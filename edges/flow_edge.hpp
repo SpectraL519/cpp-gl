@@ -42,9 +42,9 @@ struct flow_edge {
     vertex_key_t source;
     vertex_key_t destination;
 
-    const bool weight = false;
-    flow_t flow = false;
-    flow_t capacity = false;
+    const bool weight = true;
+    flow_t flow;
+    flow_t capacity;
 
     data_t data;
 };
@@ -80,8 +80,8 @@ struct flow_edge <vertex_key_t, flow_t, std::nullopt_t> {
     vertex_key_t destination;
 
     const bool weight = true;
-    flow_t flow = false;
-    flow_t capacity = false;
+    flow_t flow;
+    flow_t capacity;
 };
 
 } // namespace gl
