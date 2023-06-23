@@ -1,8 +1,10 @@
-#ifndef CPP_GL_VERTEX
-#define CPP_GL_VERTEX
+#ifndef CPP_GL_VERTEX_DESCRIPTOR
+#define CPP_GL_VERTEX_DESCRIPTOR
 
+#include <edge/edge_traits.hpp>
+#include <edge/edge.hpp>
+#include <vertex/vertex_traits.hpp>
 #include <utility/types.hpp>
-#include <utility/concepts.hpp>
 
 
 
@@ -21,7 +23,7 @@ struct vertex_descriptor {
         const container_t& ajdacent,
         const data_t& data
     ) :
-        ajdacent(adjacent),
+        adjacent(adjacent),
         data(data)
     {}
 
@@ -45,11 +47,11 @@ template <
     edge_descriptor_t edge_t,
     adjacent_container_t container_t
 >
-struct vertex_descriptor {
+struct vertex_descriptor <key_t, edge_t, container_t, std::nullopt_t> {
     vertex_descriptor() = default;
 
-    explicit vertex_descriptor (const container_t& ajdacent) :
-        ajdacent(adjacent)
+    explicit vertex_descriptor (const container_t& ajdacent) 
+        : adjacent(adjacent)
     {}
 
     explicit vertex_descriptor (
@@ -66,4 +68,4 @@ struct vertex_descriptor {
 } // namespace gl
 
 
-#endif // CPP_GL_VERTEX
+#endif // CPP_GL_VERTEX_DESCRIPTOR
