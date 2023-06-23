@@ -2,57 +2,39 @@
 #define CPP_GL_CONCEPTS
 
 #include <concepts>
-#include <vector>
-#include <list>
-#include <set>
-#include <unordered_set>
+#include <type_traits>
 
-#include <types.hpp>
-#include <edges.hpp>
+#include <utility/types.hpp>
 
 
 
 namespace gl {
 
-// adjacent vertices container type
-template <typename container_t, typename = void> 
-struct adjacent_container_trait : std::false_type {};
+// data descriptor concept
+template <typename T>
+struct data_struct {
+private:
+    template <typename S>
+    static constexpr auto test(int) -> decltype(S::data, std::true_type{});
 
-template <typename T, typename allocator_t> 
-struct adjacent_container_trait <gl::vect<T, allocator_t>> : std::true_type {};
+    template <typename>
+    static constexpr std::false_type test(...);
 
-template <typename T, typename allocator_t> 
-struct adjacent_container_trait <gl::list<T, allocator_t>> : std::true_type {};
+public:
+    static constexpr bool value = decltype(test<T>(0))::value;
+};
 
-template <typename T, typename allocator_t> 
-struct adjacent_container_trait <gl::set<T, allocator_t>> : std::true_type {};
-
-template <typename T, typename allocator_t> 
-struct adjacent_container_trait <gl::hash_set<T, allocator_t>> : std::true_type {};
-
-template <typename container_t>
-concept adjacent_container_t = adjacent_container_trait<container_t>::value;
+template <typename T>
+concept is_data_struct = data_struct<T>::value;
 
 
 
-// edge container type
-template <typename descriptor_t, typename = void>
-struct edge_descriptor_trait : std::false_type {};
+// alias concept
+template <typename T, typename Alias>
+concept has_type_alias = requires {
+    typename T::template alias_t<Alias>;
+};
 
-template <index_t key_t>
-struct edge_descriptor_trait <edge <key_t>> : std::true_type {};
-
-template <index_t key_t, numerical_t weight_t>
-struct edge_descriptor_trait <weighted_edge <key_t, weight_t>> : std::true_type {};
-
-template <index_t key_t, numerical_t flow_t>
-struct edge_descriptor_trait <flow_edge <key_t, flow_t>> : std::true_type {};
-
-template <index_t key_t, numerical_t weight_t, numerical_t flow_t>
-struct edge_descriptor_trait <weighted_flow_edge <key_t, weight_t, flow_t>> : std::true_type {};
-
-template <typename descriptor_t>
-concept edge_descriptor_t = edge_descriptor_trait<descriptor_t>::value;
 
 } // namespace gl
 

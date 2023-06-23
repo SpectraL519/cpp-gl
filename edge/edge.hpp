@@ -1,8 +1,7 @@
 #ifndef CPP_GL_EDGE
 #define CPP_GL_EDGE
 
-#include <optional>
-
+#include <edge/edge_traits.hpp>
 #include <utility/types.hpp>
 
 

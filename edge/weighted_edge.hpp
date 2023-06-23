@@ -1,8 +1,8 @@
 #ifndef CPP_GL_WEIGHTED_EDGE
 #define CPP_GL_WEIGHTED_EDGE
 
+#include <edge/edge_traits.hpp>
 #include <utility/types.hpp>
-#include <edges/edge.hpp>
 
 
 
