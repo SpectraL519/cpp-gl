@@ -13,10 +13,21 @@ template <
     numerical_t flow_t = std::size_t,
     typename data_t = std::nullopt_t
 >
-struct flow_edge {
-    flow_edge() = default;
+struct flow_edge_descriptor {
+    // attributes
+    const vertex_key_t source;
+    const vertex_key_t destination;
 
-    explicit flow_edge (
+    const bool weight = true;
+    flow_t flow;
+    flow_t capacity;
+
+    data_t data;
+
+    // constructors & destructors
+    flow_edge_descriptor() = default;
+
+    explicit flow_edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const flow_t& flow,
@@ -30,7 +41,9 @@ struct flow_edge {
         data(data) 
     {}
 
-    explicit flow_edge (const flow_edge<vertex_key_t, flow_t, data_t>& other) : 
+    explicit flow_edge_descriptor (
+        const flow_edge_descriptor<vertex_key_t, flow_t, data_t>& other
+    ) : 
         source(other.source), 
         destination(other.destination),
         flow(other.flow),
@@ -38,8 +51,14 @@ struct flow_edge {
         data(other.data)
     {}
 
-    ~flow_edge() = default;
+    ~flow_edge_descriptor() = default;
+};
 
+
+
+template <index_t vertex_key_t, numerical_t flow_t>
+struct flow_edge_descriptor <vertex_key_t, flow_t, std::nullopt_t> {
+    // attributes
     vertex_key_t source;
     vertex_key_t destination;
 
@@ -47,16 +66,10 @@ struct flow_edge {
     flow_t flow;
     flow_t capacity;
 
-    data_t data;
-};
+    // constructors & destructors
+    flow_edge_descriptor() = default;
 
-
-
-template <index_t vertex_key_t, numerical_t flow_t>
-struct flow_edge <vertex_key_t, flow_t, std::nullopt_t> {
-    flow_edge() = default;
-
-    flow_edge (
+    flow_edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const flow_t& flow,
@@ -68,21 +81,14 @@ struct flow_edge <vertex_key_t, flow_t, std::nullopt_t> {
         capacity(capacity)
     {}
 
-    flow_edge (const flow_edge<vertex_key_t, flow_t>& other) : 
+    flow_edge_descriptor (const flow_edge_descriptor<vertex_key_t, flow_t>& other) : 
         source(other.source), 
         destination(other.destination),
         flow(other.flow),
         capacity(other.capacity)
     {}
 
-    ~flow_edge() = default;
-
-    vertex_key_t source;
-    vertex_key_t destination;
-
-    const bool weight = true;
-    flow_t flow;
-    flow_t capacity;
+    ~flow_edge_descriptor() = default;
 };
 
 } // namespace gl

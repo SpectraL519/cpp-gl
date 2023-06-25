@@ -13,7 +13,7 @@
 namespace gl {
 
 template <typename descriptor_t>
-struct vertex_descriptor_trait : std::false_type {};
+struct is_vertex_descriptor : std::false_type {};
 
 template <
     index_t key_t,
@@ -21,15 +21,18 @@ template <
     adjacent_container_t container_t, 
     typename data_t
 >
-struct vertex_descriptor_trait <vertex_descriptor <key_t, edge_t, container_t, data_t>> : std::true_type {};
+struct is_vertex_descriptor <vertex_descriptor <key_t, edge_t, container_t, data_t>> : std::true_type {};
+
+template <typename descriptor_t>
+inline constexpr bool is_vertex_descriptor_v = is_vertex_descriptor<descriptor_t>::value;
 
 
 
 template <typename descriptor_t>
-concept vertex_descriptor_t = vertex_descriptor_trait<descriptor_t>::value;
+concept vertex_descriptor_t = is_vertex_descriptor_v<descriptor_t>;
 
 template <typename descriptor_t>
-concept data_vertex_descriptor_t = vertex_descriptor_trait<descriptor_t>::value && is_data_descriptor_v<descriptor_t>;
+concept data_vertex_descriptor_t = is_vertex_descriptor_v<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
 } // namespace gl
 

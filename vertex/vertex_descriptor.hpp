@@ -13,32 +13,41 @@ namespace gl {
 
 template <
     index_t key_t = std::size_t,
-    edge_descriptor_t edge_t = edge<key_t>,
+    edge_descriptor_t edge_t = edge_descriptor<key_t>,
     adjacent_container_t container_t = vect<edge_t>,
     typename data_t = std::nullopt_t
 >
 struct vertex_descriptor {
+private:
+    container_t _adjacent;
+
+public:
+    data_t data;
+
+    // constructors & destructors
     vertex_descriptor() = default;
 
     explicit vertex_descriptor (
-        const container_t& ajdacent,
+        const container_t& adjacent_,
         const data_t& data
     ) :
-        adjacent(adjacent),
+        _adjacent(adjacent_),
         data(data)
     {}
 
     explicit vertex_descriptor (
         const vertex_descriptor<key_t, edge_t, container_t, data_t>& other
     ) :
-        adjacent(other.adjacent),
+        _adjacent(other._adjacent),
         data(other.data)
     {}
 
     ~vertex_descriptor() = default;
 
-    container_t adjacent;
-    data_t data;
+    // member functions
+    container_t& adjacent () const {
+        return const_cast<container_t&>(this->_adjacent);
+    }
 };
 
 
@@ -49,21 +58,29 @@ template <
     adjacent_container_t container_t
 >
 struct vertex_descriptor <key_t, edge_t, container_t, std::nullopt_t> {
+private:
+    container_t _adjacent;
+
+public:
+    // constructors & destructors
     vertex_descriptor() = default;
 
-    explicit vertex_descriptor (const container_t& ajdacent) 
-        : adjacent(adjacent)
+    explicit vertex_descriptor (const container_t& adjacent_) 
+        : _adjacent(adjacent_)
     {}
 
     explicit vertex_descriptor (
         const vertex_descriptor<key_t, edge_t, container_t>& other
     ) : 
-        adjacent(other.adjacent)
+        _adjacent(other._adjacent)
     {}
 
     ~vertex_descriptor() = default;
 
-    container_t adjacent;
+    // member functions
+    container_t& adjacent () const {
+        return const_cast<container_t&>(this->_adjacent);
+    }
 };
     
 } // namespace gl

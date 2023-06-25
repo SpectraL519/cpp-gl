@@ -14,10 +14,21 @@ template <
     numerical_t flow_t = std::size_t,
     typename data_t = std::nullopt_t
 >
-struct weighted_flow_edge {
-    weighted_flow_edge() = default;
+struct weighted_flow_edge_descriptor {
+    // attributes
+    const vertex_key_t source;
+    const vertex_key_t destination;
 
-    explicit weighted_flow_edge (
+    weight_t weight;
+    flow_t flow;
+    flow_t capacity;
+
+    data_t data;
+
+    // constructors & destructors
+    weighted_flow_edge_descriptor() = default;
+
+    explicit weighted_flow_edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const weight_t& weight,
@@ -33,8 +44,8 @@ struct weighted_flow_edge {
         data(data) 
     {}
 
-    explicit weighted_flow_edge (
-        const weighted_flow_edge<vertex_key_t, weight_t, flow_t, data_t>& other
+    explicit weighted_flow_edge_descriptor (
+        const weighted_flow_edge_descriptor<vertex_key_t, weight_t, flow_t, data_t>& other
     ) : 
         source(other.source), 
         destination(other.destination),
@@ -43,25 +54,25 @@ struct weighted_flow_edge {
         data(other.data)
     {}
 
-    ~weighted_flow_edge() = default;
-
-    vertex_key_t source;
-    vertex_key_t destination;
-
-    weight_t weight;
-    flow_t flow;
-    flow_t capacity;
-
-    data_t data;
+    ~weighted_flow_edge_descriptor() = default;
 };
 
 
 
 template <index_t vertex_key_t, numerical_t weight_t, numerical_t flow_t>
-struct weighted_flow_edge <vertex_key_t, weight_t, flow_t, std::nullopt_t> {
-    weighted_flow_edge() = default;
+struct weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, std::nullopt_t> {
+    // attributes
+    const vertex_key_t source;
+    const vertex_key_t destination;
 
-    weighted_flow_edge (
+    weight_t weight;
+    flow_t flow;
+    flow_t capacity;
+
+    // constructors & destructors
+    weighted_flow_edge_descriptor() = default;
+
+    weighted_flow_edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const weight_t& weight,
@@ -75,8 +86,8 @@ struct weighted_flow_edge <vertex_key_t, weight_t, flow_t, std::nullopt_t> {
         capacity(capacity)
     {}
 
-    weighted_flow_edge (
-        const weighted_flow_edge<vertex_key_t, weight_t, flow_t>& other
+    weighted_flow_edge_descriptor (
+        const weighted_flow_edge_descriptor<vertex_key_t, weight_t, flow_t>& other
     ) : 
         source(other.source), 
         destination(other.destination),
@@ -85,14 +96,7 @@ struct weighted_flow_edge <vertex_key_t, weight_t, flow_t, std::nullopt_t> {
         capacity(other.capacity)
     {}
 
-    ~weighted_flow_edge() = default;
-
-    vertex_key_t source;
-    vertex_key_t destination;
-
-    weight_t weight;
-    flow_t flow;
-    flow_t capacity;
+    ~weighted_flow_edge_descriptor() = default;
 };
 
 } // namespace gl

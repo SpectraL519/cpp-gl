@@ -16,27 +16,27 @@ namespace gl {
 
 // edge container types
 template <typename descriptor_t>
-struct edge_descriptor_trait : std::false_type {};
+struct is_edge_descriptor : std::false_type {};
 
 template <
     index_t vertex_key_t, 
     typename data_t
 >
-struct edge_descriptor_trait <edge <vertex_key_t, data_t>> : std::true_type {};
+struct is_edge_descriptor <edge_descriptor <vertex_key_t, data_t>> : std::true_type {};
 
 template <
     index_t vertex_key_t, 
     numerical_t weight_t, 
     typename data_t
 >
-struct edge_descriptor_trait <weighted_edge <vertex_key_t, weight_t, data_t>> : std::true_type {};
+struct is_edge_descriptor <weighted_edge_descriptor <vertex_key_t, weight_t, data_t>> : std::true_type {};
 
 template <
     index_t vertex_key_t, 
     numerical_t flow_t, 
     typename data_t
 >
-struct edge_descriptor_trait <flow_edge <vertex_key_t, flow_t, data_t>> : std::true_type {};
+struct is_edge_descriptor <flow_edge_descriptor <vertex_key_t, flow_t, data_t>> : std::true_type {};
 
 template <
     index_t vertex_key_t, 
@@ -44,15 +44,18 @@ template <
     numerical_t flow_t, 
     typename data_t
 >
-struct edge_descriptor_trait <weighted_flow_edge <vertex_key_t, weight_t, flow_t, data_t>> : std::true_type {};
+struct is_edge_descriptor <weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, data_t>> : std::true_type {};
+
+template <typename descriptor_t>
+inline constexpr bool is_edge_descriptor_v = is_edge_descriptor<descriptor_t>::value;
 
 
 
 template <typename descriptor_t>
-concept edge_descriptor_t = edge_descriptor_trait<descriptor_t>::value;
+concept edge_descriptor_t = is_edge_descriptor_v<descriptor_t>;
 
 template <typename descriptor_t>
-concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
+concept data_edge_descriptor_t = is_edge_descriptor_v<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
 } // namespace gl
 

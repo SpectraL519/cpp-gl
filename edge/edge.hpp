@@ -12,10 +12,21 @@ template <
     index_t vertex_key_t = std::size_t,
     typename data_t = std::nullopt_t
 >
-struct edge {
-    edge() = default;
+struct edge_descriptor {
+    // attributes
+    const vertex_key_t source;
+    const vertex_key_t destination;
 
-    explicit edge (
+    const bool weight = true;
+    const bool flow = false;
+    const bool capacity = false;
+
+    data_t data;
+
+    // constructors & destructors
+    edge_descriptor() = default;
+
+    explicit edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const data_t& data
@@ -25,31 +36,31 @@ struct edge {
         data(data) 
     {}
 
-    explicit edge (const edge& other) : 
+    explicit edge_descriptor (const edge_descriptor<vertex_key_t, data_t>& other) : 
         source(other.source), 
         destination(other.destination),
         data(other.data)
     {}
 
-    ~edge() = default;
-
-    vertex_key_t source;
-    vertex_key_t destination;
-
-    const bool weight = true;
-    const bool flow = false;
-    const bool capacity = false;
-
-    data_t data;
+    ~edge_descriptor() = default;
 };
 
 
 
 template <index_t vertex_key_t>
-struct edge <vertex_key_t, std::nullopt_t> {
-    edge() = default;
+struct edge_descriptor <vertex_key_t, std::nullopt_t> {
+    // attributes
+    const vertex_key_t source;
+    const vertex_key_t destination;
 
-    edge (
+    const bool weight = true;
+    const bool flow = false;
+    const bool capacity = false;
+
+    // constructors & destructors
+    edge_descriptor() = default;
+
+    edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination
     ) : 
@@ -57,19 +68,12 @@ struct edge <vertex_key_t, std::nullopt_t> {
         destination(destination) 
     {}
 
-    edge (const edge<vertex_key_t>& other) :
+    edge_descriptor (const edge_descriptor<vertex_key_t>& other) :
         source(other.source),
         destination(other.destination)
     {}
 
-    ~edge() = default;
-
-    vertex_key_t source;
-    vertex_key_t destination;
-
-    const bool weight = true;
-    const bool flow = false;
-    const bool capacity = false;
+    ~edge_descriptor() = default;
 };
 
 } // namespace gl
