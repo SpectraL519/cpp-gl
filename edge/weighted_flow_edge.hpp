@@ -1,18 +1,17 @@
 #ifndef CPP_GL_WEIGHTED_FLOW_EDGE_DESCRIPTOR
 #define CPP_GL_WEIGHTED_FLOW_EDGE_DESCRIPTOR
 
-#include <edge/edge_traits.hpp>
-#include <utility/type_traits.hpp>
+#include <utility/types.hpp>
 
 
 
 namespace gl {
 
 template <
-    index_t vertex_key_t = std::size_t,
+    typename vertex_key_t,
     numerical_t weight_t = std::size_t,
     numerical_t flow_t = std::size_t,
-    typename data_t = std::nullopt_t
+    typename data_t = void
 >
 struct weighted_flow_edge_descriptor {
     // attributes
@@ -59,8 +58,8 @@ struct weighted_flow_edge_descriptor {
 
 
 
-template <index_t vertex_key_t, numerical_t weight_t, numerical_t flow_t>
-struct weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, std::nullopt_t> {
+template <typename vertex_key_t, numerical_t weight_t, numerical_t flow_t>
+struct weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, void> {
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;

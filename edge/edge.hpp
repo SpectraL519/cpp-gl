@@ -1,16 +1,15 @@
 #ifndef CPP_GL_EDGE_DESCRIPTOR
 #define CPP_GL_EDGE_DESCRIPTOR
 
-#include <edge/edge_traits.hpp>
-#include <utility/type_traits.hpp>
+#include <utility/types.hpp>
 
 
 
 namespace gl {
 
 template <
-    index_t vertex_key_t = std::size_t,
-    typename data_t = std::nullopt_t
+    typename vertex_key_t,
+    typename data_t = void
 >
 struct edge_descriptor {
     // attributes
@@ -47,8 +46,8 @@ struct edge_descriptor {
 
 
 
-template <index_t vertex_key_t>
-struct edge_descriptor <vertex_key_t, std::nullopt_t> {
+template <typename vertex_key_t>
+struct edge_descriptor <vertex_key_t, void> {
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;

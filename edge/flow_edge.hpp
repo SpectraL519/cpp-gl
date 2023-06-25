@@ -1,17 +1,16 @@
 #ifndef CPP_GL_FLOW_EDGE_DESCRIPTOR
 #define CPP_GL_FLOW_EDGE_DESCRIPTOR
 
-#include <edge/edge_traits.hpp>
-#include <utility/type_traits.hpp>
+#include <utility/types.hpp>
 
 
 
 namespace gl {
 
 template <
-    index_t vertex_key_t = std::size_t,
+    typename vertex_key_t,
     numerical_t flow_t = std::size_t,
-    typename data_t = std::nullopt_t
+    typename data_t = void
 >
 struct flow_edge_descriptor {
     // attributes
@@ -56,8 +55,8 @@ struct flow_edge_descriptor {
 
 
 
-template <index_t vertex_key_t, numerical_t flow_t>
-struct flow_edge_descriptor <vertex_key_t, flow_t, std::nullopt_t> {
+template <typename vertex_key_t, numerical_t flow_t>
+struct flow_edge_descriptor <vertex_key_t, flow_t, void> {
     // attributes
     vertex_key_t source;
     vertex_key_t destination;

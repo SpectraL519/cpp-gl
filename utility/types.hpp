@@ -5,27 +5,33 @@
 #include <list>
 #include <set>
 #include <unordered_set>
+#include <map>
 #include <unordered_map>
 
 
 
 namespace gl {
 
+// numerical type concepts
+template <typename T>
+concept index_t = std::unsigned_integral<T>;
+
+template <typename T>
+concept numerical_t = std::is_arithmetic_v<T>;
+
+
+
 // container types
-template <typename T, typename allocator_t = std::vector<T>::allocator_type>
-using vect = std::vector <T, allocator_t>;
+namespace container {
 
-template <typename T, typename allocator_t = std::vector<T>::allocator_type>
-using list = std::list <T, allocator_t>;
+struct vect_s     {};
+struct list_s     {};
+struct set_s      {};
+struct hash_set_s {};
+struct map_s      {};
+struct hash_map_s {};
 
-template <typename T, typename allocator_t = std::vector<T>::allocator_type>
-using set = std::set <T, allocator_t>;
-
-template <typename T, typename allocator_t = std::vector<T>::allocator_type>
-using hash_set = std::unordered_set <T, allocator_t>;
-
-template <typename T, typename allocator_t = std::vector<T>::allocator_type>
-using hash_map = std::unordered_map <T, allocator_t>;
+} // namespace container
 
 } // namespace gl
 
