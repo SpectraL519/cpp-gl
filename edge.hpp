@@ -1,5 +1,5 @@
-#ifndef CPP_GL_EDGES
-#define CPP_GL_EDGES
+#ifndef CPP_GL_EDGE
+#define CPP_GL_EDGE
 
 #include <edge/edge_traits.hpp>
 #include <edge/edge.hpp>
@@ -7,4 +7,4 @@
 #include <edge/flow_edge.hpp>
 #include <edge/weighted_flow_edge.hpp>
 
-#endif // CPP_GL_EDGES
+#endif // CPP_GL_EDGE

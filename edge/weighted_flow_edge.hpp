@@ -1,5 +1,5 @@
-#ifndef CPP_GL_WEIGHTED_FLOW_EDGE
-#define CPP_GL_WEIGHTED_FLOW_EDGE
+#ifndef CPP_GL_WEIGHTED_FLOW_EDGE_DESCRIPTOR
+#define CPP_GL_WEIGHTED_FLOW_EDGE_DESCRIPTOR
 
 #include <edge/edge_traits.hpp>
 #include <utility/type_traits.hpp>
@@ -101,4 +101,4 @@ struct weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, std::nullo
 
 } // namespace gl
 
-#endif // CPP_GL_WEIGHTED_FLOW_EDGE
+#endif // CPP_GL_WEIGHTED_FLOW_EDGE_DESCRIPTOR

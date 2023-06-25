@@ -1,5 +1,5 @@
-#ifndef CPP_GL_WEIGHTED_EDGE
-#define CPP_GL_WEIGHTED_EDGE
+#ifndef CPP_GL_WEIGHTED_EDGE_DESCRIPTOR
+#define CPP_GL_WEIGHTED_EDGE_DESCRIPTOR
 
 #include <edge/edge_traits.hpp>
 #include <utility/type_traits.hpp>
@@ -27,7 +27,7 @@ struct weighted_edge_descriptor {
     // constructors & destructors
     weighted_edge_descriptor() = default;
 
-    weighted_edge_descriptor (
+    explicit weighted_edge_descriptor (
         const vertex_key_t& source, 
         const vertex_key_t& destination,
         const weight_t& weight,
@@ -87,4 +87,4 @@ struct weighted_edge_descriptor <vertex_key_t, weight_t, std::nullopt_t> {
 
 } // namespace gl
 
-#endif // CPP_GL_WEIGHTED_EDGE
+#endif // CPP_GL_WEIGHTED_EDGE_DESCRIPTOR

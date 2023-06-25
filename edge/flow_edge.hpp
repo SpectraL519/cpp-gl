@@ -1,5 +1,5 @@
-#ifndef CPP_GL_FLOW_EDGE
-#define CPP_GL_FLOW_EDGE
+#ifndef CPP_GL_FLOW_EDGE_DESCRIPTOR
+#define CPP_GL_FLOW_EDGE_DESCRIPTOR
 
 #include <edge/edge_traits.hpp>
 #include <utility/type_traits.hpp>
@@ -93,4 +93,4 @@ struct flow_edge_descriptor <vertex_key_t, flow_t, std::nullopt_t> {
 
 } // namespace gl
 
-#endif // CPP_GL_FLOW_EDGE
+#endif // CPP_GL_FLOW_EDGE_DESCRIPTOR

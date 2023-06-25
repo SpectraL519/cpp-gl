@@ -1,5 +1,5 @@
-#ifndef CPP_GL_VERTICES
-#define CPP_GL_VERTICES
+#ifndef CPP_GL_VERTEX
+#define CPP_GL_VERTEX
 
 #include <vertex/vertex_traits.hpp>
 #include <vertex/adjacent_container.hpp>

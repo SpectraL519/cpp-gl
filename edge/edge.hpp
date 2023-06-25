@@ -1,5 +1,5 @@
-#ifndef CPP_GL_EDGE
-#define CPP_GL_EDGE
+#ifndef CPP_GL_EDGE_DESCRIPTOR
+#define CPP_GL_EDGE_DESCRIPTOR
 
 #include <edge/edge_traits.hpp>
 #include <utility/type_traits.hpp>
@@ -78,4 +78,4 @@ struct edge_descriptor <vertex_key_t, std::nullopt_t> {
 
 } // namespace gl
 
-#endif // CPP_GL_EDGE
+#endif // CPP_GL_EDGE_DESCRIPTOR
