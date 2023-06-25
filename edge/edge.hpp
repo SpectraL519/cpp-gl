@@ -2,7 +2,7 @@
 #define CPP_GL_EDGE
 
 #include <edge/edge_traits.hpp>
-#include <utility/types.hpp>
+#include <utility/type_traits.hpp>
 
 
 

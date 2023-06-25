@@ -4,17 +4,24 @@
 #include <concepts>
 #include <type_traits>
 
-#include <utility/types.hpp>
-
 
 
 namespace gl {
 
+// numerical type concepts
+template <typename T>
+concept index_t = std::unsigned_integral<T>;
+
+template <typename T>
+concept numerical_t = std::is_arithmetic_v<T>;
+
+
+
 // data descriptor concept
 template <typename T>
-struct data_struct {
+struct is_data_descriptor {
 private:
-    template <typename S>
+    template <typename S> // SFINAE
     static constexpr auto test(int) -> decltype(S::data, std::true_type{});
 
     template <typename>
@@ -25,7 +32,7 @@ public:
 };
 
 template <typename T>
-concept is_data_struct = data_struct<T>::value;
+inline constexpr bool is_data_descriptor_v = is_data_descriptor<T>::value;
 
 
 

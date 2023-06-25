@@ -4,7 +4,7 @@
 #include <optional>
 #include <concepts>
 
-#include <utility/types.hpp>
+#include <utility/type_traits.hpp>
 #include <vertex/adjacent_container.hpp>
 #include <vertex/vertex_descriptor.hpp>
 
@@ -29,7 +29,7 @@ template <typename descriptor_t>
 concept vertex_descriptor_t = vertex_descriptor_trait<descriptor_t>::value;
 
 template <typename descriptor_t>
-concept data_vertex_descriptor_t = vertex_descriptor_trait<descriptor_t>::value && is_data_struct<descriptor_t>;
+concept data_vertex_descriptor_t = vertex_descriptor_trait<descriptor_t>::value && is_data_descriptor_v<descriptor_t>;
 
 } // namespace gl
 

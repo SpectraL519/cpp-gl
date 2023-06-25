@@ -5,6 +5,7 @@
 #include <edge/edge.hpp>
 #include <vertex/vertex_traits.hpp>
 #include <utility/types.hpp>
+#include <utility/type_traits.hpp>
 
 
 

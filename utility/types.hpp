@@ -5,6 +5,7 @@
 #include <list>
 #include <set>
 #include <unordered_set>
+#include <unordered_map>
 
 
 
@@ -23,14 +24,8 @@ using set = std::set <T, allocator_t>;
 template <typename T, typename allocator_t = std::vector<T>::allocator_type>
 using hash_set = std::unordered_set <T, allocator_t>;
 
-
-
-// numerical type concepts
-template <typename T>
-concept index_t = std::unsigned_integral<T>;
-
-template <typename T>
-concept numerical_t = std::is_arithmetic_v<T>;
+template <typename T, typename allocator_t = std::vector<T>::allocator_type>
+using hash_map = std::unordered_map <T, allocator_t>;
 
 } // namespace gl
 

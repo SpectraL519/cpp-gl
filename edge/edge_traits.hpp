@@ -8,7 +8,7 @@
 #include <edge/weighted_edge.hpp>
 #include <edge/flow_edge.hpp>
 #include <edge/weighted_flow_edge.hpp>
-#include <utility/concepts.hpp>
+#include <utility/type_traits.hpp>
 
 
 
@@ -52,7 +52,7 @@ template <typename descriptor_t>
 concept edge_descriptor_t = edge_descriptor_trait<descriptor_t>::value;
 
 template <typename descriptor_t>
-concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_struct<descriptor_t>;
+concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
 } // namespace gl
 
