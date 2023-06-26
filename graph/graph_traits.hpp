@@ -1,16 +1,22 @@
 #ifndef CPP_GL_GRAPH_TRAITS
 #define CPP_GL_GRAPH_TRAITS
 
-#include <edge/edge_traits.hpp>
-#include <vertex/vertex_traits.hpp>
+#include <edge/type_traits.hpp>
+#include <vertex/type_traits.hpp>
+#include <vertex/vertex_descriptor.hpp>
 
 
 
 namespace gl {
 
-template <vertex_descriptor_t vertex_t>
+template <
+    vertex_descriptor_t vertex_t,
+    typename vertex_name_t = void,
+    graph_container_s container_s = gl::container::vect_s
+>
 class IGraph {
-    using vertex_key_t = vertex_t::key_t;
+public:
+    using container_t = container_traits<container_s, vertex_name_t, typename vertex_t::key_t>::type;
 };
 
 } // namespace gl

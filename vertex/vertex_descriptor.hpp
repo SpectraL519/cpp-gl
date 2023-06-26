@@ -21,7 +21,7 @@ template <
 struct vertex_descriptor {
 public:
     using edge_t = edge_traits<key_t, edge_s>::type;
-    using container_t = container_traits<container_s, void, edge_t>::type;
+    using container_t = container_traits<container_s, edge_t>::type;
 
 private:
     container_t _adjacent;
@@ -65,7 +65,7 @@ template <
 struct vertex_descriptor <key_t, edge_s, container_s, void> {
 public:
     using edge_t = edge_traits<key_t, edge_s>::type;
-    using container_t = container_traits<container_s, void, edge_t>::type;
+    using container_t = container_traits<container_s,edge_t>::type;
 
 private:
     container_t _adjacent;

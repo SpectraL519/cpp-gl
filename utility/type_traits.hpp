@@ -45,27 +45,27 @@ concept adjacency_container_s = container::is_adjacency_valid_v<S>;
 
 
 
-template <graph_container_s S, typename key_t = void, typename value_t = std::size_t>
+template <graph_container_s S, typename key_t = std::size_t, typename value_t = void>
 struct container_traits {};
 
-template <typename value_t> 
-struct container_traits <container::vect_s, void, value_t> {
-    typedef std::vector<value_t> type;
+template <typename key_t> 
+struct container_traits <container::vect_s, key_t, void> {
+    typedef std::vector<key_t> type;
 };
 
-template <typename value_t> 
-struct container_traits <container::list_s, void, value_t> {
-    typedef std::list<value_t> type;
+template <typename key_t> 
+struct container_traits <container::list_s, key_t, void> {
+    typedef std::list<key_t> type;
 };
 
-template <typename value_t> 
-struct container_traits <container::set_s, void, value_t> {
-    typedef std::set<value_t> type;
+template <typename key_t> 
+struct container_traits <container::set_s, key_t, void> {
+    typedef std::set<key_t> type;
 };
 
-template <typename value_t> 
-struct container_traits <container::hash_set_s, void, value_t> {
-    typedef std::unordered_set<value_t> type;
+template <typename key_t> 
+struct container_traits <container::hash_set_s, key_t, void> {
+    typedef std::unordered_set<key_t> type;
 };
 
 template <typename key_t, typename value_t> 
