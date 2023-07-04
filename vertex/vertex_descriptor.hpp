@@ -20,11 +20,12 @@ template <
 >
 struct vertex_descriptor {
 public:
-    using edge_t = edge_traits<key_t, edge_s>::type;
-    using container_t = container_traits<container_s, edge_t>::type;
+    using key_type = key_t;
+    using edge_type = edge_traits<key_t, edge_s>::type;
+    using container_type = container_traits<container_s, edge_type>::type;
 
 private:
-    container_t _adjacent;
+    container_type _adjacent;
 
 public:
     data_t data;
@@ -33,7 +34,7 @@ public:
     vertex_descriptor() = default;
 
     explicit vertex_descriptor (
-        const container_t& adjacent_,
+        const container_type& adjacent_,
         const data_t& data
     ) :
         _adjacent(adjacent_),
@@ -50,8 +51,12 @@ public:
     ~vertex_descriptor() = default;
 
     // member functions
-    container_t& adjacent () const {
-        return const_cast<container_t&>(this->_adjacent);
+    [[nodiscard]] container_type& adjacent () const noexcept {
+        return const_cast<container_type&>(this->_adjacent);
+    }
+
+    [[nodiscard]] std::size_t degree () const noexcept {
+        return this->_adjacent.size();
     }
 };
 
@@ -64,17 +69,18 @@ template <
 >
 struct vertex_descriptor <key_t, edge_s, container_s, void> {
 public:
-    using edge_t = edge_traits<key_t, edge_s>::type;
-    using container_t = container_traits<container_s,edge_t>::type;
+    using key_type = key_t;
+    using edge_type = edge_traits<key_t, edge_s>::type;
+    using container_type = container_traits<container_s, edge_type>::type;
 
 private:
-    container_t _adjacent;
+    container_type _adjacent;
 
 public:
     // constructors & destructors
     vertex_descriptor() = default;
 
-    vertex_descriptor (const container_t& adjacent_) 
+    vertex_descriptor (const container_type& adjacent_) 
         : _adjacent(adjacent_)
     {}
 
@@ -87,11 +93,15 @@ public:
     ~vertex_descriptor() = default;
 
     // member functions
-    container_t& adjacent () const {
-        return const_cast<container_t&>(this->_adjacent);
+    [[nodiscard]] container_type& adjacent () const {
+        return const_cast<container_type&>(this->_adjacent);
+    }
+
+    [[nodiscard]] std::size_t degree () const noexcept {
+        return this->_adjacent.size();
     }
 };
-    
+
 } // namespace gl
 
 

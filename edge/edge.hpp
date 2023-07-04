@@ -12,6 +12,11 @@ template <
     typename data_t = void
 >
 struct edge_descriptor {
+    using vertex_key_type = vertex_key_t;
+    using data_type = data_t;
+    using weight_type = void;
+    using flow_type = void;
+
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;
@@ -48,6 +53,11 @@ struct edge_descriptor {
 
 template <typename vertex_key_t>
 struct edge_descriptor <vertex_key_t, void> {
+    using vertex_key_type = vertex_key_t;
+    using data_type = void;
+    using weight_type = void;
+    using flow_type = void;
+
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;

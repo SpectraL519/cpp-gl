@@ -9,11 +9,16 @@ namespace gl {
 
 template <
     typename vertex_key_t,
-    numerical_t weight_t = std::size_t,
-    numerical_t flow_t = std::size_t,
+    arithmetic_t weight_t = std::size_t,
+    arithmetic_t flow_t = std::size_t,
     typename data_t = void
 >
 struct weighted_flow_edge_descriptor {
+    using vertex_key_type = vertex_key_t;
+    using data_type = data_t;
+    using weight_type = weight_t;
+    using flow_type = flow_t;
+
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;
@@ -58,8 +63,13 @@ struct weighted_flow_edge_descriptor {
 
 
 
-template <typename vertex_key_t, numerical_t weight_t, numerical_t flow_t>
+template <typename vertex_key_t, arithmetic_t weight_t, arithmetic_t flow_t>
 struct weighted_flow_edge_descriptor <vertex_key_t, weight_t, flow_t, void> {
+    using vertex_key_type = vertex_key_t;
+    using data_type = void;
+    using weight_type = weight_t;
+    using flow_type = flow_t;
+    
     // attributes
     const vertex_key_t source;
     const vertex_key_t destination;

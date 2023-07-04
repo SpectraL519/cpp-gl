@@ -25,13 +25,13 @@ template <typename data_t>
 struct is_valid_descriptor <default_s <data_t>> : std::true_type {};
 template <> struct is_valid_descriptor <default_s <>> : std::true_type {};
 
-template <numerical_t weight_t, typename data_t>
+template <arithmetic_t weight_t, typename data_t>
 struct is_valid_descriptor <weighted_s <weight_t, data_t>> : std::true_type {};
 
-template <numerical_t flow_t, typename data_t>
+template <arithmetic_t flow_t, typename data_t>
 struct is_valid_descriptor <flow_s <flow_t, data_t>> : std::true_type {};
 
-template <numerical_t weight_t, numerical_t flow_t, typename data_t>
+template <arithmetic_t weight_t, arithmetic_t flow_t, typename data_t>
 struct is_valid_descriptor <weighted_flow_s <weight_t, flow_t, data_t>> : std::true_type {};
 
 template <typename S>
@@ -49,38 +49,38 @@ struct edge_traits {};
 
 template <typename vertex_key_t, typename data_t>
 struct edge_traits <vertex_key_t, edge::default_s <data_t>> {
-    using type = typename std::conditional<
+    using type = std::conditional_t<
         std::is_void_v<data_t>, 
         edge_descriptor<vertex_key_t>,
         edge_descriptor<vertex_key_t, data_t>
-    >::type;
+    >;
 };
 
-template <typename vertex_key_t, numerical_t weight_t, typename data_t>
+template <typename vertex_key_t, arithmetic_t weight_t, typename data_t>
 struct edge_traits <vertex_key_t, edge::weighted_s <weight_t, data_t>> {
-    using type = typename std::conditional<
+    using type = std::conditional_t<
         std::is_void_v<data_t>, 
         weighted_edge_descriptor<vertex_key_t, weight_t>,
         weighted_edge_descriptor<vertex_key_t, weight_t, data_t>
-    >::type;
+    >;
 };
 
-template <typename vertex_key_t, numerical_t flow_t, typename data_t>
+template <typename vertex_key_t, arithmetic_t flow_t, typename data_t>
 struct edge_traits <vertex_key_t, edge::flow_s <flow_t, data_t>> {
-    using type = typename std::conditional<
+    using type = std::conditional_t<
         std::is_void_v<data_t>, 
         flow_edge_descriptor<vertex_key_t, flow_t>,
         flow_edge_descriptor<vertex_key_t, flow_t, data_t>
-    >::type;
+    >;
 };
 
-template <typename vertex_key_t, numerical_t weight_t, numerical_t flow_t, typename data_t>
+template <typename vertex_key_t, arithmetic_t weight_t, arithmetic_t flow_t, typename data_t>
 struct edge_traits <vertex_key_t, edge::weighted_flow_s <weight_t, flow_t, data_t>> {
-    using type = typename std::conditional<
+    using type = std::conditional_t<
         std::is_void_v<data_t>, 
         weighted_flow_edge_descriptor<vertex_key_t, weight_t, flow_t>,
         weighted_flow_edge_descriptor<vertex_key_t, weight_t, flow_t, data_t>
-    >::type;
+    >;
 };
 
 } // namespace gl

@@ -1,13 +1,6 @@
 #ifndef CPP_GL_TYPES
 #define CPP_GL_TYPES
 
-#include <vector>
-#include <list>
-#include <set>
-#include <unordered_set>
-#include <map>
-#include <unordered_map>
-
 
 
 namespace gl {
@@ -17,8 +10,7 @@ template <typename T>
 concept index_t = std::unsigned_integral<T>;
 
 template <typename T>
-concept numerical_t = std::is_arithmetic_v<T>;
-
+concept arithmetic_t = std::is_arithmetic_v<T>;
 
 
 // container types

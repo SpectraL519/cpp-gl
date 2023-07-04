@@ -16,7 +16,7 @@ template <
 >
 class IGraph {
 public:
-    using container_t = container_traits<container_s, vertex_name_t, typename vertex_t::key_t>::type;
+    using container_type = container_traits<container_s, typename vertex_t::key_type, vertex_name_t>::type;
 };
 
 } // namespace gl
