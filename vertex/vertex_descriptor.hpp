@@ -4,7 +4,7 @@
 #include <optional>
 
 #include <edge/type_traits.hpp>
-#include <edge/edge.hpp>
+#include <edge/edge_descriptor.hpp>
 #include <utility/types.hpp>
 #include <utility/type_traits.hpp>
 
@@ -13,15 +13,14 @@
 namespace gl {
 
 template <
-    index_t key_t = std::size_t,
-    graph_edge_s edge_s = gl::edge::default_s<>,
+    edge_descriptor_t edge_t = edge_descriptor<std::size_t>,
     adjacency_container_s container_s = gl::container::vect_s,
     typename data_t = void
 >
 struct vertex_descriptor {
 public:
-    using key_type = key_t;
-    using edge_type = edge_traits<key_t, edge_s>::type;
+    using key_type = edge_t::vertex_key_type;
+    using edge_type = edge_t;
     using container_type = container_traits<container_s, edge_type>::type;
 
 private:
@@ -42,7 +41,7 @@ public:
     {}
 
     explicit vertex_descriptor (
-        const vertex_descriptor<key_t, edge_s, container_s, data_t>& other
+        const vertex_descriptor<edge_t, container_s, data_t>& other
     ) :
         _adjacent(other._adjacent),
         data(other.data)
@@ -63,14 +62,13 @@ public:
 
 
 template <
-    index_t key_t,
-    graph_edge_s edge_s,
+    edge_descriptor_t edge_t,
     adjacency_container_s container_s
 >
-struct vertex_descriptor <key_t, edge_s, container_s, void> {
+struct vertex_descriptor <edge_t, container_s, void> {
 public:
-    using key_type = key_t;
-    using edge_type = edge_traits<key_t, edge_s>::type;
+    using key_type = edge_t::vertex_key_type;
+    using edge_type = edge_t;
     using container_type = container_traits<container_s, edge_type>::type;
 
 private:
@@ -84,8 +82,9 @@ public:
         : _adjacent(adjacent_)
     {}
 
+    template <typename data_t = void>
     vertex_descriptor (
-        const vertex_descriptor<key_t, edge_s, container_s, void>& other
+        const vertex_descriptor<edge_t, container_s, data_t>& other
     ) : 
         _adjacent(other._adjacent)
     {}

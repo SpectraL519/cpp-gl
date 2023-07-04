@@ -19,7 +19,7 @@ struct is_valid_descriptor : std::false_type {};
 
 template <
     index_t key_t,
-    graph_edge_s edge_s,
+    edge_traits,
     adjacency_container_s container_s,
     typename data_t
 >
@@ -34,8 +34,7 @@ template <typename descriptor_t>
 concept vertex_descriptor_t = vertex::is_valid_descriptor_v<descriptor_t>;
 
 template <typename descriptor_t>
-concept data_vertex_descriptor_t = vertex::is_valid_descriptor_v<descriptor_t> && 
-                                           is_data_descriptor_v<descriptor_t>;
+concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
 } // namespace gl
 
