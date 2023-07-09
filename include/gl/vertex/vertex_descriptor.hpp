@@ -3,10 +3,10 @@
 
 #include <optional>
 
-#include <edge/type_traits.hpp>
-#include <edge/edge_descriptor.hpp>
-#include <utility/types.hpp>
-#include <utility/type_traits.hpp>
+#include <gl/edge/type_traits.hpp>
+#include <gl/edge/edge_descriptor.hpp>
+#include <gl/utility/types.hpp>
+#include <gl/utility/type_traits.hpp>
 
 
 

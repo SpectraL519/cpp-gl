@@ -3,8 +3,8 @@
 
 #include <type_traits>
 
-#include <utility/types.hpp>
-#include <utility/type_traits.hpp>
+#include <gl/utility/types.hpp>
+#include <gl/utility/type_traits.hpp>
 
 
 

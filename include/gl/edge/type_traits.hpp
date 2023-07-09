@@ -5,8 +5,8 @@
 #include <concepts>
 #include <optional>
 
-#include <edge/edge_descriptor.hpp>
-#include <utility/types.hpp>
+#include <gl/edge/edge_descriptor.hpp>
+#include <gl/utility/types.hpp>
 
 
 

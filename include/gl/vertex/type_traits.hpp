@@ -4,9 +4,9 @@
 #include <type_traits>
 #include <concepts>
 
-#include <utility/types.hpp>
-#include <edge/type_traits.hpp>
-#include <vertex/vertex_descriptor.hpp>
+#include <gl/utility/types.hpp>
+#include <gl/edge/type_traits.hpp>
+#include <gl/vertex/vertex_descriptor.hpp>
 
 
 
@@ -18,12 +18,11 @@ template <typename descriptor_t>
 struct is_valid_descriptor : std::false_type {};
 
 template <
-    index_t key_t,
-    edge_traits,
+    edge_descriptor_t edge_t,
     adjacency_container_s container_s,
     typename data_t
 >
-struct is_valid_descriptor <vertex_descriptor <key_t, edge_s, container_s, data_t>> : std::true_type {};
+struct is_valid_descriptor <vertex_descriptor <edge_t, container_s, data_t>> : std::true_type {};
 
 template <typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
