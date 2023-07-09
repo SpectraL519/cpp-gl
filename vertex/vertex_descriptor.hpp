@@ -92,11 +92,11 @@ public:
     ~vertex_descriptor() = default;
 
     // member functions
-    [[nodiscard]] container_type& adjacent () const {
+    [[nodiscard]] container_type& adjacent () {
         return const_cast<container_type&>(this->_adjacent);
     }
 
-    [[nodiscard]] std::size_t degree () const noexcept {
+    [[nodiscard]] std::size_t degree () {
         return this->_adjacent.size();
     }
 };

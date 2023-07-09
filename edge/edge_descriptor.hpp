@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include <utility/types.hpp>
+#include <utility/type_traits.hpp>
 
 
 
@@ -11,14 +12,10 @@ namespace gl {
 
 template <
     typename vertex_key_t,
-    typename weight_t = void,
-    typename flow_t = void,
+    satisfies_or_void<std::is_arithmetic> weight_t = void,
+    satisfies_or_void<std::is_arithmetic> flow_t = void,
     typename data_t = void
 >
-requires (
-    (arithmetic_t<weight_t> || std::is_void_v<weight_t>) &&
-    (arithmetic_t<flow_t> || std::is_void_v<flow_t>)
-)
 struct edge_descriptor {
 public:
     using vertex_key_type = vertex_key_t;
