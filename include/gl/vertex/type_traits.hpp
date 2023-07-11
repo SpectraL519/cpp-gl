@@ -19,7 +19,7 @@ struct is_valid_descriptor : std::false_type {};
 
 template <
     edge_descriptor_t edge_t,
-    adjacency_container_s container_s,
+    graph_container_s container_s,
     typename data_t
 >
 struct is_valid_descriptor <vertex_descriptor <edge_t, container_s, data_t>> : std::true_type {};

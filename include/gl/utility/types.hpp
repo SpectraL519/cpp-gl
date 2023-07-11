@@ -1,6 +1,8 @@
 #ifndef CPP_GL_TYPES
 #define CPP_GL_TYPES
 
+#include <functional>
+
 
 
 namespace gl {
@@ -14,16 +16,15 @@ concept arithmetic_t = std::is_arithmetic_v<T>;
 
 
 // container types
-namespace container {
-
 struct vect_s     {};
+struct deq_s      {};
 struct list_s     {};
-struct set_s      {};
-struct hash_set_s {};
-struct map_s      {};
-struct hash_map_s {};
+struct flist_s    {};
+struct set_s      {}; // TODO: add Compare param
+struct multiset_s {}; // TODO: add Compare param
+struct hash_set_s {}; // TODO: add Hash, EqualTo params
 
-} // namespace container
+// TODO: span -> graph with vertces from range 0 : size-1
 
 } // namespace gl
 

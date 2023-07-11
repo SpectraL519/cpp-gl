@@ -31,18 +31,6 @@ concept edge_descriptor_t = edge::is_valid_descriptor_v<descriptor_t>;
 template <typename descriptor_t>
 concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
-
-
-template <
-    typename vertex_key_t, 
-    typename weight_t = void, 
-    typename flow_t = void, 
-    typename data_t = void
->
-struct edge_traits {
-    using type = edge_descriptor<vertex_key_t, weight_t, flow_t, data_t>;
-};
-
 } // namespace gl
 
 #endif // CPP_GL_EDGE_TYPE_TRAITS
