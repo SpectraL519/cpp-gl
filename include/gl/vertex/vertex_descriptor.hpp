@@ -57,7 +57,7 @@ public:
         return this->_adjacent.size();
     }
 
-    // TODO: add_edge method
+    // TODO: add_edge method (after adding insertion methods to container_traits)
 };
 
 

@@ -10,7 +10,7 @@
 namespace gl {
 
 template <
-    typename vertex_key_t,
+    index_t vertex_key_t,
     satisfies_or_void<std::is_arithmetic> weight_t = void,
     satisfies_or_void<std::is_arithmetic> flow_t = void,
     typename data_t = void
@@ -147,7 +147,7 @@ public:
 
 
 
-template <typename vertex_key_t, typename weight_t, typename flow_t>
+template <index_t vertex_key_t, typename weight_t, typename flow_t>
 struct edge_descriptor <vertex_key_t, weight_t, flow_t, void> {
 public:
     using vertex_key_type = vertex_key_t;

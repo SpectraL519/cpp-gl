@@ -49,19 +49,38 @@ public:
         // TODO: add an insert method to container_traits
     };
 
-    void add_edge (const edge_type& edge) {
+    void add_edge (const edge_type& edge) override {
         this->_add_edge<>(edge);
     }
 
+    
+
 private:
-    template <bool directed = DIRECTED>
-    std::enable_if_t<directed> _add_edge (const edge_type& edge) {
-        std::cout << "todo: directed graph" << std::endl;
+    template <bool directed = DIRECTED> requires (directed)
+    void _add_edge (const edge_type& edge) {
+        std::cout << "directed" << std::endl;
+        std::cout << '(' << edge.source << ','
+                         << edge.destination << ','
+                         << edge.weight() << ','
+                         << edge.flow() << ','
+                         << edge.capacity() << ")";
+
+        if constexpr (is_data_descriptor_v<edge_type>) 
+            std::cout << " -> " << edge.data();
+        std::cout << std::endl;
     }
 
-    template <bool directed = DIRECTED>
-    std::enable_if_t<!directed> _add_edge (const edge_type& edge) {
-        std::cout << "todo: undirected graph" << std::endl;
+    template <bool directed = DIRECTED> requires (!directed)
+    void _add_edge (const edge_type& edge) {
+        std::cout << "undirected" << std::endl;
+        std::cout << '(' << edge.source << ','
+                         << edge.destination << ','
+                         << edge.weight() << ','
+                         << edge.flow() << ','
+                         << edge.capacity() << ")" << std::endl;
+        if constexpr (is_data_descriptor_v<edge_type>) 
+            std::cout << " -> " << edge.data();
+        std::cout << std::endl;
     }
 };
 

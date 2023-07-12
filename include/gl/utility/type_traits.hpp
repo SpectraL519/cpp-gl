@@ -27,8 +27,8 @@ template <>           struct is_valid <deq_s>      : std::true_type  {};
 template <>           struct is_valid <list_s>     : std::true_type  {};
 template <>           struct is_valid <flist_s>    : std::true_type  {};
 template <>           struct is_valid <set_s>      : std::true_type  {};
-template <>           struct is_valid <hash_set_s> : std::true_type  {};
 template <>           struct is_valid <multiset_s> : std::true_type  {};
+// template <>           struct is_valid <hash_set_s> : std::true_type  {};
 
 template <typename S>
 inline constexpr bool is_valid_v = is_valid<S>::value;
@@ -41,42 +41,67 @@ concept graph_container_s = container::is_valid_v<S>;
 
 
 template <graph_container_s S, typename key_t = std::size_t>
-struct container_traits {};
+struct container_traits {
+    typedef void type;
+    static void insert (S container, const key_t& key) {}
+    // TODO: remove method
+};
 
 template <typename key_t> 
 struct container_traits <vect_s, key_t> {
     typedef std::vector<key_t> type;
+    static void insert (std::vector<key_t>& container, const key_t& key) {
+        container.emplace_back(key);
+    }
 };
 
 template <typename key_t> 
 struct container_traits <deq_s, key_t> {
     typedef std::deque<key_t> type;
+    static void insert (std::deque<key_t>& container, const key_t& key) {
+        container.emplace_back(key);
+    }
 };
 
 template <typename key_t> 
 struct container_traits <list_s, key_t> {
     typedef std::list<key_t> type;
+    static void insert (std::list<key_t>& container, const key_t& key) {
+        container.emplace_back(key);
+    }
 };
 
 template <typename key_t> 
 struct container_traits <flist_s, key_t> {
     typedef std::forward_list<key_t> type;
+    static void insert (std::forward_list<key_t>& container, const key_t& key) {
+        container.emplace_after(container.cend(), key);
+    }
 };
 
 template <typename key_t> 
 struct container_traits <set_s, key_t> {
     typedef std::set<key_t> type;
+    static void insert (std::set<key_t>& container, const key_t& key) {
+        container.emplace(key);
+    }
 };
 
 template <typename key_t>
 struct container_traits <multiset_s, key_t> {
     typedef std::multiset<key_t> type;
+    static void insert (std::multiset<key_t>& container, const key_t& key) {
+        container.emplace(key);
+    }
 };
 
-template <typename key_t> 
-struct container_traits <hash_set_s, key_t> {
-    typedef std::unordered_set<key_t> type;
-};
+// template <typename key_t> 
+// struct container_traits <hash_set_s, key_t> {
+//     typedef std::unordered_set<key_t> type;
+//     static void insert (std::unordered_set<key_t>& container, const key_t& key) {
+//         container.emplace(key);
+//     }
+// };
 
 template <typename container_s, typename key_t>
 using container_traits_t = typename container_traits<container_s, key_t>::type;
@@ -85,16 +110,16 @@ using container_traits_t = typename container_traits<container_s, key_t>::type;
 
 // data descriptor trait
 template <typename T>
+concept data_descriptor_t = requires (T descriptor) {
+    typename T::data_type;
+    { !std::is_void_v<typename T::data_type> };
+    { descriptor.data() } -> std::same_as<typename T::data_type>;
+};
+
+template <typename T>
 struct is_data_descriptor {
-private:
-    template <typename S> // SFINAE
-    static constexpr auto test(int) -> decltype(S::data, std::true_type{});
-
-    template <typename>
-    static constexpr std::false_type test(...);
-
-public:
-    static constexpr bool value = decltype(test<T>(0))::value;
+    using type = T;
+    static constexpr bool value = data_descriptor_t<T>;
 };
 
 template <typename T>
