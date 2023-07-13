@@ -3,10 +3,8 @@
 
 #include <optional>
 
-#include <gl/edge/type_traits.hpp>
-#include <gl/edge/edge_descriptor.hpp>
-#include <gl/utility/types.hpp>
-#include <gl/utility/type_traits.hpp>
+#include <gl/utility.hpp>
+#include <gl/edge.hpp>
 
 
 
@@ -25,6 +23,8 @@ public:
 
 private:
     container_type _adjacent;
+    std::function<void(container_type&, const edge_type&)> _container_insert = 
+        container_traits<container_s, edge_type>::insert;
 
 public:
     const key_type key;
@@ -49,7 +49,7 @@ public:
     ~vertex_descriptor() = default;
 
     // member functions
-    [[nodiscard]] container_type& adjacent () const {
+    [[nodiscard]] const container_type& adjacent () const {
         return const_cast<container_type&>(this->_adjacent);
     }
 
@@ -57,7 +57,13 @@ public:
         return this->_adjacent.size();
     }
 
-    // TODO: add_edge method (after adding insertion methods to container_traits)
+    bool add_edge (const edge_type& edge) {
+        if (edge.source != this->key)
+            return false;
+        
+        this->_container_insert(this->_adjacent, edge);
+        return true;
+    }
 };
 
 
@@ -74,6 +80,8 @@ public:
 
 private:
     container_type _adjacent;
+    std::function<void(container_type&, const edge_type&)> _container_insert = 
+        container_traits<container_s, edge_type>::insert;
 
 public:
     const key_type key;
@@ -86,17 +94,16 @@ public:
     {}
 
     template <typename data_t = void>
-    vertex_descriptor (
-        const key_type key, 
+    vertex_descriptor ( 
         const vertex_descriptor<edge_t, container_s, data_t>& other
     ) 
-        : key(key), _adjacent(other._adjacent)
+        : key(other.key), _adjacent(other._adjacent)
     {}
 
     ~vertex_descriptor() = default;
 
     // member functions
-    [[nodiscard]] container_type& adjacent () const {
+    [[nodiscard]] const container_type& adjacent () const {
         return const_cast<container_type&>(this->_adjacent);
     }
 
@@ -104,7 +111,13 @@ public:
         return this->_adjacent.size();
     }
 
-    // TODO: add_edge method
+    bool add_edge (const edge_type& edge) {
+        if (edge.source != this->key)
+            return false;
+        
+        this->_container_insert(this->_adjacent, edge);
+        return true;
+    }
 };
 
 } // namespace gl

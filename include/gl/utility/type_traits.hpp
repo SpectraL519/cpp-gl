@@ -43,14 +43,19 @@ concept graph_container_s = container::is_valid_v<S>;
 template <graph_container_s S, typename key_t = std::size_t>
 struct container_traits {
     typedef void type;
-    static void insert (S container, const key_t& key) {}
+    typedef void iterator;
+    typedef void const_iterator;
+    static inline void insert (S container, const key_t& key) {}
     // TODO: remove method
 };
 
 template <typename key_t> 
 struct container_traits <vect_s, key_t> {
     typedef std::vector<key_t> type;
-    static void insert (std::vector<key_t>& container, const key_t& key) {
+    typedef std::vector<key_t>::iterator iterator;
+    typedef std::vector<key_t>::const_iterator const_iterator;
+
+    static inline void insert (std::vector<key_t>& container, const key_t& key) {
         container.emplace_back(key);
     }
 };
@@ -58,7 +63,10 @@ struct container_traits <vect_s, key_t> {
 template <typename key_t> 
 struct container_traits <deq_s, key_t> {
     typedef std::deque<key_t> type;
-    static void insert (std::deque<key_t>& container, const key_t& key) {
+    typedef std::deque<key_t>::iterator iterator;
+    typedef std::deque<key_t>::const_iterator const_iterator;
+
+    static inline void insert (std::deque<key_t>& container, const key_t& key) {
         container.emplace_back(key);
     }
 };
@@ -66,7 +74,10 @@ struct container_traits <deq_s, key_t> {
 template <typename key_t> 
 struct container_traits <list_s, key_t> {
     typedef std::list<key_t> type;
-    static void insert (std::list<key_t>& container, const key_t& key) {
+    typedef std::list<key_t>::iterator iterator;
+    typedef std::list<key_t>::const_iterator const_iterator;
+
+    static inline void insert (std::list<key_t>& container, const key_t& key) {
         container.emplace_back(key);
     }
 };
@@ -74,7 +85,10 @@ struct container_traits <list_s, key_t> {
 template <typename key_t> 
 struct container_traits <flist_s, key_t> {
     typedef std::forward_list<key_t> type;
-    static void insert (std::forward_list<key_t>& container, const key_t& key) {
+    typedef std::forward_list<key_t>::iterator iterator;
+    typedef std::forward_list<key_t>::const_iterator const_iterator;
+
+    static inline void insert (std::forward_list<key_t>& container, const key_t& key) {
         container.emplace_after(container.cend(), key);
     }
 };
@@ -82,7 +96,10 @@ struct container_traits <flist_s, key_t> {
 template <typename key_t> 
 struct container_traits <set_s, key_t> {
     typedef std::set<key_t> type;
-    static void insert (std::set<key_t>& container, const key_t& key) {
+    typedef std::set<key_t>::iterator iterator;
+    typedef std::set<key_t>::const_iterator const_iterator;
+
+    static inline void insert (std::set<key_t>& container, const key_t& key) {
         container.emplace(key);
     }
 };
@@ -90,7 +107,10 @@ struct container_traits <set_s, key_t> {
 template <typename key_t>
 struct container_traits <multiset_s, key_t> {
     typedef std::multiset<key_t> type;
-    static void insert (std::multiset<key_t>& container, const key_t& key) {
+    typedef std::multiset<key_t>::iterator iterator;
+    typedef std::multiset<key_t>::const_iterator const_iterator;
+    
+    static inline void insert (std::multiset<key_t>& container, const key_t& key) {
         container.emplace(key);
     }
 };
@@ -98,7 +118,10 @@ struct container_traits <multiset_s, key_t> {
 // template <typename key_t> 
 // struct container_traits <hash_set_s, key_t> {
 //     typedef std::unordered_set<key_t> type;
-//     static void insert (std::unordered_set<key_t>& container, const key_t& key) {
+//     typedef std::unordered_set<key_t>::iterator iterator;
+//     typedef std::unordered_set<key_t>::const_iterator const_iterator;
+// 
+//     static inline void insert (std::unordered_set<key_t>& container, const key_t& key) {
 //         container.emplace(key);
 //     }
 // };

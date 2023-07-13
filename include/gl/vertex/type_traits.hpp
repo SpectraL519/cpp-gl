@@ -11,7 +11,6 @@
 
 
 namespace gl {
-
 namespace vertex {
 
 template <typename descriptor_t>
