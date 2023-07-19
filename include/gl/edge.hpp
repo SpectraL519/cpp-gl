@@ -53,9 +53,9 @@ struct edge_descriptor {
 public:
     // type definitions
     using vertex_key_type = vertex_key_t;
-    using data_type = data_t;
     using weight_type = std::conditional_t<std::is_void_v<weight_t>, bool, weight_t>;
     using flow_type = std::conditional_t<std::is_void_v<flow_t>, bool, flow_t>;
+    using data_type = data_t;
 
     // attributes
     const vertex_key_type source;
@@ -75,7 +75,7 @@ public:
 
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,
-        const data_type data = data_type()
+        const data_type& data = data_type()
     ) : 
         source(source), destination(destination), 
         _data(data) 
@@ -85,7 +85,7 @@ public:
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,
         const weight_type& weight,
-        const data_type data = data_type()
+        const data_type& data = data_type()
     ) : 
         source(source), destination(destination), 
         _weight(weight),
@@ -96,7 +96,7 @@ public:
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,
         const flow_type& flow, const flow_type& capacity, 
-        const data_type data = data_type()
+        const data_type& data = data_type()
     ) :
         source(source), destination(destination), 
         _flow(flow), _capacity(capacity),
@@ -108,7 +108,7 @@ public:
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,
         const weight_type& weight, const flow_type& flow, const flow_type& capacity, 
-        const data_type data = data_type()
+        const data_type& data = data_type()
     ) :
         source(source), destination(destination), 
         _weight(weight), _flow(flow), _capacity(capacity),
@@ -163,7 +163,7 @@ public:
     }
 
     template <typename D = data_t> requires (!std::is_void_v<D>)
-    inline void set_data (data_type data) {
+    inline void set_data (data_type& data) {
         this->_data = data;
     }
 

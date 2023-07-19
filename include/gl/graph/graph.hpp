@@ -3,6 +3,7 @@
 
 #include <numeric>
 #include <optional>
+#include <stdexcept>
 
 #include <gl/graph/graph_traits.hpp>
 #include <gl/vertex.hpp>
@@ -22,7 +23,6 @@ public:
     using vertex_type = vertex_t;
     using edge_type = vertex_t::edge_type;
     using container_type = gl::container_traits_t<container_s, vertex_type>;
-    using adj_container_type = vertex_t::container_type;
 
 private:
     container_type _adjacency_list;
@@ -40,19 +40,18 @@ public:
     [[nodiscard]] std::size_t num_edges () const override;
     [[nodiscard]] inline bool empty () const override;
     void add_vertex (const vertex_key_type& vertex_key) override;
-    bool add_edge (const edge_type& edge) override;    
+    bool add_edge (const edge_type& edge) override;   
+    [[nodiscard]] vertex_type& operator [] (const vertex_key_type& vertex_key) override; 
 
 private:
-    std::optional<std::size_t> _index_of (const vertex_key_type& v_key) const;
+    std::optional<std::size_t> _index_of (const vertex_key_type& vertex_key) const;
 
     template <bool directed = DIRECTED> requires (directed)
     bool _add_edge (const edge_type& edge);
     
     template <bool directed = DIRECTED> requires (!directed)
-    bool _add_edge (const edge_type& edge);
+    bool _add_edge (const edge_type& edge);    
 };
-
-} // namespace gl
 
 
 
@@ -86,14 +85,22 @@ bool gl::graph<DIRECTED, vertex_t, container_s>::add_edge (const edge_type& edge
     return this->_add_edge<>(edge);
 }
 
+template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
+[[nodiscard]] gl::graph<DIRECTED, vertex_t, container_s>::vertex_type& gl::graph<DIRECTED, vertex_t, container_s>::operator [] (const vertex_key_type& vertex_key) {
+    std::optional<std::size_t> idx = this->_index_of(vertex_key);
+    if (!idx) 
+        throw std::invalid_argument("vertex key: " + std::to_string(vertex_key) + " not present");
+
+    return this->_adjacency_list[idx.value()];
+}
 
 
 // private member functions
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
-std::optional<std::size_t> gl::graph<DIRECTED, vertex_t, container_s>::_index_of (const vertex_key_type& v_key) const {
+std::optional<std::size_t> gl::graph<DIRECTED, vertex_t, container_s>::_index_of (const vertex_key_type& vertex_key) const {
     container_const_iterator it = std::find_if(
         this->_adjacency_list.cbegin(), this->_adjacency_list.cend(), 
-        [&v_key] (const vertex_type& vertex) { return vertex.key == v_key; }
+        [&vertex_key] (const vertex_type& vertex) { return vertex.key == vertex_key; }
     );
 
     if (it == this->_adjacency_list.cend())
@@ -124,5 +131,7 @@ bool gl::graph<DIRECTED, vertex_t, container_s>::_add_edge (const edge_type& edg
     this->_adjacency_list[dst_idx.value()].add_edge(edge.reverse());
     return true;
 }
+
+} // namespace gl
 
 #endif // CPP_GL_GRAPH

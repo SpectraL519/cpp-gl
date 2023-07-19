@@ -56,6 +56,7 @@ public:
     using key_type = edge_t::vertex_key_type;
     using edge_type = edge_t;
     using container_type = container_traits_t<adj_container_s, edge_type>;
+    using data_type = data_t;
 
 private:
     container_type _adjacent;
@@ -67,21 +68,22 @@ private:
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
     friend class graph; // friend graph class forward declaration
 
+    data_type _data = data_type();
+
 public:
     const key_type key;
-    data_t data;
 
     // constructors & destructors
-    vertex_descriptor (const key_type key, const data_t& data) 
-        : key(key), data(data)
+    vertex_descriptor (const key_type key, const data_type& data) 
+        : key(key), _data(data)
     {}
 
-    explicit vertex_descriptor (const key_type key, const container_type& adjacent, const data_t& data) 
-        : key(key), _adjacent(adjacent), data(data)
+    explicit vertex_descriptor (const key_type key, const container_type& adjacent, const data_type& data) 
+        : key(key), _adjacent(adjacent), _data(data)
     {}
 
     explicit vertex_descriptor (const vertex_descriptor<edge_t, adj_container_s, data_t>& other) 
-        : key(other.key), _adjacent(other._adjacent), data(other.data)
+        : key(other.key), _adjacent(other._adjacent), _data(other.data)
     {}
 
     ~vertex_descriptor() = default;
@@ -111,6 +113,16 @@ public:
         this->_container_insert(this->_adjacent, edge);
         return true;
     }
+
+    template <typename D = data_t> requires (!std::is_void_v<D>)
+    [[nodiscard]] inline data_type& data () const {
+        return this->_data;
+    }
+
+    template <typename D = data_t> requires (!std::is_void_v<D>)
+    inline void set_data (data_type& data) {
+        this->_data = data;
+    }
 };
 
 
@@ -124,6 +136,7 @@ public:
     using key_type = edge_t::vertex_key_type;
     using edge_type = edge_t;
     using container_type = container_traits_t<adj_container_s, edge_type>;
+    using data_type = void;
 
 private:
     container_type _adjacent;

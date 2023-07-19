@@ -22,7 +22,6 @@ public:
     using vertex_type = vertex_t;
     using edge_type = vertex_t::edge_type;
     using container_type = gl::container_traits_t<container_s, vertex_type>;
-    using adj_container_type = vertex_t::container_type;
 
 public:
     virtual std::size_t num_vertices () const = 0;
@@ -31,6 +30,8 @@ public:
 
     virtual void add_vertex (const vertex_key_type& vertex_key) = 0; // TODO data vertices
     virtual bool add_edge (const edge_type& edge) = 0;
+
+    virtual vertex_type& operator [] (const vertex_key_type& vertex_key) = 0;
 };
 
 } // namespace gl

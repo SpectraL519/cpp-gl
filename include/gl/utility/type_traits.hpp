@@ -136,7 +136,8 @@ template <typename T>
 concept data_descriptor_t = requires (T descriptor) {
     typename T::data_type;
     { !std::is_void_v<typename T::data_type> };
-    { descriptor.data() } -> std::same_as<typename T::data_type>;
+    { std::is_same_v<decltype(descriptor.data()), typename T::data_type&> };
+    { std::is_same_v<decltype(descriptor.set_data(std::declval<typename T::data_type&>())), void> };
 };
 
 template <typename T>
