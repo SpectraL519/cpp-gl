@@ -5,6 +5,7 @@
 #include <optional>
 
 #include <gl/graph/graph_traits.hpp>
+#include <gl/vertex.hpp>
 
 
 
@@ -103,10 +104,12 @@ std::optional<std::size_t> gl::graph<DIRECTED, vertex_t, container_s>::_index_of
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
 template <bool directed> requires (directed)
 bool gl::graph<DIRECTED, vertex_t, container_s>::_add_edge (const edge_type& edge) {
-    std::optional<std::size_t> idx = this->_index_of(edge.source);
-    if (!idx) return false;
+    std::optional<std::size_t> src_idx = this->_index_of(edge.source);
+    std::optional<std::size_t> dst_idx = this->_index_of(edge.destination);
+    if (!(src_idx && dst_idx)) return false;
 
-    this->_adjacency_list[idx.value()].add_edge(edge);
+    this->_adjacency_list[src_idx.value()].add_edge(edge);
+    this->_adjacency_list[dst_idx.value()]._in_deg++;
     return true;
 }
 
@@ -118,6 +121,7 @@ bool gl::graph<DIRECTED, vertex_t, container_s>::_add_edge (const edge_type& edg
     if (!(src_idx && dst_idx)) return false;
     
     this->_adjacency_list[src_idx.value()].add_edge(edge);
+    this->_adjacency_list[dst_idx.value()].add_edge(edge.reverse());
     return true;
 }
 
