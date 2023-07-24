@@ -1,5 +1,7 @@
-#ifndef CPP_GL_TYPES
-#define CPP_GL_TYPES
+#ifndef CPP_GL_UTILITY_TYPES
+#define CPP_GL_UTILITY_TYPES
+
+#include <functional>
 
 
 
@@ -14,17 +16,14 @@ concept arithmetic_t = std::is_arithmetic_v<T>;
 
 
 // container types
-namespace container {
-
 struct vect_s     {};
+struct deq_s      {};
 struct list_s     {};
-struct set_s      {};
-struct hash_set_s {};
-struct map_s      {};
-struct hash_map_s {};
-
-} // namespace container
+struct flist_s    {};
+struct set_s      {}; // TODO: add Compare param
+struct multiset_s {}; // TODO: add Compare param
+// struct hash_set_s {}; // TODO: add Hash, EqualTo params
 
 } // namespace gl
 
-#endif // CPP_GL_TYPES
+#endif // CPP_GL_UTILITY_TYPES
