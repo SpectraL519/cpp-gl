@@ -1,7 +1,7 @@
-#ifndef CPP_GL_UTILITY_I
-#define CPP_GL_UTILITY_I
+#ifndef CPP_GL_UTILITY
+#define CPP_GL_UTILITY
 
 #include <gl/utility/types.hpp>
 #include <gl/utility/type_traits.hpp>
 
-#endif // CPP_GL_UTILITY_I
+#endif // CPP_GL_UTILITY

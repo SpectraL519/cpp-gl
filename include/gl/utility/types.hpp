@@ -1,5 +1,5 @@
-#ifndef CPP_GL_TYPES
-#define CPP_GL_TYPES
+#ifndef CPP_GL_UTILITY_TYPES
+#define CPP_GL_UTILITY_TYPES
 
 #include <functional>
 
@@ -26,4 +26,4 @@ struct multiset_s {}; // TODO: add Compare param
 
 } // namespace gl
 
-#endif // CPP_GL_TYPES
+#endif // CPP_GL_UTILITY_TYPES

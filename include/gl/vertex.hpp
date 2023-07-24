@@ -204,5 +204,4 @@ public:
 
 } // namespace gl
 
-
 #endif // CPP_GL_VERTEX
