@@ -39,8 +39,12 @@ public:
     [[nodiscard]] inline std::size_t num_vertices () const override;
     [[nodiscard]] std::size_t num_edges () const override;
     [[nodiscard]] inline bool empty () const override;
+
+    void add_vertex (const vertex_type& vertex) override;
     void add_vertex (const vertex_key_type& vertex_key) override;
     bool add_edge (const edge_type& edge) override;   
+
+    const container_type& vertices () const;
     [[nodiscard]] vertex_type& operator [] (const vertex_key_type& vertex_key) override; 
 
 private:
@@ -74,10 +78,15 @@ template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s
     return this->_adjacency_list.size() == 0;
 }
 
+
+template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
+void gl::graph<DIRECTED, vertex_t, container_s>::add_vertex (const vertex_type& vertex) {
+    this->_container_insert(this->_adjacency_list, vertex);
+};
+
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
 void gl::graph<DIRECTED, vertex_t, container_s>::add_vertex (const vertex_key_type& vertex_key) {
-    // TODO: insert vertex to adjacency list
-    // TODO: add an insert method to container_traits
+    this->_container_insert(this->_adjacency_list, vertex_key);
 };
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
@@ -85,14 +94,23 @@ bool gl::graph<DIRECTED, vertex_t, container_s>::add_edge (const edge_type& edge
     return this->_add_edge<>(edge);
 }
 
+
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
-[[nodiscard]] gl::graph<DIRECTED, vertex_t, container_s>::vertex_type& gl::graph<DIRECTED, vertex_t, container_s>::operator [] (const vertex_key_type& vertex_key) {
+[[nodiscard]] gl::graph<DIRECTED, vertex_t, container_s>::vertex_type& 
+              gl::graph<DIRECTED, vertex_t, container_s>::operator [] (const vertex_key_type& vertex_key) {
     std::optional<std::size_t> idx = this->_index_of(vertex_key);
     if (!idx) 
         throw std::invalid_argument("vertex key: " + std::to_string(vertex_key) + " not present");
 
     return this->_adjacency_list[idx.value()];
 }
+
+template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
+[[nodiscard]] const gl::graph<DIRECTED, vertex_t, container_s>::container_type& 
+                    gl::graph<DIRECTED, vertex_t, container_s>::vertices () const {
+    return const_cast<container_type&>(this->_adjacency_list);
+}
+
 
 
 // private member functions
@@ -105,7 +123,7 @@ std::optional<std::size_t> gl::graph<DIRECTED, vertex_t, container_s>::_index_of
 
     if (it == this->_adjacency_list.cend())
         return std::nullopt;
-    return std::distance(it, this->_adjacency_list.cbegin());
+    return std::distance(this->_adjacency_list.cbegin(), it);
 }
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
@@ -115,9 +133,11 @@ bool gl::graph<DIRECTED, vertex_t, container_s>::_add_edge (const edge_type& edg
     std::optional<std::size_t> dst_idx = this->_index_of(edge.destination);
     if (!(src_idx && dst_idx)) return false;
 
-    this->_adjacency_list[src_idx.value()].add_edge(edge);
-    this->_adjacency_list[dst_idx.value()]._in_deg++;
-    return true;
+    const bool correctly_added = this->_adjacency_list[src_idx.value()].add_edge(edge);
+    if (correctly_added) 
+        this->_adjacency_list[dst_idx.value()]._in_deg++;
+
+    return correctly_added;
 }
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>

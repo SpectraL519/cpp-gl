@@ -40,11 +40,15 @@ concept edge_descriptor_t = edge::is_valid_descriptor_v<descriptor_t>;
 template <typename descriptor_t>
 concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
+template <typename descriptor_t, typename vertex_key_t>
+concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> && 
+                                     std::is_same_v<typename descriptor_t::vertex_key_type, vertex_key_t>;
+
 
 
 // edge struct definition
 template <
-    typename vertex_key_t,
+    typename vertex_key_t = std::size_t,
     satisfies_or_void<std::is_arithmetic> weight_t = void,
     satisfies_or_void<std::is_arithmetic> flow_t = void,
     typename data_t = void
@@ -72,6 +76,10 @@ private:
 public:
     // constructors & destructors
     edge_descriptor() = default;
+
+    explicit edge_descriptor (const vertex_key_type& source, const vertex_key_type& destination)
+        : source(source), destination(destination)
+    {}
 
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,

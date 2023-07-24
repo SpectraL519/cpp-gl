@@ -132,12 +132,12 @@ using container_traits_t = typename container_traits<container_s, key_t>::type;
 
 
 // data descriptor trait
-template <typename T>
-concept data_descriptor_t = requires (T descriptor) {
-    typename T::data_type;
-    { !std::is_void_v<typename T::data_type> };
-    { std::is_same_v<decltype(descriptor.data()), typename T::data_type&> };
-    { std::is_same_v<decltype(descriptor.set_data(std::declval<typename T::data_type&>())), void> };
+template <typename descriptor_t>
+concept data_descriptor_t = requires (descriptor_t descriptor) {
+    typename descriptor_t::data_type;
+    { !std::is_void_v<typename descriptor_t::data_type> };
+    { std::is_same_v<decltype(descriptor.data()), typename descriptor_t::data_type&> };
+    { std::is_same_v<decltype(descriptor.set_data(std::declval<typename descriptor_t::data_type&>())), void> };
 };
 
 template <typename T>

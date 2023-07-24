@@ -12,7 +12,8 @@ namespace gl {
 
 // vertex struct forward declaration
 template <
-    edge_descriptor_t edge_t,
+    typename key_t,
+    key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
     typename data_t
 >
@@ -25,11 +26,12 @@ template <typename descriptor_t>
 struct is_valid_descriptor : std::false_type {};
 
 template <
-    edge_descriptor_t edge_t,
+    typename key_t,
+    key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
     typename data_t
 >
-struct is_valid_descriptor <vertex_descriptor <edge_t, container_s, data_t>> : std::true_type {};
+struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_s, data_t>> : std::true_type {};
 
 template <typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
@@ -47,13 +49,15 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 
 // vertex struct definition
 template <
-    edge_descriptor_t edge_t = edge_descriptor<std::size_t>,
+    typename key_t = std::size_t,
+    key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
     graph_container_s adj_container_s = gl::vect_s,
     typename data_t = void
 >
-struct vertex_descriptor {
+struct vertex_descriptor
+{
 public:
-    using key_type = edge_t::vertex_key_type;
+    using key_type = key_t;
     using edge_type = edge_t;
     using container_type = container_traits_t<adj_container_s, edge_type>;
     using data_type = data_t;
@@ -74,7 +78,9 @@ public:
     const key_type key;
 
     // constructors & destructors
-    vertex_descriptor (const key_type key, const data_type& data) 
+    vertex_descriptor (const key_type key) : key(key) {}
+
+    explicit vertex_descriptor (const key_type key, const data_type& data) 
         : key(key), _data(data)
     {}
 
@@ -82,7 +88,11 @@ public:
         : key(key), _adjacent(adjacent), _data(data)
     {}
 
-    explicit vertex_descriptor (const vertex_descriptor<edge_t, adj_container_s, data_t>& other) 
+    explicit vertex_descriptor (const key_type key, const container_type& adjacent_) 
+        : key(key), _adjacent(adjacent_)
+    {}
+
+    vertex_descriptor (const vertex_descriptor<edge_t, adj_container_s, data_t>& other) 
         : key(other.key), _adjacent(other._adjacent), _data(other.data)
     {}
 
@@ -114,12 +124,12 @@ public:
         return true;
     }
 
-    template <typename D = data_t> requires (!std::is_void_v<D>)
+    template <typename Data = data_t> requires (!std::is_void_v<Data>)
     [[nodiscard]] inline data_type& data () const {
         return this->_data;
     }
 
-    template <typename D = data_t> requires (!std::is_void_v<D>)
+    template <typename Data = data_t> requires (!std::is_void_v<Data>)
     inline void set_data (data_type& data) {
         this->_data = data;
     }
@@ -128,12 +138,13 @@ public:
 
 
 template <
-    edge_descriptor_t edge_t,
+    typename key_t,
+    key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s adj_container_s
 >
-struct vertex_descriptor <edge_t, adj_container_s, void> {
+struct vertex_descriptor <key_t, edge_t, adj_container_s, void> {
 public:
-    using key_type = edge_t::vertex_key_type;
+    using key_type = key_t;
     using edge_type = edge_t;
     using container_type = container_traits_t<adj_container_s, edge_type>;
     using data_type = void;
@@ -154,7 +165,7 @@ public:
     // constructors & destructors
     vertex_descriptor (const key_type key) : key(key) {}
 
-    vertex_descriptor (const key_type key, const container_type& adjacent_) 
+    explicit vertex_descriptor (const key_type key, const container_type& adjacent_) 
         : key(key), _adjacent(adjacent_)
     {}
 

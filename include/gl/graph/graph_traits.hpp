@@ -28,9 +28,11 @@ public:
     virtual std::size_t num_edges () const = 0;
     virtual bool empty () const = 0;
 
-    virtual void add_vertex (const vertex_key_type& vertex_key) = 0; // TODO data vertices
+    virtual void add_vertex (const vertex_type& vertex) = 0;
+    virtual void add_vertex (const vertex_key_type& vertex_key) = 0;
     virtual bool add_edge (const edge_type& edge) = 0;
 
+    virtual const container_type& vertices () const = 0;
     virtual vertex_type& operator [] (const vertex_key_type& vertex_key) = 0;
 };
 
