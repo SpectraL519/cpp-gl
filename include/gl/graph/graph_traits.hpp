@@ -1,7 +1,8 @@
 #ifndef CPP_GL_GRAPH_TRAITS
 #define CPP_GL_GRAPH_TRAITS
 
-#include <initializer_list>
+#include <optional>
+#include <functional>
 
 #include <gl/utility.hpp>
 #include <gl/edge.hpp>
@@ -27,13 +28,16 @@ public:
     virtual std::size_t num_vertices () const = 0;
     virtual std::size_t num_edges () const = 0;
     virtual bool empty () const = 0;
+    virtual bool has_vertex (const vertex_key_type& vertex_key) const = 0;
 
-    virtual void add_vertex (const vertex_type& vertex) = 0;
-    virtual void add_vertex (const vertex_key_type& vertex_key) = 0;
-    virtual bool add_edge (const edge_type& edge) = 0;
-
+    virtual vertex_type& operator[] (const std::size_t& index) = 0;
+    virtual vertex_type& at (const std::size_t& index) = 0;
+    virtual std::optional<std::reference_wrapper<vertex_type>> get_vertex (const vertex_key_type& vertex_key) = 0;
     virtual const container_type& vertices () const = 0;
-    virtual vertex_type& operator [] (const vertex_key_type& vertex_key) = 0;
+
+    virtual void add_vertex (const vertex_key_type& vertex_key) = 0;
+    virtual void add_vertex (const vertex_type& vertex) = 0;
+    virtual bool add_edge (const edge_type& edge) = 0;
 };
 
 } // namespace gl

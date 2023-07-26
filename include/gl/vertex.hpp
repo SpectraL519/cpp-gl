@@ -62,9 +62,13 @@ public:
     using container_type = container_traits_t<adj_container_s, edge_type>;
     using data_type = data_t;
 
+    const key_type key;
+
 private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
+
+    data_type _data = data_type();
 
     std::function<void(container_type&, const edge_type&)> _container_insert = 
         container_traits<adj_container_s, edge_type>::insert;
@@ -72,11 +76,7 @@ private:
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
     friend class graph; // friend graph class forward declaration
 
-    data_type _data = data_type();
-
 public:
-    const key_type key;
-
     // constructors & destructors
     vertex_descriptor (const key_type key) : key(key) {}
 
@@ -92,8 +92,8 @@ public:
         : key(key), _adjacent(adjacent_)
     {}
 
-    vertex_descriptor (const vertex_descriptor<edge_t, adj_container_s, data_t>& other) 
-        : key(other.key), _adjacent(other._adjacent), _data(other.data)
+    vertex_descriptor (const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
+        : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
     ~vertex_descriptor() = default;
@@ -125,13 +125,18 @@ public:
     }
 
     template <typename Data = data_t> requires (!std::is_void_v<Data>)
-    [[nodiscard]] inline data_type& data () const {
-        return this->_data;
+    [[nodiscard]] inline const data_type& data () const {
+        return const_cast<data_type&>(this->_data);
     }
 
     template <typename Data = data_t> requires (!std::is_void_v<Data>)
     inline void set_data (data_type& data) {
         this->_data = data;
+    }
+
+    template <typename Data = data_t, typename... T> requires (!std::is_void_v<Data>)
+    inline void set_data (T&&... args) {
+        this->_data = data_type(args...);
     }
 };
 
@@ -149,6 +154,8 @@ public:
     using container_type = container_traits_t<adj_container_s, edge_type>;
     using data_type = void;
 
+    const key_type key;
+
 private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
@@ -160,8 +167,6 @@ private:
     friend class graph; // friend graph class forward declaration
 
 public:
-    const key_type key;
-
     // constructors & destructors
     vertex_descriptor (const key_type key) : key(key) {}
 
@@ -170,7 +175,7 @@ public:
     {}
 
     template <typename data_t = void>
-    vertex_descriptor (const vertex_descriptor<edge_t, adj_container_s, data_t>& other) 
+    vertex_descriptor (const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
         : key(other.key), _adjacent(other._adjacent)
     {}
 
