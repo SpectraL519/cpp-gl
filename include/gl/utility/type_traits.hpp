@@ -18,6 +18,32 @@
 
 namespace gl {
 
+// general
+namespace detail {
+
+// has static const bool value
+template <typename T>
+concept has_static_const_bool_value = requires {
+    T::value;
+    std::is_same_v<decltype(T::value), const bool>;
+};
+
+} // namespace detail
+
+template <typename T, template <typename> typename Concept>
+concept satisfies_or_void = detail::has_static_const_bool_value<Concept<T>> && (Concept<T>::value || std::is_void_v<T>);
+
+template <typename T, template <typename> typename... Concepts>
+concept satisfies_all = ((detail::has_static_const_bool_value<Concepts<T>> && Concepts<T>::value) && ...);
+
+template <typename T, template <typename> typename... Concepts>
+concept satisfies_any = ((detail::has_static_const_bool_value<Concepts<T>> && Concepts<T>::value) || ...);
+
+template <typename Base, typename Derived>
+concept derived_from = std::is_base_of_v<Base, Derived>;
+
+
+
 // container traits
 namespace container {
 
@@ -148,26 +174,6 @@ struct is_data_descriptor {
 
 template <typename T>
 inline constexpr bool is_data_descriptor_v = is_data_descriptor<T>::value;
-
-
-
-namespace detail {
-
-// has static const bool value
-template <typename T>
-concept has_static_const_bool_value = requires {
-    T::value;
-    std::is_same_v<decltype(T::value), const bool>;
-};
-
-} // namespace detail
-
-// satisfies concept or is void trait
-template <typename T, template <typename> typename Concept>
-concept satisfies_or_void = detail::has_static_const_bool_value<Concept<T>> && (Concept<T>::value || std::is_void_v<T>);
-
-template <typename T, template <typename> typename... Concepts>
-concept satisfies_all = ((detail::has_static_const_bool_value<Concepts<T>> && Concepts<T>::value) && ...);
 
 } // namespace gl
 

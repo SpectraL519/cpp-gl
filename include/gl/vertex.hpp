@@ -4,7 +4,7 @@
 #include <optional>
 
 #include <gl/utility.hpp>
-#include <gl/edge.hpp>
+#include <gl/edge/edge_descriptor.hpp>
 
 
 
@@ -96,6 +96,10 @@ public:
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
+    vertex_descriptor (vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other) 
+        : key(other.key), _adjacent(other._adjacent), _data(other._data)
+    {}
+
     ~vertex_descriptor() = default;
 
     // member functions
@@ -176,6 +180,11 @@ public:
 
     template <typename data_t = void>
     vertex_descriptor (const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
+        : key(other.key), _adjacent(other._adjacent)
+    {}
+
+    template <typename data_t = void>
+    vertex_descriptor (vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other) 
         : key(other.key), _adjacent(other._adjacent)
     {}
 
