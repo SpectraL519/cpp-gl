@@ -1,8 +1,6 @@
 #ifndef CPP_GL_EDGE_DESCRIPTOR
 #define CPP_GL_EDGE_DESCRIPTOR
 
-#include <type_traits>
-
 #include <gl/utility.hpp>
 #include <gl/edge/edge_data.hpp>
 
@@ -13,7 +11,7 @@ namespace gl {
 // edge struct forward declaration
 template <
     typename vertex_key_t,
-    typename data_t
+    detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct edge_descriptor;
 
@@ -48,13 +46,13 @@ concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> &&
 // edge struct definition
 template <
     typename vertex_key_t = std::size_t,
-    typename data_t = void
+    detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
 struct edge_descriptor {
 public:
     // type definitions
     using vertex_key_type = vertex_key_t;
-    using data_type = std::conditional_t<std::is_void_v<data_t>, edge::weight_data<>, data_t>;
+    using data_type = data_t;
 
     // attributes
     const vertex_key_type source;
@@ -75,7 +73,7 @@ public:
     explicit edge_descriptor (
         const vertex_key_type& source, const vertex_key_type& destination,
         const data_type& data
-    ) requires (!std::is_void_v<data_t>) : 
+    ) : 
         source(source), destination(destination), 
         _data(data) 
     {}
@@ -99,13 +97,11 @@ public:
     {}
 
     // getters & setters
-    [[nodiscard]] inline data_type& data () const
-    requires (!std::is_void_v<data_t>) {
+    [[nodiscard]] inline data_type& data () const {
         return const_cast<data_type&>(this->_data);
     }
 
-    inline void set_data (const data_type& data) 
-    requires (!std::is_void_v<data_t>) {
+    inline void set_data (const data_type& data) {
         this->_data = data;
     }
 
@@ -113,9 +109,45 @@ public:
         return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, this->_data);
     }
 
-    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse (const data_type& reverse_data) 
-    requires (!std::is_void_v<data_t>) {
+    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse (const data_type& reverse_data) {
         return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, reverse_data);
+    }
+};
+
+
+
+// void data edge struct definition
+template <typename vertex_key_t>
+struct edge_descriptor<vertex_key_t, void> {
+public:
+    // type definitions
+    using vertex_key_type = vertex_key_t;
+    using data_type = void;
+
+    // attributes
+    const vertex_key_type source;
+    const vertex_key_type destination;
+
+public:
+    // constructors & destructors
+    edge_descriptor() = default;
+    ~edge_descriptor() = default;
+
+    explicit edge_descriptor (const vertex_key_type& source, const vertex_key_type& destination)
+        : source(source), destination(destination)
+    {}
+
+    edge_descriptor (const edge_descriptor<vertex_key_type, void>& other) 
+        : source(other.source), destination(other.destination)
+    {}
+
+    edge_descriptor (edge_descriptor<vertex_key_type, void>&& other) 
+        : source(other.source), destination(other.destination)
+    {}
+
+    // getters & setters
+    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse () {
+        return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, this->_data);
     }
 };
 

@@ -12,10 +12,10 @@ namespace gl {
 
 // vertex struct forward declaration
 template <
-    typename key_t,
+    detail::equality_comparable key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
-    typename data_t
+    detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct vertex_descriptor;
 
@@ -49,10 +49,10 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 
 // vertex struct definition
 template <
-    typename key_t = std::size_t,
+    detail::equality_comparable key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
     graph_container_s adj_container_s = gl::vect_s,
-    typename data_t = void
+    detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
 struct vertex_descriptor
 {
@@ -102,7 +102,7 @@ public:
 
     ~vertex_descriptor() = default;
 
-    // member functions
+    // getters & setters
     [[nodiscard]] inline const container_type& adjacent () const {
         return const_cast<container_type&>(this->_adjacent);
     }
@@ -128,24 +128,23 @@ public:
         return true;
     }
 
-    template <typename Data = data_t> requires (!std::is_void_v<Data>)
     [[nodiscard]] inline const data_type& data () const {
         return const_cast<data_type&>(this->_data);
     }
 
-    template <typename Data = data_t> requires (!std::is_void_v<Data>)
     inline void set_data (data_type& data) {
         this->_data = data;
     }
 
-    template <typename Data = data_t, typename... T> requires (!std::is_void_v<Data>)
-    inline void set_data (T&&... args) {
+    template <typename... T>
+    inline void set_data (const T&... args) {
         this->_data = data_type(args...);
     }
 };
 
 
 
+// void data vertex struct definition
 template <
     typename key_t,
     key_type_edge_descriptor_t<key_t> edge_t,

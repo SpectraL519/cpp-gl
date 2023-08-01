@@ -25,6 +25,8 @@ public:
 
     inline weight_type& weight () const;
     virtual inline void set_weight (const weight_type& weight);
+
+    virtual bool operator == (const weight_data& other); 
 };
 
 
@@ -61,6 +63,8 @@ public:
 
     virtual inline void set_flow (const flow_type& weight);
     virtual inline void set_capacity (const flow_type& capacity);
+
+    virtual bool operator == (const flow_data& other);
 };
 
 } // namespace gl::edge
@@ -77,6 +81,12 @@ template <gl::arithmetic_t weight_t>
 inline void gl::edge::weight_data<weight_t>::set_weight (const weight_type& weight) {
     this->_weight = weight;
 }
+
+template <gl::arithmetic_t weight_t>
+bool gl::edge::weight_data<weight_t>::operator == (const weight_data& other) {
+    return this->_weight == other._weight;
+}
+
 
 
 // flow_data member_functions
@@ -98,6 +108,11 @@ inline void gl::edge::flow_data<flow_t>::set_flow (const flow_type& flow) {
 template <gl::arithmetic_t flow_t>
 inline void gl::edge::flow_data<flow_t>::set_capacity (const flow_type& capacity) {
     this->_capacity = capacity;
+}
+
+template <gl::arithmetic_t flow_t>
+bool gl::edge::flow_data<flow_t>::operator == (const flow_data& other) {
+    return this->_flow == other._flow && this->_capacity == other._capacity;
 }
 
 #endif // CPP_GL_EDGE_DATA
