@@ -96,7 +96,15 @@ public:
         : source(other.source), destination(other.destination)
     {}
 
-    // getters & setters
+    // operators
+    friend bool operator == (const edge_descriptor<vertex_key_type, data_type>& lhs,
+                             const edge_descriptor<vertex_key_type, data_type>& rhs) {
+        return lhs.source == rhs.source &&
+               lhs.destination == rhs.destination &&
+               lhs._data == rhs._data;
+    }
+
+    // member functions
     [[nodiscard]] inline data_type& data () const {
         return const_cast<data_type&>(this->_data);
     }
@@ -145,9 +153,16 @@ public:
         : source(other.source), destination(other.destination)
     {}
 
-    // getters & setters
-    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse () {
-        return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, this->_data);
+    // operators
+    friend bool operator == (const edge_descriptor<vertex_key_type, data_type>& lhs,
+                             const edge_descriptor<vertex_key_type, data_type>& rhs) {
+        return lhs.source == rhs.source &&
+               lhs.destination == rhs.destination;
+    }
+
+    // member functions
+    [[nodiscard]] inline edge_descriptor<vertex_key_type, void> reverse () {
+        return edge_descriptor<vertex_key_type, void>(this->destination, this->source);
     }
 };
 

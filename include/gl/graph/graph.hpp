@@ -40,10 +40,10 @@ public:
     [[nodiscard]] inline bool empty () const override;
     [[nodiscard]] inline bool has_vertex (const vertex_key_type& vertex_key) const override;
 
-    [[nodiscard]] inline vertex_type& operator[] (const std::size_t& index) override;
-    [[nodiscard]] vertex_type& at (const std::size_t& index) override;
+    [[nodiscard]] inline vertex_type& operator [] (const std::size_t& index) const override;
+    [[nodiscard]] vertex_type& at (const std::size_t& index) const override;
     [[nodiscard]] std::optional<std::reference_wrapper<vertex_type>> get_vertex (const vertex_key_type& vertex_key) override; 
-    [[nodiscard]] const container_type& vertices () const override;
+    [[nodiscard]] inline const container_type& vertices () const override;
 
     void add_vertex (const vertex_type& vertex) override;
     void add_vertex (const vertex_key_type& vertex_key) override;
@@ -88,19 +88,19 @@ template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
 [[nodiscard]] inline gl::graph<DIRECTED, vertex_t, container_s>::vertex_type&
-              gl::graph<DIRECTED, vertex_t, container_s>::operator[] (const std::size_t& index) {
-    return this->_adjacency_list[index];
+              gl::graph<DIRECTED, vertex_t, container_s>::operator[] (const std::size_t& index) const {
+    return const_cast<vertex_type&>(this->_adjacency_list[index]);
 }
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
-[[nodiscard]] inline gl::graph<DIRECTED, vertex_t, container_s>::vertex_type&
-              gl::graph<DIRECTED, vertex_t, container_s>::at (const std::size_t& index) {
+[[nodiscard]] gl::graph<DIRECTED, vertex_t, container_s>::vertex_type&
+              gl::graph<DIRECTED, vertex_t, container_s>::at (const std::size_t& index) const  {
     if (index >= this->num_vertices())
         throw std::out_of_range(
             "index (" + std::to_string(index) + ") >= this->num_vertices() (" + std::to_string(this->num_vertices()) + ")"
         );
 
-    return this->_adjacency_list[index];
+    return const_cast<vertex_type&>(this->_adjacency_list[index]);
 }
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
@@ -114,8 +114,8 @@ template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s
 }
 
 template <bool DIRECTED, gl::vertex_descriptor_t vertex_t, gl::graph_container_s container_s>
-[[nodiscard]] const gl::graph<DIRECTED, vertex_t, container_s>::container_type& 
-                    gl::graph<DIRECTED, vertex_t, container_s>::vertices () const {
+[[nodiscard]] inline const gl::graph<DIRECTED, vertex_t, container_s>::container_type& 
+              gl::graph<DIRECTED, vertex_t, container_s>::vertices () const {
     return const_cast<container_type&>(this->_adjacency_list);
 }
 

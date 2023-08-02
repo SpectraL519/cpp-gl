@@ -92,17 +92,25 @@ public:
         : key(key), _adjacent(adjacent_)
     {}
 
-    vertex_descriptor (const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
+    vertex_descriptor (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& other) 
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
-    vertex_descriptor (vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other) 
+    vertex_descriptor (vertex_descriptor<key_type, edge_type, adj_container_s, data_type>&& other) 
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
     ~vertex_descriptor() = default;
 
-    // getters & setters
+    // operators
+    friend bool operator == (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
+                             const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+        return lhs.key == rhs.key &&
+               lhs._adjacent == rhs._adjacent &&
+               lhs._data == rhs._data;
+    }
+
+    // member functions
     [[nodiscard]] inline const container_type& adjacent () const {
         return const_cast<container_type&>(this->_adjacent);
     }
@@ -188,6 +196,13 @@ public:
     {}
 
     ~vertex_descriptor() = default;
+
+    // operators
+    friend bool operator == (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
+                             const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+        return lhs.key == rhs.key &&
+               lhs._adjacent == rhs._adjacent;
+    }
 
     // member functions
     [[nodiscard]] const container_type& adjacent () const {
