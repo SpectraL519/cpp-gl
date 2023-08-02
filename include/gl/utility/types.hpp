@@ -1,7 +1,7 @@
 #ifndef CPP_GL_UTILITY_TYPES
 #define CPP_GL_UTILITY_TYPES
 
-#include <functional>
+#include <concepts>
 
 
 
