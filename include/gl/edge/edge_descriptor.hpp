@@ -10,7 +10,7 @@ namespace gl {
 
 // edge struct forward declaration
 template <
-    typename vertex_key_t,
+    index_t vertex_key_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct edge_descriptor;
@@ -45,7 +45,7 @@ concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> &&
 
 // edge struct definition
 template <
-    typename vertex_key_t = std::size_t,
+    index_t vertex_key_t = std::size_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
 struct edge_descriptor {
@@ -125,7 +125,7 @@ public:
 
 
 // void data edge struct definition
-template <typename vertex_key_t>
+template <index_t vertex_key_t>
 struct edge_descriptor<vertex_key_t, void> {
 public:
     // type definitions

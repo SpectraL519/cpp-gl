@@ -12,7 +12,7 @@ namespace gl {
 
 // vertex struct forward declaration
 template <
-    detail::equality_comparable key_t,
+    index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
@@ -26,10 +26,10 @@ template <typename descriptor_t>
 struct is_valid_descriptor : std::false_type {};
 
 template <
-    typename key_t,
+    index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
-    typename data_t
+    detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_s, data_t>> : std::true_type {};
 
@@ -49,7 +49,7 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 
 // vertex struct definition
 template <
-    detail::equality_comparable key_t = std::size_t,
+    index_t key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
     graph_container_s adj_container_s = gl::vect_s,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
@@ -78,17 +78,17 @@ private:
 
 public:
     // constructors & destructors
-    vertex_descriptor(const key_type key) : key(key) {}
+    explicit vertex_descriptor(const key_type& key) : key(key) {}
 
-    explicit vertex_descriptor(const key_type key, const data_type& data) 
+    explicit vertex_descriptor(const key_type& key, const data_type& data) 
         : key(key), _data(data)
     {}
 
-    explicit vertex_descriptor(const key_type key, const container_type& adjacent, const data_type& data) 
+    explicit vertex_descriptor(const key_type& key, const container_type& adjacent, const data_type& data) 
         : key(key), _adjacent(adjacent), _data(data)
     {}
 
-    explicit vertex_descriptor(const key_type key, const container_type& adjacent_) 
+    explicit vertex_descriptor(const key_type& key, const container_type& adjacent_) 
         : key(key), _adjacent(adjacent_)
     {}
 
@@ -128,12 +128,11 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    bool add_edge(const edge_type& edge) {
+    void add_edge(const edge_type& edge) {
         if (edge.source != this->key)
-            return false;
+            return;
         
         this->_container_insert(this->_adjacent, edge);
-        return true;
     }
 
     [[nodiscard]] inline const data_type& data() const {
@@ -154,7 +153,7 @@ public:
 
 // void data vertex struct definition
 template <
-    typename key_t,
+    index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s adj_container_s
 >
@@ -179,9 +178,9 @@ private:
 
 public:
     // constructors & destructors
-    vertex_descriptor(const key_type key) : key(key) {}
+    explicit vertex_descriptor(const key_type& key) : key(key) {}
 
-    explicit vertex_descriptor(const key_type key, const container_type& adjacent_) 
+    explicit vertex_descriptor(const key_type& key, const container_type& adjacent_) 
         : key(key), _adjacent(adjacent_)
     {}
 
@@ -221,12 +220,11 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    bool add_edge (const edge_type& edge) {
+    void add_edge (const edge_type& edge) {
         if (edge.source != this->key)
-            return false;
+            return;
         
         this->_container_insert(this->_adjacent, edge);
-        return true;
     }
 };
 

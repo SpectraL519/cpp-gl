@@ -39,6 +39,7 @@ struct container_traits {
     typedef void type;
     typedef void iterator;
     typedef void const_iterator;
+
     static inline void insert(S container, const key_t& key);
     // TODO: remove method
 };
@@ -111,6 +112,22 @@ struct container_traits <multiset_s, key_t> {
 
 template <typename container_s, typename key_t>
 using container_traits_t = typename container_traits<container_s, key_t>::type;
+
+
+
+template <typename container_t>
+concept joinable_container = requires(container_t c) {
+    { std::ranges::begin(c) } -> std::same_as<typename container_t::iterator>;
+    { std::ranges::end(c) }   -> std::same_as<typename container_t::iterator>;
+};
+
+template <typename container_t>
+struct is_joinable_container {
+    static constexpr bool value = joinable_container<container_t>;
+};
+
+template <typename container_t>
+inline constexpr bool is_joinable_container_v = is_joinable_container<container_t>::value;
 
 } // namespace gl
 

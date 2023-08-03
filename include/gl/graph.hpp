@@ -3,6 +3,5 @@
 
 #include <gl/graph/graph_traits.hpp>
 #include <gl/graph/graph.hpp>
-#include <gl/graph/fast_graph.hpp>
 
 #endif // CPP_GL_GRAPH_I
