@@ -11,7 +11,7 @@ namespace gl {
 
 // data descriptor trait
 template <typename descriptor_t>
-concept data_descriptor_t = requires (descriptor_t descriptor) {
+concept data_descriptor_t = requires(descriptor_t descriptor) {
     typename descriptor_t::data_type;
     { !std::is_void_v<typename descriptor_t::data_type> };
     { std::is_same_v<decltype(descriptor.data()), typename descriptor_t::data_type&> };
@@ -53,7 +53,7 @@ concept derived_from = std::is_base_of_v<Base, Derived>;
 
 template <typename data_t>
 concept equality_comparable = std::default_initializable<data_t> &&
-        requires (data_t a, data_t b) {
+        requires(data_t a, data_t b) {
             { a == b } -> std::convertible_to<bool>;
         };
 

@@ -22,7 +22,6 @@ struct list_s     {};
 struct flist_s    {};
 struct set_s      {}; // TODO: add Compare param
 struct multiset_s {}; // TODO: add Compare param
-// struct hash_set_s {}; // TODO: add Hash, EqualTo params
 
 } // namespace gl
 

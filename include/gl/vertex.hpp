@@ -78,57 +78,57 @@ private:
 
 public:
     // constructors & destructors
-    vertex_descriptor (const key_type key) : key(key) {}
+    vertex_descriptor(const key_type key) : key(key) {}
 
-    explicit vertex_descriptor (const key_type key, const data_type& data) 
+    explicit vertex_descriptor(const key_type key, const data_type& data) 
         : key(key), _data(data)
     {}
 
-    explicit vertex_descriptor (const key_type key, const container_type& adjacent, const data_type& data) 
+    explicit vertex_descriptor(const key_type key, const container_type& adjacent, const data_type& data) 
         : key(key), _adjacent(adjacent), _data(data)
     {}
 
-    explicit vertex_descriptor (const key_type key, const container_type& adjacent_) 
+    explicit vertex_descriptor(const key_type key, const container_type& adjacent_) 
         : key(key), _adjacent(adjacent_)
     {}
 
-    vertex_descriptor (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& other) 
+    vertex_descriptor(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& other) 
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
-    vertex_descriptor (vertex_descriptor<key_type, edge_type, adj_container_s, data_type>&& other) 
+    vertex_descriptor(vertex_descriptor<key_type, edge_type, adj_container_s, data_type>&& other) 
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
     ~vertex_descriptor() = default;
 
     // operators
-    friend bool operator == (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
-                             const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
+                           const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent &&
                lhs._data == rhs._data;
     }
 
     // member functions
-    [[nodiscard]] inline const container_type& adjacent () const {
+    [[nodiscard]] inline const container_type& adjacent() const {
         return const_cast<container_type&>(this->_adjacent);
     }
 
-    [[nodiscard]] inline std::size_t in_deg () const {
+    [[nodiscard]] inline std::size_t in_deg() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg () const {
+    [[nodiscard]] inline std::size_t out_deg() const {
         return this->_adjacent.size();
     }
 
 
-    [[nodiscard]] inline std::size_t degree () const {
+    [[nodiscard]] inline std::size_t degree() const {
         return this->in_deg() + this->out_deg();
     }
 
-    bool add_edge (const edge_type& edge) {
+    bool add_edge(const edge_type& edge) {
         if (edge.source != this->key)
             return false;
         
@@ -136,16 +136,16 @@ public:
         return true;
     }
 
-    [[nodiscard]] inline const data_type& data () const {
+    [[nodiscard]] inline const data_type& data() const {
         return const_cast<data_type&>(this->_data);
     }
 
-    inline void set_data (data_type& data) {
+    inline void set_data(data_type& data) {
         this->_data = data;
     }
 
     template <typename... T>
-    inline void set_data (const T&... args) {
+    inline void set_data(const T&... args) {
         this->_data = data_type(args...);
     }
 };
@@ -179,45 +179,45 @@ private:
 
 public:
     // constructors & destructors
-    vertex_descriptor (const key_type key) : key(key) {}
+    vertex_descriptor(const key_type key) : key(key) {}
 
-    explicit vertex_descriptor (const key_type key, const container_type& adjacent_) 
+    explicit vertex_descriptor(const key_type key, const container_type& adjacent_) 
         : key(key), _adjacent(adjacent_)
     {}
 
     template <typename data_t = void>
-    vertex_descriptor (const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
+    vertex_descriptor(const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other) 
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     template <typename data_t = void>
-    vertex_descriptor (vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other) 
+    vertex_descriptor(vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other) 
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     ~vertex_descriptor() = default;
 
     // operators
-    friend bool operator == (const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
-                             const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
+                           const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent;
     }
 
     // member functions
-    [[nodiscard]] const container_type& adjacent () const {
+    [[nodiscard]] const container_type& adjacent() const {
         return const_cast<container_type&>(this->_adjacent);
     }
 
-    [[nodiscard]] inline std::size_t in_deg () const {
+    [[nodiscard]] inline std::size_t in_deg() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg () const {
+    [[nodiscard]] inline std::size_t out_deg() const {
         return this->_adjacent.size();
     }
 
-    [[nodiscard]] std::size_t degree () const {
+    [[nodiscard]] std::size_t degree() const {
         return this->in_deg() + this->out_deg();
     }
 
