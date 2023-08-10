@@ -1,7 +1,7 @@
 #ifndef CPP_GL_VERTEX
 #define CPP_GL_VERTEX
 
-#include <optional>
+#include <memory>
 
 #include <gl/utility.hpp>
 #include <gl/edge/edge_descriptor.hpp>
@@ -59,7 +59,7 @@ struct vertex_descriptor
 public:
     using key_type = key_t;
     using edge_type = edge_t;
-    using container_type = container_traits_t<adj_container_s, edge_type>;
+    using container_type = container_traits_t<adj_container_s, std::unique_ptr<edge_type>>;
     using data_type = data_t;
 
     const key_type key;
@@ -70,8 +70,8 @@ private:
 
     data_type _data = data_type();
 
-    std::function<void(container_type&, const edge_type&)> _container_insert =
-        container_traits<adj_container_s, edge_type>::insert;
+    std::function<void(container_type&, std::unique_ptr<edge_type>&&)> _container_insert =
+        container_traits<adj_container_s, std::unique_ptr<edge_type>>::insert;
 
     template<bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
     friend class graph; // friend graph class forward declaration
@@ -128,12 +128,15 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    void add_edge(const edge_type& edge) {
+    void add_edge(edge_type&& edge) {
         if (edge.source != this->key)
             return;
 
-        this->_container_insert(this->_adjacent, edge);
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
+
+    // TODO: add_edge(src, dst)
+    // TODO: add_edge(src, dst, data)
 
     [[nodiscard]] inline const data_type& data() const {
         return const_cast<data_type&>(this->_data);
@@ -170,7 +173,7 @@ private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
 
-    std::function<void(container_type&, const edge_type&)> _container_insert =
+    std::function<void(container_type&, edge_type&&)> _container_insert =
         container_traits<adj_container_s, edge_type>::insert;
 
     template<bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
@@ -220,12 +223,14 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    void add_edge (const edge_type& edge) {
+    void add_edge (edge_type&& edge) {
         if (edge.source != this->key)
             return;
 
-        this->_container_insert(this->_adjacent, edge);
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
+
+    // TODO: add_edge(src, dst)
 };
 
 } // namespace gl

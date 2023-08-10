@@ -16,7 +16,7 @@ namespace gl {
 
 namespace container {
 
-template<typename S> struct is_valid              : std::false_type {};
+template<typename S> struct is_valid             : std::false_type {};
 template<>           struct is_valid<vect_s>     : std::true_type  {};
 template<>           struct is_valid<deq_s>      : std::true_type  {};
 template<>           struct is_valid<list_s>     : std::true_type  {};
@@ -40,7 +40,7 @@ struct container_traits {
     typedef void iterator;
     typedef void const_iterator;
 
-    static inline void insert(S container, const key_t& key);
+    static inline void insert(S container, key_t&& key);
 };
 
 template<typename key_t>
@@ -49,8 +49,8 @@ struct container_traits <vect_s, key_t> {
     typedef std::vector<key_t>::iterator iterator;
     typedef std::vector<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::vector<key_t>& container, const key_t& key) {
-        container.emplace_back(key);
+    static inline void insert(std::vector<key_t>& container, key_t&& key) {
+        container.push_back(std::move(key));
     }
 };
 
@@ -60,8 +60,8 @@ struct container_traits <deq_s, key_t> {
     typedef std::deque<key_t>::iterator iterator;
     typedef std::deque<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::deque<key_t>& container, const key_t& key) {
-        container.emplace_back(key);
+    static inline void insert(std::deque<key_t>& container, key_t&& key) {
+        container.push_back(std::move(key));
     }
 };
 
@@ -71,8 +71,8 @@ struct container_traits <list_s, key_t> {
     typedef std::list<key_t>::iterator iterator;
     typedef std::list<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::list<key_t>& container, const key_t& key) {
-        container.emplace_back(key);
+    static inline void insert(std::list<key_t>& container, key_t&& key) {
+        container.push_back(std::move(key));
     }
 };
 
@@ -82,8 +82,8 @@ struct container_traits <flist_s, key_t> {
     typedef std::forward_list<key_t>::iterator iterator;
     typedef std::forward_list<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::forward_list<key_t>& container, const key_t& key) {
-        container.emplace_after(container.cend(), key);
+    static inline void insert(std::forward_list<key_t>& container, key_t&& key) {
+        container.insert_after(container.cend(), key);
     }
 };
 
@@ -93,8 +93,8 @@ struct container_traits <set_s, key_t> {
     typedef std::set<key_t>::iterator iterator;
     typedef std::set<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::set<key_t>& container, const key_t& key) {
-        container.emplace(key);
+    static inline void insert(std::set<key_t>& container, key_t&& key) {
+        container.insert(std::move(key));
     }
 };
 
@@ -104,8 +104,8 @@ struct container_traits <multiset_s, key_t> {
     typedef std::multiset<key_t>::iterator iterator;
     typedef std::multiset<key_t>::const_iterator const_iterator;
 
-    static inline void insert(std::multiset<key_t>& container, const key_t& key) {
-        container.emplace(key);
+    static inline void insert(std::multiset<key_t>& container, key_t&& key) {
+        container.insert(std::move(key));
     }
 };
 
