@@ -9,7 +9,7 @@
 namespace gl {
 
 // edge struct forward declaration
-template <
+template<
     index_t vertex_key_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
@@ -20,31 +20,31 @@ struct edge_descriptor;
 // valid edge descriptor concepts
 namespace edge {
 
-template <typename descriptor_t>
+template<typename descriptor_t>
 struct is_valid_descriptor : std::false_type {};
 
-template <typename vertex_key_t, typename data_t>
+template<typename vertex_key_t, typename data_t>
 struct is_valid_descriptor <edge_descriptor <vertex_key_t, data_t>> : std::true_type {};
 
-template <typename descriptor_t>
+template<typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
 
 } // namespace edge
 
-template <typename descriptor_t>
+template<typename descriptor_t>
 concept edge_descriptor_t = edge::is_valid_descriptor_v<descriptor_t>;
 
-template <typename descriptor_t>
+template<typename descriptor_t>
 concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
-template <typename descriptor_t, typename vertex_key_t>
-concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> && 
+template<typename descriptor_t, typename vertex_key_t>
+concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> &&
                                      std::is_same_v<typename descriptor_t::vertex_key_type, vertex_key_t>;
 
 
 
 // edge struct definition
-template <
+template<
     index_t vertex_key_t = std::size_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
@@ -73,26 +73,26 @@ public:
     explicit edge_descriptor(
         const vertex_key_type& source, const vertex_key_type& destination,
         const data_type& data
-    ) : 
-        source(source), destination(destination), 
-        _data(data) 
+    ) :
+        source(source), destination(destination),
+        _data(data)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, data_type>& other) 
+    edge_descriptor(const edge_descriptor<vertex_key_type, data_type>& other)
         : source(other.source), destination(other.destination),
           _data(other._data)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, data_type>&& other) 
+    edge_descriptor(edge_descriptor<vertex_key_type, data_type>&& other)
         : source(other.source), destination(other.destination),
           _data(other._data)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other) 
+    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other)
         : source(other.source), destination(other.destination)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other) 
+    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other)
         : source(other.source), destination(other.destination)
     {}
 
@@ -125,7 +125,7 @@ public:
 
 
 // void data edge struct definition
-template <index_t vertex_key_t>
+template<index_t vertex_key_t>
 struct edge_descriptor<vertex_key_t, void> {
 public:
     // type definitions
@@ -145,11 +145,11 @@ public:
         : source(source), destination(destination)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other) 
+    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other)
         : source(other.source), destination(other.destination)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other) 
+    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other)
         : source(other.source), destination(other.destination)
     {}
 

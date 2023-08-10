@@ -8,10 +8,10 @@
 namespace gl {
 
 // numerical type concepts
-template <typename T>
+template<typename T>
 concept index_t = std::unsigned_integral<T>;
 
-template <typename T>
+template<typename T>
 concept arithmetic_t = std::is_arithmetic_v<T>;
 
 

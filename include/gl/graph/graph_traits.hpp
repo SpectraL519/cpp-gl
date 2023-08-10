@@ -12,9 +12,9 @@
 
 namespace gl {
 
-template <
+template<
     bool DIRECTED = true,
-    vertex_descriptor_t vertex_t = gl::vertex_descriptor<>, 
+    vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_s container_s = gl::vect_s
 >
 class igraph {
