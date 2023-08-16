@@ -3,6 +3,7 @@
 
 #include <numeric>
 #include <stdexcept>
+#include <optional>
 
 #include <gl/graph/graph_traits.hpp>
 #include <gl/vertex.hpp>
@@ -23,10 +24,12 @@ public:
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_s, std::unique_ptr<vertex_type>>;
 
+    graph(const graph&) = delete;
+    graph(graph&&) = delete;
 
     graph() = default;
     ~graph() = default;
-    // TODO: copy constructor
+    // ? TODO: initializer list constructor
 
 
     // class feature getters
@@ -35,7 +38,7 @@ public:
     }
 
     [[nodiscard]] std::size_t num_edges() const override {
-        // ??? keep edge count as a private member variable
+        // ? keep edge count as a private member variable
         std::size_t edges = 0;
         for (auto& vertex : this->_adjacency_list)
             edges += vertex->degree();
@@ -75,14 +78,21 @@ public:
     }
 
     void add_vertices(const vertex_key_type& num_new_vertices) override {
-        // TODO: check type overflow
-        std::size_t new_size = this->num_vertices() + num_new_vertices;
+        auto new_size_opt = this->_add_with_overflow_check(this->num_vertices(), num_new_vertices);
+        if (!new_size_opt)
+            throw std::out_of_range(
+                std::string("type overflow (") + typeid(vertex_key_type()).name() + "): cannot add "
+                + std::to_string(num_new_vertices) + " vertices"
+                + "\n\tcurrent vertex count: " + std::to_string(this->num_vertices())
+                + "\n\tmaximum type value: " + std::to_string(std::numeric_limits<vertex_key_type>::max())
+            );
+
+        auto new_size = new_size_opt.value();
         for (vertex_key_type key = this->num_vertices(); key < new_size; key++)
             this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(key));
     }
 
     inline void add_edge(edge_type&& edge) override {
-        // TODO: fix _add_edge functions
         if constexpr (DIRECTED) {
             if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
                 return;
@@ -106,6 +116,7 @@ public:
 
 
 private:
+    vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;
 
     using container_iterator = gl::container_traits<container_s, vertex_type>::iterator;
@@ -119,21 +130,11 @@ private:
         return idx < this->num_vertices();
     }
 
-    void _add_edge(std::true_type, edge_type&& edge) {
-        // TODO: check for multiedges
-        if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
-            return;
-
-        this->_adjacency_list.at(edge.source)->add_edge(std::move(edge));
-        this->_adjacency_list.at(edge.destination)->_in_deg++;
-    }
-
-    void _add_edge(std::false_type, edge_type&& edge) {
-        if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
-            return;
-
-        this->_adjacency_list.at(edge.source)->add_edge(std::move(edge));
-        this->_adjacency_list.at(edge.destination)->add_edge(std::move(edge.reverse()));
+    inline std::optional<vertex_key_type> _add_with_overflow_check(
+        const vertex_key_type& a,
+        const vertex_key_type& b
+    ) {
+        return (a < this->_max_key - b) ? std::make_optional<vertex_key_type>(a + b) : std::nullopt;
     }
 };
 

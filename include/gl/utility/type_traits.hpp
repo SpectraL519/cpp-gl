@@ -3,7 +3,7 @@
 
 #include <type_traits>
 
-#include <gl/utility/types.hpp>
+#include <gl/utility/type_traits.hpp>
 
 
 
@@ -63,6 +63,13 @@ struct equality_comparable_s {
 };
 
 } // namespace detail
+
+// numerical type concepts
+template<typename T>
+concept index_t = std::unsigned_integral<T>;
+
+template<typename T>
+concept arithmetic_t = std::is_arithmetic_v<T>;
 
 } // namespace gl
 

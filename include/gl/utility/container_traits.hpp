@@ -6,31 +6,38 @@
 #include <list>
 #include <forward_list>
 #include <set>
-// #include <unordered_set>
 
-#include <gl/utility/types.hpp>
+#include <gl/utility/type_traits.hpp>
 
 
 
 namespace gl {
 
-namespace container {
+// container types
+struct vect_s     {};
+struct deq_s      {};
+struct list_s     {};
+struct flist_s    {};
+struct set_s      {}; // TODO: add Compare param
+struct multiset_s {}; // TODO: add Compare param
 
-template<typename S> struct is_valid             : std::false_type {};
-template<>           struct is_valid<vect_s>     : std::true_type  {};
-template<>           struct is_valid<deq_s>      : std::true_type  {};
-template<>           struct is_valid<list_s>     : std::true_type  {};
-template<>           struct is_valid<flist_s>    : std::true_type  {};
-template<>           struct is_valid<set_s>      : std::true_type  {};
-template<>           struct is_valid<multiset_s> : std::true_type  {};
+namespace detail {
+
+template<typename S> struct is_valid_container             : std::false_type {};
+template<>           struct is_valid_container<vect_s>     : std::true_type  {};
+template<>           struct is_valid_container<deq_s>      : std::true_type  {};
+template<>           struct is_valid_container<list_s>     : std::true_type  {};
+template<>           struct is_valid_container<flist_s>    : std::true_type  {};
+template<>           struct is_valid_container<set_s>      : std::true_type  {};
+template<>           struct is_valid_container<multiset_s> : std::true_type  {};
 
 template<typename S>
-inline constexpr bool is_valid_v = is_valid<S>::value;
+inline constexpr bool is_valid_container_v = is_valid_container<S>::value;
 
 } // namespace container
 
 template<typename S>
-concept graph_container_s = container::is_valid_v<S>;
+concept graph_container_s = detail::is_valid_container_v<S>;
 
 
 
