@@ -11,7 +11,7 @@
 namespace gl {
 
 // vertex struct forward declaration
-template<
+template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
@@ -22,10 +22,10 @@ struct vertex_descriptor;
 // valid vertex descriptor concepts
 namespace vertex {
 
-template<typename descriptor_t>
+template <typename descriptor_t>
 struct is_valid_descriptor : std::false_type {};
 
-template<
+template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s container_s,
@@ -33,22 +33,22 @@ template<
 >
 struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_s, data_t>> : std::true_type {};
 
-template<typename descriptor_t>
+template <typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
 
 } // namespace vertex
 
-template<typename descriptor_t>
+template <typename descriptor_t>
 concept vertex_descriptor_t = vertex::is_valid_descriptor_v<descriptor_t>;
 
-template<typename descriptor_t>
+template <typename descriptor_t>
 concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
 
 
 
 
 // vertex struct definition
-template<
+template <
     index_t key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
     graph_container_s adj_container_s = gl::vect_s,
@@ -73,7 +73,7 @@ private:
     std::function<void(container_type&, std::unique_ptr<edge_type>&&)> _container_insert =
         container_traits<adj_container_s, std::unique_ptr<edge_type>>::insert;
 
-    template<bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
+    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
     friend class graph; // friend graph class forward declaration
 
 public:
@@ -151,7 +151,7 @@ public:
         this->_data = data;
     }
 
-    template<typename... T>
+    template <typename... T>
     inline void set_data(const T&... args) {
         this->_data = data_type(args...);
     }
@@ -160,7 +160,7 @@ public:
 
 
 // void data vertex struct definition
-template<
+template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_s adj_container_s
@@ -181,7 +181,7 @@ private:
     std::function<void(container_type&, edge_type&&)> _container_insert =
         container_traits<adj_container_s, edge_type>::insert;
 
-    template<bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
+    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
     friend class graph; // friend graph class forward declaration
 
 public:
@@ -192,12 +192,12 @@ public:
         : key(key), _adjacent(adjacent_)
     {}
 
-    template<typename data_t = void>
+    template <typename data_t = void>
     vertex_descriptor(const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
 
-    template<typename data_t = void>
+    template <typename data_t = void>
     vertex_descriptor(vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
