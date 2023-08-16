@@ -53,22 +53,22 @@ public:
         return this->num_vertices() == 0;
     }
 
-    [[nodiscard]] inline bool has_vertex(const vertex_key_type& key) const override {
+    [[nodiscard]] inline bool has_vertex(vertex_key_type key) const override {
         return this->_index_in_range(key);
     }
 
 
     // getters
-    [[nodiscard]] inline std::unique_ptr<vertex_type>& operator[](const std::size_t& idx) const override {
-        return const_cast<std::unique_ptr<vertex_type>&>(this->_adjacency_list[idx]);
+    [[nodiscard]] inline const std::unique_ptr<vertex_type>& operator[](const std::size_t& idx) override {
+        return this->_adjacency_list[idx];
     }
 
-    [[nodiscard]] inline std::unique_ptr<vertex_type>& at(const std::size_t& idx) const override {
-        return const_cast<std::unique_ptr<vertex_type>&>(this->_adjacency_list.at(idx));
+    [[nodiscard]] inline const std::unique_ptr<vertex_type>& at(const std::size_t& idx) override {
+        return this->_adjacency_list.at(idx);
     }
 
-    [[nodiscard]] inline const container_type& vertices() const override {
-        return const_cast<container_type&>(this->_adjacency_list);
+    [[nodiscard]] inline const container_type& vertices() override {
+        return this->_adjacency_list;
     }
 
 
@@ -77,7 +77,7 @@ public:
         this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(this->num_vertices()));
     }
 
-    void add_vertices(const vertex_key_type& num_new_vertices) override {
+    void add_vertices(vertex_key_type num_new_vertices) override {
         auto new_size_opt = this->_add_with_overflow_check(this->num_vertices(), num_new_vertices);
         if (!new_size_opt)
             throw std::out_of_range(

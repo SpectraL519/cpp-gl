@@ -111,8 +111,8 @@ public:
     }
 
     // member functions
-    [[nodiscard]] inline const container_type& adjacent() const {
-        return const_cast<container_type&>(this->_adjacent);
+    [[nodiscard]] inline const container_type& adjacent() {
+        return this->_adjacent;
     }
 
     [[nodiscard]] inline std::size_t in_deg() const {
@@ -128,6 +128,14 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
+    void add_edge(key_type destination) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
+    }
+
+    void add_edge(key_type destination, const data_type& data) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination, data));
+    }
+
     void add_edge(edge_type&& edge) {
         if (edge.source != this->key)
             return;
@@ -135,11 +143,8 @@ public:
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
 
-    // TODO: add_edge(src, dst)
-    // TODO: add_edge(src, dst, data)
-
-    [[nodiscard]] inline const data_type& data() const {
-        return const_cast<data_type&>(this->_data);
+    [[nodiscard]] inline const data_type& data() {
+        return this->_data;
     }
 
     inline void set_data(data_type& data) {
@@ -207,8 +212,8 @@ public:
     }
 
     // member functions
-    [[nodiscard]] const container_type& adjacent() const {
-        return const_cast<container_type&>(this->_adjacent);
+    [[nodiscard]] const container_type& adjacent() {
+        return this->_adjacent;
     }
 
     [[nodiscard]] inline std::size_t in_deg() const {
@@ -223,14 +228,16 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
+    void add_edge(key_type destination) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
+    }
+
     void add_edge (edge_type&& edge) {
         if (edge.source != this->key)
             return;
 
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
-
-    // TODO: add_edge(src, dst)
 };
 
 } // namespace gl

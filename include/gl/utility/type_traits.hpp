@@ -52,10 +52,11 @@ template<typename Base, typename Derived>
 concept derived_from = std::is_base_of_v<Base, Derived>;
 
 template<typename data_t>
-concept equality_comparable = std::default_initializable<data_t> &&
-        requires(data_t a, data_t b) {
-            { a == b } -> std::convertible_to<bool>;
-        };
+concept equality_comparable =
+    std::default_initializable<data_t> &&
+    requires(data_t a, data_t b) {
+        { a == b } -> std::convertible_to<bool>;
+    };
 
 template<typename data_t>
 struct equality_comparable_s {

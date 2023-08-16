@@ -105,8 +105,8 @@ public:
     }
 
     // member functions
-    [[nodiscard]] inline data_type& data() const {
-        return const_cast<data_type&>(this->_data);
+    [[nodiscard]] inline const data_type& data() {
+        return this->_data;
     }
 
     inline void set_data(const data_type& data) {

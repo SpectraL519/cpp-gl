@@ -30,15 +30,15 @@ public:
     virtual std::size_t num_edges() const = 0;
     virtual std::size_t size() const = 0;
     virtual bool empty() const = 0;
-    virtual bool has_vertex(const vertex_key_type& key) const = 0;
+    virtual bool has_vertex(vertex_key_type key) const = 0;
 
-    virtual std::unique_ptr<vertex_type>& operator[](const std::size_t& idx) const = 0;
-    virtual std::unique_ptr<vertex_type>& at(const std::size_t& idx) const = 0;
-    virtual const container_type& vertices() const = 0;
+    virtual const std::unique_ptr<vertex_type>& operator[](const std::size_t& idx) = 0;
+    virtual const std::unique_ptr<vertex_type>& at(const std::size_t& idx) = 0;
+    virtual const container_type& vertices() = 0;
     // TODO: has_vertex(data) get_vertex(data)
 
     virtual void add_vertex() = 0;
-    virtual void add_vertices(const vertex_key_type& num_new_vertices) = 0;
+    virtual void add_vertices(vertex_key_type num_new_vertices) = 0;
     virtual void add_edge(edge_type&& edge) = 0;
     virtual void add_edges(vertex_type::container_type&& edges) = 0;
 
