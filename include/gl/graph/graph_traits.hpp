@@ -4,9 +4,9 @@
 #include <functional>
 #include <optional>
 
-#include <gl/utility.hpp>
-#include <gl/edge.hpp>
-#include <gl/vertex.hpp>
+#include "gl/utility.hpp"
+#include "gl/edge.hpp"
+#include "gl/vertex.hpp"
 
 
 

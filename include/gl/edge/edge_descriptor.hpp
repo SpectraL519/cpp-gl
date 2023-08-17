@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gl/utility.hpp>
-#include <gl/edge/edge_data.hpp>
+#include "gl/utility.hpp"
+#include "gl/edge/edge_data.hpp"
 
 
 
