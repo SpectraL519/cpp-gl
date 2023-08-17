@@ -36,15 +36,11 @@ public:
     virtual const vertex_ptr& at(std::size_t idx) = 0;
     virtual const vertex_ptr& get_vertex(vertex_key_type key) = 0;
     virtual const container_type& vertices() = 0;
-    // TODO: has_vertex(data) get_vertex(data)
 
     virtual void add_vertex() = 0;
     virtual void add_vertices(vertex_key_type num_new_vertices) = 0;
     virtual void add_edge(vertex_key_type source_key, vertex_key_type destination_key) = 0;
     virtual void add_edge(edge_type&& edge) = 0;
-
-    // TODO: add_vertex(data), add_vertices(vector<data>)
-    // TODO: remove methods for vertices and edges
 };
 
 } // namespace gl

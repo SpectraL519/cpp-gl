@@ -33,7 +33,6 @@ public:
     // ? TODO: initializer list constructor
 
 
-    // class feature getters
     [[nodiscard]] inline vertex_key_type num_vertices() const override {
         return (vertex_key_type)this->_adjacency_list.size();
     }
@@ -59,7 +58,6 @@ public:
     }
 
 
-    // getters
     [[nodiscard]] inline const vertex_ptr& at(std::size_t idx) override {
         return this->_adjacency_list.at(idx);
     }
@@ -73,7 +71,6 @@ public:
     }
 
 
-    // modifiers
     inline void add_vertex() override {
         this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(this->num_vertices()));
     }

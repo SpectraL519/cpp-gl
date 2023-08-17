@@ -10,7 +10,6 @@
 
 namespace gl {
 
-// vertex struct forward declaration
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
@@ -19,7 +18,8 @@ template <
 >
 struct vertex_descriptor;
 
-// valid vertex descriptor concepts
+
+
 namespace vertex {
 
 template <typename descriptor_t>
@@ -47,7 +47,7 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 
 
 
-// vertex struct definition
+
 template <
     index_t key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
@@ -65,7 +65,6 @@ public:
     const key_type key;
 
 
-    // constructors & destructors
     explicit vertex_descriptor(const key_type& key) : key(key) {}
 
     explicit vertex_descriptor(const key_type& key, const data_type& data)
@@ -90,7 +89,7 @@ public:
 
     ~vertex_descriptor() = default;
 
-    // operators
+
     friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
                            const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
         return lhs.key == rhs.key &&
@@ -98,7 +97,7 @@ public:
                lhs._data == rhs._data;
     }
 
-    // member functions
+
     [[nodiscard]] inline const container_type& adjacent() {
         return this->_adjacent;
     }
@@ -160,7 +159,6 @@ private:
 
 
 
-// void data vertex struct definition
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
@@ -177,7 +175,6 @@ public:
     const key_type key;
 
 
-    // constructors & destructors
     explicit vertex_descriptor(const key_type& key) : key(key) {}
 
     explicit vertex_descriptor(const key_type& key, const container_type& adjacent_)
@@ -196,14 +193,14 @@ public:
 
     ~vertex_descriptor() = default;
 
-    // operators
+
     friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
                            const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent;
     }
 
-    // member functions
+
     [[nodiscard]] const container_type& adjacent() {
         return this->_adjacent;
     }
@@ -240,7 +237,7 @@ private:
         container_traits<adj_container_s, edge_ptr>::insert;
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_s>
-    friend class graph; // friend graph class forward declaration
+    friend class graph;
 };
 
 } // namespace gl

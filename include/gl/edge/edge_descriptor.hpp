@@ -8,7 +8,6 @@
 
 namespace gl {
 
-// edge struct forward declaration
 template <
     index_t vertex_key_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
@@ -17,7 +16,6 @@ struct edge_descriptor;
 
 
 
-// valid edge descriptor concepts
 namespace edge {
 
 template <typename descriptor_t>
@@ -43,18 +41,17 @@ concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> &&
 
 
 
-// edge struct definition
+
+
 template <
     index_t vertex_key_t = std::size_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
 struct edge_descriptor {
 public:
-    // type definitions
     using vertex_key_type = vertex_key_t;
     using data_type = data_t;
 
-    // attributes
     const vertex_key_type source;
     const vertex_key_type destination;
 
@@ -62,7 +59,6 @@ private:
     data_type _data = data_type();
 
 public:
-    // constructors & destructors
     edge_descriptor() = default;
     ~edge_descriptor() = default;
 
@@ -96,7 +92,7 @@ public:
         : source(other.source), destination(other.destination)
     {}
 
-    // operators
+
     friend bool operator==(const edge_descriptor<vertex_key_type, data_type>& lhs,
                            const edge_descriptor<vertex_key_type, data_type>& rhs) {
         return lhs.source == rhs.source &&
@@ -104,7 +100,7 @@ public:
                lhs._data == rhs._data;
     }
 
-    // member functions
+
     [[nodiscard]] inline const data_type& data() {
         return this->_data;
     }
@@ -124,20 +120,16 @@ public:
 
 
 
-// void data edge struct definition
 template <index_t vertex_key_t>
 struct edge_descriptor<vertex_key_t, void> {
 public:
-    // type definitions
     using vertex_key_type = vertex_key_t;
     using data_type = void;
 
-    // attributes
     const vertex_key_type source;
     const vertex_key_type destination;
 
 public:
-    // constructors & destructors
     edge_descriptor() = default;
     ~edge_descriptor() = default;
 
@@ -153,14 +145,14 @@ public:
         : source(other.source), destination(other.destination)
     {}
 
-    // operators
+
     friend bool operator==(const edge_descriptor<vertex_key_type, data_type>& lhs,
                            const edge_descriptor<vertex_key_type, data_type>& rhs) {
         return lhs.source == rhs.source &&
                lhs.destination == rhs.destination;
     }
 
-    // member functions
+
     [[nodiscard]] inline edge_descriptor<vertex_key_type, void> reverse() {
         return edge_descriptor<vertex_key_type, void>(this->destination, this->source);
     }
