@@ -160,8 +160,8 @@ struct container_traits <multiset, key_t> {
     }
 };
 
-template <typename container_s, typename key_t>
-using container_traits_t = typename container_traits<container_s, key_t>::type;
+template <typename container_t, typename key_t>
+using container_traits_t = typename container_traits<container_t, key_t>::type;
 
 
 

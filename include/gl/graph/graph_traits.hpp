@@ -15,7 +15,7 @@ namespace gl {
 template <
     bool DIRECTED = true,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
-    graph_container_t container_s = gl::vector
+    graph_container_t container_t = gl::vector
 >
 class igraph {
 public:
@@ -23,7 +23,7 @@ public:
     using vertex_ptr = std::unique_ptr<vertex_type>;
     using vertex_key_type = vertex_type::key_type;
     using edge_type = vertex_type::edge_type;
-    using container_type = gl::container_traits_t<container_s, vertex_ptr>;
+    using container_type = gl::container_traits_t<container_t, vertex_ptr>;
 
 public:
     virtual vertex_key_type num_vertices() const = 0;

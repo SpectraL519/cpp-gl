@@ -1,9 +1,5 @@
 #pragma once
 
-#include <numeric>
-#include <stdexcept>
-#include <optional>
-
 #include "gl/graph/graph_traits.hpp"
 #include "gl/vertex.hpp"
 
@@ -16,7 +12,7 @@ template <
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
 >
-class graph : public igraph<DIRECTED, vertex_t, container_t> {
+class mutable_graph : public igraph<DIRECTED, vertex_t, container_t> {
 public:
     using vertex_type = vertex_t;
     using vertex_ptr = std::unique_ptr<vertex_type>;
@@ -24,11 +20,11 @@ public:
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
 
-    graph(const graph&) = delete;
-    graph(graph&&) = delete;
+    mutable_graph(const mutable_graph&) = delete;
+    mutable_graph(mutable_graph&&) = delete;
 
-    graph() = default;
-    ~graph() = default;
+    mutable_graph() = default;
+    ~mutable_graph() = default;
     // ? TODO: initializer list constructor
 
 
@@ -40,7 +36,7 @@ public:
         // ? keep edge count as a private member variable
         std::size_t edges = 0;
         for (auto& vertex : this->_adjacency_list)
-            edges += vertex->out_deg();
+            edges += vertex->degree();
         return edges;
     }
 
@@ -122,6 +118,12 @@ public:
             source->add_edge(std::move(edge));
         }
     }
+
+    /*
+    TODO:
+    * remove_vertex
+    * remove_edge
+    */
 
 
 private:
