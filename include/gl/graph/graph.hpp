@@ -15,14 +15,15 @@ namespace gl {
 template <
     bool DIRECTED = true,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
-    graph_container_s container_s = gl::vect_s
+    graph_container_t container_s = gl::vector
 >
 class graph : public igraph<DIRECTED, vertex_t, container_s> {
 public:
     using vertex_type = vertex_t;
+    using vertex_ptr = std::unique_ptr<vertex_type>;
     using vertex_key_type = vertex_type::key_type;
     using edge_type = vertex_type::edge_type;
-    using container_type = gl::container_traits_t<container_s, std::unique_ptr<vertex_type>>;
+    using container_type = gl::container_traits_t<container_s, vertex_ptr>;
 
     graph(const graph&) = delete;
     graph(graph&&) = delete;
@@ -33,8 +34,8 @@ public:
 
 
     // class feature getters
-    [[nodiscard]] inline std::size_t num_vertices() const override {
-        return this->_adjacency_list.size();
+    [[nodiscard]] inline vertex_key_type num_vertices() const override {
+        return (vertex_key_type)this->_adjacency_list.size();
     }
 
     [[nodiscard]] std::size_t num_edges() const override {
@@ -59,12 +60,12 @@ public:
 
 
     // getters
-    [[nodiscard]] inline const std::unique_ptr<vertex_type>& operator[](const std::size_t& idx) override {
-        return this->_adjacency_list[idx];
+    [[nodiscard]] inline const vertex_ptr& at(std::size_t idx) override {
+        return this->_adjacency_list.at(idx);
     }
 
-    [[nodiscard]] inline const std::unique_ptr<vertex_type>& at(const std::size_t& idx) override {
-        return this->_adjacency_list.at(idx);
+    [[nodiscard]] const vertex_ptr& get_vertex(vertex_key_type key) override {
+        return this->at(key);
     }
 
     [[nodiscard]] inline const container_type& vertices() override {
@@ -92,26 +93,38 @@ public:
             this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(key));
     }
 
-    inline void add_edge(edge_type&& edge) override {
-        if constexpr (DIRECTED) {
-            if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
-                return;
+    void add_edge(vertex_key_type source_key, vertex_key_type destination_key) override {
+        if (!(this->_index_in_range(source_key) && this->_index_in_range(destination_key)))
+            return;
 
-            this->_adjacency_list.at(edge.source)->add_edge(std::move(edge));
-            this->_adjacency_list.at(edge.destination)->_in_deg++;
+        vertex_ptr& source = this->_container_at(this->_adjacency_list, source_key);
+        vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
+
+        if constexpr (DIRECTED) {
+            source->add_edge(destination_key);
+            destination->_in_deg++;
         }
         else {
-            if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
-                return;
-
-            this->_adjacency_list.at(edge.source)->add_edge(std::move(edge));
-            this->_adjacency_list.at(edge.destination)->add_edge(std::move(edge.reverse()));
+            source->add_edge(destination_key);
+            destination->add_edge(source_key);
         }
     }
 
-    void add_edges(vertex_type::container_type&& edges) override {
-        for (const auto& edge : edges)
-            this->add_edge(std::move(*edge));
+    void add_edge(edge_type&& edge) override {
+        if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
+            return;
+
+        vertex_ptr& source = this->_container_at(this->_adjacency_list, edge.source);
+        vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
+
+        if constexpr (DIRECTED) {
+            source->add_edge(std::move(edge));
+            destination->_in_deg++;
+        }
+        else {
+            destination->add_edge(edge.reverse());
+            source->add_edge(std::move(edge));
+        }
     }
 
 
@@ -122,8 +135,10 @@ private:
     using container_iterator = gl::container_traits<container_s, vertex_type>::iterator;
     using container_const_iterator = gl::container_traits<container_s, vertex_type>::const_iterator;
 
-    std::function<void(container_type&, std::unique_ptr<vertex_type>&&)> _container_insert =
-        container_traits<container_s, std::unique_ptr<vertex_type>>::insert;
+    std::function<void(container_type&, vertex_ptr&&)> _container_insert =
+        container_traits<container_s, vertex_ptr>::insert;
+    std::function<vertex_ptr&(container_type&, std::size_t)> _container_at =
+        container_traits<container_s, vertex_ptr>::at;
 
 
     inline bool _index_in_range(const std::size_t& idx) const {

@@ -14,7 +14,7 @@ namespace gl {
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_s container_s,
+    graph_container_t container_s,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct vertex_descriptor;
@@ -28,7 +28,7 @@ struct is_valid_descriptor : std::false_type {};
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_s container_s,
+    graph_container_t container_s,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_s, data_t>> : std::true_type {};
@@ -51,32 +51,20 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 template <
     index_t key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
-    graph_container_s adj_container_s = gl::vect_s,
+    graph_container_t adj_container_s = gl::vector,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
-struct vertex_descriptor
-{
+struct vertex_descriptor {
 public:
     using key_type = key_t;
     using edge_type = edge_t;
-    using container_type = container_traits_t<adj_container_s, std::unique_ptr<edge_type>>;
+    using edge_ptr = std::unique_ptr<edge_type>;
+    using container_type = container_traits_t<adj_container_s, edge_ptr>;
     using data_type = data_t;
 
     const key_type key;
 
-private:
-    container_type _adjacent;
-    std::size_t _in_deg = 0;
 
-    data_type _data = data_type();
-
-    std::function<void(container_type&, std::unique_ptr<edge_type>&&)> _container_insert =
-        container_traits<adj_container_s, std::unique_ptr<edge_type>>::insert;
-
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
-    friend class graph; // friend graph class forward declaration
-
-public:
     // constructors & destructors
     explicit vertex_descriptor(const key_type& key) : key(key) {}
 
@@ -155,6 +143,19 @@ public:
     inline void set_data(const T&... args) {
         this->_data = data_type(args...);
     }
+
+
+private:
+    container_type _adjacent;
+    std::size_t _in_deg = 0;
+
+    data_type _data = data_type();
+
+    std::function<void(container_type&, edge_ptr&&)> _container_insert =
+        container_traits<adj_container_s, edge_ptr>::insert;
+
+    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_s>
+    friend class graph; // friend graph class forward declaration
 };
 
 
@@ -163,28 +164,19 @@ public:
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_s adj_container_s
+    graph_container_t adj_container_s
 >
 struct vertex_descriptor <key_t, edge_t, adj_container_s, void> {
 public:
     using key_type = key_t;
     using edge_type = edge_t;
-    using container_type = container_traits_t<adj_container_s, edge_type>;
+    using edge_ptr = std::unique_ptr<edge_type>;
+    using container_type = container_traits_t<adj_container_s, edge_ptr>;
     using data_type = void;
 
     const key_type key;
 
-private:
-    container_type _adjacent;
-    std::size_t _in_deg = 0;
 
-    std::function<void(container_type&, edge_type&&)> _container_insert =
-        container_traits<adj_container_s, edge_type>::insert;
-
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_s container_s>
-    friend class graph; // friend graph class forward declaration
-
-public:
     // constructors & destructors
     explicit vertex_descriptor(const key_type& key) : key(key) {}
 
@@ -238,6 +230,17 @@ public:
 
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
+
+
+private:
+    container_type _adjacent;
+    std::size_t _in_deg = 0;
+
+    std::function<void(container_type&, edge_ptr&&)> _container_insert =
+        container_traits<adj_container_s, edge_ptr>::insert;
+
+    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_s>
+    friend class graph; // friend graph class forward declaration
 };
 
 } // namespace gl
