@@ -16,7 +16,7 @@ template <
     graph_container_t container_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
-struct vertex_descriptor;
+class vertex_descriptor;
 
 
 
@@ -54,15 +54,13 @@ template <
     graph_container_t adj_container_t = gl::vector,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
-struct vertex_descriptor {
+class vertex_descriptor {
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
     using container_type = container_traits_t<adj_container_t, edge_ptr>;
     using data_type = data_t;
-
-    const key_type key;
 
 
     explicit vertex_descriptor(const key_type& key) : key(key) {}
@@ -144,11 +142,14 @@ public:
     }
 
 
+    const key_type key;
+
 private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
 
     data_type _data = data_type();
+
 
     std::function<void(container_type&, edge_ptr&&)> _container_insert =
         container_traits<adj_container_t, edge_ptr>::insert;
@@ -168,15 +169,13 @@ template <
     key_type_edge_descriptor_t<key_t> edge_t,
     graph_container_t adj_container_t
 >
-struct vertex_descriptor <key_t, edge_t, adj_container_t, void> {
+class vertex_descriptor <key_t, edge_t, adj_container_t, void> {
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
     using container_type = container_traits_t<adj_container_t, edge_ptr>;
     using data_type = void;
-
-    const key_type key;
 
 
     explicit vertex_descriptor(const key_type& key) : key(key) {}
@@ -232,6 +231,8 @@ public:
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
 
+
+    const key_type key;
 
 private:
     container_type _adjacent;

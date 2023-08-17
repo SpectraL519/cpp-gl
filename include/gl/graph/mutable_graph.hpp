@@ -119,13 +119,6 @@ public:
         }
     }
 
-    /*
-    TODO:
-    * remove_vertex
-    * remove_edge
-    */
-
-
 private:
     vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;

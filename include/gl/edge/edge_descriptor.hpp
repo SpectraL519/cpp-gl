@@ -11,7 +11,7 @@ template <
     index_t vertex_key_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
-struct edge_descriptor;
+class edge_descriptor;
 
 
 
@@ -46,18 +46,12 @@ template <
     index_t vertex_key_t = std::size_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
-struct edge_descriptor {
+class edge_descriptor {
 public:
     using vertex_key_type = vertex_key_t;
     using data_type = data_t;
 
-    const vertex_key_type source;
-    const vertex_key_type destination;
 
-private:
-    data_type _data = data_type();
-
-public:
     edge_descriptor() = default;
     ~edge_descriptor() = default;
 
@@ -115,20 +109,24 @@ public:
     [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse(const data_type& reverse_data) {
         return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, reverse_data);
     }
+
+
+    const vertex_key_type source;
+    const vertex_key_type destination;
+
+private:
+    data_type _data = data_type();
 };
 
 
 
 template <index_t vertex_key_t>
-struct edge_descriptor<vertex_key_t, void> {
+class edge_descriptor<vertex_key_t, void> {
 public:
     using vertex_key_type = vertex_key_t;
     using data_type = void;
 
-    const vertex_key_type source;
-    const vertex_key_type destination;
 
-public:
     edge_descriptor() = default;
     ~edge_descriptor() = default;
 
@@ -155,6 +153,10 @@ public:
     [[nodiscard]] inline edge_descriptor<vertex_key_type, void> reverse() {
         return edge_descriptor<vertex_key_type, void>(this->destination, this->source);
     }
+
+
+    const vertex_key_type source;
+    const vertex_key_type destination;
 };
 
 } // namespace gl

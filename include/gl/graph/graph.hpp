@@ -128,8 +128,6 @@ private:
     vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;
 
-    using container_iterator = gl::container_traits<container_t, vertex_type>::iterator;
-    using container_const_iterator = gl::container_traits<container_t, vertex_type>::const_iterator;
 
     std::function<void(container_type&, vertex_ptr&&)> _container_insert =
         container_traits<container_t, vertex_ptr>::insert;
