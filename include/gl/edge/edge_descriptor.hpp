@@ -1,5 +1,4 @@
-#ifndef CPP_GL_EDGE_DESCRIPTOR
-#define CPP_GL_EDGE_DESCRIPTOR
+#pragma once
 
 #include <gl/utility.hpp>
 #include <gl/edge/edge_data.hpp>
@@ -159,5 +158,3 @@ public:
 };
 
 } // namespace gl
-
-#endif // CPP_GL_EDGE_DESCRIPTOR

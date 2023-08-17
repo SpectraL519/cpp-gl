@@ -1,5 +1,4 @@
-#ifndef CPP_GL_UTILITY_TYPE_TRAITS
-#define CPP_GL_UTILITY_TYPE_TRAITS
+#pragma once
 
 #include <type_traits>
 
@@ -74,5 +73,3 @@ template <typename T>
 inline constexpr bool is_data_descriptor_v = is_data_descriptor<T>::value;
 
 } // namespace gl
-
-#endif // CPP_GL_UTILITY_TYPE_TRAITS

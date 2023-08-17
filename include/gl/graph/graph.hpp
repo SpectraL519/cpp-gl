@@ -1,5 +1,4 @@
-#ifndef CPP_GL_GRAPH
-#define CPP_GL_GRAPH
+#pragma once
 
 #include <numeric>
 #include <stdexcept>
@@ -62,7 +61,7 @@ public:
         return this->_adjacency_list.at(idx);
     }
 
-    [[nodiscard]] const vertex_ptr& get_vertex(vertex_key_type key) override {
+    [[nodiscard]] inline const vertex_ptr& get_vertex(vertex_key_type key) override {
         return this->at(key);
     }
 
@@ -151,5 +150,3 @@ private:
 };
 
 } // namespace gl
-
-#endif // CPP_GL_GRAPH

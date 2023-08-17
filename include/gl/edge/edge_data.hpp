@@ -1,5 +1,4 @@
-#ifndef CPP_GL_EDGE_DATA
-#define CPP_GL_EDGE_DATA
+#pragma once
 
 #include <stdexcept>
 
@@ -101,5 +100,3 @@ protected:
 };
 
 } // namespace gl::edge
-
-#endif // CPP_GL_EDGE_DATA

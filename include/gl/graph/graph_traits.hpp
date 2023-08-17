@@ -1,5 +1,4 @@
-#ifndef CPP_GL_GRAPH_TRAITS
-#define CPP_GL_GRAPH_TRAITS
+#pragma once
 
 #include <memory>
 #include <functional>
@@ -44,5 +43,3 @@ public:
 };
 
 } // namespace gl
-
-#endif // CPP_GL_GRAPH_TRAITS

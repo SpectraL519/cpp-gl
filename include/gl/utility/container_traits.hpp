@@ -1,5 +1,4 @@
-#ifndef CPP_GL_UTILITY_CONTAINER_TRAITS
-#define CPP_GL_UTILITY_CONTAINER_TRAITS
+#pragma once
 
 #include <vector>
 #include <deque>
@@ -181,5 +180,3 @@ template <typename container_t>
 inline constexpr bool is_joinable_container_v = is_joinable_container<container_t>::value;
 
 } // namespace gl
-
-#endif // CPP_GL_UTILITY_CONTAINER_TRAITS

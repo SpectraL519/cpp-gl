@@ -1,7 +1,4 @@
-#ifndef CPP_GL_EDGE_I
-#define CPP_GL_EDGE_I
+#pragma once
 
 #include <gl/edge/edge_data.hpp>
 #include <gl/edge/edge_descriptor.hpp>
-
-#endif // CPP_GL_EDGE_I

@@ -1,5 +1,4 @@
-#ifndef CPP_GL_VERTEX
-#define CPP_GL_VERTEX
+#pragma once
 
 #include <memory>
 
@@ -241,5 +240,3 @@ private:
 };
 
 } // namespace gl
-
-#endif // CPP_GL_VERTEX
