@@ -1,118 +1,105 @@
 #ifndef CPP_GL_EDGE_DATA
 #define CPP_GL_EDGE_DATA
 
+#include <stdexcept>
+
 #include <gl/utility.hpp>
 
 
 
 namespace gl::edge {
 
-template <arithmetic_t weight_t = bool> 
+template <arithmetic_t T = bool>
 struct weight_data {
 public:
-    using weight_type = weight_t;
+    using weight_type = T;
 
-protected:    
-    weight_type _weight = 1;
-
-public:
     weight_data() = default;
     ~weight_data() = default;
 
-    weight_data (const weight_type& weight) : _weight(weight)        {}
-    weight_data (const weight_data& other)  : _weight(other._weight) {}
-    weight_data (weight_data&& other)       : _weight(other._weight) {}
+    weight_data(weight_type weight)       : _weight(weight)        {}
+    weight_data(const weight_data& other) : _weight(other._weight) {}
+    weight_data(weight_data&& other)      : _weight(other._weight) {}
 
-    inline weight_type& weight () const;
-    virtual inline void set_weight (const weight_type& weight);
 
-    virtual bool operator == (const weight_data& other); 
+    inline weight_type weight() const {
+        return this->_weight;
+    }
+
+    virtual inline void set_weight(weight_type weight) {
+        this->_weight = weight;
+    }
+
+    virtual bool operator==(const weight_data& other) {
+        return this->_weight == other._weight;
+    }
+
+protected:
+    weight_type _weight = 1;
 };
 
 
 
-template <arithmetic_t flow_t = bool>
+template <arithmetic_t T = bool>
 struct flow_data {
 public:
-    using flow_type = flow_t;
+    using flow_type = T;
 
-protected:    
-    flow_type _flow = 0;
-    flow_type _capacity = 1;
-
-public:
     flow_data() = default;
     ~flow_data() = default;
 
-    explicit flow_data (const flow_type& capacity) : _capacity(capacity) {}
+    explicit flow_data(flow_type capacity) : _capacity(capacity) {}
 
-    explicit flow_data (const flow_type& flow, const flow_type& capacity)
+    explicit flow_data(flow_type flow, flow_type capacity)
         : _flow(flow), _capacity(capacity)
     {}
 
-    flow_data (const flow_data& other)
-        : _flow(other._flow), _capacity(other._capacity)
-    {}
-    
-    flow_data (flow_data&& other)
+    flow_data(const flow_data& other)
         : _flow(other._flow), _capacity(other._capacity)
     {}
 
-    inline flow_type& flow () const;
-    inline flow_type& capacity () const;
+    flow_data(flow_data&& other)
+        : _flow(other._flow), _capacity(other._capacity)
+    {}
 
-    virtual inline void set_flow (const flow_type& weight);
-    virtual inline void set_capacity (const flow_type& capacity);
 
-    virtual bool operator == (const flow_data& other);
+    inline flow_type flow() const {
+        return this->_flow;
+    }
+
+    inline flow_type capacity() const {
+        return this->_capacity;
+    }
+
+    virtual void set_flow(flow_type flow) {
+        if (flow > this->_capacity)
+            throw std::invalid_argument(
+                "overflow: new flow (" + std::to_string(flow)
+                + ") > capacity (" + std::to_string(this->_capacity) + ")"
+            );
+
+        this->_flow = flow;
+    }
+
+    virtual inline void set_capacity(flow_type capacity) {
+        if (capacity < this->_flow)
+            throw std::invalid_argument(
+                "overflow: new capacity (" + std::to_string(capacity)
+                + ") < flow (" + std::to_string(this->_flow) + ")"
+            );
+
+        this->_capacity = capacity;
+    }
+
+    virtual bool operator==(const flow_data& other) {
+        return this->_flow == other._flow && this->_capacity == other._capacity;
+    }
+
+protected:
+    flow_type _flow = 0;
+    flow_type _capacity = 1;
 };
 
 } // namespace gl::edge
-
-
-
-// weight_data member functions
-template <gl::arithmetic_t weight_t>
-inline gl::edge::weight_data<weight_t>::weight_type& gl::edge::weight_data<weight_t>::weight () const {
-    return const_cast<weight_type&>(this->_weight);
-}
-
-template <gl::arithmetic_t weight_t>
-inline void gl::edge::weight_data<weight_t>::set_weight (const weight_type& weight) {
-    this->_weight = weight;
-}
-
-template <gl::arithmetic_t weight_t>
-bool gl::edge::weight_data<weight_t>::operator == (const weight_data& other) {
-    return this->_weight == other._weight;
-}
-
-
-
-// flow_data member_functions
-template <gl::arithmetic_t flow_t>
-inline gl::edge::flow_data<flow_t>::flow_type& gl::edge::flow_data<flow_t>::flow () const {
-    return const_cast<flow_type&>(this->_flow);
-}
-
-template <gl::arithmetic_t flow_t>
-inline gl::edge::flow_data<flow_t>::flow_type& gl::edge::flow_data<flow_t>::capacity () const {
-    return const_cast<flow_type&>(this->_capacity);
-}
-
-template <gl::arithmetic_t flow_t>
-inline void gl::edge::flow_data<flow_t>::set_flow (const flow_type& flow) {
-    this->_flow = flow;
-}
-
-template <gl::arithmetic_t flow_t>
-inline void gl::edge::flow_data<flow_t>::set_capacity (const flow_type& capacity) {
-    this->_capacity = capacity;
-}
-
-template <gl::arithmetic_t flow_t>
-bool gl::edge::flow_data<flow_t>::operator == (const flow_data& other) {
-    return this->_flow == other._flow && this->_capacity == other._capacity;
-}
 
 #endif // CPP_GL_EDGE_DATA
