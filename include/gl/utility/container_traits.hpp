@@ -47,6 +47,7 @@ struct container_traits {
     typedef void const_iterator;
 
     static void insert(C& container, key_t&& key);
+    static void remove_at(C& container, typename C::iterator pos);
     static key_t& at(C& container, std::size_t index);
 };
 
@@ -58,6 +59,10 @@ struct container_traits <vector, key_t> {
 
     static inline void insert(std::vector<key_t>& container, key_t&& key) {
         container.push_back(std::move(key));
+    }
+
+    static inline void remove_at(std::vector<key_t>& container, iterator pos) {
+        container.erase(pos);
     }
 
     static inline key_t& at(std::vector<key_t>& container, std::size_t index) {
@@ -75,6 +80,10 @@ struct container_traits <deque, key_t> {
         container.push_back(std::move(key));
     }
 
+    static inline void remove_at(std::deque<key_t>& container, iterator pos) {
+        container.erase(pos);
+    }
+
     static inline key_t& at(std::deque<key_t>& container, std::size_t index) {
         return container.at(index);
     }
@@ -88,6 +97,13 @@ struct container_traits <linked_list, key_t> {
 
     static inline void insert(std::forward_list<key_t>& container, key_t&& key) {
         container.insert_after(container.cend(), std::move(key));
+    }
+
+    static inline void remove_at(std::forward_list<key_t>& container, iterator pos) {
+        iterator prev = container.before_begin();
+        while (prev != container.end() && std::next(prev) != pos)
+            prev++;
+        container.erase_after(prev);
     }
 
     static key_t& at(std::forward_list<key_t>& container, std::size_t index) {
@@ -110,6 +126,10 @@ struct container_traits <doubly_linked_list, key_t> {
         container.push_back(std::move(key));
     }
 
+    static inline void remove_at(std::list<key_t>& container, iterator pos) {
+        container.erase(pos);
+    }
+
     static key_t& at(std::list<key_t>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
@@ -130,6 +150,10 @@ struct container_traits <set, key_t> {
         container.insert(std::move(key));
     }
 
+    static inline void remove_at(std::set<key_t>& container, iterator pos) {
+        container.erase(pos);
+    }
+
     static key_t& at(std::set<key_t>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
@@ -148,6 +172,10 @@ struct container_traits <multiset, key_t> {
 
     static inline void insert(std::multiset<key_t>& container, key_t&& key) {
         container.insert(std::move(key));
+    }
+
+    static inline void remove_at(std::multiset<key_t>& container, iterator pos) {
+        container.erase(pos);
     }
 
     static key_t& at(std::multiset<key_t>& container, std::size_t index) {

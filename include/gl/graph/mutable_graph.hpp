@@ -58,7 +58,12 @@ public:
     }
 
     [[nodiscard]] inline const vertex_ptr& get_vertex(vertex_key_type key) override {
-        return this->at(key);
+        return *std::find_if(
+            this->_adjacency_list.begin(), this->_adjacency_list.end(),
+            [key](const vertex_ptr& vertex) {
+                return vertex->key == key;
+            }
+        );
     }
 
     [[nodiscard]] inline const container_type& vertices() override {
@@ -93,12 +98,12 @@ public:
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
 
         if constexpr (DIRECTED) {
-            source->add_edge(destination_key);
+            source->_add_edge(destination_key);
             destination->_in_deg++;
         }
         else {
-            source->add_edge(destination_key);
-            destination->add_edge(source_key);
+            source->_add_edge(destination_key);
+            destination->_add_edge(source_key);
         }
     }
 
@@ -110,13 +115,18 @@ public:
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
 
         if constexpr (DIRECTED) {
-            source->add_edge(std::move(edge));
+            source->_add_edge(std::move(edge));
             destination->_in_deg++;
         }
         else {
-            destination->add_edge(edge.reverse());
-            source->add_edge(std::move(edge));
+            destination->_add_edge(edge.reverse());
+            source->_add_edge(std::move(edge));
         }
+    }
+
+    void remove_edge(const vertex_type::edge_ptr& edge) {
+        auto& vertex = get_vertex(edge->source);
+        vertex->_remove_edge(edge->destination);
     }
 
 private:

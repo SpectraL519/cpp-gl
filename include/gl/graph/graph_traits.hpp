@@ -33,6 +33,7 @@ public:
     virtual bool has_vertex(vertex_key_type key) const = 0;
 
     virtual const vertex_ptr& at(std::size_t idx) = 0;
+    // TODO: virtual const std::optional<vertex_ptr>& get_vertex(vertex_key_type key) = 0;
     virtual const vertex_ptr& get_vertex(vertex_key_type key) = 0;
     virtual const container_type& vertices() = 0;
 

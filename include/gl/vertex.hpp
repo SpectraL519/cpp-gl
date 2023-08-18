@@ -113,21 +113,6 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    void add_edge(key_type destination) {
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
-    }
-
-    void add_edge(key_type destination, const data_type& data) {
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination, data));
-    }
-
-    void add_edge(edge_type&& edge) {
-        if (edge.source != this->key)
-            return;
-
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
-    }
-
     [[nodiscard]] inline const data_type& data() {
         return this->_data;
     }
@@ -151,8 +136,39 @@ private:
     data_type _data = data_type();
 
 
+    inline void _add_edge(key_type destination) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
+    }
+
+    inline void _add_edge(key_type destination, const data_type& data) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination, data));
+    }
+
+    void _add_edge(edge_type&& edge) {
+        if (edge.source != this->key)
+            return;
+
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
+    }
+
+    void _remove_edge(key_type destination) {
+        container_it edge_it = std::find_if(
+            this->_adjacent.begin(), this->_adjacent.end(),
+            [&destination](const edge_ptr& edge) {
+                return edge->destination == destination;
+            }
+        );
+
+        this->_container_remove_at(this->_adjacent, edge_it);
+    }
+
+
+    using container_it = container_traits<adj_container_t, edge_ptr>::iterator;
+
     std::function<void(container_type&, edge_ptr&&)> _container_insert =
         container_traits<adj_container_t, edge_ptr>::insert;
+    std::function<void(container_type&, container_it)> _container_remove_at =
+        container_traits<adj_container_t, edge_ptr>::remove_at;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
@@ -220,17 +236,6 @@ public:
         return this->in_deg() + this->out_deg();
     }
 
-    void add_edge(key_type destination) {
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
-    }
-
-    void add_edge (edge_type&& edge) {
-        if (edge.source != this->key)
-            return;
-
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
-    }
-
 
     const key_type key;
 
@@ -238,8 +243,36 @@ private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
 
+
+    inline void _add_edge(key_type destination) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
+    }
+
+    void _add_edge (edge_type&& edge) {
+        if (edge.source != this->key)
+            return;
+
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
+    }
+
+    void _remove_edge(key_type destination) {
+        container_it edge_it = std::find_if(
+            this->_adjacent.begin(), this->_adjacent.end(),
+            [&destination](const edge_ptr& edge) {
+                return edge->destination == destination;
+            }
+        );
+
+        this->_container_remove_at(this->_adjacent, edge_it);
+    }
+
+
+    using container_it = container_traits<adj_container_t, edge_ptr>::iterator;
+
     std::function<void(container_type&, edge_ptr&&)> _container_insert =
         container_traits<adj_container_t, edge_ptr>::insert;
+    std::function<void(container_type&, container_it)> _container_remove_at =
+        container_traits<adj_container_t, edge_ptr>::remove_at;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>

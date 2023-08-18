@@ -24,6 +24,7 @@ public:
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
 
+
     graph(const graph&) = delete;
     graph(graph&&) = delete;
 
@@ -62,6 +63,7 @@ public:
     }
 
     [[nodiscard]] inline const vertex_ptr& get_vertex(vertex_key_type key) override {
+        // TODO: return std::make_optional<vertex_ptr>(this->at(key));
         return this->at(key);
     }
 
@@ -97,12 +99,12 @@ public:
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
 
         if constexpr (DIRECTED) {
-            source->add_edge(destination_key);
+            source->_add_edge(destination_key);
             destination->_in_deg++;
         }
         else {
-            source->add_edge(destination_key);
-            destination->add_edge(source_key);
+            source->_add_edge(destination_key);
+            destination->_add_edge(source_key);
         }
     }
 
@@ -114,12 +116,12 @@ public:
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
 
         if constexpr (DIRECTED) {
-            source->add_edge(std::move(edge));
+            source->_add_edge(std::move(edge));
             destination->_in_deg++;
         }
         else {
-            destination->add_edge(edge.reverse());
-            source->add_edge(std::move(edge));
+            destination->_add_edge(edge.reverse());
+            source->_add_edge(std::move(edge));
         }
     }
 
