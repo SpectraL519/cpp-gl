@@ -133,13 +133,13 @@ private:
     vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;
 
-    using container_iterator = gl::container_traits<container_t, vertex_type>::iterator;
-    using container_const_iterator = gl::container_traits<container_t, vertex_type>::const_iterator;
 
-    std::function<void(container_type&, vertex_ptr&&)> _container_insert =
-        container_traits<container_t, vertex_ptr>::insert;
-    std::function<vertex_ptr&(container_type&, std::size_t)> _container_at =
-        container_traits<container_t, vertex_ptr>::at;
+    using _container_traits = gl::container_traits<container_t, vertex_ptr>;
+    using container_iterator = _container_traits::iterator;
+    using container_const_iterator = _container_traits::const_iterator;
+
+    std::function<void(container_type&, vertex_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<vertex_ptr&(container_type&, std::size_t)> _container_at = _container_traits::at;
 
 
     inline bool _index_in_range(const std::size_t& idx) const {

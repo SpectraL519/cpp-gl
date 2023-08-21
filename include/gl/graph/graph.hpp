@@ -131,10 +131,10 @@ private:
     container_type _adjacency_list;
 
 
-    std::function<void(container_type&, vertex_ptr&&)> _container_insert =
-        container_traits<container_t, vertex_ptr>::insert;
-    std::function<vertex_ptr&(container_type&, std::size_t)> _container_at =
-        container_traits<container_t, vertex_ptr>::at;
+    using _container_traits = gl::container_traits<container_t, vertex_ptr>;
+
+    std::function<void(container_type&, vertex_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<vertex_ptr&(container_type&, std::size_t)> _container_at = _container_traits::at;
 
 
     inline bool _index_in_range(const std::size_t& idx) const {

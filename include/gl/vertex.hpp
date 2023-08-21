@@ -13,7 +13,7 @@ namespace gl {
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_t container_t,
+    graph_container_t adj_container_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
 class vertex_descriptor;
@@ -28,10 +28,10 @@ struct is_valid_descriptor : std::false_type {};
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_t container_t,
+    graph_container_t adj_container_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
-struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_t, data_t>> : std::true_type {};
+struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, adj_container_t, data_t>> : std::true_type {};
 
 template <typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
@@ -55,11 +55,14 @@ template <
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
 class vertex_descriptor {
+private:
+    using _vertex_type = vertex_descriptor<key_t, edge_t, adj_container_t, data_t>;
+
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
-    using container_type = container_traits_t<adj_container_t, edge_ptr>;
+    using container_type = gl::container_traits_t<adj_container_t, edge_ptr>;
     using data_type = data_t;
 
 
@@ -77,19 +80,18 @@ public:
         : key(key), _adjacent(adjacent_)
     {}
 
-    vertex_descriptor(const vertex_descriptor<key_type, edge_type, adj_container_t, data_type>& other)
+    vertex_descriptor(const _vertex_type& other)
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
-    vertex_descriptor(vertex_descriptor<key_type, edge_type, adj_container_t, data_type>&& other)
+    vertex_descriptor(_vertex_type&& other)
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
     ~vertex_descriptor() = default;
 
 
-    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_t, data_type>& lhs,
-                           const vertex_descriptor<key_type, edge_type, adj_container_t, data_type>& rhs) {
+    friend bool operator==(const _vertex_type& lhs, const _vertex_type& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent &&
                lhs._data == rhs._data;
@@ -152,7 +154,7 @@ private:
     }
 
     void _remove_edge(key_type destination) {
-        container_it edge_it = std::find_if(
+        _container_it edge_it = std::find_if(
             this->_adjacent.begin(), this->_adjacent.end(),
             [&destination](const edge_ptr& edge) {
                 return edge->destination == destination;
@@ -163,12 +165,11 @@ private:
     }
 
 
-    using container_it = container_traits<adj_container_t, edge_ptr>::iterator;
+    using _container_traits = gl::container_traits<adj_container_t, edge_ptr>;
+    using _container_it = _container_traits::iterator;
 
-    std::function<void(container_type&, edge_ptr&&)> _container_insert =
-        container_traits<adj_container_t, edge_ptr>::insert;
-    std::function<void(container_type&, container_it)> _container_remove_at =
-        container_traits<adj_container_t, edge_ptr>::remove_at;
+    std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_it)> _container_remove_at = _container_traits::remove_at;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
@@ -186,11 +187,14 @@ template <
     graph_container_t adj_container_t
 >
 class vertex_descriptor <key_t, edge_t, adj_container_t, void> {
+private:
+    using _vertex_type = vertex_descriptor<key_t, edge_t, adj_container_t, void>;
+
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
-    using container_type = container_traits_t<adj_container_t, edge_ptr>;
+    using container_type = gl::container_traits_t<adj_container_t, edge_ptr>;
     using data_type = void;
 
 
@@ -201,20 +205,19 @@ public:
     {}
 
     template <typename data_t = void>
-    vertex_descriptor(const vertex_descriptor<key_t, edge_t, adj_container_t, data_t>& other)
+    vertex_descriptor(const _vertex_type& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     template <typename data_t = void>
-    vertex_descriptor(vertex_descriptor<key_t, edge_t, adj_container_t, data_t>&& other)
+    vertex_descriptor(_vertex_type&& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     ~vertex_descriptor() = default;
 
 
-    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_t, data_type>& lhs,
-                           const vertex_descriptor<key_type, edge_type, adj_container_t, data_type>& rhs) {
+    friend bool operator==(const _vertex_type& lhs, const _vertex_type& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent;
     }
@@ -256,7 +259,7 @@ private:
     }
 
     void _remove_edge(key_type destination) {
-        container_it edge_it = std::find_if(
+        _container_it edge_it = std::find_if(
             this->_adjacent.begin(), this->_adjacent.end(),
             [&destination](const edge_ptr& edge) {
                 return edge->destination == destination;
@@ -267,12 +270,11 @@ private:
     }
 
 
-    using container_it = container_traits<adj_container_t, edge_ptr>::iterator;
+    using _container_traits = gl::container_traits<adj_container_t, edge_ptr>;
+    using _container_it = _container_traits::iterator;
 
-    std::function<void(container_type&, edge_ptr&&)> _container_insert =
-        container_traits<adj_container_t, edge_ptr>::insert;
-    std::function<void(container_type&, container_it)> _container_remove_at =
-        container_traits<adj_container_t, edge_ptr>::remove_at;
+    std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_it)> _container_remove_at = _container_traits::remove_at;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
