@@ -5,6 +5,7 @@
 #include <list>
 #include <forward_list>
 #include <set>
+#include <algorithm>
 
 #include "gl/utility/type_traits.hpp"
 
@@ -47,9 +48,14 @@ struct container_traits {
     typedef void const_iterator;
 
     static void insert(C& container, key_t&& key);
-    static void remove_at(C& container, typename C::iterator pos);
+
+    static void remove(C& container, typename C::iterator pos);
+    template <typename unary_predicate>
+    static void remove_if(C& container, unary_predicate predicate);
+
     static key_t& at(C& container, std::size_t index);
 };
+
 
 template <typename key_t>
 struct container_traits <vector, key_t> {
@@ -61,14 +67,23 @@ struct container_traits <vector, key_t> {
         container.push_back(std::move(key));
     }
 
-    static inline void remove_at(std::vector<key_t>& container, iterator pos) {
+    static inline void remove(std::vector<key_t>& container, iterator pos) {
         container.erase(pos);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::vector<key_t>& container, unary_predicate predicate) {
+        container.erase(
+            std::remove_if(container.begin(), container.end(), predicate),
+            container.end()
+        );
     }
 
     static inline key_t& at(std::vector<key_t>& container, std::size_t index) {
         return container.at(index);
     }
 };
+
 
 template <typename key_t>
 struct container_traits <deque, key_t> {
@@ -80,14 +95,23 @@ struct container_traits <deque, key_t> {
         container.push_back(std::move(key));
     }
 
-    static inline void remove_at(std::deque<key_t>& container, iterator pos) {
+    static inline void remove(std::deque<key_t>& container, iterator pos) {
         container.erase(pos);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::deque<key_t>& container, unary_predicate predicate) {
+        container.erase(
+            std::remove_if(container.begin(), container.end(), predicate),
+            container.end()
+        );
     }
 
     static inline key_t& at(std::deque<key_t>& container, std::size_t index) {
         return container.at(index);
     }
 };
+
 
 template <typename key_t>
 struct container_traits <linked_list, key_t> {
@@ -99,11 +123,16 @@ struct container_traits <linked_list, key_t> {
         container.insert_after(container.cend(), std::move(key));
     }
 
-    static inline void remove_at(std::forward_list<key_t>& container, iterator pos) {
+    static inline void remove(std::forward_list<key_t>& container, iterator pos) {
         iterator prev = container.before_begin();
         while (prev != container.end() && std::next(prev) != pos)
             prev++;
         container.erase_after(prev);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::forward_list<key_t>& container, unary_predicate predicate) {
+        container.remove_if(predicate);
     }
 
     static key_t& at(std::forward_list<key_t>& container, std::size_t index) {
@@ -116,6 +145,7 @@ struct container_traits <linked_list, key_t> {
     }
 };
 
+
 template <typename key_t>
 struct container_traits <doubly_linked_list, key_t> {
     typedef std::list<key_t> type;
@@ -126,8 +156,16 @@ struct container_traits <doubly_linked_list, key_t> {
         container.push_back(std::move(key));
     }
 
-    static inline void remove_at(std::list<key_t>& container, iterator pos) {
+    static inline void remove(std::list<key_t>& container, iterator pos) {
         container.erase(pos);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::list<key_t>& container, unary_predicate predicate) {
+        container.erase(
+            std::remove_if(container.begin(), container.end(), predicate),
+            container.end()
+        );
     }
 
     static key_t& at(std::list<key_t>& container, std::size_t index) {
@@ -140,6 +178,7 @@ struct container_traits <doubly_linked_list, key_t> {
     }
 };
 
+
 template <typename key_t>
 struct container_traits <set, key_t> {
     typedef std::set<key_t> type;
@@ -150,8 +189,16 @@ struct container_traits <set, key_t> {
         container.insert(std::move(key));
     }
 
-    static inline void remove_at(std::set<key_t>& container, iterator pos) {
+    static inline void remove(std::set<key_t>& container, iterator pos) {
         container.erase(pos);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::set<key_t>& container, unary_predicate predicate) {
+        container.erase(
+            std::remove_if(container.begin(), container.end(), predicate),
+            container.end()
+        );
     }
 
     static key_t& at(std::set<key_t>& container, std::size_t index) {
@@ -164,6 +211,7 @@ struct container_traits <set, key_t> {
     }
 };
 
+
 template <typename key_t>
 struct container_traits <multiset, key_t> {
     typedef std::multiset<key_t> type;
@@ -174,8 +222,16 @@ struct container_traits <multiset, key_t> {
         container.insert(std::move(key));
     }
 
-    static inline void remove_at(std::multiset<key_t>& container, iterator pos) {
+    static inline void remove(std::multiset<key_t>& container, iterator pos) {
         container.erase(pos);
+    }
+
+    template <typename unary_predicate>
+    static void remove_if(std::multiset<key_t>& container, unary_predicate predicate) {
+        container.erase(
+            std::remove_if(container.begin(), container.end(), predicate),
+            container.end()
+        );
     }
 
     static key_t& at(std::multiset<key_t>& container, std::size_t index) {

@@ -90,12 +90,25 @@ public:
             this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(key));
     }
 
+    void remove_vertex(vertex_key_type key) {
+        auto vertex_it = std::find_if(
+            std::begin(this->_adjacency_list),
+            std::end(this->_adjacency_list),
+            [key](const vertex_ptr& vertex) {
+                return vertex->key == key;
+            }
+        );
+
+        this->_container_remove(this->_adjacency_list, vertex_it);
+        this->_remove_stale_edges(key);
+    }
+
     void add_edge(vertex_key_type source_key, vertex_key_type destination_key) override {
         if (!(this->_index_in_range(source_key) && this->_index_in_range(destination_key)))
             return;
 
-        vertex_ptr& source = this->_container_at(this->_adjacency_list, source_key);
-        vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
+        const auto& source = this->get_vertex(source_key);
+        const auto& destination = this->get_vertex(destination_key);
 
         if constexpr (DIRECTED) {
             source->_add_edge(destination_key);
@@ -111,8 +124,8 @@ public:
         if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
             return;
 
-        vertex_ptr& source = this->_container_at(this->_adjacency_list, edge.source);
-        vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
+        const auto& source = this->get_vertex(edge.source);
+        const auto& destination = this->get_vertex(edge.destination);
 
         if constexpr (DIRECTED) {
             source->_add_edge(std::move(edge));
@@ -129,16 +142,22 @@ public:
         vertex->_remove_edge(edge->destination);
     }
 
+    void remove_edge(vertex_key_type source, vertex_key_type destination) {
+        auto& vertex = get_vertex(source);
+        vertex->_remove_edge(destination);
+    }
+
 private:
     vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;
 
 
     using _container_traits = gl::container_traits<container_t, vertex_ptr>;
-    using container_iterator = _container_traits::iterator;
-    using container_const_iterator = _container_traits::const_iterator;
+    using _container_iterator = _container_traits::iterator;
+    using _container_const_iterator = _container_traits::const_iterator;
 
     std::function<void(container_type&, vertex_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_iterator)> _container_remove = _container_traits::remove;
     std::function<vertex_ptr&(container_type&, std::size_t)> _container_at = _container_traits::at;
 
 
@@ -151,6 +170,17 @@ private:
         const vertex_key_type& b
     ) {
         return (a < this->_max_key - b) ? std::make_optional<vertex_key_type>(a + b) : std::nullopt;
+    }
+
+    void _remove_stale_edges(vertex_key_type key) {
+        auto key_equal_predicate =
+            [key](const vertex_type::edge_ptr& edge) {
+                return edge->destination == key;
+            };
+
+        _container_traits::remove_if<decltype(key_equal_predicate)>(
+            this->_adjacency_list, key_equal_predicate
+        );
     }
 };
 

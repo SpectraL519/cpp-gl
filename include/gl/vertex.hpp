@@ -155,13 +155,14 @@ private:
 
     void _remove_edge(key_type destination) {
         _container_it edge_it = std::find_if(
-            this->_adjacent.begin(), this->_adjacent.end(),
-            [&destination](const edge_ptr& edge) {
+            std::begin(this->_adjacent),
+            std::end(this->_adjacent),
+            [destination](const edge_ptr& edge) {
                 return edge->destination == destination;
             }
         );
 
-        this->_container_remove_at(this->_adjacent, edge_it);
+        this->_container_remove(this->_adjacent, edge_it);
     }
 
 
@@ -169,7 +170,7 @@ private:
     using _container_it = _container_traits::iterator;
 
     std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
-    std::function<void(container_type&, _container_it)> _container_remove_at = _container_traits::remove_at;
+    std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
@@ -260,13 +261,14 @@ private:
 
     void _remove_edge(key_type destination) {
         _container_it edge_it = std::find_if(
-            this->_adjacent.begin(), this->_adjacent.end(),
-            [&destination](const edge_ptr& edge) {
+            std::begin(this->_adjacent),
+            std::end(this->_adjacent),
+            [destination](const edge_ptr& edge) {
                 return edge->destination == destination;
             }
         );
 
-        this->_container_remove_at(this->_adjacent, edge_it);
+        this->_container_remove(this->_adjacent, edge_it);
     }
 
 
@@ -274,7 +276,7 @@ private:
     using _container_it = _container_traits::iterator;
 
     std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
-    std::function<void(container_type&, _container_it)> _container_remove_at = _container_traits::remove_at;
+    std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
 
 
     template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
