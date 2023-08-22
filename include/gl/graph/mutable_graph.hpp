@@ -8,11 +8,11 @@
 namespace gl {
 
 template <
-    bool DIRECTED = true,
+    directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
 >
-class mutable_graph : public igraph<DIRECTED, vertex_t, container_t> {
+class mutable_graph : public igraph<directed_v, vertex_t, container_t> {
 public:
     using vertex_type = vertex_t;
     using vertex_ptr = std::unique_ptr<vertex_type>;
@@ -110,7 +110,7 @@ public:
         const auto& source = this->get_vertex(source_key);
         const auto& destination = this->get_vertex(destination_key);
 
-        if constexpr (DIRECTED) {
+        if constexpr (directed_v) {
             source->_add_edge(destination_key);
             destination->_in_deg++;
         }
@@ -127,7 +127,7 @@ public:
         const auto& source = this->get_vertex(edge.source);
         const auto& destination = this->get_vertex(edge.destination);
 
-        if constexpr (DIRECTED) {
+        if constexpr (directed_v) {
             source->_add_edge(std::move(edge));
             destination->_in_deg++;
         }

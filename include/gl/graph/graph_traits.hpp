@@ -12,8 +12,14 @@
 
 namespace gl {
 
+using directed_specifier = bool;
+constexpr bool directed = true;
+constexpr bool undirected = false;
+
+
+
 template <
-    bool DIRECTED = true,
+    directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
 >

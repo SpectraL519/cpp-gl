@@ -102,17 +102,17 @@ public:
         return this->_adjacent;
     }
 
-    [[nodiscard]] inline std::size_t in_deg() const {
+    [[nodiscard]] inline std::size_t in_degree() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg() const {
+    [[nodiscard]] inline std::size_t out_degree() const {
         return this->_adjacent.size();
     }
 
 
     [[nodiscard]] inline std::size_t degree() const {
-        return this->in_deg() + this->out_deg();
+        return this->in_degree() + this->out_degree();
     }
 
     [[nodiscard]] inline const data_type& data() {
@@ -173,10 +173,10 @@ private:
     std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
 
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
     friend class graph;
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
     friend class mutable_graph;
 };
 
@@ -228,16 +228,16 @@ public:
         return this->_adjacent;
     }
 
-    [[nodiscard]] inline std::size_t in_deg() const {
+    [[nodiscard]] inline std::size_t in_degree() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg() const {
+    [[nodiscard]] inline std::size_t out_degree() const {
         return this->_adjacent.size();
     }
 
     [[nodiscard]] std::size_t degree() const {
-        return this->in_deg() + this->out_deg();
+        return this->in_degree() + this->out_degree();
     }
 
 
@@ -279,10 +279,10 @@ private:
     std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
 
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
     friend class graph;
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
     friend class mutable_graph;
 };
 

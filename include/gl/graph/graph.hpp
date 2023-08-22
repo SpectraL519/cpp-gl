@@ -12,11 +12,11 @@
 namespace gl {
 
 template <
-    bool DIRECTED = true,
+    directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
 >
-class graph : public igraph<DIRECTED, vertex_t, container_t> {
+class graph : public igraph<directed_v, vertex_t, container_t> {
 public:
     using vertex_type = vertex_t;
     using vertex_ptr = std::unique_ptr<vertex_type>;
@@ -41,7 +41,7 @@ public:
         // ? keep edge count as a private member variable
         std::size_t edges = 0;
         for (auto& vertex : this->_adjacency_list)
-            edges += vertex->out_deg();
+            edges += vertex->out_degree();
         return edges;
     }
 
@@ -98,7 +98,7 @@ public:
         vertex_ptr& source = this->_container_at(this->_adjacency_list, source_key);
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
 
-        if constexpr (DIRECTED) {
+        if constexpr (directed_v) {
             source->_add_edge(destination_key);
             destination->_in_deg++;
         }
@@ -115,7 +115,7 @@ public:
         vertex_ptr& source = this->_container_at(this->_adjacency_list, edge.source);
         vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
 
-        if constexpr (DIRECTED) {
+        if constexpr (directed_v) {
             source->_add_edge(std::move(edge));
             destination->_in_deg++;
         }
