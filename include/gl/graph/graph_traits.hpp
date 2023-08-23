@@ -47,6 +47,8 @@ public:
     virtual void add_vertices(vertex_key_type num_new_vertices) = 0;
     virtual void add_edge(vertex_key_type source_key, vertex_key_type destination_key) = 0;
     virtual void add_edge(edge_type&& edge) = 0;
+
+    // TODO: add_vertex(data), add_edge(data)
 };
 
 } // namespace gl

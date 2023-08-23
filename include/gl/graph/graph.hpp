@@ -12,6 +12,15 @@
 namespace gl {
 
 template <
+    directed_specifier directed_v,
+    vertex_descriptor_t vertex_t,
+    graph_container_t container_t
+>
+class mutable_graph;
+
+
+
+template <
     directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
@@ -147,6 +156,9 @@ private:
     ) {
         return (a < this->_max_key - b) ? std::make_optional<vertex_key_type>(a + b) : std::nullopt;
     }
+
+
+    friend class mutable_graph<directed_v, vertex_t, container_t>;
 };
 
 } // namespace gl
