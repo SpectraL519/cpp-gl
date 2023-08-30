@@ -1,10 +1,7 @@
 #pragma once
 
-#include <numeric>
-#include <stdexcept>
-#include <optional>
-
 #include "gl/graph/graph_traits.hpp"
+#include "gl/graph/graph.hpp"
 #include "gl/vertex.hpp"
 
 
@@ -12,20 +9,11 @@
 namespace gl {
 
 template <
-    directed_specifier directed_v,
-    vertex_descriptor_t vertex_t,
-    graph_container_t container_t
->
-class mutable_graph;
-
-
-
-template <
     directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
     graph_container_t container_t = gl::vector
 >
-class graph : public igraph<directed_v, vertex_t, container_t> {
+class mutable_graph : public igraph<directed_v, vertex_t, container_t> {
 public:
     using vertex_type = vertex_t;
     using vertex_ptr = std::unique_ptr<vertex_type>;
@@ -33,12 +21,11 @@ public:
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
 
+    mutable_graph(const mutable_graph&) = delete;
+    mutable_graph(mutable_graph&&) = delete;
 
-    graph(const graph&) = delete;
-    graph(graph&&) = delete;
-
-    graph() = default;
-    ~graph() = default;
+    mutable_graph() = default;
+    ~mutable_graph() = default;
     // ? TODO: initializer list constructor
 
 
@@ -50,7 +37,7 @@ public:
         // ? keep edge count as a private member variable
         std::size_t edges = 0;
         for (auto& vertex : this->_adjacency_list)
-            edges += vertex->out_degree();
+            edges += vertex->degree();
         return edges;
     }
 
@@ -72,8 +59,17 @@ public:
     }
 
     [[nodiscard]] inline const vertex_ptr& get_vertex(vertex_key_type key) override {
-        // TODO: return std::make_optional<vertex_ptr>(this->at(key));
-        return this->at(key);
+        if (this->_consecutive_vertices)
+            // TODO: return std::make_optional<vertex_ptr>(this->at(key));
+            return this->at(key);
+
+        // TODO: optional get_vertex -> return nullopt if vertex is not found
+        return *std::find_if(
+            this->_adjacency_list.begin(), this->_adjacency_list.end(),
+            [key](const vertex_ptr& vertex) {
+                return vertex->key == key;
+            }
+        );
     }
 
     [[nodiscard]] inline const container_type& vertices() override {
@@ -82,10 +78,14 @@ public:
 
 
     inline void add_vertex() override {
+        // TODO: account for removed vertices
+        // ? keep a queue of indices which have been removed from the graph
         this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(this->num_vertices()));
     }
 
     void add_vertices(vertex_key_type num_new_vertices) override {
+        // TODO: account for removed vertices
+        // ? keep a queue of indices which have been removed from the graph
         auto new_size_opt = this->_add_with_overflow_check(this->num_vertices(), num_new_vertices);
         if (!new_size_opt)
             throw std::out_of_range(
@@ -100,12 +100,26 @@ public:
             this->_container_insert(this->_adjacency_list, std::make_unique<vertex_type>(key));
     }
 
+    void remove_vertex(vertex_key_type key) {
+        auto vertex_it = std::find_if(
+            std::begin(this->_adjacency_list),
+            std::end(this->_adjacency_list),
+            [key](const vertex_ptr& vertex) {
+                return vertex->key == key;
+            }
+        );
+
+        this->_container_remove(this->_adjacency_list, vertex_it);
+        this->_remove_stale_edges(key);
+        this->_consecutive_vertices = false;
+    }
+
     void add_edge(vertex_key_type source_key, vertex_key_type destination_key) override {
         if (!(this->_index_in_range(source_key) && this->_index_in_range(destination_key)))
             return;
 
-        vertex_ptr& source = this->_container_at(this->_adjacency_list, source_key);
-        vertex_ptr& destination = this->_container_at(this->_adjacency_list, destination_key);
+        const auto& source = this->get_vertex(source_key);
+        const auto& destination = this->get_vertex(destination_key);
 
         if constexpr (directed_v) {
             source->_add_edge(destination_key);
@@ -121,8 +135,8 @@ public:
         if (!(this->_index_in_range(edge.source) && this->_index_in_range(edge.destination)))
             return;
 
-        vertex_ptr& source = this->_container_at(this->_adjacency_list, edge.source);
-        vertex_ptr& destination = this->_container_at(this->_adjacency_list, edge.destination);
+        const auto& source = this->get_vertex(edge.source);
+        const auto& destination = this->get_vertex(edge.destination);
 
         if constexpr (directed_v) {
             source->_add_edge(std::move(edge));
@@ -134,15 +148,30 @@ public:
         }
     }
 
+    void remove_edge(const vertex_type::edge_ptr& edge) {
+        auto& vertex = get_vertex(edge->source);
+        vertex->_remove_edge(edge->destination);
+    }
+
+    void remove_edge(vertex_key_type source, vertex_key_type destination) {
+        auto& vertex = get_vertex(source);
+        vertex->_remove_edge(destination);
+    }
+
+    // TODO: shrink[_to_size]
 
 private:
     vertex_key_type _max_key = std::numeric_limits<vertex_key_type>::max();
     container_type _adjacency_list;
+    bool _consecutive_vertices = true;
 
 
     using _container_traits = gl::container_traits<container_t, vertex_ptr>;
+    using _container_iterator = _container_traits::iterator;
+    using _container_const_iterator = _container_traits::const_iterator;
 
     std::function<void(container_type&, vertex_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_iterator)> _container_remove = _container_traits::remove;
     std::function<vertex_ptr&(container_type&, std::size_t)> _container_at = _container_traits::at;
 
 
@@ -157,8 +186,48 @@ private:
         return (a < this->_max_key - b) ? std::make_optional<vertex_key_type>(a + b) : std::nullopt;
     }
 
+    void _remove_stale_edges(vertex_key_type key) {
+        auto key_destination_predicate =
+            [key](const vertex_type::edge_ptr& edge) {
+                return edge->destination == key;
+            };
 
-    friend class mutable_graph<directed_v, vertex_t, container_t>;
+        for (auto& vertex : this->_adjacency_list) {
+            vertex_type::_container_traits::remove_if(
+                vertex->_adjacent, key_destination_predicate
+            );
+        }
+    }
+
+
+    mutable_graph(const graph<directed_v, vertex_t, container_t>& graph) {
+        this->add_vertices(graph.num_vertices());
+
+        for (const auto& vertex : graph._adjacency_list) {
+            if (!vertex)
+                continue;
+
+            for (const auto& edge : vertex->_adjacent)
+                this->add_edge(edge->source, edge->destination);
+        }
+    }
+
+    friend mutable_graph make_mutable<directed_v, vertex_t, container_t>(
+        const graph<directed_v, vertex_t, container_t>& graph
+    );
 };
+
+
+
+template <
+    directed_specifier directed_v,
+    vertex_descriptor_t vertex_t,
+    graph_container_t container_t
+>
+mutable_graph<directed_v, vertex_t, container_t> make_mutable(
+    const graph<directed_v, vertex_t, container_t>& graph
+) {
+    return mutable_graph<directed_v, vertex_t, container_t>(graph);
+}
 
 } // namespace gl

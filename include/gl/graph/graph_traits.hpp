@@ -12,10 +12,16 @@
 
 namespace gl {
 
+using directed_specifier = bool;
+constexpr bool directed = true;
+constexpr bool undirected = false;
+
+
+
 template <
-    bool DIRECTED = true,
+    directed_specifier directed_v = directed,
     vertex_descriptor_t vertex_t = gl::vertex_descriptor<>,
-    graph_container_t container_s = gl::vector
+    graph_container_t container_t = gl::vector
 >
 class igraph {
 public:
@@ -23,7 +29,7 @@ public:
     using vertex_ptr = std::unique_ptr<vertex_type>;
     using vertex_key_type = vertex_type::key_type;
     using edge_type = vertex_type::edge_type;
-    using container_type = gl::container_traits_t<container_s, vertex_ptr>;
+    using container_type = gl::container_traits_t<container_t, vertex_ptr>;
 
 public:
     virtual vertex_key_type num_vertices() const = 0;
@@ -33,6 +39,7 @@ public:
     virtual bool has_vertex(vertex_key_type key) const = 0;
 
     virtual const vertex_ptr& at(std::size_t idx) = 0;
+    // TODO: virtual const std::optional<vertex_ptr>& get_vertex(vertex_key_type key) = 0;
     virtual const vertex_ptr& get_vertex(vertex_key_type key) = 0;
     virtual const container_type& vertices() = 0;
 
@@ -40,6 +47,8 @@ public:
     virtual void add_vertices(vertex_key_type num_new_vertices) = 0;
     virtual void add_edge(vertex_key_type source_key, vertex_key_type destination_key) = 0;
     virtual void add_edge(edge_type&& edge) = 0;
+
+    // TODO: add_vertex(data), add_edge(data)
 };
 
 } // namespace gl

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include "gl/utility.hpp"
 #include "gl/edge/edge_descriptor.hpp"
@@ -12,10 +13,10 @@ namespace gl {
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_t container_s,
+    graph_container_t adj_container_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
-struct vertex_descriptor;
+class vertex_descriptor;
 
 
 
@@ -27,10 +28,10 @@ struct is_valid_descriptor : std::false_type {};
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_t container_s,
+    graph_container_t adj_container_t,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t
 >
-struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, container_s, data_t>> : std::true_type {};
+struct is_valid_descriptor <vertex_descriptor <key_t, edge_t, adj_container_t, data_t>> : std::true_type {};
 
 template <typename descriptor_t>
 inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
@@ -50,18 +51,19 @@ concept data_vertex_descriptor_t = vertex_descriptor_t<descriptor_t> && is_data_
 template <
     index_t key_t = std::size_t,
     key_type_edge_descriptor_t<key_t> edge_t = edge_descriptor<key_t>,
-    graph_container_t adj_container_s = gl::vector,
+    graph_container_t adj_container_t = gl::vector,
     detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
 >
-struct vertex_descriptor {
+class vertex_descriptor {
+private:
+    using _vertex_type = vertex_descriptor<key_t, edge_t, adj_container_t, data_t>;
+
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
-    using container_type = container_traits_t<adj_container_s, edge_ptr>;
+    using container_type = gl::container_traits_t<adj_container_t, edge_ptr>;
     using data_type = data_t;
-
-    const key_type key;
 
 
     explicit vertex_descriptor(const key_type& key) : key(key) {}
@@ -78,19 +80,18 @@ public:
         : key(key), _adjacent(adjacent_)
     {}
 
-    vertex_descriptor(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& other)
+    vertex_descriptor(const _vertex_type& other)
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
-    vertex_descriptor(vertex_descriptor<key_type, edge_type, adj_container_s, data_type>&& other)
+    vertex_descriptor(_vertex_type&& other)
         : key(other.key), _adjacent(other._adjacent), _data(other._data)
     {}
 
     ~vertex_descriptor() = default;
 
 
-    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
-                           const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+    friend bool operator==(const _vertex_type& lhs, const _vertex_type& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent &&
                lhs._data == rhs._data;
@@ -101,32 +102,17 @@ public:
         return this->_adjacent;
     }
 
-    [[nodiscard]] inline std::size_t in_deg() const {
+    [[nodiscard]] inline std::size_t in_degree() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg() const {
+    [[nodiscard]] inline std::size_t out_degree() const {
         return this->_adjacent.size();
     }
 
 
     [[nodiscard]] inline std::size_t degree() const {
-        return this->in_deg() + this->out_deg();
-    }
-
-    void add_edge(key_type destination) {
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
-    }
-
-    void add_edge(key_type destination, const data_type& data) {
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination, data));
-    }
-
-    void add_edge(edge_type&& edge) {
-        if (edge.source != this->key)
-            return;
-
-        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
+        return this->in_degree() + this->out_degree();
     }
 
     [[nodiscard]] inline const data_type& data() {
@@ -143,17 +129,55 @@ public:
     }
 
 
+    const key_type key;
+
 private:
     container_type _adjacent;
     std::size_t _in_deg = 0;
 
     data_type _data = data_type();
 
-    std::function<void(container_type&, edge_ptr&&)> _container_insert =
-        container_traits<adj_container_s, edge_ptr>::insert;
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_s>
-    friend class graph; // friend graph class forward declaration
+    inline void _add_edge(key_type destination) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
+    }
+
+    inline void _add_edge(key_type destination, const data_type& data) {
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination, data));
+    }
+
+    void _add_edge(edge_type&& edge) {
+        if (edge.source != this->key)
+            return;
+
+        this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
+    }
+
+    void _remove_edge(key_type destination) {
+        _container_it edge_it = std::find_if(
+            std::begin(this->_adjacent),
+            std::end(this->_adjacent),
+            [destination](const edge_ptr& edge) {
+                return edge->destination == destination;
+            }
+        );
+
+        this->_container_remove(this->_adjacent, edge_it);
+    }
+
+
+    using _container_traits = gl::container_traits<adj_container_t, edge_ptr>;
+    using _container_it = _container_traits::iterator;
+
+    std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
+
+
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    friend class graph;
+
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    friend class mutable_graph;
 };
 
 
@@ -161,17 +185,18 @@ private:
 template <
     index_t key_t,
     key_type_edge_descriptor_t<key_t> edge_t,
-    graph_container_t adj_container_s
+    graph_container_t adj_container_t
 >
-struct vertex_descriptor <key_t, edge_t, adj_container_s, void> {
+class vertex_descriptor <key_t, edge_t, adj_container_t, void> {
+private:
+    using _vertex_type = vertex_descriptor<key_t, edge_t, adj_container_t, void>;
+
 public:
     using key_type = key_t;
     using edge_type = edge_t;
     using edge_ptr = std::unique_ptr<edge_type>;
-    using container_type = container_traits_t<adj_container_s, edge_ptr>;
+    using container_type = gl::container_traits_t<adj_container_t, edge_ptr>;
     using data_type = void;
-
-    const key_type key;
 
 
     explicit vertex_descriptor(const key_type& key) : key(key) {}
@@ -181,20 +206,19 @@ public:
     {}
 
     template <typename data_t = void>
-    vertex_descriptor(const vertex_descriptor<key_t, edge_t, adj_container_s, data_t>& other)
+    vertex_descriptor(const _vertex_type& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     template <typename data_t = void>
-    vertex_descriptor(vertex_descriptor<key_t, edge_t, adj_container_s, data_t>&& other)
+    vertex_descriptor(_vertex_type&& other)
         : key(other.key), _adjacent(other._adjacent)
     {}
 
     ~vertex_descriptor() = default;
 
 
-    friend bool operator==(const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& lhs,
-                           const vertex_descriptor<key_type, edge_type, adj_container_s, data_type>& rhs) {
+    friend bool operator==(const _vertex_type& lhs, const _vertex_type& rhs) {
         return lhs.key == rhs.key &&
                lhs._adjacent == rhs._adjacent;
     }
@@ -204,39 +228,62 @@ public:
         return this->_adjacent;
     }
 
-    [[nodiscard]] inline std::size_t in_deg() const {
+    [[nodiscard]] inline std::size_t in_degree() const {
         return this->_in_deg;
     }
 
-    [[nodiscard]] inline std::size_t out_deg() const {
+    [[nodiscard]] inline std::size_t out_degree() const {
         return this->_adjacent.size();
     }
 
     [[nodiscard]] std::size_t degree() const {
-        return this->in_deg() + this->out_deg();
+        return this->in_degree() + this->out_degree();
     }
 
-    void add_edge(key_type destination) {
+
+    const key_type key;
+
+private:
+    container_type _adjacent;
+    std::size_t _in_deg = 0;
+
+
+    inline void _add_edge(key_type destination) {
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(this->key, destination));
     }
 
-    void add_edge (edge_type&& edge) {
+    void _add_edge (edge_type&& edge) {
         if (edge.source != this->key)
             return;
 
         this->_container_insert(this->_adjacent, std::make_unique<edge_type>(std::move(edge)));
     }
 
+    void _remove_edge(key_type destination) {
+        _container_it edge_it = std::find_if(
+            std::begin(this->_adjacent),
+            std::end(this->_adjacent),
+            [destination](const edge_ptr& edge) {
+                return edge->destination == destination;
+            }
+        );
 
-private:
-    container_type _adjacent;
-    std::size_t _in_deg = 0;
+        this->_container_remove(this->_adjacent, edge_it);
+    }
 
-    std::function<void(container_type&, edge_ptr&&)> _container_insert =
-        container_traits<adj_container_s, edge_ptr>::insert;
 
-    template <bool DIRECTED, vertex_descriptor_t vertex_t, graph_container_t container_s>
+    using _container_traits = gl::container_traits<adj_container_t, edge_ptr>;
+    using _container_it = _container_traits::iterator;
+
+    std::function<void(container_type&, edge_ptr&&)> _container_insert = _container_traits::insert;
+    std::function<void(container_type&, _container_it)> _container_remove = _container_traits::remove;
+
+
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
     friend class graph;
+
+    template <bool directed_v, vertex_descriptor_t vertex_t, graph_container_t container_t>
+    friend class mutable_graph;
 };
 
 } // namespace gl
