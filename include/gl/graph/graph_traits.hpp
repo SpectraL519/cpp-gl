@@ -4,9 +4,8 @@
 #include <functional>
 #include <optional>
 
-#include "gl/utility.hpp"
-#include "gl/edge.hpp"
 #include "gl/vertex.hpp"
+#include "gl/utility/type_traits.hpp"
 
 
 
@@ -50,5 +49,12 @@ public:
 
     // TODO: add_vertex(data), add_edge(data)
 };
+
+
+
+template <typename graph_t>
+concept gl_graph_t = std::is_base_of_v<
+    igraph<graph_t::directed_v, typename graph_t::vertex_t, typename graph_t::container_t>,
+    graph_t>;
 
 } // namespace gl
