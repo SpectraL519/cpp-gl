@@ -29,8 +29,13 @@ public:
     using vertex_key_type = vertex_type::key_type;
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
+    using container_specifier = typename gl::container_traits<container_t, vertex_ptr>::container_specifier;
 
-public:
+    static constexpr bool is_directed() {
+        return directed_v;
+    }
+
+
     virtual vertex_key_type num_vertices() const = 0;
     virtual std::size_t num_edges() const = 0;
     virtual std::size_t size() const = 0;
@@ -54,7 +59,7 @@ public:
 
 template <typename graph_t>
 concept gl_graph_t = std::is_base_of_v<
-    igraph<graph_t::directed_v, typename graph_t::vertex_t, typename graph_t::container_t>,
+    igraph<graph_t::is_directed(), typename graph_t::vertex_type, typename graph_t::container_specifier>,
     graph_t>;
 
 } // namespace gl

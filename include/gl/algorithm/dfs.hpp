@@ -10,22 +10,16 @@
 
 namespace gl {
 
-// TODO:
-// template <gl_graph_t graph_type>
-// void depth_first_search(std::unique_ptr<graph_t> graph) {
-
-template <
-    directed_specifier directed_v,
-    vertex_descriptor_t vertex_t,
-    graph_container_t container_t
->
-void depth_first_search(std::unique_ptr<igraph<directed_v, vertex_t, container_t>> graph) {
+template <gl_graph_t graph_type>
+void depth_first_search(const std::unique_ptr<graph_type>& graph) {
     // TODO: add pre and post functions
+    // TODO (*): account for mutable_graph (some keys can be missing)
 
-    using key_type = igraph<directed_v, vertex_t, container_t>::key_type;
+    // using key_type = igraph<directed_v, vertex_t, container_t>::vertex_key_type;
+    using key_type = typename graph_type::vertex_key_type;
 
     auto num_vertices = graph->num_vertices();
-    std::vector<bool> visited(num_vertices, false); // TODO: (*) account for mutable_graph (some keys can be missing)
+    std::vector<bool> visited(num_vertices, false); // TODO: (*)
     std::stack<key_type> key_stack;
 
     for (auto& vertex : graph->vertices()) {
@@ -36,10 +30,10 @@ void depth_first_search(std::unique_ptr<igraph<directed_v, vertex_t, container_t
             visited.at(vertex->key) = true; // TODO: (*)
 
             for (auto& edge : vertex->adjacent()) {
-                if (visited.at(edge.destination))
+                if (visited.at(edge->destination))
                     continue;
 
-                key_stack.push(edge.destination);
+                key_stack.push(edge->destination);
             }
         }
     }

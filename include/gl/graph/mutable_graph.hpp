@@ -20,6 +20,7 @@ public:
     using vertex_key_type = vertex_type::key_type;
     using edge_type = vertex_type::edge_type;
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
+    using container_specifier = typename gl::container_traits<container_t, vertex_ptr>::container_specifier;
 
     mutable_graph(const mutable_graph&) = delete;
     mutable_graph(mutable_graph&&) = delete;
