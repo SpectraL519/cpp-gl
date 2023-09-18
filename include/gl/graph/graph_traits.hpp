@@ -27,7 +27,9 @@ public:
     using vertex_type = vertex_t;
     using vertex_ptr = std::unique_ptr<vertex_type>;
     using vertex_key_type = vertex_type::key_type;
+
     using edge_type = vertex_type::edge_type;
+
     using container_type = gl::container_traits_t<container_t, vertex_ptr>;
     using container_specifier = typename gl::container_traits<container_t, vertex_ptr>::container_specifier;
 

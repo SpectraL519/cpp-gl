@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gl/algorithm/callbacks.hpp"
 #include "gl/algorithm/dfs.hpp"
 
 /*
