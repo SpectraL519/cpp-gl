@@ -46,6 +46,7 @@ struct container_traits {
     typedef void type;
     typedef void iterator;
     typedef void const_iterator;
+    typedef void container_specifier;
 
     static void insert(C& container, key_t&& key);
 
@@ -62,6 +63,7 @@ struct container_traits <vector, key_t> {
     typedef std::vector<key_t> type;
     typedef std::vector<key_t>::iterator iterator;
     typedef std::vector<key_t>::const_iterator const_iterator;
+    typedef vector container_specifier;
 
     static inline void insert(std::vector<key_t>& container, key_t&& key) {
         container.push_back(std::move(key));
@@ -90,6 +92,7 @@ struct container_traits <deque, key_t> {
     typedef std::deque<key_t> type;
     typedef std::deque<key_t>::iterator iterator;
     typedef std::deque<key_t>::const_iterator const_iterator;
+    typedef deque container_specifier;
 
     static inline void insert(std::deque<key_t>& container, key_t&& key) {
         container.push_back(std::move(key));
@@ -118,6 +121,7 @@ struct container_traits <linked_list, key_t> {
     typedef std::forward_list<key_t> type;
     typedef std::forward_list<key_t>::iterator iterator;
     typedef std::forward_list<key_t>::const_iterator const_iterator;
+    typedef linked_list container_specifier;
 
     static inline void insert(std::forward_list<key_t>& container, key_t&& key) {
         container.insert_after(container.cend(), std::move(key));
@@ -151,6 +155,7 @@ struct container_traits <doubly_linked_list, key_t> {
     typedef std::list<key_t> type;
     typedef std::list<key_t>::iterator iterator;
     typedef std::list<key_t>::const_iterator const_iterator;
+    typedef doubly_linked_list container_specifier;
 
     static inline void insert(std::list<key_t>& container, key_t&& key) {
         container.push_back(std::move(key));
@@ -184,6 +189,7 @@ struct container_traits <set, key_t> {
     typedef std::set<key_t> type;
     typedef std::set<key_t>::iterator iterator;
     typedef std::set<key_t>::const_iterator const_iterator;
+    typedef set container_specifier;
 
     static inline void insert(std::set<key_t>& container, key_t&& key) {
         container.insert(std::move(key));
@@ -217,6 +223,7 @@ struct container_traits <multiset, key_t> {
     typedef std::multiset<key_t> type;
     typedef std::multiset<key_t>::iterator iterator;
     typedef std::multiset<key_t>::const_iterator const_iterator;
+    typedef multiset container_specifier;
 
     static inline void insert(std::multiset<key_t>& container, key_t&& key) {
         container.insert(std::move(key));
