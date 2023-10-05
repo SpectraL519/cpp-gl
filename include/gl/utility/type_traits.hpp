@@ -37,20 +37,19 @@ concept equality_comparable =
     };
 
 template <typename data_t>
-struct equality_comparable_s {
+struct is_equality_comparable {
     static constexpr bool value = equality_comparable<data_t>;
 };
-
-} // namespace detail
-
 
 
 // numerical type concepts
 template <typename T>
-concept index_t = std::unsigned_integral<T>;
+concept u_integral = std::unsigned_integral<T>;
 
 template <typename T>
-concept arithmetic_t = std::is_arithmetic_v<T>;
+concept arithmetic = std::is_arithmetic_v<T>;
+
+} // namespace detail
 
 
 

@@ -8,8 +8,8 @@
 namespace gl {
 
 template <
-    index_t vertex_key_t,
-    detail::satisfies_or_void<detail::equality_comparable_s> data_t
+    detail::u_integral vertex_key_t,
+    detail::satisfies_or_void<detail::is_equality_comparable> data_t
 >
 class edge_descriptor;
 
@@ -29,22 +29,20 @@ inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>:
 } // namespace edge
 
 template <typename descriptor_t>
-concept edge_descriptor_t = edge::is_valid_descriptor_v<descriptor_t>;
+concept edge_descriptor_c = edge::is_valid_descriptor_v<descriptor_t>;
 
 template <typename descriptor_t>
-concept data_edge_descriptor_t = edge_descriptor_t<descriptor_t> && is_data_descriptor_v<descriptor_t>;
+concept data_edge_descriptor_c = edge_descriptor_c<descriptor_t> && data_descriptor_t<descriptor_t>;
 
 template <typename descriptor_t, typename vertex_key_t>
-concept key_type_edge_descriptor_t = edge_descriptor_t<descriptor_t> &&
-                                     std::is_same_v<typename descriptor_t::vertex_key_type, vertex_key_t>;
-
-
+concept key_type_matching_edge_descriptor_c =
+    edge_descriptor_c<descriptor_t> && std::is_same_v<typename descriptor_t::vertex_key_type, vertex_key_t>;
 
 
 
 template <
-    index_t vertex_key_t = std::size_t,
-    detail::satisfies_or_void<detail::equality_comparable_s> data_t = void
+    detail::u_integral vertex_key_t = std::size_t,
+    detail::satisfies_or_void<detail::is_equality_comparable> data_t = void
 >
 class edge_descriptor {
 public:
@@ -120,7 +118,7 @@ private:
 
 
 
-template <index_t vertex_key_t>
+template <detail::u_integral vertex_key_t>
 class edge_descriptor<vertex_key_t, void> {
 public:
     using vertex_key_type = vertex_key_t;

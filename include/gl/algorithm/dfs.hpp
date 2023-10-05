@@ -15,11 +15,11 @@ namespace gl {
 // * remove at() method from igraph and mutable_graph
 // * use get_vertex() instead of at() in dfs algorithms
 
-template <gl_graph_t graph_type>
+template <gl_graph_c graph_type>
 void depth_first_search(
     const std::unique_ptr<graph_type>& graph,
-    vertex_ptr_callback<graph_type> pre_visit = {},
-    vertex_ptr_callback<graph_type> post_visit = {}
+    vertex_ptr_type_callback<graph_type> pre_visit = {},
+    vertex_ptr_type_callback<graph_type> post_visit = {}
 ) {
     // TODO (*): account for mutable_graph (some keys can be missing)
 
@@ -56,13 +56,13 @@ void depth_first_search(
 
 namespace detail {
 
-template <gl_graph_t graph_type>
+template <gl_graph_c graph_type>
 void depth_first_search_recursive_unit(
     const std::unique_ptr<graph_type>& graph,
-    const typename graph_type::vertex_ptr& vertex,
+    const typename graph_type::vertex_ptr_type& vertex,
     std::vector<bool>& visited,
-    vertex_ptr_callback<graph_type> pre_visit,
-    vertex_ptr_callback<graph_type> post_visit
+    vertex_ptr_type_callback<graph_type> pre_visit,
+    vertex_ptr_type_callback<graph_type> post_visit
 ) {
     if (visited.at(vertex->key)) // TODO: (*)
         return;
@@ -87,11 +87,11 @@ void depth_first_search_recursive_unit(
 
 } // namespace detail
 
-template <gl_graph_t graph_type>
+template <gl_graph_c graph_type>
 void depth_first_search_recursive(
     const std::unique_ptr<graph_type>& graph,
-    vertex_ptr_callback<graph_type> pre_visit = {},
-    vertex_ptr_callback<graph_type> post_visit = {}
+    vertex_ptr_type_callback<graph_type> pre_visit = {},
+    vertex_ptr_type_callback<graph_type> post_visit = {}
 ) {
     // TODO (*): account for mutable_graph (some keys can be missing)
 

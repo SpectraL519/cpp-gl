@@ -37,11 +37,11 @@ inline constexpr bool is_valid_container_v = is_valid_container<T>::value;
 } // namespace container
 
 template <typename T>
-concept graph_container_t = detail::is_valid_container_v<T>;
+concept graph_container_c = detail::is_valid_container_v<T>;
 
 
 
-template <graph_container_t C, typename key_t = std::size_t>
+template <graph_container_c C, typename key_t = std::size_t>
 struct container_traits {
     typedef void type;
     typedef void iterator;

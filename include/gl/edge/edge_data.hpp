@@ -8,7 +8,7 @@
 
 namespace gl::edge {
 
-template <arithmetic_t T = bool>
+template <detail::arithmetic T = bool>
 struct weight_data {
 public:
     using weight_type = T;
@@ -39,7 +39,7 @@ protected:
 
 
 
-template <arithmetic_t T = bool>
+template <detail::arithmetic T = bool>
 struct flow_data {
 public:
     using flow_type = T;
