@@ -56,9 +56,17 @@ public:
 };
 
 template <typename graph_t>
-concept gl_graph_c = std::is_base_of_v<
-    igraph<graph_t::is_directed(), typename graph_t::vertex_type, typename graph_t::container_specifier>,
-    graph_t>;
+concept gl_graph_c = requires {
+    { graph_t::is_directed() } -> std::same_as<bool>;
+    std::is_base_of_v<
+        igraph<
+            graph_t::is_directed(),
+            typename graph_t::vertex_type,
+            typename graph_t::container_specifier
+        >,
+        graph_t
+    >;
+};
 
 
 
