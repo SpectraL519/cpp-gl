@@ -1,4 +1,7 @@
+# editor
 .vscode/
+
+# temporary files
 Makefile
 *.cpp
 *.exe
