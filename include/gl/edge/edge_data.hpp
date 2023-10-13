@@ -47,7 +47,9 @@ public:
     flow_data() = default;
     ~flow_data() = default;
 
-    explicit flow_data(flow_type capacity) : _capacity(capacity) {}
+    explicit flow_data(flow_type capacity)
+        : _capacity(capacity)
+    {}
 
     explicit flow_data(flow_type flow, flow_type capacity)
         : _flow(flow), _capacity(capacity)
@@ -62,19 +64,19 @@ public:
     {}
 
 
-    inline flow_type flow() const {
+    [[nodiscard]] inline flow_type flow() const {
         return this->_flow;
     }
 
-    inline flow_type capacity() const {
+    [[nodiscard]] inline flow_type capacity() const {
         return this->_capacity;
     }
 
     virtual void set_flow(flow_type flow) {
         if (flow > this->_capacity)
             throw std::invalid_argument(
-                "overflow: new flow (" + std::to_string(flow)
-                + ") > capacity (" + std::to_string(this->_capacity) + ")"
+                "overflow: new flow (" + std::to_string(flow) +
+                ") > capacity (" + std::to_string(this->_capacity) + ")"
             );
 
         this->_flow = flow;
@@ -83,8 +85,8 @@ public:
     virtual inline void set_capacity(flow_type capacity) {
         if (capacity < this->_flow)
             throw std::invalid_argument(
-                "overflow: new capacity (" + std::to_string(capacity)
-                + ") < flow (" + std::to_string(this->_flow) + ")"
+                "overflow: new capacity (" + std::to_string(capacity) +
+                ") < flow (" + std::to_string(this->_flow) + ")"
             );
 
         this->_capacity = capacity;

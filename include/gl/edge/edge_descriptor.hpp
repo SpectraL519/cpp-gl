@@ -8,8 +8,8 @@
 namespace gl {
 
 template <
-    detail::u_integral vertex_key_t,
-    detail::satisfies_or_void<detail::is_equality_comparable> data_t
+    detail::u_integral VertexKey,
+    detail::satisfies_or_void<detail::is_equality_comparable> Data
 >
 class edge_descriptor;
 
@@ -17,37 +17,38 @@ class edge_descriptor;
 
 namespace edge {
 
-template <typename descriptor_t>
+template <typename Descriptor>
 struct is_valid_descriptor : std::false_type {};
 
-template <typename vertex_key_t, typename data_t>
-struct is_valid_descriptor <edge_descriptor <vertex_key_t, data_t>> : std::true_type {};
+template <typename VertexKey, typename Data>
+struct is_valid_descriptor <edge_descriptor <VertexKey, Data>> : std::true_type {};
 
-template <typename descriptor_t>
-inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<descriptor_t>::value;
+template <typename Descriptor>
+inline constexpr bool is_valid_descriptor_v = is_valid_descriptor<Descriptor>::value;
 
 } // namespace edge
 
-template <typename descriptor_t>
-concept edge_descriptor_c = edge::is_valid_descriptor_v<descriptor_t>;
+template <typename Descriptor>
+concept edge_descriptor_c = edge::is_valid_descriptor_v<Descriptor>;
 
-template <typename descriptor_t>
-concept data_edge_descriptor_c = edge_descriptor_c<descriptor_t> && data_descriptor_t<descriptor_t>;
+template <typename Descriptor>
+concept data_edge_descriptor_c = edge_descriptor_c<Descriptor> && data_descriptor_t<Descriptor>;
 
-template <typename descriptor_t, typename vertex_key_t>
+template <typename Descriptor, typename VertexKey>
 concept key_type_matching_edge_descriptor_c =
-    edge_descriptor_c<descriptor_t> && std::is_same_v<typename descriptor_t::vertex_key_type, vertex_key_t>;
+    edge_descriptor_c<Descriptor> && std::is_same_v<typename Descriptor::vertex_key_type, VertexKey>;
 
 
 
 template <
-    detail::u_integral vertex_key_t = std::size_t,
-    detail::satisfies_or_void<detail::is_equality_comparable> data_t = void
+    detail::u_integral VertexKey = std::size_t,
+    detail::satisfies_or_void<detail::is_equality_comparable> Data = void
 >
 class edge_descriptor {
 public:
-    using vertex_key_type = vertex_key_t;
-    using data_type = data_t;
+    using type = edge_descriptor<VertexKey, Data>;
+    using vertex_key_type = VertexKey;
+    using data_type = Data;
 
 
     edge_descriptor() = default;
@@ -65,27 +66,26 @@ public:
         _data(data)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, data_type>& other)
+    edge_descriptor(const type& other)
         : source(other.source), destination(other.destination),
           _data(other._data)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, data_type>&& other)
+    edge_descriptor(type&& other)
         : source(other.source), destination(other.destination),
           _data(other._data)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other)
+    edge_descriptor(const edge_descriptor<VertexKey, void>& other)
         : source(other.source), destination(other.destination)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other)
+    edge_descriptor(const edge_descriptor<VertexKey, void>&& other)
         : source(other.source), destination(other.destination)
     {}
 
 
-    friend bool operator==(const edge_descriptor<vertex_key_type, data_type>& lhs,
-                           const edge_descriptor<vertex_key_type, data_type>& rhs) {
+    friend bool operator==(const type& lhs, const type& rhs) {
         return lhs.source == rhs.source &&
                lhs.destination == rhs.destination &&
                lhs._data == rhs._data;
@@ -100,12 +100,12 @@ public:
         this->_data = data;
     }
 
-    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse() {
-        return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, this->_data);
+    [[nodiscard]] inline type reverse() {
+        return type(this->destination, this->source, this->_data);
     }
 
-    [[nodiscard]] inline edge_descriptor<vertex_key_type, data_type> reverse(const data_type& reverse_data) {
-        return edge_descriptor<vertex_key_type, data_type>(this->destination, this->source, reverse_data);
+    [[nodiscard]] inline type reverse(const data_type& reverse_data) {
+        return type(this->destination, this->source, reverse_data);
     }
 
 
@@ -118,10 +118,11 @@ private:
 
 
 
-template <detail::u_integral vertex_key_t>
-class edge_descriptor<vertex_key_t, void> {
+template <detail::u_integral VertexKey>
+class edge_descriptor<VertexKey, void> {
 public:
-    using vertex_key_type = vertex_key_t;
+    using type = edge_descriptor<VertexKey, void>;
+    using vertex_key_type = VertexKey;
     using data_type = void;
 
 
@@ -132,24 +133,23 @@ public:
         : source(source), destination(destination)
     {}
 
-    edge_descriptor(const edge_descriptor<vertex_key_type, void>& other)
+    edge_descriptor(const type& other)
         : source(other.source), destination(other.destination)
     {}
 
-    edge_descriptor(edge_descriptor<vertex_key_type, void>&& other)
+    edge_descriptor(type&& other)
         : source(other.source), destination(other.destination)
     {}
 
 
-    friend bool operator==(const edge_descriptor<vertex_key_type, data_type>& lhs,
-                           const edge_descriptor<vertex_key_type, data_type>& rhs) {
+    friend bool operator==(const type& lhs, const type& rhs) {
         return lhs.source == rhs.source &&
                lhs.destination == rhs.destination;
     }
 
 
-    [[nodiscard]] inline edge_descriptor<vertex_key_type, void> reverse() {
-        return edge_descriptor<vertex_key_type, void>(this->destination, this->source);
+    [[nodiscard]] inline type reverse() {
+        return type(this->destination, this->source);
     }
 
 
