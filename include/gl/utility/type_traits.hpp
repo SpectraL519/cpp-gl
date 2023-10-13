@@ -54,12 +54,12 @@ concept arithmetic = std::is_arithmetic_v<T>;
 
 
 // data descriptor trait
-template <typename descriptor_t>
-concept data_descriptor_t = requires(descriptor_t descriptor) {
-    typename descriptor_t::data_type;
-    { !std::is_void_v<typename descriptor_t::data_type> };
-    { std::is_same_v<decltype(descriptor.data()), typename descriptor_t::data_type&> };
-    { std::is_same_v<decltype(descriptor.set_data(std::declval<typename descriptor_t::data_type&>())), void> };
+template <typename Descriptor>
+concept data_descriptor_t = requires(Descriptor descriptor) {
+    typename Descriptor::data_type;
+    { !std::is_void_v<typename Descriptor::data_type> };
+    { std::is_same_v<decltype(descriptor.data()), typename Descriptor::data_type&> };
+    { std::is_same_v<decltype(descriptor.set_data(std::declval<typename Descriptor::data_type&>())), void> };
 };
 
 template <typename T>
