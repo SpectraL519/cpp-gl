@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <functional>
+#include <memory>
 
-#include "gl/utility.hpp"
 #include "gl/edge/edge_descriptor.hpp"
+#include "gl/utility.hpp"
 
 
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
-#include <deque>
-#include <list>
-#include <forward_list>
-#include <set>
 #include <algorithm>
+#include <deque>
+#include <forward_list>
+#include <list>
+#include <set>
+#include <vector>
 
 #include "gl/utility/types.hpp"
 #include "gl/utility/type_traits.hpp"
