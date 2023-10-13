@@ -5,15 +5,15 @@
 #include <optional>
 
 #include "gl/vertex.hpp"
+#include "gl/utility/types.hpp"
 #include "gl/utility/type_traits.hpp"
 
 
 
 namespace gl {
 
-using directed_specifier_type = bool;
-constexpr bool directed = true;
-constexpr bool undirected = false;
+constexpr directed_specifier_type directed = true;
+constexpr directed_specifier_type undirected = false;
 
 
 

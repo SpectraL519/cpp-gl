@@ -7,19 +7,12 @@
 #include <set>
 #include <algorithm>
 
+#include "gl/utility/types.hpp"
 #include "gl/utility/type_traits.hpp"
 
 
 
 namespace gl {
-
-// container types
-struct vector             {};
-struct deque              {};
-struct linked_list        {};
-struct doubly_linked_list {};
-struct set                {}; // TODO: add Compare param
-struct multiset           {}; // TODO: add Compare param
 
 namespace detail {
 

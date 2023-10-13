@@ -12,33 +12,33 @@ namespace gl {
 namespace detail {
 
 template <typename T>
-concept has_static_const_bool_value = requires {
+concept is_valid_requirement = requires {
     T::value;
     std::is_same_v<decltype(T::value), const bool>;
 };
 
-template <typename T, template <typename> typename Concept>
-concept satisfies_or_void = has_static_const_bool_value<Concept<T>> && (Concept<T>::value || std::is_void_v<T>);
+template <typename T, template <typename> typename Requirement>
+concept satisfies_or_void = is_valid_requirement<Requirement<T>> && (Requirement<T>::value || std::is_void_v<T>);
 
-template <typename T, template <typename> typename... Concepts>
-concept satisfies_all = ((has_static_const_bool_value<Concepts<T>> && Concepts<T>::value) && ...);
+template <typename T, template <typename> typename... Requirements>
+concept satisfies_all = ((is_valid_requirement<Requirements<T>> && Requirements<T>::value) && ...);
 
-template <typename T, template <typename> typename... Concepts>
-concept satisfies_any = ((has_static_const_bool_value<Concepts<T>> && Concepts<T>::value) || ...);
+template <typename T, template <typename> typename... Requirements>
+concept satisfies_any = ((is_valid_requirement<Requirements<T>> && Requirements<T>::value) || ...);
 
 template <typename Base, typename Derived>
 concept derived_from = std::is_base_of_v<Base, Derived>;
 
-template <typename data_t>
+template <typename Data>
 concept equality_comparable =
-    std::default_initializable<data_t> &&
-    requires(data_t a, data_t b) {
+    std::default_initializable<Data> &&
+    requires(Data a, Data b) {
         { a == b } -> std::convertible_to<bool>;
     };
 
-template <typename data_t>
+template <typename Data>
 struct is_equality_comparable {
-    static constexpr bool value = equality_comparable<data_t>;
+    static constexpr bool value = equality_comparable<Data>;
 };
 
 
