@@ -8,10 +8,12 @@
 
 namespace gl {
 
-template <typename graph_t>
-using vertex_callback = std::function<void(const typename graph_t::vertex_type&)>;
+template <typename Graph>
+using vertex_callback =
+    std::function<void(const typename Graph::vertex_type&)>;
 
-template <typename graph_t>
-using vertex_ptr_type_callback = std::function<void(const typename graph_t::vertex_ptr_type&)>;
+template <typename Graph>
+using vertex_ptr_type_callback =
+    std::function<void(const typename Graph::vertex_ptr_type&)>;
 
 } // namespace gl
