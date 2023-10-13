@@ -12,7 +12,7 @@
 namespace gl {
 
 // TODO:
-// * remove at() method from igraph and mutable_graph
+// * remove at() method from abstract_graph_base and mutable_graph
 // * use get_vertex() instead of at() in dfs algorithms
 
 template <gl_graph_c graph_type>
