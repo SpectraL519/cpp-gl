@@ -67,7 +67,7 @@ public:
 
 
     [[nodiscard]] inline const vertex_ptr_type& at(std::size_t idx) override {
-        return this->_adjacency_list.at(idx);
+        return this->_at(this->_adjacency_list, idx);
     }
 
     [[nodiscard]] inline const vertex_ptr_type& get_vertex(vertex_key_type key) override {
@@ -89,7 +89,7 @@ public:
     void add_vertices(vertex_key_type num_new_vertices) override {
         auto new_size_opt =
             this->_add_with_overflow_check(this->num_vertices(), num_new_vertices);
-        if (! new_size_opt)
+        if (!new_size_opt)
             throw std::out_of_range(
                 std::string("type overflow (") + typeid(vertex_key_type()).name() +
                 "): cannot add " + std::to_string(num_new_vertices) + " vertices" +
@@ -104,13 +104,11 @@ public:
     }
 
     void add_edge(vertex_key_type source_key, vertex_key_type destination_key) override {
-        if (! (this->_index_in_range(source_key) &&
-               this->_index_in_range(destination_key)))
+        if (!(this->_index_in_range(source_key) && this->_index_in_range(destination_key)))
             return;
 
-        vertex_ptr_type& source = this->_at(this->_adjacency_list, source_key);
-        vertex_ptr_type& destination =
-            this->_at(this->_adjacency_list, destination_key);
+        const auto& source = this->_at(this->_adjacency_list, source_key);
+        const auto& destination = this->_at(this->_adjacency_list, destination_key);
 
         if constexpr (this->is_directed()) {
             source->_add_edge(destination_key);
@@ -123,13 +121,12 @@ public:
     }
 
     void add_edge(edge_type&& edge) override {
-        if (! (this->_index_in_range(edge.source) &&
-               this->_index_in_range(edge.destination)))
+        if (!(this->_index_in_range(edge.source) &&
+              this->_index_in_range(edge.destination)))
             return;
 
-        vertex_ptr_type& source = this->_at(this->_adjacency_list, edge.source);
-        vertex_ptr_type& destination =
-            this->_at(this->_adjacency_list, edge.destination);
+        const auto& source = this->_at(this->_adjacency_list, edge.source);
+        const auto& destination = this->_at(this->_adjacency_list, edge.destination);
 
         if constexpr (this->is_directed()) {
             source->_add_edge(std::move(edge));
@@ -151,7 +148,7 @@ private:
 
     std::function<void(container_type&, vertex_ptr_type&&)> _insert =
         _container_traits::insert;
-    std::function<vertex_ptr_type&(container_type&, std::size_t)> _at =
+    std::function<const vertex_ptr_type&(container_type&, std::size_t)> _at =
         _container_traits::at;
 
 

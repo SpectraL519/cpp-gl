@@ -8,42 +8,16 @@
 #include <forward_list>
 #include <list>
 #include <set>
-#include <vector>
 #include <stdexcept>
+#include <type_traits>
+#include <vector>
 
 
 namespace gl {
 
-namespace detail {
-
 template <typename T>
-struct is_valid_container : std::false_type {};
-
-template <>
-struct is_valid_container<vector> : std::true_type {};
-
-template <>
-struct is_valid_container<deque> : std::true_type {};
-
-template <>
-struct is_valid_container<linked_list> : std::true_type {};
-
-template <>
-struct is_valid_container<doubly_linked_list> : std::true_type {};
-
-template <>
-struct is_valid_container<set> : std::true_type {};
-
-template <>
-struct is_valid_container<multiset> : std::true_type {};
-
-template <typename T>
-inline constexpr bool is_valid_container_v = is_valid_container<T>::value;
-
-}  // namespace detail
-
-template <typename T>
-concept graph_container_c = detail::is_valid_container_v<T>;
+concept graph_container_c =
+    detail::is_valid_type_v<T, vector, deque, linked_list, doubly_linked_list, set, multiset>;
 
 
 template <graph_container_c Container, typename Key = std::size_t>
@@ -59,7 +33,7 @@ struct container_traits {
     template <typename UnaryPredicate>
     static void remove_if(Container& container, UnaryPredicate predicate);
 
-    static Key& at(Container& container, std::size_t index);
+    static const Key& at(Container& container, std::size_t index);
 };
 
 
@@ -145,11 +119,11 @@ struct container_traits<linked_list, Key> {
         container.remove_if(predicate);
     }
 
-    static Key& at(std::forward_list<Key>& container, std::size_t index) {
+    static const Key& at(std::forward_list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
                 "index [" + std::to_string(index) + "] >= contaiener.size() [" +
-                container.size() + "]"
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -180,11 +154,11 @@ struct container_traits<doubly_linked_list, Key> {
         );
     }
 
-    static Key& at(std::list<Key>& container, std::size_t index) {
+    static const Key& at(std::list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
                 "index [" + std::to_string(index) + "] >= contaiener.size() [" +
-                container.size() + "]"
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -215,11 +189,11 @@ struct container_traits<set, Key> {
         );
     }
 
-    static Key& at(std::set<Key>& container, std::size_t index) {
+    static const Key& at(std::set<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
                 "index [" + std::to_string(index) + "] >= contaiener.size() [" +
-                container.size() + "]"
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -250,11 +224,11 @@ struct container_traits<multiset, Key> {
         );
     }
 
-    static Key& at(std::multiset<Key>& container, std::size_t index) {
+    static const Key& at(std::multiset<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
                 "index [" + std::to_string(index) + "] >= contaiener.size() [" +
-                container.size() + "]"
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);

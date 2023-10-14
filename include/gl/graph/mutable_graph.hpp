@@ -59,7 +59,7 @@ public:
 
 
     [[nodiscard]] inline const vertex_ptr_type& at(std::size_t idx) override {
-        return this->_adjacency_list.at(idx);
+        return this->_at(this->_adjacency_list, idx);
     }
 
     [[nodiscard]] inline const vertex_ptr_type& get_vertex(vertex_key_type key) override {
@@ -92,7 +92,7 @@ public:
         // ? keep a queue of indices which have been removed from the graph
         auto new_size_opt =
             this->_add_with_overflow_check(this->num_vertices(), num_new_vertices);
-        if (! new_size_opt)
+        if (!new_size_opt)
             throw std::out_of_range(
                 std::string("type overflow (") + typeid(vertex_key_type()).name() +
                 "): cannot add " + std::to_string(num_new_vertices) + " vertices" +
@@ -118,8 +118,7 @@ public:
     }
 
     void add_edge(vertex_key_type source_key, vertex_key_type destination_key) override {
-        if (! (this->_index_in_range(source_key) &&
-               this->_index_in_range(destination_key)))
+        if (!(this->_index_in_range(source_key) && this->_index_in_range(destination_key)))
             return;
 
         const auto& source = this->get_vertex(source_key);
@@ -136,8 +135,8 @@ public:
     }
 
     void add_edge(edge_type&& edge) override {
-        if (! (this->_index_in_range(edge.source) &&
-               this->_index_in_range(edge.destination)))
+        if (!(this->_index_in_range(edge.source) &&
+              this->_index_in_range(edge.destination)))
             return;
 
         const auto& source = this->get_vertex(edge.source);
@@ -179,7 +178,7 @@ private:
         _container_traits::insert;
     std::function<void(container_type&, _container_iterator)> _remove =
         _container_traits::remove;
-    std::function<vertex_ptr_type&(container_type&, std::size_t)> _at =
+    std::function<const vertex_ptr_type&(container_type&, std::size_t)> _at =
         _container_traits::at;
 
 

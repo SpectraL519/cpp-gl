@@ -153,7 +153,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep:              2
 
 SpaceAfterCStyleCast:              false
-SpaceAfterLogicalNot:              true
+SpaceAfterLogicalNot:              false
 SpaceAfterTemplateKeyword:         true
 SpaceAroundPointerQualifiers:      Default
 SpaceBeforeAssignmentOperators:    true
