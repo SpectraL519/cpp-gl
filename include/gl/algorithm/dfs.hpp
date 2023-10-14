@@ -1,13 +1,12 @@
 #pragma once
 
-#include <memory>
-#include <stack>
-#include <vector>
-
 #include "gl/algorithm/callbacks.hpp"
 #include "gl/algorithm/detail/dfs.hpp"
 #include "gl/graph/graph_traits.hpp"
 
+#include <memory>
+#include <stack>
+#include <vector>
 
 
 namespace gl {
@@ -27,18 +26,18 @@ void depth_first_search(
     using key_type = typename Graph::vertex_key_type;
 
     const auto num_vertices = graph->num_vertices();
-    std::vector<bool> visited(num_vertices, false); // TODO: (*)
+    std::vector<bool> visited(num_vertices, false);  // TODO: (*)
     std::stack<key_type> key_stack;
 
     for (auto& vertex : graph->vertices()) {
-        if (visited.at(vertex->key)) // TODO: (*)
+        if (visited.at(vertex->key))  // TODO: (*)
             continue;
 
         if (pre_visit)
             pre_visit(vertex);
 
         while (not key_stack.empty()) {
-            visited.at(vertex->key) = true; // TODO: (*)
+            visited.at(vertex->key) = true;  // TODO: (*)
 
             for (auto& edge : vertex->adjacent()) {
                 if (visited.at(edge->destination))
@@ -62,7 +61,7 @@ void depth_first_search_recursive(
     // TODO (*): account for mutable_graph (some keys can be missing)
 
     const auto num_vertices = graph->num_vertices();
-    std::vector<bool> visited(num_vertices, false); // TODO: (*)
+    std::vector<bool> visited(num_vertices, false);  // TODO: (*)
 
     for (auto& vertex : graph->vertices())
         detail::depth_first_search_recursive_unit(
@@ -70,4 +69,4 @@ void depth_first_search_recursive(
         );
 }
 
-} // namespace gl
+}  // namespace gl

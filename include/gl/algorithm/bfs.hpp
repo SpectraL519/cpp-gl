@@ -1,12 +1,11 @@
 #pragma once
 
-#include <memory>
-#include <queue>
-#include <vector>
-
 #include "gl/algorithm/callbacks.hpp"
 #include "gl/graph/graph_traits.hpp"
 
+#include <memory>
+#include <queue>
+#include <vector>
 
 
 namespace gl {
@@ -26,18 +25,18 @@ void breadth_first_search(
     using key_type = typename Graph::vertex_key_type;
 
     const auto num_vertices = graph->num_vertices();
-    std::vector<bool> visited(num_vertices, false); // TODO: (*)
+    std::vector<bool> visited(num_vertices, false);  // TODO: (*)
     std::queue<key_type> key_queue;
 
     for (auto& vertex : graph->vertices()) {
-        if (visited.at(vertex->key)) // TODO: (*)
+        if (visited.at(vertex->key))  // TODO: (*)
             continue;
 
         if (pre_visit)
             pre_visit(vertex);
 
         while (not key_queue.empty()) {
-            visited.at(vertex->key) = true; // TODO: (*)
+            visited.at(vertex->key) = true;  // TODO: (*)
 
             for (auto& edge : vertex->adjacent()) {
                 if (visited.at(edge->destination))
@@ -52,4 +51,4 @@ void breadth_first_search(
     }
 }
 
-} // namespace gl
+}  // namespace gl

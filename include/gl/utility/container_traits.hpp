@@ -1,37 +1,49 @@
 #pragma once
 
+#include "gl/utility/type_traits.hpp"
+#include "gl/utility/types.hpp"
+
 #include <algorithm>
 #include <deque>
 #include <forward_list>
 #include <list>
 #include <set>
 #include <vector>
-
-#include "gl/utility/types.hpp"
-#include "gl/utility/type_traits.hpp"
-
+#include <stdexcept>
 
 
 namespace gl {
 
 namespace detail {
 
-template <typename T> struct is_valid_container                     : std::false_type {};
-template <>           struct is_valid_container<vector>             : std::true_type  {};
-template <>           struct is_valid_container<deque>              : std::true_type  {};
-template <>           struct is_valid_container<linked_list>        : std::true_type  {};
-template <>           struct is_valid_container<doubly_linked_list> : std::true_type  {};
-template <>           struct is_valid_container<set>                : std::true_type  {};
-template <>           struct is_valid_container<multiset>           : std::true_type  {};
+template <typename T>
+struct is_valid_container : std::false_type {};
+
+template <>
+struct is_valid_container<vector> : std::true_type {};
+
+template <>
+struct is_valid_container<deque> : std::true_type {};
+
+template <>
+struct is_valid_container<linked_list> : std::true_type {};
+
+template <>
+struct is_valid_container<doubly_linked_list> : std::true_type {};
+
+template <>
+struct is_valid_container<set> : std::true_type {};
+
+template <>
+struct is_valid_container<multiset> : std::true_type {};
 
 template <typename T>
 inline constexpr bool is_valid_container_v = is_valid_container<T>::value;
 
-} // namespace container
+}  // namespace detail
 
 template <typename T>
 concept graph_container_c = detail::is_valid_container_v<T>;
-
 
 
 template <graph_container_c Container, typename Key = std::size_t>
@@ -128,14 +140,16 @@ struct container_traits<linked_list, Key> {
     }
 
     template <typename UnaryPredicate>
-    static void remove_if(std::forward_list<Key>& container, UnaryPredicate predicate) {
+    static void
+        remove_if(std::forward_list<Key>& container, UnaryPredicate predicate) {
         container.remove_if(predicate);
     }
 
     static Key& at(std::forward_list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                container.size() + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -169,7 +183,8 @@ struct container_traits<doubly_linked_list, Key> {
     static Key& at(std::list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                container.size() + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -203,7 +218,8 @@ struct container_traits<set, Key> {
     static Key& at(std::set<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                container.size() + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -237,7 +253,8 @@ struct container_traits<multiset, Key> {
     static Key& at(std::multiset<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                container.size() + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -248,11 +265,10 @@ template <typename container_t, typename Key>
 using container_traits_t = typename container_traits<container_t, Key>::type;
 
 
-
 template <typename Container>
 concept joinable_container = requires(Container c) {
     { std::ranges::begin(c) } -> std::same_as<typename Container::iterator>;
-    { std::ranges::end(c) }   -> std::same_as<typename Container::iterator>;
+    { std::ranges::end(c) } -> std::same_as<typename Container::iterator>;
 };
 
 template <typename Container>
@@ -261,6 +277,7 @@ struct is_joinable_container {
 };
 
 template <typename Container>
-inline constexpr bool is_joinable_container_v = is_joinable_container<Container>::value;
+inline constexpr bool is_joinable_container_v =
+    is_joinable_container<Container>::value;
 
-} // namespace gl
+}  // namespace gl
