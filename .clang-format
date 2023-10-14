@@ -106,15 +106,14 @@ BracedInitializerIndentWidth: 4
 
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex:           '<[[:alnum:].]+>'
-    Priority:        4
-  - Regex:           '^((<|")(gtest|gmock|isl|json)/)'
-    Priority:        3
-  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
-    Priority:        2
-    CaseSensitive:   true
-  - Regex:           '.*'
-    Priority:        1
+  - Regex: '^".*"'      # Internal includes inside double quotes
+    Priority: 1
+  - Regex: '^<.*>'      # Internal includes inside angle brackets
+    Priority: 2
+  - Regex: '^(?!<|").*' # External non-standard includes
+    Priority: 3
+  - Regex: '<.*>'       # Standard library includes
+    Priority: 4
 SortIncludes:          CaseSensitive
 SortUsingDeclarations: LexicographicNumeric
 # IncludeIsMainRegex: ''
@@ -154,7 +153,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep:              2
 
 SpaceAfterCStyleCast:              false
-SpaceAfterLogicalNot:              false
+SpaceAfterLogicalNot:              true
 SpaceAfterTemplateKeyword:         true
 SpaceAroundPointerQualifiers:      Default
 SpaceBeforeAssignmentOperators:    true
