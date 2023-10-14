@@ -1,148 +1,129 @@
 #pragma once
 
-#include <vector>
-#include <deque>
-#include <list>
-#include <forward_list>
-#include <set>
-#include <algorithm>
-
 #include "gl/utility/type_traits.hpp"
+#include "gl/utility/types.hpp"
 
+#include <algorithm>
+#include <deque>
+#include <forward_list>
+#include <list>
+#include <set>
+#include <stdexcept>
+#include <type_traits>
+#include <vector>
 
 
 namespace gl {
 
-// container types
-struct vector             {};
-struct deque              {};
-struct linked_list        {};
-struct doubly_linked_list {};
-struct set                {}; // TODO: add Compare param
-struct multiset           {}; // TODO: add Compare param
-
-namespace detail {
-
-template <typename T> struct is_valid_container                     : std::false_type {};
-template <>           struct is_valid_container<vector>             : std::true_type  {};
-template <>           struct is_valid_container<deque>              : std::true_type  {};
-template <>           struct is_valid_container<linked_list>        : std::true_type  {};
-template <>           struct is_valid_container<doubly_linked_list> : std::true_type  {};
-template <>           struct is_valid_container<set>                : std::true_type  {};
-template <>           struct is_valid_container<multiset>           : std::true_type  {};
-
 template <typename T>
-inline constexpr bool is_valid_container_v = is_valid_container<T>::value;
-
-} // namespace container
-
-template <typename T>
-concept graph_container_t = detail::is_valid_container_v<T>;
+concept graph_container_c =
+    detail::is_valid_type_v<T, vector, deque, linked_list, doubly_linked_list, set, multiset>;
 
 
-
-template <graph_container_t C, typename key_t = std::size_t>
+template <graph_container_c Container, typename Key = std::size_t>
 struct container_traits {
     typedef void type;
     typedef void iterator;
     typedef void const_iterator;
     typedef void container_specifier;
 
-    static void insert(C& container, key_t&& key);
+    static void insert(Container& container, Key&& key);
 
-    static void remove(C& container, typename C::iterator pos);
-    template <typename unary_predicate>
-    static void remove_if(C& container, unary_predicate predicate);
+    static void remove(Container& container, typename Container::iterator pos);
+    template <typename UnaryPredicate>
+    static void remove_if(Container& container, UnaryPredicate predicate);
 
-    static key_t& at(C& container, std::size_t index);
+    static const Key& at(Container& container, std::size_t index);
 };
 
 
-template <typename key_t>
-struct container_traits <vector, key_t> {
-    typedef std::vector<key_t> type;
-    typedef std::vector<key_t>::iterator iterator;
-    typedef std::vector<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<vector, Key> {
+    typedef std::vector<Key> type;
+    typedef std::vector<Key>::iterator iterator;
+    typedef std::vector<Key>::const_iterator const_iterator;
     typedef vector container_specifier;
 
-    static inline void insert(std::vector<key_t>& container, key_t&& key) {
+    static inline void insert(std::vector<Key>& container, Key&& key) {
         container.push_back(std::move(key));
     }
 
-    static inline void remove(std::vector<key_t>& container, iterator pos) {
+    static inline void remove(std::vector<Key>& container, iterator pos) {
         container.erase(pos);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::vector<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void remove_if(std::vector<Key>& container, UnaryPredicate predicate) {
         container.erase(
             std::remove_if(container.begin(), container.end(), predicate),
             container.end()
         );
     }
 
-    static inline key_t& at(std::vector<key_t>& container, std::size_t index) {
+    static inline Key& at(std::vector<Key>& container, std::size_t index) {
         return container.at(index);
     }
 };
 
 
-template <typename key_t>
-struct container_traits <deque, key_t> {
-    typedef std::deque<key_t> type;
-    typedef std::deque<key_t>::iterator iterator;
-    typedef std::deque<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<deque, Key> {
+    typedef std::deque<Key> type;
+    typedef std::deque<Key>::iterator iterator;
+    typedef std::deque<Key>::const_iterator const_iterator;
     typedef deque container_specifier;
 
-    static inline void insert(std::deque<key_t>& container, key_t&& key) {
+    static inline void insert(std::deque<Key>& container, Key&& key) {
         container.push_back(std::move(key));
     }
 
-    static inline void remove(std::deque<key_t>& container, iterator pos) {
+    static inline void remove(std::deque<Key>& container, iterator pos) {
         container.erase(pos);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::deque<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void remove_if(std::deque<Key>& container, UnaryPredicate predicate) {
         container.erase(
             std::remove_if(container.begin(), container.end(), predicate),
             container.end()
         );
     }
 
-    static inline key_t& at(std::deque<key_t>& container, std::size_t index) {
+    static inline Key& at(std::deque<Key>& container, std::size_t index) {
         return container.at(index);
     }
 };
 
 
-template <typename key_t>
-struct container_traits <linked_list, key_t> {
-    typedef std::forward_list<key_t> type;
-    typedef std::forward_list<key_t>::iterator iterator;
-    typedef std::forward_list<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<linked_list, Key> {
+    typedef std::forward_list<Key> type;
+    typedef std::forward_list<Key>::iterator iterator;
+    typedef std::forward_list<Key>::const_iterator const_iterator;
     typedef linked_list container_specifier;
 
-    static inline void insert(std::forward_list<key_t>& container, key_t&& key) {
+    static inline void insert(std::forward_list<Key>& container, Key&& key) {
         container.insert_after(container.cend(), std::move(key));
     }
 
-    static inline void remove(std::forward_list<key_t>& container, iterator pos) {
+    static inline void remove(std::forward_list<Key>& container, iterator pos) {
         iterator prev = container.before_begin();
         while (prev != container.end() && std::next(prev) != pos)
             prev++;
         container.erase_after(prev);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::forward_list<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void
+        remove_if(std::forward_list<Key>& container, UnaryPredicate predicate) {
         container.remove_if(predicate);
     }
 
-    static key_t& at(std::forward_list<key_t>& container, std::size_t index) {
+    static const Key& at(std::forward_list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -150,33 +131,34 @@ struct container_traits <linked_list, key_t> {
 };
 
 
-template <typename key_t>
-struct container_traits <doubly_linked_list, key_t> {
-    typedef std::list<key_t> type;
-    typedef std::list<key_t>::iterator iterator;
-    typedef std::list<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<doubly_linked_list, Key> {
+    typedef std::list<Key> type;
+    typedef std::list<Key>::iterator iterator;
+    typedef std::list<Key>::const_iterator const_iterator;
     typedef doubly_linked_list container_specifier;
 
-    static inline void insert(std::list<key_t>& container, key_t&& key) {
+    static inline void insert(std::list<Key>& container, Key&& key) {
         container.push_back(std::move(key));
     }
 
-    static inline void remove(std::list<key_t>& container, iterator pos) {
+    static inline void remove(std::list<Key>& container, iterator pos) {
         container.erase(pos);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::list<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void remove_if(std::list<Key>& container, UnaryPredicate predicate) {
         container.erase(
             std::remove_if(container.begin(), container.end(), predicate),
             container.end()
         );
     }
 
-    static key_t& at(std::list<key_t>& container, std::size_t index) {
+    static const Key& at(std::list<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -184,33 +166,34 @@ struct container_traits <doubly_linked_list, key_t> {
 };
 
 
-template <typename key_t>
-struct container_traits <set, key_t> {
-    typedef std::set<key_t> type;
-    typedef std::set<key_t>::iterator iterator;
-    typedef std::set<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<set, Key> {
+    typedef std::set<Key> type;
+    typedef std::set<Key>::iterator iterator;
+    typedef std::set<Key>::const_iterator const_iterator;
     typedef set container_specifier;
 
-    static inline void insert(std::set<key_t>& container, key_t&& key) {
+    static inline void insert(std::set<Key>& container, Key&& key) {
         container.insert(std::move(key));
     }
 
-    static inline void remove(std::set<key_t>& container, iterator pos) {
+    static inline void remove(std::set<Key>& container, iterator pos) {
         container.erase(pos);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::set<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void remove_if(std::set<Key>& container, UnaryPredicate predicate) {
         container.erase(
             std::remove_if(container.begin(), container.end(), predicate),
             container.end()
         );
     }
 
-    static key_t& at(std::set<key_t>& container, std::size_t index) {
+    static const Key& at(std::set<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
@@ -218,56 +201,57 @@ struct container_traits <set, key_t> {
 };
 
 
-template <typename key_t>
-struct container_traits <multiset, key_t> {
-    typedef std::multiset<key_t> type;
-    typedef std::multiset<key_t>::iterator iterator;
-    typedef std::multiset<key_t>::const_iterator const_iterator;
+template <typename Key>
+struct container_traits<multiset, Key> {
+    typedef std::multiset<Key> type;
+    typedef std::multiset<Key>::iterator iterator;
+    typedef std::multiset<Key>::const_iterator const_iterator;
     typedef multiset container_specifier;
 
-    static inline void insert(std::multiset<key_t>& container, key_t&& key) {
+    static inline void insert(std::multiset<Key>& container, Key&& key) {
         container.insert(std::move(key));
     }
 
-    static inline void remove(std::multiset<key_t>& container, iterator pos) {
+    static inline void remove(std::multiset<Key>& container, iterator pos) {
         container.erase(pos);
     }
 
-    template <typename unary_predicate>
-    static void remove_if(std::multiset<key_t>& container, unary_predicate predicate) {
+    template <typename UnaryPredicate>
+    static void remove_if(std::multiset<Key>& container, UnaryPredicate predicate) {
         container.erase(
             std::remove_if(container.begin(), container.end(), predicate),
             container.end()
         );
     }
 
-    static key_t& at(std::multiset<key_t>& container, std::size_t index) {
+    static const Key& at(std::multiset<Key>& container, std::size_t index) {
         if (index > container.size())
             throw std::out_of_range(
-                "index [" + std::to_string(index) + "] >= contaiener.size() [" + container.size() + "]"
+                "index [" + std::to_string(index) + "] >= contaiener.size() [" +
+                std::to_string(container.size()) + "]"
             );
 
         return *std::next(container.begin(), index);
     }
 };
 
-template <typename container_t, typename key_t>
-using container_traits_t = typename container_traits<container_t, key_t>::type;
+template <typename container_t, typename Key>
+using container_traits_t = typename container_traits<container_t, Key>::type;
 
 
-
-template <typename container_t>
-concept joinable_container = requires(container_t c) {
-    { std::ranges::begin(c) } -> std::same_as<typename container_t::iterator>;
-    { std::ranges::end(c) }   -> std::same_as<typename container_t::iterator>;
+template <typename Container>
+concept joinable_container = requires(Container c) {
+    { std::ranges::begin(c) } -> std::same_as<typename Container::iterator>;
+    { std::ranges::end(c) } -> std::same_as<typename Container::iterator>;
 };
 
-template <typename container_t>
+template <typename Container>
 struct is_joinable_container {
-    static constexpr bool value = joinable_container<container_t>;
+    static constexpr bool value = joinable_container<Container>;
 };
 
-template <typename container_t>
-inline constexpr bool is_joinable_container_v = is_joinable_container<container_t>::value;
+template <typename Container>
+inline constexpr bool is_joinable_container_v =
+    is_joinable_container<Container>::value;
 
-} // namespace gl
+}  // namespace gl
