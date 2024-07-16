@@ -15,12 +15,40 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_doctest_config");
 
-TEST_CASE("true should be true") {
-    REQUIRE(true);
+namespace {
+
+int add(int a, int b) {
+    return a + b;
 }
 
-TEST_CASE("true should not be false") {
-    REQUIRE_FALSE(false);
+float multiply(float a, float b) {
+    return a * b;
+}
+
+int divide(const int numerator, const int denominator) {
+    if (not denominator)
+        throw std::logic_error("Division by zero");
+    return numerator / denominator;
+}
+
+} // namespace
+
+TEST_CASE("addition of integers") {
+    int a = 5;
+    int b = 10;
+    REQUIRE(add(a, b) == 15);
+}
+
+TEST_CASE("multiplication of floats") {
+    constexpr float x = 2.5f;
+    constexpr float y = 3.0f;
+    CHECK(multiply(x, y) == doctest::Approx(7.5).epsilon(0.01));
+}
+
+TEST_CASE("division by zero") {
+    int numerator = 10;
+    int denominator = 0;
+    CHECK_THROWS_AS(divide(numerator, denominator), std::logic_error);
 }
 
 TEST_SUITE_END(); // test_doctest_config
@@ -76,7 +104,7 @@ TEST_CASE("mock should perform actions correctly") {
     CHECK_NE(test_object.get_bar(foo_value), foo_value);
 
     Verify(Method(config_test_mock, foo)).Exactly(1);
-    Verify(Method(config_test_mock, bar).Using(foo_value)).AtLeast(1);
+    Verify(Method(config_test_mock, bar).Using(foo_value)).Exactly(2);
 }
 
 TEST_SUITE_END(); // test_fakeit_config
