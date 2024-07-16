@@ -1,0 +1,195 @@
+---
+Language: Cpp
+Standard: c++20
+DisableFormat: false
+
+
+# General
+IndentWidth:             4
+TabWidth:                4
+UseTab:                  Never
+ColumnLimit:             100
+ContinuationIndentWidth: 4
+
+
+# Alignment options
+AlignAfterOpenBracket:  BlockIndent
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments: false
+AlignConsecutiveBitFields: false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: false
+AlignConsecutiveShortCaseStatements:
+  Enabled: false
+AlignEscapedNewlines: Left
+AlignOperands:        AlignAfterOperator
+AlignTrailingComments: false
+
+AllowAllArgumentsOnNextLine:               true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine:             Empty
+AllowShortCaseLabelsOnASingleLine:         false
+AllowShortEnumsOnASingleLine:              true
+AllowShortFunctionsOnASingleLine:          Empty
+AllowShortIfStatementsOnASingleLine:       Never
+AllowShortLambdasOnASingleLine:            All
+AllowShortLoopsOnASingleLine:              false
+
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType:           None
+AlwaysBreakBeforeMultilineStrings:    false
+AlwaysBreakTemplateDeclarations:      Yes
+BreakAfterAttributes:                 Never
+BreakBeforeBinaryOperators:           NonAssignment
+BreakBeforeBraces:                    Attach
+BreakBeforeConceptDeclarations:       Always
+BreakBeforeTernaryOperators:          true
+BreakConstructorInitializers:         BeforeColon
+BreakInheritanceList:                 BeforeColon
+BreakStringLiterals:                  true
+
+BinPackArguments:                 false
+BinPackParameters:                false
+ExperimentalAutoDetectBinPacking: false
+
+BitFieldColonSpacing: Both
+
+BraceWrapping:
+  AfterCaseLabel:        false
+  AfterClass:            false
+  AfterControlStatement: Never
+  AfterEnum:             false
+  AfterFunction:         false
+  AfterNamespace:        false
+  AfterObjCDeclaration:  false
+  AfterStruct:           false
+  AfterUnion:            false
+  AfterExternBlock:      false
+  BeforeCatch:           true
+  BeforeElse:            true
+  BeforeLambdaBody:      false
+  BeforeWhile:           false
+  IndentBraces:          false
+  SplitEmptyFunction:    false
+  SplitEmptyRecord:      false
+  SplitEmptyNamespace:   false
+BracedInitializerIndentWidth: 4
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^".*"'            # Internal includes inside double quotes
+    Priority: 1
+  - Regex: '^<[^>]+\.h(pp)?>' # Internal includes inside angle brackets
+    Priority: 2
+  - Regex: '^(?!<|").*'       # External non-standard includes
+    Priority: 3
+  - Regex: '<.*>'             # Standard library includes
+    Priority: 4
+SortIncludes:          CaseSensitive
+SortUsingDeclarations: LexicographicNumeric
+
+CompactNamespaces:    false
+FixNamespaceComments: true
+NamespaceIndentation: None
+ShortNamespaceLines:  0
+
+IndentAccessModifiers:             false
+AccessModifierOffset:              -4
+ConstructorInitializerIndentWidth: 0
+EmptyLineAfterAccessModifier:      Never
+EmptyLineBeforeAccessModifier:     LogicalBlock
+PackConstructorInitializers:       NextLine
+SeparateDefinitionBlocks:          Always
+
+IndentCaseBlocks: false
+IndentCaseLabels: false
+
+IndentWrappedFunctionNames: false
+LambdaBodyIndentation:      Signature
+
+IndentRequiresClause:          false
+RequiresClausePosition:        OwnLine
+RequiresExpressionIndentation: OuterScope
+
+InsertBraces:                     false
+RemoveBracesLLVM:                 false
+RemoveParentheses:                ReturnStatement
+RemoveSemicolon:                  true
+InsertNewlineAtEOF:               true
+InsertTrailingCommas:             None
+KeepEmptyLinesAtEOF:              false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep:              2
+
+SpaceAfterCStyleCast:              false
+SpaceAfterLogicalNot:              true
+SpaceAfterTemplateKeyword:         true
+SpaceAroundPointerQualifiers:      Default
+SpaceBeforeAssignmentOperators:    true
+SpaceBeforeCaseColon:              false
+SpaceBeforeCpp11BracedList:        false
+SpaceBeforeCtorInitializerColon:   true
+SpaceBeforeParens:                 Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements:       true
+  AfterForeachMacros:           false
+  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName:  false
+  AfterIfMacros:                false
+  AfterOverloadedOperator:      false
+  AfterRequiresInClause:        false
+  AfterRequiresInExpression:    false
+  BeforeNonEmptyParentheses:    false
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets:         false
+SpaceInEmptyBlock:                 false
+SpaceInEmptyParentheses:           false
+SpacesBeforeTrailingComments:      1
+SpacesInAngles:                    Never
+SpacesInContainerLiterals:         false
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: -1
+SpacesInParens:         Never
+SpacesInSquareBrackets: false
+
+PenaltyBreakAssignment:               0
+PenaltyBreakBeforeFirstCallParameter: 0
+PenaltyBreakComment:                  100
+PenaltyBreakFirstLessLess:            0
+PenaltyBreakOpenParenthesis:          0
+PenaltyBreakString:                   100
+PenaltyBreakTemplateDeclaration:      0
+PenaltyExcessCharacter:               2
+PenaltyReturnTypeOnItsOwnLine:        500
+PenaltyIndentedWhitespace:            5
+
+PointerAlignment:        Left
+DerivePointerAlignment:  false
+ReferenceAlignment:      Pointer
+QualifierAlignment:      Left
+
+# Other
+IntegerLiteralSeparator:
+  Binary:           4
+  BinaryMinDigits:  6
+  Decimal:          3
+  DecimalMinDigits: 5
+  Hex:              2
+  HexMinDigits:     6
+
+Cpp11BracedListStyle: false
+
+ReflowComments: false
+
+IndentExternBlock:          Indent
+IndentGotoLabels:           true
+IndentPPDirectives:         None
+PPIndentWidth:              -1
+
+ObjCBinPackProtocolList:         Auto
+ObjCBlockIndentWidth:            4
+ObjCBreakBeforeNestedBlockParam: true
+ObjCSpaceAfterProperty:          false
+ObjCSpaceBeforeProtocolList:     true
+...
