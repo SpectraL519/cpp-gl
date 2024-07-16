@@ -5,13 +5,9 @@ import sys
 
 
 class default_parameters:
-    search_paths = ["."]
+    search_paths = ["include", "tests"]
     file_patterns = ["*.cpp", "*.hpp", "*.c", "*.h"]
-    exclude_paths = [
-        "tests/external",
-        "build",
-        "tmp"
-    ]
+    exclude_paths = ["tests/external"]
     check = False
     help = False
 
