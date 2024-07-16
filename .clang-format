@@ -113,7 +113,7 @@ RequiresExpressionIndentation: OuterScope
 
 InsertBraces:                     false
 RemoveBracesLLVM:                 false
-# RemoveParentheses:                ReturnStatement
+RemoveParentheses:                ReturnStatement
 RemoveSemicolon:                  true
 InsertNewlineAtEOF:               true
 InsertTrailingCommas:             None

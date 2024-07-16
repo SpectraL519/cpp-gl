@@ -114,18 +114,21 @@ test_fakeit_config
 ### Formatting
 
 > [!NOTE]
-> The project uses `clang-format-18`. Installation instructions can be found on the [llvm apt](https://apt.llvm.org/) page.
+> The project uses `clang-format-18`. The `llvm-18` toolchain installation instructions can be found on the [llvm apt](https://apt.llvm.org/) page. After installing the toolchain run `sudo apt install clang-format-18`.
+
+You can format the code manually using `clang-format-18` or you can use the prepared python script:
 
 To format the code run the following:
 ```shell
-# Linux
-./scripts/format/linux.sh
+python scripts/format.py
 ```
+To inspect the script's options run:
 ```shell
-# Windows: powershell
-./scripts/format/windows.ps1
+python scripts/format.py --help
 ```
-To run a format check use the above-mentioned scripts with a `--check` flag.
+
+> [!NOTE]
+> The script requires `python >= 3.9`
 
 <br />
 <br />
