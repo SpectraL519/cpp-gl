@@ -4,6 +4,8 @@
 [![clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang++)
 [![format](https://github.com/SpectraL519/cpp-gl/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/format)
 
+<!-- TODO: modify master branch protection ruleset (require all checks to pass) -->
+
 <br />
 
 ## Overview
