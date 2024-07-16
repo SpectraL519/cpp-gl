@@ -2,6 +2,6 @@
 
 include(CMakeFindDependencyMacro)
 
-set_and_check(CPP_AP_INCLUDE_DIR "@PACKAGE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(CPP_GL_INCLUDE_DIR "@PACKAGE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
 
 include("${CMAKE_CURRENT_LIST_DIR}/cpp-gl-targets.cmake")
