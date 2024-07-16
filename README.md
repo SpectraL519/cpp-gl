@@ -75,7 +75,41 @@ If you do not use CMake you can dowload the desired [library release](https://gi
 
 ### Building and testing
 
-TODO
+> [!NOTE]
+> The project uses `Doctest` and `FakeIt` frameworks for unit testing, however they are already installed in the `tests/external` directory so there is no need to download them manually.
+
+Build the testing executable:
+    ```shell
+    cmake -B build
+    cd build && make
+    ```
+
+This will build the test executable `run` in the `<project-root>/build/tests` directory.
+
+> [!TIP]
+> Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
+
+Run the tests:
+
+* All tests:
+
+    ```shell
+    cd build
+    ./tests/run
+    ```
+
+* A single test suite:
+
+    ```shell
+    cd build
+    ./tests/run -ts="<test-suite-name>"
+    ```
+
+> [!NOTE]
+> Test suites in the project have the same names as the files they're in except for the `test_config` file which defines two test suites: `test_doctest_config` and `test_fakeit_config`.
+test_fakeit_config
+
+<br />
 
 ### Formatting
 

@@ -11,7 +11,9 @@ This test file was created to determine whether the doctest and fakeit libraries
 and testing CMakeLists.txt file have been set up correctly :)
 */
 
-TEST_SUITE_BEGIN("test_dectest_config");
+namespace gl_testing {
+
+TEST_SUITE_BEGIN("test_doctest_config");
 
 TEST_CASE("true should be true") {
     REQUIRE(true);
@@ -21,7 +23,7 @@ TEST_CASE("true should not be false") {
     REQUIRE_FALSE(false);
 }
 
-TEST_SUITE_END();
+TEST_SUITE_END(); // test_doctest_config
 
 TEST_SUITE_BEGIN("test_fakeit_config");
 
@@ -61,4 +63,6 @@ TEST_CASE("mock should perform actions correctly") {
     Verify(Method(mock, bar).Using(foo_value)).AtLeast(1);
 }
 
-TEST_SUITE_END();
+TEST_SUITE_END(); // test_fakeit_config
+
+} // namespace gl_testing
