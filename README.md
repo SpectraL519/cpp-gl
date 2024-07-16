@@ -1,7 +1,7 @@
 # CPP-GL
 
-<!-- TODO: workflow badges -->
-<!-- TODO: master branch ruleset: require status checks to pass -->
+[![g++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/g++)
+[![clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang++)
 
 <br />
 
