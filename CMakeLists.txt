@@ -63,15 +63,14 @@ install(EXPORT cpp-gl-targets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-gl
 )
 
-# Include test directory if cpp-gl is a top level project
-if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
-    add_subdirectory(test)
-endif()
-
 # Exporting from the build tree
 export(EXPORT cpp-gl-targets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/cpp-gl-targets.cmake
     NAMESPACE cpp-gl::
 )
-
 export(PACKAGE cpp-gl)
+
+# Include test directory if cpp-gl is a top level project
+if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
