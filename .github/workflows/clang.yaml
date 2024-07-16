@@ -38,5 +38,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ./build/test/run_tests
+          ./build/tests/run
         continue-on-error: false
