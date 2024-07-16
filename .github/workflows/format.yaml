@@ -1,0 +1,38 @@
+name: format
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - .github/workflows/format.yaml
+      - include/**
+      - tests/include/**
+      - tests/source/**
+      - tests/app/**
+
+
+jobs:
+  build:
+    name: Test code formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install clang-format-18
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+          sudo apt install -y clang-format-18
+
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test formatting
+        shell: bash
+        run: |
+          python3 scripts/format.py

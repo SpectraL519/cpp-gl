@@ -1,0 +1,42 @@
+name: clang++
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - .github/workflows/clang.yaml
+      - include/**
+      - tests/**
+
+jobs:
+  build:
+    name: Build and run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install clang-17
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17
+
+      - name: Prepare
+        env:
+          CC:  clang-17
+          CXX: clang++-17
+        run: |
+          cmake -B build -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
+        continue-on-error: false
+
+      - name: Build test executable
+        run: |
+          cd build && make
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          ./build/tests/run
+        continue-on-error: false
