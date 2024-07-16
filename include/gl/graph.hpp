@@ -2,6 +2,8 @@
 
 namespace gl {
 
-class graph {};
+class graph {
+    // TODO
+};
 
 } // namespace gl
