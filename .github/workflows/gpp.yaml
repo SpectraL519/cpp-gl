@@ -4,6 +4,7 @@ on:
     branches:
       - '*'
     paths:
+      - .github/workflows/gpp.yaml
       - include/**
       - tests/**
 

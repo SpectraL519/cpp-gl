@@ -4,6 +4,7 @@ on:
     branches:
       - '*'
     paths:
+      - .github/workflows/clang.yaml
       - include/**
       - tests/**
 
@@ -15,6 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install clang-17
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17
 
       - name: Prepare
         env:

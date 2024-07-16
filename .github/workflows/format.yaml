@@ -4,6 +4,7 @@ on:
     branches:
       - '*'
     paths:
+      - .github/workflows/format.yaml
       - include/**
       - tests/include/**
       - tests/source/**
