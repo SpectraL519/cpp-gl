@@ -1,0 +1,2 @@
+# Ensure bash scripts have unix style new line encoding
+*.sh text eol=lf
