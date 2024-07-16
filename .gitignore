@@ -1,0 +1,12 @@
+# editor files
+.vscode/
+
+# build files
+*.exe
+build/
+
+# documentation files
+documentation/
+
+# other
+tmp/
