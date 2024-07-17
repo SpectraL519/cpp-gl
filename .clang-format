@@ -178,7 +178,7 @@ IntegerLiteralSeparator:
   Hex:              2
   HexMinDigits:     6
 
-Cpp11BracedListStyle: false
+Cpp11BracedListStyle: true
 
 ReflowComments: false
 
