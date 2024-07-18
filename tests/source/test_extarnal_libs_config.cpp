@@ -36,7 +36,7 @@ int divide(const int numerator, const int denominator) {
 TEST_CASE("addition of integers") {
     int a = 5;
     int b = 10;
-    REQUIRE(add(a, b) == 15);
+    CHECK(add(a, b) == 15);
 }
 
 TEST_CASE("multiplication of floats") {
@@ -97,7 +97,7 @@ TEST_CASE("mock should perform actions correctly") {
     When(Method(config_test_mock, bar).Using(foo_value)).AlwaysReturn(bar_value);
 
     const auto& config_mock_instance = config_test_mock.get();
-    const TestClass test_object{ config_mock_instance };
+    const TestClass test_object{config_mock_instance};
 
     CHECK_EQ(test_object.get_foo(), foo_value);
     CHECK_EQ(test_object.get_bar(foo_value), bar_value);
