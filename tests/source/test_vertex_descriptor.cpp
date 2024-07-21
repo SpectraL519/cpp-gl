@@ -1,8 +1,6 @@
 #include <doctest.h>
 #include <gl/vertex_descriptor.hpp>
 
-#include <type_traits>
-
 using namespace gl;
 
 namespace {
@@ -21,8 +19,7 @@ TEST_CASE("id() should return the correct vertex id") {
 TEST_CASE("properties should be properly initialized") {
     struct visited_property {
         bool operator==(const visited_property&) const = default;
-
-        bool visited = false;
+        bool visited;
     };
 
     const visited_property visited{true};

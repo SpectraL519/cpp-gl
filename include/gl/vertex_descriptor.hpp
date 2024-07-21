@@ -45,4 +45,7 @@ private:
     std::size_t _id;
 };
 
+template <detail::c_properties Properties = detail::empty_properties>
+using vertex = vertex_descriptor<Properties>;
+
 } // namespace gl
