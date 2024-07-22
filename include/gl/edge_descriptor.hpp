@@ -23,11 +23,11 @@ public:
 
     edge_descriptor() = delete;
 
-    edge_descriptor(vertex_ptr_type u, vertex_ptr_type v) : _u(u), _v(v) {}
+    edge_descriptor(vertex_ptr_type u, vertex_ptr_type v) : _vertices(u, v) {}
 
     edge_descriptor(vertex_ptr_type u, vertex_ptr_type v, const properties_type& properties)
     requires(not std::is_same_v<properties_type, detail::empty_properties>)
-    : _u(u), _v(v), properties(properties) {}
+    : _vertices(u, v), properties(properties) {}
 
     edge_descriptor(const edge_descriptor&) = default;
     edge_descriptor(edge_descriptor&&) = default;
@@ -37,17 +37,20 @@ public:
 
     properties_type properties = {};
 
-    [[nodiscard]] inline const vertex_ptr_type& u() {
-        return this->_u;
+    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& vertices() const {
+        return this->_vertices;
     }
 
-    [[nodiscard]] inline const vertex_ptr_type& v() {
-        return this->_v;
+    [[nodiscard]] inline bool is_directed() const {
+        return std::is_same_v<edge_tag, directed>;
+    }
+
+    [[nodiscard]] inline bool is_bidirectional() const {
+        return std::is_same_v<edge_tag, bidirectional>;
     }
 
 private:
-    vertex_ptr_type _u;
-    vertex_ptr_type _v;
+    std::pair<vertex_ptr_type, vertex_ptr_type> _vertices;
 };
 
 } // namespace gl
