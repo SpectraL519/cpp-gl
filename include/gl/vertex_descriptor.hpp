@@ -3,6 +3,8 @@
 #include "detail/concepts.hpp"
 #include "detail/default_types.hpp"
 
+#include <compare>
+
 namespace gl {
 
 /*
@@ -34,6 +36,14 @@ public:
     vertex_descriptor& operator=(vertex_descriptor&&) = default;
 
     ~vertex_descriptor() = default;
+
+    bool operator==(const vertex_descriptor& other) const {
+        return this->_id == other._id;
+    }
+
+    std::strong_ordering operator<=>(const vertex_descriptor& other) const {
+        return this->_id <=> other._id;
+    }
 
     [[nodiscard]] inline std::size_t id() const {
         return this->_id;

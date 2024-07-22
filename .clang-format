@@ -160,7 +160,7 @@ PenaltyBreakFirstLessLess:            0
 PenaltyBreakOpenParenthesis:          0
 PenaltyBreakString:                   100
 PenaltyBreakTemplateDeclaration:      0
-PenaltyExcessCharacter:               2
+PenaltyExcessCharacter:               200
 PenaltyReturnTypeOnItsOwnLine:        500
 PenaltyIndentedWhitespace:            5
 
