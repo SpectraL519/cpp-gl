@@ -58,4 +58,11 @@ private:
 template <detail::c_properties Properties = detail::empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
+// TODO - add:
+// * is_incident_to(edge)
+// * is_incident_from(edge)
+// * is_incident_to(vertex, graph)
+// * is_incident_from(vertex, graph)
+// * are_incident(vertex, vertex, graph)
+
 } // namespace gl

@@ -4,14 +4,14 @@
 
 namespace gl {
 
-struct bidirectional {};
+struct directed_t {};
 
-struct directed {};
+struct undirected_t {};
 
 namespace detail {
 
 template <typename T>
-concept c_edge_tag = c_one_of<T, bidirectional, directed>;
+concept c_edge_tag = c_one_of<T, directed_t, undirected_t>;
 
 } // namespace detail
 

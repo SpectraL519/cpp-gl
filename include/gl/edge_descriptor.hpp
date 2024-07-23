@@ -12,7 +12,7 @@ namespace gl {
 
 template <
     detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_edge_tag EdgeTag = bidirectional,
+    detail::c_edge_tag EdgeTag = directed_t,
     detail::c_properties Properties = detail::empty_properties>
 class edge_descriptor {
 public:
@@ -37,20 +37,85 @@ public:
 
     properties_type properties = {};
 
-    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& vertices() const {
+    [[nodiscard]] constexpr inline bool is_directed() const {
+        return std::is_same_v<edge_tag, directed_t>;
+    }
+
+    [[nodiscard]] constexpr inline bool is_undirected() const {
+        return std::is_same_v<edge_tag, undirected_t>;
+    }
+
+    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& incident_vertices(
+    ) const {
         return this->_vertices;
     }
 
-    [[nodiscard]] inline bool is_directed() const {
-        return std::is_same_v<edge_tag, directed>;
+    [[nodiscard]] vertex_ptr_type incident_vertex(const vertex_ptr_type& v) {
+        if (*v == *this->_vertices.first)
+            return this->_vertices.second;
+
+        if (*v == *this->_vertices.second)
+            return this->_vertices.first;
+
+        return nullptr;
     }
 
-    [[nodiscard]] inline bool is_bidirectional() const {
-        return std::is_same_v<edge_tag, bidirectional>;
+    [[nodiscard]] inline vertex_ptr_type incident_form() {
+        return this->_vertices.first; // source
     }
+
+    [[nodiscard]] inline vertex_ptr_type incident_to() {
+        return this->_vertices.second; // destination
+    }
+
+    [[nodiscard]] inline vertex_ptr_type is_incident_form(const vertex_ptr_type& v)
+    requires(std::is_same_v<edge_tag, directed_t>)
+    {
+        return v == *this->_vertices.first;
+    }
+
+    [[nodiscard]] inline vertex_ptr_type is_incident_form(const vertex_ptr_type& v)
+    requires(std::is_same_v<edge_tag, undirected_t>)
+    {
+        return this->incident_vertex(v) != nullptr;
+    }
+
+    [[nodiscard]] inline vertex_ptr_type is_incident_to(const vertex_ptr_type& v)
+    requires(std::is_same_v<edge_tag, directed_t>)
+    {
+        return v == *this->_vertices.second;
+    }
+
+    [[nodiscard]] inline vertex_ptr_type is_incident_to(const vertex_ptr_type& v)
+    requires(std::is_same_v<edge_tag, undirected_t>)
+    {
+        return this->incident_vertex(v) != nullptr;
+    }
+
+    friend struct directed_t;
+    friend struct undirected_t;
 
 private:
     std::pair<vertex_ptr_type, vertex_ptr_type> _vertices;
 };
+
+template <
+    detail::c_instantiation_of<vertex_descriptor> VertexType,
+    detail::c_edge_tag EdgeTag = directed_t,
+    detail::c_properties Properties = detail::empty_properties>
+using edge = edge_descriptor<VertexType, EdgeTag, Properties>;
+
+template <
+    detail::c_instantiation_of<vertex_descriptor> VertexType,
+    detail::c_properties Properties = detail::empty_properties>
+using directed_edge = edge_descriptor<VertexType, directed_t, Properties>;
+
+template <
+    detail::c_instantiation_of<vertex_descriptor> VertexType,
+    detail::c_properties Properties = detail::empty_properties>
+using undirected_edge = edge_descriptor<VertexType, undirected_t, Properties>;
+
+// TODO - add:
+// * are_incident(edge, edge, graph)
 
 } // namespace gl

@@ -4,8 +4,8 @@
 using namespace gl;
 
 namespace {
-constexpr std::size_t id_1 = 1234ull;
-constexpr std::size_t id_2 = 4321ull;
+constexpr std::size_t id_1 = 1111ull;
+constexpr std::size_t id_2 = 2222ull;
 } // namespace
 
 namespace gl_testing {
