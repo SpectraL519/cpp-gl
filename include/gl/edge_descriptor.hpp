@@ -2,7 +2,7 @@
 
 #include "detail/concepts.hpp"
 #include "detail/default_types.hpp"
-#include "detail/edge_traits.hpp"
+// #include "detail/edge_traits.hpp"
 #include "edge_tags.hpp"
 #include "vertex_descriptor.hpp"
 
@@ -17,13 +17,10 @@ template <
     detail::c_edge_directional_tag DirectionalTag = directed_t,
     detail::c_properties Properties = detail::empty_properties>
 class edge_descriptor {
-private:
-    using traits_type = detail::edge_traits<DirectionalTag>;
-
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
     using vertex_type = std::shared_ptr<VertexType>;
-    using directional_tag = detail::edge_tag_type<traits_type>;
+    using directional_tag = DirectionalTag;
     using properties_type = Properties;
 
     edge_descriptor() = delete;
@@ -75,14 +72,15 @@ public:
     }
 
     [[nodiscard]] inline bool is_incident_from(const vertex_type& vertex) const {
-        return traits_type::is_incident_from(*this, vertex);
+        return directional_tag::is_incident_from(*this, vertex);
     }
 
     [[nodiscard]] inline bool is_incident_to(const vertex_type& vertex) const {
-        return traits_type::is_incident_to(*this, vertex);
+        return directional_tag::is_incident_to(*this, vertex);
     }
 
-    friend struct detail::edge_traits<directional_tag>;
+    friend struct directed_t;
+    friend struct undirected_t;
 
 private:
     std::pair<vertex_type, vertex_type> _vertices;
