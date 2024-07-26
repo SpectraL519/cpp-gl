@@ -2,7 +2,6 @@
 
 #include "detail/concepts.hpp"
 #include "detail/default_types.hpp"
-// #include "detail/edge_traits.hpp"
 #include "edge_tags.hpp"
 #include "vertex_descriptor.hpp"
 
@@ -79,8 +78,7 @@ public:
         return directional_tag::is_incident_to(*this, vertex);
     }
 
-    friend struct directed_t;
-    friend struct undirected_t;
+    friend directional_tag;
 
 private:
     std::pair<vertex_type, vertex_type> _vertices;
