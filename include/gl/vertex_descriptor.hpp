@@ -3,16 +3,9 @@
 #include "detail/concepts.hpp"
 #include "detail/default_types.hpp"
 
-namespace gl {
+#include <compare>
 
-/*
-TODO: define the properties member only when Properties is not void
-Possible solutions:
-- Template specialization
-- std::enable_if_t ?
-Requires:
-- Modification of the c_properties concept to be a valid type or void
-*/
+namespace gl {
 
 template <detail::c_properties Properties = detail::empty_properties>
 class vertex_descriptor {
@@ -21,9 +14,9 @@ public:
 
     vertex_descriptor() = delete;
 
-    vertex_descriptor(const std::size_t id) : _id(id) {}
+    explicit vertex_descriptor(const std::size_t id) : _id(id) {}
 
-    vertex_descriptor(const std::size_t id, const properties_type& properties)
+    explicit vertex_descriptor(const std::size_t id, const properties_type& properties)
     requires(not std::is_same_v<properties_type, detail::empty_properties>)
     : _id(id), properties(properties) {}
 
@@ -35,6 +28,14 @@ public:
 
     ~vertex_descriptor() = default;
 
+    bool operator==(const vertex_descriptor& other) const {
+        return this->_id == other._id;
+    }
+
+    std::strong_ordering operator<=>(const vertex_descriptor& other) const {
+        return this->_id <=> other._id;
+    }
+
     [[nodiscard]] inline std::size_t id() const {
         return this->_id;
     }
@@ -44,5 +45,8 @@ public:
 private:
     std::size_t _id;
 };
+
+template <detail::c_properties Properties = detail::empty_properties>
+using vertex = vertex_descriptor<Properties>;
 
 } // namespace gl

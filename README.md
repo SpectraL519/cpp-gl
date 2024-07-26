@@ -87,6 +87,9 @@ Build the testing executable:
     cd build && make
     ```
 
+> [!TIP]
+> To speed up the build process you can run: `make -j <number-of-jobs>`
+
 This will build the test executable `run` in the `<project-root>/build/tests` directory.
 
 > [!TIP]
