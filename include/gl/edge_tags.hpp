@@ -12,7 +12,7 @@ struct undirected_t {};
 namespace detail {
 
 template <typename T>
-concept c_edge_tag = c_one_of<T, directed_t, undirected_t>;
+concept c_edge_directional_tag = c_one_of<T, directed_t, undirected_t>;
 
 } // namespace detail
 

@@ -42,7 +42,7 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(directed_edge.is_undirected());
 }
 
-TEST_CASE_TEMPLATE_DEFINE("edge_tag-independent tests", EdgeType, parametric_edge_tag_template) {
+TEST_CASE_TEMPLATE_DEFINE("edge_tag-independent tests", EdgeType, edge_directional_tag_template) {
     test_edge_descriptor fixture{};
 
     EdgeType sut{fixture.vd_1, fixture.vd_2};
@@ -74,14 +74,14 @@ TEST_CASE_TEMPLATE_DEFINE("edge_tag-independent tests", EdgeType, parametric_edg
 TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_from tests") {
     SUBCASE("[undirected_edge] should return true for both vertices") {
         undirected_edge<vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_form(vd_1));
-        CHECK(sut.is_incident_form(vd_2));
+        CHECK(sut.is_incident_from(vd_1));
+        CHECK(sut.is_incident_from(vd_2));
     }
 
     SUBCASE("[directed_edge] should return true only for the first vertex") {
         directed_edge<vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_form(vd_1));
-        CHECK_FALSE(sut.is_incident_form(vd_2));
+        CHECK(sut.is_incident_from(vd_1));
+        CHECK_FALSE(sut.is_incident_from(vd_2));
     }
 }
 
@@ -99,7 +99,7 @@ TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_to tests") {
     }
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(parametric_edge_tag_template, directed_edge<vertex<>>, undirected_edge<vertex<>>);
+TEST_CASE_TEMPLATE_INSTANTIATE(edge_directional_tag_template, directed_edge<vertex<>>, undirected_edge<vertex<>>);
 
 TEST_SUITE_END(); // test_edge_descriptor
 
