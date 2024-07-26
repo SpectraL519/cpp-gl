@@ -33,7 +33,7 @@ jobs:
 
       - name: Build test executable
         run: |
-          cd build && make
+          cd build && make -j 4
         continue-on-error: false
 
       - name: Run tests
