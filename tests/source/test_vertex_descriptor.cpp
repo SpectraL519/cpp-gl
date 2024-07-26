@@ -4,8 +4,10 @@
 using namespace gl;
 
 namespace {
+
 constexpr std::size_t id_1 = 1111ull;
 constexpr std::size_t id_2 = 2222ull;
+
 } // namespace
 
 namespace gl_testing {
