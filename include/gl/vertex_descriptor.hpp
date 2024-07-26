@@ -7,15 +7,6 @@
 
 namespace gl {
 
-/*
-TODO: define the properties member only when Properties is not void
-Possible solutions:
-- Template specialization
-- std::enable_if_t ?
-Requires:
-- Modification of the c_properties concept to be a valid type or void
-*/
-
 template <detail::c_properties Properties = detail::empty_properties>
 class vertex_descriptor {
 public:
@@ -23,9 +14,9 @@ public:
 
     vertex_descriptor() = delete;
 
-    vertex_descriptor(const std::size_t id) : _id(id) {}
+    explicit vertex_descriptor(const std::size_t id) : _id(id) {}
 
-    vertex_descriptor(const std::size_t id, const properties_type& properties)
+    explicit vertex_descriptor(const std::size_t id, const properties_type& properties)
     requires(not std::is_same_v<properties_type, detail::empty_properties>)
     : _id(id), properties(properties) {}
 
@@ -57,12 +48,5 @@ private:
 
 template <detail::c_properties Properties = detail::empty_properties>
 using vertex = vertex_descriptor<Properties>;
-
-// TODO - add:
-// * is_incident_to(edge)
-// * is_incident_from(edge)
-// * is_incident_to(vertex, graph)
-// * is_incident_from(vertex, graph)
-// * are_incident(vertex, vertex, graph)
 
 } // namespace gl

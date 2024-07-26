@@ -24,10 +24,10 @@ struct test_edge_descriptor {
 TEST_CASE_FIXTURE(
     test_edge_descriptor, "is_directed() should return true only for edges with directed edge tag"
 ) {
-    edge_descriptor<vertex<>, directed_t> directed_edge{vd_1, vd_2};
+    directed_edge<vertex<>> directed_edge{vd_1, vd_2};
     CHECK(directed_edge.is_directed());
 
-    edge_descriptor<vertex<>, undirected_t> bidirectional_edge{vd_1, vd_2};
+    undirected_edge<vertex<>> bidirectional_edge{vd_1, vd_2};
     CHECK_FALSE(bidirectional_edge.is_directed());
 }
 
@@ -35,36 +35,67 @@ TEST_CASE_FIXTURE(
     test_edge_descriptor,
     "is_undirected() should return true only for edges with bidirectional edge tag"
 ) {
-    edge_descriptor<vertex<>, undirected_t> bidirectional_edge{vd_1, vd_2};
+    undirected_edge<vertex<>> bidirectional_edge{vd_1, vd_2};
     CHECK(bidirectional_edge.is_undirected());
 
-    edge_descriptor<vertex<>, directed_t> directed_edge{vd_1, vd_2};
+    directed_edge<vertex<>> directed_edge{vd_1, vd_2};
     CHECK_FALSE(directed_edge.is_undirected());
 }
 
-TEST_CASE_FIXTURE(
-    test_edge_descriptor,
-    "incident_vertices() should return the pair of vertices the edge was initialized with"
-) {
-    edge_descriptor<vertex<>> sut{vd_1, vd_2};
-
-    const auto& vertices = sut.incident_vertices();
-    CHECK_EQ(*vertices.first, *vd_1);
-    CHECK_EQ(*vertices.second, *vd_2);
-}
-
-TEST_CASE_TEMPLATE_DEFINE("incident_vertex() tests", EdgeType, parametric_edge_tag_template) {
+TEST_CASE_TEMPLATE_DEFINE("edge_tag-independent tests", EdgeType, parametric_edge_tag_template) {
     test_edge_descriptor fixture{};
 
     EdgeType sut{fixture.vd_1, fixture.vd_2};
 
-    SUBCASE("should return nullptr if input vertex is not incident with the edge") {
+    SUBCASE("incident_vertices should return the pair of vertices the edge was initialized with") {
+        const auto& vertices = sut.incident_vertices();
+        CHECK_EQ(*vertices.first, *fixture.vd_1);
+        CHECK_EQ(*vertices.second, *fixture.vd_2);
+    }
+
+    SUBCASE("first should return the first vertex descriptor the edge was initialized with") {
+        CHECK_EQ(*sut.first(), *fixture.vd_1);
+    }
+
+    SUBCASE("second should return the second vertex descriptor the edge was initialized with") {
+        CHECK_EQ(*sut.second(), *fixture.vd_2);
+    }
+
+    SUBCASE("incident_vertex should return nullptr if input vertex is not incident with the edge") {
         CHECK_FALSE(sut.incident_vertex(fixture.vd_3));
     }
 
-    SUBCASE("should return the vertex incident to the input vertex") {
+    SUBCASE("incident_vertex should return the vertex incident with the input vertex") {
         CHECK_EQ(*sut.incident_vertex(fixture.vd_1), *fixture.vd_2);
         CHECK_EQ(*sut.incident_vertex(fixture.vd_2), *fixture.vd_1);
+    }
+}
+
+TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_from tests") {
+    SUBCASE("[undirected_edge] should return true for both vertices") {
+        undirected_edge<vertex<>> sut{vd_1, vd_2};
+        CHECK(sut.is_incident_form(vd_1));
+        CHECK(sut.is_incident_form(vd_2));
+    }
+
+    SUBCASE("[directed_edge] should return true only for the first vertex") {
+        directed_edge<vertex<>> sut{vd_1, vd_2};
+        CHECK(sut.is_incident_form(vd_1));
+        CHECK_FALSE(sut.is_incident_form(vd_2));
+    }
+}
+
+TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_to tests") {
+    SUBCASE("[undirected_edge] should return true for both vertices") {
+        undirected_edge<vertex<>> sut{vd_1, vd_2};
+        CHECK(sut.is_incident_to(vd_1));
+        CHECK(sut.is_incident_to(vd_2));
+    }
+
+    SUBCASE("[directed_edge] should return true only for the second vertex") {
+        directed_edge<vertex<>> sut{vd_1, vd_2};
+        CHECK(sut.is_incident_to(vd_2));
+        CHECK_FALSE(sut.is_incident_to(vd_1));
     }
 }
 

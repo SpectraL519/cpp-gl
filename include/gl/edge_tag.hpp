@@ -1,6 +1,7 @@
 #pragma once
 
 #include "detail/concepts.hpp"
+#include "vertex_descriptor.hpp"
 
 namespace gl {
 
