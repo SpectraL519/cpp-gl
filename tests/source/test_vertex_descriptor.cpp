@@ -1,7 +1,7 @@
+#include "types.hpp"
+
 #include <doctest.h>
 #include <gl/vertex_descriptor.hpp>
-
-#include "types.hpp"
 
 using namespace gl;
 
