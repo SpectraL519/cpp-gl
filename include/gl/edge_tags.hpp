@@ -3,6 +3,8 @@
 #include "detail/concepts.hpp"
 #include "vertex_descriptor.hpp"
 
+#include <memory>
+
 namespace gl {
 
 struct directed_t;
@@ -27,6 +29,10 @@ struct directed_t {
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
+    using edge_ptr_type = std::unique_ptr<EdgeType>;
+
+    template <detail::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(std::same_as<typename EdgeType::directional_tag, type>)
     static bool is_incident_from(
         const EdgeType& edge, const typename EdgeType::vertex_type& vertex
     ) {
@@ -42,6 +48,10 @@ struct directed_t {
 
 struct undirected_t {
     using type = undirected_t;
+
+    template <detail::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(std::same_as<typename EdgeType::directional_tag, type>)
+    using edge_ptr_type = std::shared_ptr<EdgeType>;
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)

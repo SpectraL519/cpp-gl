@@ -32,4 +32,4 @@ jobs:
       - name: Test formatting
         shell: bash
         run: |
-          python3 scripts/format.py
+          python3 scripts/format.py --check
