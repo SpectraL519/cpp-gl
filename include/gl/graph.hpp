@@ -34,6 +34,14 @@ public:
         return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
     }
 
+    inline vertex_ptr_type& add_vertex(const vertex_properties_type& properties)
+    requires(not detail::is_default_properties_type_v<vertex_properties_type>)
+    {
+        return this->_vertices.emplace_back(
+            std::make_shared<vertex_type>(this->no_vertices(), properties)
+        );
+    }
+
     [[nodiscard]] inline std::size_t no_vertices() const {
         return this->_vertices.size();
     }

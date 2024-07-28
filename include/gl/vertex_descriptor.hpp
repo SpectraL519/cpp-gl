@@ -17,7 +17,7 @@ public:
     explicit vertex_descriptor(const std::size_t id) : _id(id) {}
 
     explicit vertex_descriptor(const std::size_t id, const properties_type& properties)
-    requires(not std::is_same_v<properties_type, detail::empty_properties>)
+    requires(not detail::is_default_properties_type_v<properties_type>)
     : _id(id), properties(properties) {}
 
     vertex_descriptor(const vertex_descriptor&) = default;

@@ -29,7 +29,7 @@ public:
     explicit edge_descriptor(vertex_type u, vertex_type v) : _vertices(u, v) {}
 
     explicit edge_descriptor(vertex_type u, vertex_type v, const properties_type& properties)
-    requires(not std::is_same_v<properties_type, detail::empty_properties>)
+    requires(not detail::is_default_properties_type_v<properties_type>)
     : _vertices(u, v), properties(properties) {}
 
     edge_descriptor(const edge_descriptor&) = default;

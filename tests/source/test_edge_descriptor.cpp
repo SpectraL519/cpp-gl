@@ -1,3 +1,5 @@
+#include "types.hpp"
+
 #include <doctest.h>
 #include <gl/edge_descriptor.hpp>
 
@@ -8,11 +10,6 @@ namespace {
 constexpr std::size_t vertex_id_1 = 1111ull;
 constexpr std::size_t vertex_id_2 = 2222ull;
 constexpr std::size_t vertex_id_3 = 3333ull;
-
-struct used_property {
-    bool operator==(const used_property&) const = default;
-    bool used;
-};
 
 } // namespace
 
@@ -52,13 +49,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     test_edge_descriptor fixture;
 
-    const used_property used{true};
+    const edge_types::used_property used{true};
     const EdgeType sut{fixture.vd_1, fixture.vd_2, used};
 
     CHECK_EQ(sut.properties, used);
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(properties_edge_directional_tag_template, directed_edge<vertex<>, used_property>, undirected_edge<vertex<>, used_property>);
+// TODO: fix .clang-format to split such lines
+TEST_CASE_TEMPLATE_INSTANTIATE(properties_edge_directional_tag_template, directed_edge<vertex<>, edge_types::used_property>, undirected_edge<vertex<>, edge_types::used_property>);
 
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", EdgeType, edge_directional_tag_template
