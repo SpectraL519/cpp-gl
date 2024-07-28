@@ -2,6 +2,8 @@
 
 #include "graph_traits.hpp"
 
+#include <algorithm>
+
 namespace gl {
 
 template <detail::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
@@ -20,7 +22,7 @@ public:
 
     graph() = default;
 
-    // TODO: graph(no_vertices)
+    graph(const std::size_t no_vertices) : _vertices(graph::_generate_vertices(no_vertices)) {}
 
     graph(const graph&) = default;
     graph(graph&&) = default;
@@ -47,6 +49,14 @@ public:
     }
 
 private:
+    static std::vector<vertex_ptr_type> _generate_vertices(const std::size_t no_vertices) {
+        return std::views::iota(0ull, no_vertices)
+             | std::views::transform([](const std::size_t vertex_id) {
+                   return std::make_shared<vertex>(vertex_id);
+               })
+             | std::ranges::to<std::vector>();
+    }
+
     std::vector<vertex_ptr_type> _vertices = {};
 };
 
