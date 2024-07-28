@@ -19,11 +19,13 @@ struct graph_traits {
     using vertex_ptr_type = std::shared_ptr<vertex_type>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
-    using edge_directional_tag = typename edge_type::directional_tag;
-    using edge_type = edge_descriptor<vertex_type, EdgeDirectionalTag, EdgeProperties>;
+    using edge_directional_tag = EdgeDirectionalTag;
+    using edge_type = edge_descriptor<vertex_type, edge_directional_tag, EdgeProperties>;
     using edge_ptr_type = typename edge_directional_tag::edge_ptr_type<edge_type>;
     using edge_properties_type = typename edge_type::properties_type;
 };
+
+namespace traits {
 
 template <detail::c_instantiation_of<graph_traits> GraphTraits>
 using vertex_type = typename GraphTraits::vertex_type;
@@ -45,5 +47,7 @@ using edge_ptr_type = typename GraphTraits::edge_ptr_type;
 
 template <detail::c_instantiation_of<graph_traits> GraphTraits>
 using edge_properties_type = typename GraphTraits::edge_properties_type;
+
+} // namespace traits
 
 } // namespace gl
