@@ -1,9 +1,9 @@
 #pragma once
 
 #include "detail/concepts.hpp"
-#include "types/types.hpp"
-#include "types/default_types.hpp"
 #include "edge_tags.hpp"
+#include "types/default_types.hpp"
+#include "types/types.hpp"
 
 #include <compare>
 

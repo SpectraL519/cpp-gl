@@ -1,5 +1,5 @@
-#include "types.hpp"
 #include "common_constants.hpp"
+#include "types.hpp"
 
 #include <doctest.h>
 #include <gl/graph.hpp>
@@ -14,13 +14,12 @@ struct test_graph {
     graph<> sut;
 };
 
-TEST_CASE_FIXTURE(
-    test_graph, "graph should be initialized with no vertices by default"
-) {
+TEST_CASE_FIXTURE(test_graph, "graph should be initialized with no vertices by default") {
     CHECK_EQ(sut.no_vertices(), zero_vertices);
 }
 
-TEST_CASE("graph constructed with no_vertices parameter should properly initialize the vertex list") {
+TEST_CASE("graph constructed with no_vertices parameter should properly initialize the vertex list"
+) {
     graph<> sut{no_vertices};
     CHECK_EQ(sut.no_vertices(), no_vertices);
 

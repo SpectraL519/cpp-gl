@@ -1,5 +1,5 @@
-#include "types.hpp"
 #include "common_constants.hpp"
+#include "types.hpp"
 
 #include <doctest.h>
 #include <gl/vertex_descriptor.hpp>

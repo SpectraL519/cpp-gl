@@ -1,8 +1,8 @@
 #pragma once
 
 #include "detail/concepts.hpp"
-#include "types/default_types.hpp"
 #include "edge_tags.hpp"
+#include "types/default_types.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>
@@ -49,7 +49,8 @@ public:
         return std::is_same_v<directional_tag, undirected_t>;
     }
 
-    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& incident_vertices() const {
+    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& incident_vertices(
+    ) const {
         return this->_vertices;
     }
 

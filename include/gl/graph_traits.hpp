@@ -1,11 +1,10 @@
 #pragma once
 
 #include "detail/concepts.hpp"
-#include "types/default_types.hpp"
 #include "edge_descriptor.hpp"
 #include "edge_tags.hpp"
+#include "types/default_types.hpp"
 #include "vertex_descriptor.hpp"
-
 
 #include <memory>
 

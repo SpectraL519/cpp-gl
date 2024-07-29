@@ -43,7 +43,9 @@ struct directed_t {
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
-    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex) {
+    static bool is_incident_to(
+        const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
+    ) {
         return *vertex == *edge._vertices.second;
     }
 };
@@ -65,7 +67,9 @@ struct undirected_t {
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
-    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex) {
+    static bool is_incident_to(
+        const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
+    ) {
         return edge.incident_vertex(vertex) != nullptr;
     }
 };
