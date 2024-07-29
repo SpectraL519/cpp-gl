@@ -22,7 +22,12 @@ public:
 
     graph() = default;
 
-    graph(const std::size_t no_vertices) : _vertices(graph::_generate_vertices(no_vertices)) {}
+    graph(const std::size_t no_vertices) : _vertices(no_vertices) {
+        std::ranges::generate(this->_vertices, []() {
+            static std::size_t vertex_id = 0ull;
+            return std::make_shared<vertex_type>(vertex_id++);
+        });
+    }
 
     graph(const graph&) = default;
     graph(graph&&) = default;
@@ -50,11 +55,15 @@ public:
 
 private:
     static std::vector<vertex_ptr_type> _generate_vertices(const std::size_t no_vertices) {
+        /*
+        TODO: run benchmarks and select best solution for gcc and clang compilers
+        - Fastest solution for gcc with -O3:
         return std::views::iota(0ull, no_vertices)
              | std::views::transform([](const std::size_t vertex_id) {
                    return std::make_shared<vertex>(vertex_id);
                })
              | std::ranges::to<std::vector>();
+        */
     }
 
     std::vector<vertex_ptr_type> _vertices = {};

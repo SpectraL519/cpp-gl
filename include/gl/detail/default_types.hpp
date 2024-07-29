@@ -4,6 +4,7 @@
 
 namespace gl::detail {
 
+// TODO: move to gl::types
 struct empty_properties {};
 
 template <c_properties Properties>
