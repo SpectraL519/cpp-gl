@@ -7,9 +7,9 @@ using namespace gl;
 
 namespace {
 
-constexpr std::size_t vertex_id_1 = 1111ull;
-constexpr std::size_t vertex_id_2 = 2222ull;
-constexpr std::size_t vertex_id_3 = 3333ull;
+constexpr types::id_type vertex_id_1 = 1111ull;
+constexpr types::id_type vertex_id_2 = 2222ull;
+constexpr types::id_type vertex_id_3 = 3333ull;
 
 } // namespace
 

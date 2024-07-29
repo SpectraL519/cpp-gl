@@ -25,7 +25,7 @@ template <
 class edge_descriptor;
 
 struct directed_t {
-    using type = directed_t;
+    using type = std::type_identity_t<directed_t>;
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
@@ -34,20 +34,20 @@ struct directed_t {
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
     static bool is_incident_from(
-        const EdgeType& edge, const typename EdgeType::vertex_type& vertex
+        const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return *vertex == *edge._vertices.first;
     }
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
-    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_type& vertex) {
+    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex) {
         return *vertex == *edge._vertices.second;
     }
 };
 
 struct undirected_t {
-    using type = undirected_t;
+    using type = std::type_identity_t<undirected_t>;
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
@@ -56,14 +56,14 @@ struct undirected_t {
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
     static bool is_incident_from(
-        const EdgeType& edge, const typename EdgeType::vertex_type& vertex
+        const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return edge.incident_vertex(vertex) != nullptr;
     }
 
     template <detail::c_instantiation_of<edge_descriptor> EdgeType>
     requires(std::same_as<typename EdgeType::directional_tag, type>)
-    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_type& vertex) {
+    static bool is_incident_to(const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex) {
         return edge.incident_vertex(vertex) != nullptr;
     }
 };

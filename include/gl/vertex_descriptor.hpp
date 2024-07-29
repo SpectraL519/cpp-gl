@@ -1,22 +1,23 @@
 #pragma once
 
 #include "detail/concepts.hpp"
-#include "detail/default_types.hpp"
+#include "types/types.hpp"
+#include "types/default_types.hpp"
 
 #include <compare>
 
 namespace gl {
 
-template <detail::c_properties Properties = detail::empty_properties>
+template <detail::c_properties Properties = types::empty_properties>
 class vertex_descriptor {
 public:
     using properties_type = Properties;
 
     vertex_descriptor() = delete;
 
-    explicit vertex_descriptor(const std::size_t id) : _id(id) {}
+    explicit vertex_descriptor(const types::id_type id) : _id(id) {}
 
-    explicit vertex_descriptor(const std::size_t id, const properties_type& properties)
+    explicit vertex_descriptor(const types::id_type id, const properties_type& properties)
     requires(not detail::is_default_properties_type_v<properties_type>)
     : _id(id), properties(properties) {}
 
@@ -36,17 +37,17 @@ public:
         return this->_id <=> other._id;
     }
 
-    [[nodiscard]] inline std::size_t id() const {
+    [[nodiscard]] inline types::id_type id() const {
         return this->_id;
     }
 
     properties_type properties = properties_type{};
 
 private:
-    std::size_t _id;
+    types::id_type _id;
 };
 
-template <detail::c_properties Properties = detail::empty_properties>
+template <detail::c_properties Properties = types::empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
 } // namespace gl

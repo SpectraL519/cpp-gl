@@ -7,8 +7,8 @@ using namespace gl;
 
 namespace {
 
-constexpr std::size_t id_1 = 1111ull;
-constexpr std::size_t id_2 = 2222ull;
+constexpr types::id_type id_1 = 1111ull;
+constexpr types::id_type id_2 = 2222ull;
 
 } // namespace
 

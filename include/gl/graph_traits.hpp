@@ -1,10 +1,11 @@
 #pragma once
 
 #include "detail/concepts.hpp"
-#include "detail/default_types.hpp"
+#include "types/default_types.hpp"
 #include "edge_descriptor.hpp"
 #include "edge_tags.hpp"
 #include "vertex_descriptor.hpp"
+
 
 #include <memory>
 
@@ -12,8 +13,8 @@ namespace gl {
 
 template <
     detail::c_edge_directional_tag EdgeDirectionalTag = directed_t,
-    detail::c_properties VertexProperties = detail::empty_properties,
-    detail::c_properties EdgeProperties = detail::empty_properties>
+    detail::c_properties VertexProperties = types::empty_properties,
+    detail::c_properties EdgeProperties = types::empty_properties>
 struct graph_traits {
     using vertex_type = vertex_descriptor<VertexProperties>;
     using vertex_ptr_type = std::shared_ptr<vertex_type>;

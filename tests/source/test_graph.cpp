@@ -7,8 +7,8 @@ using namespace gl;
 
 namespace {
 
-constexpr std::size_t no_vertices = 0ull;
-constexpr std::size_t one_vertex = 1ull;
+constexpr types::size_type no_vertices = 0ull;
+constexpr types::size_type one_vertex = 1ull;
 
 } // namespace
 
@@ -29,9 +29,9 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_graph_default_traits, "add_vertex should return a vertex_descriptor with an incremented id"
 ) {
-    constexpr std::size_t target_no_vertices = 3ull;
+    constexpr types::size_type target_no_vertices = 3ull;
 
-    for (std::size_t v_id = no_vertices; v_id < target_no_vertices; v_id++) {
+    for (types::id_type v_id = no_vertices; v_id < target_no_vertices; v_id++) {
         const auto& vertex = sut.add_vertex();
         CHECK_EQ(vertex->id(), v_id);
         CHECK_EQ(sut.no_vertices(), v_id + one_vertex);
