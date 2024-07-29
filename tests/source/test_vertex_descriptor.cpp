@@ -1,36 +1,30 @@
 #include "types.hpp"
+#include "common_constants.hpp"
 
 #include <doctest.h>
 #include <gl/vertex_descriptor.hpp>
 
 using namespace gl;
 
-namespace {
-
-constexpr types::id_type id_1 = 1111ull;
-constexpr types::id_type id_2 = 2222ull;
-
-} // namespace
-
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_vertex_descriptor");
 
 TEST_CASE("id() should return the correct vertex id") {
-    const vertex_descriptor sut{id_1};
-    CHECK_EQ(sut.id(), id_1);
+    const vertex_descriptor sut{vertex_id_1};
+    CHECK_EQ(sut.id(), vertex_id_1);
 }
 
 TEST_CASE("properties should be properly initialized") {
     const vertex_types::visited_property visited{true};
-    const vertex_descriptor<vertex_types::visited_property> sut{id_1, visited};
+    const vertex_descriptor<vertex_types::visited_property> sut{vertex_id_1, visited};
 
     CHECK_EQ(sut.properties, visited);
 }
 
 TEST_CASE("vertex_descriptor objects should be compared by id") {
-    const vertex_descriptor vd_1{id_1};
-    const vertex_descriptor vd_2{id_2};
+    const vertex_descriptor vd_1{vertex_id_1};
+    const vertex_descriptor vd_2{vertex_id_2};
 
     REQUIRE_NE(vd_1, vd_2);
     CHECK_EQ(vd_1, vd_1);

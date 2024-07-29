@@ -4,6 +4,7 @@
 #include "types/types.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 namespace gl {
 
@@ -24,8 +25,8 @@ public:
     graph() = default;
 
     graph(const types::size_type no_vertices) : _vertices(no_vertices) {
-        std::ranges::generate(this->_vertices, []() {
-            static types::id_type vertex_id = 0ull;
+        types::id_type vertex_id = 0ull;
+        std::ranges::generate(this->_vertices, [&vertex_id]() {
             return std::make_shared<vertex_type>(vertex_id++);
         });
     }
@@ -50,8 +51,24 @@ public:
         );
     }
 
+    inline void remove_vertex(const vertex_ptr_type& vertex) {
+        const auto vertex_id = vertex->id();
+        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
+
+        // align ids of remainig vertices
+        std::for_each(
+            std::next(std::begin(this->_vertices), vertex_id),
+            this->_vertices.end(),
+            [](auto& v) { v->_set_id(v->id() - 1ull); }
+        );
+    }
+
     [[nodiscard]] inline types::size_type no_vertices() const {
         return this->_vertices.size();
+    }
+
+    [[nodiscard]] inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
+        return this->_vertices.at(vertex_id);
     }
 
 private:

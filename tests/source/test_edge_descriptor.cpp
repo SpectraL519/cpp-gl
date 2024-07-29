@@ -1,17 +1,10 @@
 #include "types.hpp"
+#include "common_constants.hpp"
 
 #include <doctest.h>
 #include <gl/edge_descriptor.hpp>
 
 using namespace gl;
-
-namespace {
-
-constexpr types::id_type vertex_id_1 = 1111ull;
-constexpr types::id_type vertex_id_2 = 2222ull;
-constexpr types::id_type vertex_id_3 = 3333ull;
-
-} // namespace
 
 namespace gl_testing {
 
