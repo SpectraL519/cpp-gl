@@ -2,12 +2,10 @@
 
 #include <doctest.h>
 
+#include <forward_list>
+#include <list>
 #include <numeric>
 #include <vector>
-#include <list>
-#include <forward_list>
-
-#include <iostream>
 
 namespace gl_testing {
 
@@ -29,9 +27,7 @@ struct test_iterator_range_common {
     lib_t::iterator_range<iterator_type> sut;
 };
 
-TEST_CASE_TEMPLATE_DEFINE(
-    "common iterator_range tests", ContainerType, container_type_template
-) {
+TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, container_type_template) {
     using fixture_type = test_iterator_range_common<ContainerType>;
     using iterator_type = typename fixture_type::iterator_type;
 
@@ -73,9 +69,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     container_type_template,
-    std::vector<std::size_t>,       // random access iterator
-    std::list<std::size_t>,         // bidirectional iterator
-    std::forward_list<std::size_t>  // forward iterator
+    std::vector<std::size_t>, // random access iterator
+    std::list<std::size_t>, // bidirectional iterator
+    std::forward_list<std::size_t> // forward iterator
 );
 
 TEST_SUITE_END(); // test_iterator_range
