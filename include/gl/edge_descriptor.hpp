@@ -3,6 +3,7 @@
 #include "detail/concepts.hpp"
 #include "edge_tags.hpp"
 #include "types/default_types.hpp"
+#include "types/types.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>
@@ -49,7 +50,7 @@ public:
         return std::is_same_v<directional_tag, undirected_t>;
     }
 
-    [[nodiscard]] inline const std::pair<vertex_ptr_type, vertex_ptr_type>& incident_vertices(
+    [[nodiscard]] inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices(
     ) const {
         return this->_vertices;
     }
@@ -83,7 +84,7 @@ public:
     properties_type properties = {};
 
 private:
-    std::pair<vertex_ptr_type, vertex_ptr_type> _vertices;
+    types::homogeneous_pair<vertex_ptr_type> _vertices;
 };
 
 template <

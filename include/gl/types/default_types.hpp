@@ -2,11 +2,13 @@
 
 #include "gl/detail/concepts.hpp"
 
+#include <variant>
+
 namespace gl {
 
 namespace types {
 
-struct empty_properties {};
+using empty_properties = std::monostate;
 
 } // namespace types
 
