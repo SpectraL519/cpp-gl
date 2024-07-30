@@ -4,12 +4,15 @@
 namespace gl {
 
 namespace detail {}
+
 namespace types {}
 
 } // namespace gl
 
 namespace gl_testing {
-    namespace lib = gl;
-    namespace lib_d = lib::detail;
-    namespace lib_t = lib::types;
-}
+
+namespace lib = gl;
+namespace lib_d = lib::detail;
+namespace lib_t = lib::types;
+
+} // namespace gl_testing

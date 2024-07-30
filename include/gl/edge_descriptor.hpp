@@ -50,8 +50,7 @@ public:
         return std::is_same_v<directional_tag, undirected_t>;
     }
 
-    [[nodiscard]] inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices(
-    ) const {
+    [[nodiscard]] inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
         return this->_vertices;
     }
 
