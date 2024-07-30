@@ -13,6 +13,3 @@ struct used_property {
 };
 
 } // namespace gl_testing::types
-
-// namespace alias used to avoid name collisions in tests
-namespace test_types = gl_testing::types;
