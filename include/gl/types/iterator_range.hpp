@@ -24,8 +24,8 @@ public:
 
     iterator_range(iterator_type begin, iterator_type end) : _range{begin, end} {}
 
-    // template <std::ranges::range Range>
-    // iterator_range(Range& range) : _range{std::ranges::begin(range), std::ranges::end(range)} {}
+    template <std::ranges::range Range>
+    iterator_range(Range& range) : _range{std::ranges::begin(range), std::ranges::end(range)} {}
 
     ~iterator_range() = default;
 

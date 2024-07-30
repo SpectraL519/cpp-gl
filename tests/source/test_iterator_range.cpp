@@ -52,6 +52,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(range_element, element++);
     }
 
+    SUBCASE("should properly initialize the begin and end iterator for a range") {
+        lib_t::iterator_range<iterator_type> range_constructed_sut{container};
+
+        CHECK_EQ(sut.begin(), std::ranges::begin(container));
+        CHECK_EQ(sut.end(), std::ranges::end(container));
+    }
+
     SUBCASE("distance should return the distance between begin and end iterators") {
         CHECK_EQ(sut.distance(), fixture_type::size);
     }
@@ -64,7 +71,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 }
 
-// TODO: fix .clang-format to split such lines
 TEST_CASE_TEMPLATE_INSTANTIATE(
     container_type_template,
     std::vector<std::size_t>,       // random access iterator
