@@ -2,7 +2,6 @@
 
 #include <doctest.h>
 
-#include <format>
 #include <forward_list>
 #include <list>
 #include <numeric>
@@ -82,7 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
     SUBCASE("advance_begin should move the begin iterator by the the specified offset") {
         for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            SUBCASE(std::format("n = {}", n).c_str()) {
+            SUBCASE(("n = " + std::to_string(n)).c_str()) {
                 iterator_type it = std::ranges::next(container.begin(), n);
 
                 sut.advance_begin(n);
@@ -98,7 +97,7 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
         for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
             const auto neg_n = -n;
-            SUBCASE(std::format("n = {}", neg_n).c_str()) {
+            SUBCASE(("n = " + std::to_string(neg_n)).c_str()) {
                 iterator_type it = std::ranges::next(container.end(), neg_n);
 
                 narrow_range.advance_begin(neg_n);
@@ -112,7 +111,7 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
         lib_t::iterator_range<iterator_type> narrow_range{container.begin(), container.begin()};
 
         for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            SUBCASE(std::format("n = {}", n).c_str()) {
+            SUBCASE(("n = " + std::to_string(n)).c_str()) {
                 iterator_type it = std::ranges::next(container.begin(), n);
 
                 narrow_range.advance_end(n);
@@ -126,7 +125,7 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
             "difference") {
         for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
             const auto neg_n = -n;
-            SUBCASE(std::format("n = {}", neg_n).c_str()) {
+            SUBCASE(("n = " + std::to_string(neg_n)).c_str()) {
                 iterator_type it = std::ranges::next(container.end(), neg_n);
 
                 sut.advance_end(neg_n);
