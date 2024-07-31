@@ -77,13 +77,13 @@ BracedInitializerIndentWidth: 4
 
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^".*"'            # Internal includes inside double quotes
+  - Regex: '^".*"'                # Internal includes inside double quotes
     Priority: 1
-  - Regex: '^<[^>]+\.h(pp)?>' # Internal includes inside angle brackets
+  - Regex: '^<gl/[^>]+\.h(pp)?>'  # Internal includes inside angle brackets
     Priority: 2
-  - Regex: '^(?!<|").*'       # External non-standard includes
+  - Regex: '<.*\.h(pp)?>'         # External non-standard includes
     Priority: 3
-  - Regex: '<.*>'             # Standard library includes
+  - Regex: '<.*>'                 # Standard library includes
     Priority: 4
 SortIncludes:          CaseSensitive
 SortUsingDeclarations: LexicographicNumeric

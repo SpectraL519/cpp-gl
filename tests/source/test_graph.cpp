@@ -1,8 +1,9 @@
 #include "constants.hpp"
 #include "types.hpp"
 
-#include <doctest.h>
 #include <gl/graph.hpp>
+
+#include <doctest.h>
 
 namespace gl_testing {
 
