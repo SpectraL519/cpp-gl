@@ -7,14 +7,6 @@
 
 namespace gl::types {
 
-/*
-TODO:
-* constructor(container/range)
-* assignment operators
-* advance/retreat_begin/end
-* comparison operators
-*/
-
 template <std::forward_iterator Iterator>
 class iterator_range {
 public:
@@ -22,10 +14,11 @@ public:
     using difference_type = std::ptrdiff_t;
     using value_type = std::remove_reference_t<typename iterator_type::value_type>;
 
-    iterator_range(iterator_type begin, iterator_type end) : _range{begin, end} {}
+    explicit iterator_range(iterator_type begin, iterator_type end) : _range(begin, end) {}
 
     template <std::ranges::range Range>
-    iterator_range(Range& range) : _range{std::ranges::begin(range), std::ranges::end(range)} {}
+    explicit iterator_range(Range& range)
+    : _range(std::ranges::begin(range), std::ranges::end(range)) {}
 
     iterator_range(const iterator_range&) = default;
     iterator_range(iterator_range&&) = default;
@@ -50,7 +43,15 @@ public:
     }
 
     [[nodiscard]] inline value_type& get(types::size_type n) const {
-        return *std::next(this->begin(), n);
+        return *std::ranges::next(this->begin(), n);
+    }
+
+    inline void advance_begin(difference_type n) {
+        std::ranges::advance(this->_range.first, n);
+    }
+
+    inline void advance_end(difference_type n) {
+        std::ranges::advance(this->_range.second, n);
     }
 
 private:

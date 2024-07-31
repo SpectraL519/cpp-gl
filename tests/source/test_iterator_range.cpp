@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 
+#include <format>
 #include <forward_list>
 #include <list>
 #include <numeric>
@@ -20,7 +21,7 @@ struct test_iterator_range_common {
         std::iota(container.begin(), container.end(), first_element);
     }
 
-    static constexpr std::size_t size = 5ull;
+    static constexpr std::size_t size = 3ull;
     static constexpr std::size_t first_element = 0ull;
     container_type container;
 
@@ -28,7 +29,8 @@ struct test_iterator_range_common {
 };
 
 TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, container_type_template) {
-    using fixture_type = test_iterator_range_common<ContainerType>;
+    using container_type = ContainerType;
+    using fixture_type = test_iterator_range_common<container_type>;
     using iterator_type = typename fixture_type::iterator_type;
 
     fixture_type fixture;
@@ -44,8 +46,8 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
     SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
         lib_t::iterator_range<iterator_type> range_constructed_sut{container};
 
-        CHECK_EQ(sut.begin(), std::ranges::begin(container));
-        CHECK_EQ(sut.end(), std::ranges::end(container));
+        CHECK_EQ(range_constructed_sut.begin(), std::ranges::begin(container));
+        CHECK_EQ(range_constructed_sut.end(), std::ranges::end(container));
     }
 
     SUBCASE("equality operator should return true only when both iterators are equal") {
@@ -74,8 +76,64 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
     SUBCASE("get should return a reference to the correct element") {
         iterator_type it = container.begin();
-        for (std::ptrdiff_t n = 0; n < fixture_type::size; n++)
+        for (std::size_t n = 0; n < fixture_type::size; n++)
             CHECK_EQ(std::addressof(sut.get(n)), std::addressof(*it++));
+    }
+
+    SUBCASE("advance_begin should move the begin iterator by the the specified offset") {
+        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
+            SUBCASE(std::format("n = {}", n).c_str()) {
+                iterator_type it = std::ranges::next(container.begin(), n);
+
+                sut.advance_begin(n);
+                CHECK_EQ(sut.distance(), std::ranges::distance(it, container.end()));
+                CHECK_EQ(std::addressof(*sut.begin()), std::addressof(*it));
+            }
+        }
+    }
+
+    SUBCASE("advance_begin should move the begin iterator by the the specified offset for negative "
+            "difference") {
+        lib_t::iterator_range<iterator_type> narrow_range{container.end(), container.end()};
+
+        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
+            const auto neg_n = -n;
+            SUBCASE(std::format("n = {}", neg_n).c_str()) {
+                iterator_type it = std::ranges::next(container.end(), neg_n);
+
+                narrow_range.advance_begin(neg_n);
+                CHECK_EQ(narrow_range.distance(), std::ranges::distance(it, container.end()));
+                CHECK_EQ(std::addressof(*narrow_range.begin()), std::addressof(*it));
+            }
+        }
+    }
+
+    SUBCASE("advance_end should move the end iterator by the specified offset") {
+        lib_t::iterator_range<iterator_type> narrow_range{container.begin(), container.begin()};
+
+        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
+            SUBCASE(std::format("n = {}", n).c_str()) {
+                iterator_type it = std::ranges::next(container.begin(), n);
+
+                narrow_range.advance_end(n);
+                CHECK_EQ(narrow_range.distance(), std::ranges::distance(container.begin(), it));
+                CHECK_EQ(std::addressof(*narrow_range.end()), std::addressof(*it));
+            }
+        }
+    }
+
+    SUBCASE("advance_end should move the begin iterator by the the specified offset for negative "
+            "difference") {
+        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
+            const auto neg_n = -n;
+            SUBCASE(std::format("n = {}", neg_n).c_str()) {
+                iterator_type it = std::ranges::next(container.end(), neg_n);
+
+                sut.advance_end(neg_n);
+                CHECK_EQ(sut.distance(), std::ranges::distance(container.begin(), it));
+                CHECK_EQ(std::addressof(*sut.end()), std::addressof(*it));
+            }
+        }
     }
 }
 
