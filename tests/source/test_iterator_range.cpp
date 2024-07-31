@@ -41,18 +41,31 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
         CHECK_EQ(sut.end(), container.end());
     }
 
+    SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
+        lib_t::iterator_range<iterator_type> range_constructed_sut{container};
+
+        CHECK_EQ(sut.begin(), std::ranges::begin(container));
+        CHECK_EQ(sut.end(), std::ranges::end(container));
+    }
+
+    SUBCASE("equality operator should return true only when both iterators are equal") {
+        lib_t::iterator_range<iterator_type> range{sut};
+        REQUIRE_EQ(sut, range);
+
+        range = lib_t::iterator_range<iterator_type>{std::next(sut.begin()), sut.end()};
+        CHECK_NE(sut, range);
+
+        range = lib_t::iterator_range<iterator_type>{
+            sut.begin(), std::next(sut.begin(), sut.distance() - 1)
+        };
+        CHECK_NE(sut, range);
+    }
+
     SUBCASE("should be compatible with range based loops") {
         std::size_t element = fixture_type::first_element;
 
         for (const std::size_t range_element : sut)
             CHECK_EQ(range_element, element++);
-    }
-
-    SUBCASE("should properly initialize the begin and end iterator for a range") {
-        lib_t::iterator_range<iterator_type> range_constructed_sut{container};
-
-        CHECK_EQ(sut.begin(), std::ranges::begin(container));
-        CHECK_EQ(sut.end(), std::ranges::end(container));
     }
 
     SUBCASE("distance should return the distance between begin and end iterators") {
@@ -61,9 +74,8 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
     SUBCASE("get should return a reference to the correct element") {
         iterator_type it = container.begin();
-
-        for (std::size_t i = 0; i < fixture_type::size; i++)
-            CHECK_EQ(std::addressof(sut.get(i)), std::addressof(*it++));
+        for (std::ptrdiff_t n = 0; n < fixture_type::size; n++)
+            CHECK_EQ(std::addressof(sut.get(n)), std::addressof(*it++));
     }
 }
 

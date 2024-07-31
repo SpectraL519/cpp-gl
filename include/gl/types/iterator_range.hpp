@@ -10,9 +10,9 @@ namespace gl::types {
 /*
 TODO:
 * constructor(container/range)
+* assignment operators
 * advance/retreat_begin/end
 * comparison operators
-* std::(ranges::)begin overloads
 */
 
 template <std::forward_iterator Iterator>
@@ -27,7 +27,15 @@ public:
     template <std::ranges::range Range>
     iterator_range(Range& range) : _range{std::ranges::begin(range), std::ranges::end(range)} {}
 
+    iterator_range(const iterator_range&) = default;
+    iterator_range(iterator_range&&) = default;
+
+    iterator_range& operator=(const iterator_range&) = default;
+    iterator_range& operator=(iterator_range&&) = default;
+
     ~iterator_range() = default;
+
+    bool operator==(const iterator_range&) const = default;
 
     [[nodiscard]] inline iterator_type begin() const {
         return this->_range.first;
@@ -41,8 +49,7 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] inline value_type& get(difference_type n) const {
-        // TODO: if n < 0: std::next(end, n) ?
+    [[nodiscard]] inline value_type& get(types::size_type n) const {
         return *std::next(this->begin(), n);
     }
 
