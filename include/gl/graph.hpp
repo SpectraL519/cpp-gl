@@ -24,7 +24,7 @@ public:
 
     graph() = default;
 
-    graph(const types::size_type no_vertices) : _vertices{no_vertices} {
+    graph(const types::size_type no_vertices) : _vertices(no_vertices) {
         types::id_type vertex_id = 0ull;
         std::ranges::generate(this->_vertices, [&vertex_id]() {
             return std::make_shared<vertex_type>(vertex_id++);
