@@ -5,7 +5,9 @@
 #include <iterator>
 #include <ranges>
 
-namespace gl::types {
+namespace gl {
+
+namespace types {
 
 template <std::forward_iterator Iterator>
 class iterator_range {
@@ -58,4 +60,20 @@ private:
     homogeneous_pair<iterator_type> _range;
 };
 
-} // namespace gl::types
+} // namespace types
+
+template <std::forward_iterator Iterator>
+[[nodiscard]] inline types::iterator_range<Iterator> make_iterator_range(
+    Iterator begin, Iterator end
+) {
+    return types::iterator_range{begin, end};
+}
+
+template <std::ranges::range Range>
+[[nodiscard]] inline types::iterator_range<typename Range::iterator> make_iterator_range(
+    Range& range
+) {
+    return types::iterator_range{std::ranges::begin(range), std::ranges::end(range)};
+}
+
+} // namespace gl

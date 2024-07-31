@@ -134,6 +134,17 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
             }
         }
     }
+
+    SUBCASE("make_iterator_range should return a properly initialized iterator_range") {
+        const auto range = lib::make_iterator_range(container.begin(), container.end());
+        CHECK_EQ(range, sut);
+    }
+
+    SUBCASE("make_iterator_range should return an iterator_range properly initialized with the "
+            "container") {
+        const auto range = lib::make_iterator_range(container);
+        CHECK_EQ(range, sut);
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
