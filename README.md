@@ -126,9 +126,14 @@ You can format the code manually using `clang-format-18` or you can use the prep
 
 To format the code run the following:
 ```shell
-python scripts/format.py
+python scripts/format.py (--check)
 ```
-To inspect the script's options run:
+
+The script allows formatting all files modified since the last pushed commit with the `-m` or `--modified-files` flag.
+
+The remaining options are: search paths, file patterns, exclude paths.
+
+To inspect the all script's options and usage run:
 ```shell
 python scripts/format.py --help
 ```
