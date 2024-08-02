@@ -23,10 +23,11 @@ endif()
 add_executable(run ${SOURCES})
 set_target_properties(run PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
-    CXX_STANDARD 20
+    CXX_STANDARD ${CMAKE_CXX_STANDARD}
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )
 target_include_directories(run PRIVATE ${INCLUDE_DIRS})
 target_compile_options(run PRIVATE ${CMAKE_CXX_FLAGS})
+target_compile_definitions(run PRIVATE GL_TESTING)
 target_link_libraries(run PRIVATE cpp-gl)

@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 
+#include <algorithm>
 #include <forward_list>
 #include <list>
 #include <numeric>
@@ -40,6 +41,11 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
     SUBCASE("should properly initialze the begin and end iterators") {
         CHECK_EQ(sut.begin(), container.begin());
         CHECK_EQ(sut.end(), container.end());
+
+#if __cplusplus >= 202302L
+        CHECK_EQ(sut.cbegin(), container.cbegin());
+        CHECK_EQ(sut.cend(), container.cend());
+#endif
     }
 
     SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
@@ -47,6 +53,11 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
         CHECK_EQ(range_constructed_sut.begin(), std::ranges::begin(container));
         CHECK_EQ(range_constructed_sut.end(), std::ranges::end(container));
+
+#if __cplusplus >= 202302L
+        CHECK_EQ(range_constructed_sut.cbegin(), std::ranges::cbegin(container));
+        CHECK_EQ(range_constructed_sut.cend(), std::ranges::cend(container));
+#endif
     }
 
     SUBCASE("equality operator should return true only when both iterators are equal") {
@@ -67,6 +78,18 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
 
         for (const std::size_t range_element : sut)
             CHECK_EQ(range_element, element++);
+    }
+
+    SUBCASE("should be compatible with std functions") {
+        CHECK(std::equal(std::begin(sut), std::end(sut), container.begin()));
+
+#if __cplusplus >= 202302L
+        CHECK(std::equal(std::cbegin(sut), std::cend(sut), container.cbegin()));
+#endif
+    }
+
+    SUBCASE("should be compatible with std::ranges functions") {
+        CHECK(std::ranges::equal(sut, container));
     }
 
     SUBCASE("distance should return the distance between begin and end iterators") {
