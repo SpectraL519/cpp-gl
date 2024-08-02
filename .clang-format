@@ -174,8 +174,8 @@ IntegerLiteralSeparator:
   Binary:           4
   BinaryMinDigits:  6
   Decimal:          3
-  DecimalMinDigits: 5
-  Hex:              2
+  DecimalMinDigits: 7
+  Hex:              4
   HexMinDigits:     6
 
 Cpp11BracedListStyle: true

@@ -16,6 +16,15 @@ project(cpp-gl
 
 option(BUILD_TESTS "Build project tests" ON)
 
+# Set the proper cxx standard
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
+elseif(CMAKE_CXX_STANDARD LESS 20)
+    message(WARNING "The defined C++ standard (${CMAKE_CXX_STANDARD}) is too low - overriding!")
+    set(CMAKE_CXX_STANDARD 20)
+endif()
+message(STATUS "The C++ standard is set to ${CMAKE_CXX_STANDARD}")
+
 # Define the library target
 add_library(cpp-gl INTERFACE)
 target_include_directories(cpp-gl INTERFACE
@@ -23,8 +32,9 @@ target_include_directories(cpp-gl INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 set_target_properties(cpp-gl PROPERTIES
-    CXX_STANDARD 20
+    CXX_STANDARD ${CMAKE_CXX_STANDARD}
     CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
 )
 
 # Installation configuration

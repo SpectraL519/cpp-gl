@@ -11,6 +11,11 @@ TEST_SUITE_BEGIN("test_graph");
 
 struct test_graph {
     lib::graph<> sut;
+
+    template <lib_d::c_instantiation_of<lib::graph> GraphType>
+    typename GraphType::vertex_list_type& get_vertex_list(GraphType& graph) {
+        return graph._vertices;
+    }
 };
 
 TEST_CASE_FIXTURE(test_graph, "graph should be initialized with no vertices by default") {
@@ -22,11 +27,9 @@ TEST_CASE("graph constructed with no_vertices parameter should properly initiali
     lib::graph<> sut{constants::no_vertices};
     CHECK_EQ(sut.no_vertices(), constants::no_vertices);
 
-    // TODO: replace with iterator range
-    for (lib_t::id_type v_id = 0ull; v_id < constants::no_vertices; v_id++) {
-        CHECK_NOTHROW(static_cast<void>(sut.get_vertex(v_id)));
-        CHECK_EQ(sut.get_vertex(v_id)->id(), v_id);
-    }
+    lib_t::id_type v_id = constants::vertex_id_1;
+    for (const auto& vertex : sut.vertex_crange())
+        CHECK_EQ(vertex->id(), v_id++);
 }
 
 TEST_CASE_FIXTURE(
@@ -65,20 +68,44 @@ TEST_CASE_FIXTURE(test_graph, "get_vertex should return a vertex with the given 
     CHECK_EQ(*sut.get_vertex(added_vertex->id()), *added_vertex);
 }
 
+TEST_CASE_FIXTURE(
+    test_graph, "vertex_(c)range should return the correct vertex list iterator range"
+) {
+    const auto v_range = sut.vertex_range();
+    CHECK(std::ranges::equal(v_range, get_vertex_list(sut)));
+
+    const auto v_crange = sut.vertex_crange();
+    CHECK(std::ranges::equal(v_crange, get_vertex_list(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    test_graph, "vertex_(c)rrange should return the correct vertex list reverse iterator range"
+) {
+    const auto v_rrange = sut.vertex_rrange();
+    CHECK(std::ranges::equal(v_rrange, get_vertex_list(sut)));
+
+    const auto v_crrange = sut.vertex_crrange();
+    CHECK(std::ranges::equal(v_crrange, get_vertex_list(sut)));
+}
+
 TEST_CASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {
     lib::graph<> sut{constants::no_vertices};
     CHECK_EQ(sut.no_vertices(), constants::no_vertices);
 
     sut.remove_vertex(sut.get_vertex(constants::vertex_id_1));
 
-    constexpr lib_t::id_type last_vertex_id = constants::no_vertices - constants::one_vertex;
-    REQUIRE_THROWS_AS(static_cast<void>(sut.get_vertex(last_vertex_id)), std::out_of_range);
+    constexpr lib_t::id_type no_vertices_after_remove =
+        constants::no_vertices - constants::one_vertex;
 
-    // TODO: replace with iterator range
-    for (lib_t::id_type v_id = constants::vertex_id_1; v_id < last_vertex_id; v_id++) {
-        CHECK_NOTHROW(static_cast<void>(sut.get_vertex(v_id)));
-        CHECK_EQ(sut.get_vertex(v_id)->id(), v_id);
-    }
+    CHECK_EQ(sut.no_vertices(), no_vertices_after_remove);
+    REQUIRE_THROWS_AS(
+        static_cast<void>(sut.get_vertex(no_vertices_after_remove)), std::out_of_range
+    );
+
+    CHECK(std::ranges::equal(
+        sut.vertex_range() | std::views::transform([](const auto& vertex) { return vertex->id(); }),
+        std::views::iota(constants::vertex_id_1, no_vertices_after_remove)
+    ));
 }
 
 TEST_SUITE_END(); // test_graph

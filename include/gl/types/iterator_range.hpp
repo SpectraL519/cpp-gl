@@ -13,8 +13,13 @@ template <std::forward_iterator Iterator>
 class iterator_range {
 public:
     using iterator_type = Iterator;
+#if __cplusplus >= 202302L
+    using const_iterator_type = std::const_iterator<Iterator>;
+#endif
     using difference_type = std::ptrdiff_t;
     using value_type = std::remove_reference_t<typename iterator_type::value_type>;
+
+    iterator_range() = delete;
 
     explicit iterator_range(iterator_type begin, iterator_type end) : _range(begin, end) {}
 
@@ -40,6 +45,16 @@ public:
         return this->_range.second;
     }
 
+#if __cplusplus >= 202302L
+    [[nodiscard]] inline auto cbegin() const {
+        return std::make_const_iterator(this->_range.first);
+    }
+
+    [[nodiscard]] inline auto cend() const {
+        return std::make_const_iterator(this->_range.second);
+    }
+#endif
+
     [[nodiscard]] inline difference_type distance() const {
         return std::ranges::distance(this->begin(), this->end());
     }
@@ -48,16 +63,18 @@ public:
         return *std::ranges::next(this->begin(), n);
     }
 
-    inline void advance_begin(difference_type n) {
+    inline void advance_begin(difference_type n = _default_n) {
         std::ranges::advance(this->_range.first, n);
     }
 
-    inline void advance_end(difference_type n) {
+    inline void advance_end(difference_type n = _default_n) {
         std::ranges::advance(this->_range.second, n);
     }
 
 private:
     homogeneous_pair<iterator_type> _range;
+
+    static constexpr difference_type _default_n = 1;
 };
 
 } // namespace types
