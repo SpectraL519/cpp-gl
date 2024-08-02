@@ -1,10 +1,19 @@
 #pragma once
 
 #include "graph_traits.hpp"
+#include "types/iterator_range.hpp"
 #include "types/types.hpp"
 
 #include <algorithm>
 #include <iostream>
+
+#ifdef GL_TESTING
+
+namespace gl_testing {
+struct test_graph;
+} // namespace gl_testing
+
+#endif
 
 namespace gl {
 
@@ -14,13 +23,20 @@ public:
     using traits_type = GraphTraits;
 
     using vertex_type = traits::vertex_type<traits_type>;
-    using vertex_ptr_type = traits::vertex_ptr_type<traits_type>;
     using vertex_properties_type = traits::vertex_properties_type<traits_type>;
+    using vertex_ptr_type = traits::vertex_ptr_type<traits_type>;
+    using vertex_list_type = std::vector<vertex_ptr_type>;
+    using vertex_iterator_type = typename vertex_list_type::iterator;
+    using vertex_const_iterator_type = typename vertex_list_type::const_iterator;
 
     using edge_directional_tag = traits::edge_directional_tag<traits_type>;
     using edge_type = traits::edge_type<traits_type>;
     using edge_ptr_type = traits::edge_ptr_type<traits_type>;
     using edge_properties_type = traits::edge_properties_type<traits_type>;
+
+#ifdef GL_TESTING
+    friend struct ::gl_testing::test_graph;
+#endif
 
     graph() = default;
 
@@ -39,6 +55,10 @@ public:
 
     ~graph() = default;
 
+    [[nodiscard]] inline types::size_type no_vertices() const {
+        return this->_vertices.size();
+    }
+
     inline vertex_ptr_type& add_vertex() {
         return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
     }
@@ -51,7 +71,19 @@ public:
         );
     }
 
-    inline void remove_vertex(const vertex_ptr_type& vertex) {
+    [[nodiscard]] inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
+        return this->_vertices.at(vertex_id);
+    }
+
+    [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertex_range() {
+        return make_iterator_range(this->_vertices);
+    }
+
+    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertex_crange() const {
+        return make_iterator_range(this->_vertices.cbegin(), this->_vertices.cend());
+    }
+
+    void remove_vertex(const vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
         this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
 
@@ -63,16 +95,8 @@ public:
         );
     }
 
-    [[nodiscard]] inline types::size_type no_vertices() const {
-        return this->_vertices.size();
-    }
-
-    [[nodiscard]] inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
-        return this->_vertices.at(vertex_id);
-    }
-
 private:
-    std::vector<vertex_ptr_type> _vertices = {};
+    vertex_list_type _vertices = {};
 };
 
 } // namespace gl
