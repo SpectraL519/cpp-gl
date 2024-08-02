@@ -28,6 +28,8 @@ public:
     using vertex_list_type = std::vector<vertex_ptr_type>;
     using vertex_iterator_type = typename vertex_list_type::iterator;
     using vertex_const_iterator_type = typename vertex_list_type::const_iterator;
+    using vertex_reverse_iterator_type = typename vertex_list_type::reverse_iterator;
+    using vertex_const_reverse_iterator_type = typename vertex_list_type::const_reverse_iterator;
 
     using edge_directional_tag = traits::edge_directional_tag<traits_type>;
     using edge_type = traits::edge_type<traits_type>;
@@ -81,6 +83,15 @@ public:
 
     [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertex_crange() const {
         return make_iterator_range(this->_vertices.cbegin(), this->_vertices.cend());
+    }
+
+    [[nodiscard]] inline types::iterator_range<vertex_reverse_iterator_type> vertex_rrange() {
+        return make_iterator_range(this->_vertices.rbegin(), this->_vertices.rend());
+    }
+
+    [[nodiscard]] inline types::iterator_range<vertex_const_reverse_iterator_type> vertex_crrange(
+    ) const {
+        return make_iterator_range(this->_vertices.crbegin(), this->_vertices.crend());
     }
 
     void remove_vertex(const vertex_ptr_type& vertex) {

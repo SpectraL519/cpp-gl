@@ -68,9 +68,24 @@ TEST_CASE_FIXTURE(test_graph, "get_vertex should return a vertex with the given 
     CHECK_EQ(*sut.get_vertex(added_vertex->id()), *added_vertex);
 }
 
-TEST_CASE_FIXTURE(test_graph, "vertex_range should return the correct vertex list iterator range") {
+TEST_CASE_FIXTURE(
+    test_graph, "vertex_(c)range should return the correct vertex list iterator range"
+) {
     const auto v_range = sut.vertex_range();
     CHECK(std::ranges::equal(v_range, get_vertex_list(sut)));
+
+    const auto v_crange = sut.vertex_crange();
+    CHECK(std::ranges::equal(v_crange, get_vertex_list(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    test_graph, "vertex_(c)rrange should return the correct vertex list reverse iterator range"
+) {
+    const auto v_rrange = sut.vertex_rrange();
+    CHECK(std::ranges::equal(v_rrange, get_vertex_list(sut)));
+
+    const auto v_crrange = sut.vertex_crrange();
+    CHECK(std::ranges::equal(v_crrange, get_vertex_list(sut)));
 }
 
 TEST_CASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {

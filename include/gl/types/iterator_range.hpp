@@ -19,6 +19,8 @@ public:
     using difference_type = std::ptrdiff_t;
     using value_type = std::remove_reference_t<typename iterator_type::value_type>;
 
+    iterator_range() = delete;
+
     explicit iterator_range(iterator_type begin, iterator_type end) : _range(begin, end) {}
 
     template <std::ranges::range Range>
