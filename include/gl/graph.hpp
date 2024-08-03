@@ -23,17 +23,18 @@ public:
     using traits_type = GraphTraits;
 
     using vertex_type = traits::vertex_type<traits_type>;
-    using vertex_properties_type = traits::vertex_properties_type<traits_type>;
     using vertex_ptr_type = traits::vertex_ptr_type<traits_type>;
-    using vertex_list_type = std::vector<vertex_ptr_type>;
-    using vertex_iterator_type = typename vertex_list_type::iterator;
-    using vertex_const_iterator_type = typename vertex_list_type::const_iterator;
-    using vertex_reverse_iterator_type = typename vertex_list_type::reverse_iterator;
-    using vertex_const_reverse_iterator_type = typename vertex_list_type::const_reverse_iterator;
+    using vertex_properties_type = traits::vertex_properties_type<traits_type>;
 
-    using edge_directional_tag = traits::edge_directional_tag<traits_type>;
+    using vertex_set_type = std::vector<vertex_ptr_type>;
+    using vertex_iterator_type = typename vertex_set_type::iterator;
+    using vertex_const_iterator_type = typename vertex_set_type::const_iterator;
+    using vertex_reverse_iterator_type = typename vertex_set_type::reverse_iterator;
+    using vertex_const_reverse_iterator_type = typename vertex_set_type::const_reverse_iterator;
+
     using edge_type = traits::edge_type<traits_type>;
     using edge_ptr_type = traits::edge_ptr_type<traits_type>;
+    using edge_directional_tag = traits::edge_directional_tag<traits_type>;
     using edge_properties_type = traits::edge_properties_type<traits_type>;
 
 #ifdef GL_TESTING
@@ -107,7 +108,7 @@ public:
     }
 
 private:
-    vertex_list_type _vertices = {};
+    vertex_set_type _vertices = {};
 };
 
 } // namespace gl

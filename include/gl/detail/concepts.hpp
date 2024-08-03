@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <type_traits>
+#include <ranges>
 
 namespace gl::detail {
 
@@ -30,5 +31,11 @@ inline constexpr bool is_one_of_v = is_one_of<T, Types...>::value;
 
 template <typename T, typename... Types>
 concept c_one_of = is_one_of_v<T, Types...>;
+
+template <typename T>
+concept c_reverse_range = requires(T& t) {
+    std::ranges::rbegin(t);
+    std::ranges::rend (t);
+};
 
 } // namespace gl::detail
