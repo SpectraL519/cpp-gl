@@ -28,8 +28,9 @@ public:
     using vertex_properties_type = type_traits::vertex_properties_type<traits_type>;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
-    using vertex_iterator_type = typename vertex_set_type::iterator;
-    using vertex_const_iterator_type = typename vertex_set_type::const_iterator;
+    using vertex_iterator_type = type_traits::iterator_type<vertex_set_type>;
+    using vertex_const_iterator_type = type_traits::const_iterator_type<vertex_set_type>;
+    // TODO: remove reverse iterators
     using vertex_reverse_iterator_type = typename vertex_set_type::reverse_iterator;
     using vertex_const_reverse_iterator_type = typename vertex_set_type::const_reverse_iterator;
 

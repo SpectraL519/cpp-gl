@@ -81,6 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 }
 
+// TODO: fix .clang-format to split such lines
 TEST_CASE_TEMPLATE_INSTANTIATE(edge_directional_tag_template, lib::directed_edge<lib::vertex<>>, lib::undirected_edge<lib::vertex<>>);
 
 TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_from tests") {
