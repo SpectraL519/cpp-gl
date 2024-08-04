@@ -3,11 +3,9 @@
 // required for the type alias
 namespace gl {
 
-namespace types::traits {
-} // namesapce types::traits
+namespace types::traits {} // namespace types::traits
 
-namespace impl {
-} // namespace impl
+namespace impl {} // namespace impl
 
 } // namespace gl
 

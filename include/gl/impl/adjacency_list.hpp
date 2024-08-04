@@ -1,27 +1,26 @@
 #pragma once
 
-#include "gl/types/types.hpp"
+#include "gl/graph_traits.hpp"
 #include "gl/types/type_traits.hpp"
-#include "gl/edge_descriptor.hpp"
+#include "gl/types/types.hpp"
 
 #include <vector>
 
 namespace gl::impl {
 
-// TODO: should be parametrized with graph_traits
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_list {
 public:
-    using vertex_type = typename EdgeType::vertex_type;
-    using vertex_ptr_type = typename EdgeType::vertex_ptr_type;
+    using vertex_type = type_traits::vertex_type<GraphTraits>;
+    using vertex_ptr_type = type_traits::vertex_ptr_type<GraphTraits>;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
     using vertex_iterator_type = type_traits::iterator_type<vertex_set_type>;
     using vertex_const_iterator_type = type_traits::const_iterator_type<vertex_set_type>;
 
-    using edge_type = EdgeType;
-    using edge_directional_tag = typename edge_type::directional_tag;
-    using edge_ptr_type = typename edge_directional_tag::template edge_ptr_type<edge_type>;
+    using edge_type = type_traits::edge_type<GraphTraits>;
+    using edge_ptr_type = type_traits::edge_ptr_type<GraphTraits>;
+    using edge_directional_tag = type_traits::edge_directional_tag<GraphTraits>;
 
     using edge_set_type = std::vector<edge_ptr_type>;
     using edge_iterator_type = typename edge_set_type::iterator;

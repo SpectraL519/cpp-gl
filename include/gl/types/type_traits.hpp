@@ -1,7 +1,7 @@
 #pragma once
 
-#include "traits/iterator_traits.hpp"
 #include "traits/concepts.hpp"
+#include "traits/iterator_traits.hpp"
 
 namespace gl {
 

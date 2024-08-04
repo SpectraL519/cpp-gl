@@ -1,8 +1,8 @@
 #pragma once
 
 #include <concepts>
-#include <type_traits>
 #include <ranges>
+#include <type_traits>
 
 namespace gl::types::traits {
 
@@ -35,7 +35,7 @@ concept c_one_of = is_one_of_v<T, Types...>;
 template <typename T>
 concept c_reverse_range = requires(T& t) {
     std::ranges::rbegin(t);
-    std::ranges::rend (t);
+    std::ranges::rend(t);
 };
 
 } // namespace gl::types::traits

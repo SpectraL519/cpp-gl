@@ -20,7 +20,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.size(), constants::zero_vertices);
     }
 
-    SUBCASE("constructed with the no_vertices parameter should properly initialize the adjcacency list") {
+    SUBCASE("constructed with no_vertices parameter should properly initialize the adj list") {
         SutType sut{constants::no_vertices};
         CHECK_EQ(sut.size(), constants::no_vertices);
     }
@@ -28,8 +28,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_directional_tag_sut_template,
-    lib_i::adjacency_list<typename test_adjacency_list::directed_edge_type>, // directed adj list
-    lib_i::adjacency_list<typename test_adjacency_list::undirected_edge_type> // undirected adj list
+    lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>, // directed adj list
+    lib_i::adjacency_list<lib::graph_traits<lib::undirected_t>> // undirected adj list
 );
 
 

@@ -2,8 +2,8 @@
 
 #include "edge_tags.hpp"
 #include "types/default_types.hpp"
-#include "types/types.hpp"
 #include "types/type_traits.hpp"
+#include "types/types.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>

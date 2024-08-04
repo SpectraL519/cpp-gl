@@ -2,8 +2,8 @@
 
 #include "graph_traits.hpp"
 #include "types/iterator_range.hpp"
-#include "types/types.hpp"
 #include "types/type_traits.hpp"
+#include "types/types.hpp"
 
 #include <algorithm>
 #include <iostream>
