@@ -30,7 +30,8 @@ public:
     using vertex_set_type = std::vector<vertex_ptr_type>;
     using vertex_iterator_type = type_traits::iterator_type<vertex_set_type>;
     using vertex_const_iterator_type = type_traits::const_iterator_type<vertex_set_type>;
-    // TODO: remove reverse iterators
+
+    // TODO: reverese iterators should be available only for bidirectional ranges
     using vertex_reverse_iterator_type = typename vertex_set_type::reverse_iterator;
     using vertex_const_reverse_iterator_type = typename vertex_set_type::const_reverse_iterator;
 

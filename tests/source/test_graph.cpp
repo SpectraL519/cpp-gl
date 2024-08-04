@@ -1,9 +1,12 @@
 #include "constants.hpp"
+#include "transforms.hpp"
 #include "types.hpp"
 
 #include <gl/graph.hpp>
 
 #include <doctest.h>
+
+#include <algorithm>
 
 namespace gl_testing {
 
@@ -25,11 +28,13 @@ TEST_CASE_FIXTURE(test_graph, "graph should be initialized with no vertices by d
 TEST_CASE("graph constructed with no_vertices parameter should properly initialize the vertex list"
 ) {
     lib::graph<> sut{constants::no_vertices};
-    CHECK_EQ(sut.no_vertices(), constants::no_vertices);
 
-    lib_t::id_type v_id = constants::vertex_id_1;
-    for (const auto& vertex : sut.vertex_crange())
-        CHECK_EQ(vertex->id(), v_id++);
+    REQUIRE(std::ranges::equal(
+        sut.vertex_crange() | std::views::transform(transforms::extract_vertex_id<>),
+        std::views::iota(constants::vertex_id_1, constants::no_vertices)
+    ));
+
+    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::no_vertices)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
@@ -97,15 +102,12 @@ TEST_CASE("remove_vertex should remove the given vertex and align ids of remaini
     constexpr lib_t::id_type no_vertices_after_remove =
         constants::no_vertices - constants::one_vertex;
 
-    CHECK_EQ(sut.no_vertices(), no_vertices_after_remove);
-    REQUIRE_THROWS_AS(
-        static_cast<void>(sut.get_vertex(no_vertices_after_remove)), std::out_of_range
-    );
-
-    CHECK(std::ranges::equal(
-        sut.vertex_range() | std::views::transform([](const auto& vertex) { return vertex->id(); }),
+    REQUIRE(std::ranges::equal(
+        sut.vertex_range() | std::views::transform(transforms::extract_vertex_id<>),
         std::views::iota(constants::vertex_id_1, no_vertices_after_remove)
     ));
+
+    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(no_vertices_after_remove)), std::out_of_range);
 }
 
 TEST_SUITE_END(); // test_graph

@@ -4,6 +4,8 @@
 
 #include <doctest.h>
 
+#include <algorithm>
+
 namespace gl_testing {
 
 struct test_adjacency_list {
@@ -23,6 +25,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("constructed with no_vertices parameter should properly initialize the adj list") {
         SutType sut{constants::no_vertices};
         CHECK_EQ(sut.size(), constants::no_vertices);
+
+        std::ranges::for_each(
+            std::views::iota(constants::vertex_id_1, constants::no_vertices),
+            [&sut](const lib_t::id_type vertex_id) {
+                CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_edges);
+            }
+        );
     }
 }
 

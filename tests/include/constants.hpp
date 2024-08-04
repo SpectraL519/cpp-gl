@@ -14,4 +14,8 @@ constexpr lib_t::id_type vertex_id_1 = 0ull;
 constexpr lib_t::id_type vertex_id_2 = 1ull;
 constexpr lib_t::id_type vertex_id_3 = 2ull;
 
+constexpr lib_t::size_type zero_edges = 0ull;
+constexpr lib_t::size_type one_edge = 1ull;
+constexpr lib_t::size_type no_edges = 3ull;
+
 } // namespace gl_testing::constants
