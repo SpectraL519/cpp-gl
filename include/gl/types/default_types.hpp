@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl/detail/concepts.hpp"
+#include "traits/concepts.hpp"
 
 #include <variant>
 
@@ -12,12 +12,12 @@ using empty_properties = std::monostate;
 
 } // namespace types
 
-namespace detail {
+namespace types::traits {
 
 template <c_properties Properties>
 constexpr inline bool is_default_properties_type_v =
     std::is_same_v<Properties, gl::types::empty_properties>;
 
-} // namespace detail
+} // namespace types::traits
 
 } // namespace gl

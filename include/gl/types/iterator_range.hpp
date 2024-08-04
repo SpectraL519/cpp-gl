@@ -12,16 +12,16 @@ namespace types {
 template <std::forward_iterator Iterator>
 class iterator_range {
 public:
-    using iterator_type = Iterator;
+    using iterator = Iterator;
 #if __cplusplus >= 202302L
-    using const_iterator_type = std::const_iterator<Iterator>;
+    using const_iterator = std::const_iterator<Iterator>;
 #endif
     using difference_type = std::ptrdiff_t;
-    using value_type = std::remove_reference_t<typename iterator_type::value_type>;
+    using value_type = std::remove_reference_t<typename iterator::value_type>;
 
     iterator_range() = delete;
 
-    explicit iterator_range(iterator_type begin, iterator_type end) : _range(begin, end) {}
+    explicit iterator_range(iterator begin, iterator end) : _range(begin, end) {}
 
     template <std::ranges::range Range>
     explicit iterator_range(Range& range)
@@ -37,11 +37,11 @@ public:
 
     bool operator==(const iterator_range&) const = default;
 
-    [[nodiscard]] inline iterator_type begin() const {
+    [[nodiscard]] inline iterator begin() const {
         return this->_range.first;
     }
 
-    [[nodiscard]] inline iterator_type end() const {
+    [[nodiscard]] inline iterator end() const {
         return this->_range.second;
     }
 
@@ -72,7 +72,7 @@ public:
     }
 
 private:
-    homogeneous_pair<iterator_type> _range;
+    homogeneous_pair<iterator> _range;
 
     static constexpr difference_type _default_n = 1;
 };

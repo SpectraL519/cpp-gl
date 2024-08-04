@@ -3,6 +3,7 @@
 #include "graph_traits.hpp"
 #include "types/iterator_range.hpp"
 #include "types/types.hpp"
+#include "types/type_traits.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -17,14 +18,14 @@ struct test_graph;
 
 namespace gl {
 
-template <detail::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
+template <type_traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
 class graph {
 public:
     using traits_type = GraphTraits;
 
-    using vertex_type = traits::vertex_type<traits_type>;
-    using vertex_ptr_type = traits::vertex_ptr_type<traits_type>;
-    using vertex_properties_type = traits::vertex_properties_type<traits_type>;
+    using vertex_type = type_traits::vertex_type<traits_type>;
+    using vertex_ptr_type = type_traits::vertex_ptr_type<traits_type>;
+    using vertex_properties_type = type_traits::vertex_properties_type<traits_type>;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
     using vertex_iterator_type = typename vertex_set_type::iterator;
@@ -32,10 +33,10 @@ public:
     using vertex_reverse_iterator_type = typename vertex_set_type::reverse_iterator;
     using vertex_const_reverse_iterator_type = typename vertex_set_type::const_reverse_iterator;
 
-    using edge_type = traits::edge_type<traits_type>;
-    using edge_ptr_type = traits::edge_ptr_type<traits_type>;
-    using edge_directional_tag = traits::edge_directional_tag<traits_type>;
-    using edge_properties_type = traits::edge_properties_type<traits_type>;
+    using edge_type = type_traits::edge_type<traits_type>;
+    using edge_ptr_type = type_traits::edge_ptr_type<traits_type>;
+    using edge_directional_tag = type_traits::edge_directional_tag<traits_type>;
+    using edge_properties_type = type_traits::edge_properties_type<traits_type>;
 
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph;
@@ -67,7 +68,7 @@ public:
     }
 
     inline vertex_ptr_type& add_vertex(const vertex_properties_type& properties)
-    requires(not detail::is_default_properties_type_v<vertex_properties_type>)
+    requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         return this->_vertices.emplace_back(
             std::make_shared<vertex_type>(this->no_vertices(), properties)

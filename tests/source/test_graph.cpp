@@ -12,8 +12,8 @@ TEST_SUITE_BEGIN("test_graph");
 struct test_graph {
     lib::graph<> sut;
 
-    template <lib_d::c_instantiation_of<lib::graph> GraphType>
-    typename GraphType::vertex_list_type& get_vertex_list(GraphType& graph) {
+    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
+    typename GraphType::vertex_set_type& get_vertex_list(GraphType& graph) {
         return graph._vertices;
     }
 };

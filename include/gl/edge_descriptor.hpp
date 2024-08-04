@@ -1,9 +1,9 @@
 #pragma once
 
-#include "detail/concepts.hpp"
 #include "edge_tags.hpp"
 #include "types/default_types.hpp"
 #include "types/types.hpp"
+#include "types/type_traits.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>
@@ -13,9 +13,9 @@
 namespace gl {
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_edge_directional_tag DirectionalTag = directed_t,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
+    type_traits::c_properties Properties = types::empty_properties>
 class edge_descriptor {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
@@ -31,7 +31,7 @@ public:
     explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v) : _vertices(u, v) {}
 
     explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v, const properties_type& properties)
-    requires(not detail::is_default_properties_type_v<properties_type>)
+    requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(u, v), properties(properties) {}
 
     edge_descriptor(const edge_descriptor&) = default;
@@ -87,19 +87,19 @@ private:
 };
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_edge_directional_tag DirectionalTag = directed_t,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
+    type_traits::c_properties Properties = types::empty_properties>
 using edge = edge_descriptor<VertexType, DirectionalTag, Properties>;
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_properties Properties = types::empty_properties>
 using directed_edge = edge_descriptor<VertexType, directed_t, Properties>;
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_properties Properties = types::empty_properties>
 using undirected_edge = edge_descriptor<VertexType, undirected_t, Properties>;
 
 } // namespace gl
