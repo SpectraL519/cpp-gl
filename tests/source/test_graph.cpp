@@ -40,7 +40,7 @@ TEST_CASE("graph constructed with no_vertices parameter should properly initiali
 TEST_CASE_FIXTURE(
     test_graph, "add_vertex should return a vertex_descriptor with an incremented id"
 ) {
-    constexpr lib_t::size_type target_no_vertices = 3ull;
+    constexpr lib_t::size_type target_no_vertices = constants::no_vertices;
 
     for (lib_t::id_type v_id = constants::zero_vertices; v_id < target_no_vertices; v_id++) {
         const auto& vertex = sut.add_vertex();

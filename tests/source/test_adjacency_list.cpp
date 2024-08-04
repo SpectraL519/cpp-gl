@@ -22,7 +22,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.size(), constants::zero_vertices);
     }
 
-    SUBCASE("constructed with no_vertices parameter should properly initialize the adj list") {
+    SUBCASE("constructed with the no_vertices parameter should properly initialize the adjacency "
+            "list") {
         SutType sut{constants::no_vertices};
         CHECK_EQ(sut.size(), constants::no_vertices);
 
@@ -32,6 +33,19 @@ TEST_CASE_TEMPLATE_DEFINE(
                 CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_edges);
             }
         );
+    }
+
+    SUBCASE("add_vertex should properly extend the current adjacency list") {
+        SutType sut{};
+        constexpr lib_t::size_type target_no_vertices = constants::no_vertices;
+
+        for (lib_t::id_type no_vertices = constants::one_vertex; no_vertices <= target_no_vertices;
+             no_vertices++) {
+            sut.add_vertex();
+            CHECK_EQ(sut.size(), no_vertices);
+        }
+
+        CHECK_EQ(sut.size(), target_no_vertices);
     }
 }
 
