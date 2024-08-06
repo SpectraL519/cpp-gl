@@ -65,11 +65,11 @@ public:
         return this->_vertices.size();
     }
 
-    inline vertex_ptr_type& add_vertex() {
+    inline vertex_ptr_type add_vertex() {
         return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
     }
 
-    inline vertex_ptr_type& add_vertex(const vertex_properties_type& properties)
+    inline vertex_ptr_type add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         return this->_vertices.emplace_back(
@@ -79,6 +79,19 @@ public:
 
     [[nodiscard]] inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
         return this->_vertices.at(vertex_id);
+    }
+
+    void remove_vertex(const vertex_ptr_type& vertex) {
+        const auto vertex_id = vertex->id();
+        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
+        // TODO: remove vertex from adjacency impl
+
+        // align ids of remainig vertices
+        std::for_each(
+            std::next(std::begin(this->_vertices), vertex_id),
+            this->_vertices.end(),
+            [](auto& v) { v->_set_id(v->id() - 1ull); }
+        );
     }
 
     [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertex_range() {
@@ -96,19 +109,6 @@ public:
     [[nodiscard]] inline types::iterator_range<vertex_const_reverse_iterator_type> vertex_crrange(
     ) const {
         return make_iterator_range(this->_vertices.crbegin(), this->_vertices.crend());
-    }
-
-    void remove_vertex(const vertex_ptr_type& vertex) {
-        const auto vertex_id = vertex->id();
-        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
-        // TODO: remove vertex from adjacency impl
-
-        // align ids of remainig vertices
-        std::for_each(
-            std::next(std::begin(this->_vertices), vertex_id),
-            this->_vertices.end(),
-            [](auto& v) { v->_set_id(v->id() - 1ull); }
-        );
     }
 
 private:

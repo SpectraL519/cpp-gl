@@ -26,6 +26,16 @@ template <
     type_traits::c_properties Properties>
 class edge_descriptor;
 
+template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+[[nodiscard]] inline constexpr bool is_directed(const std::shared_ptr<EdgeType>& edge) {
+    return std::is_same_v<typename EdgeType::directional_tag, directed_t>;
+}
+
+template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+[[nodiscard]] inline constexpr bool is_undirected(const std::shared_ptr<EdgeType>& edge) {
+    return std::is_same_v<typename EdgeType::directional_tag, undirected_t>;
+}
+
 struct directed_t {
     using type = std::type_identity_t<directed_t>;
 

@@ -47,12 +47,6 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
-    ) {
-        return make_iterator_range(this->_list.at(vertex_id));
-    }
-
     inline void remove_vertex(const types::id_type vertex_id) {
         /*
         TODO: remove edges incident to/from the removed vertex
@@ -66,6 +60,19 @@ public:
         */
 
         this->_list.erase(std::next(std::begin(this->_list), vertex_id));
+    }
+
+    // TODO: add tests
+    inline void add_edge(const edge_ptr_type& edge) {
+        this->_list.at(edge->first()->id()).push_back(edge);
+        if constexpr (is_directed(edge))
+            this->_list.at(edge->second()->id()).push_back(edge);
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
+        const types::id_type vertex_id
+    ) {
+        return make_iterator_range(this->_list.at(vertex_id));
     }
 
 private:
