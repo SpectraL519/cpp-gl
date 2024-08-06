@@ -53,6 +53,21 @@ public:
         return make_iterator_range(this->_list.at(vertex_id));
     }
 
+    inline void remove_vertex(const types::id_type vertex_id) {
+        /*
+        TODO: remove edges incident to/from the removed vertex
+        * for directed graphs:
+            * iterate over all vertices
+            * for each vertex remove all edges incident with the removed vertex
+        * for undirected graphs:
+            * iterate over edges adjacent with the removed vertex
+            * for each edge e get other vertex v
+            * remove all edges incident with the removed vertex in the adj list for vertex v
+        */
+
+        this->_list.erase(std::next(std::begin(this->_list), vertex_id));
+    }
+
 private:
     type _list = {};
 };

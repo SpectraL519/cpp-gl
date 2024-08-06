@@ -101,6 +101,7 @@ public:
     void remove_vertex(const vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
         this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
+        // TODO: remove vertex from adjacency impl
 
         // align ids of remainig vertices
         std::for_each(
