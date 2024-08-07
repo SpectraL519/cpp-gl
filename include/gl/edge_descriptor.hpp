@@ -28,9 +28,12 @@ public:
 
     edge_descriptor() = delete;
 
-    explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v) : _vertices(u, v) {}
+    explicit edge_descriptor(const vertex_ptr_type& u, const vertex_ptr_type& v)
+    : _vertices(u, v) {}
 
-    explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v, const properties_type& properties)
+    explicit edge_descriptor(
+        const vertex_ptr_type& u, const vertex_ptr_type& v, const properties_type& properties
+    )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(u, v), properties(properties) {}
 

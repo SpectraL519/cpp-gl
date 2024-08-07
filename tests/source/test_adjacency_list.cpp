@@ -81,26 +81,67 @@ struct test_directed_adjacency_list {
     sut_type sut{constants::no_vertices};
     std::vector<std::shared_ptr<vertex_type>> vertices;
 
-    test_directed_adjacency_list() : vertices(constants::no_vertices) {
+    test_directed_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
             vertices.push_back(util::make_vertex<vertex_type>(id));
     }
 
-    /*
-    ? Why does this not compile ?
-    void prepare_full_graph() {
-        for (const auto first_id : constants::vertex_id_view) {
-            for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id)) {
-                sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
-                sut.add_edge(lib::make_edge<edge_type>(vertices[second_id], vertices[first_id]));
-            }
-        }
+    void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+        sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
     }
-    */
+
+    // void prepare_full_graph() {
+    //     for (const auto first_id : constants::vertex_id_view) {
+    //         for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id)) {
+    //             add_edge(first_id, second_id);
+    //             add_edge(second_id, first_id);
+    //         }
+    //     }
+    // }
 };
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list, "add_edge should add the edge only to the source vertex list"
-) {}
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    REQUIRE_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_edge);
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_edges);
+}
+
+struct test_undirected_adjacency_list {
+    using vertex_type = lib::vertex_descriptor<>;
+    using edge_type = lib::undirected_edge<vertex_type>;
+    using sut_type = lib_i::adjacency_list<lib::graph_traits<lib::undirected_t>>;
+
+    sut_type sut{constants::no_vertices};
+    std::vector<std::shared_ptr<vertex_type>> vertices;
+
+    test_undirected_adjacency_list() {
+        for (const auto id : constants::vertex_id_view)
+            vertices.push_back(util::make_vertex<vertex_type>(id));
+    }
+
+    void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+        sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+    }
+
+    // void prepare_full_graph() {
+    //     for (const auto first_id : constants::vertex_id_view) {
+    //         for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id)) {
+    //             add_edge(first_id, second_id);
+    //         }
+    //     }
+    // }
+};
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_edge);
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::one_edge);
+}
 
 } // namespace gl_testing

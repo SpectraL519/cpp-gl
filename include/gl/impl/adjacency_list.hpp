@@ -65,10 +65,17 @@ public:
     }
 
     // TODO: add tests
-    inline void add_edge(const edge_ptr_type& edge) {
+    void add_edge(edge_ptr_type edge)
+    requires(type_traits::is_directed_v<edge_type>)
+    {
+        this->_list.at(edge->first()->id()).push_back(std::move(edge));
+    }
+
+    void add_edge(edge_ptr_type edge)
+    requires(type_traits::is_undirected_v<edge_type>)
+    {
         this->_list.at(edge->first()->id()).push_back(edge);
-        if constexpr (is_directed(edge))
-            this->_list.at(edge->second()->id()).push_back(edge);
+        this->_list.at(edge->second()->id()).push_back(edge);
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
