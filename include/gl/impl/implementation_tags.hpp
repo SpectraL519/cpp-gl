@@ -12,12 +12,12 @@ struct matrix_t;
 
 } // namespace impl
 
-namespace types::traits {
+namespace type_traits {
 
 template <typename T>
 concept c_graph_impl_tag = c_one_of<T, impl::list_t, impl::matrix_t>;
 
-} // namespace types::traits
+} // namespace type_traits
 
 struct list_t {};
 

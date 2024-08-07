@@ -1,5 +1,6 @@
 #include "constants.hpp"
 #include "types.hpp"
+#include "utility.hpp"
 
 #include <gl/edge_descriptor.hpp>
 
@@ -10,9 +11,11 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_edge_descriptor");
 
 struct test_edge_descriptor {
-    std::shared_ptr<lib::vertex<>> vd_1 = std::make_shared<lib::vertex<>>(constants::vertex_id_1);
-    std::shared_ptr<lib::vertex<>> vd_2 = std::make_shared<lib::vertex<>>(constants::vertex_id_2);
-    std::shared_ptr<lib::vertex<>> vd_3 = std::make_shared<lib::vertex<>>(constants::vertex_id_3);
+    using vertex_type = lib::vertex_descriptor<>;
+
+    std::shared_ptr<vertex_type> vd_1 = util::make_vertex<vertex_type>(constants::vertex_id_1);
+    std::shared_ptr<vertex_type> vd_2 = util::make_vertex<vertex_type>(constants::vertex_id_2);
+    std::shared_ptr<vertex_type> vd_3 = util::make_vertex<vertex_type>(constants::vertex_id_3);
 };
 
 TEST_CASE_FIXTURE(

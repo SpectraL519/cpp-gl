@@ -53,6 +53,8 @@ public:
         });
     }
 
+    // TODO: delete copy constructor and operator
+
     graph(const graph&) = default;
     graph(graph&&) = default;
 

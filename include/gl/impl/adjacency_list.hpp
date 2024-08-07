@@ -31,6 +31,8 @@ public:
 
     adjacency_list(const types::size_type no_vertices) : _list(no_vertices) {}
 
+    // TODO: delete copy constructor and operator
+
     adjacency_list(const adjacency_list&) = default;
     adjacency_list(adjacency_list&&) = default;
 

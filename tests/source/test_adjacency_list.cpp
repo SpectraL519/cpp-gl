@@ -1,5 +1,6 @@
 #include "constants.hpp"
 #include "functional.hpp"
+#include "utility.hpp"
 
 #include <gl/impl/adjacency_list.hpp>
 
@@ -9,12 +10,6 @@
 #include <functional>
 
 namespace gl_testing {
-
-struct test_adjacency_list {
-    using vertex_type = lib::vertex_descriptor<>;
-    using directed_edge_type = lib::directed_edge<vertex_type>;
-    using undirected_edge_type = lib::undirected_edge<vertex_type>;
-};
 
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
@@ -77,5 +72,35 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>, // directed adj list
     lib_i::adjacency_list<lib::graph_traits<lib::undirected_t>> // undirected adj list
 );
+
+struct test_directed_adjacency_list {
+    using vertex_type = lib::vertex_descriptor<>;
+    using edge_type = lib::directed_edge<vertex_type>;
+    using sut_type = lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>;
+
+    sut_type sut{constants::no_vertices};
+    std::vector<std::shared_ptr<vertex_type>> vertices;
+
+    test_directed_adjacency_list() : vertices(constants::no_vertices) {
+        for (const auto id : constants::vertex_id_view)
+            vertices.push_back(util::make_vertex<vertex_type>(id));
+    }
+
+    /*
+    ? Why does this not compile ?
+    void prepare_full_graph() {
+        for (const auto first_id : constants::vertex_id_view) {
+            for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id)) {
+                sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+                sut.add_edge(lib::make_edge<edge_type>(vertices[second_id], vertices[first_id]));
+            }
+        }
+    }
+    */
+};
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list, "add_edge should add the edge only to the source vertex list"
+) {}
 
 } // namespace gl_testing

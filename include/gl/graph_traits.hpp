@@ -25,7 +25,7 @@ struct graph_traits {
     using edge_properties_type = typename edge_type::properties_type;
 };
 
-namespace types::traits {
+namespace type_traits {
 
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 using vertex_type = typename GraphTraits::vertex_type;
@@ -48,6 +48,6 @@ using edge_ptr_type = typename GraphTraits::edge_ptr_type;
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 using edge_properties_type = typename GraphTraits::edge_properties_type;
 
-} // namespace types::traits
+} // namespace type_traits
 
 } // namespace gl

@@ -35,6 +35,8 @@ public:
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _id(id), properties(properties) {}
 
+    // TODO: delete copy constructor and operator
+
     vertex_descriptor(const vertex_descriptor&) = default;
     vertex_descriptor(vertex_descriptor&&) = default;
 

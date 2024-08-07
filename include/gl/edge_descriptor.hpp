@@ -34,6 +34,8 @@ public:
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(u, v), properties(properties) {}
 
+    // TODO: delete copy constructor and operator
+
     edge_descriptor(const edge_descriptor&) = default;
     edge_descriptor(edge_descriptor&&) = default;
 

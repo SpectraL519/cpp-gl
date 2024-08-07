@@ -12,12 +12,12 @@ using empty_properties = std::monostate;
 
 } // namespace types
 
-namespace types::traits {
+namespace type_traits {
 
 template <c_properties Properties>
 constexpr inline bool is_default_properties_type_v =
     std::is_same_v<Properties, gl::types::empty_properties>;
 
-} // namespace types::traits
+} // namespace type_traits
 
 } // namespace gl

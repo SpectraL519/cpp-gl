@@ -4,7 +4,7 @@
 #include <ranges>
 #include <type_traits>
 
-namespace gl::types::traits {
+namespace gl::type_traits {
 
 template <typename T>
 concept c_properties =
@@ -37,4 +37,4 @@ concept c_reverse_range = requires(T& t) {
     std::ranges::rend(t);
 };
 
-} // namespace gl::types::traits
+} // namespace gl::type_traits
