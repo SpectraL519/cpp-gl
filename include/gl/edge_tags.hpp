@@ -40,22 +40,12 @@ inline constexpr bool is_undirected_v =
 } // namespace type_traits
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_directed(const std::unique_ptr<EdgeType>&) {
+[[nodiscard]] inline constexpr bool is_directed(const EdgeType&) {
     return type_traits::is_directed_v<EdgeType>;
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_directed(const std::shared_ptr<EdgeType>&) {
-    return type_traits::is_directed_v<EdgeType>;
-}
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_undirected(const std::unique_ptr<EdgeType>&) {
-    return type_traits::is_undirected_v<EdgeType>;
-}
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_undirected(const std::shared_ptr<EdgeType>&) {
+[[nodiscard]] inline constexpr bool is_undirected(const EdgeType&) {
     return type_traits::is_undirected_v<EdgeType>;
 }
 

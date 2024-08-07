@@ -29,6 +29,7 @@ public:
 
     vertex_descriptor() = delete;
 
+    // TODO: constructors should be private
     explicit vertex_descriptor(const types::id_type id) : _id(id) {}
 
     explicit vertex_descriptor(const types::id_type id, const properties_type& properties)

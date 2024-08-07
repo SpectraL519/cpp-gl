@@ -17,6 +17,38 @@ struct test_edge_tags {
     std::shared_ptr<vertex_type> vd_2 = util::make_vertex<vertex_type>(constants::vertex_id_2);
 };
 
+TEST_CASE_FIXTURE(test_edge_tags, "is_directed should return true only for directed edges") {
+    const auto directed_edge_ptr = lib::make_edge<lib::directed_edge<vertex_type>>(vd_1, vd_2);
+    CHECK(lib::is_directed(*directed_edge_ptr));
+
+    const auto directed_properties_edge_ptr =
+        lib::make_edge<lib::directed_edge<vertex_type, types::used_property>>(vd_1, vd_2, {});
+    CHECK(lib::is_directed(*directed_properties_edge_ptr));
+
+    const auto undirected_edge_ptr = lib::make_edge<lib::undirected_edge<vertex_type>>(vd_1, vd_2);
+    CHECK_FALSE(lib::is_directed(*undirected_edge_ptr));
+
+    const auto undirected_properties_edge_ptr =
+        lib::make_edge<lib::undirected_edge<vertex_type, types::used_property>>(vd_1, vd_2, {});
+    CHECK_FALSE(lib::is_directed(*undirected_properties_edge_ptr));
+}
+
+TEST_CASE_FIXTURE(test_edge_tags, "is_undirected should return true only for undirected edges") {
+    const auto undirected_edge_ptr = lib::make_edge<lib::undirected_edge<vertex_type>>(vd_1, vd_2);
+    CHECK(lib::is_undirected(*undirected_edge_ptr));
+
+    const auto undirected_properties_edge_ptr =
+        lib::make_edge<lib::undirected_edge<vertex_type, types::used_property>>(vd_1, vd_2, {});
+    CHECK(lib::is_undirected(*undirected_properties_edge_ptr));
+
+    const auto directed_edge_ptr = lib::make_edge<lib::directed_edge<vertex_type>>(vd_1, vd_2);
+    CHECK_FALSE(lib::is_undirected(*directed_edge_ptr));
+
+    const auto directed_properties_edge_ptr =
+        lib::make_edge<lib::directed_edge<vertex_type, types::used_property>>(vd_1, vd_2, {});
+    CHECK_FALSE(lib::is_undirected(*directed_properties_edge_ptr));
+}
+
 struct test_directed_edge_tag : test_edge_tags {
     using sut_type = lib::directed_t;
     using edge_type = lib::directed_edge<vertex_type>;
@@ -27,8 +59,8 @@ struct test_directed_edge_tag : test_edge_tags {
 TEST_CASE_FIXTURE(
     test_directed_edge_tag, "make_edge should return a unique ptr to a directed edge"
 ) {
-    REQUIRE(lib::is_directed(edge_ptr));
-    REQUIRE_FALSE(lib::is_undirected(edge_ptr));
+    REQUIRE(lib::is_directed(*edge_ptr));
+    REQUIRE_FALSE(lib::is_undirected(*edge_ptr));
 
     CHECK_EQ(edge_ptr->first(), vd_1);
     CHECK_EQ(edge_ptr->second(), vd_2);
@@ -58,8 +90,8 @@ struct test_undirected_edge_tag : test_edge_tags {
 TEST_CASE_FIXTURE(
     test_undirected_edge_tag, "make_edge should return a shared ptr to a directed edge"
 ) {
-    REQUIRE(lib::is_undirected(edge_ptr));
-    REQUIRE_FALSE(lib::is_directed(edge_ptr));
+    REQUIRE(lib::is_undirected(*edge_ptr));
+    REQUIRE_FALSE(lib::is_directed(*edge_ptr));
 
     CHECK_EQ(edge_ptr->first(), vd_1);
     CHECK_EQ(edge_ptr->second(), vd_2);
