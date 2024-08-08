@@ -14,15 +14,17 @@ namespace gl_testing {
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
 ) {
-    SUBCASE("should be initialized with no vertices by default") {
+    SUBCASE("should be initialized with no vertices and no edges by default") {
         SutType sut{};
-        CHECK_EQ(sut.size(), constants::zero_vertices);
+        CHECK_EQ(sut.no_vertices(), constants::zero_vertices);
+        CHECK_EQ(sut.no_unique_edges(), constants::zero_edges);
     }
 
     SUBCASE("constructed with the no_vertices parameter should properly initialize the adjacency "
             "list") {
         SutType sut{constants::no_vertices};
-        REQUIRE_EQ(sut.size(), constants::no_vertices);
+        REQUIRE_EQ(sut.no_vertices(), constants::no_vertices);
+        REQUIRE_EQ(sut.no_unique_edges(), constants::zero_edges);
 
         std::ranges::for_each(
             std::views::iota(constants::vertex_id_1, constants::no_vertices),
@@ -39,10 +41,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (lib_t::id_type no_vertices = constants::one_vertex; no_vertices <= target_no_vertices;
              no_vertices++) {
             sut.add_vertex();
-            CHECK_EQ(sut.size(), no_vertices);
+            CHECK_EQ(sut.no_vertices(), no_vertices);
         }
 
-        CHECK_EQ(sut.size(), target_no_vertices);
+        CHECK_EQ(sut.no_vertices(), target_no_vertices);
+        CHECK_EQ(sut.no_unique_edges(), constants::zero_edges);
     }
 
     SUBCASE("remove_vertex should remove the vertex at the given id and all edges adjacent to that "
@@ -105,7 +108,9 @@ TEST_CASE_FIXTURE(
 ) {
     add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
-    REQUIRE_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_edge);
+    REQUIRE_EQ(sut.no_unique_edges(), constants::one_edge);
+
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_edge);
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_edges);
 }
 
@@ -139,6 +144,8 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
 ) {
     add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    REQUIRE_EQ(sut.no_unique_edges(), constants::one_edge);
 
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_edge);
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::one_edge);

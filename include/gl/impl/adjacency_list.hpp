@@ -42,8 +42,12 @@ public:
 
     ~adjacency_list() = default;
 
-    [[nodiscard]] inline types::size_type size() const {
+    [[nodiscard]] inline types::size_type no_vertices() const {
         return this->_list.size();
+    }
+
+    [[nodiscard]] inline types::size_type no_unique_edges() const {
+        return this->_no_unique_edges;
     }
 
     inline void add_vertex() {
@@ -60,6 +64,7 @@ public:
             * iterate over edges adjacent with the removed vertex
             * for each edge e get other vertex v
             * remove all edges incident with the removed vertex in the adj list for vertex v
+        * align the _no_unique_vertices variable
         */
 
         this->_list.erase(std::next(std::begin(this->_list), vertex_id));
@@ -73,17 +78,16 @@ public:
     requires(type_traits::is_directed_v<edge_type>)
     {
         this->_list.at(edge_ptr->first()->id()).push_back(std::move(edge_ptr));
+        this->_no_unique_edges++;
     }
 
     void remove_edge(const edge_ptr_type& edge_ptr)
     requires(type_traits::is_directed_v<edge_type>)
     {
-        const auto is_target_edge =
-            [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
-                return adjacent_edge_ptr.get() == target_edge_addr;
-            };
-
-        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
+        std::ranges::remove_if(
+            this->_list.at(edge_ptr->first()->id()), this->_make_address_comparator(edge_ptr)
+        );
+        this->_no_unique_edges--;
     }
 
     void add_edge(edge_ptr_type edge_ptr)
@@ -91,18 +95,17 @@ public:
     {
         this->_list.at(edge_ptr->first()->id()).push_back(edge_ptr);
         this->_list.at(edge_ptr->second()->id()).push_back(edge_ptr);
+        this->_no_unique_edges++;
     }
 
     void remove_edge(const edge_ptr_type& edge_ptr)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        const auto is_target_edge =
-            [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
-                return adjacent_edge_ptr.get() == target_edge_addr;
-            };
+        const auto address_comparator = this->_make_address_comparator(edge_ptr);
 
-        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
-        std::ranges::remove_if(this->_list.at(edge_ptr->second()->id()), is_target_edge);
+        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), address_comparator);
+        std::ranges::remove_if(this->_list.at(edge_ptr->second()->id()), address_comparator);
+        this->_no_unique_edges--;
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
@@ -112,7 +115,15 @@ public:
     }
 
 private:
+    template <typename EdgePtrType>
+    auto _make_address_comparator(const EdgePtrType& edge_ptr) {
+        return [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
+            return adjacent_edge_ptr.get() == target_edge_addr;
+        };
+    }
+
     type _list = {};
+    types::size_type _no_unique_edges = 0ull;
 };
 
 } // namespace gl::impl
