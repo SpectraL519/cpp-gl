@@ -5,6 +5,7 @@
 #include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
 
+#include <algorithm>
 #include <vector>
 
 namespace gl::impl {
@@ -64,12 +65,23 @@ public:
         this->_list.erase(std::next(std::begin(this->_list), vertex_id));
     }
 
-    // TODO: add_edge functionality moved to directional tags
+    // TODO:
+    // * add/remove_edge functionality moved to directional tags
+    // * add tests for remove_edge
 
     void add_edge(edge_ptr_type edge_ptr)
     requires(type_traits::is_directed_v<edge_type>)
     {
         this->_list.at(edge_ptr->first()->id()).push_back(std::move(edge_ptr));
+    }
+
+    void remove_edge(const edge_ptr_type& edge_ptr)
+    requires(type_traits::is_directed_v<edge_type>) {
+        const auto is_target_edge = [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
+            return adjacent_edge_ptr.get() == target_edge_addr;
+        };
+
+        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
     }
 
     void add_edge(edge_ptr_type edge_ptr)
@@ -79,9 +91,14 @@ public:
         this->_list.at(edge_ptr->second()->id()).push_back(edge_ptr);
     }
 
-    void remove_edge(const edge_ptr_type& edge_ptr) {
-        const auto first_id = edge_ptr->first()->id();
-        const auto second_id = edge_ptr->second()->id();
+    void remove_edge(const edge_ptr_type& edge_ptr)
+    requires(type_traits::is_undirected_v<edge_type>) {
+        const auto is_target_edge = [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
+            return adjacent_edge_ptr.get() == target_edge_addr;
+        };
+
+        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
+        std::ranges::remove_if(this->_list.at(edge_ptr->second()->id()), is_target_edge);
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
