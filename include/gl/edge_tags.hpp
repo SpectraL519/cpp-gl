@@ -92,7 +92,9 @@ template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     const typename EdgeType::vertex_ptr_type& first,
     const typename EdgeType::vertex_ptr_type& second
 ) {
-    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(new EdgeType(first, second));
+    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(
+        new EdgeType(first, second)
+    );
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>

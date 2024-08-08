@@ -76,10 +76,12 @@ public:
     }
 
     void remove_edge(const edge_ptr_type& edge_ptr)
-    requires(type_traits::is_directed_v<edge_type>) {
-        const auto is_target_edge = [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
-            return adjacent_edge_ptr.get() == target_edge_addr;
-        };
+    requires(type_traits::is_directed_v<edge_type>)
+    {
+        const auto is_target_edge =
+            [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
+                return adjacent_edge_ptr.get() == target_edge_addr;
+            };
 
         std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
     }
@@ -92,10 +94,12 @@ public:
     }
 
     void remove_edge(const edge_ptr_type& edge_ptr)
-    requires(type_traits::is_undirected_v<edge_type>) {
-        const auto is_target_edge = [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
-            return adjacent_edge_ptr.get() == target_edge_addr;
-        };
+    requires(type_traits::is_undirected_v<edge_type>)
+    {
+        const auto is_target_edge =
+            [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
+                return adjacent_edge_ptr.get() == target_edge_addr;
+            };
 
         std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), is_target_edge);
         std::ranges::remove_if(this->_list.at(edge_ptr->second()->id()), is_target_edge);
