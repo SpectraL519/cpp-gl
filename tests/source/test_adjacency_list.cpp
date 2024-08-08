@@ -78,9 +78,6 @@ struct test_directed_adjacency_list {
     using edge_type = lib::directed_edge<vertex_type>;
     using sut_type = lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>;
 
-    sut_type sut{constants::no_vertices};
-    std::vector<std::shared_ptr<vertex_type>> vertices;
-
     test_directed_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
             vertices.push_back(util::make_vertex<vertex_type>(id));
@@ -98,6 +95,9 @@ struct test_directed_adjacency_list {
     //         }
     //     }
     // }
+
+    sut_type sut{constants::no_vertices};
+    std::vector<std::shared_ptr<vertex_type>> vertices;
 };
 
 TEST_CASE_FIXTURE(

@@ -28,14 +28,14 @@ public:
 
     edge_descriptor() = delete;
 
-    explicit edge_descriptor(const vertex_ptr_type& u, const vertex_ptr_type& v)
-    : _vertices(u, v) {}
+    explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
+    : _vertices(first, second) {}
 
     explicit edge_descriptor(
-        const vertex_ptr_type& u, const vertex_ptr_type& v, const properties_type& properties
+        const vertex_ptr_type& first, const vertex_ptr_type& second, const properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(u, v), properties(properties) {}
+    : _vertices(first, second), properties(properties) {}
 
     // TODO: delete copy constructor and operator
 

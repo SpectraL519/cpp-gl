@@ -64,18 +64,24 @@ public:
         this->_list.erase(std::next(std::begin(this->_list), vertex_id));
     }
 
-    // TODO: add tests
-    void add_edge(edge_ptr_type edge)
+    // TODO: add_edge functionality moved to directional tags
+
+    void add_edge(edge_ptr_type edge_ptr)
     requires(type_traits::is_directed_v<edge_type>)
     {
-        this->_list.at(edge->first()->id()).push_back(std::move(edge));
+        this->_list.at(edge_ptr->first()->id()).push_back(std::move(edge_ptr));
     }
 
-    void add_edge(edge_ptr_type edge)
+    void add_edge(edge_ptr_type edge_ptr)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        this->_list.at(edge->first()->id()).push_back(edge);
-        this->_list.at(edge->second()->id()).push_back(edge);
+        this->_list.at(edge_ptr->first()->id()).push_back(edge_ptr);
+        this->_list.at(edge_ptr->second()->id()).push_back(edge_ptr);
+    }
+
+    void remove_edge(const edge_ptr_type& edge_ptr) {
+        const auto first_id = edge_ptr->first()->id();
+        const auto second_id = edge_ptr->second()->id();
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(

@@ -39,16 +39,6 @@ inline constexpr bool is_undirected_v =
 
 } // namespace type_traits
 
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_directed(const EdgeType&) {
-    return type_traits::is_directed_v<EdgeType>;
-}
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline constexpr bool is_undirected(const EdgeType&) {
-    return type_traits::is_undirected_v<EdgeType>;
-}
-
 struct directed_t {
     using type = std::type_identity_t<directed_t>;
 
@@ -98,20 +88,20 @@ struct undirected_t {
 };
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline typename EdgeType::directional_tag::edge_ptr_type<EdgeType> make_edge(
+[[nodiscard]] inline typename EdgeType::directional_tag::template edge_ptr_type<EdgeType> make_edge(
     const typename EdgeType::vertex_ptr_type& first,
     const typename EdgeType::vertex_ptr_type& second
 ) {
-    return typename EdgeType::directional_tag::edge_ptr_type<EdgeType>(new EdgeType(first, second));
+    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(new EdgeType(first, second));
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] inline typename EdgeType::directional_tag::edge_ptr_type<EdgeType> make_edge(
+[[nodiscard]] inline typename EdgeType::directional_tag::template edge_ptr_type<EdgeType> make_edge(
     const typename EdgeType::vertex_ptr_type& first,
     const typename EdgeType::vertex_ptr_type& second,
     const typename EdgeType::properties_type& properties
 ) {
-    return typename EdgeType::directional_tag::edge_ptr_type<EdgeType>(
+    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(
         new EdgeType(first, second, properties)
     );
 }
