@@ -3,6 +3,7 @@
 #include "types.hpp"
 
 #include <iterator>
+#include <format>
 #include <ranges>
 
 namespace gl {
@@ -59,9 +60,15 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] inline value_type& get(types::size_type n) const {
+    [[nodiscard]] value_type& element_at(types::size_type n) const {
+        const auto distance = this->distance();
+        if (not (n < this->distance()))
+            throw std::out_of_range(std::format("Position index {} out of range [0, {}]", n, this->distance()));
         return *std::ranges::next(this->begin(), n);
     }
+
+    // TODO: validate begin <(=?) end
+    // If validated, use size_type instead of ptrdiff_t
 
     inline void advance_begin(difference_type n = _default_n) {
         std::ranges::advance(this->_range.first, n);
