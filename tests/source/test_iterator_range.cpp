@@ -99,7 +99,9 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
     }
 
     SUBCASE("element_at should throw when index is out of range") {
-        CHECK_THROWS_AS(func::discard_result(sut.element_at(fixture_type::size)), std::out_of_range);
+        CHECK_THROWS_AS(
+            func::discard_result(sut.element_at(fixture_type::size)), std::out_of_range
+        );
     }
 
     SUBCASE("element_at should return a reference to the correct element") {

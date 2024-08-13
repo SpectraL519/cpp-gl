@@ -2,8 +2,8 @@
 
 #include "types.hpp"
 
-#include <iterator>
 #include <format>
+#include <iterator>
 #include <ranges>
 
 namespace gl {
@@ -63,7 +63,9 @@ public:
     [[nodiscard]] value_type& element_at(types::size_type n) const {
         const auto distance = this->distance();
         if (not (n < this->distance()))
-            throw std::out_of_range(std::format("Position index {} out of range [0, {}]", n, this->distance()));
+            throw std::out_of_range(
+                std::format("Position index {} out of range [0, {}]", n, this->distance())
+            );
         return *std::ranges::next(this->begin(), n);
     }
 
