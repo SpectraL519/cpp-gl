@@ -27,6 +27,8 @@ public:
     friend directional_tag;
 
     edge_descriptor() = delete;
+    edge_descriptor(const edge_descriptor&) = delete;
+    edge_descriptor& operator=(const edge_descriptor&) = delete;
 
     explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
     : _vertices(first, second) {}
@@ -39,12 +41,7 @@ public:
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(first, second), properties(properties) {}
 
-    // TODO: delete copy constructor and operator
-
-    edge_descriptor(const edge_descriptor&) = default;
     edge_descriptor(edge_descriptor&&) = default;
-
-    edge_descriptor& operator=(const edge_descriptor&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
 
     ~edge_descriptor() = default;

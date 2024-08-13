@@ -44,6 +44,9 @@ public:
     friend struct ::gl_testing::test_graph;
 #endif
 
+    graph(const graph&) = delete;
+    graph& operator=(const graph&) = delete;
+
     graph() = default;
 
     graph(const types::size_type no_vertices) : _vertices(no_vertices) {
@@ -53,12 +56,7 @@ public:
         });
     }
 
-    // TODO: delete copy constructor and operator
-
-    graph(const graph&) = default;
     graph(graph&&) = default;
-
-    graph& operator=(const graph&) = default;
     graph& operator=(graph&&) = default;
 
     ~graph() = default;

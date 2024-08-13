@@ -24,20 +24,18 @@ public:
     using edge_iterator_type = typename edge_set_type::iterator;
     using edge_const_iterator_type = typename edge_set_type::const_iterator;
 
-    // TODO: reverese iterators should be available only for bidirectional ranges
+    // TODO: reverese iterators should be available for bidirectional ranges
 
     using type = std::vector<edge_set_type>;
+
+    adjacency_list(const adjacency_list&) = delete;
+    adjacency_list& operator=(const adjacency_list&) = delete;
 
     adjacency_list() = default;
 
     adjacency_list(const types::size_type no_vertices) : _list(no_vertices) {}
 
-    // TODO: delete copy constructor and operator
-
-    adjacency_list(const adjacency_list&) = default;
     adjacency_list(adjacency_list&&) = default;
-
-    adjacency_list& operator=(const adjacency_list&) = default;
     adjacency_list& operator=(adjacency_list&&) = default;
 
     ~adjacency_list() = default;
@@ -70,9 +68,7 @@ public:
         this->_list.erase(std::next(std::begin(this->_list), vertex_id));
     }
 
-    // TODO:
-    // * add/remove_edge functionality moved to directional tags
-    // * add tests for remove_edge
+    // TODO: add/remove_edge functionality moved to directional tags
 
     void add_edge(edge_ptr_type edge_ptr)
     requires(type_traits::is_directed_v<edge_type>)
