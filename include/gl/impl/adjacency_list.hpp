@@ -70,14 +70,26 @@ public:
     void remove_vertex(const vertex_ptr_type& vertex)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        /*
-        TODO: remove edges incident with the removed vertex
-        * iterate over edges adjacent with the removed vertex
-        * for each edge e get other vertex v
-        * remove all edges incident with the removed vertex in the adj list for vertex v
-        * align the _no_unique_vertices variable
-        */
-        this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
+        // TODO: optimize for multiedges
+        // * the edges adjacent to incident_vertex should be processed once
+
+        const auto vertex_id = vertex->id();
+
+        for (const auto& edge : this->_list.at(vertex_id)) {
+            const auto incident_vertex = edge->incident_vertex(vertex);
+            if (*incident_vertex == *vertex)
+                continue; // loop
+
+            auto& adjacent_edges = this->_list.at(incident_vertex->id());
+            const auto rem_subrange =
+                std::ranges::remove_if(adjacent_edges, [&vertex](const auto& edge) {
+                    return edge->is_incident_with(vertex);
+                });
+            adjacent_edges.erase(rem_subrange.begin(), rem_subrange.end());
+        }
+
+        this->_no_unique_edges -= this->_list.at(vertex_id).size();
+        this->_list.erase(std::next(std::begin(this->_list), vertex_id));
     }
 
     void add_edge(edge_ptr_type edge)
