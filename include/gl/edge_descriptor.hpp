@@ -76,6 +76,10 @@ public:
         return nullptr;
     }
 
+    [[nodiscard]] inline bool is_incident_with(const vertex_ptr_type& vertex) const {
+        return *vertex == *this->_vertices.first or *vertex == *this->_vertices.second;
+    }
+
     [[nodiscard]] inline bool is_incident_from(const vertex_ptr_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }

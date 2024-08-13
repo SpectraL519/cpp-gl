@@ -52,53 +52,65 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    inline void remove_vertex(const types::id_type vertex_id) {
-        /*
-        TODO: remove edges incident to/from the removed vertex
-        * for directed graphs:
-            * iterate over all vertices
-            * for each vertex remove all edges incident with the removed vertex
-        * for undirected graphs:
-            * iterate over edges adjacent with the removed vertex
-            * for each edge e get other vertex v
-            * remove all edges incident with the removed vertex in the adj list for vertex v
-        * align the _no_unique_vertices variable
-        */
+    /*
+    TODO [remove_vertex]: remove edges incident to/from the removed vertex
+    * for directed graphs:
+        * iterate over all vertices
+        * for each vertex remove all edges incident with the removed vertex
+    * for undirected graphs:
+        * iterate over edges adjacent with the removed vertex
+        * for each edge e get other vertex v
+        * remove all edges incident with the removed vertex in the adj list for vertex v
+    * align the _no_unique_vertices variable
+    */
 
-        this->_list.erase(std::next(std::begin(this->_list), vertex_id));
+    void remove_vertex(const vertex_ptr_type& vertex)
+    requires(type_traits::is_directed_v<edge_type>) {
+        for (auto& adjacent_edges : this->_list) {
+            adjacent_edges.erase(
+                std::ranges::remove_if(
+                    adjacent_edges,
+                    [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
+                )
+            );
+        }
+        this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
     }
 
-    // TODO: add/remove_edge functionality moved to directional tags
+    void remove_vertex(const vertex_ptr_type& vertex)
+    requires(type_traits::is_undirected_v<edge_type>) {
+        this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
+    }
 
-    void add_edge(edge_ptr_type edge_ptr)
+    void add_edge(edge_ptr_type edge)
     requires(type_traits::is_directed_v<edge_type>)
     {
-        this->_list.at(edge_ptr->first()->id()).push_back(std::move(edge_ptr));
+        this->_list.at(edge->first()->id()).push_back(std::move(edge));
         this->_no_unique_edges++;
     }
 
-    void remove_edge(const edge_ptr_type& edge_ptr)
+    void remove_edge(const edge_ptr_type& edge)
     requires(type_traits::is_directed_v<edge_type>)
     {
-        auto& adj_edges = this->_list.at(edge_ptr->first()->id());
-        adj_edges.erase(std::ranges::find(adj_edges, edge_ptr.get(), address_projection{}));
+        auto& adj_edges = this->_list.at(edge->first()->id());
+        adj_edges.erase(std::ranges::find(adj_edges, edge.get(), address_projection{}));
         this->_no_unique_edges--;
     }
 
-    void add_edge(edge_ptr_type edge_ptr)
+    void add_edge(edge_ptr_type edge)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        this->_list.at(edge_ptr->first()->id()).push_back(edge_ptr);
-        this->_list.at(edge_ptr->second()->id()).push_back(edge_ptr);
+        this->_list.at(edge->first()->id()).push_back(edge);
+        this->_list.at(edge->second()->id()).push_back(edge);
         this->_no_unique_edges++;
     }
 
-    void remove_edge(const edge_ptr_type& edge_ptr)
+    void remove_edge(const edge_ptr_type& edge)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        const auto edge_addr = edge_ptr.get();
-        auto& adj_edges_first = this->_list.at(edge_ptr->first()->id());
-        auto& adj_edges_second = this->_list.at(edge_ptr->second()->id());
+        const auto edge_addr = edge.get();
+        auto& adj_edges_first = this->_list.at(edge->first()->id());
+        auto& adj_edges_second = this->_list.at(edge->second()->id());
 
         adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, address_projection{}));
         adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, address_projection{})
@@ -114,8 +126,8 @@ public:
 
 private:
     struct address_projection {
-        auto operator()(const edge_ptr_type& edge_ptr) const {
-            return edge_ptr.get();
+        auto operator()(const edge_ptr_type& edge) const {
+            return edge.get();
         }
     };
 

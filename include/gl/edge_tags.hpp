@@ -75,7 +75,7 @@ struct undirected_t {
     static bool is_incident_from(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
-        return edge.incident_vertex(vertex) != nullptr;
+        return edge.is_incident_with(vertex);
     }
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
@@ -83,7 +83,7 @@ struct undirected_t {
     static bool is_incident_to(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
-        return edge.incident_vertex(vertex) != nullptr;
+        return edge.is_incident_with(vertex);
     }
 };
 

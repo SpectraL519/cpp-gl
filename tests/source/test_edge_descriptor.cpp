@@ -82,6 +82,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(*sut.incident_vertex(fixture.vd_1), *fixture.vd_2);
         CHECK_EQ(*sut.incident_vertex(fixture.vd_2), *fixture.vd_1);
     }
+
+    SUBCASE("is_incident_with should return true when the given vertex is one of the connected vertices") {
+        CHECK(sut.is_incident_with(fixture.vd_1));
+        CHECK(sut.is_incident_with(fixture.vd_2));
+        CHECK_FALSE(sut.is_incident_with(fixture.vd_3));
+    }
 }
 
 // TODO: fix .clang-format to split such lines
