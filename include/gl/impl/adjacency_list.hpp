@@ -52,33 +52,31 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    /*
-    TODO [remove_vertex]: remove edges incident to/from the removed vertex
-    * for directed graphs:
-        * iterate over all vertices
-        * for each vertex remove all edges incident with the removed vertex
-    * for undirected graphs:
-        * iterate over edges adjacent with the removed vertex
-        * for each edge e get other vertex v
-        * remove all edges incident with the removed vertex in the adj list for vertex v
-    * align the _no_unique_vertices variable
-    */
-
     void remove_vertex(const vertex_ptr_type& vertex)
-    requires(type_traits::is_directed_v<edge_type>) {
+    requires(type_traits::is_directed_v<edge_type>)
+    {
         for (auto& adjacent_edges : this->_list) {
-            adjacent_edges.erase(
-                std::ranges::remove_if(
-                    adjacent_edges,
-                    [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
-                )
-            );
+            const auto rem_subrange =
+                std::ranges::remove_if(adjacent_edges, [&vertex](const auto& edge) {
+                    return edge->is_incident_with(vertex);
+                });
+            this->_no_unique_edges -=
+                std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
+            adjacent_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
         this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
     }
 
     void remove_vertex(const vertex_ptr_type& vertex)
-    requires(type_traits::is_undirected_v<edge_type>) {
+    requires(type_traits::is_undirected_v<edge_type>)
+    {
+        /*
+        TODO: remove edges incident with the removed vertex
+        * iterate over edges adjacent with the removed vertex
+        * for each edge e get other vertex v
+        * remove all edges incident with the removed vertex in the adj list for vertex v
+        * align the _no_unique_vertices variable
+        */
         this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
     }
 

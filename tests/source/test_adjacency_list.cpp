@@ -48,26 +48,28 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.no_unique_edges(), constants::zero_elements);
     }
 
-    // SUBCASE("remove_vertex should remove the vertex at the given id and all edges adjacent to that "
-    //         "vertex") {
-    //     SutType sut{constants::no_elements};
+    /*
+    SUBCASE("remove_vertex should remove the vertex at the given id and all edges adjacent to that "
+            "vertex") {
+        SutType sut{constants::no_elements};
 
-    //     sut.remove_vertex(constants::vertex_id_1);
+        sut.remove_vertex(constants::vertex_id_1);
 
-    //     constexpr lib_t::size_type no_vertices_after_remove =
-    //         constants::no_elements - constants::one_element;
+        constexpr lib_t::size_type no_vertices_after_remove =
+            constants::no_elements - constants::one_element;
 
-    //     std::ranges::for_each(
-    //         std::views::iota(constants::vertex_id_1, no_vertices_after_remove),
-    //         [&sut](const lib_t::id_type& vertex_id) {
-    //             CHECK_NOTHROW(func::discard_result(sut.adjacent_edges(vertex_id)));
-    //         }
-    //     );
+        std::ranges::for_each(
+            std::views::iota(constants::vertex_id_1, no_vertices_after_remove),
+            [&sut](const lib_t::id_type& vertex_id) {
+                CHECK_NOTHROW(func::discard_result(sut.adjacent_edges(vertex_id)));
+            }
+        );
 
-    //     CHECK_THROWS_AS(
-    //         func::discard_result(sut.adjacent_edges(no_vertices_after_remove)), std::out_of_range
-    //     );
-    // }
+        CHECK_THROWS_AS(
+            func::discard_result(sut.adjacent_edges(no_vertices_after_remove)), std::out_of_range
+        );
+    }
+    */
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -80,6 +82,9 @@ namespace {
 
 constexpr lib_t::size_type no_incident_edges_for_fully_connected_vertex =
     constants::no_elements - constants::one_element;
+
+constexpr lib_t::size_type no_unique_edges_in_full_graph =
+    no_incident_edges_for_fully_connected_vertex * constants::no_elements;
 
 } // namespace
 
@@ -103,10 +108,10 @@ struct test_directed_adjacency_list {
                 add_edge(first_id, second_id);
     }
 
-    // void prepare_full_graph() {
-    //     for (const auto first_id : constants::vertex_id_view)
-    //         fully_connect_vertex(first_id);
-    // }
+    void prepare_full_graph() {
+        for (const auto first_id : constants::vertex_id_view)
+            fully_connect_vertex(first_id);
+    }
 
     sut_type sut{constants::no_elements};
     std::vector<std::shared_ptr<vertex_type>> vertices;
@@ -153,6 +158,33 @@ TEST_CASE_FIXTURE(
         ),
         adjacent_edges.end()
     );
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "remove_vertex should remove the given vertex and all edges incident with it"
+) {
+    prepare_full_graph();
+    REQUIRE_EQ(sut.no_unique_edges(), no_unique_edges_in_full_graph);
+
+    const auto& removed_vertex = vertices[constants::first_element_idx];
+    sut.remove_vertex(removed_vertex);
+
+    constexpr auto no_vertices_after_remove = constants::no_elements - constants::one_element;
+    constexpr auto no_incident_edges_after_remove =
+        no_incident_edges_for_fully_connected_vertex - constants::one_element;
+
+    REQUIRE_EQ(sut.no_vertices(), no_vertices_after_remove);
+    REQUIRE_EQ(sut.no_unique_edges(), no_vertices_after_remove * no_incident_edges_after_remove);
+
+    for (const auto vertex_id :
+         constants::vertex_id_view | std::views::take(no_vertices_after_remove)) {
+        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
+        REQUIRE_EQ(adjacent_edges.distance(), no_incident_edges_after_remove);
+        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
+            return edge->is_incident_with(removed_vertex);
+        }));
+    }
 }
 
 struct test_undirected_adjacency_list {
