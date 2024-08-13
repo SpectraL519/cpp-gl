@@ -84,9 +84,8 @@ public:
     void remove_edge(const edge_ptr_type& edge_ptr)
     requires(type_traits::is_directed_v<edge_type>)
     {
-        std::ranges::remove_if(
-            this->_list.at(edge_ptr->first()->id()), this->_make_address_comparator(edge_ptr)
-        );
+        auto& adj_edges = this->_list.at(edge_ptr->first()->id());
+        adj_edges.erase(std::ranges::find(adj_edges, edge_ptr.get(), address_projection{}));
         this->_no_unique_edges--;
     }
 
@@ -101,10 +100,13 @@ public:
     void remove_edge(const edge_ptr_type& edge_ptr)
     requires(type_traits::is_undirected_v<edge_type>)
     {
-        const auto address_comparator = this->_make_address_comparator(edge_ptr);
+        const auto edge_addr = edge_ptr.get();
+        auto& adj_edges_first = this->_list.at(edge_ptr->first()->id());
+        auto& adj_edges_second = this->_list.at(edge_ptr->second()->id());
 
-        std::ranges::remove_if(this->_list.at(edge_ptr->first()->id()), address_comparator);
-        std::ranges::remove_if(this->_list.at(edge_ptr->second()->id()), address_comparator);
+        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, address_projection{}));
+        adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, address_projection{})
+        );
         this->_no_unique_edges--;
     }
 
@@ -115,12 +117,11 @@ public:
     }
 
 private:
-    template <typename EdgePtrType>
-    auto _make_address_comparator(const EdgePtrType& edge_ptr) {
-        return [target_edge_addr = edge_ptr.get()](const auto& adjacent_edge_ptr) {
-            return adjacent_edge_ptr.get() == target_edge_addr;
-        };
-    }
+    struct address_projection {
+        auto operator()(const edge_ptr_type& edge_ptr) const {
+            return edge_ptr.get();
+        }
+    };
 
     type _list = {};
     types::size_type _no_unique_edges = 0ull;

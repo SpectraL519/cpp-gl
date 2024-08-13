@@ -25,30 +25,30 @@ struct test_graph {
 };
 
 TEST_CASE_FIXTURE(test_graph, "graph should be initialized with no vertices by default") {
-    CHECK_EQ(sut.no_vertices(), constants::zero_vertices);
+    CHECK_EQ(sut.no_vertices(), constants::zero_elements);
 }
 
 TEST_CASE("graph constructed with no_vertices parameter should properly initialize the vertex list"
 ) {
-    default_sut_type sut{constants::no_vertices};
+    default_sut_type sut{constants::no_elements};
 
     REQUIRE(std::ranges::equal(
         sut.vertex_crange() | std::views::transform(transforms::extract_vertex_id<>),
-        std::views::iota(constants::vertex_id_1, constants::no_vertices)
+        std::views::iota(constants::vertex_id_1, constants::no_elements)
     ));
 
-    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::no_vertices)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::no_elements)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
     test_graph, "add_vertex should return a vertex_descriptor with an incremented id"
 ) {
-    constexpr lib_t::size_type target_no_vertices = constants::no_vertices;
+    constexpr lib_t::size_type target_no_vertices = constants::no_elements;
 
-    for (lib_t::id_type v_id = constants::zero_vertices; v_id < target_no_vertices; v_id++) {
+    for (lib_t::id_type v_id = constants::zero_elements; v_id < target_no_vertices; v_id++) {
         const auto& vertex = sut.add_vertex();
         CHECK_EQ(vertex->id(), v_id);
-        CHECK_EQ(sut.no_vertices(), v_id + constants::one_vertex);
+        CHECK_EQ(sut.no_vertices(), v_id + constants::one_element);
     }
 
     CHECK_EQ(sut.no_vertices(), target_no_vertices);
@@ -61,7 +61,7 @@ TEST_CASE("add_vertex should initialize a new vertex with the input properties s
     const types::visited_property visited{true};
 
     const auto& vertex = sut.add_vertex(visited);
-    REQUIRE_EQ(sut.no_vertices(), constants::one_vertex);
+    REQUIRE_EQ(sut.no_vertices(), constants::one_element);
 
     CHECK_EQ(vertex->id(), 0ull);
     CHECK_EQ(vertex->properties, visited);
@@ -97,13 +97,13 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {
-    default_sut_type sut{constants::no_vertices};
-    CHECK_EQ(sut.no_vertices(), constants::no_vertices);
+    default_sut_type sut{constants::no_elements};
+    CHECK_EQ(sut.no_vertices(), constants::no_elements);
 
     sut.remove_vertex(sut.get_vertex(constants::vertex_id_1));
 
     constexpr lib_t::size_type no_vertices_after_remove =
-        constants::no_vertices - constants::one_vertex;
+        constants::no_elements - constants::one_element;
 
     REQUIRE(std::ranges::equal(
         sut.vertex_range() | std::views::transform(transforms::extract_vertex_id<>),
