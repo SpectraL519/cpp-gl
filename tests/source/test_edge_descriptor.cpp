@@ -89,6 +89,13 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK(sut.is_incident_with(fixture.vd_2));
         CHECK_FALSE(sut.is_incident_with(fixture.vd_3));
     }
+
+    SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {
+        CHECK_FALSE(sut.is_loop());
+
+        const EdgeType loop{fixture.vd_1, fixture.vd_1};
+        CHECK(loop.is_loop());
+    }
 }
 
 // TODO: fix .clang-format to split such lines

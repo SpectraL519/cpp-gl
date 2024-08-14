@@ -13,4 +13,15 @@ inline lib_t::id_type extract_vertex_id(const std::shared_ptr<Vertextype>& verte
     return vertex->id();
 }
 
+template <typename T>
+struct address_projection {
+    auto operator()(const std::unique_ptr<T>& ptr) const {
+        return ptr.get();
+    }
+
+    auto operator()(const std::shared_ptr<T>& ptr) const {
+        return ptr.get();
+    }
+};
+
 } // namespace gl_testing::transforms

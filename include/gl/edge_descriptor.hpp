@@ -88,6 +88,10 @@ public:
         return directional_tag::is_incident_to(*this, vertex);
     }
 
+    [[nodiscard]] inline bool is_loop() const {
+        return *this->_vertices.first == *this->_vertices.second;
+    }
+
     properties_type properties = {};
 
 private:

@@ -90,7 +90,7 @@ public:
         std::for_each(
             std::next(std::begin(this->_vertices), vertex_id),
             this->_vertices.end(),
-            [](auto& v) { v->_set_id(v->id() - 1ull); }
+            [](auto& v) { v->_id--; }
         );
     }
 

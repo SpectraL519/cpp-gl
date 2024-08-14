@@ -14,15 +14,4 @@ template <lib_tt::c_instantiation_of<lib::vertex_descriptor> VertexType>
     return std::make_shared<VertexType>(id);
 }
 
-template <typename T>
-struct address_projection {
-    auto operator()(const std::unique_ptr<T>& ptr) const {
-        return ptr.get();
-    }
-
-    auto operator()(const std::shared_ptr<T>& ptr) const {
-        return ptr.get();
-    }
-};
-
 } // namespace gl_testing::util

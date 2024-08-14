@@ -78,7 +78,7 @@ public:
         for (const auto& edge : this->_list.at(vertex_id)) {
             const auto incident_vertex = edge->incident_vertex(vertex);
             if (*incident_vertex == *vertex)
-                continue; // loop
+                continue; // loop: will be removed with the vertex's list
 
             auto& adjacent_edges = this->_list.at(incident_vertex->id());
             const auto rem_subrange =
@@ -111,7 +111,8 @@ public:
     requires(type_traits::is_undirected_v<edge_type>)
     {
         this->_list.at(edge->first()->id()).push_back(edge);
-        this->_list.at(edge->second()->id()).push_back(edge);
+        if (not edge->is_loop())
+            this->_list.at(edge->second()->id()).push_back(edge);
         this->_no_unique_edges++;
     }
 

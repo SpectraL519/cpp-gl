@@ -57,10 +57,6 @@ public:
     properties_type properties = properties_type{};
 
 private:
-    inline void _set_id(const types::id_type id) {
-        this->_id = id;
-    }
-
     types::id_type _id;
 };
 
