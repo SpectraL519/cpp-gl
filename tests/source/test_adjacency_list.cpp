@@ -32,7 +32,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         std::ranges::for_each(
             std::views::iota(constants::vertex_id_1, constants::no_elements),
             [&sut](const lib_t::id_type vertex_id) {
-                CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_elements);
+                CHECK_EQ(sut.adjacent_edges_c(vertex_id).distance(), constants::zero_elements);
             }
         );
     }
@@ -106,8 +106,8 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
 
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
 }
 
 TEST_CASE_FIXTURE(
@@ -160,7 +160,7 @@ TEST_CASE_FIXTURE(
 
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(no_vertices_after_remove)) {
-        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
+        const auto adjacent_edges = sut.adjacent_edges_c(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), no_incident_edges_after_remove);
         CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
             return edge->is_incident_with(removed_vertex);
@@ -210,8 +210,8 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
 
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::one_element);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::one_element);
 }
 
 TEST_CASE_FIXTURE(
@@ -221,7 +221,7 @@ TEST_CASE_FIXTURE(
     add_edge(constants::vertex_id_1, constants::vertex_id_1);
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).distance(), constants::one_element);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
 }
 
 TEST_CASE_FIXTURE(
@@ -261,7 +261,7 @@ TEST_CASE_FIXTURE(
         adjacent_edges_first.end()
     );
 
-    const auto adjacent_edges_second = sut.adjacent_edges(second_id);
+    const auto adjacent_edges_second = sut.adjacent_edges_c(second_id);
     REQUIRE_EQ(adjacent_edges_second.distance(), constants::zero_elements);
     // validate that the adjacent edges vector has been properly aligned
     CHECK_EQ(
@@ -292,7 +292,7 @@ TEST_CASE_FIXTURE(
 
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(no_vertices_after_remove)) {
-        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
+        const auto adjacent_edges = sut.adjacent_edges_c(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), no_incident_edges_after_remove);
         CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
             return edge->is_incident_with(removed_vertex);

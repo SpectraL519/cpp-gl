@@ -120,11 +120,14 @@ public:
     requires(type_traits::is_undirected_v<edge_type>)
     {
         const auto edge_addr = edge.get();
-        auto& adj_edges_first = this->_list.at(edge->first()->id());
-        auto& adj_edges_second = this->_list.at(edge->second()->id());
+        auto& adjacent_edges_first = this->_list.at(edge->first()->id());
+        auto& adjacent_edges_second = this->_list.at(edge->second()->id());
 
-        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, address_projection{}));
-        adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, address_projection{})
+        adj_edges_first.erase(
+            std::ranges::find(adjacent_edges_first, edge_addr, address_projection{})
+        );
+        adj_edges_second.erase(
+            std::ranges::find(adjacent_edges_second, edge_addr, address_projection{})
         );
         this->_no_unique_edges--;
     }
@@ -133,6 +136,13 @@ public:
         const types::id_type vertex_id
     ) {
         return make_iterator_range(this->_list.at(vertex_id));
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+        const types::id_type vertex_id
+    ) const {
+        const auto& adjacent_edges = this->_list.at(vertex_id);
+        return make_iterator_range(adjacent_edges.cbegin(), adjacent_edges.cend());
     }
 
 private:
