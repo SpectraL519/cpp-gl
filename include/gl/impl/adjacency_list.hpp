@@ -6,7 +6,6 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
-#include <algorithm>
 #include <vector>
 
 namespace gl::impl {

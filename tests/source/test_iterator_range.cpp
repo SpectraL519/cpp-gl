@@ -15,11 +15,11 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_iterator_range");
 
 template <typename Container>
-struct test_iterator_range_common {
+struct test_iterator_range {
     using container_type = Container;
     using iterator_type = typename container_type::iterator;
 
-    test_iterator_range_common() : container(size), sut(container.begin(), container.end()) {
+    test_iterator_range() : container(size), sut(container.begin(), container.end()) {
         std::iota(container.begin(), container.end(), first_element);
     }
 
@@ -30,9 +30,9 @@ struct test_iterator_range_common {
     lib_t::iterator_range<iterator_type> sut;
 };
 
-TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, container_type_template) {
+TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", ContainerType, container_type_template) {
     using container_type = ContainerType;
-    using fixture_type = test_iterator_range_common<container_type>;
+    using fixture_type = test_iterator_range<container_type>;
     using iterator_type = typename fixture_type::iterator_type;
 
     fixture_type fixture;

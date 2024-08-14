@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <memory>
 #include <ranges>
 #include <type_traits>
 
@@ -36,5 +37,9 @@ concept c_reverse_range = requires(T& t) {
     std::ranges::rbegin(t);
     std::ranges::rend(t);
 };
+
+template <typename T>
+concept c_strong_smart_ptr =
+    c_instantiation_of<T, std::unique_ptr> or c_instantiation_of<T, std::shared_ptr>;
 
 } // namespace gl::type_traits

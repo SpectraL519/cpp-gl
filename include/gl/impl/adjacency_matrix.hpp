@@ -4,8 +4,8 @@
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
+#include "specialized/adjacency_matrix.hpp"
 
-#include <algorithm>
 #include <vector>
 
 namespace gl::impl {
@@ -28,17 +28,18 @@ public:
 
     using type = std::vector<edge_set_type>;
 
+private:
+    using specialized = specialized::impl_type<adjacency_matrix>;
+    friend specialized;
+
+public:
     adjacency_matrix(const adjacency_matrix&) = delete;
     adjacency_matrix& operator=(const adjacency_matrix&) = delete;
 
     adjacency_matrix() = default;
 
     adjacency_matrix(const types::size_type no_vertices) : _matrix(no_vertices) {
-        constexpr auto make_null_edge = []() { return nullptr; };
-        for (auto& matrix_row : this->_matrix) {
-            matrix_row.reserve(no_vertices);
-            std::generate_n(std::back_inserter(matrix_row), no_vertices, make_null_edge);
-        }
+        specialized::construct(*this, no_vertices);
     }
 
     adjacency_matrix(adjacency_matrix&&) = default;
