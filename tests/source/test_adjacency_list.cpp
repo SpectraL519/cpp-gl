@@ -12,6 +12,8 @@
 
 namespace gl_testing {
 
+TEST_SUITE_BEGIN("test_adjacency_list");
+
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
 ) {
@@ -297,5 +299,7 @@ TEST_CASE_FIXTURE(
         }));
     }
 }
+
+TEST_SUITE_END(); // test_adjacency_list
 
 } // namespace gl_testing
