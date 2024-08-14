@@ -4,6 +4,7 @@
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
+#include "specialized/adjacency_list.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -28,6 +29,11 @@ public:
 
     using type = std::vector<edge_set_type>;
 
+private:
+    using specialized = specialized::impl_type<adjacency_list>;
+    friend specialized;
+
+public:
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
 
@@ -52,84 +58,16 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    void remove_vertex(const vertex_ptr_type& vertex)
-    requires(type_traits::is_directed_v<edge_type>)
-    {
-        for (auto& adjacent_edges : this->_list) {
-            const auto rem_subrange =
-                std::ranges::remove_if(adjacent_edges, [&vertex](const auto& edge) {
-                    return edge->is_incident_with(vertex);
-                });
-            this->_no_unique_edges -=
-                std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
-            adjacent_edges.erase(rem_subrange.begin(), rem_subrange.end());
-        }
-        this->_list.erase(std::next(std::begin(this->_list), vertex->id()));
+    inline void remove_vertex(const vertex_ptr_type& vertex) {
+        specialized::remove_vertex(*this, vertex);
     }
 
-    void remove_vertex(const vertex_ptr_type& vertex)
-    requires(type_traits::is_undirected_v<edge_type>)
-    {
-        // TODO: optimize for multiedges
-        // * the edges adjacent to incident_vertex should be processed once
-
-        const auto vertex_id = vertex->id();
-
-        for (const auto& edge : this->_list.at(vertex_id)) {
-            const auto incident_vertex = edge->incident_vertex(vertex);
-            if (*incident_vertex == *vertex)
-                continue; // loop: will be removed with the vertex's list
-
-            auto& adjacent_edges = this->_list.at(incident_vertex->id());
-            const auto rem_subrange =
-                std::ranges::remove_if(adjacent_edges, [&vertex](const auto& edge) {
-                    return edge->is_incident_with(vertex);
-                });
-            adjacent_edges.erase(rem_subrange.begin(), rem_subrange.end());
-        }
-
-        this->_no_unique_edges -= this->_list.at(vertex_id).size();
-        this->_list.erase(std::next(std::begin(this->_list), vertex_id));
+    inline void add_edge(edge_ptr_type edge) {
+        specialized::add_edge(*this, std::move(edge));
     }
 
-    void add_edge(edge_ptr_type edge)
-    requires(type_traits::is_directed_v<edge_type>)
-    {
-        this->_list.at(edge->first()->id()).push_back(std::move(edge));
-        this->_no_unique_edges++;
-    }
-
-    void remove_edge(const edge_ptr_type& edge)
-    requires(type_traits::is_directed_v<edge_type>)
-    {
-        auto& adj_edges = this->_list.at(edge->first()->id());
-        adj_edges.erase(std::ranges::find(adj_edges, edge.get(), address_projection{}));
-        this->_no_unique_edges--;
-    }
-
-    void add_edge(edge_ptr_type edge)
-    requires(type_traits::is_undirected_v<edge_type>)
-    {
-        this->_list.at(edge->first()->id()).push_back(edge);
-        if (not edge->is_loop())
-            this->_list.at(edge->second()->id()).push_back(edge);
-        this->_no_unique_edges++;
-    }
-
-    void remove_edge(const edge_ptr_type& edge)
-    requires(type_traits::is_undirected_v<edge_type>)
-    {
-        const auto edge_addr = edge.get();
-        auto& adjacent_edges_first = this->_list.at(edge->first()->id());
-        auto& adjacent_edges_second = this->_list.at(edge->second()->id());
-
-        adj_edges_first.erase(
-            std::ranges::find(adjacent_edges_first, edge_addr, address_projection{})
-        );
-        adj_edges_second.erase(
-            std::ranges::find(adjacent_edges_second, edge_addr, address_projection{})
-        );
-        this->_no_unique_edges--;
+    inline void remove_edge(const edge_ptr_type& edge) {
+        specialized::template remove_edge<address_projection>(*this, edge);
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(

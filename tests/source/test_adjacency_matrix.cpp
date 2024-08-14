@@ -22,6 +22,15 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.no_vertices(), constants::zero_elements);
         CHECK_EQ(sut.no_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("constructed with the no_vertices parameter should properly initialize the adjacency "
+            "matrix") {
+        SutType sut{constants::no_elements};
+        REQUIRE_EQ(sut.no_vertices(), constants::no_elements);
+        REQUIRE_EQ(sut.no_unique_edges(), constants::zero_elements);
+
+        // TODO: check that there are no edges added
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

@@ -33,8 +33,13 @@ public:
 
     adjacency_matrix() = default;
 
-    adjacency_matrix(const types::size_type no_vertices)
-    : _matrix(no_vertices, edge_set_type(no_vertices)) {}
+    adjacency_matrix(const types::size_type no_vertices) : _matrix(no_vertices) {
+        constexpr auto make_null_edge = []() { return nullptr; };
+        for (auto& matrix_row : this->_matrix) {
+            matrix_row.reserve(no_vertices);
+            std::generate_n(std::back_inserter(matrix_row), no_vertices, make_null_edge);
+        }
+    }
 
     adjacency_matrix(adjacency_matrix&&) = default;
     adjacency_matrix& operator=(adjacency_matrix&&) = default;
