@@ -1,3 +1,5 @@
+#include "functional.hpp"
+
 #include <gl/types/iterator_range.hpp>
 
 #include <doctest.h>
@@ -96,10 +98,16 @@ TEST_CASE_TEMPLATE_DEFINE("common iterator_range tests", ContainerType, containe
         CHECK_EQ(sut.distance(), fixture_type::size);
     }
 
-    SUBCASE("get should return a reference to the correct element") {
+    SUBCASE("element_at should throw when index is out of range") {
+        CHECK_THROWS_AS(
+            func::discard_result(sut.element_at(fixture_type::size)), std::out_of_range
+        );
+    }
+
+    SUBCASE("element_at should return a reference to the correct element") {
         iterator_type it = container.begin();
         for (std::size_t n = 0; n < fixture_type::size; n++)
-            CHECK_EQ(std::addressof(sut.get(n)), std::addressof(*it++));
+            CHECK_EQ(std::addressof(sut.element_at(n)), std::addressof(*it++));
     }
 
     SUBCASE("advance_begin should move the begin iterator by the the specified offset") {

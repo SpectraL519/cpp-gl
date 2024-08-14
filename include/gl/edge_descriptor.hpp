@@ -1,8 +1,8 @@
 #pragma once
 
-#include "detail/concepts.hpp"
 #include "edge_tags.hpp"
 #include "types/default_types.hpp"
+#include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
 
@@ -13,9 +13,9 @@
 namespace gl {
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_edge_directional_tag DirectionalTag = directed_t,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
+    type_traits::c_properties Properties = types::empty_properties>
 class edge_descriptor {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
@@ -27,17 +27,21 @@ public:
     friend directional_tag;
 
     edge_descriptor() = delete;
+    edge_descriptor(const edge_descriptor&) = delete;
+    edge_descriptor& operator=(const edge_descriptor&) = delete;
 
-    explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v) : _vertices(u, v) {}
+    explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
+    : _vertices(first, second) {}
 
-    explicit edge_descriptor(vertex_ptr_type u, vertex_ptr_type v, const properties_type& properties)
-    requires(not detail::is_default_properties_type_v<properties_type>)
-    : _vertices(u, v), properties(properties) {}
+    explicit edge_descriptor(
+        const vertex_ptr_type& first,
+        const vertex_ptr_type& second,
+        const properties_type& properties
+    )
+    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    : _vertices(first, second), properties(properties) {}
 
-    edge_descriptor(const edge_descriptor&) = default;
     edge_descriptor(edge_descriptor&&) = default;
-
-    edge_descriptor& operator=(const edge_descriptor&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
 
     ~edge_descriptor() = default;
@@ -72,12 +76,20 @@ public:
         return nullptr;
     }
 
+    [[nodiscard]] inline bool is_incident_with(const vertex_ptr_type& vertex) const {
+        return *vertex == *this->_vertices.first or *vertex == *this->_vertices.second;
+    }
+
     [[nodiscard]] inline bool is_incident_from(const vertex_ptr_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }
 
     [[nodiscard]] inline bool is_incident_to(const vertex_ptr_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
+    }
+
+    [[nodiscard]] inline bool is_loop() const {
+        return *this->_vertices.first == *this->_vertices.second;
     }
 
     properties_type properties = {};
@@ -87,19 +99,19 @@ private:
 };
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_edge_directional_tag DirectionalTag = directed_t,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
+    type_traits::c_properties Properties = types::empty_properties>
 using edge = edge_descriptor<VertexType, DirectionalTag, Properties>;
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_properties Properties = types::empty_properties>
 using directed_edge = edge_descriptor<VertexType, directed_t, Properties>;
 
 template <
-    detail::c_instantiation_of<vertex_descriptor> VertexType,
-    detail::c_properties Properties = types::empty_properties>
+    type_traits::c_instantiation_of<vertex_descriptor> VertexType,
+    type_traits::c_properties Properties = types::empty_properties>
 using undirected_edge = edge_descriptor<VertexType, undirected_t, Properties>;
 
 } // namespace gl

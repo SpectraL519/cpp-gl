@@ -25,15 +25,16 @@ AlignEscapedNewlines: Left
 AlignOperands:        AlignAfterOperator
 AlignTrailingComments: false
 
-AllowAllArgumentsOnNextLine:               true
-AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortBlocksOnASingleLine:             Empty
-AllowShortCaseLabelsOnASingleLine:         false
-AllowShortEnumsOnASingleLine:              true
-AllowShortFunctionsOnASingleLine:          Empty
-AllowShortIfStatementsOnASingleLine:       Never
-AllowShortLambdasOnASingleLine:            All
-AllowShortLoopsOnASingleLine:              false
+AllowAllArgumentsOnNextLine:                true
+AllowAllParametersOfDeclarationOnNextLine:  true
+AllowShortBlocksOnASingleLine:              Empty
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine:          false
+AllowShortEnumsOnASingleLine:               true
+AllowShortFunctionsOnASingleLine:           Empty
+AllowShortIfStatementsOnASingleLine:        Never
+AllowShortLambdasOnASingleLine:             All
+AllowShortLoopsOnASingleLine:               false
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType:           None
