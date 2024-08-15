@@ -57,6 +57,7 @@ public:
 #endif
 
     [[nodiscard]] inline difference_type distance() const {
+        // TODO: keep the current distance as a member
         return std::ranges::distance(this->begin(), this->end());
     }
 

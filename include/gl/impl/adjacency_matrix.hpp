@@ -78,7 +78,7 @@ public:
     }
 
     inline void remove_edge(const edge_ptr_type& edge) {
-        // specialized::template remove_edge<address_projection>(*this, edge);
+        specialized::remove_edge(*this, edge);
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(

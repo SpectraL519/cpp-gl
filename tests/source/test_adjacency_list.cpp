@@ -119,8 +119,8 @@ TEST_CASE_FIXTURE(
     fully_connect_vertex(constants::vertex_id_1);
 
     auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
-    REQUIRE_EQ(adjacent_edges.distance(), no_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(sut.no_unique_edges(), no_incident_edges_for_fully_connected_vertex);
+    REQUIRE_EQ(adjacent_edges.distance(), no_incident_edges_for_fully_connected_vertex);
 
     const auto& edge_to_remove = adjacent_edges.element_at(constants::first_element_idx);
     const auto edge_to_remove_addr = edge_to_remove.get();
@@ -135,7 +135,7 @@ TEST_CASE_FIXTURE(
         adjacent_edges.distance(),
         no_incident_edges_for_fully_connected_vertex - constants::one_element
     );
-    // validate that the adjacent edges vector has been properly aligned
+    // validate that the adjacent edges list has been properly aligned
     CHECK_EQ(edge_to_remove.get(), adjacent_edges.element_at(constants::first_element_idx).get());
     CHECK_EQ(
         std::ranges::find(
@@ -255,19 +255,19 @@ TEST_CASE_FIXTURE(
     const auto edge_to_remove_addr = edge_to_remove.get();
 
     const auto second_id = edge_to_remove->second()->id();
-    REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
+    REQUIRE_EQ(sut.adjacent_edges_c(second_id).distance(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
     REQUIRE_EQ(
         sut.no_unique_edges(), no_incident_edges_for_fully_connected_vertex - constants::one_element
     );
 
+    // validate that the first adjacent edges list has been properly aligned
     adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
     REQUIRE_EQ(
         adjacent_edges_first.distance(),
         no_incident_edges_for_fully_connected_vertex - constants::one_element
     );
-    // validate that the adjacent edges vector has been properly aligned
     CHECK_EQ(
         edge_to_remove.get(), adjacent_edges_first.element_at(constants::first_element_idx).get()
     );
@@ -278,9 +278,9 @@ TEST_CASE_FIXTURE(
         adjacent_edges_first.end()
     );
 
+    // validate that the second adjacent edges list has been properly aligned
     const auto adjacent_edges_second = sut.adjacent_edges_c(second_id);
     REQUIRE_EQ(adjacent_edges_second.distance(), constants::zero_elements);
-    // validate that the adjacent edges vector has been properly aligned
     CHECK_EQ(
         std::ranges::find(
             adjacent_edges_second, edge_to_remove_addr, transforms::address_projection<edge_type>{}
