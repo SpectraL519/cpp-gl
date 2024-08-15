@@ -57,12 +57,12 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    inline void remove_vertex(const vertex_ptr_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
-    }
-
     inline void add_edge(edge_ptr_type edge) {
         specialized::add_edge(*this, std::move(edge));
+    }
+
+    inline void remove_vertex(const vertex_ptr_type& vertex) {
+        specialized::remove_vertex(*this, vertex);
     }
 
     inline void remove_edge(const edge_ptr_type& edge) {

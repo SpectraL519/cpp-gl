@@ -68,19 +68,17 @@ public:
         std::generate_n(std::back_inserter(new_row), this->no_vertices(), _make_null_edge);
     }
 
-    /*
-    inline void remove_vertex(const vertex_ptr_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
-    }
-
     inline void add_edge(edge_ptr_type edge) {
         specialized::add_edge(*this, std::move(edge));
     }
 
-    inline void remove_edge(const edge_ptr_type& edge) {
-        specialized::template remove_edge<address_projection>(*this, edge);
+    inline void remove_vertex(const vertex_ptr_type& vertex) {
+        // specialized::remove_vertex(*this, vertex);
     }
-    */
+
+    inline void remove_edge(const edge_ptr_type& edge) {
+        // specialized::template remove_edge<address_projection>(*this, edge);
+    }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id

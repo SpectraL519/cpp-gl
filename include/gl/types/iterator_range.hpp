@@ -60,7 +60,16 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] value_type& element_at(types::size_type n) const {
+    [[nodiscard]] value_type& element_at(types::size_type n) {
+        const auto distance = this->distance();
+        if (not (n < this->distance()))
+            throw std::out_of_range(
+                std::format("Position index {} out of range [0, {}]", n, this->distance())
+            );
+        return *std::ranges::next(this->begin(), n);
+    }
+
+    [[nodiscard]] const value_type& element_at(types::size_type n) const {
         const auto distance = this->distance();
         if (not (n < this->distance()))
             throw std::out_of_range(

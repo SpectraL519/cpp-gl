@@ -19,6 +19,11 @@ requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
 
+    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        self._list.at(edge->first()->id()).push_back(std::move(edge));
+        self._no_unique_edges++;
+    }
+
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         for (auto& adj_edges : self._list) {
             const auto rem_subrange = std::ranges::remove_if(
@@ -29,11 +34,6 @@ struct directed_adjacency_list {
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
         self._list.erase(std::next(std::begin(self._list), vertex->id()));
-    }
-
-    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
-        self._list.at(edge->first()->id()).push_back(std::move(edge));
-        self._no_unique_edges++;
     }
 
     template <typename IdProjection>
@@ -48,6 +48,13 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
+
+    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        self._list.at(edge->first()->id()).push_back(edge);
+        if (not edge->is_loop())
+            self._list.at(edge->second()->id()).push_back(edge);
+        self._no_unique_edges++;
+    }
 
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         // TODO: optimize for multiedges
@@ -69,13 +76,6 @@ struct undirected_adjacency_list {
 
         self._no_unique_edges -= self._list.at(vertex_id).size();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
-    }
-
-    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
-        self._list.at(edge->first()->id()).push_back(edge);
-        if (not edge->is_loop())
-            self._list.at(edge->second()->id()).push_back(edge);
-        self._no_unique_edges++;
     }
 
     template <typename IdProjection>

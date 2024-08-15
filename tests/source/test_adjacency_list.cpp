@@ -106,8 +106,13 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
 
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
+    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+    REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
+    REQUIRE_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
+
+    const auto& new_edge = adjacent_edges_1.element_at(constants::first_element_idx);
+    CHECK(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
+    CHECK(new_edge->is_incident_to(vertices[constants::vertex_id_2]));
 }
 
 TEST_CASE_FIXTURE(
@@ -210,8 +215,18 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
 
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::one_element);
+    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+    const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+
+    REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
+    REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
+
+    const auto& new_edge_1 = adjacent_edges_1.element_at(constants::first_element_idx);
+    CHECK(new_edge_1->is_incident_from(vertices[constants::vertex_id_1]));
+    CHECK(new_edge_1->is_incident_to(vertices[constants::vertex_id_2]));
+
+    const auto& new_edge_2 = adjacent_edges_2.element_at(constants::first_element_idx);
+    CHECK_EQ(new_edge_1.get(), new_edge_2.get());
 }
 
 TEST_CASE_FIXTURE(
@@ -221,7 +236,11 @@ TEST_CASE_FIXTURE(
     add_edge(constants::vertex_id_1, constants::vertex_id_1);
 
     REQUIRE_EQ(sut.no_unique_edges(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_1).distance(), constants::one_element);
+
+    const auto adjacent_edges = sut.adjacent_edges_c(constants::vertex_id_1);
+    REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
+
+    CHECK(adjacent_edges.element_at(constants::first_element_idx)->is_loop());
 }
 
 TEST_CASE_FIXTURE(

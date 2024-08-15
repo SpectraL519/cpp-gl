@@ -18,12 +18,27 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyMatrix;
+
+    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        self._matrix.at(edge->first()->id()).at(edge->second()->id()) = std::move(edge);
+        self._no_unique_edges++;
+    }
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyMatrix;
+
+    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        const auto first_id = edge->first()->id();
+        const auto second_id = edge->second()->id();
+
+        self._matrix.at(first_id).at(second_id) = edge;
+        if (not edge->is_loop())
+            self._matrix.at(second_id).at(first_id) = edge;
+        self._no_unique_edges++;
+    }
 };
 
 // common utility
