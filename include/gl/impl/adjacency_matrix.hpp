@@ -74,7 +74,7 @@ public:
     }
 
     inline void remove_vertex(const vertex_ptr_type& vertex) {
-        // specialized::remove_vertex(*this, vertex);
+        specialized::remove_vertex(*this, vertex);
     }
 
     inline void remove_edge(const edge_ptr_type& edge) {

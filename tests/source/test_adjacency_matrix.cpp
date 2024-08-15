@@ -145,7 +145,6 @@ TEST_CASE_FIXTURE(
     );
 }
 
-/*
 TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
@@ -171,7 +170,6 @@ TEST_CASE_FIXTURE(
         }));
     }
 }
-*/
 
 struct test_undirected_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
@@ -288,7 +286,6 @@ TEST_CASE_FIXTURE(
     );
 }
 
-/*
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
@@ -316,7 +313,6 @@ TEST_CASE_FIXTURE(
         }));
     }
 }
-*/
 
 TEST_SUITE_END(); // test_adjacency_matrix
 
