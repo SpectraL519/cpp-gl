@@ -2,10 +2,10 @@
 
 #include "gl/graph_traits.hpp"
 #include "gl/types/iterator_range.hpp"
+#include "gl/types/non_null_iterator.hpp"
 #include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
-#include "gl/types/non_null_iterator.hpp"
 
 #include <vector>
 
@@ -23,7 +23,8 @@ public:
 
     using edge_set_type = std::vector<edge_ptr_type>;
     using edge_iterator_type = types::non_null_iterator<type_traits::iterator_type<edge_set_type>>;
-    using edge_const_iterator_type = types::non_null_iterator<type_traits::const_iterator_type<edge_set_type>>;
+    using edge_const_iterator_type =
+        types::non_null_iterator<type_traits::const_iterator_type<edge_set_type>>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
