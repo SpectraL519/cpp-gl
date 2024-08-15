@@ -29,7 +29,26 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.no_vertices(), constants::no_elements);
         REQUIRE_EQ(sut.no_unique_edges(), constants::zero_elements);
 
-        // TODO: check that there are no edges added
+        std::ranges::for_each(
+            constants::vertex_id_view,
+            [&sut](const lib_t::id_type vertex_id) {
+                CHECK_EQ(sut.adjacent_edges_c(vertex_id).distance(), constants::zero_elements);
+            }
+        );
+    }
+
+    SUBCASE("add_vertex should properly extend the current adjacency matrix") {
+        SutType sut{};
+        constexpr lib_t::size_type target_no_vertices = constants::no_elements;
+
+        for (lib_t::size_type no_vertices = constants::one_element; no_vertices <= target_no_vertices;
+             no_vertices++) {
+            sut.add_vertex();
+            CHECK_EQ(sut.no_vertices(), no_vertices);
+        }
+
+        CHECK_EQ(sut.no_vertices(), target_no_vertices);
+        CHECK_EQ(sut.no_unique_edges(), constants::zero_elements);
     }
 }
 
