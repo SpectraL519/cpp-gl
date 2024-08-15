@@ -1,10 +1,10 @@
 #pragma once
 
+#include "type_traits.hpp"
 #include "types.hpp"
 
 #include <format>
 #include <iterator>
-#include <ranges>
 
 namespace gl {
 
@@ -24,7 +24,7 @@ public:
 
     explicit iterator_range(iterator begin, iterator end) : _range(begin, end) {}
 
-    template <std::ranges::range Range>
+    template <type_traits::c_range Range>
     explicit iterator_range(Range& range)
     : _range(std::ranges::begin(range), std::ranges::end(range)) {}
 
@@ -95,11 +95,17 @@ template <std::forward_iterator Iterator>
     return types::iterator_range{begin, end};
 }
 
-template <std::ranges::range Range>
-[[nodiscard]] inline types::iterator_range<typename Range::iterator> make_iterator_range(
+template <type_traits::c_range Range>
+[[nodiscard]] inline types::iterator_range<type_traits::iterator_type<Range>> make_iterator_range(
     Range& range
 ) {
     return types::iterator_range{std::ranges::begin(range), std::ranges::end(range)};
+}
+
+template <type_traits::c_range Range>
+[[nodiscard]] inline types::iterator_range<type_traits::const_iterator_type<Range>>
+make_const_iterator_range(Range& range) {
+    return types::iterator_range{std::ranges::cbegin(range), std::ranges::cend(range)};
 }
 
 } // namespace gl

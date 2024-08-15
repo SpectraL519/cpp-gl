@@ -21,8 +21,8 @@ public:
     using edge_directional_tag = type_traits::edge_directional_tag<GraphTraits>;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = typename edge_set_type::iterator;
-    using edge_const_iterator_type = typename edge_set_type::const_iterator;
+    using edge_iterator_type = type_traits::iterator_type<edge_set_type>;
+    using edge_const_iterator_type = type_traits::const_iterator_type<edge_set_type>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -53,6 +53,18 @@ public:
 
     [[nodiscard]] inline types::size_type no_unique_edges() const {
         return this->_no_unique_edges;
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
+        const types::id_type vertex_id
+    ) {
+        return make_iterator_range(this->_list.at(vertex_id));
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+        const types::id_type vertex_id
+    ) const {
+        return make_const_iterator_range(this->_list.at(vertex_id));
     }
 
 private:

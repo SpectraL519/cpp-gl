@@ -99,7 +99,7 @@ public:
     }
 
     [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertex_crange() const {
-        return make_iterator_range(this->_vertices.cbegin(), this->_vertices.cend());
+        return make_const_iterator_range(this->_vertices);
     }
 
     [[nodiscard]] inline types::iterator_range<vertex_reverse_iterator_type> vertex_rrange() {

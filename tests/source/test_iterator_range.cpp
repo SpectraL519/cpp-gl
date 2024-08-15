@@ -17,7 +17,7 @@ TEST_SUITE_BEGIN("test_iterator_range");
 template <typename Container>
 struct test_iterator_range {
     using container_type = Container;
-    using iterator_type = typename container_type::iterator;
+    using iterator_type = lib_tt::iterator_type<container_type>;
 
     test_iterator_range() : container(size), sut(container.begin(), container.end()) {
         std::iota(container.begin(), container.end(), first_element);
