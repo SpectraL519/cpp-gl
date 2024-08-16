@@ -3,7 +3,7 @@
 #include "transforms.hpp"
 #include "utility.hpp"
 
-#include <gl/impl/adjacency_list.hpp>
+#include <gl/impl/adjacency_matrix.hpp>
 
 #include <doctest.h>
 
@@ -12,7 +12,7 @@
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_adjacency_list");
+TEST_SUITE_BEGIN("test_adjacency_matrix");
 
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
@@ -24,7 +24,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("constructed with the no_vertices parameter should properly initialize the adjacency "
-            "list") {
+            "matrix") {
         SutType sut{constants::no_elements};
         REQUIRE_EQ(sut.no_vertices(), constants::no_elements);
         REQUIRE_EQ(sut.no_unique_edges(), constants::zero_elements);
@@ -34,7 +34,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         });
     }
 
-    SUBCASE("add_vertex should properly extend the current adjacency list") {
+    SUBCASE("add_vertex should properly extend the current adjacency matrix") {
         SutType sut{};
         constexpr lib_t::size_type target_no_vertices = constants::no_elements;
 
@@ -52,8 +52,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_directional_tag_sut_template,
-    lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>, // directed adj list
-    lib_i::adjacency_list<lib::graph_traits<lib::undirected_t>> // undirected adj list
+    lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>, // directed adj list
+    lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>> // undirected adj list
 );
 
 namespace {
@@ -63,12 +63,12 @@ constexpr lib_t::size_type no_incident_edges_for_fully_connected_vertex =
 
 } // namespace
 
-struct test_directed_adjacency_list {
+struct test_directed_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::directed_edge<vertex_type>;
-    using sut_type = lib_i::adjacency_list<lib::graph_traits<lib::directed_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>;
 
-    test_directed_adjacency_list() {
+    test_directed_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
             vertices.push_back(util::make_vertex<vertex_type>(id));
     }
@@ -98,7 +98,7 @@ struct test_directed_adjacency_list {
 };
 
 TEST_CASE_FIXTURE(
-    test_directed_adjacency_list, "add_edge should add the edge only to the source vertex list"
+    test_directed_adjacency_matrix, "add_edge should add the edge only to the source vertex list"
 ) {
     add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
@@ -114,7 +114,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_directed_adjacency_list, "remove_edge should remove the edge from the source vertex's list"
+    test_directed_adjacency_matrix,
+    "remove_edge should remove the edge from the source vertex's list"
 ) {
     fully_connect_vertex(constants::vertex_id_1);
 
@@ -130,13 +131,12 @@ TEST_CASE_FIXTURE(
         sut.no_unique_edges(), no_incident_edges_for_fully_connected_vertex - constants::one_element
     );
 
-    adjacent_edges = sut.adjacent_edges(constants::first_element_idx);
+    // validate that the adjacent edges list has been properly aligned
+    adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(
         adjacent_edges.distance(),
         no_incident_edges_for_fully_connected_vertex - constants::one_element
     );
-    // validate that the adjacent edges list has been properly aligned
-    CHECK_EQ(edge_to_remove.get(), adjacent_edges.element_at(constants::first_element_idx).get());
     CHECK_EQ(
         std::ranges::find(
             adjacent_edges, edge_to_remove_addr, transforms::address_projection<edge_type>{}
@@ -146,7 +146,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_directed_adjacency_list,
+    test_directed_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
     prepare_full_graph();
@@ -171,12 +171,12 @@ TEST_CASE_FIXTURE(
     }
 }
 
-struct test_undirected_adjacency_list {
+struct test_undirected_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::undirected_edge<vertex_type>;
-    using sut_type = lib_i::adjacency_list<lib::graph_traits<lib::undirected_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>>;
 
-    test_undirected_adjacency_list() {
+    test_undirected_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
             vertices.push_back(util::make_vertex<vertex_type>(id));
     }
@@ -207,7 +207,7 @@ struct test_undirected_adjacency_list {
 };
 
 TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
+    test_undirected_adjacency_matrix, "add_edge should add the edge to the lists of both vertices"
 ) {
     add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
@@ -228,7 +228,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list,
+    test_undirected_adjacency_matrix,
     "add_edge should add the edge once to the vertex list if the edge is a loop"
 ) {
     add_edge(constants::vertex_id_1, constants::vertex_id_1);
@@ -242,7 +242,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list,
+    test_undirected_adjacency_matrix,
     "remove_edge should remove the edge from both the first and second vertices' list"
 ) {
     fully_connect_vertex(constants::vertex_id_1);
@@ -263,13 +263,10 @@ TEST_CASE_FIXTURE(
     );
 
     // validate that the first adjacent edges list has been properly aligned
-    adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
+    adjacent_edges_first = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(
         adjacent_edges_first.distance(),
         no_incident_edges_for_fully_connected_vertex - constants::one_element
-    );
-    CHECK_EQ(
-        edge_to_remove.get(), adjacent_edges_first.element_at(constants::first_element_idx).get()
     );
     CHECK_EQ(
         std::ranges::find(
@@ -290,7 +287,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list,
+    test_undirected_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
     prepare_full_graph();
@@ -317,6 +314,6 @@ TEST_CASE_FIXTURE(
     }
 }
 
-TEST_SUITE_END(); // test_adjacency_list
+TEST_SUITE_END(); // test_adjacency_matrix
 
 } // namespace gl_testing

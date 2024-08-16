@@ -34,7 +34,7 @@ TEST_CASE("graph constructed with no_vertices parameter should properly initiali
 
     REQUIRE(std::ranges::equal(
         sut.vertex_crange() | std::views::transform(transforms::extract_vertex_id<>),
-        std::views::iota(constants::vertex_id_1, constants::no_elements)
+        constants::vertex_id_view
     ));
 
     CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::no_elements)), std::out_of_range);

@@ -1,10 +1,10 @@
 #pragma once
 
+#include "type_traits.hpp"
 #include "types.hpp"
 
 #include <format>
 #include <iterator>
-#include <ranges>
 
 namespace gl {
 
@@ -24,7 +24,7 @@ public:
 
     explicit iterator_range(iterator begin, iterator end) : _range(begin, end) {}
 
-    template <std::ranges::range Range>
+    template <type_traits::c_range Range>
     explicit iterator_range(Range& range)
     : _range(std::ranges::begin(range), std::ranges::end(range)) {}
 
@@ -57,10 +57,20 @@ public:
 #endif
 
     [[nodiscard]] inline difference_type distance() const {
+        // TODO: keep the current distance as a member
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] value_type& element_at(types::size_type n) const {
+    [[nodiscard]] value_type& element_at(types::size_type n) {
+        const auto distance = this->distance();
+        if (not (n < this->distance()))
+            throw std::out_of_range(
+                std::format("Position index {} out of range [0, {}]", n, this->distance())
+            );
+        return *std::ranges::next(this->begin(), n);
+    }
+
+    [[nodiscard]] const value_type& element_at(types::size_type n) const {
         const auto distance = this->distance();
         if (not (n < this->distance()))
             throw std::out_of_range(
@@ -95,11 +105,17 @@ template <std::forward_iterator Iterator>
     return types::iterator_range{begin, end};
 }
 
-template <std::ranges::range Range>
-[[nodiscard]] inline types::iterator_range<typename Range::iterator> make_iterator_range(
+template <type_traits::c_range Range>
+[[nodiscard]] inline types::iterator_range<type_traits::iterator_type<Range>> make_iterator_range(
     Range& range
 ) {
     return types::iterator_range{std::ranges::begin(range), std::ranges::end(range)};
+}
+
+template <type_traits::c_range Range>
+[[nodiscard]] inline types::iterator_range<type_traits::const_iterator_type<Range>>
+make_const_iterator_range(Range& range) {
+    return types::iterator_range{std::ranges::cbegin(range), std::ranges::cend(range)};
 }
 
 } // namespace gl
