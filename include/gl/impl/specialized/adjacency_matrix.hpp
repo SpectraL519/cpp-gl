@@ -12,14 +12,12 @@ class adjacency_matrix;
 
 namespace specialized {
 
-// directed adjacency_matrix
-
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
 
-    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+    static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
         self._matrix.at(edge->first()->id()).at(edge->second()->id()) = std::move(edge);
         self._no_unique_edges++;
     }
@@ -37,7 +35,7 @@ struct directed_adjacency_matrix {
         }
     }
 
-    static void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
+    static inline void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
         self._matrix.at(edge->first()->id()).at(edge->second()->id()) = nullptr;
         self._no_unique_edges--;
     }

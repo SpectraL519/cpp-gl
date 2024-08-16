@@ -12,14 +12,12 @@ class adjacency_list;
 
 namespace specialized {
 
-// directed adjacency_list
-
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
 
-    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+    static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
         self._list.at(edge->first()->id()).push_back(std::move(edge));
         self._no_unique_edges++;
     }
