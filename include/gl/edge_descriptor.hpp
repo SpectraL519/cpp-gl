@@ -92,7 +92,7 @@ public:
         return *this->_vertices.first == *this->_vertices.second;
     }
 
-    properties_type properties = {};
+    [[no_unique_address]] properties_type properties = {};
 
 private:
     types::homogeneous_pair<vertex_ptr_type> _vertices;
