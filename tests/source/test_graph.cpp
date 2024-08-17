@@ -33,7 +33,7 @@ TEST_CASE("graph constructed with no_vertices parameter should properly initiali
     default_sut_type sut{constants::no_elements};
 
     REQUIRE(std::ranges::equal(
-        sut.vertex_crange() | std::views::transform(transforms::extract_vertex_id<>),
+        sut.c_vertices() | std::views::transform(transforms::extract_vertex_id<>),
         constants::vertex_id_view
     ));
 
@@ -76,24 +76,12 @@ TEST_CASE_FIXTURE(test_graph, "get_vertex should return a vertex with the given 
     CHECK_EQ(*sut.get_vertex(added_vertex->id()), *added_vertex);
 }
 
-TEST_CASE_FIXTURE(
-    test_graph, "vertex_(c)range should return the correct vertex list iterator range"
-) {
-    const auto v_range = sut.vertex_range();
+TEST_CASE_FIXTURE(test_graph, "(c_)vertices should return the correct vertex list iterator range") {
+    const auto v_range = sut.vertices();
     CHECK(std::ranges::equal(v_range, get_vertex_list(sut)));
 
-    const auto v_crange = sut.vertex_crange();
+    const auto v_crange = sut.c_vertices();
     CHECK(std::ranges::equal(v_crange, get_vertex_list(sut)));
-}
-
-TEST_CASE_FIXTURE(
-    test_graph, "vertex_(c)rrange should return the correct vertex list reverse iterator range"
-) {
-    const auto v_rrange = sut.vertex_rrange();
-    CHECK(std::ranges::equal(v_rrange, get_vertex_list(sut)));
-
-    const auto v_crrange = sut.vertex_crrange();
-    CHECK(std::ranges::equal(v_crrange, get_vertex_list(sut)));
 }
 
 TEST_CASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {
@@ -106,7 +94,7 @@ TEST_CASE("remove_vertex should remove the given vertex and align ids of remaini
         constants::no_elements - constants::one_element;
 
     REQUIRE(std::ranges::equal(
-        sut.vertex_range() | std::views::transform(transforms::extract_vertex_id<>),
+        sut.c_vertices() | std::views::transform(transforms::extract_vertex_id<>),
         std::views::iota(constants::vertex_id_1, no_vertices_after_remove)
     ));
 

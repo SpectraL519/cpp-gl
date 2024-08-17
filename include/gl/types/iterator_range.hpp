@@ -50,21 +50,21 @@ public:
 
     iterator_range() = delete;
 
-    iterator_range(iterator begin, iterator end)
+    explicit iterator_range(iterator begin, iterator end)
     requires(cache_type == iterator_range_cache_type::eager)
     {
         this->_distance = std::ranges::distance(begin, end);
         this->_range = std::make_pair(begin, end);
     }
 
-    iterator_range(iterator begin, iterator end)
+    explicit iterator_range(iterator begin, iterator end)
     requires(cache_type == iterator_range_cache_type::lazy)
     {
         this->_range = std::make_pair(begin, end);
         this->_distance = _invalid_distance;
     }
 
-    iterator_range(iterator begin, iterator end)
+    explicit iterator_range(iterator begin, iterator end)
     requires(cache_type == iterator_range_cache_type::none)
     {
         this->_range = std::make_pair(begin, end);
@@ -161,7 +161,7 @@ template <
 [[nodiscard]] inline types::iterator_range<Iterator, CacheType> make_iterator_range(
     Iterator begin, Iterator end
 ) {
-    return {begin, end};
+    return types::iterator_range<Iterator, CacheType>{begin, end};
 }
 
 template <
@@ -169,7 +169,9 @@ template <
     types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
 [[nodiscard]] inline types::iterator_range<type_traits::iterator_type<Range>, CacheType>
 make_iterator_range(Range& range) {
-    return {std::ranges::begin(range), std::ranges::end(range)};
+    return types::iterator_range<type_traits::iterator_type<Range>, CacheType>{
+        std::ranges::begin(range), std::ranges::end(range)
+    };
 }
 
 template <
@@ -177,7 +179,9 @@ template <
     types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
 [[nodiscard]] inline types::iterator_range<type_traits::const_iterator_type<Range>, CacheType>
 make_const_iterator_range(const Range& range) {
-    return {std::ranges::cbegin(range), std::ranges::cend(range)};
+    return types::iterator_range<type_traits::const_iterator_type<Range>, CacheType>{
+        std::ranges::cbegin(range), std::ranges::cend(range)
+    };
 }
 
 } // namespace gl
