@@ -60,7 +60,8 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
     }
 
     SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
-        sut_type range_constructed_sut = lib::make_iterator_range<container_type, cache_type>(container);
+        sut_type range_constructed_sut =
+            lib::make_iterator_range<container_type, cache_type>(container);
 
         CHECK_EQ(range_constructed_sut.begin(), std::ranges::begin(container));
         CHECK_EQ(range_constructed_sut.end(), std::ranges::end(container));
@@ -78,9 +79,7 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
         range = sut_type{std::next(sut.begin()), sut.end()};
         CHECK_NE(sut, range);
 
-        range = sut_type{
-            sut.begin(), std::next(sut.begin(), sut.distance() - 1)
-        };
+        range = sut_type{sut.begin(), std::next(sut.begin(), sut.distance() - 1)};
         CHECK_NE(sut, range);
     }
 
@@ -120,7 +119,8 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
     }
 
     SUBCASE("make_iterator_range should return a properly initialized iterator_range") {
-        const auto range = lib::make_iterator_range<iterator_type, cache_type>(container.begin(), container.end());
+        const auto range =
+            lib::make_iterator_range<iterator_type, cache_type>(container.begin(), container.end());
         CHECK(std::ranges::equal(range, container));
     }
 
@@ -130,7 +130,8 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
         CHECK(std::ranges::equal(range, container));
     }
 
-    SUBCASE("make_const_iterator_range should return an iterator_range properly initialized with the container") {
+    SUBCASE("make_const_iterator_range should return an iterator_range properly initialized with "
+            "the container") {
         const auto range = lib::make_const_iterator_range<container_type, cache_type>(container);
         CHECK(std::ranges::equal(range, container));
     }
@@ -139,17 +140,35 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
 TEST_CASE_TEMPLATE_INSTANTIATE(
     type_params_template,
     // cache_type::none
-    test_iterator_range_type_params<std::vector<std::size_t>, lib::it_range_cache::none>, // random access iterator
-    test_iterator_range_type_params<std::list<std::size_t>, lib::it_range_cache::none>, // bidirectional iterator
-    test_iterator_range_type_params<std::forward_list<std::size_t>, lib::it_range_cache::none>, // forward iterator
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib::it_range_cache::none>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib::it_range_cache::none>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib::it_range_cache::none>, // forward iterator
     // cache_type::lazy
-    test_iterator_range_type_params<std::vector<std::size_t>, lib::it_range_cache::lazy>, // random access iterator
-    test_iterator_range_type_params<std::list<std::size_t>, lib::it_range_cache::lazy>, // bidirectional iterator
-    test_iterator_range_type_params<std::forward_list<std::size_t>, lib::it_range_cache::lazy>, // forward iterator
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib::it_range_cache::lazy>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib::it_range_cache::lazy>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib::it_range_cache::lazy>, // forward iterator
     // cache_type::eager
-    test_iterator_range_type_params<std::vector<std::size_t>, lib::it_range_cache::eager>, // random access iterator
-    test_iterator_range_type_params<std::list<std::size_t>, lib::it_range_cache::eager>, // bidirectional iterator
-    test_iterator_range_type_params<std::forward_list<std::size_t>, lib::it_range_cache::eager> // forward iterator
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib::it_range_cache::eager>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib::it_range_cache::eager>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib::it_range_cache::eager> // forward iterator
 );
 
 TEST_SUITE_END(); // test_iterator_range

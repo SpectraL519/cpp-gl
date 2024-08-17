@@ -19,22 +19,24 @@ using it_range_cache = types::iterator_range_cache_type;
 } // namespace gl
 
 #ifdef GL_CONFIG_IT_RANGE_DEFAULT_CACHE_TYPE_EAGER
-    #define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::eager
+#define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::eager
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_TYPE_LAZY)
-    #define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::lazy
+#define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::lazy
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_TYPE_NONE)
-    #define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::none
+#define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::none
 #endif
 
 #ifndef _GL_IT_RANGE_DEFAULT_CACHE_TYPE
-    #define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::lazy
+#define _GL_IT_RANGE_DEFAULT_CACHE_TYPE gl::types::iterator_range_cache_type::lazy
 #endif
 
 namespace gl {
 
 namespace types {
 
-template <std::forward_iterator Iterator, iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
+template <
+    std::forward_iterator Iterator,
+    iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
 class iterator_range {
 public:
     using iterator = Iterator;
@@ -49,19 +51,22 @@ public:
     iterator_range() = delete;
 
     iterator_range(iterator begin, iterator end)
-    requires(cache_type == iterator_range_cache_type::eager) {
+    requires(cache_type == iterator_range_cache_type::eager)
+    {
         this->_distance = std::ranges::distance(begin, end);
         this->_range = std::make_pair(begin, end);
     }
 
     iterator_range(iterator begin, iterator end)
-    requires(cache_type == iterator_range_cache_type::lazy) {
+    requires(cache_type == iterator_range_cache_type::lazy)
+    {
         this->_range = std::make_pair(begin, end);
         this->_distance = _invalid_distance;
     }
 
     iterator_range(iterator begin, iterator end)
-    requires(cache_type == iterator_range_cache_type::none) {
+    requires(cache_type == iterator_range_cache_type::none)
+    {
         this->_range = std::make_pair(begin, end);
     }
 
@@ -94,19 +99,22 @@ public:
 #endif
 
     [[nodiscard]] inline distance_type distance() const
-    requires(cache_type == iterator_range_cache_type::eager) {
+    requires(cache_type == iterator_range_cache_type::eager)
+    {
         return this->_distance;
     }
 
     [[nodiscard]] inline distance_type distance() const
-    requires(cache_type == iterator_range_cache_type::lazy) {
+    requires(cache_type == iterator_range_cache_type::lazy)
+    {
         if (this->_is_distance_uninitialized())
             this->_distance = std::ranges::distance(this->begin(), this->end());
         return this->_distance;
     }
 
     [[nodiscard]] inline distance_type distance() const
-    requires(cache_type == iterator_range_cache_type::none) {
+    requires(cache_type == iterator_range_cache_type::none)
+    {
         return std::ranges::distance(this->begin(), this->end());
     }
 
@@ -137,10 +145,9 @@ private:
 
     homogeneous_pair<iterator> _range;
 
-    [[no_unique_address]] mutable std::conditional_t<
-        cache_type == iterator_range_cache_type::none,
-        std::monostate,
-        distance_type> _distance;
+    [[no_unique_address]] mutable std::
+        conditional_t<cache_type == iterator_range_cache_type::none, std::monostate, distance_type>
+            _distance;
 
     static constexpr distance_type _invalid_distance = -1;
     static constexpr distance_type _default_n = 1;
@@ -148,21 +155,26 @@ private:
 
 } // namespace types
 
-template <std::forward_iterator Iterator, types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
+template <
+    std::forward_iterator Iterator,
+    types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
 [[nodiscard]] inline types::iterator_range<Iterator, CacheType> make_iterator_range(
     Iterator begin, Iterator end
 ) {
     return {begin, end};
 }
 
-template <type_traits::c_range Range, types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
-[[nodiscard]] inline types::iterator_range<type_traits::iterator_type<Range>, CacheType> make_iterator_range(
-    Range& range
-) {
+template <
+    type_traits::c_range Range,
+    types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
+[[nodiscard]] inline types::iterator_range<type_traits::iterator_type<Range>, CacheType>
+make_iterator_range(Range& range) {
     return {std::ranges::begin(range), std::ranges::end(range)};
 }
 
-template <type_traits::c_range Range, types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
+template <
+    type_traits::c_range Range,
+    types::iterator_range_cache_type CacheType = _GL_IT_RANGE_DEFAULT_CACHE_TYPE>
 [[nodiscard]] inline types::iterator_range<type_traits::const_iterator_type<Range>, CacheType>
 make_const_iterator_range(const Range& range) {
     return {std::ranges::cbegin(range), std::ranges::cend(range)};
