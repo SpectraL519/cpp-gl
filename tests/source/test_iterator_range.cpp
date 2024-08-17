@@ -14,10 +14,17 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_iterator_range");
 
-template <typename Container>
-struct test_iterator_range {
+template <typename Container, lib_tt::cache_mode CacheMode>
+struct test_iterator_range_type_params {
     using container_type = Container;
+    static constexpr lib_tt::cache_mode cache_mode = CacheMode;
+};
+
+template <typename TypeParams>
+struct test_iterator_range {
+    using container_type = typename TypeParams::container_type;
     using iterator_type = lib_tt::iterator_type<container_type>;
+    using sut_type = lib_t::iterator_range<iterator_type, TypeParams::cache_mode>;
 
     test_iterator_range() : container(size), sut(container.begin(), container.end()) {
         std::iota(container.begin(), container.end(), first_element);
@@ -27,13 +34,15 @@ struct test_iterator_range {
     static constexpr std::size_t first_element = 0ull;
     container_type container;
 
-    lib_t::iterator_range<iterator_type> sut;
+    sut_type sut;
 };
 
-TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", ContainerType, container_type_template) {
-    using container_type = ContainerType;
-    using fixture_type = test_iterator_range<container_type>;
+TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_template) {
+    using fixture_type = test_iterator_range<TypeParams>;
+    using container_type = typename fixture_type::container_type;
     using iterator_type = typename fixture_type::iterator_type;
+    using sut_type = typename fixture_type::sut_type;
+    constexpr lib_tt::cache_mode cache_mode = sut_type::cache_mode;
 
     fixture_type fixture;
 
@@ -51,7 +60,8 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", ContainerType, container_type_
     }
 
     SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
-        lib_t::iterator_range<iterator_type> range_constructed_sut{container};
+        sut_type range_constructed_sut =
+            lib::make_iterator_range<container_type, cache_mode>(container);
 
         CHECK_EQ(range_constructed_sut.begin(), std::ranges::begin(container));
         CHECK_EQ(range_constructed_sut.end(), std::ranges::end(container));
@@ -63,15 +73,13 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", ContainerType, container_type_
     }
 
     SUBCASE("equality operator should return true only when both iterators are equal") {
-        lib_t::iterator_range<iterator_type> range{sut};
+        sut_type range{sut};
         REQUIRE_EQ(sut, range);
 
-        range = lib_t::iterator_range<iterator_type>{std::next(sut.begin()), sut.end()};
+        range = sut_type{std::next(sut.begin()), sut.end()};
         CHECK_NE(sut, range);
 
-        range = lib_t::iterator_range<iterator_type>{
-            sut.begin(), std::next(sut.begin(), sut.distance() - 1)
-        };
+        range = sut_type{sut.begin(), std::next(sut.begin(), sut.distance() - 1)};
         CHECK_NE(sut, range);
     }
 
@@ -110,79 +118,57 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", ContainerType, container_type_
             CHECK_EQ(std::addressof(sut.element_at(n)), std::addressof(*it++));
     }
 
-    SUBCASE("advance_begin should move the begin iterator by the the specified offset") {
-        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            SUBCASE(("n = " + std::to_string(n)).c_str()) {
-                iterator_type it = std::ranges::next(container.begin(), n);
-
-                sut.advance_begin(n);
-                CHECK_EQ(sut.distance(), std::ranges::distance(it, container.end()));
-                CHECK_EQ(std::addressof(*sut.begin()), std::addressof(*it));
-            }
-        }
-    }
-
-    SUBCASE("advance_begin should move the begin iterator by the the specified offset for negative "
-            "difference") {
-        lib_t::iterator_range<iterator_type> narrow_range{container.end(), container.end()};
-
-        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            const auto neg_n = -n;
-            SUBCASE(("n = " + std::to_string(neg_n)).c_str()) {
-                iterator_type it = std::ranges::next(container.end(), neg_n);
-
-                narrow_range.advance_begin(neg_n);
-                CHECK_EQ(narrow_range.distance(), std::ranges::distance(it, container.end()));
-                CHECK_EQ(std::addressof(*narrow_range.begin()), std::addressof(*it));
-            }
-        }
-    }
-
-    SUBCASE("advance_end should move the end iterator by the specified offset") {
-        lib_t::iterator_range<iterator_type> narrow_range{container.begin(), container.begin()};
-
-        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            SUBCASE(("n = " + std::to_string(n)).c_str()) {
-                iterator_type it = std::ranges::next(container.begin(), n);
-
-                narrow_range.advance_end(n);
-                CHECK_EQ(narrow_range.distance(), std::ranges::distance(container.begin(), it));
-                CHECK_EQ(std::addressof(*narrow_range.end()), std::addressof(*it));
-            }
-        }
-    }
-
-    SUBCASE("advance_end should move the begin iterator by the the specified offset for negative "
-            "difference") {
-        for (std::ptrdiff_t n = 0ull; n < static_cast<std::ptrdiff_t>(fixture_type::size); n++) {
-            const auto neg_n = -n;
-            SUBCASE(("n = " + std::to_string(neg_n)).c_str()) {
-                iterator_type it = std::ranges::next(container.end(), neg_n);
-
-                sut.advance_end(neg_n);
-                CHECK_EQ(sut.distance(), std::ranges::distance(container.begin(), it));
-                CHECK_EQ(std::addressof(*sut.end()), std::addressof(*it));
-            }
-        }
-    }
-
     SUBCASE("make_iterator_range should return a properly initialized iterator_range") {
-        const auto range = lib::make_iterator_range(container.begin(), container.end());
-        CHECK_EQ(range, sut);
+        const auto range =
+            lib::make_iterator_range<iterator_type, cache_mode>(container.begin(), container.end());
+        CHECK(std::ranges::equal(range, container));
     }
 
     SUBCASE("make_iterator_range should return an iterator_range properly initialized with the "
             "container") {
-        const auto range = lib::make_iterator_range(container);
-        CHECK_EQ(range, sut);
+        const auto range = lib::make_iterator_range<container_type, cache_mode>(container);
+        CHECK(std::ranges::equal(range, container));
+    }
+
+    SUBCASE("make_const_iterator_range should return an iterator_range properly initialized with "
+            "the container") {
+        const auto range = lib::make_const_iterator_range<container_type, cache_mode>(container);
+        CHECK(std::ranges::equal(range, container));
     }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    container_type_template,
-    std::vector<std::size_t>, // random access iterator
-    std::list<std::size_t>, // bidirectional iterator
-    std::forward_list<std::size_t> // forward iterator
+    type_params_template,
+    // cache_mode::none
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib_tt::cache_mode::none>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib_tt::cache_mode::none>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib_tt::cache_mode::none>, // forward iterator
+    // cache_mode::lazy
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib_tt::cache_mode::lazy>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib_tt::cache_mode::lazy>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib_tt::cache_mode::lazy>, // forward iterator
+    // cache_mode::eager
+    test_iterator_range_type_params<
+        std::vector<std::size_t>,
+        lib_tt::cache_mode::eager>, // random access iterator
+    test_iterator_range_type_params<
+        std::list<std::size_t>,
+        lib_tt::cache_mode::eager>, // bidirectional iterator
+    test_iterator_range_type_params<
+        std::forward_list<std::size_t>,
+        lib_tt::cache_mode::eager> // forward iterator
 );
 
 TEST_SUITE_END(); // test_iterator_range
