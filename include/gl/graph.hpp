@@ -6,7 +6,6 @@
 #include "types/types.hpp"
 
 #include <algorithm>
-#include <iostream>
 
 #ifdef GL_TESTING
 
@@ -31,9 +30,7 @@ public:
     using vertex_iterator_type = type_traits::iterator_type<vertex_set_type>;
     using vertex_const_iterator_type = type_traits::const_iterator_type<vertex_set_type>;
 
-    // TODO: reverese iterators should be available only for bidirectional ranges
-    using vertex_reverse_iterator_type = typename vertex_set_type::reverse_iterator;
-    using vertex_const_reverse_iterator_type = typename vertex_set_type::const_reverse_iterator;
+    // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = type_traits::edge_type<traits_type>;
     using edge_ptr_type = type_traits::edge_ptr_type<traits_type>;
@@ -94,21 +91,12 @@ public:
         );
     }
 
-    [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertex_range() {
+    [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertices() {
         return make_iterator_range(this->_vertices);
     }
 
-    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertex_crange() const {
+    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> c_vertices() const {
         return make_const_iterator_range(this->_vertices);
-    }
-
-    [[nodiscard]] inline types::iterator_range<vertex_reverse_iterator_type> vertex_rrange() {
-        return make_iterator_range(this->_vertices.rbegin(), this->_vertices.rend());
-    }
-
-    [[nodiscard]] inline types::iterator_range<vertex_const_reverse_iterator_type> vertex_crrange(
-    ) const {
-        return make_iterator_range(this->_vertices.crbegin(), this->_vertices.crend());
     }
 
 private:
