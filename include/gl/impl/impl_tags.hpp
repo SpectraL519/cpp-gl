@@ -1,8 +1,8 @@
 #pragma once
 
-#include "impl_tags_decl.hpp"
 #include "adjacency_list.hpp"
 #include "adjacency_matrix.hpp"
+#include "impl_tags_decl.hpp"
 
 namespace gl {
 

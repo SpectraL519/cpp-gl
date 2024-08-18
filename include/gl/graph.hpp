@@ -1,10 +1,10 @@
 #pragma once
 
 #include "graph_traits.hpp"
+#include "impl/impl_tags.hpp"
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
-#include "impl/impl_tags.hpp"
 
 #include <algorithm>
 

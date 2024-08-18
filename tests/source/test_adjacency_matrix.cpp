@@ -2,8 +2,8 @@
 #include "functional.hpp"
 #include "transforms.hpp"
 
-#include <gl/impl/adjacency_matrix.hpp>
 #include <gl/graph_traits.hpp>
+#include <gl/impl/adjacency_matrix.hpp>
 
 #include <doctest.h>
 
