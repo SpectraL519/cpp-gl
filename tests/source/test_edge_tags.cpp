@@ -1,6 +1,5 @@
 #include "constants.hpp"
 #include "types.hpp"
-#include "utility.hpp"
 
 #include <gl/edge_descriptor.hpp>
 
@@ -13,8 +12,8 @@ TEST_SUITE_BEGIN("test_edge_tags");
 struct test_edge_tags {
     using vertex_type = lib::vertex_descriptor<>;
 
-    std::shared_ptr<vertex_type> vd_1 = util::make_vertex<vertex_type>(constants::vertex_id_1);
-    std::shared_ptr<vertex_type> vd_2 = util::make_vertex<vertex_type>(constants::vertex_id_2);
+    std::shared_ptr<vertex_type> vd_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
+    std::shared_ptr<vertex_type> vd_2 = std::make_shared<vertex_type>(constants::vertex_id_2);
 };
 
 struct test_directed_edge_tag : test_edge_tags {

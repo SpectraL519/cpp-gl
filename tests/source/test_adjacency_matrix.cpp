@@ -1,7 +1,6 @@
 #include "constants.hpp"
 #include "functional.hpp"
 #include "transforms.hpp"
-#include "utility.hpp"
 
 #include <gl/impl/adjacency_matrix.hpp>
 
@@ -70,7 +69,7 @@ struct test_directed_adjacency_matrix {
 
     test_directed_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(util::make_vertex<vertex_type>(id));
+            vertices.push_back(std::make_shared<vertex_type>(id));
     }
 
     void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
@@ -178,7 +177,7 @@ struct test_undirected_adjacency_matrix {
 
     test_undirected_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(util::make_vertex<vertex_type>(id));
+            vertices.push_back(std::make_shared<vertex_type>(id));
     }
 
     void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
