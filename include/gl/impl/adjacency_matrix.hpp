@@ -1,9 +1,7 @@
 #pragma once
 
-#include "gl/graph_traits.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/non_null_iterator.hpp"
-#include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
 
@@ -14,12 +12,12 @@ namespace gl::impl {
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_matrix {
 public:
-    using vertex_type = type_traits::vertex_type<GraphTraits>;
-    using vertex_ptr_type = type_traits::vertex_ptr_type<GraphTraits>;
+    using vertex_type = typename GraphTraits::vertex_type;
+    using vertex_ptr_type = typename GraphTraits::vertex_ptr_type;
 
-    using edge_type = type_traits::edge_type<GraphTraits>;
-    using edge_ptr_type = type_traits::edge_ptr_type<GraphTraits>;
-    using edge_directional_tag = type_traits::edge_directional_tag<GraphTraits>;
+    using edge_type = typename GraphTraits::edge_type;
+    using edge_ptr_type = typename GraphTraits::edge_ptr_type;
+    using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
     using edge_iterator_type = types::non_null_iterator<type_traits::iterator_type<edge_set_type>>;
@@ -31,7 +29,7 @@ public:
     using type = std::vector<edge_set_type>;
 
 private:
-    using specialized = specialized::impl_type<adjacency_matrix>;
+    using specialized = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
     friend specialized;
 
 public:

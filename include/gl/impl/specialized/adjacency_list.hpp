@@ -1,7 +1,6 @@
 #pragma once
 
-#include "gl/graph_traits.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/impl/impl_tags_decl.hpp"
 
 #include <algorithm>
 
@@ -95,23 +94,20 @@ struct undirected_adjacency_list {
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 struct list_impl_traits {
-    using specialized_type = void;
+    using type = void;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
-    using specialized_type = directed_adjacency_list<AdjacencyList>;
+    using type = directed_adjacency_list<AdjacencyList>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
-    using specialized_type = undirected_adjacency_list<AdjacencyList>;
+    using type = undirected_adjacency_list<AdjacencyList>;
 };
-
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-using impl_type = typename list_impl_traits<AdjacencyList>::specialized_type;
 
 } // namespace specialized
 

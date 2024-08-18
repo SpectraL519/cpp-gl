@@ -1,8 +1,6 @@
 #pragma once
 
-#include "gl/graph_traits.hpp"
 #include "gl/types/iterator_range.hpp"
-#include "gl/types/type_traits.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
@@ -13,12 +11,12 @@ namespace gl::impl {
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_list {
 public:
-    using vertex_type = type_traits::vertex_type<GraphTraits>;
-    using vertex_ptr_type = type_traits::vertex_ptr_type<GraphTraits>;
+    using vertex_type = typename GraphTraits::vertex_type;
+    using vertex_ptr_type = typename GraphTraits::vertex_ptr_type;
 
-    using edge_type = type_traits::edge_type<GraphTraits>;
-    using edge_ptr_type = type_traits::edge_ptr_type<GraphTraits>;
-    using edge_directional_tag = type_traits::edge_directional_tag<GraphTraits>;
+    using edge_type = typename GraphTraits::edge_type;
+    using edge_ptr_type = typename GraphTraits::edge_ptr_type;
+    using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
     using edge_iterator_type = type_traits::iterator_type<edge_set_type>;
@@ -29,7 +27,7 @@ public:
     using type = std::vector<edge_set_type>;
 
 private:
-    using specialized = specialized::impl_type<adjacency_list>;
+    using specialized = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized;
 
 public:

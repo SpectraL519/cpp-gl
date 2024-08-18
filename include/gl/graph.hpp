@@ -4,6 +4,7 @@
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
+#include "impl/impl_tags.hpp"
 
 #include <algorithm>
 
@@ -65,7 +66,12 @@ public:
         return this->_vertices.size();
     }
 
+    // [[nodiscard]] inline types::size_type no_unique_edges() const {
+    //     return this->_impl.no_unique_edges();
+    // }
+
     inline vertex_ptr_type add_vertex() {
+        // this->_impl.add_vertex();
         return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
     }
 
@@ -104,6 +110,7 @@ public:
 
 private:
     vertex_set_type _vertices = {};
+    impl_type _impl;
 };
 
 } // namespace gl

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "gl/graph_traits.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/impl/impl_tags_decl.hpp"
 
 #include <algorithm>
 
@@ -82,23 +81,20 @@ struct undirected_adjacency_matrix {
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 struct matrix_impl_traits {
-    using specialized_type = void;
+    using type = void;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
-    using specialized_type = directed_adjacency_matrix<AdjacencyMatrix>;
+    using type = directed_adjacency_matrix<AdjacencyMatrix>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
-    using specialized_type = undirected_adjacency_matrix<AdjacencyMatrix>;
+    using type = undirected_adjacency_matrix<AdjacencyMatrix>;
 };
-
-template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-using impl_type = typename matrix_impl_traits<AdjacencyMatrix>::specialized_type;
 
 } // namespace specialized
 
