@@ -37,6 +37,9 @@ public:
     using edge_directional_tag = type_traits::edge_directional_tag<traits_type>;
     using edge_properties_type = type_traits::edge_properties_type<traits_type>;
 
+    using impl_tag = type_traits::implementation_tag<traits_type>;
+    using impl_type = type_traits::implementation_type<traits_type>;
+
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph;
 #endif
