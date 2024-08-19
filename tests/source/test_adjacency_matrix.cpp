@@ -38,8 +38,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         SutType sut{};
         constexpr lib_t::size_type target_n_vertices = constants::n_elements;
 
-        for (lib_t::size_type n_vertices = constants::one_element;
-             n_vertices <= target_n_vertices;
+        for (lib_t::size_type n_vertices = constants::one_element; n_vertices <= target_n_vertices;
              n_vertices++) {
             sut.add_vertex();
             CHECK_EQ(sut.n_vertices(), n_vertices);
@@ -300,9 +299,7 @@ TEST_CASE_FIXTURE(
         n_incident_edges_for_fully_connected_vertex - constants::one_element;
 
     REQUIRE_EQ(sut.n_vertices(), n_vertices_after_remove);
-    REQUIRE_EQ(
-        sut.n_unique_edges(), (n_vertices_after_remove * n_incident_edges_after_remove) / 2
-    );
+    REQUIRE_EQ(sut.n_unique_edges(), (n_vertices_after_remove * n_incident_edges_after_remove) / 2);
 
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {

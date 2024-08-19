@@ -21,8 +21,7 @@ struct directed_adjacency_list {
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
             );
-            self._n_unique_edges -=
-                std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
+            self._n_unique_edges -= std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
         self._list.erase(std::next(std::begin(self._list), vertex->id()));

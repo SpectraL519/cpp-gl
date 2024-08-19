@@ -24,7 +24,9 @@ struct test_graph {
     }
 };
 
-TEST_CASE_FIXTURE(test_graph, "graph should be initialized with no vertices and no edges by default") {
+TEST_CASE_FIXTURE(
+    test_graph, "graph should be initialized with no vertices and no edges by default"
+) {
     CHECK_EQ(sut.n_vertices(), constants::zero_elements);
     CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 }
