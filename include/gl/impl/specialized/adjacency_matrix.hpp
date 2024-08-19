@@ -16,11 +16,6 @@ requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
 
-    static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
-        self._matrix.at(edge->first()->id()).at(edge->second()->id()) = std::move(edge);
-        self._no_unique_edges++;
-    }
-
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
@@ -34,6 +29,11 @@ struct directed_adjacency_matrix {
         }
     }
 
+    static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        self._matrix.at(edge->first()->id()).at(edge->second()->id()) = std::move(edge);
+        self._no_unique_edges++;
+    }
+
     static inline void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
         self._matrix.at(edge->first()->id()).at(edge->second()->id()) = nullptr;
         self._no_unique_edges--;
@@ -45,16 +45,6 @@ requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
 struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
 
-    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
-        const auto first_id = edge->first()->id();
-        const auto second_id = edge->second()->id();
-
-        self._matrix.at(first_id).at(second_id) = edge;
-        if (not edge->is_loop())
-            self._matrix.at(second_id).at(first_id) = edge;
-        self._no_unique_edges++;
-    }
-
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
@@ -63,6 +53,16 @@ struct undirected_adjacency_matrix {
 
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
+    }
+
+    static void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
+        const auto first_id = edge->first()->id();
+        const auto second_id = edge->second()->id();
+
+        self._matrix.at(first_id).at(second_id) = edge;
+        if (not edge->is_loop())
+            self._matrix.at(second_id).at(first_id) = edge;
+        self._no_unique_edges++;
     }
 
     static void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {

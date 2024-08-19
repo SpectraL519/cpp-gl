@@ -29,6 +29,8 @@ struct graph_traits {
 
 namespace type_traits {
 
+// TODO: remove
+
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 using vertex_type = typename GraphTraits::vertex_type;
 

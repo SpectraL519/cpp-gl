@@ -50,7 +50,7 @@ public:
 
     graph() = default;
 
-    graph(const types::size_type no_vertices) : _vertices(no_vertices) {
+    graph(const types::size_type no_vertices) : _vertices(no_vertices), _impl(no_vertices) {
         types::id_type vertex_id = 0ull;
         std::ranges::generate(this->_vertices, [&vertex_id]() {
             return std::make_shared<vertex_type>(vertex_id++);
@@ -66,12 +66,12 @@ public:
         return this->_vertices.size();
     }
 
-    // [[nodiscard]] inline types::size_type no_unique_edges() const {
-    //     return this->_impl.no_unique_edges();
-    // }
+    [[nodiscard]] inline types::size_type no_unique_edges() const {
+        return this->_impl.no_unique_edges();
+    }
 
     inline vertex_ptr_type add_vertex() {
-        // this->_impl.add_vertex();
+        this->_impl.add_vertex();
         return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
     }
 
@@ -89,8 +89,8 @@ public:
 
     void remove_vertex(const vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
+        // this->_impl.remove_vertex(vertex);
         this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
-        // TODO: remove vertex from adjacency impl
 
         // align ids of remainig vertices
         std::for_each(
@@ -110,7 +110,7 @@ public:
 
 private:
     vertex_set_type _vertices = {};
-    impl_type _impl;
+    impl_type _impl = {};
 };
 
 } // namespace gl
