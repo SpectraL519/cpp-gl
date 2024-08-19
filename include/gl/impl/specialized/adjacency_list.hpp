@@ -21,7 +21,7 @@ struct directed_adjacency_list {
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
             );
-            self._no_unique_edges -=
+            self._n_unique_edges -=
                 std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
@@ -30,7 +30,7 @@ struct directed_adjacency_list {
 
     static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
         self._list.at(edge->first()->id()).push_back(std::move(edge));
-        self._no_unique_edges++;
+        self._n_unique_edges++;
     }
 
     static void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
@@ -38,7 +38,7 @@ struct directed_adjacency_list {
 
         auto& adj_edges = self._list.at(edge->first()->id());
         adj_edges.erase(std::ranges::find(adj_edges, edge.get(), id_projection{}));
-        self._no_unique_edges--;
+        self._n_unique_edges--;
     }
 };
 
@@ -65,7 +65,7 @@ struct undirected_adjacency_list {
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
 
-        self._no_unique_edges -= self._list.at(vertex_id).size();
+        self._n_unique_edges -= self._list.at(vertex_id).size();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
 
@@ -73,7 +73,7 @@ struct undirected_adjacency_list {
         self._list.at(edge->first()->id()).push_back(edge);
         if (not edge->is_loop())
             self._list.at(edge->second()->id()).push_back(edge);
-        self._no_unique_edges++;
+        self._n_unique_edges++;
     }
 
     static void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
@@ -86,7 +86,7 @@ struct undirected_adjacency_list {
         adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, id_projection{}));
         if (not edge->is_loop())
             adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, id_projection{}));
-        self._no_unique_edges--;
+        self._n_unique_edges--;
     }
 };
 

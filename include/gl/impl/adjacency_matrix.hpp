@@ -38,11 +38,11 @@ public:
 
     adjacency_matrix() = default;
 
-    adjacency_matrix(const types::size_type no_vertices) : _matrix(no_vertices) {
+    adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
         // initialize a full n x n matrix with null elements
         for (auto& row : this->_matrix) {
-            row.reserve(no_vertices);
-            std::generate_n(std::back_inserter(row), no_vertices, _make_null_edge);
+            row.reserve(n_vertices);
+            std::generate_n(std::back_inserter(row), n_vertices, _make_null_edge);
         }
     }
 
@@ -51,20 +51,20 @@ public:
 
     ~adjacency_matrix() = default;
 
-    [[nodiscard]] inline types::size_type no_vertices() const {
+    [[nodiscard]] inline types::size_type n_vertices() const {
         return this->_matrix.size();
     }
 
-    [[nodiscard]] inline types::size_type no_unique_edges() const {
-        return this->_no_unique_edges;
+    [[nodiscard]] inline types::size_type n_unique_edges() const {
+        return this->_n_unique_edges;
     }
 
     void add_vertex() {
         for (auto& row : this->_matrix)
             row.push_back(_make_null_edge());
         auto& new_row = this->_matrix.emplace_back();
-        new_row.reserve(this->no_vertices());
-        std::generate_n(std::back_inserter(new_row), this->no_vertices(), _make_null_edge);
+        new_row.reserve(this->n_vertices());
+        std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
     inline void add_edge(edge_ptr_type edge) {
@@ -99,7 +99,7 @@ private:
     }
 
     type _matrix = {};
-    types::size_type _no_unique_edges = 0ull;
+    types::size_type _n_unique_edges = 0ull;
 };
 
 } // namespace gl::impl

@@ -96,15 +96,15 @@ def run_clang_format(
     files: set[Path],
     check: bool
 ):
-    no_files = len(files)
+    n_files = len(files)
     if check:
-        print(f"Files to check: {no_files}")
+        print(f"Files to check: {n_files}")
     else:
-        print(f"Files to format: {no_files}")
+        print(f"Files to format: {n_files}")
 
     return_code = 0
     for i, file in enumerate(files):
-        print(f"[{i + 1}/{no_files}] {file}")
+        print(f"[{i + 1}/{n_files}] {file}")
 
         cmd = ["clang-format-18", str(file)]
         if check:

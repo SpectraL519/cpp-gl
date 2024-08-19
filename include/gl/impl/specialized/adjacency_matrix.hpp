@@ -19,24 +19,24 @@ struct directed_adjacency_matrix {
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
-        self._no_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
+        self._n_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
         self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
 
         for (auto& row : self._matrix) {
             const auto vertex_it = std::next(std::begin(row), vertex_id);
-            self._no_unique_edges -= static_cast<types::size_type>(*vertex_it != nullptr);
+            self._n_unique_edges -= static_cast<types::size_type>(*vertex_it != nullptr);
             row.erase(vertex_it);
         }
     }
 
     static inline void add_edge(impl_type& self, typename impl_type::edge_ptr_type edge) {
         self._matrix.at(edge->first()->id()).at(edge->second()->id()) = std::move(edge);
-        self._no_unique_edges++;
+        self._n_unique_edges++;
     }
 
     static inline void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
         self._matrix.at(edge->first()->id()).at(edge->second()->id()) = nullptr;
-        self._no_unique_edges--;
+        self._n_unique_edges--;
     }
 };
 
@@ -48,7 +48,7 @@ struct undirected_adjacency_matrix {
     static void remove_vertex(impl_type& self, const typename impl_type::vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
-        self._no_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
+        self._n_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
         self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
 
         for (auto& row : self._matrix)
@@ -62,7 +62,7 @@ struct undirected_adjacency_matrix {
         self._matrix.at(first_id).at(second_id) = edge;
         if (not edge->is_loop())
             self._matrix.at(second_id).at(first_id) = edge;
-        self._no_unique_edges++;
+        self._n_unique_edges++;
     }
 
     static void remove_edge(impl_type& self, const typename impl_type::edge_ptr_type& edge) {
@@ -73,7 +73,7 @@ struct undirected_adjacency_matrix {
         self._matrix.at(first_id).at(second_id) = nullptr;
         if (not is_loop)
             self._matrix.at(second_id).at(first_id) = nullptr;
-        self._no_unique_edges--;
+        self._n_unique_edges--;
     }
 };
 

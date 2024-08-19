@@ -50,7 +50,7 @@ public:
 
     graph() = default;
 
-    graph(const types::size_type no_vertices) : _vertices(no_vertices), _impl(no_vertices) {
+    graph(const types::size_type n_vertices) : _vertices(n_vertices), _impl(n_vertices) {
         types::id_type vertex_id = 0ull;
         std::ranges::generate(this->_vertices, [&vertex_id]() {
             return std::make_shared<vertex_type>(vertex_id++);
@@ -62,24 +62,24 @@ public:
 
     ~graph() = default;
 
-    [[nodiscard]] inline types::size_type no_vertices() const {
+    [[nodiscard]] inline types::size_type n_vertices() const {
         return this->_vertices.size();
     }
 
-    [[nodiscard]] inline types::size_type no_unique_edges() const {
-        return this->_impl.no_unique_edges();
+    [[nodiscard]] inline types::size_type n_unique_edges() const {
+        return this->_impl.n_unique_edges();
     }
 
     inline vertex_ptr_type add_vertex() {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->no_vertices()));
+        return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->n_vertices()));
     }
 
     inline vertex_ptr_type add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         return this->_vertices.emplace_back(
-            std::make_shared<vertex_type>(this->no_vertices(), properties)
+            std::make_shared<vertex_type>(this->n_vertices(), properties)
         );
     }
 

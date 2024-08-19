@@ -36,19 +36,19 @@ public:
 
     adjacency_list() = default;
 
-    adjacency_list(const types::size_type no_vertices) : _list(no_vertices) {}
+    adjacency_list(const types::size_type n_vertices) : _list(n_vertices) {}
 
     adjacency_list(adjacency_list&&) = default;
     adjacency_list& operator=(adjacency_list&&) = default;
 
     ~adjacency_list() = default;
 
-    [[nodiscard]] inline types::size_type no_vertices() const {
+    [[nodiscard]] inline types::size_type n_vertices() const {
         return this->_list.size();
     }
 
-    [[nodiscard]] inline types::size_type no_unique_edges() const {
-        return this->_no_unique_edges;
+    [[nodiscard]] inline types::size_type n_unique_edges() const {
+        return this->_n_unique_edges;
     }
 
     inline void add_vertex() {
@@ -87,7 +87,7 @@ private:
     };
 
     type _list = {};
-    types::size_type _no_unique_edges = 0ull;
+    types::size_type _n_unique_edges = 0ull;
 };
 
 } // namespace gl::impl
