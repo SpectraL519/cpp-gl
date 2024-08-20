@@ -38,8 +38,8 @@ public:
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
-    using impl_tag = typename traits_type::implementation_tag;
-    using impl_type = typename impl_tag::template type<traits_type>;
+    using implementation_tag = typename traits_type::implementation_tag;
+    using implementation_type = typename implementation_tag::template type<traits_type>;
 
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph;
@@ -78,6 +78,7 @@ public:
     inline vertex_ptr_type add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
+        this->_impl.add_vertex();
         return this->_vertices.emplace_back(
             std::make_shared<vertex_type>(this->n_vertices(), properties)
         );
@@ -87,9 +88,9 @@ public:
         return this->_vertices.at(vertex_id);
     }
 
-    void remove_vertex(const vertex_ptr_type& vertex) {
-        const auto vertex_id = vertex->id();
-        // this->_impl.remove_vertex(vertex);
+    void remove_vertex(const types::size_type vertex_id) {
+        const auto& vertex = this->get_vertex(vertex_id);
+        this->_impl.remove_vertex(vertex);
         this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
 
         // align ids of remainig vertices
@@ -108,9 +109,11 @@ public:
         return make_const_iterator_range(this->_vertices);
     }
 
+    // [[nodiscard]] inline auto adjacent_edges(const types::id_type)
+
 private:
     vertex_set_type _vertices = {};
-    impl_type _impl = {};
+    implementation_type _impl = {};
 };
 
 } // namespace gl

@@ -40,7 +40,7 @@ TEST_CASE("graph constructed with n_vertices parameter should properly initializ
         constants::vertex_id_view
     ));
 
-    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::n_elements)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::out_of_range_elemenet_idx)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
@@ -87,11 +87,16 @@ TEST_CASE_FIXTURE(test_graph, "(c_)vertices should return the correct vertex lis
     CHECK(std::ranges::equal(v_crange, get_vertex_list(sut)));
 }
 
+TEST_CASE("remove_vertex should throw if the given id is invalid") {
+    default_sut_type sut{constants::n_elements};
+
+    CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_range_elemenet_idx), std::out_of_range);
+}
+
 TEST_CASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {
     default_sut_type sut{constants::n_elements};
-    CHECK_EQ(sut.n_vertices(), constants::n_elements);
 
-    sut.remove_vertex(sut.get_vertex(constants::vertex_id_1));
+    sut.remove_vertex(constants::vertex_id_1);
 
     constexpr lib_t::size_type n_vertices_after_remove =
         constants::n_elements - constants::one_element;
@@ -100,6 +105,8 @@ TEST_CASE("remove_vertex should remove the given vertex and align ids of remaini
         sut.c_vertices() | std::views::transform(transforms::extract_vertex_id<>),
         std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
     ));
+
+    // TODO: extend with adjacency iterator ranges checks
 
     CHECK_THROWS_AS(
         func::discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range
