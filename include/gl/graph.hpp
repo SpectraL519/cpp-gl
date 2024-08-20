@@ -11,6 +11,7 @@
 #ifdef GL_TESTING
 
 namespace gl_testing {
+template <typename TraitsType>
 struct test_graph;
 } // namespace gl_testing
 
@@ -46,7 +47,7 @@ public:
     using edge_const_iterator_type = typename implementation_type::edge_const_iterator_type;
 
 #ifdef GL_TESTING
-    friend struct ::gl_testing::test_graph;
+    friend struct ::gl_testing::test_graph<traits_type>;
 #endif
 
     graph(const graph&) = delete;

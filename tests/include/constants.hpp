@@ -1,6 +1,7 @@
 #pragma once
 
 #include "namespaces.hpp"
+#include "types.hpp"
 
 #include <gl/types/types.hpp>
 
@@ -21,5 +22,13 @@ constexpr lib_t::id_type vertex_id_2 = vertex_id_1 + one_element;
 constexpr lib_t::id_type vertex_id_3 = vertex_id_2 + one_element;
 
 constexpr auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
+
+constexpr types::it_distance_type empty_distance = 0;
+
+constexpr types::visited_property visited{true};
+constexpr types::visited_property not_visited{false};
+
+constexpr types::used_property used{true};
+constexpr types::used_property not_used{false};
 
 } // namespace gl_testing::constants
