@@ -26,11 +26,6 @@ public:
 
     using type = std::vector<edge_set_type>;
 
-private:
-    using specialized = typename specialized::list_impl_traits<adjacency_list>::type;
-    friend specialized;
-
-public:
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
 
@@ -80,6 +75,9 @@ public:
     }
 
 private:
+    using specialized = typename specialized::list_impl_traits<adjacency_list>::type;
+    friend specialized;
+
     struct address_projection {
         auto operator()(const edge_ptr_type& edge) const {
             return edge.get();

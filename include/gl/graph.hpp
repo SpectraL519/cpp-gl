@@ -23,6 +23,9 @@ class graph {
 public:
     using traits_type = GraphTraits;
 
+    using implementation_tag = typename traits_type::implementation_tag;
+    using implementation_type = typename implementation_tag::template type<traits_type>;
+
     using vertex_type = typename traits_type::vertex_type;
     using vertex_ptr_type = typename traits_type::vertex_ptr_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
@@ -38,8 +41,9 @@ public:
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
-    using implementation_tag = typename traits_type::implementation_tag;
-    using implementation_type = typename implementation_tag::template type<traits_type>;
+    using edge_set_type = typename implementation_type::edge_set_type;
+    using edge_iterator_type = typename implementation_type::edge_iterator_type;
+    using edge_const_iterator_type = typename implementation_type::edge_const_iterator_type;
 
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph;
@@ -109,7 +113,17 @@ public:
         return make_const_iterator_range(this->_vertices);
     }
 
-    // [[nodiscard]] inline auto adjacent_edges(const types::id_type)
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
+        const types::id_type vertex_id
+    ) {
+        return this->_impl.adjacent_edges(vertex_id);
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+        const types::id_type vertex_id
+    ) const {
+        return this->_impl.adjacent_edges_c(vertex_id);
+    }
 
 private:
     vertex_set_type _vertices = {};

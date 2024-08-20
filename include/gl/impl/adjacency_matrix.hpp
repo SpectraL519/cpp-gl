@@ -28,11 +28,6 @@ public:
 
     using type = std::vector<edge_set_type>;
 
-private:
-    using specialized = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
-    friend specialized;
-
-public:
     adjacency_matrix(const adjacency_matrix&) = delete;
     adjacency_matrix& operator=(const adjacency_matrix&) = delete;
 
@@ -94,6 +89,9 @@ public:
     }
 
 private:
+    using specialized = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
+    friend specialized;
+
     static constexpr edge_ptr_type _make_null_edge() {
         return nullptr;
     }

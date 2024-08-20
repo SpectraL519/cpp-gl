@@ -13,6 +13,8 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph");
 
+// TODO: add parametrization with implementation and directional tags
+
 using default_sut_type = lib::graph<>;
 
 struct test_graph {
@@ -40,7 +42,9 @@ TEST_CASE("graph constructed with n_vertices parameter should properly initializ
         constants::vertex_id_view
     ));
 
-    CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(constants::out_of_range_elemenet_idx)), std::out_of_range);
+    CHECK_THROWS_AS(
+        static_cast<void>(sut.get_vertex(constants::out_of_range_elemenet_idx)), std::out_of_range
+    );
 }
 
 TEST_CASE_FIXTURE(
