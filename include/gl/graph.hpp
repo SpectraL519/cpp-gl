@@ -23,23 +23,23 @@ class graph {
 public:
     using traits_type = GraphTraits;
 
-    using vertex_type = type_traits::vertex_type<traits_type>;
-    using vertex_ptr_type = type_traits::vertex_ptr_type<traits_type>;
-    using vertex_properties_type = type_traits::vertex_properties_type<traits_type>;
+    using vertex_type = typename traits_type::vertex_type;
+    using vertex_ptr_type = typename traits_type::vertex_ptr_type;
+    using vertex_properties_type = typename traits_type::vertex_properties_type;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
-    using vertex_iterator_type = type_traits::iterator_type<vertex_set_type>;
-    using vertex_const_iterator_type = type_traits::const_iterator_type<vertex_set_type>;
+    using vertex_iterator_type = typename vertex_set_type::iterator;
+    using vertex_const_iterator_type = typename vertex_set_type::const_iterator;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
-    using edge_type = type_traits::edge_type<traits_type>;
-    using edge_ptr_type = type_traits::edge_ptr_type<traits_type>;
-    using edge_directional_tag = type_traits::edge_directional_tag<traits_type>;
-    using edge_properties_type = type_traits::edge_properties_type<traits_type>;
+    using edge_type = typename traits_type::edge_type;
+    using edge_ptr_type = typename traits_type::edge_ptr_type;
+    using edge_directional_tag = typename traits_type::edge_directional_tag;
+    using edge_properties_type = typename traits_type::edge_properties_type;
 
-    using impl_tag = type_traits::implementation_tag<traits_type>;
-    using impl_type = type_traits::implementation_type<traits_type>;
+    using impl_tag = typename traits_type::implementation_tag;
+    using impl_type = typename impl_tag::template type<traits_type>;
 
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph;

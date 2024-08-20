@@ -20,9 +20,9 @@ public:
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = types::non_null_iterator<type_traits::iterator_type<edge_set_type>>;
+    using edge_iterator_type = types::non_null_iterator<typename edge_set_type::iterator>;
     using edge_const_iterator_type =
-        types::non_null_iterator<type_traits::const_iterator_type<edge_set_type>>;
+        types::non_null_iterator<typename edge_set_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 

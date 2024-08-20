@@ -27,39 +27,6 @@ struct graph_traits {
     using implementation_tag = ImplTag;
 };
 
-namespace type_traits {
-
-// TODO: remove
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using vertex_type = typename GraphTraits::vertex_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using vertex_ptr_type = typename GraphTraits::vertex_ptr_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using vertex_properties_type = typename GraphTraits::vertex_properties_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using edge_directional_tag = typename GraphTraits::edge_directional_tag;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using edge_type = typename GraphTraits::edge_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using edge_ptr_type = typename GraphTraits::edge_ptr_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using edge_properties_type = typename GraphTraits::edge_properties_type;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using implementation_tag = typename GraphTraits::implementation_tag;
-
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-using implementation_type = typename implementation_tag<GraphTraits>::template type<GraphTraits>;
-
-} // namespace type_traits
-
 template <
     type_traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
