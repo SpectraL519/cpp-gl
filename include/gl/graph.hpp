@@ -95,31 +95,43 @@ public:
     }
 
     inline void remove_vertex(const types::size_type vertex_id) {
-        this->_remove_vertex_impl(this->get_vertex(vertex_id), vertex_id);
+        this->_remove_vertex_impl(this->get_vertex(vertex_id));
     }
 
-    void remove_vertex(const vertex_ptr_type& vertex) {
-        const auto vertex_id = vertex->id();
-        const auto& self_vertex = this->get_vertex(vertex_id);
-
-        if (vertex.get() != self_vertex.get())
-            throw std::logic_error(std::format(
-                "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
-                vertex_id,
-                types::formatter(self_vertex.get()),
-                types::formatter(vertex.get())
-            ));
-
-        this->_remove_vertex_impl(self_vertex, vertex_id);
+    inline void remove_vertex(const vertex_ptr_type& vertex) {
+        this->_verify_vertex(vertex);
+        this->_remove_vertex_impl(vertex);
     }
 
     [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertices() {
         return make_iterator_range(this->_vertices);
     }
 
-    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> c_vertices() const {
+    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertices_c() const {
         return make_const_iterator_range(this->_vertices);
     }
+
+    inline const edge_ptr_type& add_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) {
+        return this->_impl.add_edge(
+            make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
+        );
+    }
+
+    inline const edge_ptr_type& add_edge(
+        const types::id_type first_id,
+        const types::id_type second_id,
+        const edge_properties_type& properties
+    )
+    requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
+    {
+        return this->_impl.add_edge(make_edge<edge_type>(
+            this->get_vertex(first_id), this->get_vertex(second_id), properties
+        ));
+    }
+
+    // TODO: add_loop_edge
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
@@ -134,7 +146,21 @@ public:
     }
 
 private:
-    void _remove_vertex_impl(const vertex_ptr_type& vertex, const types::size_type vertex_id) {
+    void _verify_vertex(const vertex_ptr_type& vertex) {
+        const auto vertex_id = vertex->id();
+        const auto& self_vertex = this->get_vertex(vertex_id);
+
+        if (vertex.get() != self_vertex.get())
+            throw std::logic_error(std::format(
+                "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
+                vertex_id,
+                types::formatter(self_vertex.get()),
+                types::formatter(vertex.get())
+            ));
+    }
+
+    void _remove_vertex_impl(const vertex_ptr_type& vertex) {
+        const auto vertex_id = vertex->id();
         this->_impl.remove_vertex(vertex);
         this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
 

@@ -42,7 +42,7 @@ AlwaysBreakBeforeMultilineStrings:    false
 AlwaysBreakTemplateDeclarations:      Yes
 BreakAfterAttributes:                 Never
 BreakBeforeBinaryOperators:           NonAssignment
-BreakBeforeBraces:                    Attach
+BreakBeforeBraces:                    Custom
 BreakBeforeConceptDeclarations:       Always
 BreakBeforeTernaryOperators:          true
 BreakConstructorInitializers:         BeforeColon
