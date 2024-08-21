@@ -56,7 +56,7 @@ public:
         return this->_id;
     }
 
-    [[no_unique_address]] properties_type properties = properties_type{};
+    [[no_unique_address]] properties_type properties{};
 
 private:
     types::id_type _id;
