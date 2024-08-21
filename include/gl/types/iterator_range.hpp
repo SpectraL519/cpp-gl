@@ -116,6 +116,8 @@ public:
         return *std::ranges::next(this->begin(), position);
     }
 
+    // TODO: add the [] operator
+
 private:
     [[nodiscard]] inline bool _is_distance_uninitialized() const
     requires(cache_mode == type_traits::cache_mode::lazy)

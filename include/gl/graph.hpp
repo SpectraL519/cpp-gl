@@ -131,7 +131,25 @@ public:
         ));
     }
 
-    // TODO: add_loop_edge
+    inline const edge_ptr_type& add_edge(
+        const vertex_ptr_type& first, const vertex_ptr_type& second
+    ) {
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return this->_impl.add_edge(make_edge<edge_type>(first, second));
+    }
+
+    inline const edge_ptr_type& add_edge(
+        const vertex_ptr_type& first,
+        const vertex_ptr_type& second,
+        const edge_properties_type& properties
+    )
+    requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
+    {
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
+    }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
