@@ -15,7 +15,9 @@ TEST_CASE("id() should return the correct vertex id") {
 }
 
 TEST_CASE("properties should be properly initialized") {
-    const lib::vertex_descriptor<types::visited_property> sut{constants::vertex_id_1, constants::visited};
+    const lib::vertex_descriptor<types::visited_property> sut{
+        constants::vertex_id_1, constants::visited
+    };
     CHECK_EQ(sut.properties, constants::visited);
 }
 

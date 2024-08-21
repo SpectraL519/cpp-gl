@@ -24,13 +24,14 @@ struct test_graph {
     }
 };
 
-template <lib_tt::c_instantiation_of<lib::graph_traits> TraitsType, lib_tt::c_properties VertexProperties>
-using add_vertex_property =
-    lib::graph_traits<
-        typename TraitsType::edge_directional_tag,
-        VertexProperties,
-        typename TraitsType::edge_properties_type,
-        typename TraitsType::implementation_tag>;
+template <
+    lib_tt::c_instantiation_of<lib::graph_traits> TraitsType,
+    lib_tt::c_properties VertexProperties>
+using add_vertex_property = lib::graph_traits<
+    typename TraitsType::edge_directional_tag,
+    VertexProperties,
+    typename TraitsType::edge_properties_type,
+    typename TraitsType::implementation_tag>;
 
 TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_template) {
     using fixture_type = test_graph<TraitsType>;
