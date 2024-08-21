@@ -37,6 +37,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     using fixture_type = test_graph<TraitsType>;
     using sut_type = typename fixture_type::sut_type;
     using traits_type = typename fixture_type::traits_type;
+    using vertex_type = typename sut_type::vertex_type;
 
     fixture_type fixture;
 
@@ -112,12 +113,49 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK(std::ranges::equal(v_crange, fixture.get_vertex_list(sut)));
     }
 
-    SUBCASE("remove_vertex should throw if the given id is invalid") {
+    SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
+        sut_type sut{constants::n_elements};
+        const auto invalid_vertex =
+            std::make_shared<vertex_type>(constants::out_of_range_elemenet_idx);
+
+        CHECK_THROWS_AS(sut.remove_vertex(invalid_vertex), std::out_of_range);
+    }
+
+    SUBCASE("remove_vertex(vertex) should throw if the id is valid but the address is not") {
+        sut_type sut{constants::n_elements};
+        const auto invalid_vertex = std::make_shared<vertex_type>(constants::vertex_id_1);
+
+        CHECK_THROWS_AS(sut.remove_vertex(invalid_vertex), std::logic_error);
+    }
+
+    SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
+            "vertices") {
+        // TODO: prepare full graph and verify that no vertices are adjacent with the removed vertex
+
+        sut_type sut{constants::n_elements};
+
+        sut.remove_vertex(fixture.get_vertex_list(sut).at(constants::vertex_id_1));
+
+        constexpr lib_t::size_type n_vertices_after_remove =
+            constants::n_elements - constants::one_element;
+
+        REQUIRE(std::ranges::equal(
+            sut.c_vertices() | std::views::transform(transforms::extract_vertex_id<>),
+            std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
+        ));
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range
+        );
+    }
+
+    SUBCASE("remove_vertex(id) should throw if the given id is invalid") {
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_range_elemenet_idx), std::out_of_range);
     }
 
-    SUBCASE("remove_vertex should remove the given vertex and align ids of remaining vertices") {
+    SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
+    ) {
         // TODO: prepare full graph and verify that no vertices are adjacent with the removed vertex
 
         sut_type sut{constants::n_elements};

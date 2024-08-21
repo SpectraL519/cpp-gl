@@ -2,6 +2,7 @@
 
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
+#include "types/formatter.hpp"
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -93,17 +94,23 @@ public:
         return this->_vertices.at(vertex_id);
     }
 
-    void remove_vertex(const types::size_type vertex_id) {
-        const auto& vertex = this->get_vertex(vertex_id);
-        this->_impl.remove_vertex(vertex);
-        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
+    inline void remove_vertex(const types::size_type vertex_id) {
+        this->_remove_vertex_impl(this->get_vertex(vertex_id), vertex_id);
+    }
 
-        // align ids of remainig vertices
-        std::for_each(
-            std::next(std::begin(this->_vertices), vertex_id),
-            this->_vertices.end(),
-            [](auto& v) { v->_id--; }
-        );
+    void remove_vertex(const vertex_ptr_type& vertex) {
+        const auto vertex_id = vertex->id();
+        const auto& self_vertex = this->get_vertex(vertex_id);
+
+        if (vertex.get() != self_vertex.get())
+            throw std::logic_error(std::format(
+                "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
+                vertex_id,
+                types::formatter(self_vertex.get()),
+                types::formatter(vertex.get())
+            ));
+
+        this->_remove_vertex_impl(self_vertex, vertex_id);
     }
 
     [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertices() {
@@ -127,6 +134,18 @@ public:
     }
 
 private:
+    void _remove_vertex_impl(const vertex_ptr_type& vertex, const types::size_type vertex_id) {
+        this->_impl.remove_vertex(vertex);
+        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
+
+        // align ids of remainig vertices
+        std::for_each(
+            std::next(std::begin(this->_vertices), vertex_id),
+            this->_vertices.end(),
+            [](auto& v) { v->_id--; }
+        );
+    }
+
     vertex_set_type _vertices = {};
     implementation_type _impl = {};
 };
