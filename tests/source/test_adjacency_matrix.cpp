@@ -65,6 +65,7 @@ constexpr lib_t::size_type n_incident_edges_for_fully_connected_vertex =
 struct test_directed_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::directed_edge<vertex_type>;
+    using edge_ptr_type = lib::directed_t::edge_ptr_type<edge_type>;
     using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>;
 
     test_directed_adjacency_matrix() {
@@ -72,8 +73,8 @@ struct test_directed_adjacency_matrix {
             vertices.push_back(std::make_shared<vertex_type>(id));
     }
 
-    void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+    const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -99,17 +100,18 @@ struct test_directed_adjacency_matrix {
 TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix, "add_edge should add the edge only to the source vertex list"
 ) {
-    add_edge(constants::vertex_id_1, constants::vertex_id_2);
-
+    const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
-    REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
-    REQUIRE_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
+    REQUIRE(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
+    REQUIRE(new_edge->is_incident_to(vertices[constants::vertex_id_2]));
 
-    const auto& new_edge = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
-    CHECK(new_edge->is_incident_to(vertices[constants::vertex_id_2]));
+    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+    CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
+    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
+
+    const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
+    CHECK_EQ(new_edge_extracted.get(), new_edge.get());
 }
 
 TEST_CASE_FIXTURE(
@@ -173,6 +175,7 @@ TEST_CASE_FIXTURE(
 struct test_undirected_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::undirected_edge<vertex_type>;
+    using edge_ptr_type = lib::undirected_t::edge_ptr_type<edge_type>;
     using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>>;
 
     test_undirected_adjacency_matrix() {
@@ -180,8 +183,8 @@ struct test_undirected_adjacency_matrix {
             vertices.push_back(std::make_shared<vertex_type>(id));
     }
 
-    void add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+    const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -208,7 +211,9 @@ struct test_undirected_adjacency_matrix {
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix, "add_edge should add the edge to the lists of both vertices"
 ) {
-    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
+    REQUIRE(new_edge->is_incident_to(vertices[constants::vertex_id_2]));
 
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -218,26 +223,27 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
 
-    const auto& new_edge_1 = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK(new_edge_1->is_incident_from(vertices[constants::vertex_id_1]));
-    CHECK(new_edge_1->is_incident_to(vertices[constants::vertex_id_2]));
+    const auto& new_edge_extracted_1 = adjacent_edges_1.element_at(constants::first_element_idx);
+    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 
-    const auto& new_edge_2 = adjacent_edges_2.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_1.get(), new_edge_2.get());
+    const auto& new_edge_extracted_2 = adjacent_edges_2.element_at(constants::first_element_idx);
+    CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
 }
 
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix,
     "add_edge should add the edge once to the vertex list if the edge is a loop"
 ) {
-    add_edge(constants::vertex_id_1, constants::vertex_id_1);
-
+    const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
+    REQUIRE(new_edge->is_loop());
+    REQUIRE(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
 
     const auto adjacent_edges = sut.adjacent_edges_c(constants::vertex_id_1);
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
-    CHECK(adjacent_edges.element_at(constants::first_element_idx)->is_loop());
+    const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
+    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 }
 
 TEST_CASE_FIXTURE(

@@ -62,8 +62,8 @@ public:
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
-    inline void add_edge(edge_ptr_type edge) {
-        specialized::add_edge(*this, std::move(edge));
+    inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+        return specialized::add_edge(*this, std::move(edge));
     }
 
     inline void remove_vertex(const vertex_ptr_type& vertex) {
