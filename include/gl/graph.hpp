@@ -151,6 +151,10 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
+    inline void remove_edge(const edge_ptr_type& edge) {
+        this->_impl.remove_edge(edge);
+    }
+
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) {

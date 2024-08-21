@@ -187,7 +187,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("add_edge tests with empty properties") {
         sut_type sut{constants::n_elements};
+
         const auto vertices = sut.vertices_c();
+        const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
+        const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
 
         SUBCASE("add_edge(ids) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
@@ -226,9 +229,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("add_edge(vertices) should throw if either vertex is invalid") {
-            const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
-            const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
-
             const auto out_of_range_vertex =
                 std::make_shared<vertex_type>(constants::out_of_range_elemenet_idx);
             const auto invalid_vertex_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
@@ -242,9 +242,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
-            const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
-            const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
-
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2);
             REQUIRE(new_edge->is_incident_from(vertex_1));
             REQUIRE(new_edge->is_incident_to(vertex_2));
@@ -268,13 +265,37 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
             }
         }
+
+        SUBCASE("remove edge should properly remove the edge for both incident vertices") {
+            const auto& added_edge = sut.add_edge(vertex_1, vertex_2);
+
+            REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
+
+            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+
+            REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
+            if constexpr (lib_tt::is_undirected_v<edge_type>)
+                REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
+
+            sut.remove_edge(added_edge);
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+
+            CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
+            CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
+        }
     }
 
     SUBCASE("add_edge tests with non empty properties") {
         using properties_traits_type = add_edge_property<traits_type, types::used_property>;
-
         lib::graph<properties_traits_type> sut{constants::n_elements};
+
         const auto vertices = sut.vertices_c();
+        const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
+        const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
 
         SUBCASE("add_edge(ids) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
@@ -319,9 +340,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("add_edge(vertices) should throw if either vertex is invalid") {
-            const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
-            const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
-
             const auto out_of_range_vertex =
                 std::make_shared<vertex_type>(constants::out_of_range_elemenet_idx);
             const auto invalid_vertex_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
@@ -343,9 +361,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
-            const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
-            const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
-
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2, constants::used);
             REQUIRE(new_edge->is_incident_from(vertex_1));
             REQUIRE(new_edge->is_incident_to(vertex_2));
@@ -369,6 +384,28 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
             }
+        }
+
+        SUBCASE("remove edge should properly remove the edge for both incident vertices") {
+            const auto& added_edge = sut.add_edge(vertex_1, vertex_2, constants::used);
+
+            REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
+
+            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+
+            REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
+            if constexpr (lib_tt::is_undirected_v<edge_type>)
+                REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
+
+            sut.remove_edge(added_edge);
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+
+            CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
+            CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
         }
     }
 }
