@@ -131,15 +131,13 @@ public:
         ));
     }
 
-    inline const edge_ptr_type& add_edge(
-        const vertex_ptr_type& first, const vertex_ptr_type& second
-    ) {
+    const edge_ptr_type& add_edge(const vertex_ptr_type& first, const vertex_ptr_type& second) {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
         return this->_impl.add_edge(make_edge<edge_type>(first, second));
     }
 
-    inline const edge_ptr_type& add_edge(
+    const edge_ptr_type& add_edge(
         const vertex_ptr_type& first,
         const vertex_ptr_type& second,
         const edge_properties_type& properties

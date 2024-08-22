@@ -22,6 +22,54 @@ struct test_graph {
     typename GraphType::vertex_set_type& get_vertex_list(GraphType& graph) {
         return graph._vertices;
     }
+
+    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
+    requires(lib_tt::is_directed_v<typename GraphType::edge_type>)
+    void initialize_full_graph(GraphType& graph) {
+        const auto vertices = graph.vertices_c();
+        for (const auto& first : vertices)
+            for (const auto& second : vertices)
+                if (*first != *second)
+                    graph.add_edge(first, second);
+
+        const lib_t::size_type n_unique_edges_in_full_graph =
+            n_incident_edges_for_fully_connected_vertex * constants::n_elements;
+
+        REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_in_full_graph);
+        validate_full_graph_edges(graph);
+    }
+
+    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
+    requires(lib_tt::is_undirected_v<typename GraphType::edge_type>)
+    void initialize_full_graph(GraphType& graph) {
+        const auto vertices = graph.vertices_c();
+        for (const auto& first : vertices)
+            for (const auto& second : vertices)
+                if (*first < *second)
+                    graph.add_edge(first, second);
+
+        const lib_t::size_type n_unique_edges_in_full_graph =
+            (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
+
+        REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_in_full_graph);
+        validate_full_graph_edges(graph);
+    }
+
+    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
+    void validate_full_graph_edges(const GraphType& graph) {
+        REQUIRE(std::ranges::all_of(
+            graph.vertices_c()
+                | std::views::transform(transforms::extract_vertex_id<
+                                        typename GraphType::vertex_type>),
+            [this, &graph](const lib_t::id_type vertex_id) {
+                return graph.adjacent_edges_c(vertex_id).distance()
+                    == n_incident_edges_for_fully_connected_vertex;
+            }
+        ));
+    }
+
+    const lib_t::size_type n_incident_edges_for_fully_connected_vertex =
+        constants::n_elements - constants::one_element;
 };
 
 template <
@@ -140,18 +188,27 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
             "vertices") {
-        // TODO: prepare full graph and verify that no vertices are adjacent with the removed vertex
-
         sut_type sut{constants::n_elements};
+        fixture.initialize_full_graph(sut);
 
         sut.remove_vertex(fixture.get_vertex_list(sut).at(constants::vertex_id_1));
 
         constexpr lib_t::size_type n_vertices_after_remove =
             constants::n_elements - constants::one_element;
+        const auto expected_n_incident_edges =
+            fixture.n_incident_edges_for_fully_connected_vertex - constants::one_element;
+
+        const auto vertex_id_view =
+            sut.vertices_c() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
 
         REQUIRE(std::ranges::equal(
-            sut.vertices_c() | std::views::transform(transforms::extract_vertex_id<>),
-            std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
+            vertex_id_view, std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
+        ));
+        REQUIRE(std::ranges::all_of(
+            vertex_id_view,
+            [&sut, expected_n_incident_edges](const lib_t::id_type vertex_id) {
+                return sut.adjacent_edges_c(vertex_id).distance() == expected_n_incident_edges;
+            }
         ));
 
         CHECK_THROWS_AS(
@@ -166,18 +223,27 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
     ) {
-        // TODO: prepare full graph and verify that no vertices are adjacent with the removed vertex
-
         sut_type sut{constants::n_elements};
+        fixture.initialize_full_graph(sut);
 
         sut.remove_vertex(constants::vertex_id_1);
 
         constexpr lib_t::size_type n_vertices_after_remove =
             constants::n_elements - constants::one_element;
+        const auto expected_n_incident_edges =
+            fixture.n_incident_edges_for_fully_connected_vertex - constants::one_element;
+
+        const auto vertex_id_view =
+            sut.vertices_c() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
 
         REQUIRE(std::ranges::equal(
-            sut.vertices_c() | std::views::transform(transforms::extract_vertex_id<>),
-            std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
+            vertex_id_view, std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
+        ));
+        REQUIRE(std::ranges::all_of(
+            vertex_id_view,
+            [&sut, expected_n_incident_edges](const lib_t::id_type vertex_id) {
+                return sut.adjacent_edges_c(vertex_id).distance() == expected_n_incident_edges;
+            }
         ));
 
         CHECK_THROWS_AS(

@@ -83,7 +83,7 @@ struct test_directed_adjacency_list {
                 add_edge(first_id, second_id);
     }
 
-    void prepare_full_graph() {
+    void initialize_full_graph() {
         for (const auto first_id : constants::vertex_id_view)
             fully_connect_vertex(first_id);
 
@@ -93,7 +93,7 @@ struct test_directed_adjacency_list {
     sut_type sut{constants::n_elements};
     std::vector<std::shared_ptr<vertex_type>> vertices;
 
-    static constexpr lib_t::size_type n_unique_edges_in_full_graph =
+    const lib_t::size_type n_unique_edges_in_full_graph =
         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
 };
 
@@ -150,7 +150,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    prepare_full_graph();
+    initialize_full_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);
@@ -193,7 +193,7 @@ struct test_undirected_adjacency_list {
                 add_edge(first_id, second_id);
     }
 
-    void prepare_full_graph() {
+    void initialize_full_graph() {
         for (const auto first_id : constants::vertex_id_view)
             for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id))
                 add_edge(first_id, second_id);
@@ -204,7 +204,7 @@ struct test_undirected_adjacency_list {
     sut_type sut{constants::n_elements};
     std::vector<std::shared_ptr<vertex_type>> vertices;
 
-    static constexpr lib_t::size_type n_unique_edges_in_full_graph =
+    const lib_t::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
 };
 
@@ -298,7 +298,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    prepare_full_graph();
+    initialize_full_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);

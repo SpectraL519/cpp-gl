@@ -83,7 +83,7 @@ struct test_directed_adjacency_matrix {
                 add_edge(first_id, second_id);
     }
 
-    void prepare_full_graph() {
+    void initialize_full_graph() {
         for (const auto first_id : constants::vertex_id_view)
             fully_connect_vertex(first_id);
 
@@ -150,7 +150,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    prepare_full_graph();
+    initialize_full_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);
@@ -193,7 +193,7 @@ struct test_undirected_adjacency_matrix {
                 add_edge(first_id, second_id);
     }
 
-    void prepare_full_graph() {
+    void initialize_full_graph() {
         for (const auto first_id : constants::vertex_id_view)
             for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id))
                 add_edge(first_id, second_id);
@@ -295,7 +295,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    prepare_full_graph();
+    initialize_full_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);
