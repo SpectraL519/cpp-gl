@@ -55,7 +55,7 @@ public:
         return type_traits::is_undirected_v<type>;
     }
 
-    [[nodiscard]] const gl_attr_force_inline types::homogeneous_pair<vertex_ptr_type>&
+    [[nodiscard]] gl_attr_force_inline const types::homogeneous_pair<vertex_ptr_type>&
     incident_vertices() const {
         return this->_vertices;
     }

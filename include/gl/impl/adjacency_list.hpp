@@ -51,7 +51,7 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    const gl_attr_force_inline edge_ptr_type& add_edge(edge_ptr_type edge) {
+    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 

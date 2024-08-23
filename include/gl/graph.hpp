@@ -91,7 +91,7 @@ public:
         );
     }
 
-    [[nodiscard]] const gl_attr_force_inline vertex_ptr_type& get_vertex(
+    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& get_vertex(
         const types::id_type vertex_id
     ) const {
         return this->_vertices.at(vertex_id);
@@ -115,7 +115,7 @@ public:
         return make_const_iterator_range(this->_vertices);
     }
 
-    const gl_attr_force_inline edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_ptr_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
         return this->_impl.add_edge(
@@ -123,7 +123,7 @@ public:
         );
     }
 
-    const gl_attr_force_inline edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_ptr_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
