@@ -55,10 +55,15 @@ public:
         return type_traits::is_undirected_v<type>;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::homogeneous_pair<vertex_ptr_type>&
-    incident_vertices() const {
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
+    [[nodiscard]] gl_attr_force_inline
+    const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
         return this->_vertices;
     }
+
+    // clang-format on
 
     [[nodiscard]] gl_attr_force_inline vertex_ptr_type first() const {
         return this->_vertices.first;

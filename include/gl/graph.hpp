@@ -91,11 +91,16 @@ public:
         );
     }
 
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
     [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& get_vertex(
         const types::id_type vertex_id
     ) const {
         return this->_vertices.at(vertex_id);
     }
+
+    // clang-format on
 
     gl_attr_force_inline void remove_vertex(const types::size_type vertex_id) {
         this->_remove_vertex_impl(this->get_vertex(vertex_id));
@@ -114,6 +119,9 @@ public:
     ) const {
         return make_const_iterator_range(this->_vertices);
     }
+
+    // clang-format off
+    // gl_attr_force_inline misplacement
 
     gl_attr_force_inline const edge_ptr_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
@@ -134,6 +142,8 @@ public:
             this->get_vertex(first_id), this->get_vertex(second_id), properties
         ));
     }
+
+    // clang-format on
 
     const edge_ptr_type& add_edge(const vertex_ptr_type& first, const vertex_ptr_type& second) {
         this->_verify_vertex(first);
