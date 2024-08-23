@@ -46,11 +46,11 @@ public:
 
     ~adjacency_matrix() = default;
 
-    [[nodiscard]] inline types::size_type n_vertices() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_matrix.size();
     }
 
-    [[nodiscard]] inline types::size_type n_unique_edges() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
         return this->_n_unique_edges;
     }
 
@@ -62,15 +62,20 @@ public:
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
-    inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
+    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 
-    inline void remove_vertex(const vertex_ptr_type& vertex) {
+    // clang-format on
+
+    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
         specialized::remove_vertex(*this, vertex);
     }
 
-    inline void remove_edge(const edge_ptr_type& edge) {
+    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         specialized::remove_edge(*this, edge);
     }
 

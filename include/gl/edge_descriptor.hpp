@@ -1,6 +1,7 @@
 #pragma once
 
 #include "edge_tags.hpp"
+#include "gl/attributes/force_inline.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -46,23 +47,29 @@ public:
 
     ~edge_descriptor() = default;
 
-    [[nodiscard]] inline constexpr bool is_directed() const {
+    [[nodiscard]] constexpr bool is_directed() const {
         return type_traits::is_directed_v<type>;
     }
 
-    [[nodiscard]] inline constexpr bool is_undirected() const {
+    [[nodiscard]] constexpr bool is_undirected() const {
         return type_traits::is_undirected_v<type>;
     }
 
-    [[nodiscard]] inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
+    [[nodiscard]] gl_attr_force_inline
+    const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
         return this->_vertices;
     }
 
-    [[nodiscard]] inline vertex_ptr_type first() const {
+    // clang-format on
+
+    [[nodiscard]] gl_attr_force_inline vertex_ptr_type first() const {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] inline vertex_ptr_type second() const {
+    [[nodiscard]] gl_attr_force_inline vertex_ptr_type second() const {
         return this->_vertices.second;
     }
 
@@ -76,19 +83,19 @@ public:
         return nullptr;
     }
 
-    [[nodiscard]] inline bool is_incident_with(const vertex_ptr_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_ptr_type& vertex) const {
         return *vertex == *this->_vertices.first or *vertex == *this->_vertices.second;
     }
 
-    [[nodiscard]] inline bool is_incident_from(const vertex_ptr_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_ptr_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }
 
-    [[nodiscard]] inline bool is_incident_to(const vertex_ptr_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_ptr_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
     }
 
-    [[nodiscard]] inline bool is_loop() const {
+    [[nodiscard]] gl_attr_force_inline bool is_loop() const {
         return *this->_vertices.first == *this->_vertices.second;
     }
 
