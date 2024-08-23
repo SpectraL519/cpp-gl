@@ -1,6 +1,7 @@
 #pragma once
 
 #include "edge_tags.hpp"
+#include "gl/attributes/force_inline.hpp"
 #include "gl/impl/impl_tags_decl.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
@@ -44,15 +45,15 @@ public:
 
     ~vertex_descriptor() = default;
 
-    bool operator==(const vertex_descriptor& other) const {
+    gl_attr_force_inline bool operator==(const vertex_descriptor& other) const {
         return this->_id == other._id;
     }
 
-    std::strong_ordering operator<=>(const vertex_descriptor& other) const {
+    gl_attr_force_inline std::strong_ordering operator<=>(const vertex_descriptor& other) const {
         return this->_id <=> other._id;
     }
 
-    [[nodiscard]] inline types::id_type id() const {
+    [[nodiscard]] gl_attr_force_inline types::id_type id() const {
         return this->_id;
     }
 
