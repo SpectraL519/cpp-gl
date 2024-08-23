@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <memory>
 
@@ -127,19 +127,23 @@ struct undirected_t {
 };
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline typename EdgeType::directional_tag::template edge_ptr_type<EdgeType> make_edge(
-    const typename EdgeType::vertex_ptr_type& first,
-    const typename EdgeType::vertex_ptr_type& second
-) {
+[[nodiscard]] gl_attr_force_inline
+    typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>
+    make_edge(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second
+    ) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second);
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline typename EdgeType::directional_tag::template edge_ptr_type<EdgeType> make_edge(
-    const typename EdgeType::vertex_ptr_type& first,
-    const typename EdgeType::vertex_ptr_type& second,
-    const typename EdgeType::properties_type& properties
-) {
+[[nodiscard]] gl_attr_force_inline
+    typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>
+    make_edge(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second,
+        const typename EdgeType::properties_type& properties
+    ) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
 }
 

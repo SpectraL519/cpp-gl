@@ -62,7 +62,7 @@ public:
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+    const gl_attr_force_inline edge_ptr_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 

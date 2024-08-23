@@ -1,11 +1,11 @@
 #pragma once
 
 #include "edge_tags.hpp"
+#include "gl/attributes/force_inline.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <memory>
 #include <type_traits>
@@ -55,7 +55,8 @@ public:
         return type_traits::is_undirected_v<type>;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
+    [[nodiscard]] const gl_attr_force_inline types::homogeneous_pair<vertex_ptr_type>&
+    incident_vertices() const {
         return this->_vertices;
     }
 

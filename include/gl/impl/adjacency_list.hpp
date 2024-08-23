@@ -1,9 +1,9 @@
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <vector>
 
@@ -51,7 +51,7 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+    const gl_attr_force_inline edge_ptr_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 
@@ -69,9 +69,8 @@ public:
         return make_iterator_range(this->_list.at(vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
-        const types::id_type vertex_id
-    ) const {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
+    adjacent_edges_c(const types::id_type vertex_id) const {
         return make_const_iterator_range(this->_list.at(vertex_id));
     }
 

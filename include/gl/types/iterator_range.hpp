@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "type_traits.hpp"
 #include "types.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <format>
 #include <iterator>
@@ -158,9 +158,8 @@ template <
 template <
     type_traits::c_range Range,
     type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
-[[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::iterator, CacheMode> make_iterator_range(
-    Range& range
-) {
+[[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::iterator, CacheMode>
+make_iterator_range(Range& range) {
     return types::iterator_range<typename Range::iterator, CacheMode>{
         std::ranges::begin(range), std::ranges::end(range)
     };

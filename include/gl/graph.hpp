@@ -1,12 +1,12 @@
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
 #include "types/formatter.hpp"
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <algorithm>
 
@@ -91,7 +91,9 @@ public:
         );
     }
 
-    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] const gl_attr_force_inline vertex_ptr_type& get_vertex(
+        const types::id_type vertex_id
+    ) const {
         return this->_vertices.at(vertex_id);
     }
 
@@ -108,11 +110,12 @@ public:
         return make_iterator_range(this->_vertices);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices_c() const {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices_c(
+    ) const {
         return make_const_iterator_range(this->_vertices);
     }
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(
+    const gl_attr_force_inline edge_ptr_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
         return this->_impl.add_edge(
@@ -120,7 +123,7 @@ public:
         );
     }
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(
+    const gl_attr_force_inline edge_ptr_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
@@ -160,9 +163,8 @@ public:
         return this->_impl.adjacent_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
-        const types::id_type vertex_id
-    ) const {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
+    adjacent_edges_c(const types::id_type vertex_id) const {
         return this->_impl.adjacent_edges_c(vertex_id);
     }
 

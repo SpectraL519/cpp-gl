@@ -1,11 +1,11 @@
 #pragma once
 
 #include "edge_tags.hpp"
+#include "gl/attributes/force_inline.hpp"
 #include "gl/impl/impl_tags_decl.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
-#include "gl/attributes/force_inline.hpp"
 
 #include <compare>
 
