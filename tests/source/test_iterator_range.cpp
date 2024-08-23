@@ -23,7 +23,7 @@ struct test_iterator_range_type_params {
 template <typename TypeParams>
 struct test_iterator_range {
     using container_type = typename TypeParams::container_type;
-    using iterator_type = lib_tt::iterator_type<container_type>;
+    using iterator_type = typename container_type::iterator;
     using sut_type = lib_t::iterator_range<iterator_type, TypeParams::cache_mode>;
 
     test_iterator_range() : container(size), sut(container.begin(), container.end()) {

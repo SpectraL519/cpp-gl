@@ -1,6 +1,7 @@
 #pragma once
 
 #include "edge_tags.hpp"
+#include "gl/impl/impl_tags_decl.hpp"
 #include "types/default_types.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -12,7 +13,8 @@ namespace gl {
 template <
     type_traits::c_edge_directional_tag EdgeDirectionalTag,
     type_traits::c_properties VertexProperties,
-    type_traits::c_properties EdgeProperties>
+    type_traits::c_properties EdgeProperties,
+    type_traits::c_graph_impl_tag ImplTag>
 struct graph_traits;
 
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
@@ -54,7 +56,7 @@ public:
         return this->_id;
     }
 
-    [[no_unique_address]] properties_type properties = properties_type{};
+    [[no_unique_address]] properties_type properties{};
 
 private:
     types::id_type _id;

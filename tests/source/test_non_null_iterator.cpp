@@ -29,7 +29,7 @@ template <typename Container>
 struct test_non_null_iterator {
     using container_type = Container;
     using data_ptr_type = typename container_type::value_type;
-    using sut_type = lib_t::non_null_iterator<lib_tt::iterator_type<container_type>>;
+    using sut_type = lib_t::non_null_iterator<typename container_type::iterator>;
 
     struct reference_projection {
         auto operator()(const data_ptr_type& data_ptr) {
@@ -38,7 +38,7 @@ struct test_non_null_iterator {
     };
 
     test_non_null_iterator() {
-        for (auto i = constants::first_element_idx; i < constants::no_elements; i++) {
+        for (auto i = constants::first_element_idx; i < constants::n_elements; i++) {
             container.push_front(nullptr);
             container.push_front(data_ptr_type{
                 new data{i, std::to_string(i)}
