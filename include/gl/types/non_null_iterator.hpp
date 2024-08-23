@@ -1,6 +1,7 @@
 #pragma once
 
 #include "type_traits.hpp"
+#include "gl/attributes/force_inline.hpp"
 
 #include <algorithm>
 
@@ -76,22 +77,22 @@ private:
 } // namespace types
 
 template <type_traits::c_range Range>
-[[nodiscard]] auto non_null_begin(Range& range) {
+[[nodiscard]] gl_attr_force_inline auto non_null_begin(Range& range) {
     return types::non_null_iterator(std::ranges::begin(range), std::ranges::end(range));
 }
 
 template <type_traits::c_range Range>
-[[nodiscard]] auto non_null_end(Range& range) {
+[[nodiscard]] gl_attr_force_inline auto non_null_end(Range& range) {
     return types::non_null_iterator(std::ranges::end(range), std::ranges::end(range));
 }
 
 template <type_traits::c_const_range Range>
-[[nodiscard]] auto non_null_cbegin(Range& range) {
+[[nodiscard]] gl_attr_force_inline auto non_null_cbegin(Range& range) {
     return types::non_null_iterator(std::ranges::cbegin(range), std::ranges::cend(range));
 }
 
 template <type_traits::c_const_range Range>
-[[nodiscard]] auto non_null_cend(Range& range) {
+[[nodiscard]] gl_attr_force_inline auto non_null_cend(Range& range) {
     return types::non_null_iterator(std::ranges::cend(range), std::ranges::cend(range));
 }
 
