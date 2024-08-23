@@ -47,11 +47,11 @@ public:
     ~edge_descriptor() = default;
 
     [[nodiscard]] inline constexpr bool is_directed() const {
-        return std::is_same_v<directional_tag, directed_t>;
+        return type_traits::is_directed_v<type>;
     }
 
     [[nodiscard]] inline constexpr bool is_undirected() const {
-        return std::is_same_v<directional_tag, undirected_t>;
+        return type_traits::is_undirected_v<type>;
     }
 
     [[nodiscard]] inline const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
@@ -92,7 +92,7 @@ public:
         return *this->_vertices.first == *this->_vertices.second;
     }
 
-    [[no_unique_address]] properties_type properties = {};
+    [[no_unique_address]] properties_type properties{};
 
 private:
     types::homogeneous_pair<vertex_ptr_type> _vertices;

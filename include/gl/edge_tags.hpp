@@ -48,7 +48,26 @@ struct directed_t {
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_directed_v<EdgeType>)
-    static bool is_incident_from(
+    [[nodiscard]] static inline edge_ptr_type<EdgeType> make(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second
+    ) {
+        return std::make_unique<EdgeType>(first, second);
+    }
+
+    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(type_traits::is_directed_v<EdgeType>)
+    [[nodiscard]] static inline edge_ptr_type<EdgeType> make(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second,
+        const typename EdgeType::properties_type& properties
+    ) {
+        return std::make_unique<EdgeType>(first, second, properties);
+    }
+
+    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(type_traits::is_directed_v<EdgeType>)
+    static inline bool is_incident_from(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return *vertex == *edge._vertices.first;
@@ -56,7 +75,7 @@ struct directed_t {
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_directed_v<EdgeType>)
-    static bool is_incident_to(
+    static inline bool is_incident_to(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return *vertex == *edge._vertices.second;
@@ -72,7 +91,26 @@ struct undirected_t {
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_undirected_v<EdgeType>)
-    static bool is_incident_from(
+    [[nodiscard]] static inline edge_ptr_type<EdgeType> make(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second
+    ) {
+        return std::make_shared<EdgeType>(first, second);
+    }
+
+    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(type_traits::is_undirected_v<EdgeType>)
+    [[nodiscard]] static inline edge_ptr_type<EdgeType> make(
+        const typename EdgeType::vertex_ptr_type& first,
+        const typename EdgeType::vertex_ptr_type& second,
+        const typename EdgeType::properties_type& properties
+    ) {
+        return std::make_shared<EdgeType>(first, second, properties);
+    }
+
+    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(type_traits::is_undirected_v<EdgeType>)
+    static inline bool is_incident_from(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return edge.is_incident_with(vertex);
@@ -80,7 +118,7 @@ struct undirected_t {
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_undirected_v<EdgeType>)
-    static bool is_incident_to(
+    static inline bool is_incident_to(
         const EdgeType& edge, const typename EdgeType::vertex_ptr_type& vertex
     ) {
         return edge.is_incident_with(vertex);
@@ -92,9 +130,7 @@ template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     const typename EdgeType::vertex_ptr_type& first,
     const typename EdgeType::vertex_ptr_type& second
 ) {
-    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(
-        new EdgeType(first, second)
-    );
+    return EdgeType::directional_tag::template make<EdgeType>(first, second);
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
@@ -103,9 +139,7 @@ template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     const typename EdgeType::vertex_ptr_type& second,
     const typename EdgeType::properties_type& properties
 ) {
-    return typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>(
-        new EdgeType(first, second, properties)
-    );
+    return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
 }
 
 } // namespace gl
