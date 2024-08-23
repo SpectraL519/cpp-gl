@@ -2,6 +2,7 @@
 
 #include "type_traits.hpp"
 #include "types.hpp"
+#include "gl/attributes/force_inline.hpp"
 
 #include <format>
 #include <iterator>
@@ -68,25 +69,25 @@ public:
 
     bool operator==(const iterator_range&) const = default;
 
-    [[nodiscard]] inline iterator begin() const {
+    [[nodiscard]] gl_attr_force_inline iterator begin() const {
         return this->_range.first;
     }
 
-    [[nodiscard]] inline iterator end() const {
+    [[nodiscard]] gl_attr_force_inline iterator end() const {
         return this->_range.second;
     }
 
 #if __cplusplus >= 202302L
-    [[nodiscard]] inline auto cbegin() const {
+    [[nodiscard]] gl_attr_force_inline auto cbegin() const {
         return std::make_const_iterator(this->_range.first);
     }
 
-    [[nodiscard]] inline auto cend() const {
+    [[nodiscard]] gl_attr_force_inline auto cend() const {
         return std::make_const_iterator(this->_range.second);
     }
 #endif
 
-    [[nodiscard]] inline distance_type distance() const
+    [[nodiscard]] gl_attr_force_inline distance_type distance() const
     requires(cache_mode == type_traits::cache_mode::eager)
     {
         return this->_distance;
@@ -100,7 +101,7 @@ public:
         return this->_distance;
     }
 
-    [[nodiscard]] inline distance_type distance() const
+    [[nodiscard]] gl_attr_force_inline distance_type distance() const
     requires(cache_mode == type_traits::cache_mode::none)
     {
         return std::ranges::distance(this->begin(), this->end());
@@ -119,7 +120,7 @@ public:
     // TODO: add the [] operator
 
 private:
-    [[nodiscard]] inline bool _is_distance_uninitialized() const
+    [[nodiscard]] gl_attr_force_inline bool _is_distance_uninitialized() const
     requires(cache_mode == type_traits::cache_mode::lazy)
     {
         return this->_distance == _invalid_distance;
@@ -148,7 +149,7 @@ private:
 template <
     std::forward_iterator Iterator,
     type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
-[[nodiscard]] inline types::iterator_range<Iterator, CacheMode> make_iterator_range(
+[[nodiscard]] gl_attr_force_inline types::iterator_range<Iterator, CacheMode> make_iterator_range(
     Iterator begin, Iterator end
 ) {
     return types::iterator_range<Iterator, CacheMode>{begin, end};
@@ -157,7 +158,7 @@ template <
 template <
     type_traits::c_range Range,
     type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
-[[nodiscard]] inline types::iterator_range<typename Range::iterator, CacheMode> make_iterator_range(
+[[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::iterator, CacheMode> make_iterator_range(
     Range& range
 ) {
     return types::iterator_range<typename Range::iterator, CacheMode>{
@@ -168,7 +169,7 @@ template <
 template <
     type_traits::c_range Range,
     type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
-[[nodiscard]] inline types::iterator_range<typename Range::const_iterator, CacheMode>
+[[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::const_iterator, CacheMode>
 make_const_iterator_range(const Range& range) {
     return types::iterator_range<typename Range::const_iterator, CacheMode>{
         std::ranges::cbegin(range), std::ranges::cend(range)

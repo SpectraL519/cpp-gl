@@ -3,6 +3,7 @@
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
+#include "gl/attributes/force_inline.hpp"
 
 #include <vector>
 
@@ -38,37 +39,37 @@ public:
 
     ~adjacency_list() = default;
 
-    [[nodiscard]] inline types::size_type n_vertices() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_list.size();
     }
 
-    [[nodiscard]] inline types::size_type n_unique_edges() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
         return this->_n_unique_edges;
     }
 
-    inline void add_vertex() {
+    gl_attr_force_inline void add_vertex() {
         this->_list.push_back(edge_set_type{});
     }
 
-    inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 
-    inline void remove_vertex(const vertex_ptr_type& vertex) {
+    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
         specialized::remove_vertex(*this, vertex);
     }
 
-    inline void remove_edge(const edge_ptr_type& edge) {
+    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         specialized::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) {
         return make_iterator_range(this->_list.at(vertex_id));
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
         const types::id_type vertex_id
     ) const {
         return make_const_iterator_range(this->_list.at(vertex_id));
@@ -79,7 +80,7 @@ private:
     friend specialized;
 
     struct address_projection {
-        auto operator()(const edge_ptr_type& edge) const {
+        gl_attr_force_inline auto operator()(const edge_ptr_type& edge) const {
             return edge.get();
         }
     };

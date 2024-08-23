@@ -6,6 +6,7 @@
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
+#include "gl/attributes/force_inline.hpp"
 
 #include <algorithm>
 
@@ -68,11 +69,11 @@ public:
 
     ~graph() = default;
 
-    [[nodiscard]] inline types::size_type n_vertices() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_vertices.size();
     }
 
-    [[nodiscard]] inline types::size_type n_unique_edges() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
         return this->_impl.n_unique_edges();
     }
 
@@ -90,11 +91,11 @@ public:
         );
     }
 
-    [[nodiscard]] inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& get_vertex(const types::id_type vertex_id) const {
         return this->_vertices.at(vertex_id);
     }
 
-    inline void remove_vertex(const types::size_type vertex_id) {
+    gl_attr_force_inline void remove_vertex(const types::size_type vertex_id) {
         this->_remove_vertex_impl(this->get_vertex(vertex_id));
     }
 
@@ -103,15 +104,15 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
-    [[nodiscard]] inline types::iterator_range<vertex_iterator_type> vertices() {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices() {
         return make_iterator_range(this->_vertices);
     }
 
-    [[nodiscard]] inline types::iterator_range<vertex_const_iterator_type> vertices_c() const {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices_c() const {
         return make_const_iterator_range(this->_vertices);
     }
 
-    inline const edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_ptr_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
         return this->_impl.add_edge(
@@ -119,7 +120,7 @@ public:
         );
     }
 
-    inline const edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_ptr_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
@@ -149,17 +150,17 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
-    inline void remove_edge(const edge_ptr_type& edge) {
+    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) {
         return this->_impl.adjacent_edges(vertex_id);
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
         const types::id_type vertex_id
     ) const {
         return this->_impl.adjacent_edges_c(vertex_id);
