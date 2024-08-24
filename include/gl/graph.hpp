@@ -111,13 +111,13 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices() {
-        return make_iterator_range(this->_vertices);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices_c(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices(
     ) const {
         return make_const_iterator_range(this->_vertices);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices_mut() {
+        return make_iterator_range(this->_vertices);
     }
 
     // clang-format off
@@ -167,15 +167,15 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
-    ) {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
+    adjacent_edges(const types::id_type vertex_id) const {
         return this->_impl.adjacent_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
-    adjacent_edges_c(const types::id_type vertex_id) const {
-        return this->_impl.adjacent_edges_c(vertex_id);
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
+        const types::id_type vertex_id
+    ) {
+        return this->_impl.adjacent_edges_mut(vertex_id);
     }
 
 private:
