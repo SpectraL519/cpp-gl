@@ -111,13 +111,13 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices() {
-        return make_iterator_range(this->_vertices);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices_c(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices(
     ) const {
         return make_const_iterator_range(this->_vertices);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices_mut() {
+        return make_iterator_range(this->_vertices);
     }
 
     // clang-format off
