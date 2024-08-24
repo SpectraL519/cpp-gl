@@ -30,7 +30,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
         std::ranges::for_each(constants::vertex_id_view, [&sut](const lib_t::id_type vertex_id) {
-            CHECK_EQ(sut.adjacent_edges_c(vertex_id).distance(), constants::zero_elements);
+            CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_elements);
         });
     }
 
@@ -106,9 +106,9 @@ TEST_CASE_FIXTURE(
     REQUIRE(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
     REQUIRE(new_edge->is_incident_to(vertices[constants::vertex_id_2]));
 
-    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+    const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
-    CHECK_EQ(sut.adjacent_edges_c(constants::vertex_id_2).distance(), constants::zero_elements);
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
 
     const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
     CHECK_EQ(new_edge_extracted.get(), new_edge.get());
@@ -119,7 +119,7 @@ TEST_CASE_FIXTURE(
 ) {
     fully_connect_vertex(constants::vertex_id_1);
 
-    auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
+    auto adjacent_edges = sut.adjacent_edges_mut(constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_for_fully_connected_vertex);
 
@@ -131,7 +131,7 @@ TEST_CASE_FIXTURE(
         sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex - constants::one_element
     );
 
-    adjacent_edges = sut.adjacent_edges(constants::first_element_idx);
+    adjacent_edges = sut.adjacent_edges_mut(constants::first_element_idx);
     REQUIRE_EQ(
         adjacent_edges.distance(),
         n_incident_edges_for_fully_connected_vertex - constants::one_element
@@ -164,7 +164,7 @@ TEST_CASE_FIXTURE(
 
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        const auto adjacent_edges = sut.adjacent_edges_c(vertex_id);
+        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
         CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
             return edge->is_incident_with(removed_vertex);
@@ -217,8 +217,8 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-    const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
-    const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+    const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+    const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
     REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
@@ -239,7 +239,7 @@ TEST_CASE_FIXTURE(
     REQUIRE(new_edge->is_loop());
     REQUIRE(new_edge->is_incident_from(vertices[constants::vertex_id_1]));
 
-    const auto adjacent_edges = sut.adjacent_edges_c(constants::vertex_id_1);
+    const auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
@@ -252,7 +252,7 @@ TEST_CASE_FIXTURE(
 ) {
     fully_connect_vertex(constants::vertex_id_1);
 
-    auto adjacent_edges_first = sut.adjacent_edges(constants::vertex_id_1);
+    auto adjacent_edges_first = sut.adjacent_edges_mut(constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges_first.distance(), n_incident_edges_for_fully_connected_vertex);
 
@@ -260,7 +260,7 @@ TEST_CASE_FIXTURE(
     const auto edge_to_remove_addr = edge_to_remove.get();
 
     const auto second_id = edge_to_remove->second()->id();
-    REQUIRE_EQ(sut.adjacent_edges_c(second_id).distance(), constants::one_element);
+    REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
     REQUIRE_EQ(
@@ -268,7 +268,7 @@ TEST_CASE_FIXTURE(
     );
 
     // validate that the first adjacent edges list has been properly aligned
-    adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
+    adjacent_edges_first = sut.adjacent_edges_mut(constants::first_element_idx);
     REQUIRE_EQ(
         adjacent_edges_first.distance(),
         n_incident_edges_for_fully_connected_vertex - constants::one_element
@@ -284,7 +284,7 @@ TEST_CASE_FIXTURE(
     );
 
     // validate that the second adjacent edges list has been properly aligned
-    const auto adjacent_edges_second = sut.adjacent_edges_c(second_id);
+    const auto adjacent_edges_second = sut.adjacent_edges(second_id);
     REQUIRE_EQ(adjacent_edges_second.distance(), constants::zero_elements);
     CHECK_EQ(
         std::ranges::find(
@@ -312,7 +312,7 @@ TEST_CASE_FIXTURE(
 
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        const auto adjacent_edges = sut.adjacent_edges_c(vertex_id);
+        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
         CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
             return edge->is_incident_with(removed_vertex);
