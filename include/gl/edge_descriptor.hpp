@@ -21,7 +21,7 @@ class edge_descriptor {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
     using vertex_type = VertexType;
-    using vertex_ptr_type = std::shared_ptr<vertex_type>;
+    using vertex_ptr_type = types::vertex_ptr_type<vertex_type>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
 

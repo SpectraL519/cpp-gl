@@ -66,4 +66,11 @@ private:
 template <type_traits::c_properties Properties = types::empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
+namespace types {
+
+template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
+using vertex_ptr_type = std::shared_ptr<VertexType>;
+
+} // namespace types
+
 } // namespace gl

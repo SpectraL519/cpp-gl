@@ -126,24 +126,27 @@ struct undirected_t {
     }
 };
 
+namespace types {
+
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline
-    typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>
-    make_edge(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second
-    ) {
+using edge_ptr_type = typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>;
+
+} // namespace types
+
+template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+[[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
+    const typename EdgeType::vertex_ptr_type& first,
+    const typename EdgeType::vertex_ptr_type& second
+) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second);
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline
-    typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>
-    make_edge(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second,
-        const typename EdgeType::properties_type& properties
-    ) {
+[[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
+    const typename EdgeType::vertex_ptr_type& first,
+    const typename EdgeType::vertex_ptr_type& second,
+    const typename EdgeType::properties_type& properties
+) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
 }
 
