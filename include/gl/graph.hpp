@@ -178,8 +178,22 @@ public:
         return this->_impl.adjacent_edges_mut(vertex_id);
     }
 
+    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges(
+        const vertex_ptr_type& vertex
+    ) const {
+        this->_verify_vertex(vertex);
+        return this->_impl.adjacent_edges(vertex->id());
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
+        const vertex_ptr_type& vertex
+    ) {
+        this->_verify_vertex(vertex);
+        return this->_impl.adjacent_edges_mut(vertex->id());
+    }
+
 private:
-    void _verify_vertex(const vertex_ptr_type& vertex) {
+    void _verify_vertex(const vertex_ptr_type& vertex) const {
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
 
