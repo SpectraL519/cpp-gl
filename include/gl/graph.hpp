@@ -167,15 +167,15 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
-    ) {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
+    adjacent_edges(const types::id_type vertex_id) const {
         return this->_impl.adjacent_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
-    adjacent_edges_c(const types::id_type vertex_id) const {
-        return this->_impl.adjacent_edges_c(vertex_id);
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
+        const types::id_type vertex_id
+    ) {
+        return this->_impl.adjacent_edges_mut(vertex_id);
     }
 
 private:

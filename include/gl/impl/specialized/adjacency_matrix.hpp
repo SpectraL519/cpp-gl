@@ -21,7 +21,7 @@ struct directed_adjacency_matrix {
     static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
-        self._n_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
+        self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
         self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
 
         for (auto& row : self._matrix) {
@@ -54,7 +54,7 @@ struct undirected_adjacency_matrix {
     static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
         const auto vertex_id = vertex->id();
 
-        self._n_unique_edges -= self.adjacent_edges_c(vertex_id).distance();
+        self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
         self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
 
         for (auto& row : self._matrix)

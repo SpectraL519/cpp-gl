@@ -79,18 +79,18 @@ public:
         specialized::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
-    ) {
-        auto& row = this->_matrix.at(vertex_id);
-        return make_iterator_range(non_null_begin(row), non_null_end(row));
-    }
-
-    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges_c(
+    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
         const auto& row = this->_matrix.at(vertex_id);
         return make_iterator_range(non_null_cbegin(row), non_null_cend(row));
+    }
+
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
+        const types::id_type vertex_id
+    ) {
+        auto& row = this->_matrix.at(vertex_id);
+        return make_iterator_range(non_null_begin(row), non_null_end(row));
     }
 
 private:

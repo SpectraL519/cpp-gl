@@ -62,7 +62,7 @@ struct test_graph {
                 | std::views::transform(transforms::extract_vertex_id<
                                         typename GraphType::vertex_type>),
             [this, &graph](const lib_t::id_type vertex_id) {
-                return graph.adjacent_edges_c(vertex_id).distance()
+                return graph.adjacent_edges(vertex_id).distance()
                     == n_incident_edges_for_fully_connected_vertex;
             }
         ));
@@ -121,7 +121,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
 
         CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const lib_t::id_type vertex_id) {
-            return not static_cast<bool>(sut.adjacent_edges_c(vertex_id).distance());
+            return not static_cast<bool>(sut.adjacent_edges(vertex_id).distance());
         }));
     }
 
@@ -133,7 +133,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             const auto& vertex = sut.add_vertex();
             CHECK_EQ(vertex->id(), v_id);
             CHECK_EQ(sut.n_vertices(), v_id + constants::one_element);
-            CHECK_EQ(sut.adjacent_edges_c(v_id).distance(), constants::empty_distance);
+            CHECK_EQ(sut.adjacent_edges(v_id).distance(), constants::empty_distance);
         }
 
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
@@ -207,7 +207,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
             [&sut, expected_n_incident_edges](const lib_t::id_type vertex_id) {
-                return sut.adjacent_edges_c(vertex_id).distance() == expected_n_incident_edges;
+                return sut.adjacent_edges(vertex_id).distance() == expected_n_incident_edges;
             }
         ));
 
@@ -242,7 +242,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
             [&sut, expected_n_incident_edges](const lib_t::id_type vertex_id) {
-                return sut.adjacent_edges_c(vertex_id).distance() == expected_n_incident_edges;
+                return sut.adjacent_edges(vertex_id).distance() == expected_n_incident_edges;
             }
         ));
 
@@ -276,13 +276,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+            const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
             CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 
-            const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+            const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
@@ -314,13 +314,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+            const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
             CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 
-            const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+            const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
@@ -337,8 +337,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+            auto adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
 
             REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
             if constexpr (lib_tt::is_undirected_v<edge_type>)
@@ -347,8 +347,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             sut.remove_edge(added_edge);
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+            adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
 
             CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -387,13 +387,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+            const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
             CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 
-            const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+            const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
@@ -434,13 +434,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            const auto adjacent_edges_1 = sut.adjacent_edges_c(constants::vertex_id_1);
+            const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
             CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
 
-            const auto adjacent_edges_2 = sut.adjacent_edges_c(constants::vertex_id_2);
+            const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
@@ -457,8 +457,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+            auto adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
 
             REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
             if constexpr (lib_tt::is_undirected_v<edge_type>)
@@ -467,8 +467,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             sut.remove_edge(added_edge);
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+            adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
 
             CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
