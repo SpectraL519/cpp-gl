@@ -559,7 +559,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_NOTHROW([&sut, &vertex]() {
             CHECK_EQ(sut.adjacent_edges(vertex).distance(), constants::zero_elements);
             CHECK_EQ(sut.adjacent_edges_mut(vertex).distance(), constants::zero_elements);
-        });
+        }());
     }
 }
 
