@@ -47,6 +47,29 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("has_edge(id, id) throw for out of range vertex ids") {
+        SutType sut{constants::n_elements};
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.has_edge(
+                constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
+            )),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(
+                sut.has_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2)
+            ),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(
+                sut.has_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx)
+            ),
+            std::out_of_range
+        );
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

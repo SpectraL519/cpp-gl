@@ -37,6 +37,10 @@ struct directed_adjacency_list {
     [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
+        // no need to check first - exception will be thrown in the at() function
+        if (second_id >= self._list.size())
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
+
         const auto& adjacent_edges = self._list.at(first_id);
         return std::ranges::find(
                    adjacent_edges, second_id, [](const auto& edge) { return edge->second()->id(); }
@@ -92,6 +96,10 @@ struct undirected_adjacency_list {
     [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
+        // no need to check first - exception will be thrown in the at() function
+        if (second_id >= self._list.size())
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
+
         const auto& adjacent_edges = self._list.at(first_id);
         return std::ranges::find_if(
                    adjacent_edges,

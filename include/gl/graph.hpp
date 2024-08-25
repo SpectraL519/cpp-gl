@@ -100,7 +100,8 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_ptr_type& vertex) const {
-        return this->get_vertex(vertex->id()).get() == vertex.get();
+        return this->has_vertex(vertex->id())
+           and this->_vertices[vertex->id()].get() == vertex.get();
     }
 
     // clang-format off
@@ -223,6 +224,27 @@ public:
     }
 
     // --- incidence methods ---
+
+    [[nodiscard]] bool are_incident(const types::id_type first_id, const types::id_type second_id)
+        const {
+        if (first_id == second_id) {
+            if (not this->has_vertex(first_id))
+                throw std::out_of_range(std::format("Got invalid vertex id [{}]", first_id));
+            return true;
+        }
+
+        return this->has_edge(first_id, second_id);
+    }
+
+    [[nodiscard]] bool are_incident(const vertex_ptr_type& first, const vertex_ptr_type& second)
+        const {
+        if (first.get() == second.get()) {
+            this->_verify_vertex(first);
+            return true;
+        }
+
+        return this->has_edge(first, second);
+    }
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge) const {
         this->_verify_vertex(vertex);

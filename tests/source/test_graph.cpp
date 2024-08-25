@@ -160,8 +160,18 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_EQ(vertex->properties, constants::visited);
     }
 
-    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in the "
-            "graph") {
+    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
+            "the graph") {
+        sut_type sut{constants::n_elements};
+
+        CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
+            return sut.has_vertex(vertex_id);
+        }));
+        CHECK_FALSE(sut.has_vertex(constants::out_of_range_elemenet_idx));
+    }
+
+    SUBCASE("has_vertex(vertex) should return true when a vertex with the given id is present in "
+            "the graph") {
         sut_type sut{constants::n_elements};
 
         CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
@@ -170,16 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK(std::ranges::none_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
             return sut.has_vertex(std::make_shared<vertex_type>(vertex_id));
         }));
-    }
-
-    SUBCASE("has_vertex(vertex) should return true when a vertex with the given id is present in "
-            "the graph") {
-        sut_type sut{constants::n_elements};
-
-        CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-            return sut.has_vertex(vertex_id);
-        }));
-        CHECK_FALSE(sut.has_vertex(constants::out_of_range_elemenet_idx));
+        CHECK_FALSE(sut.has_vertex(fixture.out_of_range_vertex));
     }
 
     SUBCASE("get_vertex should throw if the given id is invalid") {
@@ -499,24 +500,37 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("has_edge(vertex_ptr pair) should throw if one of the vertices is invalid") {
         sut_type sut{constants::n_elements};
 
-        const auto& first = sut.get_vertex(constants::vertex_id_1);
-        const auto& second = sut.get_vertex(constants::vertex_id_2);
+        const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(fixture.out_of_range_vertex, second)),
-            std::out_of_range
+            func::discard_result(sut.has_edge(fixture.out_of_range_vertex, vd_2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(first, fixture.out_of_range_vertex)),
-            std::out_of_range
+            func::discard_result(sut.has_edge(vd_1, fixture.out_of_range_vertex)), std::out_of_range
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(fixture.invalid_vertex, second)), std::logic_error
+            func::discard_result(sut.has_edge(fixture.invalid_vertex, vd_2)), std::logic_error
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(first, fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.has_edge(vd_1, fixture.invalid_vertex)), std::logic_error
         );
+    }
+
+    SUBCASE("has_edge(vertex_ptr pair) should return true if there is an edge connecting the given "
+            "vertices in the graph") {
+        sut_type sut{constants::n_elements};
+
+        const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
+        const auto& vd_3 = sut.get_vertex(constants::vertex_id_3);
+
+        sut.add_edge(vd_1, vd_2);
+
+        CHECK(sut.has_edge(vd_1, vd_2));
+        CHECK_FALSE(sut.has_edge(vd_1, vd_3));
+        CHECK_FALSE(sut.has_edge(vd_2, vd_3));
     }
 
     SUBCASE("adjacent_edges(vertex) should throw if the vertex is invalid") {
