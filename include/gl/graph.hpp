@@ -34,8 +34,7 @@ public:
     using vertex_properties_type = typename traits_type::vertex_properties_type;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
-    using vertex_iterator_type = typename vertex_set_type::iterator;
-    using vertex_const_iterator_type = typename vertex_set_type::const_iterator;
+    using vertex_iterator_type = typename vertex_set_type::const_iterator;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -46,7 +45,6 @@ public:
 
     using edge_set_type = typename implementation_type::edge_set_type;
     using edge_iterator_type = typename implementation_type::edge_iterator_type;
-    using edge_const_iterator_type = typename implementation_type::edge_const_iterator_type;
 
 #ifdef GL_TESTING
     friend struct ::gl_testing::test_graph<traits_type>;
@@ -124,13 +122,9 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_const_iterator_type> vertices(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
         return make_const_iterator_range(this->_vertices);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices_mut() {
-        return make_iterator_range(this->_vertices);
     }
 
     // --- edge methods ---
@@ -198,29 +192,17 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
-    adjacent_edges(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
+        const types::id_type vertex_id
+    ) const {
         return this->_impl.adjacent_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
-        const types::id_type vertex_id
-    ) {
-        return this->_impl.adjacent_edges_mut(vertex_id);
-    }
-
-    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges(
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const vertex_ptr_type& vertex
     ) const {
         this->_verify_vertex(vertex);
         return this->_impl.adjacent_edges(vertex->id());
-    }
-
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
-        const vertex_ptr_type& vertex
-    ) {
-        this->_verify_vertex(vertex);
-        return this->_impl.adjacent_edges_mut(vertex->id());
     }
 
     // --- incidence methods ---

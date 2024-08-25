@@ -174,7 +174,7 @@ TEST_CASE_FIXTURE(
 ) {
     fully_connect_vertex(constants::vertex_id_1);
 
-    auto adjacent_edges = sut.adjacent_edges_mut(constants::vertex_id_1);
+    auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_for_fully_connected_vertex);
 
@@ -186,7 +186,7 @@ TEST_CASE_FIXTURE(
         sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex - constants::one_element
     );
 
-    adjacent_edges = sut.adjacent_edges_mut(constants::first_element_idx);
+    adjacent_edges = sut.adjacent_edges(constants::first_element_idx);
     REQUIRE_EQ(
         adjacent_edges.distance(),
         n_incident_edges_for_fully_connected_vertex - constants::one_element
@@ -339,7 +339,7 @@ TEST_CASE_FIXTURE(
 ) {
     fully_connect_vertex(constants::vertex_id_1);
 
-    auto adjacent_edges_first = sut.adjacent_edges_mut(constants::vertex_id_1);
+    auto adjacent_edges_first = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges_first.distance(), n_incident_edges_for_fully_connected_vertex);
 
@@ -355,7 +355,7 @@ TEST_CASE_FIXTURE(
     );
 
     // validate that the first adjacent edges list has been properly aligned
-    adjacent_edges_first = sut.adjacent_edges_mut(constants::first_element_idx);
+    adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
     REQUIRE_EQ(
         adjacent_edges_first.distance(),
         n_incident_edges_for_fully_connected_vertex - constants::one_element

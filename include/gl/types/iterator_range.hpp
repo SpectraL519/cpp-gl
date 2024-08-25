@@ -107,7 +107,9 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] inline value_type& element_at(types::size_type position) {
+    [[nodiscard]] inline value_type& element_at(types::size_type position)
+    requires(not type_traits::c_const_iterator<iterator>)
+    {
         this->_validate_element_position(position);
         return *std::ranges::next(this->begin(), position);
     }
@@ -116,8 +118,6 @@ public:
         this->_validate_element_position(position);
         return *std::ranges::next(this->begin(), position);
     }
-
-    // TODO: add the [] operator
 
 private:
     [[nodiscard]] gl_attr_force_inline bool _is_distance_uninitialized() const
