@@ -34,11 +34,25 @@ struct directed_adjacency_list {
         return self._list.at(edge->first()->id()).emplace_back(std::move(edge));
     }
 
+    [[nodiscard]] static inline bool has_edge(
+        const impl_type& self, const types::id_type first_id, const types::id_type second_id
+    ) {
+        // no need to check first - exception will be thrown in the at() function
+        if (second_id >= self._list.size())
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
+
+        const auto& adjacent_edges = self._list.at(first_id);
+        return std::ranges::find(
+                   adjacent_edges, second_id, [](const auto& edge) { return edge->second()->id(); }
+               )
+            != adjacent_edges.cend();
+    }
+
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        using id_projection = typename impl_type::address_projection;
+        using addr_proj = typename impl_type::address_projection;
 
         auto& adj_edges = self._list.at(edge->first()->id());
-        adj_edges.erase(std::ranges::find(adj_edges, edge.get(), id_projection{}));
+        adj_edges.erase(std::ranges::find(adj_edges, edge.get(), addr_proj{}));
         self._n_unique_edges--;
     }
 };
@@ -79,16 +93,33 @@ struct undirected_adjacency_list {
         return self._list.at(edge->first()->id()).emplace_back(edge);
     }
 
+    [[nodiscard]] static inline bool has_edge(
+        const impl_type& self, const types::id_type first_id, const types::id_type second_id
+    ) {
+        // no need to check first - exception will be thrown in the at() function
+        if (second_id >= self._list.size())
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
+
+        const auto& adjacent_edges = self._list.at(first_id);
+        return std::ranges::find_if(
+                   adjacent_edges,
+                   [second_id](const auto& edge) {
+                       return edge->second()->id() == second_id or edge->first()->id() == second_id;
+                   }
+               )
+            != adjacent_edges.cend();
+    }
+
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        using id_projection = typename impl_type::address_projection;
+        using addr_proj = typename impl_type::address_projection;
 
         const auto edge_addr = edge.get();
         auto& adj_edges_first = self._list.at(edge->first()->id());
         auto& adj_edges_second = self._list.at(edge->second()->id());
 
-        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, id_projection{}));
+        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, addr_proj{}));
         if (not edge->is_loop())
-            adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, id_projection{}));
+            adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, addr_proj{}));
         self._n_unique_edges--;
     }
 };

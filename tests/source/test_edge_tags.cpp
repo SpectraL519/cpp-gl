@@ -14,6 +14,11 @@ struct test_edge_tags {
 
     std::shared_ptr<vertex_type> vd_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
     std::shared_ptr<vertex_type> vd_2 = std::make_shared<vertex_type>(constants::vertex_id_2);
+
+    std::shared_ptr<vertex_type> invalid_vd_1 =
+        std::make_shared<vertex_type>(constants::vertex_id_1);
+    std::shared_ptr<vertex_type> invalid_vd_2 =
+        std::make_shared<vertex_type>(constants::vertex_id_2);
 };
 
 struct test_directed_edge_tag : test_edge_tags {
@@ -61,6 +66,7 @@ TEST_CASE_FIXTURE(
 ) {
     CHECK(sut_type::is_incident_from(*edge, vd_1));
     CHECK_FALSE(sut_type::is_incident_from(*edge, vd_2));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd_1));
 }
 
 TEST_CASE_FIXTURE(
@@ -68,6 +74,7 @@ TEST_CASE_FIXTURE(
 ) {
     CHECK(sut_type::is_incident_to(*edge, vd_2));
     CHECK_FALSE(sut_type::is_incident_to(*edge, vd_1));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd_2));
 }
 
 struct test_undirected_edge_tag : test_edge_tags {
@@ -115,11 +122,17 @@ TEST_CASE_FIXTURE(
 ) {
     CHECK(sut_type::is_incident_from(*edge, vd_1));
     CHECK(sut_type::is_incident_from(*edge, vd_2));
+
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd_1));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd_2));
 }
 
 TEST_CASE_FIXTURE(test_undirected_edge_tag, "is_incident_to should return true for both vertices") {
     CHECK(sut_type::is_incident_to(*edge, vd_1));
     CHECK(sut_type::is_incident_to(*edge, vd_2));
+
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd_1));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd_2));
 }
 
 TEST_SUITE_END(); // untest_edge_tags

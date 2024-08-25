@@ -21,7 +21,7 @@ class edge_descriptor {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
     using vertex_type = VertexType;
-    using vertex_ptr_type = std::shared_ptr<vertex_type>;
+    using vertex_ptr_type = types::vertex_ptr_type<vertex_type>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
 
@@ -74,17 +74,21 @@ public:
     }
 
     [[nodiscard]] vertex_ptr_type incident_vertex(const vertex_ptr_type& vertex) const {
-        if (*vertex == *this->_vertices.first)
+        const auto vertex_addr = vertex.get();
+
+        if (vertex_addr == this->_vertices.first.get())
             return this->_vertices.second;
 
-        if (*vertex == *this->_vertices.second)
+        if (vertex_addr == this->_vertices.second.get())
             return this->_vertices.first;
 
         return nullptr;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_ptr_type& vertex) const {
-        return *vertex == *this->_vertices.first or *vertex == *this->_vertices.second;
+        const auto vertex_addr = vertex.get();
+        return vertex_addr == this->_vertices.first.get()
+            or vertex_addr == this->_vertices.second.get();
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_ptr_type& vertex) const {
@@ -96,7 +100,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_loop() const {
-        return *this->_vertices.first == *this->_vertices.second;
+        return this->_vertices.first.get() == this->_vertices.second.get();
     }
 
     [[no_unique_address]] properties_type properties{};

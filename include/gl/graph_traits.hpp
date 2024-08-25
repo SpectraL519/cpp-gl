@@ -21,7 +21,7 @@ struct graph_traits {
 
     using edge_type = edge_descriptor<vertex_type, EdgeDirectionalTag, EdgeProperties>;
     using edge_directional_tag = typename edge_type::directional_tag;
-    using edge_ptr_type = typename edge_directional_tag::template edge_ptr_type<edge_type>;
+    using edge_ptr_type = types::edge_ptr_type<edge_type>;
     using edge_properties_type = typename edge_type::properties_type;
 
     using implementation_tag = ImplTag;
