@@ -7,6 +7,7 @@ namespace gl {
 
 // TODO: modify these methods to take the graph as parameter
 // requires adding a has_vertex(vertex_ptr) method to the graph class
+// Alternative: move these functions to the graph class
 
 template <type_traits::c_instantiation_of<graph> GraphType>
 [[nodiscard]] gl_attr_force_inline bool are_incident(

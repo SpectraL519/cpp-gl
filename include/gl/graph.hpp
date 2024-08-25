@@ -192,6 +192,29 @@ public:
         return this->_impl.adjacent_edges_mut(vertex->id());
     }
 
+    [[nodiscard]] inline bool are_incident(
+        const vertex_ptr_type& vertex, const edge_ptr_type& edge
+    ) const {
+        this->_verify_vertex(vertex);
+        // TODO: verify edge ?
+        return edge->is_incident_with(vertex);
+    }
+
+    [[nodiscard]] inline bool are_incident(
+        const edge_ptr_type& edge, const vertex_ptr_type& vertex
+    ) const {
+        this->_verify_vertex(vertex);
+        // TODO: verify edge ?
+        return edge->is_incident_with(vertex);
+    }
+
+    [[nodiscard]] inline bool are_incident(
+        const edge_ptr_type& edge_1, const edge_ptr_type& edge_2
+    ) const {
+        // TODO: verify edge ?
+        return edge_1->is_incident_with(edge_2->first()) or edge_1->is_incident_with(edge_2->second());
+    }
+
 private:
     void _verify_vertex(const vertex_ptr_type& vertex) const {
         const auto vertex_id = vertex->id();
