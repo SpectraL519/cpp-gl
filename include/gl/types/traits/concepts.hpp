@@ -51,4 +51,9 @@ template <typename T>
 concept c_strong_smart_ptr =
     c_instantiation_of<T, std::unique_ptr> or c_instantiation_of<T, std::shared_ptr>;
 
+template <typename T>
+concept c_const_iterator = requires(T iter) {
+    { *iter } -> std::same_as<const std::remove_cvref_t<decltype(*iter)>&>;
+};
+
 } // namespace gl::type_traits

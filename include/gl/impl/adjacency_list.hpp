@@ -20,8 +20,7 @@ public:
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = typename edge_set_type::iterator;
-    using edge_const_iterator_type = typename edge_set_type::const_iterator;
+    using edge_iterator_type = typename edge_set_type::const_iterator;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -86,15 +85,10 @@ public:
         specialized::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_const_iterator_type>
-    adjacent_edges(const types::id_type vertex_id) const {
-        return make_const_iterator_range(this->_list.at(vertex_id));
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
-    ) {
-        return make_iterator_range(this->_list.at(vertex_id));
+    ) const {
+        return make_const_iterator_range(this->_list.at(vertex_id));
     }
 
 private:

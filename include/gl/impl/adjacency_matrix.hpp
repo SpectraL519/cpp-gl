@@ -20,9 +20,7 @@ public:
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = types::non_null_iterator<typename edge_set_type::iterator>;
-    using edge_const_iterator_type =
-        types::non_null_iterator<typename edge_set_type::const_iterator>;
+    using edge_iterator_type = types::non_null_iterator<typename edge_set_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -96,18 +94,11 @@ public:
         specialized::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_const_iterator_type> adjacent_edges(
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
         const auto& row = this->_matrix.at(vertex_id);
         return make_iterator_range(non_null_cbegin(row), non_null_cend(row));
-    }
-
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges_mut(
-        const types::id_type vertex_id
-    ) {
-        auto& row = this->_matrix.at(vertex_id);
-        return make_iterator_range(non_null_begin(row), non_null_end(row));
     }
 
 private:

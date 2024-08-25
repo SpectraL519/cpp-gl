@@ -194,14 +194,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_EQ(*sut.get_vertex(added_vertex->id()), *added_vertex);
     }
 
-    SUBCASE("vertices(_mut) should return the correct vertex list iterator range") {
+    SUBCASE("vertices should return the correct vertex list iterator range") {
         sut_type sut{constants::n_elements};
 
-        const auto v_range = sut.vertices_mut();
+        const auto v_range = sut.vertices();
         CHECK(std::ranges::equal(v_range, fixture.get_vertex_list(sut)));
-
-        const auto v_crange = sut.vertices();
-        CHECK(std::ranges::equal(v_crange, fixture.get_vertex_list(sut)));
     }
 
     SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
@@ -362,8 +359,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            auto adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
-            auto adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
+            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
             REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
             if constexpr (lib_tt::is_undirected_v<edge_type>)
@@ -372,8 +369,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             sut.remove_edge(added_edge);
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-            adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
-            adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
+            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
             CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -479,8 +476,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-            auto adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
-            auto adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
+            auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
             REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
             if constexpr (lib_tt::is_undirected_v<edge_type>)
@@ -489,8 +486,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             sut.remove_edge(added_edge);
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-            adjacent_edges_1 = sut.adjacent_edges_mut(constants::vertex_id_1);
-            adjacent_edges_2 = sut.adjacent_edges_mut(constants::vertex_id_2);
+            adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+            adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
             CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -540,15 +537,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             func::discard_result(sut.adjacent_edges(fixture.out_of_range_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.adjacent_edges_mut(fixture.out_of_range_vertex)),
-            std::out_of_range
-        );
-
-        CHECK_THROWS_AS(
             func::discard_result(sut.adjacent_edges(fixture.invalid_vertex)), std::logic_error
-        );
-        CHECK_THROWS_AS(
-            func::discard_result(sut.adjacent_edges_mut(fixture.invalid_vertex)), std::logic_error
         );
     }
 
@@ -558,7 +547,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         CHECK_NOTHROW([&sut, &vertex]() {
             CHECK_EQ(sut.adjacent_edges(vertex).distance(), constants::zero_elements);
-            CHECK_EQ(sut.adjacent_edges_mut(vertex).distance(), constants::zero_elements);
         }());
     }
 }
