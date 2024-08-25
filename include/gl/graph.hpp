@@ -95,12 +95,10 @@ public:
         );
     }
 
-    // TODO: add tests
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
         return vertex_id < this->n_vertices();
     }
 
-    // TODO: add tests
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_ptr_type& vertex) const {
         return this->get_vertex(vertex->id()).get() == vertex.get();
     }
@@ -179,7 +177,21 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
-    // TODO: add has_edge(first(_id), second(_id)), has_edge(edge_ptr)
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        return this->_impl.has_edge(first_id, second_id);
+    }
+
+    [[nodiscard]] bool has_edge(const vertex_ptr_type& first, const vertex_ptr_type& second) const {
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return this->has_edge(first->id(), second->id());
+    }
+
+    // [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
+    //     specialized
+    // }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         this->_impl.remove_edge(edge);

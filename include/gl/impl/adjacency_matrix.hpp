@@ -46,6 +46,8 @@ public:
 
     ~adjacency_matrix() = default;
 
+    // --- general methods ---
+
     [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_matrix.size();
     }
@@ -54,6 +56,8 @@ public:
         return this->_n_unique_edges;
     }
 
+    // --- vertex methods ---
+
     void add_vertex() {
         for (auto& row : this->_matrix)
             row.push_back(_make_null_edge());
@@ -61,6 +65,12 @@ public:
         new_row.reserve(this->n_vertices());
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
+
+    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
+        specialized::remove_vertex(*this, vertex);
+    }
+
+    // --- edge methods ---
 
     // clang-format off
     // gl_attr_force_inline misplacement
@@ -71,8 +81,15 @@ public:
 
     // clang-format on
 
-    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        return this->_matrix.at(first_id).at(second_id) != nullptr;
+    }
+
+    [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
+        const auto& matrix_element = this->_matrix.at(edge->first()->id()).at(edge->second()->id());
+        return matrix_element != nullptr and matrix_element.get() == edge.get();
     }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
