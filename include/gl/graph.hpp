@@ -69,6 +69,8 @@ public:
 
     ~graph() = default;
 
+    // --- general methods ---
+
     [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_vertices.size();
     }
@@ -76,6 +78,8 @@ public:
     [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
         return this->_impl.n_unique_edges();
     }
+
+    // --- vertex methods ---
 
     inline vertex_ptr_type add_vertex() {
         this->_impl.add_vertex();
@@ -89,6 +93,16 @@ public:
         return this->_vertices.emplace_back(
             std::make_shared<vertex_type>(this->n_vertices(), properties)
         );
+    }
+
+    // TODO: add tests
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
+        return vertex_id < this->n_vertices();
+    }
+
+    // TODO: add tests
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_ptr_type& vertex) const {
+        return this->get_vertex(vertex->id()).get() == vertex.get();
     }
 
     // clang-format off
@@ -119,6 +133,8 @@ public:
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices_mut() {
         return make_iterator_range(this->_vertices);
     }
+
+    // --- edge methods ---
 
     // clang-format off
     // gl_attr_force_inline misplacement
@@ -163,6 +179,8 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
+    // TODO: add has_edge(first(_id), second(_id)), has_edge(edge_ptr)
+
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         this->_impl.remove_edge(edge);
     }
@@ -192,30 +210,32 @@ public:
         return this->_impl.adjacent_edges_mut(vertex->id());
     }
 
-    [[nodiscard]] inline bool are_incident(
-        const vertex_ptr_type& vertex, const edge_ptr_type& edge
-    ) const {
+    // --- incidence methods ---
+
+    [[nodiscard]] inline bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge)
+        const {
         this->_verify_vertex(vertex);
         // TODO: verify edge ?
         return edge->is_incident_with(vertex);
     }
 
-    [[nodiscard]] inline bool are_incident(
-        const edge_ptr_type& edge, const vertex_ptr_type& vertex
-    ) const {
+    [[nodiscard]] inline bool are_incident(const edge_ptr_type& edge, const vertex_ptr_type& vertex)
+        const {
         this->_verify_vertex(vertex);
         // TODO: verify edge ?
         return edge->is_incident_with(vertex);
     }
 
-    [[nodiscard]] inline bool are_incident(
-        const edge_ptr_type& edge_1, const edge_ptr_type& edge_2
-    ) const {
+    [[nodiscard]] inline bool are_incident(const edge_ptr_type& edge_1, const edge_ptr_type& edge_2)
+        const {
         // TODO: verify edge ?
-        return edge_1->is_incident_with(edge_2->first()) or edge_1->is_incident_with(edge_2->second());
+        return edge_1->is_incident_with(edge_2->first())
+            or edge_1->is_incident_with(edge_2->second());
     }
 
 private:
+    // TODO: verify edge
+
     void _verify_vertex(const vertex_ptr_type& vertex) const {
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
