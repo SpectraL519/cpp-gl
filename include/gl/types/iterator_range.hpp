@@ -107,17 +107,12 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    [[nodiscard]] inline value_type& element_at(types::size_type position) {
-        this->_validate_element_position(position);
-        return *std::ranges::next(this->begin(), position);
-    }
+    // TODO: non-const element_at if not const iterator
 
     [[nodiscard]] inline const value_type& element_at(types::size_type position) const {
         this->_validate_element_position(position);
         return *std::ranges::next(this->begin(), position);
     }
-
-    // TODO: add the [] operator
 
 private:
     [[nodiscard]] gl_attr_force_inline bool _is_distance_uninitialized() const
