@@ -189,9 +189,9 @@ public:
         return this->has_edge(first->id(), second->id());
     }
 
-    // [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
-    //     specialized
-    // }
+    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_ptr_type& edge) const {
+        return this->_impl.has_edge(edge);
+    }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
         this->_impl.remove_edge(edge);
@@ -224,30 +224,26 @@ public:
 
     // --- incidence methods ---
 
-    [[nodiscard]] inline bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge)
-        const {
+    [[nodiscard]] bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge) const {
         this->_verify_vertex(vertex);
-        // TODO: verify edge ?
+        this->_verify_edge(edge);
         return edge->is_incident_with(vertex);
     }
 
-    [[nodiscard]] inline bool are_incident(const edge_ptr_type& edge, const vertex_ptr_type& vertex)
-        const {
+    [[nodiscard]] bool are_incident(const edge_ptr_type& edge, const vertex_ptr_type& vertex) const {
         this->_verify_vertex(vertex);
-        // TODO: verify edge ?
+        this->_verify_edge(edge);
         return edge->is_incident_with(vertex);
     }
 
-    [[nodiscard]] inline bool are_incident(const edge_ptr_type& edge_1, const edge_ptr_type& edge_2)
-        const {
-        // TODO: verify edge ?
+    [[nodiscard]] bool are_incident(const edge_ptr_type& edge_1, const edge_ptr_type& edge_2) const {
+        this->_verify_edge(edge_1);
+        this->_verify_edge(edge_2);
         return edge_1->is_incident_with(edge_2->first())
             or edge_1->is_incident_with(edge_2->second());
     }
 
 private:
-    // TODO: verify edge
-
     void _verify_vertex(const vertex_ptr_type& vertex) const {
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
@@ -258,6 +254,16 @@ private:
                 vertex_id,
                 types::formatter(self_vertex.get()),
                 types::formatter(vertex.get())
+            ));
+    }
+
+    void _verify_edge(const edge_ptr_type& edge) const {
+        if (not this->has_edge(edge))
+            throw std::logic_error(std::format(
+                "Got invalid edge [vertices = ({}, {}) | addr = {}]",
+                edge->first()->id(),
+                edge->second()->id(),
+                types::formatter(edge.get())
             ));
     }
 
@@ -274,8 +280,8 @@ private:
         );
     }
 
-    vertex_set_type _vertices = {};
-    implementation_type _impl = {};
+    vertex_set_type _vertices{};
+    implementation_type _impl{};
 };
 
 } // namespace gl

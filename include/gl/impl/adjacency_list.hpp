@@ -107,8 +107,8 @@ private:
         }
     };
 
-    type _list = {};
-    types::size_type _n_unique_edges = 0ull;
+    type _list{};
+    types::size_type _n_unique_edges{0ull};
 };
 
 } // namespace gl::impl

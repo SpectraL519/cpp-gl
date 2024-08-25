@@ -118,8 +118,8 @@ private:
         return nullptr;
     }
 
-    type _matrix = {};
-    types::size_type _n_unique_edges = 0ull;
+    type _matrix{};
+    types::size_type _n_unique_edges{0ull};
 };
 
 } // namespace gl::impl
