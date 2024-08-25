@@ -107,7 +107,12 @@ public:
         return std::ranges::distance(this->begin(), this->end());
     }
 
-    // TODO: non-const element_at if not const iterator
+    [[nodiscard]] inline value_type& element_at(types::size_type position)
+    requires(not type_traits::c_const_iterator<iterator>)
+    {
+        this->_validate_element_position(position);
+        return *std::ranges::next(this->begin(), position);
+    }
 
     [[nodiscard]] inline const value_type& element_at(types::size_type position) const {
         this->_validate_element_position(position);
