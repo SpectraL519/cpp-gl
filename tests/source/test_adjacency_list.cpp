@@ -47,6 +47,29 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("has_edge(id, id) throw for out of range vertex ids") {
+        SutType sut{constants::n_elements};
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.has_edge(
+                constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
+            )),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(
+                sut.has_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2)
+            ),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(
+                sut.has_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx)
+            ),
+            std::out_of_range
+        );
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -112,6 +135,38 @@ TEST_CASE_FIXTURE(
 
     const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
     CHECK_EQ(new_edge_extracted.get(), new_edge.get());
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
+    "with the given ids in the specified direction"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    CHECK(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_2, constants::vertex_id_1));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_3));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_2, constants::vertex_id_3));
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "has_edge(edge_ptr) should return true if the given edge is present in the graph"
+) {
+    const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto invalid_edge = lib::make_edge<edge_type>(
+        vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
+    );
+
+    // edge connecting vertices not connected in the actual graph
+    const auto not_present_edge = lib::make_edge<edge_type>(
+        vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
+    );
+
+    CHECK(sut.has_edge(valid_edge));
+    CHECK_FALSE(sut.has_edge(invalid_edge));
+    CHECK_FALSE(sut.has_edge(not_present_edge));
 }
 
 TEST_CASE_FIXTURE(
@@ -244,6 +299,38 @@ TEST_CASE_FIXTURE(
 
     const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
     CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
+    "with the given ids in any direction"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    CHECK(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+    CHECK(sut.has_edge(constants::vertex_id_2, constants::vertex_id_1));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_3));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_2, constants::vertex_id_3));
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "has_edge(edge_ptr) should return true if the given edge is present in the graph"
+) {
+    const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto invalid_edge = lib::make_edge<edge_type>(
+        vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
+    );
+
+    // edge connecting vertices not connected in the actual graph
+    const auto not_present_edge = lib::make_edge<edge_type>(
+        vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
+    );
+
+    CHECK(sut.has_edge(valid_edge));
+    CHECK_FALSE(sut.has_edge(invalid_edge));
+    CHECK_FALSE(sut.has_edge(not_present_edge));
 }
 
 TEST_CASE_FIXTURE(

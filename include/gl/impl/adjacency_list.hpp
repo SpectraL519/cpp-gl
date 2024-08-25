@@ -39,6 +39,8 @@ public:
 
     ~adjacency_list() = default;
 
+    // --- general methods ---
+
     [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
         return this->_list.size();
     }
@@ -47,9 +49,17 @@ public:
         return this->_n_unique_edges;
     }
 
+    // --- vertex methods ---
+
     gl_attr_force_inline void add_vertex() {
         this->_list.push_back(edge_set_type{});
     }
+
+    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
+        specialized::remove_vertex(*this, vertex);
+    }
+
+    // --- edge methods ---
 
     // clang-format off
     // gl_attr_force_inline misplacement
@@ -60,8 +70,16 @@ public:
 
     // clang-format on
 
-    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        return specialized::has_edge(*this, first_id, second_id);
+    }
+
+    [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
+        const auto& adjacent_edges = this->_list.at(edge->first()->id());
+        return std::ranges::find(adjacent_edges, edge.get(), address_projection{})
+            != adjacent_edges.end();
     }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
@@ -89,8 +107,8 @@ private:
         }
     };
 
-    type _list = {};
-    types::size_type _n_unique_edges = 0ull;
+    type _list{};
+    types::size_type _n_unique_edges{0ull};
 };
 
 } // namespace gl::impl

@@ -15,6 +15,11 @@ struct test_edge_descriptor {
     std::shared_ptr<vertex_type> vd_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
     std::shared_ptr<vertex_type> vd_2 = std::make_shared<vertex_type>(constants::vertex_id_2);
     std::shared_ptr<vertex_type> vd_3 = std::make_shared<vertex_type>(constants::vertex_id_3);
+
+    std::shared_ptr<vertex_type> invalid_vd_1 =
+        std::make_shared<vertex_type>(constants::vertex_id_1);
+    std::shared_ptr<vertex_type> invalid_vd_2 =
+        std::make_shared<vertex_type>(constants::vertex_id_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -86,7 +91,9 @@ TEST_CASE_TEMPLATE_DEFINE(
             "vertices") {
         CHECK(sut.is_incident_with(fixture.vd_1));
         CHECK(sut.is_incident_with(fixture.vd_2));
-        CHECK_FALSE(sut.is_incident_with(fixture.vd_3));
+
+        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd_1));
+        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd_2));
     }
 
     SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {
@@ -99,34 +106,6 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 // TODO: fix .clang-format to split such lines
 TEST_CASE_TEMPLATE_INSTANTIATE(edge_directional_tag_template, lib::directed_edge<lib::vertex<>>, lib::undirected_edge<lib::vertex<>>);
-
-TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_from tests") {
-    SUBCASE("[undirected_edge] should return true for both vertices") {
-        lib::undirected_edge<lib::vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_from(vd_1));
-        CHECK(sut.is_incident_from(vd_2));
-    }
-
-    SUBCASE("[directed_edge] should return true only for the first vertex") {
-        lib::directed_edge<lib::vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_from(vd_1));
-        CHECK_FALSE(sut.is_incident_from(vd_2));
-    }
-}
-
-TEST_CASE_FIXTURE(test_edge_descriptor, "is_incident_to tests") {
-    SUBCASE("[undirected_edge] should return true for both vertices") {
-        lib::undirected_edge<lib::vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_to(vd_1));
-        CHECK(sut.is_incident_to(vd_2));
-    }
-
-    SUBCASE("[directed_edge] should return true only for the second vertex") {
-        lib::directed_edge<lib::vertex<>> sut{vd_1, vd_2};
-        CHECK(sut.is_incident_to(vd_2));
-        CHECK_FALSE(sut.is_incident_to(vd_1));
-    }
-}
 
 TEST_SUITE_END(); // test_edge_descriptor
 
