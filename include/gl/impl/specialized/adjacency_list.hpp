@@ -49,10 +49,8 @@ struct directed_adjacency_list {
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        using addr_proj = typename impl_type::address_projection;
-
         auto& adj_edges = self._list.at(edge->first()->id());
-        adj_edges.erase(std::ranges::find(adj_edges, edge.get(), addr_proj{}));
+        adj_edges.erase(std::ranges::find(adj_edges, edge));
         self._n_unique_edges--;
     }
 };
@@ -111,15 +109,12 @@ struct undirected_adjacency_list {
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        using addr_proj = typename impl_type::address_projection;
-
-        const auto edge_addr = edge.get();
         auto& adj_edges_first = self._list.at(edge->first()->id());
         auto& adj_edges_second = self._list.at(edge->second()->id());
 
-        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge_addr, addr_proj{}));
+        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge));
         if (not edge->is_loop())
-            adj_edges_second.erase(std::ranges::find(adj_edges_second, edge_addr, addr_proj{}));
+            adj_edges_second.erase(std::ranges::find(adj_edges_second, edge));
         self._n_unique_edges--;
     }
 };

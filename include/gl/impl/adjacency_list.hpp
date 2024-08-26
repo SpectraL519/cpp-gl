@@ -77,8 +77,7 @@ public:
 
     [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
         const auto& adjacent_edges = this->_list.at(edge->first()->id());
-        return std::ranges::find(adjacent_edges, edge.get(), address_projection{})
-            != adjacent_edges.end();
+        return std::ranges::find(adjacent_edges, edge) != adjacent_edges.end();
     }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
@@ -94,12 +93,6 @@ public:
 private:
     using specialized = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized;
-
-    struct address_projection {
-        gl_attr_force_inline auto operator()(const edge_ptr_type& edge) const {
-            return edge.get();
-        }
-    };
 
     type _list{};
     types::size_type _n_unique_edges{0ull};

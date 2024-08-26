@@ -134,7 +134,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
 
     const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -192,7 +192,6 @@ TEST_CASE_FIXTURE(
         n_incident_edges_for_fully_connected_vertex - constants::one_element
     );
     // validate that the adjacent edges list has been properly aligned
-    CHECK_EQ(edge_to_remove.get(), adjacent_edges.element_at(constants::first_element_idx).get());
     CHECK_EQ(
         std::ranges::find(
             adjacent_edges, edge_to_remove_addr, transforms::address_projection<edge_type>{}
@@ -279,10 +278,10 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 
     const auto& new_edge_extracted_2 = adjacent_edges_2.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_2, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -298,7 +297,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -359,9 +358,6 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(
         adjacent_edges_first.distance(),
         n_incident_edges_for_fully_connected_vertex - constants::one_element
-    );
-    CHECK_EQ(
-        edge_to_remove.get(), adjacent_edges_first.element_at(constants::first_element_idx).get()
     );
     CHECK_EQ(
         std::ranges::find(

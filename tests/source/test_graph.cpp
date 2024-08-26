@@ -307,14 +307,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -340,14 +340,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -413,14 +413,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -457,14 +457,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);

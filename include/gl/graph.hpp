@@ -91,9 +91,7 @@ public:
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        this->_vertices.push_back(
-            std::make_unique<vertex_type>(this->n_vertices(), properties)
-        );
+        this->_vertices.push_back(std::make_unique<vertex_type>(this->n_vertices(), properties));
         return this->_vertices.back();
     }
 
@@ -102,8 +100,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_ptr_type& vertex) const {
-        return this->has_vertex(vertex->id())
-           and this->_vertices[vertex->id()].get() == vertex.get();
+        return this->has_vertex(vertex->id()) and this->_vertices[vertex->id()] == vertex;
     }
 
     // clang-format off
@@ -224,7 +221,7 @@ public:
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& first, const vertex_ptr_type& second)
         const {
-        if (first.get() == second.get()) {
+        if (first == second) {
             this->_verify_vertex(first);
             return true;
         }
@@ -256,7 +253,7 @@ private:
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
 
-        if (vertex.get() != self_vertex.get())
+        if (vertex != self_vertex)
             throw std::logic_error(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,

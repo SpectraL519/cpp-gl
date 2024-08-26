@@ -3,15 +3,15 @@
 #include "edge_tags.hpp"
 #include "gl/attributes/force_inline.hpp"
 #include "types/default_types.hpp"
+#include "types/formatter.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
-#include "types/formatter.hpp"
 
+#include <format>
 #include <memory>
 #include <type_traits>
 #include <vector>
-#include <format>
 
 namespace gl {
 
@@ -65,8 +65,6 @@ public:
         return this->_vertices;
     }
 
-    // clang-format on
-
     [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& first() const {
         return this->_vertices.first;
     }
@@ -75,7 +73,8 @@ public:
         return this->_vertices.second;
     }
 
-    // TODO: align tests
+    // clang-format on
+
     [[nodiscard]] const vertex_ptr_type& incident_vertex(const vertex_ptr_type& vertex) const {
         if (vertex == this->_vertices.first)
             return this->_vertices.second;
@@ -89,8 +88,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_ptr_type& vertex) const {
-        return vertex == this->_vertices.first
-            or vertex == this->_vertices.second;
+        return vertex == this->_vertices.first or vertex == this->_vertices.second;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_ptr_type& vertex) const {
@@ -102,7 +100,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_loop() const {
-        return this->_vertices.first.get() == this->_vertices.second.get();
+        return this->_vertices.first == this->_vertices.second;
     }
 
     [[no_unique_address]] properties_type properties{};

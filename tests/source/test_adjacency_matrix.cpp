@@ -134,7 +134,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
 
     const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -279,10 +279,10 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 
     const auto& new_edge_extracted_2 = adjacent_edges_2.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_2, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -298,7 +298,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 }
 
 TEST_CASE_FIXTURE(
