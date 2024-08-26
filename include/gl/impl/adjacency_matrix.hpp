@@ -85,8 +85,16 @@ public:
         return this->_matrix[first_id][second_id] != nullptr;
     }
 
-    [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
-        const auto& matrix_element = this->_matrix[edge->first()->id()][edge->second()->id()];
+    [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
+        const auto first_id = edge->first()->id();
+        if (first_id >= this->_matrix.size())
+            return false;
+
+        const auto second_id = edge->second()->id();
+        if (second_id >= this->_matrix.size())
+            return false;
+
+        const auto& matrix_element = this->_matrix[first_id][second_id];
         return matrix_element != nullptr and matrix_element == edge;
     }
 

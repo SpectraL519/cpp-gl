@@ -75,8 +75,12 @@ public:
         return specialized::has_edge(*this, first_id, second_id);
     }
 
-    [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
-        const auto& adjacent_edges = this->_list.at(edge->first()->id());
+    [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
+        const auto first_id = edge->first()->id();
+        if (first_id >= this->_list.size())
+            return false;
+
+        const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find(adjacent_edges, edge) != adjacent_edges.end();
     }
 

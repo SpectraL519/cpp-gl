@@ -132,18 +132,27 @@ TEST_CASE_FIXTURE(
     "has_edge(edge_ptr) should return true if the given edge is present in the graph"
 ) {
     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    CHECK(sut.has_edge(valid_edge));
+
     const auto invalid_edge = lib::make_edge<edge_type>(
         vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
     );
+    CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
     const auto not_present_edge = lib::make_edge<edge_type>(
         vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
     );
-
-    CHECK(sut.has_edge(valid_edge));
-    CHECK_FALSE(sut.has_edge(invalid_edge));
     CHECK_FALSE(sut.has_edge(not_present_edge));
+
+    const auto out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+    CHECK_FALSE(sut.has_edge(
+        lib::make_edge<edge_type>(out_of_range_vertex, vertices[constants::vertex_id_2])
+    ));
+    CHECK_FALSE(sut.has_edge(
+        lib::make_edge<edge_type>(vertices[constants::vertex_id_1], out_of_range_vertex)
+    ));
 }
 
 TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
@@ -323,18 +332,27 @@ TEST_CASE_FIXTURE(
     "has_edge(edge_ptr) should return true if the given edge is present in the graph"
 ) {
     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    CHECK(sut.has_edge(valid_edge));
+
     const auto invalid_edge = lib::make_edge<edge_type>(
         vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
     );
+    CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
     const auto not_present_edge = lib::make_edge<edge_type>(
         vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
     );
-
-    CHECK(sut.has_edge(valid_edge));
-    CHECK_FALSE(sut.has_edge(invalid_edge));
     CHECK_FALSE(sut.has_edge(not_present_edge));
+
+    const auto out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+    CHECK_FALSE(sut.has_edge(
+        lib::make_edge<edge_type>(out_of_range_vertex, vertices[constants::vertex_id_2])
+    ));
+    CHECK_FALSE(sut.has_edge(
+        lib::make_edge<edge_type>(vertices[constants::vertex_id_1], out_of_range_vertex)
+    ));
 }
 
 TEST_CASE_FIXTURE(

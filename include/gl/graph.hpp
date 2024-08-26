@@ -225,7 +225,7 @@ public:
         const {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return first == second or this->has_edge(first, second);
+        return first == second or this->has_edge(first->id(), second->id());
     }
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge) const {
