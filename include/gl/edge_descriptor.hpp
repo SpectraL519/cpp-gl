@@ -82,7 +82,7 @@ public:
         if (vertex == this->_vertices.second)
             return this->_vertices.first;
 
-        throw std::logic_error(std::format(
+        throw std::invalid_argument(std::format(
             "Got invalid vertex [id = {} | addr = ]", vertex->id(), types::formatter(vertex.get())
         ));
     }

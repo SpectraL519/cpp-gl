@@ -208,7 +208,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("remove_vertex(vertex) should throw if the id is valid but the address is not") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(sut.remove_vertex(fixture.invalid_vertex), std::logic_error);
+        CHECK_THROWS_AS(sut.remove_vertex(fixture.invalid_vertex), std::invalid_argument);
     }
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
@@ -325,8 +325,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_THROWS_AS(sut.add_edge(fixture.out_of_range_vertex, vertex_2), std::out_of_range);
             CHECK_THROWS_AS(sut.add_edge(vertex_1, fixture.out_of_range_vertex), std::out_of_range);
 
-            CHECK_THROWS_AS(sut.add_edge(fixture.invalid_vertex, vertex_2), std::logic_error);
-            CHECK_THROWS_AS(sut.add_edge(vertex_1, fixture.invalid_vertex), std::logic_error);
+            CHECK_THROWS_AS(sut.add_edge(fixture.invalid_vertex, vertex_2), std::invalid_argument);
+            CHECK_THROWS_AS(sut.add_edge(vertex_1, fixture.invalid_vertex), std::invalid_argument);
         }
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
@@ -438,10 +438,12 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             );
 
             CHECK_THROWS_AS(
-                sut.add_edge(fixture.invalid_vertex, vertex_2, constants::used), std::logic_error
+                sut.add_edge(fixture.invalid_vertex, vertex_2, constants::used),
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
-                sut.add_edge(vertex_1, fixture.invalid_vertex, constants::used), std::logic_error
+                sut.add_edge(vertex_1, fixture.invalid_vertex, constants::used),
+                std::invalid_argument
             );
         }
 
@@ -508,10 +510,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(fixture.invalid_vertex, vd_2)), std::logic_error
+            func::discard_result(sut.has_edge(fixture.invalid_vertex, vd_2)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(vd_1, fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.has_edge(vd_1, fixture.invalid_vertex)), std::invalid_argument
         );
     }
 
@@ -530,6 +532,25 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_FALSE(sut.has_edge(vd_2, vd_3));
     }
 
+    SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {
+        sut_type sut{constants::n_elements};
+        CHECK_THROWS_AS(
+            func::discard_result(sut.adjacent_edges(constants::out_of_range_elemenet_idx)),
+            std::invalid_argument
+        );
+    }
+
+    SUBCASE("adjacent_edges(id) should return a proper iterator range for a valid vertex") {
+        sut_type sut{constants::one_element};
+
+        CHECK_NOTHROW([&sut]() {
+            CHECK_EQ(
+                sut.adjacent_edges(constants::first_element_idx).distance(),
+                constants::zero_elements
+            );
+        }());
+    }
+
     SUBCASE("adjacent_edges(vertex) should throw if the vertex is invalid") {
         sut_type sut{constants::n_elements};
 
@@ -537,7 +558,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             func::discard_result(sut.adjacent_edges(fixture.out_of_range_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.adjacent_edges(fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.adjacent_edges(fixture.invalid_vertex)), std::invalid_argument
         );
     }
 

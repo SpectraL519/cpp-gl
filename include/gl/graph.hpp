@@ -193,9 +193,10 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
+        this->_verify_vertex_id(vertex_id);
         return this->_impl.adjacent_edges(vertex_id);
     }
 
@@ -210,23 +211,21 @@ public:
 
     [[nodiscard]] bool are_incident(const types::id_type first_id, const types::id_type second_id)
         const {
-        if (first_id == second_id) {
-            if (not this->has_vertex(first_id))
-                throw std::out_of_range(std::format("Got invalid vertex id [{}]", first_id));
+        this->_verify_vertex_id(first_id);
+
+        if (first_id == second_id)
             return true;
-        }
+
+        this->_verify_vertex_id(second_id);
 
         return this->has_edge(first_id, second_id);
     }
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& first, const vertex_ptr_type& second)
         const {
-        if (first == second) {
-            this->_verify_vertex(first);
-            return true;
-        }
-
-        return this->has_edge(first, second);
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return first == second or this->has_edge(first->id(), second->id());
     }
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& vertex, const edge_ptr_type& edge) const {
@@ -249,26 +248,31 @@ public:
     }
 
 private:
+    gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
+        if (not this->has_vertex(vertex_id))
+            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
+    }
+
     void _verify_vertex(const vertex_ptr_type& vertex) const {
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
 
         if (vertex != self_vertex)
-            throw std::logic_error(std::format(
+            throw std::invalid_argument(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,
-                types::formatter(self_vertex.get()),
-                types::formatter(vertex.get())
+                types::formatter(self_vertex),
+                types::formatter(vertex)
             ));
     }
 
     void _verify_edge(const edge_ptr_type& edge) const {
         if (not this->has_edge(edge))
-            throw std::logic_error(std::format(
+            throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
                 edge->first()->id(),
                 edge->second()->id(),
-                types::formatter(edge.get())
+                types::formatter(edge)
             ));
     }
 
