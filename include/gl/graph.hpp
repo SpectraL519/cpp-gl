@@ -55,10 +55,12 @@ public:
 
     graph() = default;
 
-    graph(const types::size_type n_vertices) : _vertices(n_vertices), _impl(n_vertices) {
+    graph(const types::size_type n_vertices) : _impl(n_vertices) {
+        this->_vertices.reserve(n_vertices);
+
         types::id_type vertex_id = 0ull;
-        std::ranges::generate(this->_vertices, [&vertex_id]() {
-            return std::make_shared<vertex_type>(vertex_id++);
+        std::ranges::generate_n(std::back_inserter(this->_vertices), n_vertices, [&vertex_id]() {
+            return std::make_unique<vertex_type>(vertex_id++);
         });
     }
 
@@ -79,18 +81,18 @@ public:
 
     // --- vertex methods ---
 
-    inline vertex_ptr_type add_vertex() {
+    inline const vertex_ptr_type& add_vertex() {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(std::make_shared<vertex_type>(this->n_vertices()));
+        this->_vertices.push_back(std::make_unique<vertex_type>(this->n_vertices()));
+        return this->_vertices.back();
     }
 
-    inline vertex_ptr_type add_vertex(const vertex_properties_type& properties)
+    inline const vertex_ptr_type& add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(
-            std::make_shared<vertex_type>(this->n_vertices(), properties)
-        );
+        this->_vertices.push_back(std::make_unique<vertex_type>(this->n_vertices(), properties));
+        return this->_vertices.back();
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
@@ -98,8 +100,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_ptr_type& vertex) const {
-        return this->has_vertex(vertex->id())
-           and this->_vertices[vertex->id()].get() == vertex.get();
+        return this->has_vertex(vertex->id()) and this->_vertices[vertex->id()] == vertex;
     }
 
     // clang-format off
@@ -220,7 +221,7 @@ public:
 
     [[nodiscard]] bool are_incident(const vertex_ptr_type& first, const vertex_ptr_type& second)
         const {
-        if (first.get() == second.get()) {
+        if (first == second) {
             this->_verify_vertex(first);
             return true;
         }
@@ -252,7 +253,7 @@ private:
         const auto vertex_id = vertex->id();
         const auto& self_vertex = this->get_vertex(vertex_id);
 
-        if (vertex.get() != self_vertex.get())
+        if (vertex != self_vertex)
             throw std::logic_error(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,
