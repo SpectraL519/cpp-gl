@@ -56,14 +56,14 @@ struct directed_adjacency_list {
         return self._list.at(edge->first()->id()).emplace_back(std::move(edge));
     }
 
-    [[nodiscard]] inline static bool has_edge(
+    [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
-        const auto& edge_set = self._list[first_id];
+        const auto& adjacent_edges = self._list[first_id];
         return std::ranges::find(
-                   edge_set, second_id, [](const auto& edge) { return edge->second()->id(); }
+                   adjacent_edges, second_id, [](const auto& edge) { return edge->second()->id(); }
                )
-            != edge_set.cend();
+            != adjacent_edges.cend();
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
@@ -112,14 +112,14 @@ struct undirected_adjacency_list {
     [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
-        const auto& edge_set = self._list[first_id];
+        const auto& adjacent_edges = self._list[first_id];
         return std::ranges::find_if(
-                   edge_set,
+                   adjacent_edges,
                    [second_id](const auto& edge) {
                        return edge->second()->id() == second_id or edge->first()->id() == second_id;
                    }
                )
-            != edge_set.cend();
+            != adjacent_edges.cend();
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
