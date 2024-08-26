@@ -11,6 +11,26 @@ class adjacency_matrix;
 
 namespace specialized {
 
+namespace detail {
+
+template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
+[[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
+    typename AdjacencyMatrix::type& matrix, const typename AdjacencyMatrix::edge_ptr_type& edge
+) {
+    auto& matrix_element = matrix.at(edge->first()->id()).at(edge->second()->id());
+    if (edge != matrix_element)
+        throw std::invalid_argument(std::format(
+            "Got invalid edge [vertices = ({}, {}) | addr = {}]",
+            edge->first()->id(),
+            edge->second()->id(),
+            types::formatter(edge)
+        ));
+
+    return matrix_element;
+}
+
+} // namespace detail
+
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
@@ -39,7 +59,7 @@ struct directed_adjacency_matrix {
     }
 
     static inline void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        self._matrix.at(edge->first()->id()).at(edge->second()->id()) = nullptr;
+        detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
         self._n_unique_edges--;
     }
 };
@@ -74,13 +94,17 @@ struct undirected_adjacency_matrix {
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        const auto first_id = edge->first()->id();
-        const auto second_id = edge->second()->id();
-        const bool is_loop = edge->is_loop();
+        if (edge->is_loop()) {
+            detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
+        }
+        else {
+            const auto first_id = edge->first()->id();
+            const auto second_id = edge->second()->id();
 
-        self._matrix.at(first_id).at(second_id) = nullptr;
-        if (not is_loop)
-            self._matrix.at(second_id).at(first_id) = nullptr;
+            detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
+            // if the edge was found in the first matrix cell, it will be in the second matrix cell
+            self._matrix[second_id][first_id] = nullptr;
+        }
         self._n_unique_edges--;
     }
 };

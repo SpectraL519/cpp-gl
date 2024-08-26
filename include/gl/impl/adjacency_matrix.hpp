@@ -82,11 +82,19 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        return this->_matrix.at(first_id).at(second_id) != nullptr;
+        return this->_matrix[first_id][second_id] != nullptr;
     }
 
-    [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
-        const auto& matrix_element = this->_matrix.at(edge->first()->id()).at(edge->second()->id());
+    [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
+        const auto first_id = edge->first()->id();
+        if (first_id >= this->_matrix.size())
+            return false;
+
+        const auto second_id = edge->second()->id();
+        if (second_id >= this->_matrix.size())
+            return false;
+
+        const auto& matrix_element = this->_matrix[first_id][second_id];
         return matrix_element != nullptr and matrix_element == edge;
     }
 
@@ -97,7 +105,7 @@ public:
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
-        const auto& row = this->_matrix.at(vertex_id);
+        const auto& row = this->_matrix[vertex_id];
         return make_iterator_range(non_null_cbegin(row), non_null_cend(row));
     }
 
