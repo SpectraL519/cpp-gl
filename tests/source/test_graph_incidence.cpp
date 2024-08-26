@@ -82,13 +82,13 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(fixture.invalid_vertex, fixture.invalid_vertex)),
-            std::logic_error
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, vd_2)), std::logic_error
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, vd_2)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.are_incident(vd_1, fixture.invalid_vertex)), std::invalid_argument
         );
     }
 
@@ -111,17 +111,17 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto& edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::logic_error
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::logic_error
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::invalid_argument
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::logic_error
+            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::invalid_argument
         );
     }
 
@@ -129,17 +129,17 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto invalid_edge = lib::make_edge<typename SutType::edge_type>(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::logic_error
+            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::logic_error
+            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::logic_error
+            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::logic_error
+            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
         );
     }
 
@@ -159,10 +159,10 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto invalid_edge = lib::make_edge<typename SutType::edge_type>(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, invalid_edge)), std::logic_error
+            func::discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, edge)), std::logic_error
+            func::discard_result(sut.are_incident(invalid_edge, edge)), std::invalid_argument
         );
     }
 

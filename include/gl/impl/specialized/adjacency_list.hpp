@@ -21,12 +21,13 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 ) {
     const auto it = std::ranges::find(edge_set, edge);
     if (it == edge_set.end())
-        throw std::logic_error(std::format(
+        throw std::invalid_argument(std::format(
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
             edge->first()->id(),
             edge->second()->id(),
-            types::formatter(edge.get())
+            types::formatter(edge)
         ));
+
     return it;
 }
 

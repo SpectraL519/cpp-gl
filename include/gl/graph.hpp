@@ -254,21 +254,21 @@ private:
         const auto& self_vertex = this->get_vertex(vertex_id);
 
         if (vertex != self_vertex)
-            throw std::logic_error(std::format(
+            throw std::invalid_argument(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,
-                types::formatter(self_vertex.get()),
-                types::formatter(vertex.get())
+                types::formatter(self_vertex),
+                types::formatter(vertex)
             ));
     }
 
     void _verify_edge(const edge_ptr_type& edge) const {
         if (not this->has_edge(edge))
-            throw std::logic_error(std::format(
+            throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
                 edge->first()->id(),
                 edge->second()->id(),
-                types::formatter(edge.get())
+                types::formatter(edge)
             ));
     }
 

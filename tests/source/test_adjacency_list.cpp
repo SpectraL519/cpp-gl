@@ -185,7 +185,7 @@ TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when a
         sut.remove_edge(
             lib::make_edge<edge_type>(vertices[constants::vertex_id_1], out_of_range_vertex)
         ),
-        std::logic_error
+        std::invalid_argument
     );
 
     // not existing edge between valid vertices
@@ -193,7 +193,7 @@ TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when a
         sut.remove_edge(lib::make_edge<edge_type>(
             vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
         )),
-        std::logic_error
+        std::invalid_argument
     );
 }
 
@@ -384,7 +384,7 @@ TEST_CASE_FIXTURE(
         sut.remove_edge(lib::make_edge<edge_type>(
             vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
         )),
-        std::logic_error
+        std::invalid_argument
     );
 }
 
