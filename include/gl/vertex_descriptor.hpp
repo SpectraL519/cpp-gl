@@ -69,7 +69,7 @@ using vertex = vertex_descriptor<Properties>;
 namespace types {
 
 template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
-using vertex_ptr_type = std::shared_ptr<VertexType>;
+using vertex_ptr_type = std::unique_ptr<VertexType>;
 
 } // namespace types
 

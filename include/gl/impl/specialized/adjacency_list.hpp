@@ -71,8 +71,8 @@ struct undirected_adjacency_list {
         const auto vertex_id = vertex->id();
 
         for (const auto& edge : self._list.at(vertex_id)) {
-            const auto incident_vertex = edge->incident_vertex(vertex);
-            if (*incident_vertex == *vertex)
+            const auto& incident_vertex = edge->incident_vertex(vertex);
+            if (incident_vertex == vertex)
                 continue; // loop: will be removed with the vertex's list
 
             auto& adj_edges = self._list.at(incident_vertex->id());

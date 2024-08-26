@@ -12,10 +12,10 @@ TEST_SUITE_BEGIN("test_graph_incidence");
 struct test_graph_incidence {
     using vertex_type = lib::vertex_descriptor<>;
 
-    std::shared_ptr<vertex_type> invalid_vertex =
-        std::make_shared<vertex_type>(constants::vertex_id_1);
-    std::shared_ptr<vertex_type> out_of_range_vertex =
-        std::make_shared<vertex_type>(constants::out_of_range_elemenet_idx);
+    std::unique_ptr<vertex_type> invalid_vertex =
+        std::make_unique<vertex_type>(constants::vertex_id_1);
+    std::unique_ptr<vertex_type> out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
 };
 
 TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_template) {

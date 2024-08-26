@@ -1,5 +1,6 @@
 #include "constants.hpp"
 #include "types.hpp"
+#include "functional.hpp"
 
 #include <gl/edge_descriptor.hpp>
 
@@ -12,14 +13,14 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = lib::vertex_descriptor<>;
 
-    std::shared_ptr<vertex_type> vd_1 = std::make_shared<vertex_type>(constants::vertex_id_1);
-    std::shared_ptr<vertex_type> vd_2 = std::make_shared<vertex_type>(constants::vertex_id_2);
-    std::shared_ptr<vertex_type> vd_3 = std::make_shared<vertex_type>(constants::vertex_id_3);
+    std::unique_ptr<vertex_type> vd_1 = std::make_unique<vertex_type>(constants::vertex_id_1);
+    std::unique_ptr<vertex_type> vd_2 = std::make_unique<vertex_type>(constants::vertex_id_2);
+    std::unique_ptr<vertex_type> vd_3 = std::make_unique<vertex_type>(constants::vertex_id_3);
 
-    std::shared_ptr<vertex_type> invalid_vd_1 =
-        std::make_shared<vertex_type>(constants::vertex_id_1);
-    std::shared_ptr<vertex_type> invalid_vd_2 =
-        std::make_shared<vertex_type>(constants::vertex_id_2);
+    std::unique_ptr<vertex_type> invalid_vd_1 =
+        std::make_unique<vertex_type>(constants::vertex_id_1);
+    std::unique_ptr<vertex_type> invalid_vd_2 =
+        std::make_unique<vertex_type>(constants::vertex_id_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -66,25 +67,25 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("incident_vertices should return the pair of vertices the edge was initialized with") {
         const auto& vertices = sut.incident_vertices();
-        CHECK_EQ(*vertices.first, *fixture.vd_1);
-        CHECK_EQ(*vertices.second, *fixture.vd_2);
+        CHECK_EQ(vertices.first, fixture.vd_1);
+        CHECK_EQ(vertices.second, fixture.vd_2);
     }
 
     SUBCASE("first should return the first vertex descriptor the edge was initialized with") {
-        CHECK_EQ(*sut.first(), *fixture.vd_1);
+        CHECK_EQ(sut.first(), fixture.vd_1);
     }
 
     SUBCASE("second should return the second vertex descriptor the edge was initialized with") {
-        CHECK_EQ(*sut.second(), *fixture.vd_2);
+        CHECK_EQ(sut.second(), fixture.vd_2);
     }
 
-    SUBCASE("incident_vertex should return nullptr if input vertex is not incident with the edge") {
-        CHECK_FALSE(sut.incident_vertex(fixture.vd_3));
+    SUBCASE("incident_vertex should return throw if input vertex is not incident with the edge") {
+        CHECK_THROWS_AS(func::discard_result(sut.incident_vertex(fixture.vd_3)), std::logic_error);
     }
 
     SUBCASE("incident_vertex should return the vertex incident with the input vertex") {
-        CHECK_EQ(*sut.incident_vertex(fixture.vd_1), *fixture.vd_2);
-        CHECK_EQ(*sut.incident_vertex(fixture.vd_2), *fixture.vd_1);
+        CHECK_EQ(sut.incident_vertex(fixture.vd_1), fixture.vd_2);
+        CHECK_EQ(sut.incident_vertex(fixture.vd_2), fixture.vd_1);
     }
 
     SUBCASE("is_incident_with should return true when the given vertex is one of the connected "

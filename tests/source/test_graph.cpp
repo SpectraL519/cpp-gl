@@ -72,10 +72,10 @@ struct test_graph {
     const lib_t::size_type n_incident_edges_for_fully_connected_vertex =
         constants::n_elements - constants::one_element;
 
-    const std::shared_ptr<vertex_type> out_of_range_vertex =
-        std::make_shared<vertex_type>(constants::out_of_range_elemenet_idx);
-    const std::shared_ptr<vertex_type> invalid_vertex =
-        std::make_shared<vertex_type>(constants::vertex_id_1);
+    const std::unique_ptr<vertex_type> out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+    const std::unique_ptr<vertex_type> invalid_vertex =
+        std::make_unique<vertex_type>(constants::vertex_id_1);
 };
 
 template <
@@ -178,7 +178,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             return sut.has_vertex(sut.get_vertex(vertex_id));
         }));
         CHECK(std::ranges::none_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-            return sut.has_vertex(std::make_shared<vertex_type>(vertex_id));
+            return sut.has_vertex(std::make_unique<vertex_type>(vertex_id));
         }));
         CHECK_FALSE(sut.has_vertex(fixture.out_of_range_vertex));
     }

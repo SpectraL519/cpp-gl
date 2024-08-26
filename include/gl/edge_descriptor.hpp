@@ -6,10 +6,12 @@
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
+#include "types/formatter.hpp"
 
 #include <memory>
 #include <type_traits>
 #include <vector>
+#include <format>
 
 namespace gl {
 
@@ -59,36 +61,36 @@ public:
     // gl_attr_force_inline misplacement
 
     [[nodiscard]] gl_attr_force_inline
-    const types::homogeneous_pair<vertex_ptr_type>& incident_vertices() const {
+    const types::homogeneous_pair<const vertex_ptr_type&>& incident_vertices() const {
         return this->_vertices;
     }
 
     // clang-format on
 
-    [[nodiscard]] gl_attr_force_inline vertex_ptr_type first() const {
+    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& first() const {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] gl_attr_force_inline vertex_ptr_type second() const {
+    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& second() const {
         return this->_vertices.second;
     }
 
-    [[nodiscard]] vertex_ptr_type incident_vertex(const vertex_ptr_type& vertex) const {
-        const auto vertex_addr = vertex.get();
-
-        if (vertex_addr == this->_vertices.first.get())
+    // TODO: align tests
+    [[nodiscard]] const vertex_ptr_type& incident_vertex(const vertex_ptr_type& vertex) const {
+        if (vertex == this->_vertices.first)
             return this->_vertices.second;
 
-        if (vertex_addr == this->_vertices.second.get())
+        if (vertex == this->_vertices.second)
             return this->_vertices.first;
 
-        return nullptr;
+        throw std::logic_error(std::format(
+            "Got invalid vertex [id = {} | addr = ]", vertex->id(), types::formatter(vertex.get())
+        ));
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_ptr_type& vertex) const {
-        const auto vertex_addr = vertex.get();
-        return vertex_addr == this->_vertices.first.get()
-            or vertex_addr == this->_vertices.second.get();
+        return vertex == this->_vertices.first
+            or vertex == this->_vertices.second;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_ptr_type& vertex) const {
@@ -106,7 +108,7 @@ public:
     [[no_unique_address]] properties_type properties{};
 
 private:
-    types::homogeneous_pair<vertex_ptr_type> _vertices;
+    types::homogeneous_pair<const vertex_ptr_type&> _vertices;
 };
 
 template <

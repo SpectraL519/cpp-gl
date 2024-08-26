@@ -93,7 +93,7 @@ struct test_directed_adjacency_list {
 
     test_directed_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(std::make_shared<vertex_type>(id));
+            vertices.push_back(std::make_unique<vertex_type>(id));
     }
 
     const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
@@ -114,7 +114,7 @@ struct test_directed_adjacency_list {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<std::shared_ptr<vertex_type>> vertices;
+    std::vector<std::unique_ptr<vertex_type>> vertices;
 
     const lib_t::size_type n_unique_edges_in_full_graph =
         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
@@ -235,7 +235,7 @@ struct test_undirected_adjacency_list {
 
     test_undirected_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(std::make_shared<vertex_type>(id));
+            vertices.push_back(std::make_unique<vertex_type>(id));
     }
 
     const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
@@ -257,7 +257,7 @@ struct test_undirected_adjacency_list {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<std::shared_ptr<vertex_type>> vertices;
+    std::vector<std::unique_ptr<vertex_type>> vertices;
 
     const lib_t::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
