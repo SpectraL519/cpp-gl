@@ -3,6 +3,7 @@
 #include "gl/impl/impl_tags_decl.hpp"
 
 #include <algorithm>
+#include <format>
 
 namespace gl::impl {
 
@@ -10,6 +11,26 @@ template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_list;
 
 namespace specialized {
+
+namespace detail {
+
+template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
+[[nodiscard]] typename AdjacencyList::edge_iterator_type strict_find(
+    typename AdjacencyList::edge_set_type& edge_set,
+    const typename AdjacencyList::edge_ptr_type& edge
+) {
+    const auto it = std::ranges::find(edge_set, edge);
+    if (it == edge_set.end())
+        throw std::logic_error(std::format(
+            "Got invalid edge [vertices = ({}, {}) | addr = {}]",
+            edge->first()->id(),
+            edge->second()->id(),
+            types::formatter(edge.get())
+        ));
+    return it;
+}
+
+} // namespace detail
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
@@ -50,7 +71,7 @@ struct directed_adjacency_list {
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
         auto& adj_edges = self._list.at(edge->first()->id());
-        adj_edges.erase(std::ranges::find(adj_edges, edge));
+        adj_edges.erase(detail::strict_find<impl_type>(adj_edges, edge));
         self._n_unique_edges--;
     }
 };
@@ -109,12 +130,18 @@ struct undirected_adjacency_list {
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        auto& adj_edges_first = self._list.at(edge->first()->id());
-        auto& adj_edges_second = self._list.at(edge->second()->id());
+        if (edge->is_loop()) {
+            auto& adj_edges_first = self._list.at(edge->first()->id());
+            adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
+        }
+        else {
+            auto& adj_edges_first = self._list.at(edge->first()->id());
+            auto& adj_edges_second = self._list.at(edge->second()->id());
 
-        adj_edges_first.erase(std::ranges::find(adj_edges_first, edge));
-        if (not edge->is_loop())
+            adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
+            // if the edge was found in the first list, it will be in the second list
             adj_edges_second.erase(std::ranges::find(adj_edges_second, edge));
+        }
         self._n_unique_edges--;
     }
 };

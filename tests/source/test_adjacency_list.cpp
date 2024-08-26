@@ -169,6 +169,34 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(sut.has_edge(not_present_edge));
 }
 
+TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
+    const auto out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+
+    CHECK_THROWS_AS(
+        sut.remove_edge(
+            lib::make_edge<edge_type>(out_of_range_vertex, vertices[constants::vertex_id_2])
+        ),
+        std::out_of_range
+    );
+
+    // the edge with an invalid vertex will not be found in the list
+    CHECK_THROWS_AS(
+        sut.remove_edge(
+            lib::make_edge<edge_type>(vertices[constants::vertex_id_1], out_of_range_vertex)
+        ),
+        std::logic_error
+    );
+
+    // not existing edge between valid vertices
+    CHECK_THROWS_AS(
+        sut.remove_edge(lib::make_edge<edge_type>(
+            vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
+        )),
+        std::logic_error
+    );
+}
+
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list, "remove_edge should remove the edge from the source vertex's list"
 ) {
@@ -330,6 +358,34 @@ TEST_CASE_FIXTURE(
     CHECK(sut.has_edge(valid_edge));
     CHECK_FALSE(sut.has_edge(invalid_edge));
     CHECK_FALSE(sut.has_edge(not_present_edge));
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list, "remove_edge should throw when an edge is invalid"
+) {
+    const auto out_of_range_vertex =
+        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+
+    CHECK_THROWS_AS(
+        sut.remove_edge(
+            lib::make_edge<edge_type>(out_of_range_vertex, vertices[constants::vertex_id_2])
+        ),
+        std::out_of_range
+    );
+    CHECK_THROWS_AS(
+        sut.remove_edge(
+            lib::make_edge<edge_type>(vertices[constants::vertex_id_1], out_of_range_vertex)
+        ),
+        std::out_of_range
+    );
+
+    // not existing edge between valid vertices
+    CHECK_THROWS_AS(
+        sut.remove_edge(lib::make_edge<edge_type>(
+            vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
+        )),
+        std::logic_error
+    );
 }
 
 TEST_CASE_FIXTURE(
