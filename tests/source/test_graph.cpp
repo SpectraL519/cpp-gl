@@ -438,10 +438,12 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             );
 
             CHECK_THROWS_AS(
-                sut.add_edge(fixture.invalid_vertex, vertex_2, constants::used), std::invalid_argument
+                sut.add_edge(fixture.invalid_vertex, vertex_2, constants::used),
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
-                sut.add_edge(vertex_1, fixture.invalid_vertex, constants::used), std::invalid_argument
+                sut.add_edge(vertex_1, fixture.invalid_vertex, constants::used),
+                std::invalid_argument
             );
         }
 

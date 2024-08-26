@@ -80,7 +80,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("incident_vertex should return throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(func::discard_result(sut.incident_vertex(fixture.vd_3)), std::invalid_argument);
+        CHECK_THROWS_AS(
+            func::discard_result(sut.incident_vertex(fixture.vd_3)), std::invalid_argument
+        );
     }
 
     SUBCASE("incident_vertex should return the vertex incident with the input vertex") {

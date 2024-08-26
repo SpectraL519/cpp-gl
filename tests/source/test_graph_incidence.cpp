@@ -85,10 +85,12 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
             std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, vd_2)), std::invalid_argument
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, vd_2)),
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, fixture.invalid_vertex)), std::invalid_argument
+            func::discard_result(sut.are_incident(vd_1, fixture.invalid_vertex)),
+            std::invalid_argument
         );
     }
 
@@ -111,17 +113,21 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto& edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::invalid_argument
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)),
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)), std::invalid_argument
+            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)),
+            std::invalid_argument
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::invalid_argument
+            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)),
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)), std::invalid_argument
+            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)),
+            std::invalid_argument
         );
     }
 
