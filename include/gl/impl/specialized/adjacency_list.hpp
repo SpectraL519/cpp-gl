@@ -56,18 +56,14 @@ struct directed_adjacency_list {
         return self._list.at(edge->first()->id()).emplace_back(std::move(edge));
     }
 
-    [[nodiscard]] static inline bool has_edge(
+    [[nodiscard]] inline static bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
-        // no need to check first - exception will be thrown in the at() function
-        if (second_id >= self._list.size())
-            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
-
-        const auto& adjacent_edges = self._list.at(first_id);
+        const auto& edge_set = self._list[first_id];
         return std::ranges::find(
-                   adjacent_edges, second_id, [](const auto& edge) { return edge->second()->id(); }
+                   edge_set, second_id, [](const auto& edge) { return edge->second()->id(); }
                )
-            != adjacent_edges.cend();
+            != edge_set.cend();
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
@@ -116,18 +112,14 @@ struct undirected_adjacency_list {
     [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
-        // no need to check first - exception will be thrown in the at() function
-        if (second_id >= self._list.size())
-            throw std::out_of_range(std::format("Got invalid vertex id [{}]", second_id));
-
-        const auto& adjacent_edges = self._list.at(first_id);
+        const auto& edge_set = self._list[first_id];
         return std::ranges::find_if(
-                   adjacent_edges,
+                   edge_set,
                    [second_id](const auto& edge) {
                        return edge->second()->id() == second_id or edge->first()->id() == second_id;
                    }
                )
-            != adjacent_edges.cend();
+            != edge_set.cend();
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {

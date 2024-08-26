@@ -82,11 +82,11 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        return this->_matrix.at(first_id).at(second_id) != nullptr;
+        return this->_matrix[first_id][second_id] != nullptr;
     }
 
     [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
-        const auto& matrix_element = this->_matrix.at(edge->first()->id()).at(edge->second()->id());
+        const auto& matrix_element = this->_matrix[edge->first()->id()][edge->second()->id()];
         return matrix_element != nullptr and matrix_element == edge;
     }
 

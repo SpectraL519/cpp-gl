@@ -28,22 +28,16 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(
-                constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
-            )),
-            std::out_of_range
-        );
-        CHECK_THROWS_AS(
             func::discard_result(
                 sut.are_incident(constants::out_of_range_elemenet_idx, constants::vertex_id_2)
             ),
-            std::out_of_range
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
             func::discard_result(
                 sut.are_incident(constants::vertex_id_1, constants::out_of_range_elemenet_idx)
             ),
-            std::out_of_range
+            std::invalid_argument
         );
     }
 
