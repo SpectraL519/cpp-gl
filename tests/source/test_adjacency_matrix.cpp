@@ -93,7 +93,7 @@ struct test_directed_adjacency_matrix {
 
     test_directed_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(std::make_shared<vertex_type>(id));
+            vertices.push_back(std::make_unique<vertex_type>(id));
     }
 
     const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
@@ -114,7 +114,7 @@ struct test_directed_adjacency_matrix {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<std::shared_ptr<vertex_type>> vertices;
+    std::vector<std::unique_ptr<vertex_type>> vertices;
 
     static constexpr lib_t::size_type n_unique_edges_in_full_graph =
         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
@@ -134,7 +134,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
 
     const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -235,7 +235,7 @@ struct test_undirected_adjacency_matrix {
 
     test_undirected_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
-            vertices.push_back(std::make_shared<vertex_type>(id));
+            vertices.push_back(std::make_unique<vertex_type>(id));
     }
 
     const edge_ptr_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
@@ -257,7 +257,7 @@ struct test_undirected_adjacency_matrix {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<std::shared_ptr<vertex_type>> vertices;
+    std::vector<std::unique_ptr<vertex_type>> vertices;
 
     static constexpr lib_t::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
@@ -279,10 +279,10 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges_1.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 
     const auto& new_edge_extracted_2 = adjacent_edges_2.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_2.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_2, new_edge);
 }
 
 TEST_CASE_FIXTURE(
@@ -298,7 +298,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
     const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
-    CHECK_EQ(new_edge_extracted_1.get(), new_edge.get());
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 }
 
 TEST_CASE_FIXTURE(

@@ -87,7 +87,7 @@ public:
 
     [[nodiscard]] inline bool has_edge(const edge_ptr_type& edge) const {
         const auto& matrix_element = this->_matrix.at(edge->first()->id()).at(edge->second()->id());
-        return matrix_element != nullptr and matrix_element.get() == edge.get();
+        return matrix_element != nullptr and matrix_element == edge;
     }
 
     gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
