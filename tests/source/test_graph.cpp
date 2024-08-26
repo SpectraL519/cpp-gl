@@ -532,6 +532,25 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_FALSE(sut.has_edge(vd_2, vd_3));
     }
 
+    SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {
+        sut_type sut{constants::n_elements};
+        CHECK_THROWS_AS(
+            func::discard_result(sut.adjacent_edges(constants::out_of_range_elemenet_idx)),
+            std::invalid_argument
+        );
+    }
+
+    SUBCASE("adjacent_edges(id) should return a proper iterator range for a valid vertex") {
+        sut_type sut{constants::one_element};
+
+        CHECK_NOTHROW([&sut]() {
+            CHECK_EQ(
+                sut.adjacent_edges(constants::first_element_idx).distance(),
+                constants::zero_elements
+            );
+        }());
+    }
+
     SUBCASE("adjacent_edges(vertex) should throw if the vertex is invalid") {
         sut_type sut{constants::n_elements};
 

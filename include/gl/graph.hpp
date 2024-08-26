@@ -193,9 +193,11 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
+    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
+        if (not this->has_vertex(vertex_id))
+            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
         return this->_impl.adjacent_edges(vertex_id);
     }
 

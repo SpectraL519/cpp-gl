@@ -97,7 +97,7 @@ public:
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
-        const auto& row = this->_matrix.at(vertex_id);
+        const auto& row = this->_matrix[vertex_id];
         return make_iterator_range(non_null_cbegin(row), non_null_cend(row));
     }
 
