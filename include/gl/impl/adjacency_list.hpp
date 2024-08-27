@@ -13,7 +13,6 @@ template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_list {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
-    using vertex_ptr_type = typename GraphTraits::vertex_ptr_type;
 
     using edge_type = typename GraphTraits::edge_type;
     using edge_ptr_type = typename GraphTraits::edge_ptr_type;

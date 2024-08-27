@@ -13,7 +13,6 @@ template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class adjacency_matrix {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
-    using vertex_ptr_type = typename GraphTraits::vertex_ptr_type;
 
     using edge_type = typename GraphTraits::edge_type;
     using edge_ptr_type = typename GraphTraits::edge_ptr_type;
@@ -64,7 +63,7 @@ public:
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
-    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
+    gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         specialized::remove_vertex(*this, vertex);
     }
 
@@ -86,11 +85,11 @@ public:
     }
 
     [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
-        const auto first_id = edge->first()->id();
+        const auto first_id = edge->first().id();
         if (first_id >= this->_matrix.size())
             return false;
 
-        const auto second_id = edge->second()->id();
+        const auto second_id = edge->second().id();
         if (second_id >= this->_matrix.size())
             return false;
 
