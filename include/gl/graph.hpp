@@ -38,7 +38,7 @@ public:
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
-    using edge_ptr_type = typename traits_type::edge_ptr_type;
+    using edge_ptr_type = typename traits_type::edge_ptr_type; // TODO: remove or private
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
@@ -156,9 +156,7 @@ public:
     }
 
     const edge_ptr_type& add_edge(
-        const vertex_type& first,
-        const vertex_type& second,
-        const edge_properties_type& properties
+        const vertex_type& first, const vertex_type& second, const edge_properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
     {
@@ -215,8 +213,7 @@ public:
         return this->has_edge(first_id, second_id);
     }
 
-    [[nodiscard]] bool are_incident(const vertex_type& first, const vertex_type& second)
-        const {
+    [[nodiscard]] bool are_incident(const vertex_type& first, const vertex_type& second) const {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
         return first == second or this->has_edge(first.id(), second.id());
