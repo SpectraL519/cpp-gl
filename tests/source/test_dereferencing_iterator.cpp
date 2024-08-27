@@ -1,19 +1,21 @@
 #include "constants.hpp"
 #include "functional.hpp"
 
+#include <gl/types/dereferencing_iterator.hpp>
 #include <gl/types/iterator_range.hpp>
-#include <gl/types/non_null_iterator.hpp>
 
 #include <doctest.h>
 
 #include <algorithm>
 #include <deque>
 #include <forward_list>
+#include <iostream>
 #include <list>
+#include <vector>
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_non_null_iterator");
+TEST_SUITE_BEGIN("test_dereferencing_iterator");
 
 struct data {
     lib_t::id_type id;
@@ -27,26 +29,32 @@ using data_sptr = std::shared_ptr<data>;
 using data_rawptr = data*;
 
 template <typename Container>
-struct test_non_null_iterator {
+struct test_dereferencing_iterator {
     using container_type = Container;
     using data_ptr_type = typename container_type::value_type;
-    using sut_type = lib_t::non_null_iterator<typename container_type::iterator>;
+    using sut_type = lib_t::dereferencing_iterator<typename container_type::iterator>;
 
-    struct reference_projection {
-        auto operator()(const data_ptr_type& data_ptr) {
-            return *data_ptr;
+    struct address_projection {
+        auto operator()(const data& data) {
+            return &data;
+        }
+
+        auto operator()(const data_ptr_type& data_ptr)
+        requires(lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        {
+            return data_ptr.get();
+        }
+
+        auto operator()(const data_ptr_type data_ptr)
+        requires(not lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        {
+            return data_ptr;
         }
     };
 
-    test_non_null_iterator() {
+    test_dereferencing_iterator() {
         for (auto i = constants::first_element_idx; i < constants::n_elements; i++) {
-            container.push_front(nullptr);
             container.push_front(data_ptr_type{
-                new data{i, std::to_string(i)}
-            });
-            container.push_front(nullptr);
-
-            non_null_container.push_front(data_ptr_type{
                 new data{i, std::to_string(i)}
             });
         }
@@ -59,14 +67,15 @@ struct test_non_null_iterator {
 };
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "non_null_iterator should provide an 'equivalent' iterator range as a non null container",
+    "dereferencing_iterator should provide an 'equivalent' iterator range as a reference type "
+    "range",
     ContainerType,
     container_type_template
 ) {
     using container_type = ContainerType;
-    using fixture_type = test_non_null_iterator<container_type>;
+    using fixture_type = test_dereferencing_iterator<container_type>;
     using sut_type = typename fixture_type::sut_type;
-    using reference_projection = typename fixture_type::reference_projection;
+    using address_projection = typename fixture_type::address_projection;
 
     static_assert(std::forward_iterator<sut_type>);
 
@@ -74,31 +83,27 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("normal iterator") {
         const auto sut_range = lib::make_iterator_range(
-            lib::non_null_begin(fixture.container), lib::non_null_end(fixture.container)
+            lib::deref_begin(fixture.container), lib::deref_end(fixture.container)
         );
-        const auto non_null_range = lib::make_iterator_range(fixture.non_null_container);
+        const auto ptr_range = lib::make_iterator_range(fixture.container);
 
         CHECK(std::ranges::equal(
-            sut_range,
-            non_null_range,
-            std::ranges::equal_to{},
-            reference_projection{},
-            reference_projection{}
+            sut_range, ptr_range, std::ranges::equal_to{}, address_projection{}, address_projection{}
         ));
     }
 
-    SUBCASE("cosnt iterator") {
-        const auto sut_range = lib::make_iterator_range(
-            lib::non_null_cbegin(fixture.container), lib::non_null_cend(fixture.container)
+    SUBCASE("const iterator") {
+        const auto sut_crange = lib::make_iterator_range(
+            lib::deref_cbegin(fixture.container), lib::deref_cend(fixture.container)
         );
-        const auto non_null_range = lib::make_const_iterator_range(fixture.non_null_container);
+        const auto ptr_crange = lib::make_const_iterator_range(fixture.container);
 
         CHECK(std::ranges::equal(
-            sut_range,
-            non_null_range,
+            sut_crange,
+            ptr_crange,
             std::ranges::equal_to{},
-            reference_projection{},
-            reference_projection{}
+            address_projection{},
+            address_projection{}
         ));
     }
 }
@@ -118,6 +123,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 
 // TODO: add specific tests covering the individual methods
 
-TEST_SUITE_END(); // test_non_null_iterator
+TEST_SUITE_END(); // test_dereferencing_iterator
 
 } // namespace gl_testing
