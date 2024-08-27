@@ -33,8 +33,19 @@ public:
     edge_descriptor(const edge_descriptor&) = delete;
     edge_descriptor& operator=(const edge_descriptor&) = delete;
 
-    explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
+    explicit edge_descriptor(const vertex_type& first, const vertex_type& second)
     : _vertices(first, second) {}
+
+    explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
+    : _vertices(*first, *second) {}
+
+    explicit edge_descriptor(
+        const vertex_type& first,
+        const vertex_type& second,
+        const properties_type& properties
+    )
+    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    : _vertices(first, second), properties(properties) {}
 
     explicit edge_descriptor(
         const vertex_ptr_type& first,
@@ -42,7 +53,7 @@ public:
         const properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(first, second), properties(properties) {}
+    : _vertices(*first, *second), properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
@@ -61,41 +72,41 @@ public:
     // gl_attr_force_inline misplacement
 
     [[nodiscard]] gl_attr_force_inline
-    const types::homogeneous_pair<const vertex_ptr_type&>& incident_vertices() const {
+    const types::homogeneous_pair<const vertex_type&>& incident_vertices() const {
         return this->_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& first() const {
+    [[nodiscard]] gl_attr_force_inline const vertex_type& first() const {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] gl_attr_force_inline const vertex_ptr_type& second() const {
+    [[nodiscard]] gl_attr_force_inline const vertex_type& second() const {
         return this->_vertices.second;
     }
 
     // clang-format on
 
-    [[nodiscard]] const vertex_ptr_type& incident_vertex(const vertex_ptr_type& vertex) const {
-        if (vertex == this->_vertices.first)
+    [[nodiscard]] const vertex_type& incident_vertex(const vertex_type& vertex) const {
+        if (&vertex == &this->_vertices.first)
             return this->_vertices.second;
 
-        if (vertex == this->_vertices.second)
+        if (&vertex == &this->_vertices.second)
             return this->_vertices.first;
 
         throw std::invalid_argument(std::format(
-            "Got invalid vertex [id = {} | addr = ]", vertex->id(), types::formatter(vertex.get())
+            "Got invalid vertex [id = {} | addr = ]", vertex.id(), types::formatter(&vertex)
         ));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_ptr_type& vertex) const {
-        return vertex == this->_vertices.first or vertex == this->_vertices.second;
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {
+        return &vertex == &this->_vertices.first or &vertex == &this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_ptr_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_ptr_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
     }
 
@@ -106,7 +117,7 @@ public:
     [[no_unique_address]] properties_type properties{};
 
 private:
-    types::homogeneous_pair<const vertex_ptr_type&> _vertices;
+    types::homogeneous_pair<const vertex_type&> _vertices;
 };
 
 template <

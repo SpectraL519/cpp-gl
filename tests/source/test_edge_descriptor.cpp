@@ -13,14 +13,12 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = lib::vertex_descriptor<>;
 
-    std::unique_ptr<vertex_type> vd_1 = std::make_unique<vertex_type>(constants::vertex_id_1);
-    std::unique_ptr<vertex_type> vd_2 = std::make_unique<vertex_type>(constants::vertex_id_2);
-    std::unique_ptr<vertex_type> vd_3 = std::make_unique<vertex_type>(constants::vertex_id_3);
+    vertex_type vd_1{constants::vertex_id_1};
+    vertex_type vd_2{constants::vertex_id_2};
+    vertex_type vd_3{constants::vertex_id_3};
 
-    std::unique_ptr<vertex_type> invalid_vd_1 =
-        std::make_unique<vertex_type>(constants::vertex_id_1);
-    std::unique_ptr<vertex_type> invalid_vd_2 =
-        std::make_unique<vertex_type>(constants::vertex_id_2);
+    vertex_type invalid_vd_1{constants::vertex_id_1};
+    vertex_type invalid_vd_2{constants::vertex_id_2};
 };
 
 TEST_CASE_FIXTURE(
@@ -108,7 +106,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 // TODO: fix .clang-format to split such lines
-TEST_CASE_TEMPLATE_INSTANTIATE(edge_directional_tag_template, lib::directed_edge<lib::vertex<>>, lib::undirected_edge<lib::vertex<>>);
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    edge_directional_tag_template,
+    lib::directed_edge<lib::vertex<>>, // default directed edge
+    lib::undirected_edge<lib::vertex<>> // default undirected edge
+);
 
 TEST_SUITE_END(); // test_edge_descriptor
 
