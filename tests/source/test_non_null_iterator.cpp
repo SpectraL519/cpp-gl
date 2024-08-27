@@ -24,6 +24,7 @@ struct data {
 
 using data_uptr = std::unique_ptr<data>;
 using data_sptr = std::shared_ptr<data>;
+using data_rawptr = data*;
 
 template <typename Container>
 struct test_non_null_iterator {
@@ -90,10 +91,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     container_type_template,
     std::deque<data_uptr>, // random access iterator
     std::deque<data_sptr>, // random access iterator
+    std::deque<data_rawptr>, // random access iterator
     std::list<data_uptr>, // bidirectional iterator
     std::list<data_sptr>, // bidirectional iterator
+    std::list<data_rawptr>, // bidirectional iterator
     std::forward_list<data_uptr>, // bidirectional iterator
-    std::forward_list<data_sptr> // bidirectional iterator
+    std::forward_list<data_sptr>, // bidirectional iterator
+    std::forward_list<data_rawptr> // bidirectional iterator
 );
 
 // TODO: add specific tests covering the individual methods
