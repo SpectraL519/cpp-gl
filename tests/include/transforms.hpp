@@ -9,8 +9,8 @@
 namespace gl_testing::transforms {
 
 template <lib_tt::c_instantiation_of<lib::vertex_descriptor> Vertextype = lib::vertex_descriptor<>>
-inline lib_t::id_type extract_vertex_id(const lib_t::vertex_ptr_type<Vertextype>& vertex) {
-    return vertex->id();
+inline lib_t::id_type extract_vertex_id(const Vertextype& vertex) {
+    return vertex.id();
 }
 
 template <typename T>
