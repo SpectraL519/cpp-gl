@@ -36,9 +36,7 @@ public:
     : _vertices(first, second) {}
 
     explicit edge_descriptor(
-        const vertex_type& first,
-        const vertex_type& second,
-        const properties_type& properties
+        const vertex_type& first, const vertex_type& second, const properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(first, second), properties(properties) {}
