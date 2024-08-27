@@ -54,7 +54,7 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
-    gl_attr_force_inline void remove_vertex(const vertex_ptr_type& vertex) {
+    gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         specialized::remove_vertex(*this, vertex);
     }
 
@@ -76,7 +76,7 @@ public:
     }
 
     [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
-        const auto first_id = edge->first()->id();
+        const auto first_id = edge->first().id();
         if (first_id >= this->_list.size())
             return false;
 

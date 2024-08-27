@@ -23,8 +23,8 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
     if (it == edge_set.end())
         throw std::invalid_argument(std::format(
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-            edge->first()->id(),
-            edge->second()->id(),
+            edge->first().id(),
+            edge->second().id(),
             types::formatter(edge)
         ));
 
@@ -37,10 +37,10 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
-    using vertex_ptr_type = typename impl_type::vertex_ptr_type;
+    using vertex_type = typename impl_type::vertex_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
+    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         for (auto& adj_edges : self._list) {
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
@@ -48,12 +48,12 @@ struct directed_adjacency_list {
             self._n_unique_edges -= std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
-        self._list.erase(std::next(std::begin(self._list), vertex->id()));
+        self._list.erase(std::next(std::begin(self._list), vertex.id()));
     }
 
     static inline const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
         self._n_unique_edges++;
-        return self._list.at(edge->first()->id()).emplace_back(std::move(edge));
+        return self._list.at(edge->first().id()).emplace_back(std::move(edge));
     }
 
     [[nodiscard]] static inline bool has_edge(
@@ -61,13 +61,13 @@ struct directed_adjacency_list {
     ) {
         const auto& adjacent_edges = self._list[first_id];
         return std::ranges::find(
-                   adjacent_edges, second_id, [](const auto& edge) { return edge->second()->id(); }
+                   adjacent_edges, second_id, [](const auto& edge) { return edge->second().id(); }
                )
             != adjacent_edges.cend();
     }
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        auto& adj_edges = self._list.at(edge->first()->id());
+        auto& adj_edges = self._list.at(edge->first().id());
         adj_edges.erase(detail::strict_find<impl_type>(adj_edges, edge));
         self._n_unique_edges--;
     }
@@ -77,21 +77,21 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
-    using vertex_ptr_type = typename impl_type::vertex_ptr_type;
+    using vertex_type = typename impl_type::vertex_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
+    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         // TODO: optimize for multiedges
         // * the edges adjacent to incident_vertex should be processed once
 
-        const auto vertex_id = vertex->id();
+        const auto vertex_id = vertex.id();
 
         for (const auto& edge : self._list.at(vertex_id)) {
             const auto& incident_vertex = edge->incident_vertex(vertex);
             if (incident_vertex == vertex)
                 continue; // loop: will be removed with the vertex's list
 
-            auto& adj_edges = self._list.at(incident_vertex->id());
+            auto& adj_edges = self._list.at(incident_vertex.id());
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
             );
@@ -105,8 +105,8 @@ struct undirected_adjacency_list {
     static const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
         self._n_unique_edges++;
         if (not edge->is_loop())
-            self._list.at(edge->second()->id()).push_back(edge);
-        return self._list.at(edge->first()->id()).emplace_back(edge);
+            self._list.at(edge->second().id()).push_back(edge);
+        return self._list.at(edge->first().id()).emplace_back(edge);
     }
 
     [[nodiscard]] static inline bool has_edge(
@@ -116,7 +116,7 @@ struct undirected_adjacency_list {
         return std::ranges::find_if(
                    adjacent_edges,
                    [second_id](const auto& edge) {
-                       return edge->second()->id() == second_id or edge->first()->id() == second_id;
+                       return edge->second().id() == second_id or edge->first().id() == second_id;
                    }
                )
             != adjacent_edges.cend();
@@ -124,12 +124,12 @@ struct undirected_adjacency_list {
 
     static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
         if (edge->is_loop()) {
-            auto& adj_edges_first = self._list.at(edge->first()->id());
+            auto& adj_edges_first = self._list.at(edge->first().id());
             adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
         }
         else {
-            auto& adj_edges_first = self._list.at(edge->first()->id());
-            auto& adj_edges_second = self._list.at(edge->second()->id());
+            auto& adj_edges_first = self._list.at(edge->first().id());
+            auto& adj_edges_second = self._list.at(edge->second().id());
 
             adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
             // if the edge was found in the first list, it will be in the second list
