@@ -23,7 +23,6 @@ class edge_descriptor {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
     using vertex_type = VertexType;
-    using vertex_ptr_type = types::vertex_ptr_type<vertex_type>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
 
@@ -36,9 +35,6 @@ public:
     explicit edge_descriptor(const vertex_type& first, const vertex_type& second)
     : _vertices(first, second) {}
 
-    explicit edge_descriptor(const vertex_ptr_type& first, const vertex_ptr_type& second)
-    : _vertices(*first, *second) {}
-
     explicit edge_descriptor(
         const vertex_type& first,
         const vertex_type& second,
@@ -46,14 +42,6 @@ public:
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _vertices(first, second), properties(properties) {}
-
-    explicit edge_descriptor(
-        const vertex_ptr_type& first,
-        const vertex_ptr_type& second,
-        const properties_type& properties
-    )
-    requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(*first, *second), properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;

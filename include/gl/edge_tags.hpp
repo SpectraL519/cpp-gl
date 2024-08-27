@@ -50,8 +50,8 @@ struct directed_t {
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_directed_v<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second
+        const typename EdgeType::vertex_type& first,
+        const typename EdgeType::vertex_type& second
     ) {
         return std::make_unique<EdgeType>(first, second);
     }
@@ -59,8 +59,8 @@ struct directed_t {
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_directed_v<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second,
+        const typename EdgeType::vertex_type& first,
+        const typename EdgeType::vertex_type& second,
         const typename EdgeType::properties_type& properties
     ) {
         return std::make_unique<EdgeType>(first, second, properties);
@@ -93,8 +93,8 @@ struct undirected_t {
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_undirected_v<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second
+        const typename EdgeType::vertex_type& first,
+        const typename EdgeType::vertex_type& second
     ) {
         return std::make_shared<EdgeType>(first, second);
     }
@@ -102,8 +102,8 @@ struct undirected_t {
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_undirected_v<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const typename EdgeType::vertex_ptr_type& first,
-        const typename EdgeType::vertex_ptr_type& second,
+        const typename EdgeType::vertex_type& first,
+        const typename EdgeType::vertex_type& second,
         const typename EdgeType::properties_type& properties
     ) {
         return std::make_shared<EdgeType>(first, second, properties);
@@ -133,20 +133,18 @@ using edge_ptr_type = typename EdgeType::directional_tag::template edge_ptr_type
 
 } // namespace types
 
-// TODO: add make_edge with const vertex_type&
-
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
 [[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
-    const typename EdgeType::vertex_ptr_type& first,
-    const typename EdgeType::vertex_ptr_type& second
+    const typename EdgeType::vertex_type& first,
+    const typename EdgeType::vertex_type& second
 ) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second);
 }
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
 [[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
-    const typename EdgeType::vertex_ptr_type& first,
-    const typename EdgeType::vertex_ptr_type& second,
+    const typename EdgeType::vertex_type& first,
+    const typename EdgeType::vertex_type& second,
     const typename EdgeType::properties_type& properties
 ) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
