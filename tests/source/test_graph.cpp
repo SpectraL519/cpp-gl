@@ -30,7 +30,7 @@ struct test_graph {
         const auto vertices = graph.vertices();
         for (const auto& first : vertices)
             for (const auto& second : vertices)
-                if (*first != *second)
+                if (first != second)
                     graph.add_edge(first, second);
 
         const lib_t::size_type n_unique_edges_in_full_graph =
@@ -46,7 +46,7 @@ struct test_graph {
         const auto vertices = graph.vertices();
         for (const auto& first : vertices)
             for (const auto& second : vertices)
-                if (*first < *second)
+                if (first < second)
                     graph.add_edge(first, second);
 
         const lib_t::size_type n_unique_edges_in_full_graph =
@@ -72,10 +72,8 @@ struct test_graph {
     const lib_t::size_type n_incident_edges_for_fully_connected_vertex =
         constants::n_elements - constants::one_element;
 
-    const std::unique_ptr<vertex_type> out_of_range_vertex =
-        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
-    const std::unique_ptr<vertex_type> invalid_vertex =
-        std::make_unique<vertex_type>(constants::vertex_id_1);
+    const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
+    const vertex_type invalid_vertex{constants::vertex_id_1};
 };
 
 template <
@@ -141,7 +139,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr lib_t::size_type target_n_vertices = constants::n_elements;
         for (lib_t::id_type v_id = constants::zero_elements; v_id < target_n_vertices; v_id++) {
             const auto& vertex = sut.add_vertex();
-            CHECK_EQ(vertex->id(), v_id);
+            CHECK_EQ(vertex.id(), v_id);
             CHECK_EQ(sut.n_vertices(), v_id + constants::one_element);
             CHECK_EQ(sut.adjacent_edges(v_id).distance(), constants::empty_distance);
         }
@@ -156,8 +154,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         const auto& vertex = sut.add_vertex(constants::visited);
         REQUIRE_EQ(sut.n_vertices(), constants::one_element);
 
-        CHECK_EQ(vertex->id(), constants::vertex_id_1);
-        CHECK_EQ(vertex->properties, constants::visited);
+        CHECK_EQ(vertex.id(), constants::vertex_id_1);
+        CHECK_EQ(vertex.properties, constants::visited);
     }
 
     SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
@@ -178,7 +176,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             return sut.has_vertex(sut.get_vertex(vertex_id));
         }));
         CHECK(std::ranges::none_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-            return sut.has_vertex(std::make_unique<vertex_type>(vertex_id));
+            return sut.has_vertex(vertex_type{vertex_id});
         }));
         CHECK_FALSE(sut.has_vertex(fixture.out_of_range_vertex));
     }
@@ -191,7 +189,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("get_vertex should return a vertex with the given id") {
         sut_type sut;
         const auto& added_vertex = sut.add_vertex();
-        CHECK_EQ(*sut.get_vertex(added_vertex->id()), *added_vertex);
+        CHECK_EQ(&sut.get_vertex(added_vertex.id()), &added_vertex);
     }
 
     SUBCASE("vertices should return the correct vertex list iterator range") {
@@ -298,8 +296,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(ids) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
-            REQUIRE(new_edge->is_incident_from(vertices.element_at(constants::vertex_id_1)));
-            REQUIRE(new_edge->is_incident_to(vertices.element_at(constants::vertex_id_2)));
+            REQUIRE(new_edge.is_incident_from(vertices.element_at(constants::vertex_id_1)));
+            REQUIRE(new_edge.is_incident_to(vertices.element_at(constants::vertex_id_2)));
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -307,14 +305,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1, new_edge);
+            CHECK_EQ(&new_edge_extracted_1, &new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2, new_edge);
+                CHECK_EQ(&new_edge_extracted_2, &new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -331,8 +329,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2);
-            REQUIRE(new_edge->is_incident_from(vertex_1));
-            REQUIRE(new_edge->is_incident_to(vertex_2));
+            REQUIRE(new_edge.is_incident_from(vertex_1));
+            REQUIRE(new_edge.is_incident_to(vertex_2));
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -340,14 +338,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1, new_edge);
+            CHECK_EQ(&new_edge_extracted_1, &new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2, new_edge);
+                CHECK_EQ(&new_edge_extracted_2, &new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -403,9 +401,9 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         SUBCASE("add_edge(ids) should properly add the new edge") {
             const auto& new_edge =
                 sut.add_edge(constants::vertex_id_1, constants::vertex_id_2, constants::used);
-            REQUIRE(new_edge->is_incident_from(vertices.element_at(constants::vertex_id_1)));
-            REQUIRE(new_edge->is_incident_to(vertices.element_at(constants::vertex_id_2)));
-            REQUIRE_EQ(new_edge->properties, constants::used);
+            REQUIRE(new_edge.is_incident_from(vertices.element_at(constants::vertex_id_1)));
+            REQUIRE(new_edge.is_incident_to(vertices.element_at(constants::vertex_id_2)));
+            REQUIRE_EQ(new_edge.properties, constants::used);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -413,14 +411,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1, new_edge);
+            CHECK_EQ(&new_edge_extracted_1, &new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2, new_edge);
+                CHECK_EQ(&new_edge_extracted_2, &new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
@@ -449,9 +447,9 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2, constants::used);
-            REQUIRE(new_edge->is_incident_from(vertex_1));
-            REQUIRE(new_edge->is_incident_to(vertex_2));
-            REQUIRE_EQ(new_edge->properties, constants::used);
+            REQUIRE(new_edge.is_incident_from(vertex_1));
+            REQUIRE(new_edge.is_incident_to(vertex_2));
+            REQUIRE_EQ(new_edge.properties, constants::used);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -459,14 +457,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
             const auto& new_edge_extracted_1 =
                 adjacent_edges_1.element_at(constants::first_element_idx);
-            CHECK_EQ(new_edge_extracted_1, new_edge);
+            CHECK_EQ(&new_edge_extracted_1, &new_edge);
 
             const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (lib_tt::is_undirected_v<edge_type>) {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::one_element);
                 const auto& new_edge_extracted_2 =
                     adjacent_edges_2.element_at(constants::first_element_idx);
-                CHECK_EQ(new_edge_extracted_2, new_edge);
+                CHECK_EQ(&new_edge_extracted_2, &new_edge);
             }
             else {
                 CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);

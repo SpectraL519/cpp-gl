@@ -13,6 +13,17 @@ template <typename T>
     return static_cast<void*>(ptr);
 }
 
+// clang-format off
+// gl_attr_force_inline misplacement
+
+template <typename T>
+[[nodiscard]] gl_attr_force_inline const void* formatter(const T* ptr) {
+    // std::format is not compatible with all types of ptrs
+    return static_cast<const void*>(ptr);
+}
+
+// clang-format on
+
 template <type_traits::c_strong_smart_ptr PtrType>
 [[nodiscard]] gl_attr_force_inline void* formatter(const PtrType& ptr) {
     return formatter(ptr.get());

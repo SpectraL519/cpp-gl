@@ -15,14 +15,14 @@ namespace detail {
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 [[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
-    typename AdjacencyMatrix::type& matrix, const typename AdjacencyMatrix::edge_ptr_type& edge
+    typename AdjacencyMatrix::type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
-    auto& matrix_element = matrix.at(edge->first()->id()).at(edge->second()->id());
-    if (edge != matrix_element)
+    auto& matrix_element = matrix.at(edge->first().id()).at(edge->second().id());
+    if (edge != matrix_element.get())
         throw std::invalid_argument(std::format(
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-            edge->first()->id(),
-            edge->second()->id(),
+            edge->first().id(),
+            edge->second().id(),
             types::formatter(edge)
         ));
 
@@ -35,14 +35,15 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
-    using vertex_ptr_type = typename impl_type::vertex_ptr_type;
+    using vertex_type = typename impl_type::vertex_type;
+    using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
-        const auto vertex_id = vertex->id();
+    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
+        const auto vertex_id = vertex.id();
 
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
 
         for (auto& row : self._matrix) {
             const auto vertex_it = std::next(std::begin(row), vertex_id);
@@ -51,15 +52,15 @@ struct directed_adjacency_matrix {
         }
     }
 
-    static const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
+    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         self._n_unique_edges++;
-        auto& matrix_element = self._matrix.at(edge->first()->id()).at(edge->second()->id());
+        auto& matrix_element = self._matrix.at(edge->first().id()).at(edge->second().id());
         matrix_element = std::move(edge);
-        return matrix_element;
+        return *matrix_element;
     }
 
-    static inline void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
+    static inline void remove_edge(impl_type& self, const edge_type& edge) {
+        detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
         self._n_unique_edges--;
     }
 };
@@ -68,40 +69,42 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
 struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
-    using vertex_ptr_type = typename impl_type::vertex_ptr_type;
+    using vertex_type = typename impl_type::vertex_type;
+    using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_ptr_type& vertex) {
-        const auto vertex_id = vertex->id();
+    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
+        const auto vertex_id = vertex.id();
 
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex->id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
 
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
     }
 
-    static const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        const auto first_id = edge->first()->id();
-        const auto second_id = edge->second()->id();
+    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        const auto first_id = edge->first().id();
+        const auto second_id = edge->second().id();
 
-        self._n_unique_edges++;
         if (not edge->is_loop())
             self._matrix.at(second_id).at(first_id) = edge;
         auto& matrix_element = self._matrix.at(first_id).at(second_id);
         matrix_element = edge;
-        return matrix_element;
+
+        self._n_unique_edges++;
+        return *matrix_element;
     }
 
-    static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        if (edge->is_loop()) {
-            detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
+    static void remove_edge(impl_type& self, const edge_type& edge) {
+        if (edge.is_loop()) {
+            detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
         }
         else {
-            const auto first_id = edge->first()->id();
-            const auto second_id = edge->second()->id();
+            const auto first_id = edge.first().id();
+            const auto second_id = edge.second().id();
 
-            detail::strict_get<impl_type>(self._matrix, edge) = nullptr;
+            detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
             // if the edge was found in the first matrix cell, it will be in the second matrix cell
             self._matrix[second_id][first_id] = nullptr;
         }
