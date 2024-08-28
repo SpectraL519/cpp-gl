@@ -52,8 +52,6 @@ struct test_non_null_iterator {
         }
     }
 
-    static constexpr std::size_t size = 3ull;
-    static constexpr std::size_t first_element = 0ull;
     container_type container;
     container_type non_null_container;
 };

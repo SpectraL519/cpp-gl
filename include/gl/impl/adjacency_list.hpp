@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
@@ -19,7 +20,8 @@ public:
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = typename edge_set_type::const_iterator;
+    using edge_iterator_type =
+        types::dereferencing_iterator<typename edge_set_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -54,7 +56,7 @@ public:
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
+        specialized_impl::remove_vertex(*this, vertex);
     }
 
     // --- edge methods ---
@@ -62,8 +64,8 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
-        return specialized::add_edge(*this, std::move(edge));
+    gl_attr_force_inline const edge_type& add_edge(edge_ptr_type edge) {
+        return specialized_impl::add_edge(*this, std::move(edge));
     }
 
     // clang-format on
@@ -71,31 +73,35 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        return specialized::has_edge(*this, first_id, second_id);
+        return specialized_impl::has_edge(*this, first_id, second_id);
     }
 
-    [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
-        const auto first_id = edge->first().id();
+    [[nodiscard]] bool has_edge(const edge_type& edge) const {
+        const auto first_id = edge.first().id();
         if (first_id >= this->_list.size())
             return false;
 
         const auto& adjacent_edges = this->_list[first_id];
-        return std::ranges::find(adjacent_edges, edge) != adjacent_edges.end();
+        return std::ranges::find(
+                   adjacent_edges, &edge, typename specialized_impl::address_projection{}
+               )
+            != adjacent_edges.end();
     }
 
-    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
-        specialized::remove_edge(*this, edge);
+    gl_attr_force_inline void remove_edge(const edge_type& edge) {
+        specialized_impl::remove_edge(*this, edge);
     }
 
     [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
         const types::id_type vertex_id
     ) const {
-        return make_const_iterator_range(this->_list[vertex_id]);
+        const auto& adjacent_edges = this->_list[vertex_id];
+        return make_iterator_range(deref_cbegin(adjacent_edges), deref_cend(adjacent_edges));
     }
 
 private:
-    using specialized = typename specialized::list_impl_traits<adjacency_list>::type;
-    friend specialized;
+    using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
+    friend specialized_impl;
 
     type _list{};
     types::size_type _n_unique_edges{0ull};

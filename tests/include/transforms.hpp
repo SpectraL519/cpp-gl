@@ -15,6 +15,10 @@ inline lib_t::id_type extract_vertex_id(const Vertextype& vertex) {
 
 template <typename T>
 struct address_projection {
+    auto operator()(const T& ref) const {
+        return &ref;
+    }
+
     auto operator()(const std::unique_ptr<T>& ptr) const {
         return ptr.get();
     }

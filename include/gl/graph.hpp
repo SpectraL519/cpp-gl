@@ -127,7 +127,7 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
         return this->_impl.add_edge(
@@ -135,7 +135,7 @@ public:
         );
     }
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(
+    gl_attr_force_inline const edge_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
@@ -149,13 +149,13 @@ public:
 
     // clang-format on
 
-    const edge_ptr_type& add_edge(const vertex_type& first, const vertex_type& second) {
+    const edge_type& add_edge(const vertex_type& first, const vertex_type& second) {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
         return this->_impl.add_edge(make_edge<edge_type>(first, second));
     }
 
-    const edge_ptr_type& add_edge(
+    const edge_type& add_edge(
         const vertex_type& first, const vertex_type& second, const edge_properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
@@ -177,7 +177,7 @@ public:
         return this->has_edge(first.id(), second.id());
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_ptr_type& edge) const {
+    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         return this->_impl.has_edge(edge);
     }
 
@@ -219,23 +219,22 @@ public:
         return first == second or this->has_edge(first.id(), second.id());
     }
 
-    [[nodiscard]] bool are_incident(const vertex_type& vertex, const edge_ptr_type& edge) const {
+    [[nodiscard]] bool are_incident(const vertex_type& vertex, const edge_type& edge) const {
         this->_verify_vertex(vertex);
         this->_verify_edge(edge);
-        return edge->is_incident_with(vertex);
+        return edge.is_incident_with(vertex);
     }
 
-    [[nodiscard]] bool are_incident(const edge_ptr_type& edge, const vertex_type& vertex) const {
+    [[nodiscard]] bool are_incident(const edge_type& edge, const vertex_type& vertex) const {
         this->_verify_vertex(vertex);
         this->_verify_edge(edge);
-        return edge->is_incident_with(vertex);
+        return edge.is_incident_with(vertex);
     }
 
-    [[nodiscard]] bool are_incident(const edge_ptr_type& edge_1, const edge_ptr_type& edge_2) const {
+    [[nodiscard]] bool are_incident(const edge_type& edge_1, const edge_type& edge_2) const {
         this->_verify_edge(edge_1);
         this->_verify_edge(edge_2);
-        return edge_1->is_incident_with(edge_2->first())
-            or edge_1->is_incident_with(edge_2->second());
+        return edge_1.is_incident_with(edge_2.first()) or edge_1.is_incident_with(edge_2.second());
     }
 
 private:
@@ -257,13 +256,13 @@ private:
             ));
     }
 
-    void _verify_edge(const edge_ptr_type& edge) const {
+    void _verify_edge(const edge_type& edge) const {
         if (not this->has_edge(edge))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-                edge->first().id(),
-                edge->second().id(),
-                types::formatter(edge)
+                edge.first().id(),
+                edge.second().id(),
+                types::formatter(&edge)
             ));
     }
 

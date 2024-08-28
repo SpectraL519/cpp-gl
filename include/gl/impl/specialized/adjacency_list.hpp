@@ -14,12 +14,11 @@ namespace specialized {
 
 namespace detail {
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-[[nodiscard]] typename AdjacencyList::edge_iterator_type strict_find(
-    typename AdjacencyList::edge_set_type& edge_set,
-    const typename AdjacencyList::edge_ptr_type& edge
+template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList, typename AddressProjection>
+[[nodiscard]] typename AdjacencyList::edge_iterator_type::iterator_type strict_find(
+    typename AdjacencyList::edge_set_type& edge_set, const typename AdjacencyList::edge_type* edge
 ) {
-    const auto it = std::ranges::find(edge_set, edge);
+    const auto it = std::ranges::find(edge_set, edge, AddressProjection{});
     if (it == edge_set.end())
         throw std::invalid_argument(std::format(
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
@@ -38,7 +37,18 @@ requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using vertex_type = typename impl_type::vertex_type;
+    using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+
+    struct address_projection {
+        auto operator()(const edge_type& edge) {
+            return &edge;
+        }
+
+        auto operator()(const edge_ptr_type& edge) {
+            return edge.get();
+        }
+    };
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         for (auto& adj_edges : self._list) {
@@ -51,9 +61,11 @@ struct directed_adjacency_list {
         self._list.erase(std::next(std::begin(self._list), vertex.id()));
     }
 
-    static inline const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
+    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        auto& adjacent_edges_first = self._list.at(edge->first().id());
+        adjacent_edges_first.push_back(std::move(edge));
         self._n_unique_edges++;
-        return self._list.at(edge->first().id()).emplace_back(std::move(edge));
+        return *adjacent_edges_first.back();
     }
 
     [[nodiscard]] static inline bool has_edge(
@@ -66,9 +78,9 @@ struct directed_adjacency_list {
             != adjacent_edges.cend();
     }
 
-    static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        auto& adj_edges = self._list.at(edge->first().id());
-        adj_edges.erase(detail::strict_find<impl_type>(adj_edges, edge));
+    static void remove_edge(impl_type& self, const edge_type& edge) {
+        auto& adj_edges = self._list.at(edge.first().id());
+        adj_edges.erase(detail::strict_find<impl_type, address_projection>(adj_edges, &edge));
         self._n_unique_edges--;
     }
 };
@@ -78,7 +90,18 @@ requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
     using vertex_type = typename impl_type::vertex_type;
+    using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+
+    struct address_projection {
+        auto operator()(const edge_type& edge) {
+            return &edge;
+        }
+
+        auto operator()(const edge_ptr_type& edge) {
+            return edge.get();
+        }
+    };
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         // TODO: optimize for multiedges
@@ -102,11 +125,15 @@ struct undirected_adjacency_list {
         self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
 
-    static const edge_ptr_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        self._n_unique_edges++;
+    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        auto& adjacent_edges_first = self._list.at(edge->first().id());
+
         if (not edge->is_loop())
             self._list.at(edge->second().id()).push_back(edge);
-        return self._list.at(edge->first().id()).emplace_back(edge);
+        adjacent_edges_first.push_back(std::move(edge));
+
+        self._n_unique_edges++;
+        return *adjacent_edges_first.back();
     }
 
     [[nodiscard]] static inline bool has_edge(
@@ -122,18 +149,23 @@ struct undirected_adjacency_list {
             != adjacent_edges.cend();
     }
 
-    static void remove_edge(impl_type& self, const edge_ptr_type& edge) {
-        if (edge->is_loop()) {
-            auto& adj_edges_first = self._list.at(edge->first().id());
-            adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
+    static void remove_edge(impl_type& self, const edge_type& edge) {
+        if (edge.is_loop()) {
+            auto& adj_edges_first = self._list.at(edge.first().id());
+            adj_edges_first.erase(
+                detail::strict_find<impl_type, address_projection>(adj_edges_first, &edge)
+            );
         }
         else {
-            auto& adj_edges_first = self._list.at(edge->first().id());
-            auto& adj_edges_second = self._list.at(edge->second().id());
+            auto& adj_edges_first = self._list.at(edge.first().id());
+            auto& adj_edges_second = self._list.at(edge.second().id());
 
-            adj_edges_first.erase(detail::strict_find<impl_type>(adj_edges_first, edge));
+            adj_edges_first.erase(
+                detail::strict_find<impl_type, address_projection>(adj_edges_first, &edge)
+            );
             // if the edge was found in the first list, it will be in the second list
-            adj_edges_second.erase(std::ranges::find(adj_edges_second, edge));
+            adj_edges_second.erase(std::ranges::find(adj_edges_second, &edge, address_projection{})
+            );
         }
         self._n_unique_edges--;
     }
