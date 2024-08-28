@@ -38,7 +38,6 @@ public:
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
-    using edge_ptr_type = typename traits_type::edge_ptr_type; // TODO: remove or private
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
@@ -181,7 +180,7 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
+    gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
     }
 
