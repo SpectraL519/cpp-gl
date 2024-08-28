@@ -1,10 +1,10 @@
 #pragma once
 
+#include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/non_null_iterator.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
-#include "gl/types/dereferencing_iterator.hpp"
 
 #include <vector>
 
@@ -20,9 +20,8 @@ public:
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
     using edge_set_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = types::non_null_iterator<typename edge_set_type::const_iterator>;
-    // using edge_iterator_type = types::dereferencing_iterator<types::non_null_iterator<typename edge_set_type::const_iterator>>;
-
+    using edge_iterator_type = types::dereferencing_iterator<
+        types::non_null_iterator<typename edge_set_type::const_iterator>>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -75,7 +74,7 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_ptr_type& add_edge(edge_ptr_type edge) {
+    gl_attr_force_inline const edge_type& add_edge(edge_ptr_type edge) {
         return specialized::add_edge(*this, std::move(edge));
     }
 
@@ -87,20 +86,20 @@ public:
         return this->_matrix[first_id][second_id] != nullptr;
     }
 
-    [[nodiscard]] bool has_edge(const edge_ptr_type& edge) const {
-        const auto first_id = edge->first().id();
+    [[nodiscard]] bool has_edge(const edge_type& edge) const {
+        const auto first_id = edge.first().id();
         if (first_id >= this->_matrix.size())
             return false;
 
-        const auto second_id = edge->second().id();
+        const auto second_id = edge.second().id();
         if (second_id >= this->_matrix.size())
             return false;
 
         const auto& matrix_element = this->_matrix[first_id][second_id];
-        return matrix_element != nullptr and matrix_element == edge;
+        return matrix_element != nullptr and &edge == matrix_element.get();
     }
 
-    gl_attr_force_inline void remove_edge(const edge_ptr_type& edge) {
+    gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized::remove_edge(*this, edge);
     }
 
@@ -108,7 +107,10 @@ public:
         const types::id_type vertex_id
     ) const {
         const auto& row = this->_matrix[vertex_id];
-        return make_iterator_range(non_null_cbegin(row), non_null_cend(row));
+        return make_iterator_range(
+            types::dereferencing_iterator(non_null_cbegin(row)),
+            types::dereferencing_iterator(non_null_cend(row))
+        );
     }
 
 private:
