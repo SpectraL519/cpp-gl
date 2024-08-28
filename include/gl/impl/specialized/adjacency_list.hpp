@@ -15,6 +15,10 @@ namespace specialized {
 namespace detail {
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList, typename AddressProjection>
+requires std::is_invocable_r_v<
+    const typename AdjacencyList::edge_type*,
+    AddressProjection,
+    const typename AdjacencyList::edge_ptr_type&>
 [[nodiscard]] typename AdjacencyList::edge_iterator_type::iterator_type strict_find(
     typename AdjacencyList::edge_set_type& edge_set, const typename AdjacencyList::edge_type* edge
 ) {

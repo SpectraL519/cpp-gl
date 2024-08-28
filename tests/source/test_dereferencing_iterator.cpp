@@ -11,7 +11,6 @@
 #include <forward_list>
 #include <iostream>
 #include <list>
-#include <vector>
 
 namespace gl_testing {
 

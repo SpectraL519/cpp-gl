@@ -66,7 +66,7 @@ public:
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized::remove_vertex(*this, vertex);
+        sepcialized_impl::remove_vertex(*this, vertex);
     }
 
     // --- edge methods ---
@@ -75,7 +75,7 @@ public:
     // gl_attr_force_inline misplacement
 
     gl_attr_force_inline const edge_type& add_edge(edge_ptr_type edge) {
-        return specialized::add_edge(*this, std::move(edge));
+        return sepcialized_impl::add_edge(*this, std::move(edge));
     }
 
     // clang-format on
@@ -100,7 +100,7 @@ public:
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
-        specialized::remove_edge(*this, edge);
+        sepcialized_impl::remove_edge(*this, edge);
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
@@ -114,8 +114,8 @@ public:
     }
 
 private:
-    using specialized = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
-    friend specialized;
+    using sepcialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
+    friend sepcialized_impl;
 
     static constexpr edge_ptr_type _make_null_edge() {
         return nullptr;

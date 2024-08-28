@@ -17,8 +17,7 @@ struct test_edge_descriptor {
     vertex_type vd_2{constants::vertex_id_2};
     vertex_type vd_3{constants::vertex_id_3};
 
-    vertex_type invalid_vd_1{constants::vertex_id_1};
-    vertex_type invalid_vd_2{constants::vertex_id_2};
+    vertex_type invalid_vd{constants::vertex_id_1};
 };
 
 TEST_CASE_FIXTURE(
@@ -93,8 +92,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK(sut.is_incident_with(fixture.vd_1));
         CHECK(sut.is_incident_with(fixture.vd_2));
 
-        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd_1));
-        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd_2));
+        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd));
+        CHECK_FALSE(sut.is_incident_with(fixture.invalid_vd));
     }
 
     SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {
