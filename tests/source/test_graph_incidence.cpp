@@ -12,10 +12,8 @@ TEST_SUITE_BEGIN("test_graph_incidence");
 struct test_graph_incidence {
     using vertex_type = lib::vertex_descriptor<>;
 
-    std::unique_ptr<vertex_type> invalid_vertex =
-        std::make_unique<vertex_type>(constants::vertex_id_1);
-    std::unique_ptr<vertex_type> out_of_range_vertex =
-        std::make_unique<vertex_type>(constants::out_of_range_elemenet_idx);
+    vertex_type invalid_vertex{constants::vertex_id_1};
+    vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
 };
 
 TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_template) {
@@ -126,7 +124,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     }
 
     SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
-        const auto invalid_edge = lib::make_edge<typename SutType::edge_type>(vd_1, vd_2);
+        const typename SutType::edge_type invalid_edge{vd_1, vd_2};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
@@ -156,7 +154,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
         const auto& edge = sut.add_edge(vd_1, vd_2);
-        const auto invalid_edge = lib::make_edge<typename SutType::edge_type>(vd_1, vd_2);
+        const typename SutType::edge_type invalid_edge{vd_1, vd_2};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument

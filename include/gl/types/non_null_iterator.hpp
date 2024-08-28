@@ -10,7 +10,7 @@ namespace gl {
 namespace types {
 
 template <std::forward_iterator Iterator>
-requires(type_traits::c_strong_smart_ptr<typename Iterator::value_type>)
+requires(type_traits::c_strong_ptr<typename Iterator::value_type>)
 class non_null_iterator {
 public:
     using iterator_type = Iterator;
