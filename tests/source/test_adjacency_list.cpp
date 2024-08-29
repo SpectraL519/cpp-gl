@@ -188,6 +188,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(edge_opt.has_value());
     CHECK_EQ(&edge_opt->get(), &edge_1);
     CHECK_NE(&edge_opt->get(), &edge_2);
+
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_2, constants::vertex_id_2));
 }
 
 TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
