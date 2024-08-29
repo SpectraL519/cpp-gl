@@ -43,6 +43,8 @@ struct directed_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
         auto operator()(const edge_type& edge) {
@@ -72,6 +74,14 @@ struct directed_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
+    [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
+        const edge_set_type& edge_set, const types::id_type vertex_id
+    ) {
+        return std::ranges::find(edge_set, vertex_id, [](const auto& edge) {
+            return edge->second().id();
+        });
+    }
+
     [[nodiscard]] static inline bool has_edge(
         const impl_type& self, const types::id_type first_id, const types::id_type second_id
     ) {
@@ -96,6 +106,8 @@ struct undirected_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
         auto operator()(const edge_type& edge) {
@@ -138,6 +150,14 @@ struct undirected_adjacency_list {
 
         self._n_unique_edges++;
         return *adjacent_edges_first.back();
+    }
+
+    [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
+        const edge_set_type& edge_set, const types::id_type vertex_id
+    ) {
+        return std::ranges::find_if(edge_set, [vertex_id](const auto& edge) {
+            return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
+        });
     }
 
     [[nodiscard]] static inline bool has_edge(

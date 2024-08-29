@@ -70,15 +70,22 @@ public:
 
     // clang-format on
 
-    [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const types::id_type first_id, const types::id_type second_id
-    ) const {
-        return specialized_impl::has_edge(*this, first_id, second_id);
+    [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
+        const {
+        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
+            return false;
+
+        const auto& adjacent_edges = this->_list[first_id];
+        return specialized_impl::find_edge_incident_to(adjacent_edges, second_id)
+            != adjacent_edges.end();
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
         const auto first_id = edge.first().id();
-        if (first_id >= this->_list.size())
+        if (not (
+                this->_is_valid_vertex_id(first_id)
+                and this->_is_valid_vertex_id(edge.second().id())
+            ))
             return false;
 
         const auto& adjacent_edges = this->_list[first_id];
@@ -86,6 +93,20 @@ public:
                    adjacent_edges, &edge, typename specialized_impl::address_projection{}
                )
             != adjacent_edges.end();
+    }
+
+    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
+            return std::nullopt;
+
+        const auto& adjacent_edges = this->_list[first_id];
+        const auto it = specialized_impl::find_edge_incident_to(adjacent_edges, second_id);
+
+        if (it == adjacent_edges.cend())
+            return std::nullopt;
+        return std::cref(**it);
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
@@ -102,6 +123,11 @@ public:
 private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
+
+    [[nodiscard]] gl_attr_force_inline bool _is_valid_vertex_id(const types::id_type vertex_id
+    ) const {
+        return vertex_id < this->_list.size();
+    }
 
     type _list{};
     types::size_type _n_unique_edges{0ull};
