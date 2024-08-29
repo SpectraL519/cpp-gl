@@ -180,11 +180,21 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    /*
-    TODO:
-    * get_edge(id, id) -> impl.get_edge(id, id)
-    * get_edge(vertex, vertex) -> has_vertex(vertex{1,2}) ? impl.get_edge(id, id) : nullopt
-    */
+    [[nodiscard]] gl_attr_force_inline types::optional_ref<const edge_type> get_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        return this->_impl.get_edge(first_id, second_id);
+    }
+
+    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+        const vertex_type& first, const vertex_type& second
+    ) const {
+        if (not (this->has_vertex(first) and this->has_vertex(second)))
+            return std::nullopt;
+
+        // TODO: optimize this so that the vertex ids are not checked twice
+        return this->_impl.get_edge(first.id(), second.id());
+    }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
