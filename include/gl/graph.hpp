@@ -180,6 +180,12 @@ public:
         return this->_impl.has_edge(edge);
     }
 
+    /*
+    TODO:
+    * get_edge(id, id) -> impl.get_edge(id, id)
+    * get_edge(vertex, vertex) -> has_vertex(vertex{1,2}) ? impl.get_edge(id, id) : nullopt
+    */
+
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
     }

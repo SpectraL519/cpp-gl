@@ -88,15 +88,25 @@ public:
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
         const auto first_id = edge.first().id();
-        if (first_id >= this->_matrix.size())
-            return false;
-
         const auto second_id = edge.second().id();
-        if (second_id >= this->_matrix.size())
+
+        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
             return false;
 
         const auto& matrix_element = this->_matrix[first_id][second_id];
         return matrix_element != nullptr and &edge == matrix_element.get();
+    }
+
+    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
+            return std::nullopt;
+
+        const auto& matrix_element = this->_matrix[first_id][second_id];
+        if (not matrix_element)
+            return std::nullopt;
+        return std::cref(*matrix_element);
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
@@ -119,6 +129,11 @@ private:
 
     static constexpr edge_ptr_type _make_null_edge() {
         return nullptr;
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool _is_valid_vertex_id(const types::id_type vertex_id
+    ) const {
+        return vertex_id < this->_matrix.size();
     }
 
     type _matrix{};

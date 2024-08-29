@@ -184,7 +184,6 @@ TEST_CASE_FIXTURE(
     const auto& edge_2 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
     const auto edge_opt = sut.get_edge(constants::vertex_id_1, constants::vertex_id_2);
-
     REQUIRE(edge_opt.has_value());
     CHECK_EQ(&edge_opt->get(), &edge_1);
     CHECK_NE(&edge_opt->get(), &edge_2);

@@ -151,6 +151,36 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix, "get_edge(id, id) should return nullopt if either id is invalid"
+) {
+    CHECK_FALSE(sut.get_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
+    CHECK_FALSE(
+        sut.get_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
+    );
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix,
+    "get_edge(id, id) should return nullopt if there is no edge connecting the given vertices"
+) {
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::vertex_id_2));
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix,
+    "get_edge(id, id) should return a valid edge if the given vertices are connected"
+) {
+    const auto& edge_1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    const auto edge_opt = sut.get_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE(edge_opt.has_value());
+    CHECK_EQ(&edge_opt->get(), &edge_1);
+
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_2, constants::vertex_id_2));
+}
+
+TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix, "remove_edge should throw when an edge is invalid"
 ) {
     const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
@@ -338,6 +368,39 @@ TEST_CASE_FIXTURE(
     const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
     CHECK_FALSE(sut.has_edge(edge_type{out_of_range_vertex, vertices[constants::vertex_id_2]}));
     CHECK_FALSE(sut.has_edge(edge_type{vertices[constants::vertex_id_1], out_of_range_vertex}));
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "get_edge(id, id) should return nullopt if either id is invalid"
+) {
+    CHECK_FALSE(sut.get_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
+    CHECK_FALSE(
+        sut.get_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
+    );
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "get_edge(id, id) should return nullopt if there is no edge connecting the given vertices"
+) {
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::vertex_id_2));
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "get_edge(id, id) should return a valid edge if the given vertices are connected"
+) {
+    const auto& edge_1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+
+    const auto edge_opt_1 = sut.get_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE(edge_opt_1.has_value());
+    CHECK_EQ(&edge_opt_1->get(), &edge_1);
+
+    const auto edge_opt_2 = sut.get_edge(constants::vertex_id_2, constants::vertex_id_1);
+    REQUIRE(edge_opt_2.has_value());
+    CHECK_EQ(&edge_opt_2->get(), &edge_1);
 }
 
 TEST_CASE_FIXTURE(
