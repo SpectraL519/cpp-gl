@@ -580,10 +580,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
         CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
+
+        // clang-format off
+
         CHECK(sut.get_edges(
-                     constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
-        )
-                  .empty());
+            constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
+        ).empty());
+
+        // clang-format on
     }
 
     SUBCASE("get_edges(id, id) should return an empty vector if the given vertices are not incident"
@@ -631,6 +635,29 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 address_projection
             ));
         }
+    }
+
+    SUBCASE("get_edges(vertex, vertex) should throw if either vertex is invalid") {
+        sut_type sut{constants::n_elements};
+
+        const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(fixture.out_of_range_vertex, vd_2)),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(vd_1, fixture.out_of_range_vertex)),
+            std::out_of_range
+        );
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(fixture.invalid_vertex, vd_2)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(vd_1, fixture.invalid_vertex)), std::invalid_argument
+        );
     }
 
     SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {

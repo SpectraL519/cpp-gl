@@ -211,6 +211,14 @@ public:
         }
     }
 
+    [[nodiscard]] std::vector<std::reference_wrapper<const edge_type>> get_edges(
+        const vertex_type& first, const vertex_type& second
+    ) const {
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return this->get_edges(first.id(), second.id());
+    }
+
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
     }
