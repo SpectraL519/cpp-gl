@@ -6,6 +6,7 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
+#include <span>
 #include <vector>
 
 namespace gl::impl {
@@ -107,6 +108,24 @@ public:
         if (it == adjacent_edges.cend())
             return std::nullopt;
         return std::cref(**it);
+    }
+
+    [[nodiscard]] auto get_edges(const types::id_type first_id, const types::id_type second_id)
+        const {
+        constexpr auto get_edge_ref = [](const edge_ptr_type& edge) {
+            return std::cref(*edge);
+        };
+
+        const auto adjacent_edges =
+            (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id))
+                ? std::span(this->_list[first_id])
+                : std::span<edge_ptr_type>{};
+
+        return adjacent_edges
+             | std::views::filter([second_id](const auto& edge) {
+                   return specialized_impl::is_edge_incident_to(edge, second_id);
+               })
+             | std::views::transform(get_edge_ref);
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {

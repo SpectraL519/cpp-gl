@@ -74,6 +74,12 @@ struct directed_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
+    [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
+        const edge_ptr_type& edge, const types::id_type vertex_id
+    ) {
+        return edge->second().id() == vertex_id;
+    }
+
     [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
         const edge_set_type& edge_set, const types::id_type vertex_id
     ) {
@@ -140,6 +146,12 @@ struct undirected_adjacency_list {
 
         self._n_unique_edges++;
         return *adjacent_edges_first.back();
+    }
+
+    [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
+        const edge_ptr_type& edge, const types::id_type vertex_id
+    ) {
+        return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
     }
 
     [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
