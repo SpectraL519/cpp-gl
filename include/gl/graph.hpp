@@ -164,9 +164,8 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const types::id_type first_id, const types::id_type second_id
-    ) const {
+    [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
+        const {
         return this->_impl.has_edge(first_id, second_id);
     }
 
@@ -178,6 +177,44 @@ public:
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         return this->_impl.has_edge(edge);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::optional_ref<const edge_type> get_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        return this->_impl.get_edge(first_id, second_id);
+    }
+
+    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+        const vertex_type& first, const vertex_type& second
+    ) const {
+        if (not (this->has_vertex(first) and this->has_vertex(second)))
+            return std::nullopt;
+
+        // TODO: optimize this so that the vertex ids are not checked twice
+        return this->_impl.get_edge(first.id(), second.id());
+    }
+
+    [[nodiscard]] inline std::vector<std::reference_wrapper<const edge_type>> get_edges(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
+
+        if constexpr (std::same_as<implementation_tag, impl::list_t>) {
+            return this->_impl.get_edges(first_id, second_id);
+        }
+        else {
+            const auto edge_opt = this->_impl.get_edge(first_id, second_id);
+            return edge_opt.has_value() ? edge_ref_set{edge_opt.value()} : edge_ref_set{};
+        }
+    }
+
+    [[nodiscard]] std::vector<std::reference_wrapper<const edge_type>> get_edges(
+        const vertex_type& first, const vertex_type& second
+    ) const {
+        this->_verify_vertex(first);
+        this->_verify_vertex(second);
+        return this->get_edges(first.id(), second.id());
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {

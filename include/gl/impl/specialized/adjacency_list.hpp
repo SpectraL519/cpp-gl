@@ -43,6 +43,8 @@ struct directed_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
         auto operator()(const edge_type& edge) {
@@ -72,14 +74,10 @@ struct directed_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
-    [[nodiscard]] static inline bool has_edge(
-        const impl_type& self, const types::id_type first_id, const types::id_type second_id
+    [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
+        const edge_ptr_type& edge, const types::id_type vertex_id
     ) {
-        const auto& adjacent_edges = self._list[first_id];
-        return std::ranges::find(
-                   adjacent_edges, second_id, [](const auto& edge) { return edge->second().id(); }
-               )
-            != adjacent_edges.cend();
+        return edge->second().id() == vertex_id;
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {
@@ -96,6 +94,8 @@ struct undirected_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
+    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
         auto operator()(const edge_type& edge) {
@@ -140,17 +140,10 @@ struct undirected_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
-    [[nodiscard]] static inline bool has_edge(
-        const impl_type& self, const types::id_type first_id, const types::id_type second_id
+    [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
+        const edge_ptr_type& edge, const types::id_type vertex_id
     ) {
-        const auto& adjacent_edges = self._list[first_id];
-        return std::ranges::find_if(
-                   adjacent_edges,
-                   [second_id](const auto& edge) {
-                       return edge->second().id() == second_id or edge->first().id() == second_id;
-                   }
-               )
-            != adjacent_edges.cend();
+        return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {

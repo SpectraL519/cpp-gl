@@ -494,7 +494,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
     }
 
-    SUBCASE("has_edge(vertex_ptr pair) should throw if one of the vertices is invalid") {
+    SUBCASE("has_edge(vertex, vertex) should throw if one of the vertices is invalid") {
         sut_type sut{constants::n_elements};
 
         const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
@@ -515,7 +515,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
     }
 
-    SUBCASE("has_edge(vertex_ptr pair) should return true if there is an edge connecting the given "
+    SUBCASE("has_edge(vertex, vertex) should return true if there is an edge connecting the given "
             "vertices in the graph") {
         sut_type sut{constants::n_elements};
 
@@ -528,6 +528,136 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK(sut.has_edge(vd_1, vd_2));
         CHECK_FALSE(sut.has_edge(vd_1, vd_3));
         CHECK_FALSE(sut.has_edge(vd_2, vd_3));
+    }
+
+    SUBCASE("get_edge(vertex, vertex) should return nullopt if either vertex is invalid") {
+        sut_type sut{constants::n_elements};
+        const auto& valid_vertex = sut.get_vertex(constants::vertex_id_1);
+
+        const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
+        CHECK_FALSE(sut.get_edge(valid_vertex, out_of_range_vertex));
+        CHECK_FALSE(sut.get_edge(out_of_range_vertex, valid_vertex));
+        CHECK_FALSE(sut.get_edge(out_of_range_vertex, out_of_range_vertex));
+
+        const vertex_type invalid_vertex{constants::vertex_id_1};
+        CHECK_FALSE(sut.get_edge(valid_vertex, invalid_vertex));
+        CHECK_FALSE(sut.get_edge(invalid_vertex, valid_vertex));
+        CHECK_FALSE(sut.get_edge(invalid_vertex, invalid_vertex));
+    }
+
+    SUBCASE("get_edge(vertex, vertex) should return nullopt if the given vertices are not incident"
+    ) {
+        sut_type sut{constants::n_elements};
+        CHECK_FALSE(sut.get_edge(
+            sut.get_vertex(constants::vertex_id_1), sut.get_vertex(constants::vertex_id_2)
+        ));
+    }
+
+    SUBCASE("get_edge(vertex, vertex) should return a valid edge if the given vetices are incident"
+    ) {
+        sut_type sut{constants::n_elements};
+        const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
+
+        const auto& edge = sut.add_edge(vd_1, vd_2);
+
+        const auto edge_opt_1 = sut.get_edge(vd_1, vd_2);
+        REQUIRE(edge_opt_1.has_value());
+        CHECK_EQ(&edge_opt_1->get(), &edge);
+
+        if constexpr (lib_tt::is_undirected_v<edge_type>) {
+            const auto edge_opt_2 = sut.get_edge(vd_2, vd_1);
+            REQUIRE(edge_opt_2.has_value());
+            CHECK_EQ(&edge_opt_2->get(), &edge);
+        }
+        else {
+            CHECK_FALSE(sut.get_edge(vd_2, vd_1).has_value());
+        }
+    }
+
+    SUBCASE("get_edges(id, id) should return an empty vector if either id is invalid") {
+        sut_type sut{constants::n_elements};
+
+        CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
+        CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
+
+        // clang-format off
+
+        CHECK(sut.get_edges(
+            constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
+        ).empty());
+
+        // clang-format on
+    }
+
+    SUBCASE("get_edges(id, id) should return an empty vector if the given vertices are not incident"
+    ) {
+        sut_type sut{constants::n_elements};
+        CHECK(sut.get_edges(constants::vertex_id_1, constants::vertex_id_2).empty());
+    }
+
+    SUBCASE("get_edges(id, id) should return a valid edge reference vector if the given vertices "
+            "are incident") {
+        sut_type sut{constants::n_elements};
+        std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+
+        if constexpr (std::same_as<typename sut_type::implementation_tag, lib_i::list_t>) {
+            for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
+                expected_edges.push_back(
+                    std::cref(sut.add_edge(constants::vertex_id_1, constants::vertex_id_2))
+                );
+        }
+        else {
+            expected_edges.push_back(
+                std::cref(sut.add_edge(constants::vertex_id_1, constants::vertex_id_2))
+            );
+        }
+
+        constexpr auto address_projection = [](const auto& edge_ref) { return &edge_ref.get(); };
+
+        CHECK(std::ranges::equal(
+            sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
+            expected_edges,
+            std::ranges::equal_to{},
+            address_projection,
+            address_projection
+        ));
+
+        if constexpr (lib_tt::is_directed_v<edge_type>) {
+            CHECK(sut.get_edges(constants::vertex_id_2, constants::vertex_id_2).empty());
+        }
+        else {
+            CHECK(std::ranges::equal(
+                sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
+                expected_edges,
+                std::ranges::equal_to{},
+                address_projection,
+                address_projection
+            ));
+        }
+    }
+
+    SUBCASE("get_edges(vertex, vertex) should throw if either vertex is invalid") {
+        sut_type sut{constants::n_elements};
+
+        const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(fixture.out_of_range_vertex, vd_2)),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(vd_1, fixture.out_of_range_vertex)),
+            std::out_of_range
+        );
+
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(fixture.invalid_vertex, vd_2)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edges(vd_1, fixture.invalid_vertex)), std::invalid_argument
+        );
     }
 
     SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {
