@@ -6,6 +6,7 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
 
+#include <span>
 #include <vector>
 
 namespace gl::impl {

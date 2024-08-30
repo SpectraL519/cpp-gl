@@ -193,7 +193,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
-    "get_edgse(id, id) should return an empty view if either id is invalid"
+    "get_edges(id, id) should return an empty view if either id is invalid"
 ) {
     CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
     CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
@@ -214,11 +214,10 @@ TEST_CASE_FIXTURE(
 ) {
     std::vector<std::reference_wrapper<const edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
-        expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2)));
+        expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
+        );
 
-    constexpr auto address_projection = [](const auto& edge_ref) {
-        return &edge_ref.get();
-    };
+    constexpr auto address_projection = [](const auto& edge_ref) { return &edge_ref.get(); };
 
     CHECK(std::ranges::equal(
         sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
@@ -228,7 +227,7 @@ TEST_CASE_FIXTURE(
         address_projection
     ));
 
-    CHECK_FALSE(sut.get_edge(constants::vertex_id_2, constants::vertex_id_2));
+    CHECK(sut.get_edges(constants::vertex_id_2, constants::vertex_id_2).empty());
 }
 
 TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
@@ -463,6 +462,51 @@ TEST_CASE_FIXTURE(
     REQUIRE(edge_opt_2.has_value());
     CHECK_EQ(&edge_opt_2->get(), &edge_1);
     CHECK_NE(&edge_opt_2->get(), &edge_2);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edges(id, id) should return an empty view if either id is invalid"
+) {
+    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
+    CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
+    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
+              .empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edges(id, id) should return an empty if there is no edge connecting the given vertices"
+) {
+    CHECK(sut.get_edges(constants::vertex_id_1, constants::vertex_id_2).empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edges(id, id) should return a valid edge view if the given vertices are connected"
+) {
+    std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+    for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
+        expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
+        );
+
+    constexpr auto address_projection = [](const auto& edge_ref) { return &edge_ref.get(); };
+
+    CHECK(std::ranges::equal(
+        sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
+        expected_edges,
+        std::ranges::equal_to{},
+        address_projection,
+        address_projection
+    ));
+
+    CHECK(std::ranges::equal(
+        sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
+        expected_edges,
+        std::ranges::equal_to{},
+        address_projection,
+        address_projection
+    ));
 }
 
 TEST_CASE_FIXTURE(

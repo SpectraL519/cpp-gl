@@ -575,6 +575,64 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
     }
 
+    SUBCASE("get_edges(id, id) should return an empty vector if either id is invalid") {
+        sut_type sut{constants::n_elements};
+
+        CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
+        CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
+        CHECK(sut.get_edges(
+                     constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx
+        )
+                  .empty());
+    }
+
+    SUBCASE("get_edges(id, id) should return an empty vector if the given vertices are not incident"
+    ) {
+        sut_type sut{constants::n_elements};
+        CHECK(sut.get_edges(constants::vertex_id_1, constants::vertex_id_2).empty());
+    }
+
+    SUBCASE("get_edges(id, id) should return a valid edge reference vector if the given vertices "
+            "are incident") {
+        sut_type sut{constants::n_elements};
+        std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+
+        if constexpr (std::same_as<typename sut_type::implementation_tag, lib_i::list_t>) {
+            for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
+                expected_edges.push_back(
+                    std::cref(sut.add_edge(constants::vertex_id_1, constants::vertex_id_2))
+                );
+        }
+        else {
+            expected_edges.push_back(
+                std::cref(sut.add_edge(constants::vertex_id_1, constants::vertex_id_2))
+            );
+        }
+
+        constexpr auto address_projection = [](const auto& edge_ref) { return &edge_ref.get(); };
+
+        CHECK(std::ranges::equal(
+            sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
+            expected_edges,
+            std::ranges::equal_to{},
+            address_projection,
+            address_projection
+        ));
+
+        if constexpr (lib_tt::is_directed_v<edge_type>) {
+            CHECK(sut.get_edges(constants::vertex_id_2, constants::vertex_id_2).empty());
+        }
+        else {
+            CHECK(std::ranges::equal(
+                sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
+                expected_edges,
+                std::ranges::equal_to{},
+                address_projection,
+                address_projection
+            ));
+        }
+    }
+
     SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(

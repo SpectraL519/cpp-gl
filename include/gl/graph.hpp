@@ -196,6 +196,21 @@ public:
         return this->_impl.get_edge(first.id(), second.id());
     }
 
+    [[nodiscard]] inline std::vector<std::reference_wrapper<const edge_type>> get_edges(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
+        using return_type = std::vector<std::reference_wrapper<const edge_type>>;
+
+        if constexpr (std::same_as<implementation_tag, impl::list_t>) {
+            auto edge_view = this->_impl.get_edges(first_id, second_id);
+            return return_type(edge_view.begin(), edge_view.end());
+        }
+        else {
+            const auto edge_opt = this->_impl.get_edge(first_id, second_id);
+            return edge_opt.has_value() ? return_type{edge_opt.value()} : return_type{};
+        }
+    }
+
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
     }
