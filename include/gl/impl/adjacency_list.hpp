@@ -6,7 +6,6 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
-#include <span>
 #include <vector>
 
 namespace gl::impl {
@@ -77,7 +76,12 @@ public:
             return false;
 
         const auto& adjacent_edges = this->_list[first_id];
-        return specialized_impl::find_edge_incident_to(adjacent_edges, second_id)
+        return std::ranges::find_if(
+                   adjacent_edges,
+                   [second_id](const auto& edge) {
+                       return specialized_impl::is_edge_incident_to(edge, second_id);
+                   }
+               )
             != adjacent_edges.end();
     }
 
@@ -103,7 +107,9 @@ public:
             return std::nullopt;
 
         const auto& adjacent_edges = this->_list[first_id];
-        const auto it = specialized_impl::find_edge_incident_to(adjacent_edges, second_id);
+        const auto it = std::ranges::find_if(adjacent_edges, [second_id](const auto& edge) {
+            return specialized_impl::is_edge_incident_to(edge, second_id);
+        });
 
         if (it == adjacent_edges.cend())
             return std::nullopt;
@@ -112,15 +118,22 @@ public:
 
     [[nodiscard]] auto get_edges(const types::id_type first_id, const types::id_type second_id)
         const {
-        const auto adjacent_edges =
-            (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id))
-                ? std::span(this->_list[first_id])
-                : std::span<edge_ptr_type>();
+        using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
 
-        return adjacent_edges | std::views::filter([second_id](const auto& edge) {
-                   return specialized_impl::is_edge_incident_to(edge, second_id);
-               })
-             | std::views::transform([](const edge_ptr_type& edge) { return std::cref(*edge); });
+        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
+            return edge_ref_set{};
+
+        const auto& adjacent_edges = this->_list[first_id];
+
+        edge_ref_set matching_edges{};
+        matching_edges.reserve(adjacent_edges.size());
+
+        for (const auto& edge : adjacent_edges)
+            if (specialized_impl::is_edge_incident_to(edge, second_id))
+                matching_edges.push_back(std::cref(*edge));
+
+        matching_edges.shrink_to_fit();
+        return matching_edges;
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {

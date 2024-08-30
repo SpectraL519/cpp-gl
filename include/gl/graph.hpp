@@ -9,7 +9,6 @@
 #include "types/types.hpp"
 
 #include <algorithm>
-#include <optional>
 
 #ifdef GL_TESTING
 
@@ -202,8 +201,7 @@ public:
         using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
 
         if constexpr (std::same_as<implementation_tag, impl::list_t>) {
-            auto edge_ref_view = this->_impl.get_edges(first_id, second_id);
-            return edge_ref_set(edge_ref_view.begin(), edge_ref_view.end());
+            return this->_impl.get_edges(first_id, second_id);
         }
         else {
             const auto edge_opt = this->_impl.get_edge(first_id, second_id);

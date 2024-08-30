@@ -80,14 +80,6 @@ struct directed_adjacency_list {
         return edge->second().id() == vertex_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
-        const edge_set_type& edge_set, const types::id_type vertex_id
-    ) {
-        return std::ranges::find(edge_set, vertex_id, [](const auto& edge) {
-            return edge->second().id();
-        });
-    }
-
     static void remove_edge(impl_type& self, const edge_type& edge) {
         auto& adj_edges = self._list.at(edge.first().id());
         adj_edges.erase(detail::strict_find<impl_type, address_projection>(adj_edges, &edge));
@@ -152,14 +144,6 @@ struct undirected_adjacency_list {
         const edge_ptr_type& edge, const types::id_type vertex_id
     ) {
         return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
-    }
-
-    [[nodiscard]] gl_attr_force_inline static edge_iterator_type find_edge_incident_to(
-        const edge_set_type& edge_set, const types::id_type vertex_id
-    ) {
-        return std::ranges::find_if(edge_set, [vertex_id](const auto& edge) {
-            return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
-        });
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {
