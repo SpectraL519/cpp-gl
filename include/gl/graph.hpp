@@ -238,8 +238,6 @@ public:
 
     // --- incidence methods ---
 
-    // ? should the incidence be checked as
-
     [[nodiscard]] bool are_incident(const types::id_type first_id, const types::id_type second_id)
         const {
         this->_verify_vertex_id(first_id);
