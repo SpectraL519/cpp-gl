@@ -79,6 +79,12 @@ struct directed_adjacency_list {
         const types::id_type vertex_id,
         [[maybe_unused]] const types::id_type source_id
     ) {
+        /*
+        there is no need to check source_id because the implementation will not allow
+        adding an edge for which first().id() is not the index in the adjacency
+        list at which the edge is located, but the parameter is necessary to match the
+        function signature for undirected adjacency list
+        */
         return edge->second().id() == vertex_id;
     }
 
