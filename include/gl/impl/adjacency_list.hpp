@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/constants.hpp"
 #include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
@@ -157,7 +158,7 @@ private:
     }
 
     type _list{};
-    types::size_type _n_unique_edges{0ull};
+    types::size_type _n_unique_edges{constants::default_size};
 };
 
 } // namespace gl::impl

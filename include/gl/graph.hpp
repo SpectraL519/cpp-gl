@@ -1,5 +1,6 @@
 #pragma once
 
+#include "constants.hpp"
 #include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
@@ -55,7 +56,7 @@ public:
 
     graph(const types::size_type n_vertices) : _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
-        for (auto vertex_id = 0ull; vertex_id < n_vertices; vertex_id++)
+        for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; vertex_id++)
             this->_vertices.emplace_back(vertex_id);
     }
 
@@ -237,6 +238,8 @@ public:
 
     // --- incidence methods ---
 
+    // ? should the incidence be checked as
+
     [[nodiscard]] bool are_incident(const types::id_type first_id, const types::id_type second_id)
         const {
         this->_verify_vertex_id(first_id);
@@ -246,13 +249,24 @@ public:
 
         this->_verify_vertex_id(second_id);
 
-        return this->has_edge(first_id, second_id);
+        if constexpr (type_traits::is_directed_v<edge_type>)
+            return this->has_edge(first_id, second_id) or this->has_edge(second_id, first_id);
+        else
+            return this->has_edge(first_id, second_id);
     }
 
     [[nodiscard]] bool are_incident(const vertex_type& first, const vertex_type& second) const {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return first == second or this->has_edge(first.id(), second.id());
+
+        if (first == second)
+            return true;
+
+        if constexpr (type_traits::is_directed_v<edge_type>)
+            return this->has_edge(first.id(), second.id())
+                or this->has_edge(second.id(), first.id());
+        else
+            return this->has_edge(first.id(), second.id());
     }
 
     [[nodiscard]] bool are_incident(const vertex_type& vertex, const edge_type& edge) const {
@@ -318,5 +332,24 @@ private:
     vertex_set_type _vertices{};
     implementation_type _impl{};
 };
+
+namespace type_traits {
+
+template <typename T>
+concept c_graph_type = c_instantiation_of<T, graph>;
+
+template <c_graph_type GraphType>
+inline constexpr bool is_directed_v<GraphType> = is_directed_v<typename GraphType::edge_type>;
+
+template <c_graph_type GraphType>
+inline constexpr bool is_undirected_v<GraphType> = is_undirected_v<typename GraphType::edge_type>;
+
+template <typename T>
+concept c_directed_graph_type = c_graph_type<T> and is_directed_v<T>;
+
+template <typename T>
+concept c_undirected_graph_type = c_graph_type<T> and is_undirected_v<T>;
+
+} // namespace type_traits
 
 } // namespace gl

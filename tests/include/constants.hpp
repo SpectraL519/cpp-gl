@@ -13,6 +13,9 @@ constexpr lib_t::size_type n_elements = 3ull;
 constexpr lib_t::size_type zero_elements = 0ull;
 constexpr lib_t::size_type one_element = 1ull;
 
+// n_elements for graph topology tests
+constexpr lib_t::size_type n_elements_top = 10ull;
+
 constexpr lib_t::size_type first_element_idx = 0ull;
 constexpr lib_t::size_type last_element_idx = n_elements - one_element;
 constexpr lib_t::size_type out_of_range_elemenet_idx = n_elements;
