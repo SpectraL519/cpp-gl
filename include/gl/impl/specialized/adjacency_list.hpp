@@ -75,8 +75,16 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
-        const edge_ptr_type& edge, const types::id_type vertex_id
+        const edge_ptr_type& edge,
+        const types::id_type vertex_id,
+        [[maybe_unused]] const types::id_type source_id
     ) {
+        /*
+        there is no need to check source_id because the implementation will not allow
+        adding an edge for which first().id() is not the index in the adjacency
+        list at which the edge is located, but the parameter is necessary to match the
+        function signature for undirected adjacency list
+        */
         return edge->second().id() == vertex_id;
     }
 
@@ -140,10 +148,14 @@ struct undirected_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
-    [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
-        const edge_ptr_type& edge, const types::id_type vertex_id
+    [[nodiscard]] inline static bool is_edge_incident_to(
+        const edge_ptr_type& edge, const types::id_type vertex_id, const types::id_type source_id
     ) {
-        return edge->second().id() == vertex_id or edge->first().id() == vertex_id;
+        if (edge->first().id() == source_id)
+            return edge->second().id() == vertex_id;
+        else if (edge->second().id() == source_id)
+            return edge->first().id() == vertex_id;
+        return false;
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {

@@ -6,8 +6,8 @@
 
 namespace gl::types {
 
-using id_type = std::uint64_t;
 using size_type = std::uint64_t;
+using id_type = size_type;
 
 template <typename T>
 using homogeneous_pair = std::pair<T, T>;

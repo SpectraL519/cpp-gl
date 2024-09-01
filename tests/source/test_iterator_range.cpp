@@ -1,3 +1,4 @@
+#include "constants.hpp"
 #include "functional.hpp"
 
 #include <gl/types/iterator_range.hpp>
@@ -26,12 +27,11 @@ struct test_iterator_range {
     using iterator_type = typename container_type::iterator;
     using sut_type = lib_t::iterator_range<iterator_type, TypeParams::cache_mode>;
 
-    test_iterator_range() : container(size), sut(container.begin(), container.end()) {
-        std::iota(container.begin(), container.end(), first_element);
+    test_iterator_range()
+    : container(constants::n_elements), sut(container.begin(), container.end()) {
+        std::iota(container.begin(), container.end(), constants::first_element_idx);
     }
 
-    static constexpr std::size_t size = 3ull;
-    static constexpr std::size_t first_element = 0ull;
     container_type container;
 
     sut_type sut;
@@ -84,7 +84,7 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
     }
 
     SUBCASE("should be compatible with range based loops") {
-        std::size_t element = fixture_type::first_element;
+        std::size_t element = constants::first_element_idx;
 
         for (const std::size_t range_element : sut)
             CHECK_EQ(range_element, element++);
@@ -103,18 +103,18 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
     }
 
     SUBCASE("distance should return the distance between begin and end iterators") {
-        CHECK_EQ(sut.distance(), fixture_type::size);
+        CHECK_EQ(sut.distance(), constants::n_elements);
     }
 
     SUBCASE("element_at should throw when index is out of range") {
         CHECK_THROWS_AS(
-            func::discard_result(sut.element_at(fixture_type::size)), std::out_of_range
+            func::discard_result(sut.element_at(constants::n_elements)), std::out_of_range
         );
     }
 
     SUBCASE("element_at should return a reference to the correct element") {
         iterator_type it = container.begin();
-        for (std::size_t n = 0; n < fixture_type::size; n++)
+        for (std::size_t n = 0; n < constants::n_elements; n++)
             CHECK_EQ(std::addressof(sut.element_at(n)), std::addressof(*it++));
     }
 

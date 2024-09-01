@@ -30,12 +30,18 @@ class edge_descriptor;
 
 namespace type_traits {
 
-template <c_instantiation_of<edge_descriptor> EdgeType>
-inline constexpr bool is_directed_v =
-    std::is_same_v<typename EdgeType::directional_tag, directed_t>;
+template <typename T>
+inline constexpr bool is_directed_v = false;
 
 template <c_instantiation_of<edge_descriptor> EdgeType>
-inline constexpr bool is_undirected_v =
+inline constexpr bool is_directed_v<EdgeType> =
+    std::is_same_v<typename EdgeType::directional_tag, directed_t>;
+
+template <typename T>
+inline constexpr bool is_undirected_v = false;
+
+template <c_instantiation_of<edge_descriptor> EdgeType>
+inline constexpr bool is_undirected_v<EdgeType> =
     std::is_same_v<typename EdgeType::directional_tag, undirected_t>;
 
 } // namespace type_traits
