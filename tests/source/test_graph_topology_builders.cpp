@@ -4,6 +4,8 @@
 
 #include <doctest.h>
 
+#include <iostream>
+
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_topology_builders");
@@ -125,6 +127,31 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
+template <lib_tt::c_graph_type GraphType>
+[[nodiscard]] auto is_connected_to_binary_chlidren(const GraphType& graph) {
+    using vertex_type = typename GraphType::vertex_type;
+    return [&graph](const vertex_type& source_vertex) {
+        const auto destination_ids =
+            lib::topology::detail::get_binary_destination_ids(source_vertex.id());
+
+        if (destination_ids.first >= graph.n_vertices())
+            // no need to check second as second = first + 1
+            return graph.adjacent_edges(source_vertex).distance() == constants::zero;
+
+        const auto& destination_1 = graph.get_vertex(destination_ids.first);
+        const auto& destination_2 = graph.get_vertex(destination_ids.second);
+
+        return std::ranges::all_of(
+            graph.vertices(),
+            [&](const auto& vertex) {
+                if (vertex == destination_1 or vertex == destination_2)
+                    return graph.has_edge(source_vertex, vertex) and not graph.has_edge(vertex, source_vertex);
+                return not graph.has_edge(source_vertex, vertex);
+            }
+        );
+    };
+}
+
 /*
 
 template <lib_tt::c_graph_type GraphType>
@@ -195,8 +222,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a complete binay tree graph with the given "
-            "depth") {
+    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
+    ) {
         SUBCASE("depth = 0 : empty graph") {
             const auto complete_bin_tree =
                 lib::topology::complete_binary_tree<graph_type>(constants::zero);
@@ -282,6 +309,21 @@ TEST_CASE_TEMPLATE_DEFINE(
             path.vertices().element_at(n_source_vertices)
         ));
     }
+
+    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
+    ) {
+        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
+
+        const auto expected_n_vertices =
+            lib::util::upow_sum(constants::two, constants::zero, constants::two);
+        const auto expected_n_connections = expected_n_vertices - constants::one;
+        verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
+
+        CHECK(std::ranges::all_of(
+            bin_tree.vertices(),
+            predicate::is_connected_to_binary_chlidren(bin_tree)
+        ));
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -298,7 +340,18 @@ TEST_CASE_TEMPLATE_DEFINE(
     using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a two-way cycle graph of size n_vertices") {
-        const auto cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+        graph_type cycle;
+
+        SUBCASE("cycle builder") {
+            cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+        }
+
+        SUBCASE("bidirectional_cycle builder") {
+            cycle = lib::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
+        }
+
+        CAPTURE(cycle);
+
         verify_graph_size(cycle, constants::n_elements_top, constants::n_elements_top);
 
         CHECK(std::ranges::all_of(
@@ -307,9 +360,19 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("path(n_vertices) should build a two-way path graph of size n_vertices") {
-        const auto path = lib::topology::path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.n_vertices() - constants::one_element;
+        graph_type path;
 
+        SUBCASE("path builder") {
+            path = lib::topology::path<graph_type>(constants::n_elements_top);
+        }
+
+        SUBCASE("bidirectional_path builder") {
+            path = lib::topology::bidirectional_path<graph_type>(constants::n_elements_top);
+        }
+
+        CAPTURE(path);
+
+        const auto n_source_vertices = path.n_vertices() - constants::one_element;
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
@@ -324,6 +387,21 @@ TEST_CASE_TEMPLATE_DEFINE(
             path.vertices().element_at(n_source_vertices)
         ));
     }
+
+    // SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
+    // ) {
+    //     const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
+
+    //     const auto expected_n_vertices =
+    //         lib::util::upow_sum(constants::two, constants::zero, constants::two);
+    //     const auto expected_n_connections = expected_n_vertices - constants::one;
+    //     verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
+
+    //     CHECK(std::ranges::all_of(
+    //         bin_tree.vertices(),
+    //         predicate::is_connected_to_binary_chlidren<graph_type, true>(bin_tree)
+    //     ));
+    // }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
