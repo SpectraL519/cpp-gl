@@ -108,9 +108,10 @@ public:
             return std::nullopt;
 
         const auto& adjacent_edges = this->_list[first_id];
-        const auto it = std::ranges::find_if(adjacent_edges, [first_id, second_id](const auto& edge) {
-            return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
-        });
+        const auto it =
+            std::ranges::find_if(adjacent_edges, [first_id, second_id](const auto& edge) {
+                return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
+            });
 
         if (it == adjacent_edges.cend())
             return std::nullopt;

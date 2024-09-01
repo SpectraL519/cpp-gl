@@ -165,8 +165,9 @@ public:
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_edge(const types::id_type first_id, const types::id_type second_id)
-        const {
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
         return this->_impl.has_edge(first_id, second_id);
     }
 
