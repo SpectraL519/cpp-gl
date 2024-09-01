@@ -346,17 +346,33 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
+    SUBCASE("complete_binary_tree(depth) should return a one-way complete binay tree with the given depth"
     ) {
-        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
+        constexpr auto depth = constants::three;
+        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(depth);
 
         const auto expected_n_vertices =
-            lib::util::upow_sum(constants::two, constants::zero, constants::two);
+            lib::util::upow_sum(constants::two, constants::zero, depth - constants::one);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
             bin_tree.vertices(), predicate::is_connected_to_binary_chlidren(bin_tree)
+        ));
+    }
+
+    SUBCASE("bidirectional_complete_binary_tree(depth) should return a two-way complete binay tree with the given depth"
+    ) {
+        constexpr auto depth = constants::three;
+        const auto bin_tree = lib::topology::bidirectional_complete_binary_tree<graph_type>(depth);
+
+        const auto expected_n_vertices =
+            lib::util::upow_sum(constants::two, constants::zero, depth - constants::one);
+        const auto expected_n_connections = (expected_n_vertices - constants::one) * constants::two;
+        verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
+
+        CHECK(std::ranges::all_of(
+            bin_tree.vertices(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
         ));
     }
 }
@@ -425,10 +441,21 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
     ) {
-        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
+        graph_type bin_tree;
+        constexpr auto depth = constants::three;
+
+        SUBCASE("complete_binary_tree builder") {
+            bin_tree = lib::topology::complete_binary_tree<graph_type>(depth);
+        }
+
+        SUBCASE("bidirectional_complete_binary_tree builder") {
+            bin_tree = lib::topology::bidirectional_complete_binary_tree<graph_type>(depth);
+        }
+
+        CAPTURE(bin_tree);
 
         const auto expected_n_vertices =
-            lib::util::upow_sum(constants::two, constants::zero, constants::two);
+            lib::util::upow_sum(constants::two, constants::zero, depth - constants::one);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 

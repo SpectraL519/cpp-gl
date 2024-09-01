@@ -42,4 +42,36 @@ template <type_traits::c_graph_type GraphType>
     return graph;
 }
 
+template <type_traits::c_graph_type GraphType>
+[[nodiscard]] GraphType bidirectional_complete_binary_tree(const types::size_type depth) {
+    if constexpr (type_traits::is_directed_v<GraphType>) {
+        constexpr types::size_type min_non_trivial_depth = 2ull;
+
+        if (depth < min_non_trivial_depth)
+            return GraphType{depth};
+
+        constexpr types::size_type base = constants::two;
+        constexpr types::size_type i_begin = constants::zero;
+        const types::size_type i_end = depth - constants::one;
+
+        const auto n_vertices = util::upow_sum(constants::two, i_begin, i_end);
+        GraphType graph{n_vertices};
+
+        const auto n_source_vertices = n_vertices - util::upow(base, i_end);
+
+        for (types::id_type source_id = constants::zero; source_id < n_source_vertices; source_id++) {
+            const auto destination_ids = detail::get_binary_destination_ids(source_id);
+            graph.add_edge(source_id, destination_ids.first);
+            graph.add_edge(source_id, destination_ids.second);
+            graph.add_edge(destination_ids.first, source_id);
+            graph.add_edge(destination_ids.second, source_id);
+        }
+
+        return graph;
+    }
+    else {
+        return complete_binary_tree<GraphType>(depth);
+    }
+}
+
 } // namespace gl::topology
