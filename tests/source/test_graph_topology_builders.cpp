@@ -8,6 +8,38 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_topology_builders");
 
+namespace {
+
+template <lib_tt::c_graph_type GraphType>
+[[nodiscard]] lib_t::size_type n_unique_edges_for_bidir_topology(const lib_t::size_type n_connections) {
+    if constexpr (lib_tt::is_directed_v<GraphType>)
+        return n_connections;
+    else
+        return n_connections / constants::two;
+}
+
+template <lib_tt::c_graph_type GraphType>
+void verify_graph_size(
+    const GraphType& graph,
+    const lib_t::size_type expected_n_vertices,
+    const lib_t::size_type expected_n_connections
+) {
+    REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
+    REQUIRE_EQ(graph.n_unique_edges(), expected_n_connections);
+}
+
+template <lib_tt::c_graph_type GraphType>
+void verify_bidir_graph_size(
+    const GraphType& graph,
+    const lib_t::size_type expected_n_vertices,
+    const lib_t::size_type expected_n_connections
+) {
+    REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
+    REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
+}
+
+} // namespace
+
 namespace predicate {
 
 template <lib_tt::c_graph_type GraphType>
@@ -97,7 +129,22 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = lib::topology::clique<graph_type>(constants::n_elements_top);
+
+        const auto expected_n_connections = constants::n_elements_top * (constants::n_elements_top - constants::one_element);
+        verify_bidir_graph_size(clique, constants::n_elements_top, expected_n_connections);
+
         CHECK(std::ranges::all_of(clique.vertices(), predicate::is_vertex_fully_connected(clique)));
+    }
+
+    SUBCASE("full_bipartite(n_vertices_a, n_vertices_b) should build a full bipartite graph with vertex sets of sizes n_vertices_a and n_vertices_b respectively") {
+        const auto full_bipatite = lib::topology::full_bipartite<graph_type>(constants::n_elements_top, constants::n_elements);
+
+        const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
+        // `2x` is required to account for adding edges both ways
+        const auto expected_n_connections = constants::two * constants::n_elements_top * constants::n_elements;
+        verify_bidir_graph_size(full_bipatite, expected_n_vertices, expected_n_connections);
+
+        // TODO: rest
     }
 }
 
@@ -118,6 +165,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("cycle(n_vertices) should build a one-way cycle graph of size n_vertices") {
         const auto cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+        verify_graph_size(cycle, constants::n_elements_top, constants::n_elements_top);
+
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_next_only(cycle)
         ));
@@ -127,6 +176,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     ) {
         const auto cycle =
             lib::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
+        verify_graph_size(cycle, constants::n_elements_top, constants::two * constants::n_elements_top);
+
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_id_adjacent(cycle)
         ));
@@ -135,6 +186,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = lib::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.n_vertices() - constants::one_element;
+
+        verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         REQUIRE(std::ranges::all_of(
             path.vertices() | std::views::take(n_source_vertices),
@@ -147,6 +200,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = lib::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.n_vertices() - constants::one_element;
+
+        verify_graph_size(path, constants::n_elements_top, constants::two * n_source_vertices);
 
         const auto vertices = path.vertices();
 
@@ -177,6 +232,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("cycle(n_vertices) should build a two-way cycle graph of size n_vertices") {
         const auto cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+        verify_graph_size(cycle, constants::n_elements_top, constants::n_elements_top);
+
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_id_adjacent(cycle)
         ));
@@ -185,6 +242,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = lib::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.n_vertices() - constants::one_element;
+
+        verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
 

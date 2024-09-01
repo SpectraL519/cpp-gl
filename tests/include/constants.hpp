@@ -9,6 +9,8 @@
 
 namespace gl_testing::constants {
 
+constexpr lib_t::size_type two = 2ull;
+
 constexpr lib_t::size_type n_elements = 3ull;
 constexpr lib_t::size_type zero_elements = 0ull;
 constexpr lib_t::size_type one_element = 1ull;
