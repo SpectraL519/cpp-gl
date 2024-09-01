@@ -346,8 +346,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a one-way complete binay tree with the given depth"
-    ) {
+    SUBCASE("complete_binary_tree(depth) should return a one-way complete binay tree with the "
+            "given depth") {
         constexpr auto depth = constants::three;
         const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(depth);
 
@@ -361,8 +361,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("bidirectional_complete_binary_tree(depth) should return a two-way complete binay tree with the given depth"
-    ) {
+    SUBCASE("bidirectional_complete_binary_tree(depth) should return a two-way complete binay tree "
+            "with the given depth") {
         constexpr auto depth = constants::three;
         const auto bin_tree = lib::topology::bidirectional_complete_binary_tree<graph_type>(depth);
 

@@ -59,7 +59,8 @@ template <type_traits::c_graph_type GraphType>
 
         const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-        for (types::id_type source_id = constants::zero; source_id < n_source_vertices; source_id++) {
+        for (types::id_type source_id = constants::zero; source_id < n_source_vertices;
+             source_id++) {
             const auto destination_ids = detail::get_binary_destination_ids(source_id);
             graph.add_edge(source_id, destination_ids.first);
             graph.add_edge(source_id, destination_ids.second);
