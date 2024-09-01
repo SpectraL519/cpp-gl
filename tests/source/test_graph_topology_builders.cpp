@@ -141,14 +141,50 @@ template <lib_tt::c_graph_type GraphType>
         const auto& destination_1 = graph.get_vertex(destination_ids.first);
         const auto& destination_2 = graph.get_vertex(destination_ids.second);
 
-        return std::ranges::all_of(
-            graph.vertices(),
-            [&](const auto& vertex) {
-                if (vertex == destination_1 or vertex == destination_2)
-                    return graph.has_edge(source_vertex, vertex) and not graph.has_edge(vertex, source_vertex);
-                return not graph.has_edge(source_vertex, vertex);
-            }
-        );
+        return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
+            if (vertex == destination_1 or vertex == destination_2)
+                return graph.has_edge(source_vertex, vertex)
+                   and not graph.has_edge(vertex, source_vertex);
+            return not graph.has_edge(source_vertex, vertex);
+        });
+    };
+}
+
+template <lib_tt::c_graph_type GraphType>
+[[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
+    using vertex_type = typename GraphType::vertex_type;
+    return [&graph](const vertex_type& source_vertex) {
+        const auto destination_ids =
+            lib::topology::detail::get_binary_destination_ids(source_vertex.id());
+        const lib_t::id_type parent_id =
+            source_vertex.id() == constants::zero
+                ? constants::zero
+                : (source_vertex.id() - constants::one) / constants::two;
+
+        if (destination_ids.first >= graph.n_vertices()) {
+            // no need to check second as second = first + 1
+            const auto adjacent_edges = graph.adjacent_edges(source_vertex);
+
+            return adjacent_edges.distance() == constants::one
+               and adjacent_edges.element_at(constants::first_element_idx)
+                           .incident_vertex(source_vertex)
+                           .id()
+                       == parent_id;
+        }
+
+        const auto& parent = graph.get_vertex(parent_id);
+        const auto& destination_1 = graph.get_vertex(destination_ids.first);
+        const auto& destination_2 = graph.get_vertex(destination_ids.second);
+
+        return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
+            if (vertex == destination_1 or vertex == destination_2)
+                return graph.has_edge(source_vertex, vertex);
+
+            if (vertex == parent and source_vertex.id() != constants::zero)
+                return graph.has_edge(source_vertex, vertex);
+
+            return not graph.has_edge(source_vertex, vertex);
+        });
     };
 }
 
@@ -320,8 +356,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
-            bin_tree.vertices(),
-            predicate::is_connected_to_binary_chlidren(bin_tree)
+            bin_tree.vertices(), predicate::is_connected_to_binary_chlidren(bin_tree)
         ));
     }
 }
@@ -388,20 +423,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    // SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
-    // ) {
-    //     const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
+    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
+    ) {
+        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::three);
 
-    //     const auto expected_n_vertices =
-    //         lib::util::upow_sum(constants::two, constants::zero, constants::two);
-    //     const auto expected_n_connections = expected_n_vertices - constants::one;
-    //     verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
+        const auto expected_n_vertices =
+            lib::util::upow_sum(constants::two, constants::zero, constants::two);
+        const auto expected_n_connections = expected_n_vertices - constants::one;
+        verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
-    //     CHECK(std::ranges::all_of(
-    //         bin_tree.vertices(),
-    //         predicate::is_connected_to_binary_chlidren<graph_type, true>(bin_tree)
-    //     ));
-    // }
+        CHECK(std::ranges::all_of(
+            bin_tree.vertices(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
+        ));
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
