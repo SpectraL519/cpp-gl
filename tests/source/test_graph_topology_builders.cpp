@@ -11,7 +11,9 @@ TEST_SUITE_BEGIN("test_graph_topology_builders");
 namespace {
 
 template <lib_tt::c_graph_type GraphType>
-[[nodiscard]] lib_t::size_type n_unique_edges_for_bidir_topology(const lib_t::size_type n_connections) {
+[[nodiscard]] lib_t::size_type n_unique_edges_for_bidir_topology(
+    const lib_t::size_type n_connections
+) {
     if constexpr (lib_tt::is_directed_v<GraphType>)
         return n_connections;
     else
@@ -35,7 +37,9 @@ void verify_bidir_graph_size(
     const lib_t::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
-    REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
+    REQUIRE_EQ(
+        graph.n_unique_edges(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections)
+    );
 }
 
 } // namespace
@@ -59,6 +63,19 @@ template <lib_tt::c_graph_type GraphType>
     return [&graph](const vertex_type& source_vertex) {
         return std::ranges::none_of(graph.vertices(), [&](const vertex_type& destination_vertex) {
             return graph.has_edge(source_vertex, destination_vertex);
+        });
+    };
+}
+
+template <lib_tt::c_graph_type GraphType>
+[[nodiscard]] auto is_vertex_not_connected_to_any_from(
+    const GraphType& graph, const auto& vertex_it_range
+) {
+    using vertex_type = typename GraphType::vertex_type;
+    return [&](const vertex_type& source_vertex) {
+        return std::ranges::none_of(vertex_it_range, [&](const auto& vertex) {
+            return vertex != source_vertex
+               and (graph.has_edge(source_vertex, vertex) or graph.has_edge(vertex, source_vertex));
         });
     };
 }
@@ -130,21 +147,52 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = lib::topology::clique<graph_type>(constants::n_elements_top);
 
-        const auto expected_n_connections = constants::n_elements_top * (constants::n_elements_top - constants::one_element);
+        const auto expected_n_connections =
+            constants::n_elements_top * (constants::n_elements_top - constants::one_element);
         verify_bidir_graph_size(clique, constants::n_elements_top, expected_n_connections);
 
         CHECK(std::ranges::all_of(clique.vertices(), predicate::is_vertex_fully_connected(clique)));
     }
 
-    SUBCASE("full_bipartite(n_vertices_a, n_vertices_b) should build a full bipartite graph with vertex sets of sizes n_vertices_a and n_vertices_b respectively") {
-        const auto full_bipatite = lib::topology::full_bipartite<graph_type>(constants::n_elements_top, constants::n_elements);
+    SUBCASE("full_bipartite(n_vertices_a, n_vertices_b) should build a full bipartite graph with "
+            "vertex sets of sizes n_vertices_a and n_vertices_b respectively") {
+        const auto full_bipatite = lib::topology::full_bipartite<graph_type>(
+            constants::n_elements_top, constants::n_elements
+        );
 
         const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
         // `2x` is required to account for adding edges both ways
-        const auto expected_n_connections = constants::two * constants::n_elements_top * constants::n_elements;
+        const auto expected_n_connections =
+            constants::two * constants::n_elements_top * constants::n_elements;
         verify_bidir_graph_size(full_bipatite, expected_n_vertices, expected_n_connections);
 
-        // TODO: rest
+        const auto vertices = full_bipatite.vertices();
+
+        const auto vertices_a = vertices | std::views::take(constants::n_elements_top);
+        const auto vertices_b = lib::make_iterator_range(
+            std::ranges::next(vertices.begin(), constants::n_elements_top),
+            std::ranges::next(vertices.begin(), expected_n_vertices)
+        );
+
+        // verify that all vertices from A are connected to all vertices from B and vice versa
+        CHECK(std::ranges::all_of(
+            vertices_a | std::views::take(constants::n_elements_top),
+            [&](const vertex_type& source_vertex) {
+                return std::ranges::all_of(vertices_b, [&](const auto& vertex) {
+                    return full_bipatite.has_edge(source_vertex, vertex)
+                       and full_bipatite.has_edge(vertex, source_vertex);
+                });
+            }
+        ));
+
+        CHECK(std::ranges::all_of(
+            vertices_a,
+            predicate::is_vertex_not_connected_to_any_from<graph_type>(full_bipatite, vertices_a)
+        ));
+        CHECK(std::ranges::all_of(
+            vertices_b,
+            predicate::is_vertex_not_connected_to_any_from<graph_type>(full_bipatite, vertices_b)
+        ));
     }
 }
 
@@ -176,7 +224,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     ) {
         const auto cycle =
             lib::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
-        verify_graph_size(cycle, constants::n_elements_top, constants::two * constants::n_elements_top);
+        verify_graph_size(
+            cycle, constants::n_elements_top, constants::two * constants::n_elements_top
+        );
 
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_id_adjacent(cycle)
