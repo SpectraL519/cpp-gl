@@ -8,7 +8,7 @@
 
 namespace gl::util {
 
-[[nodiscard]] constexpr types::size_type upow(types::size_type base, types::size_type exp) {
+[[nodiscard]] inline constexpr types::size_type upow(types::size_type base, types::size_type exp) {
     constexpr types::size_type one = 1ull;
     constexpr types::size_type two = 2ull;
 
@@ -23,10 +23,8 @@ namespace gl::util {
     return result;
 }
 
-[[nodiscard]] types::size_type upow_sum(
-    const types::size_type base,
-    types::size_type i_begin,
-    types::size_type i_end
+[[nodiscard]] inline types::size_type upow_sum(
+    const types::size_type base, types::size_type i_begin, types::size_type i_end
 ) {
     constexpr types::size_type zero = 0ull;
     constexpr types::size_type one = 1ull;

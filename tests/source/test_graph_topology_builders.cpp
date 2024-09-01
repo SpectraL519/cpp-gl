@@ -194,6 +194,23 @@ TEST_CASE_TEMPLATE_DEFINE(
             predicate::is_vertex_not_connected_to_any_from<graph_type>(full_bipatite, vertices_b)
         ));
     }
+
+    SUBCASE("complete_binary_tree(depth) should return a complete binay tree graph with the given "
+            "depth") {
+        SUBCASE("depth = 0 : empty graph") {
+            const auto complete_bin_tree =
+                lib::topology::complete_binary_tree<graph_type>(constants::zero);
+            REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
+        }
+
+        SUBCASE("depth = 1 : graph with one vertex and no edges") {
+            const auto complete_bin_tree =
+                lib::topology::complete_binary_tree<graph_type>(constants::one);
+            REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::one_element);
+            REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
