@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/constants.hpp"
 #include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
@@ -78,8 +79,8 @@ public:
         const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find_if(
                    adjacent_edges,
-                   [second_id](const auto& edge) {
-                       return specialized_impl::is_edge_incident_to(edge, second_id);
+                   [first_id, second_id](const auto& edge) {
+                       return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
                    }
                )
             != adjacent_edges.end();
@@ -107,9 +108,10 @@ public:
             return std::nullopt;
 
         const auto& adjacent_edges = this->_list[first_id];
-        const auto it = std::ranges::find_if(adjacent_edges, [second_id](const auto& edge) {
-            return specialized_impl::is_edge_incident_to(edge, second_id);
-        });
+        const auto it =
+            std::ranges::find_if(adjacent_edges, [first_id, second_id](const auto& edge) {
+                return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
+            });
 
         if (it == adjacent_edges.cend())
             return std::nullopt;
@@ -129,7 +131,7 @@ public:
         matching_edges.reserve(adjacent_edges.size());
 
         for (const auto& edge : adjacent_edges)
-            if (specialized_impl::is_edge_incident_to(edge, second_id))
+            if (specialized_impl::is_edge_incident_to(edge, second_id, first_id))
                 matching_edges.push_back(std::cref(*edge));
 
         matching_edges.shrink_to_fit();
@@ -157,7 +159,7 @@ private:
     }
 
     type _list{};
-    types::size_type _n_unique_edges{0ull};
+    types::size_type _n_unique_edges{constants::default_size};
 };
 
 } // namespace gl::impl

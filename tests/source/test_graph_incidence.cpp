@@ -51,6 +51,8 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         sut.add_edge(vd_1, vd_2);
 
         CHECK(sut.are_incident(constants::vertex_id_1, constants::vertex_id_2));
+        CHECK(sut.are_incident(constants::vertex_id_2, constants::vertex_id_1));
+
         CHECK_FALSE(sut.are_incident(constants::vertex_id_1, constants::vertex_id_3));
         CHECK_FALSE(sut.are_incident(constants::vertex_id_2, constants::vertex_id_3));
     }
@@ -91,6 +93,8 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         sut.add_edge(vd_1, vd_2);
 
         CHECK(sut.are_incident(vd_1, vd_2));
+        CHECK(sut.are_incident(vd_2, vd_1));
+
         CHECK_FALSE(sut.are_incident(vd_1, vd_3));
         CHECK_FALSE(sut.are_incident(vd_2, vd_3));
     }
@@ -180,7 +184,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 TEST_CASE_TEMPLATE_INSTANTIATE(
     graph_type_template,
     lib::graph<lib::graph_traits<lib::directed_t>>, // directed graph
-    lib::graph<lib::graph_traits<lib::directed_t>> // undirected graph
+    lib::graph<lib::graph_traits<lib::undirected_t>> // undirected graph
 );
 
 TEST_SUITE_END(); // test_graph_incidence
