@@ -69,17 +69,29 @@ public:
         return this->_vertices.emplace_back(this->n_vertices());
     }
 
-    void add_vertices(const types::size_type n) {
-        // TODO:
-        // * impl.add(n)
-        // * vertices.add(n)
-    }
-
     inline const vertex_type& add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
         return this->_vertices.emplace_back(this->n_vertices(), properties);
+    }
+
+    void add_vertices(const types::size_type n) {
+        this->_impl.add_vertices(n);
+        this->_vertices.reserve(this->n_vertices() + n);
+
+        for (types::size_type _ = constants::default_size; _ < n; _++)
+            this->_vertices.emplace_back(this->n_vertices());
+    }
+
+    void add_vertices_with(const std::initializer_list<vertex_properties_type> properties_list) {
+        const auto n = properties_list.size();
+
+        this->_impl.add_vertices(n);
+        this->_vertices.reserve(this->n_vertices() + n);
+
+        for (const auto& properties : properties_list)
+            this->_vertices.emplace_back(this->n_vertices(), properties);
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {

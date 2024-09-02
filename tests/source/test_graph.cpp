@@ -153,6 +153,37 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_EQ(vertex.properties, constants::visited);
     }
 
+    SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
+        sut_type sut{};
+        sut.add_vertices(constants::n_elements);
+
+        CHECK_EQ(sut.n_vertices(), constants::n_elements);
+        CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+    }
+
+    SUBCASE("add_vertices_with should properly extend the current adjacency list with the given "
+            "properties") {
+        using properties_traits_type = add_vertex_property<traits_type, types::visited_property>;
+        lib::graph<properties_traits_type> sut;
+
+        const std::initializer_list<types::visited_property> properties_list{
+            constants::visited, constants::not_visited, constants::visited
+        };
+        const auto expected_n_vertices = properties_list.size();
+
+        sut.add_vertices_with(properties_list);
+
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+        CHECK(std::ranges::equal(
+            sut.vertices(),
+            properties_list,
+            std::ranges::equal_to{},
+            [](const auto& vertex) { return vertex.properties; }
+        ));
+    }
+
     SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
             "the graph") {
         sut_type sut{constants::n_elements};
