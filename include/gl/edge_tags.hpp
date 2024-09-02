@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "types/default_types.hpp"
+#include "types/properties.hpp"
 #include "types/type_traits.hpp"
 
 #include <memory>
