@@ -11,15 +11,6 @@
 
 #include <algorithm>
 
-#ifdef GL_TESTING
-
-namespace gl_testing {
-template <typename TraitsType>
-struct test_graph;
-} // namespace gl_testing
-
-#endif
-
 namespace gl {
 
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
@@ -44,10 +35,6 @@ public:
 
     using edge_set_type = typename implementation_type::edge_set_type;
     using edge_iterator_type = typename implementation_type::edge_iterator_type;
-
-#ifdef GL_TESTING
-    friend struct ::gl_testing::test_graph<traits_type>;
-#endif
 
     graph(const graph&) = delete;
     graph& operator=(const graph&) = delete;

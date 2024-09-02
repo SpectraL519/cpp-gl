@@ -20,11 +20,6 @@ struct test_graph {
     using vertex_type = typename sut_type::vertex_type;
 
     template <lib_tt::c_instantiation_of<lib::graph> GraphType>
-    typename GraphType::vertex_set_type& get_vertex_list(GraphType& graph) {
-        return graph._vertices;
-    }
-
-    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
     requires(lib_tt::is_directed_v<typename GraphType::edge_type>)
     void initialize_full_graph(GraphType& graph) {
         const auto vertices = graph.vertices();
@@ -195,8 +190,16 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("vertices should return the correct vertex list iterator range") {
         sut_type sut{constants::n_elements};
 
-        const auto v_range = sut.vertices();
-        CHECK(std::ranges::equal(v_range, fixture.get_vertex_list(sut)));
+        // clang-format off
+
+        CHECK(std::ranges::equal(
+            sut.vertices(),
+            constants::vertex_id_view,
+            std::ranges::equal_to{},
+            transforms::extract_vertex_id<vertex_type>
+        ));
+
+        // clang-format on
     }
 
     SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
@@ -214,7 +217,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut_type sut{constants::n_elements};
         fixture.initialize_full_graph(sut);
 
-        sut.remove_vertex(fixture.get_vertex_list(sut).at(constants::vertex_id_1));
+        sut.remove_vertex(constants::vertex_id_1);
 
         constexpr lib_t::size_type n_vertices_after_remove =
             constants::n_elements - constants::one_element;
