@@ -169,7 +169,7 @@ struct binary_color_property {
 
 // --- edge properties ---
 
-template <type_traits::c_basic_arithmetic WeightType>
+template <type_traits::c_basic_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
     weight_type weight;

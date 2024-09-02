@@ -16,6 +16,8 @@ struct test_name_property {
     using sut_type = lib_t::name_property;
     using value_type = typename sut_type::value_type;
 
+    static_assert(lib_tt::c_properties<sut_type>);
+
     const value_type value = "element name";
     sut_type sut{value};
 
@@ -64,6 +66,8 @@ TEST_CASE_FIXTURE(
 struct test_dynamic_properties {
     using sut_type = lib_t::dynamic_properties;
     using key_type = typename sut_type::key_type;
+
+    static_assert(lib_tt::c_properties<sut_type>);
 
     struct compound_value {
         int x;
@@ -195,6 +199,10 @@ TEST_CASE_FIXTURE(test_binary_color, "operator bool should be equivalent to is_s
         return static_cast<bool>(c) == c.is_set();
     }));
 }
+
+// assertions for not tested property types
+static_assert(lib_tt::c_properties<lib_t::binary_color_property>);
+static_assert(lib_tt::c_properties<lib_t::weight_property<>>);
 
 TEST_SUITE_END(); // test_properties
 
