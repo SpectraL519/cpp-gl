@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/util/enum.hpp"
 #include "traits/concepts.hpp"
 
 #include <any>
@@ -111,24 +112,60 @@ private:
 
 // --- vertex properties ---
 
-template <typename Color>
-requires(std::is_enum_v<Color>)
-struct color_property {
-    using color_type = Color;
+class binary_color {
+public:
+    enum class color_value : std::uint8_t {
+        black = static_cast<std::uint8_t>(0),
+        white = static_cast<std::uint8_t>(1),
+        unset = static_cast<std::uint8_t>(2),
+    };
+
+    binary_color() = default;
+
+    binary_color(color_value value) : _value(_restrict(value)) {}
+
+    binary_color(const binary_color&) = default;
+    binary_color(binary_color&&) = default;
+
+    binary_color& operator=(const binary_color&) = default;
+    binary_color& operator=(binary_color&&) = default;
+
+    ~binary_color() = default;
+
+    binary_color& operator=(color_value value) {
+        this->_value = this->_restrict(value);
+        return *this;
+    }
+
+    [[nodiscard]] auto operator<=>(const binary_color&) const = default;
+    [[nodiscard]] bool operator==(const binary_color&) const = default;
+
+    gl_attr_force_inline operator bool() const {
+        return this->is_set();
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool is_set() const {
+        return this->_value < color_value::unset;
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::underlying_type_t<color_value> to_underlying() const {
+        return util::to_underlying(this->_value);
+    }
+
+    // TODO: iostream operators
+
+private:
+    [[nodiscard]] color_value _restrict(const color_value value) {
+        return std::min(value, color_value::unset);
+    }
+
+    color_value _value{color_value::unset};
+};
+
+struct binary_color_property {
+    using color_type = binary_color;
     color_type color;
 };
-
-enum class binary_color : bool { black = static_cast<bool>(0), white = static_cast<bool>(1) };
-
-using binary_color_property = color_property<binary_color>;
-
-enum class ext_binary_color : std::uint8_t {
-    black = static_cast<uint8_t>(0),
-    white = static_cast<uint8_t>(1),
-    unset = static_cast<uint8_t>(2),
-};
-
-using ext_binary_color_property = color_property<ext_binary_color>;
 
 // --- edge properties ---
 
@@ -139,6 +176,9 @@ struct weight_property {
 };
 
 } // namespace types
+
+// TODO: rename -> bin_color_value
+using bin_color_value = typename types::binary_color::color_value;
 
 namespace type_traits {
 

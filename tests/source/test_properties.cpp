@@ -4,8 +4,9 @@
 
 #include <doctest.h>
 
-#include <iostream>
+#include <algorithm>
 #include <sstream>
+#include <vector>
 
 namespace gl_testing {
 
@@ -156,6 +157,43 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "remove should properly erase the key
 
     sut.remove(key);
     REQUIRE_FALSE(sut.is_present(key));
+}
+
+struct test_binary_color {
+    using sut_type = lib_t::binary_color;
+    using color = sut_type::color_value;
+
+    static constexpr color out_of_bounds_color =
+        static_cast<color>(lib::util::to_underlying(color::unset) + 1);
+};
+
+TEST_CASE_FIXTURE(test_binary_color, "should be unset by default") {
+    sut_type sut{};
+    REQUIRE_EQ(sut, color::unset);
+}
+
+TEST_CASE_FIXTURE(test_binary_color, "out of bounds values should be restricted to `unset`") {
+    sut_type sut{out_of_bounds_color};
+
+    REQUIRE_EQ(sut, color::unset);
+    CHECK_EQ(sut.to_underlying(), lib::util::to_underlying(color::unset));
+}
+
+TEST_CASE_FIXTURE(
+    test_binary_color, "is_set should return false for any value other than black and white"
+) {
+    REQUIRE_FALSE(sut_type{}.is_set());
+    REQUIRE_FALSE(sut_type{out_of_bounds_color}.is_set());
+}
+
+TEST_CASE_FIXTURE(test_binary_color, "operator bool should be equivalent to is_set") {
+    const std::vector<sut_type> colors{
+        color::black, color::white, color::unset, out_of_bounds_color
+    };
+
+    CHECK(std::ranges::all_of(colors, [](const sut_type& c) {
+        return static_cast<bool>(c) == c.is_set();
+    }));
 }
 
 TEST_SUITE_END(); // test_properties

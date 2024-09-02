@@ -1,5 +1,6 @@
 #include "namespaces.hpp"
 
+#include <gl/util/enum.hpp>
 #include <gl/util/pow.hpp>
 
 #include <doctest.h>
@@ -51,6 +52,19 @@ TEST_CASE("upow_sum function test") {
     CAPTURE(expected_result);
 
     CHECK_EQ(lib::util::upow_sum(base, i_begin, i_end), expected_result);
+}
+
+TEST_CASE("to_underlying should return the underlying value of an enum class") {
+    using underlying_type = int;
+    constexpr underlying_type value_1 = 1;
+    constexpr underlying_type value_2 = 2;
+    constexpr underlying_type out_of_bounds_value = 2;
+
+    enum class Enum : underlying_type { value_1 = value_1, value_2 = value_2 };
+
+    CHECK_EQ(lib::util::to_underlying(Enum::value_1), value_1);
+    CHECK_EQ(lib::util::to_underlying(Enum::value_2), value_2);
+    CHECK_EQ(lib::util::to_underlying(static_cast<Enum>(out_of_bounds_value)), out_of_bounds_value);
 }
 
 TEST_SUITE_END(); // test_util
