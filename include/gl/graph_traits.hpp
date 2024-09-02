@@ -2,7 +2,6 @@
 
 #include "edge_descriptor.hpp"
 #include "gl/impl/impl_tags_decl.hpp"
-#include "types/default_types.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>
