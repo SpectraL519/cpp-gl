@@ -56,6 +56,12 @@ public:
         this->_list.push_back(edge_set_type{});
     }
 
+    inline void add_vertices(const types::size_type n) {
+        this->_list.reserve(this->n_vertices() + n);
+        for (types::size_type _ = constants::default_size; _ < n; _++)
+            this->_list.push_back(edge_set_type{});
+    }
+
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         specialized_impl::remove_vertex(*this, vertex);
     }

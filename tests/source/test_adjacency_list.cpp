@@ -46,6 +46,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
+        SutType sut{};
+        sut.add_vertices(constants::n_elements);
+
+        CHECK_EQ(sut.n_vertices(), constants::n_elements);
+        CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

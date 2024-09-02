@@ -69,6 +69,12 @@ public:
         return this->_vertices.emplace_back(this->n_vertices());
     }
 
+    void add_vertices(const types::size_type n) {
+        // TODO:
+        // * impl.add(n)
+        // * vertices.add(n)
+    }
+
     inline const vertex_type& add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
