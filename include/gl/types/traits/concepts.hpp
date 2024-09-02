@@ -59,4 +59,22 @@ concept c_const_iterator = requires(T iter) {
     { *iter } -> std::same_as<const std::remove_cvref_t<decltype(*iter)>&>;
 };
 
+template <typename T>
+concept c_comparable = requires(const T lhs, const T rhs) {
+    { lhs <=> rhs } -> std::convertible_to<std::partial_ordering>;
+    { lhs == rhs } -> std::convertible_to<bool>;
+};
+
+template <typename T>
+concept c_basic_arithmetic = c_comparable<T> and requires(const T a, const T b, T c) {
+    { a + b } -> std::same_as<T>;
+    { a - b } -> std::same_as<T>;
+    { a* b } -> std::same_as<T>;
+    { a / b } -> std::same_as<T>;
+    { c += a } -> std::same_as<T&>;
+    { c -= a } -> std::same_as<T&>;
+    { c *= a } -> std::same_as<T&>;
+    { c /= a } -> std::same_as<T&>;
+};
+
 } // namespace gl::type_traits
