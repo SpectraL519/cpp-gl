@@ -66,6 +66,21 @@ public:
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
     }
 
+    void add_vertices(const types::size_type n) {
+        const auto new_n_vertices = this->n_vertices() + n;
+
+        for (auto& row : this->_matrix) {
+            row.reserve(new_n_vertices);
+            std::generate_n(std::back_inserter(row), n, _make_null_edge);
+        }
+
+        for (types::size_type _ = constants::default_size; _ < n; _++) {
+            auto& new_row = this->_matrix.emplace_back();
+            new_row.reserve(new_n_vertices);
+            std::generate_n(std::back_inserter(new_row), new_n_vertices, _make_null_edge);
+        }
+    }
+
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         sepcialized_impl::remove_vertex(*this, vertex);
     }
