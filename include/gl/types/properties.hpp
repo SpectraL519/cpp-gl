@@ -3,10 +3,10 @@
 #include "gl/attributes/force_inline.hpp"
 #include "traits/concepts.hpp"
 
-#include <iomanip>
-#include <variant>
 #include <any>
+#include <iomanip>
 #include <unordered_map>
+#include <variant>
 
 namespace gl {
 
@@ -118,10 +118,7 @@ struct color_property {
     color_type color;
 };
 
-enum class binary_color : bool {
-    black = static_cast<bool>(0),
-    white = static_cast<bool>(1)
-};
+enum class binary_color : bool { black = static_cast<bool>(0), white = static_cast<bool>(1) };
 
 using binary_color_property = color_property<binary_color>;
 

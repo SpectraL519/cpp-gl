@@ -79,9 +79,7 @@ struct test_dynamic_properties {
     const compound_value new_value{2, 2.2};
 };
 
-TEST_CASE_FIXTURE(
-    test_dynamic_properties, "the underlying map should be empty by default"
-) {
+TEST_CASE_FIXTURE(test_dynamic_properties, "the underlying map should be empty by default") {
     CHECK(sut.underlying().empty());
 }
 
@@ -103,7 +101,10 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for an invalid valu
     CHECK_THROWS_AS(func::discard_result(sut.get<double>(key)), std::bad_any_cast);
 }
 
-TEST_CASE_FIXTURE(test_dynamic_properties, "get should return a reference to the underlying object for a valid key and type") {
+TEST_CASE_FIXTURE(
+    test_dynamic_properties,
+    "get should return a reference to the underlying object for a valid key and type"
+) {
     sut.underlying()[key] = value;
 
     compound_value& value_ref = sut.get<compound_value>(key);
@@ -113,7 +114,9 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "get should return a reference to the
     CHECK_EQ(sut.get<compound_value>(key), new_value);
 }
 
-TEST_CASE_FIXTURE(test_dynamic_properties, "set should properly set/override the value for the given key") {
+TEST_CASE_FIXTURE(
+    test_dynamic_properties, "set should properly set/override the value for the given key"
+) {
     sut.set<compound_value>(key, value);
     REQUIRE(sut.is_present(key));
     CHECK_EQ(sut.get<compound_value>(key), value);
@@ -123,7 +126,9 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "set should properly set/override the
     CHECK_EQ(sut.get<compound_value>(key), new_value);
 }
 
-TEST_CASE_FIXTURE(test_dynamic_properties, "mvset should properly set/override the value for the given key") {
+TEST_CASE_FIXTURE(
+    test_dynamic_properties, "mvset should properly set/override the value for the given key"
+) {
     sut.mvset<compound_value>(key, compound_value{value});
     REQUIRE(sut.is_present(key));
     CHECK_EQ(sut.get<compound_value>(key), value);
@@ -133,7 +138,9 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "mvset should properly set/override t
     CHECK_EQ(sut.get<compound_value>(key), new_value);
 }
 
-TEST_CASE_FIXTURE(test_dynamic_properties, "emplace should properly set/override the value for the given key") {
+TEST_CASE_FIXTURE(
+    test_dynamic_properties, "emplace should properly set/override the value for the given key"
+) {
     sut.emplace<compound_value>(key, value.x, value.y);
     REQUIRE(sut.is_present(key));
     CHECK_EQ(sut.get<compound_value>(key), value);
