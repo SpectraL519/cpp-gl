@@ -176,19 +176,37 @@ public:
     }
 
     void add_edges_from(
-        const types::id_type source_id, const std::initializer_list<types::id_type>& destination_ids
+        const types::id_type source_id,
+        const std::initializer_list<types::id_type>& destination_id_list
     ) {
         this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
 
         std::vector<edge_ptr_type> new_edges;
-        new_edges.reserve(destination_ids.size());
+        new_edges.reserve(destination_id_list.size());
 
-        for (const auto destination_id : destination_ids) {
+        for (const auto destination_id : destination_id_list) {
             this->_verify_vertex_id(destination_id);
             new_edges.push_back(make_edge<edge_type>(source, this->get_vertex(destination_id)));
         }
         this->_impl.add_edges_from(source_id, std::move(new_edges));
+    }
+
+    void add_edges_from(
+        const vertex_type& source,
+        const std::initializer_list<std::reference_wrapper<const vertex_type>>& destination_list
+    ) {
+        this->_verify_vertex(source);
+
+        std::vector<edge_ptr_type> new_edges;
+        new_edges.reserve(destination_list.size());
+
+        for (const auto& destination_ref : destination_list) {
+            const auto& destination = destination_ref.get();
+            this->_verify_vertex(destination);
+            new_edges.push_back(make_edge<edge_type>(source, destination));
+        }
+        this->_impl.add_edges_from(source.id(), std::move(new_edges));
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(

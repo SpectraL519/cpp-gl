@@ -408,15 +408,62 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             constexpr auto source_id = constants::vertex_id_1;
-            const std::initializer_list<lib_t::id_type> destination_ids{
+            const std::initializer_list<lib_t::id_type> destination_id_list{
                 constants::vertex_id_1, constants::vertex_id_2, constants::vertex_id_3
             };
 
-            sut.add_edges_from(source_id, destination_ids);
+            sut.add_edges_from(source_id, destination_id_list);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements);
-            CHECK(std::ranges::all_of(destination_ids, [&sut, source_id](const auto vertex_id) {
+            CHECK(std::ranges::all_of(destination_id_list, [&sut, source_id](const auto vertex_id) {
                 return sut.has_edge(source_id, vertex_id);
+            }));
+        }
+
+        SUBCASE("add_edges_from(vertices) should throw if any vertex is invalid and not extend the "
+                "graph") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(sut.add_edges_from(fixture.out_of_range_vertex, {}), std::out_of_range);
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(sut.add_edges_from(fixture.invalid_vertex, {}), std::invalid_argument);
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(
+                    sut.get_vertex(constants::vertex_id_1),
+                    {sut.get_vertex(constants::vertex_id_2), fixture.out_of_range_vertex}
+                ),
+                std::out_of_range
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(
+                    sut.get_vertex(constants::vertex_id_1),
+                    {sut.get_vertex(constants::vertex_id_2), fixture.invalid_vertex}
+                ),
+                std::invalid_argument
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+        }
+
+        SUBCASE("add_edges_from(vertices) should properly extend the graph if all ids are valid") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            const auto& source = sut.get_vertex(constants::vertex_id_1);
+            const std::initializer_list<std::reference_wrapper<const vertex_type>> destination_list{
+                sut.get_vertex(constants::vertex_id_1),
+                sut.get_vertex(constants::vertex_id_2),
+                sut.get_vertex(constants::vertex_id_3)
+            };
+
+            sut.add_edges_from(source, destination_list);
+
+            REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements);
+            CHECK(std::ranges::all_of(destination_list, [&sut, &source](const auto& vertex) {
+                return sut.has_edge(source, vertex);
             }));
         }
 
