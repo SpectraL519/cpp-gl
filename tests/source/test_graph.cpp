@@ -320,11 +320,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         SUBCASE("add_edge(ids) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
                 sut.add_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
                 sut.add_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx),
-                std::out_of_range
+                std::invalid_argument
             );
         }
 
@@ -422,13 +422,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 sut.add_edge(
                     constants::out_of_range_elemenet_idx, constants::vertex_id_2, constants::used
                 ),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
                 sut.add_edge(
                     constants::vertex_id_1, constants::out_of_range_elemenet_idx, constants::used
                 ),
-                std::out_of_range
+                std::invalid_argument
             );
         }
 

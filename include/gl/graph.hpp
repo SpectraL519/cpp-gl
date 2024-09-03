@@ -132,21 +132,25 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_type& add_edge(
+    const edge_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
         return this->_impl.add_edge(
             make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
         );
     }
 
-    gl_attr_force_inline const edge_type& add_edge(
+    const edge_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
     {
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
         return this->_impl.add_edge(make_edge<edge_type>(
             this->get_vertex(first_id), this->get_vertex(second_id), properties
         ));
