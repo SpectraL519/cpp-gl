@@ -22,10 +22,11 @@ public:
     using implementation_type = typename implementation_tag::template type<traits_type>;
 
     using vertex_type = typename traits_type::vertex_type;
+    using vertex_ptr_type = typename traits_type::vertex_ptr_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
 
-    using vertex_set_type = std::vector<vertex_type>;
-    using vertex_iterator_type = typename vertex_set_type::const_iterator;
+    using vertex_set_type = std::vector<vertex_ptr_type>;
+    using vertex_iterator_type = types::dereferencing_iterator<typename vertex_set_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -45,7 +46,7 @@ public:
     graph(const types::size_type n_vertices) : _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
         for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; vertex_id++)
-            this->_vertices.emplace_back(vertex_id);
+            this->_vertices.push_back(detail::make_vertex<vertex_type>(vertex_id));
     }
 
     graph(graph&&) = default;
@@ -65,16 +66,18 @@ public:
 
     // --- vertex methods ---
 
-    inline const vertex_type& add_vertex() {
+    const vertex_type& add_vertex() {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(this->n_vertices());
+        this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
+        return *this->_vertices.back();
     }
 
-    inline const vertex_type& add_vertex(const vertex_properties_type& properties)
+    const vertex_type& add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(this->n_vertices(), properties);
+        this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices(), properties));
+        return *this->_vertices.back();
     }
 
     void add_vertices(const types::size_type n) {
@@ -82,7 +85,7 @@ public:
         this->_vertices.reserve(this->n_vertices() + n);
 
         for (types::size_type _ = constants::default_size; _ < n; _++)
-            this->_vertices.emplace_back(this->n_vertices());
+            this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
     }
 
     void add_vertices_with(std::initializer_list<vertex_properties_type> properties_list) {
@@ -92,7 +95,7 @@ public:
         this->_vertices.reserve(this->n_vertices() + n);
 
         for (const auto& properties : properties_list)
-            this->_vertices.emplace_back(this->n_vertices(), properties);
+            this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices(), properties));
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
@@ -100,7 +103,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id()) and &vertex == &this->_vertices[vertex.id()];
+        return this->has_vertex(vertex.id()) and &vertex == this->_vertices[vertex.id()].get();
     }
 
     // clang-format off
@@ -110,7 +113,7 @@ public:
         const types::id_type vertex_id
     ) const {
         this->_verify_vertex_id(vertex_id);
-        return this->_vertices[vertex_id];
+        return *this->_vertices[vertex_id];
     }
 
     // clang-format on
@@ -126,7 +129,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
-        return make_const_iterator_range(this->_vertices);
+        return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
     }
 
     // --- edge methods ---
@@ -376,7 +379,7 @@ private:
         std::for_each(
             std::next(std::begin(this->_vertices), vertex_id),
             this->_vertices.end(),
-            [](auto& v) { v._id--; }
+            [](auto& v) { v->_id--; }
         );
     }
 
