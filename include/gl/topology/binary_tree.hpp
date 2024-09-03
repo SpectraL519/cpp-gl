@@ -35,8 +35,7 @@ template <type_traits::c_graph_type GraphType>
 
     for (types::id_type source_id = constants::zero; source_id < n_source_vertices; source_id++) {
         const auto destination_ids = detail::get_binary_destination_ids(source_id);
-        graph.add_edge(source_id, destination_ids.first);
-        graph.add_edge(source_id, destination_ids.second);
+        graph.add_edges_from(source_id, {destination_ids.first, destination_ids.second});
     }
 
     return graph;
@@ -62,8 +61,7 @@ template <type_traits::c_graph_type GraphType>
         for (types::id_type source_id = constants::zero; source_id < n_source_vertices;
              source_id++) {
             const auto destination_ids = detail::get_binary_destination_ids(source_id);
-            graph.add_edge(source_id, destination_ids.first);
-            graph.add_edge(source_id, destination_ids.second);
+            graph.add_edges_from(source_id, {destination_ids.first, destination_ids.second});
             graph.add_edge(destination_ids.first, source_id);
             graph.add_edge(destination_ids.second, source_id);
         }

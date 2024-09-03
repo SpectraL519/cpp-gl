@@ -85,7 +85,7 @@ public:
             this->_vertices.emplace_back(this->n_vertices());
     }
 
-    void add_vertices_with(const std::initializer_list<vertex_properties_type> properties_list) {
+    void add_vertices_with(std::initializer_list<vertex_properties_type> properties_list) {
         const auto n = properties_list.size();
 
         this->_impl.add_vertices(n);
@@ -109,7 +109,8 @@ public:
     [[nodiscard]] gl_attr_force_inline const vertex_type& get_vertex(
         const types::id_type vertex_id
     ) const {
-        return this->_vertices.at(vertex_id);
+        this->_verify_vertex_id(vertex_id);
+        return this->_vertices[vertex_id];
     }
 
     // clang-format on
@@ -139,7 +140,7 @@ public:
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
         return this->_impl.add_edge(
-            make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
+            detail::make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
         );
     }
 
@@ -152,7 +153,7 @@ public:
     {
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
-        return this->_impl.add_edge(make_edge<edge_type>(
+        return this->_impl.add_edge(detail::make_edge<edge_type>(
             this->get_vertex(first_id), this->get_vertex(second_id), properties
         ));
     }
@@ -162,7 +163,7 @@ public:
     const edge_type& add_edge(const vertex_type& first, const vertex_type& second) {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(make_edge<edge_type>(first, second));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second));
     }
 
     const edge_type& add_edge(
@@ -172,12 +173,12 @@ public:
     {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second, properties));
     }
 
     void add_edges_from(
         const types::id_type source_id,
-        const std::initializer_list<types::id_type>& destination_id_list
+        std::initializer_list<types::id_type> destination_id_list
     ) {
         this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
@@ -187,14 +188,14 @@ public:
 
         for (const auto destination_id : destination_id_list) {
             this->_verify_vertex_id(destination_id);
-            new_edges.push_back(make_edge<edge_type>(source, this->get_vertex(destination_id)));
+            new_edges.push_back(detail::make_edge<edge_type>(source, this->get_vertex(destination_id)));
         }
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
 
     void add_edges_from(
         const vertex_type& source,
-        const std::initializer_list<std::reference_wrapper<const vertex_type>>& destination_list
+        std::initializer_list<std::reference_wrapper<const vertex_type>> destination_list
     ) {
         this->_verify_vertex(source);
 
@@ -204,7 +205,7 @@ public:
         for (const auto& destination_ref : destination_list) {
             const auto& destination = destination_ref.get();
             this->_verify_vertex(destination);
-            new_edges.push_back(make_edge<edge_type>(source, destination));
+            new_edges.push_back(detail::make_edge<edge_type>(source, destination));
         }
         this->_impl.add_edges_from(source.id(), std::move(new_edges));
     }
@@ -265,6 +266,13 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
+    }
+
+    inline void remove_edges_from(
+        std::initializer_list<std::reference_wrapper<const edge_type>> edges
+    ) {
+        for (const auto& edge_ref : edges)
+            this->_impl.remove_edge(edge_ref.get());
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
@@ -333,7 +341,7 @@ public:
 private:
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
-            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
     void _verify_vertex(const vertex_type& vertex) const {

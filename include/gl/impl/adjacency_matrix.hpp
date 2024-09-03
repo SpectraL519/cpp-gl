@@ -8,6 +8,7 @@
 #include "specialized/adjacency_matrix.hpp"
 
 #include <vector>
+#include <iostream>
 
 namespace gl::impl {
 
@@ -64,6 +65,11 @@ public:
         auto& new_row = this->_matrix.emplace_back();
         new_row.reserve(this->n_vertices());
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
+
+        std::cout << "adj_matrix.size = " << this->_matrix.size() << std::endl;
+        for (int i = 0; i < this->_matrix.size(); i++) {
+            std::cout << "adj_matrix.row(" << i << ").size = " << this->_matrix[i].size() << std::endl;
+        }
     }
 
     void add_vertices(const types::size_type n) {

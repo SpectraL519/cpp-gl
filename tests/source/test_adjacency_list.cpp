@@ -81,7 +81,7 @@ struct test_directed_adjacency_list {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -329,7 +329,7 @@ struct test_undirected_adjacency_list {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
