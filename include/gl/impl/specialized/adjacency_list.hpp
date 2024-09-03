@@ -74,11 +74,15 @@ struct directed_adjacency_list {
         return *adjacent_edges_first.back();
     }
 
-    // static void add_edges_from(
-    //     impl_type& self, const types::id_type source_id, std::initializer_list<edge_ptr_type> edges
-    // ) {
-    //     auto& adjacent_edges_source = self._list.at(source_id)
-    // }
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& adjacent_edges_source = self._list[source_id];
+        adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
+        for (auto& edge : new_edges)
+            adjacent_edges_source.push_back(std::move(edge));
+        self._n_unique_edges += new_edges.size();
+    }
 
     [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
         const edge_ptr_type& edge,
@@ -152,6 +156,21 @@ struct undirected_adjacency_list {
 
         self._n_unique_edges++;
         return *adjacent_edges_first.back();
+    }
+
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& adjacent_edges_source = self._list[source_id];
+        adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
+
+        for (auto& edge : new_edges) {
+            if (not edge->is_loop())
+                self._list[edge->second().id()].push_back(edge);
+            adjacent_edges_source.push_back(std::move(edge));
+        }
+
+        self._n_unique_edges += new_edges.size();
     }
 
     [[nodiscard]] inline static bool is_edge_incident_to(

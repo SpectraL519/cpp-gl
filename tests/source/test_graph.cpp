@@ -310,7 +310,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     // --- edge method tests ---
 
-    SUBCASE("add_edge tests with empty properties") {
+    SUBCASE("edge method tests for default properties type") {
         sut_type sut{constants::n_elements};
 
         const auto vertices = sut.vertices();
@@ -386,6 +386,40 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }
         }
 
+        SUBCASE("add_edges_from(ids) should throw if any id is invalid and not extend the graph") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(constants::out_of_range_elemenet_idx, {}), std::invalid_argument
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(
+                    constants::vertex_id_1,
+                    {constants::vertex_id_2, constants::out_of_range_elemenet_idx}
+                ),
+                std::invalid_argument
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+        }
+
+        SUBCASE("add_edges_from(ids) should properly extend the graph if all ids are valid") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            constexpr auto source_id = constants::vertex_id_1;
+            const std::initializer_list<lib_t::id_type> destination_ids{
+                constants::vertex_id_1, constants::vertex_id_2, constants::vertex_id_3
+            };
+
+            sut.add_edges_from(source_id, destination_ids);
+
+            REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements);
+            CHECK(std::ranges::all_of(destination_ids, [&sut, source_id](const auto vertex_id) {
+                return sut.has_edge(source_id, vertex_id);
+            }));
+        }
+
         SUBCASE("remove edge should properly remove the edge for both incident vertices") {
             const auto& added_edge = sut.add_edge(vertex_1, vertex_2);
 
@@ -409,7 +443,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
     }
 
-    SUBCASE("add_edge tests with non empty properties") {
+    SUBCASE("edge method tests for non-default properties type") {
         using properties_traits_type = add_edge_property<traits_type, types::used_property>;
         lib::graph<properties_traits_type> sut{constants::n_elements};
 

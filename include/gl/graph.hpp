@@ -30,6 +30,7 @@ public:
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
+    using edge_ptr_type = typename traits_type::edge_ptr_type;
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
@@ -172,6 +173,22 @@ public:
         this->_verify_vertex(first);
         this->_verify_vertex(second);
         return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
+    }
+
+    void add_edges_from(
+        const types::id_type source_id, const std::initializer_list<types::id_type>& destination_ids
+    ) {
+        this->_verify_vertex_id(source_id);
+        const auto& source = this->get_vertex(source_id);
+
+        std::vector<edge_ptr_type> new_edges;
+        new_edges.reserve(destination_ids.size());
+
+        for (const auto destination_id : destination_ids) {
+            this->_verify_vertex_id(destination_id);
+            new_edges.push_back(make_edge<edge_type>(source, this->get_vertex(destination_id)));
+        }
+        this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(

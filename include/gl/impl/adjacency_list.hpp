@@ -77,6 +77,12 @@ public:
 
     // clang-format on
 
+    gl_attr_force_inline void add_edges_from(
+        const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        specialized_impl::add_edges_from(*this, source_id, std::move(new_edges));
+    }
+
     [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
         const {
         if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
