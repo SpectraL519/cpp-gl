@@ -518,11 +518,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("edge method tests for non-default properties type") {
         using properties_traits_type = add_edge_property<traits_type, types::used_property>;
+        using property_edge_type = typename properties_traits_type::edge_type;
         lib::graph<properties_traits_type> sut{constants::n_elements};
 
         const auto vertices = sut.vertices();
         const auto& vertex_1 = vertices.element_at(constants::vertex_id_1);
         const auto& vertex_2 = vertices.element_at(constants::vertex_id_2);
+        const auto& vertex_3 = vertices.element_at(constants::vertex_id_3);
 
         SUBCASE("add_edge(ids) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
@@ -632,6 +634,39 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             CHECK_EQ(adjacent_edges_1.distance(), constants::zero_elements);
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
+        }
+
+        SUBCASE("remove_edges_from should properly erase all given edges") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            const auto& edge_1 = sut.add_edge(vertex_1, vertex_2, constants::not_used);
+            const auto& edge_2 = sut.add_edge(vertex_2, vertex_3, constants::not_used);
+            const auto& edge_3 = sut.add_edge(vertex_3, vertex_1, constants::not_used);
+
+            // an additional edge to verify that only the given edges are removed
+            const auto& vertex_4 = sut.add_vertex();
+            const auto& edge_4 = sut.add_edge(vertex_1, vertex_4, constants::used);
+
+            REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements + constants::one_element);
+
+            std::initializer_list<std::reference_wrapper<const property_edge_type>> edges_to_remove{
+                edge_1, edge_2, edge_3
+            };
+
+            const auto has_edge = [&sut](const auto& edge_ref) {
+                return sut.has_edge(edge_ref.get());
+            };
+
+            REQUIRE(std::ranges::all_of(edges_to_remove, has_edge));
+            REQUIRE(sut.has_edge(edge_4));
+
+            sut.remove_edges_from(edges_to_remove);
+
+            CHECK_EQ(sut.n_unique_edges(), constants::one_element);
+            CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
+            CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
+            CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
+            CHECK(sut.has_edge(edge_4));
         }
     }
 
