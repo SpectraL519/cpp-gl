@@ -21,13 +21,13 @@ public:
     using edge_ptr_type = typename GraphTraits::edge_ptr_type;
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
-    using edge_set_type = std::vector<edge_ptr_type>;
+    using edge_list_type = std::vector<edge_ptr_type>;
     using edge_iterator_type =
-        types::dereferencing_iterator<typename edge_set_type::const_iterator>;
+        types::dereferencing_iterator<typename edge_list_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
-    using type = std::vector<edge_set_type>;
+    using type = std::vector<edge_list_type>;
 
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
@@ -54,13 +54,13 @@ public:
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
-        this->_list.push_back(edge_set_type{});
+        this->_list.push_back(edge_list_type{});
     }
 
     inline void add_vertices(const types::size_type n) {
         this->_list.reserve(this->n_vertices() + n);
-        for (types::size_type _ = constants::default_size; _ < n; _++)
-            this->_list.push_back(edge_set_type{});
+        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+            this->_list.push_back(edge_list_type{});
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {

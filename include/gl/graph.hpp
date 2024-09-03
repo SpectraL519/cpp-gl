@@ -25,9 +25,9 @@ public:
     using vertex_ptr_type = typename traits_type::vertex_ptr_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
 
-    using vertex_set_type = std::vector<vertex_ptr_type>;
+    using vetex_list_type = std::vector<vertex_ptr_type>;
     using vertex_iterator_type =
-        types::dereferencing_iterator<typename vertex_set_type::const_iterator>;
+        types::dereferencing_iterator<typename vetex_list_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -36,7 +36,7 @@ public:
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
-    using edge_set_type = typename implementation_type::edge_set_type;
+    using edge_list_type = typename implementation_type::edge_list_type;
     using edge_iterator_type = typename implementation_type::edge_iterator_type;
 
     graph(const graph&) = delete;
@@ -85,7 +85,7 @@ public:
         this->_impl.add_vertices(n);
         this->_vertices.reserve(this->n_vertices() + n);
 
-        for (types::size_type _ = constants::default_size; _ < n; _++)
+        for (types::size_type _ = constants::begin_idx; _ < n; _++)
             this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
     }
 
@@ -129,6 +129,8 @@ public:
         this->_verify_vertex(vertex);
         this->_remove_vertex_impl(vertex);
     }
+
+    // TODO: remove_vertices_from
 
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
@@ -387,7 +389,7 @@ private:
         );
     }
 
-    vertex_set_type _vertices{};
+    vetex_list_type _vertices{};
     implementation_type _impl{};
 };
 
