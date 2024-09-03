@@ -8,7 +8,6 @@
 #include <doctest.h>
 
 #include <algorithm>
-#include <iostream>
 
 namespace gl_testing {
 
@@ -483,67 +482,38 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(adjacent_edges_2.distance(), constants::zero_elements);
         }
 
-        // SUBCASE("remove_edges_from should properly erase all given edges") {
-        //     REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+        SUBCASE("remove_edges_from should properly erase all given edges") {
+            REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-        //     std::cout << "[test begin]\n";
+            const auto& edge_1 = sut.add_edge(vertex_1, vertex_2);
+            const auto& edge_2 = sut.add_edge(vertex_2, vertex_3);
+            const auto& edge_3 = sut.add_edge(vertex_3, vertex_1);
 
-        //     const auto& edge_1 = sut.add_edge(vertex_1, vertex_2);
-        //     const auto& edge_2 = sut.add_edge(vertex_2, vertex_3);
-        //     const auto& edge_3 = sut.add_edge(vertex_3, vertex_1);
+            // an additional edge to verify that only the given edges are removed
+            const auto& vertex_4 = sut.add_vertex();
+            const auto& edge_4 = sut.add_edge(vertex_1, vertex_4);
 
-        //     std::cout << "base vertices: " << vertex_1.id() << ", " << vertex_2.id() << ", " << vertex_3.id() << std::endl;
+            REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements + constants::one_element);
 
-        //     std::cout << "base edges\n";
+            std::initializer_list<std::reference_wrapper<const edge_type>> edges_to_remove{
+                edge_1, edge_2, edge_3
+            };
 
-        //     const auto& vertex_4 = sut.add_vertex();
+            const auto has_edge = [&sut](const auto& edge_ref) {
+                return sut.has_edge(edge_ref.get());
+            };
 
-        //     std::cout << "new vertex -> " << vertex_4.id() << " | size = " << sut.n_vertices() << std::endl;
-        //     std::cout << "base vertices: " << vertex_1.id() << ", " << vertex_2.id() << ", " << vertex_3.id() << std::endl;
+            REQUIRE(std::ranges::all_of(edges_to_remove, has_edge));
+            REQUIRE(sut.has_edge(edge_4));
 
-        //     const auto& edge_4 = sut.add_edge(vertex_1, vertex_4);
+            sut.remove_edges_from(edges_to_remove);
 
-        //     std::cout << "dangling edge\n";
-
-        //     REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements + constants::one_element);
-
-        //     std::cout << "req: n_edges\n";
-
-        //     std::initializer_list<std::reference_wrapper<const edge_type>> edges_to_remove{
-        //         edge_1, edge_2, edge_3
-        //     };
-
-        //     const auto has_edge = [&sut](const auto& edge_ref) {
-        //         return sut.has_edge(edge_ref.get());
-        //     };
-
-        //     std::cout << "req prep: has_edge\n";
-
-        //     REQUIRE(std::ranges::all_of(edges_to_remove, has_edge));
-        //     REQUIRE(sut.has_edge(edge_4));
-
-        //     std::cout << "req: has_edge\n";
-
-        //     sut.remove_edges_from(edges_to_remove);
-
-        //     std::cout << "rem edges\n";
-
-        //     CHECK_EQ(sut.n_unique_edges(), constants::one_element);
-
-        //     std::cout << "check: n_edges\n";
-
-        //     CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
-        //     CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
-        //     CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
-
-        //     std::cout << "check: has_edges(base) = false\n";
-
-        //     CHECK(sut.has_edge(edge_4));
-
-        //     std::cout << "check: has_edge(dangling) = true\n";
-
-        //     std::cout << "[test end]\n\n";
-        // }
+            CHECK_EQ(sut.n_unique_edges(), constants::one_element);
+            CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
+            CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
+            CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
+            CHECK(sut.has_edge(edge_4));
+        }
     }
 
     SUBCASE("edge method tests for non-default properties type") {

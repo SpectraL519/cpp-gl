@@ -26,7 +26,8 @@ public:
     using vertex_properties_type = typename traits_type::vertex_properties_type;
 
     using vertex_set_type = std::vector<vertex_ptr_type>;
-    using vertex_iterator_type = types::dereferencing_iterator<typename vertex_set_type::const_iterator>;
+    using vertex_iterator_type =
+        types::dereferencing_iterator<typename vertex_set_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
@@ -95,7 +96,9 @@ public:
         this->_vertices.reserve(this->n_vertices() + n);
 
         for (const auto& properties : properties_list)
-            this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices(), properties));
+            this->_vertices.push_back(
+                detail::make_vertex<vertex_type>(this->n_vertices(), properties)
+            );
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
@@ -180,8 +183,7 @@ public:
     }
 
     void add_edges_from(
-        const types::id_type source_id,
-        std::initializer_list<types::id_type> destination_id_list
+        const types::id_type source_id, std::initializer_list<types::id_type> destination_id_list
     ) {
         this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
@@ -191,7 +193,9 @@ public:
 
         for (const auto destination_id : destination_id_list) {
             this->_verify_vertex_id(destination_id);
-            new_edges.push_back(detail::make_edge<edge_type>(source, this->get_vertex(destination_id)));
+            new_edges.push_back(
+                detail::make_edge<edge_type>(source, this->get_vertex(destination_id))
+            );
         }
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }

@@ -89,6 +89,6 @@ template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
     return std::make_unique<VertexType>(id, properties);
 }
 
-}
+} // namespace detail
 
 } // namespace gl

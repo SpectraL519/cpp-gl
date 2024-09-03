@@ -7,8 +7,8 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 namespace gl::impl {
 
@@ -55,7 +55,6 @@ public:
 
     gl_attr_force_inline void add_vertex() {
         this->_list.push_back(edge_set_type{});
-        std::cout << "adj_list.size = " << this->_list.size() << std::endl;
     }
 
     inline void add_vertices(const types::size_type n) {
