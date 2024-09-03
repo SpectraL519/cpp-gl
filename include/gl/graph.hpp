@@ -89,13 +89,14 @@ public:
             this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
     }
 
-    void add_vertices_with(std::initializer_list<vertex_properties_type> properties_list) {
-        const auto n = properties_list.size();
+    template <type_traits::c_sized_range_of<vertex_properties_type> VertexPropertiesRange>
+    void add_vertices_with(const VertexPropertiesRange& properties_range) {
+        const auto n = std::ranges::size(properties_range);
 
         this->_impl.add_vertices(n);
         this->_vertices.reserve(this->n_vertices() + n);
 
-        for (const auto& properties : properties_list)
+        for (const auto& properties : properties_range)
             this->_vertices.push_back(
                 detail::make_vertex<vertex_type>(this->n_vertices(), properties)
             );
@@ -184,16 +185,17 @@ public:
         return this->_impl.add_edge(detail::make_edge<edge_type>(first, second, properties));
     }
 
+    template <type_traits::c_sized_range_of<types::id_type> IdRange>
     void add_edges_from(
-        const types::id_type source_id, std::initializer_list<types::id_type> destination_id_list
+        const types::id_type source_id, const IdRange& destination_id_range
     ) {
         this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
 
         std::vector<edge_ptr_type> new_edges;
-        new_edges.reserve(destination_id_list.size());
+        new_edges.reserve(std::ranges::size(destination_id_range));
 
-        for (const auto destination_id : destination_id_list) {
+        for (const auto destination_id : destination_id_range) {
             this->_verify_vertex_id(destination_id);
             new_edges.push_back(
                 detail::make_edge<edge_type>(source, this->get_vertex(destination_id))
@@ -202,16 +204,17 @@ public:
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
 
+    template <type_traits::c_sized_range_of<std::reference_wrapper<const vertex_type>> VertexRefRange>
     void add_edges_from(
         const vertex_type& source,
-        std::initializer_list<std::reference_wrapper<const vertex_type>> destination_list
+        const VertexRefRange& destination_range
     ) {
         this->_verify_vertex(source);
 
         std::vector<edge_ptr_type> new_edges;
-        new_edges.reserve(destination_list.size());
+        new_edges.reserve(std::ranges::size(destination_range));
 
-        for (const auto& destination_ref : destination_list) {
+        for (const auto& destination_ref : destination_range) {
             const auto& destination = destination_ref.get();
             this->_verify_vertex(destination);
             new_edges.push_back(detail::make_edge<edge_type>(source, destination));
@@ -277,8 +280,9 @@ public:
         this->_impl.remove_edge(edge);
     }
 
+    template <type_traits::c_range_of<std::reference_wrapper<const edge_type>> EdgeRefRange>
     inline void remove_edges_from(
-        std::initializer_list<std::reference_wrapper<const edge_type>> edges
+        const EdgeRefRange edges
     ) {
         for (const auto& edge_ref : edges)
             this->_impl.remove_edge(edge_ref.get());
