@@ -133,7 +133,7 @@ public:
 
     [[nodiscard]] auto get_edges(const types::id_type first_id, const types::id_type second_id)
         const {
-        using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
+        using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
 
         if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
             return edge_ref_set{};

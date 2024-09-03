@@ -222,7 +222,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );
@@ -497,7 +497,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );

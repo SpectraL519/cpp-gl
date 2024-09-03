@@ -186,9 +186,7 @@ public:
     }
 
     template <type_traits::c_sized_range_of<types::id_type> IdRange>
-    void add_edges_from(
-        const types::id_type source_id, const IdRange& destination_id_range
-    ) {
+    void add_edges_from(const types::id_type source_id, const IdRange& destination_id_range) {
         this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
 
@@ -204,11 +202,8 @@ public:
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
 
-    template <type_traits::c_sized_range_of<std::reference_wrapper<const vertex_type>> VertexRefRange>
-    void add_edges_from(
-        const vertex_type& source,
-        const VertexRefRange& destination_range
-    ) {
+    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
+    void add_edges_from(const vertex_type& source, const VertexRefRange& destination_range) {
         this->_verify_vertex(source);
 
         std::vector<edge_ptr_type> new_edges;
@@ -254,10 +249,10 @@ public:
         return this->_impl.get_edge(first.id(), second.id());
     }
 
-    [[nodiscard]] inline std::vector<std::reference_wrapper<const edge_type>> get_edges(
+    [[nodiscard]] inline std::vector<types::const_ref_wrap<edge_type>> get_edges(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
+        using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
 
         if constexpr (std::same_as<implementation_tag, impl::list_t>) {
             return this->_impl.get_edges(first_id, second_id);
@@ -268,7 +263,7 @@ public:
         }
     }
 
-    [[nodiscard]] std::vector<std::reference_wrapper<const edge_type>> get_edges(
+    [[nodiscard]] std::vector<types::const_ref_wrap<edge_type>> get_edges(
         const vertex_type& first, const vertex_type& second
     ) const {
         this->_verify_vertex(first);
@@ -280,10 +275,8 @@ public:
         this->_impl.remove_edge(edge);
     }
 
-    template <type_traits::c_range_of<std::reference_wrapper<const edge_type>> EdgeRefRange>
-    inline void remove_edges_from(
-        const EdgeRefRange edges
-    ) {
+    template <type_traits::c_range_of<types::const_ref_wrap<edge_type>> EdgeRefRange>
+    inline void remove_edges_from(const EdgeRefRange edges) {
         for (const auto& edge_ref : edges)
             this->_impl.remove_edge(edge_ref.get());
     }

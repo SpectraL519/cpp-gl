@@ -92,7 +92,7 @@ using add_edge_property = lib::graph_traits<
 using vertex_id_list = std::vector<lib_t::id_type>;
 
 template <lib_tt::c_instantiation_of<lib::vertex_descriptor> VertexType>
-using vertex_ref_list = std::vector<std::reference_wrapper<const VertexType>>;
+using vertex_ref_list = std::vector<lib_t::const_ref_wrap<VertexType>>;
 
 TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_template) {
     using fixture_type = test_graph<TraitsType>;
@@ -396,7 +396,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             CHECK_THROWS_AS(
-                sut.add_edges_from(constants::out_of_range_elemenet_idx, vertex_id_list{}), std::out_of_range
+                sut.add_edges_from(constants::out_of_range_elemenet_idx, vertex_id_list{}),
+                std::out_of_range
             );
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
@@ -430,20 +431,30 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 "graph") {
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-            CHECK_THROWS_AS(sut.add_edges_from(fixture.out_of_range_vertex, vertex_ref_list<vertex_type>{}), std::out_of_range);
-            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
-
-            CHECK_THROWS_AS(sut.add_edges_from(fixture.invalid_vertex, vertex_ref_list<vertex_type>{}), std::invalid_argument);
-            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
-
             CHECK_THROWS_AS(
-                sut.add_edges_from(vertex_1, vertex_ref_list<vertex_type>{vertex_2, fixture.out_of_range_vertex}),
+                sut.add_edges_from(fixture.out_of_range_vertex, vertex_ref_list<vertex_type>{}),
                 std::out_of_range
             );
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             CHECK_THROWS_AS(
-                sut.add_edges_from(vertex_1, vertex_ref_list<vertex_type>{vertex_2, fixture.invalid_vertex}),
+                sut.add_edges_from(fixture.invalid_vertex, vertex_ref_list<vertex_type>{}),
+                std::invalid_argument
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(
+                    vertex_1, vertex_ref_list<vertex_type>{vertex_2, fixture.out_of_range_vertex}
+                ),
+                std::out_of_range
+            );
+            CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+
+            CHECK_THROWS_AS(
+                sut.add_edges_from(
+                    vertex_1, vertex_ref_list<vertex_type>{vertex_2, fixture.invalid_vertex}
+                ),
                 std::invalid_argument
             );
             CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
@@ -453,9 +464,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             const auto& source = vertex_1;
-            const std::vector<std::reference_wrapper<const vertex_type>> destination_list{
-                vertex_1, vertex_2, vertex_3
-            };
+            const vertex_ref_list<vertex_type> destination_list{vertex_1, vertex_2, vertex_3};
 
             sut.add_edges_from(source, destination_list);
 
@@ -500,9 +509,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements + constants::one_element);
 
-            std::vector<std::reference_wrapper<const edge_type>> edges_to_remove{
-                edge_1, edge_2, edge_3
-            };
+            std::vector<lib_t::const_ref_wrap<edge_type>> edges_to_remove{edge_1, edge_2, edge_3};
 
             const auto has_edge = [&sut](const auto& edge_ref) {
                 return sut.has_edge(edge_ref.get());
@@ -654,7 +661,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements + constants::one_element);
 
-            const std::vector<std::reference_wrapper<const property_edge_type>> edges_to_remove{
+            const std::vector<lib_t::const_ref_wrap<property_edge_type>> edges_to_remove{
                 edge_1, edge_2, edge_3
             };
 
@@ -780,7 +787,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("get_edges(id, id) should return a valid edge reference vector if the given vertices "
             "are incident") {
         sut_type sut{constants::n_elements};
-        std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+        std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
 
         if constexpr (std::same_as<typename sut_type::implementation_tag, lib_i::list_t>) {
             for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
