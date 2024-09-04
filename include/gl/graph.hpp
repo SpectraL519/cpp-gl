@@ -144,6 +144,28 @@ public:
             this->_remove_vertex_impl(this->get_vertex(vertex_id));
     }
 
+    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
+    void remove_vertices_from(const VertexRefRange& vertex_ref_range) {
+        // can be replaced with std::grater for C++26
+        struct vertex_ref_greater_comparator {
+            [[nodiscard]] bool operator()(
+                const types::const_ref_wrap<vertex_type>& lhs,
+                const types::const_ref_wrap<vertex_type>& rhs
+            ) const {
+                return lhs.get() > rhs.get();
+            }
+        };
+
+        // sorts the ids in a descending order and removes duplicate ids
+        std::set<types::const_ref_wrap<vertex_type>, vertex_ref_greater_comparator> vertex_ref_set(
+            std::ranges::begin(vertex_ref_range), std::ranges::end(vertex_ref_range)
+        );
+
+        // TODO: optimize
+        for (const auto& vertex_ref : vertex_ref_set)
+            this->_remove_vertex_impl(vertex_ref.get());
+    }
+
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
         return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));

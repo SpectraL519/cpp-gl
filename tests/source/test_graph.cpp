@@ -327,6 +327,38 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         constexpr auto expected_n_vertices = n_vertices - constants::two;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+
+        constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
+        CHECK(std::ranges::all_of(
+            sut.vertices(),
+            [&sut, expected_n_adjacent_edges](const auto& vertex) {
+                return sut.adjacent_edges(vertex).distance() == expected_n_adjacent_edges;
+            }
+        ));
+    }
+
+    SUBCASE("remove_vetices_from(vertices) should properly remove elements at given indices "
+            "(ignoring duplicate vertex references)") {
+        constexpr auto n_vertices = constants::n_elements + constants::one_element;
+
+        sut_type sut{n_vertices};
+        fixture.initialize_full_graph(sut);
+
+        const auto& v1 = sut.get_vertex(constants::vertex_id_1);
+        const auto& v3 = sut.get_vertex(constants::vertex_id_3);
+
+        sut.remove_vertices_from(vertex_ref_list<vertex_type>{v1, v3, v1});
+
+        constexpr auto expected_n_vertices = n_vertices - constants::two;
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+
+        constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
+        CHECK(std::ranges::all_of(
+            sut.vertices(),
+            [&sut, expected_n_adjacent_edges](const auto& vertex) {
+                return sut.adjacent_edges(vertex).distance() == expected_n_adjacent_edges;
+            }
+        ));
     }
 
     // --- edge method tests ---
