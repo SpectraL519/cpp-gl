@@ -29,7 +29,7 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const lib_t::size_type n_unique_edges_in_full_graph =
-            n_incident_edges_for_fully_connected_vertex * constants::n_elements;
+            n_incident_edges_for_fully_connected_vertex(graph) * graph.n_vertices();
 
         REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
@@ -45,7 +45,7 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const lib_t::size_type n_unique_edges_in_full_graph =
-            (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
+            (n_incident_edges_for_fully_connected_vertex(graph) * graph.n_vertices()) / 2;
 
         REQUIRE_EQ(graph.n_unique_edges(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
@@ -57,15 +57,16 @@ struct test_graph {
             graph.vertices()
                 | std::views::transform(transforms::extract_vertex_id<
                                         typename GraphType::vertex_type>),
-            [this, &graph](const lib_t::id_type vertex_id) {
-                return graph.adjacent_edges(vertex_id).distance()
-                    == n_incident_edges_for_fully_connected_vertex;
-            }
+            [this, &graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
+                const lib_t::id_type vertex_id
+            ) { return graph.adjacent_edges(vertex_id).distance() == expected_n_edges; }
         ));
     }
 
-    const lib_t::size_type n_incident_edges_for_fully_connected_vertex =
-        constants::n_elements - constants::one_element;
+    template <lib_tt::c_instantiation_of<lib::graph> GraphType>
+    lib_t::size_type n_incident_edges_for_fully_connected_vertex(const GraphType& graph) {
+        return graph.n_vertices() - constants::one_element;
+    }
 
     const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
     const vertex_type invalid_vertex{constants::vertex_id_1};
@@ -258,7 +259,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr lib_t::size_type n_vertices_after_remove =
             constants::n_elements - constants::one_element;
         const auto expected_n_incident_edges =
-            fixture.n_incident_edges_for_fully_connected_vertex - constants::one_element;
+            fixture.n_incident_edges_for_fully_connected_vertex(sut);
 
         const auto vertex_id_view =
             sut.vertices() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
@@ -293,7 +294,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr lib_t::size_type n_vertices_after_remove =
             constants::n_elements - constants::one_element;
         const auto expected_n_incident_edges =
-            fixture.n_incident_edges_for_fully_connected_vertex - constants::one_element;
+            fixture.n_incident_edges_for_fully_connected_vertex(sut);
 
         const auto vertex_id_view =
             sut.vertices() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
@@ -311,6 +312,21 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_THROWS_AS(
             func::discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range
         );
+    }
+
+    SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
+            "duplicate indices)") {
+        constexpr auto n_vertices = constants::n_elements + constants::one_element;
+
+        sut_type sut{n_vertices};
+        fixture.initialize_full_graph(sut);
+
+        sut.remove_vertices_from(
+            vertex_id_list{constants::vertex_id_1, constants::vertex_id_3, constants::vertex_id_1}
+        );
+
+        constexpr auto expected_n_vertices = n_vertices - constants::two;
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
     // --- edge method tests ---

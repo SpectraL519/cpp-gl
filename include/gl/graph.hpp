@@ -10,6 +10,7 @@
 #include "types/types.hpp"
 
 #include <algorithm>
+#include <set>
 
 namespace gl {
 
@@ -131,7 +132,17 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
-    // TODO: remove_vertices_from
+    template <type_traits::c_sized_range_of<types::id_type> IdRange>
+    void remove_vertices_from(const IdRange& vertex_id_range) {
+        // sorts the ids in a descending order and removes duplicate ids
+        std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
+            std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
+        );
+
+        // TODO: optimize
+        for (const auto vertex_id : vertex_id_set)
+            this->_remove_vertex_impl(this->get_vertex(vertex_id));
+    }
 
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
@@ -187,14 +198,12 @@ public:
 
     template <type_traits::c_sized_range_of<types::id_type> IdRange>
     void add_edges_from(const types::id_type source_id, const IdRange& destination_id_range) {
-        this->_verify_vertex_id(source_id);
         const auto& source = this->get_vertex(source_id);
 
         std::vector<edge_ptr_type> new_edges;
         new_edges.reserve(std::ranges::size(destination_id_range));
 
         for (const auto destination_id : destination_id_range) {
-            this->_verify_vertex_id(destination_id);
             new_edges.push_back(
                 detail::make_edge<edge_type>(source, this->get_vertex(destination_id))
             );
