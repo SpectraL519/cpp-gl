@@ -10,15 +10,7 @@
 #include "types/types.hpp"
 
 #include <algorithm>
-
-#ifdef GL_TESTING
-
-namespace gl_testing {
-template <typename TraitsType>
-struct test_graph;
-} // namespace gl_testing
-
-#endif
+#include <set>
 
 namespace gl {
 
@@ -31,23 +23,22 @@ public:
     using implementation_type = typename implementation_tag::template type<traits_type>;
 
     using vertex_type = typename traits_type::vertex_type;
+    using vertex_ptr_type = typename traits_type::vertex_ptr_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
 
-    using vertex_set_type = std::vector<vertex_type>;
-    using vertex_iterator_type = typename vertex_set_type::const_iterator;
+    using vetex_list_type = std::vector<vertex_ptr_type>;
+    using vertex_iterator_type =
+        types::dereferencing_iterator<typename vetex_list_type::const_iterator>;
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
+    using edge_ptr_type = typename traits_type::edge_ptr_type;
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
-    using edge_set_type = typename implementation_type::edge_set_type;
+    using edge_list_type = typename implementation_type::edge_list_type;
     using edge_iterator_type = typename implementation_type::edge_iterator_type;
-
-#ifdef GL_TESTING
-    friend struct ::gl_testing::test_graph<traits_type>;
-#endif
 
     graph(const graph&) = delete;
     graph& operator=(const graph&) = delete;
@@ -57,7 +48,7 @@ public:
     graph(const types::size_type n_vertices) : _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
         for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; vertex_id++)
-            this->_vertices.emplace_back(vertex_id);
+            this->_vertices.push_back(detail::make_vertex<vertex_type>(vertex_id));
     }
 
     graph(graph&&) = default;
@@ -77,16 +68,39 @@ public:
 
     // --- vertex methods ---
 
-    inline const vertex_type& add_vertex() {
+    const vertex_type& add_vertex() {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(this->n_vertices());
+        this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
+        return *this->_vertices.back();
     }
 
-    inline const vertex_type& add_vertex(const vertex_properties_type& properties)
+    const vertex_type& add_vertex(const vertex_properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        return this->_vertices.emplace_back(this->n_vertices(), properties);
+        this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices(), properties));
+        return *this->_vertices.back();
+    }
+
+    void add_vertices(const types::size_type n) {
+        this->_impl.add_vertices(n);
+        this->_vertices.reserve(this->n_vertices() + n);
+
+        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+            this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
+    }
+
+    template <type_traits::c_sized_range_of<vertex_properties_type> VertexPropertiesRange>
+    void add_vertices_with(const VertexPropertiesRange& properties_range) {
+        const auto n = std::ranges::size(properties_range);
+
+        this->_impl.add_vertices(n);
+        this->_vertices.reserve(this->n_vertices() + n);
+
+        for (const auto& properties : properties_range)
+            this->_vertices.push_back(
+                detail::make_vertex<vertex_type>(this->n_vertices(), properties)
+            );
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
@@ -94,7 +108,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id()) and &vertex == &this->_vertices[vertex.id()];
+        return this->has_vertex(vertex.id()) and &vertex == this->_vertices[vertex.id()].get();
     }
 
     // clang-format off
@@ -103,7 +117,8 @@ public:
     [[nodiscard]] gl_attr_force_inline const vertex_type& get_vertex(
         const types::id_type vertex_id
     ) const {
-        return this->_vertices.at(vertex_id);
+        this->_verify_vertex_id(vertex_id);
+        return *this->_vertices[vertex_id];
     }
 
     // clang-format on
@@ -117,9 +132,43 @@ public:
         this->_remove_vertex_impl(vertex);
     }
 
+    template <type_traits::c_sized_range_of<types::id_type> IdRange>
+    void remove_vertices_from(const IdRange& vertex_id_range) {
+        // sorts the ids in a descending order and removes duplicate ids
+        std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
+            std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
+        );
+
+        // TODO: optimize
+        for (const auto vertex_id : vertex_id_set)
+            this->_remove_vertex_impl(this->get_vertex(vertex_id));
+    }
+
+    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
+    void remove_vertices_from(const VertexRefRange& vertex_ref_range) {
+        // can be replaced with std::grater for C++26
+        struct vertex_ref_greater_comparator {
+            [[nodiscard]] bool operator()(
+                const types::const_ref_wrap<vertex_type>& lhs,
+                const types::const_ref_wrap<vertex_type>& rhs
+            ) const {
+                return lhs.get() > rhs.get();
+            }
+        };
+
+        // sorts the ids in a descending order and removes duplicate ids
+        std::set<types::const_ref_wrap<vertex_type>, vertex_ref_greater_comparator> vertex_ref_set(
+            std::ranges::begin(vertex_ref_range), std::ranges::end(vertex_ref_range)
+        );
+
+        // TODO: optimize
+        for (const auto& vertex_ref : vertex_ref_set)
+            this->_remove_vertex_impl(vertex_ref.get());
+    }
+
     [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
     ) const {
-        return make_const_iterator_range(this->_vertices);
+        return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
     }
 
     // --- edge methods ---
@@ -127,22 +176,26 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_type& add_edge(
+    const edge_type& add_edge(
         const types::id_type first_id, const types::id_type second_id
     ) {
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
         return this->_impl.add_edge(
-            make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
+            detail::make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
         );
     }
 
-    gl_attr_force_inline const edge_type& add_edge(
+    const edge_type& add_edge(
         const types::id_type first_id,
         const types::id_type second_id,
         const edge_properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<edge_properties_type>)
     {
-        return this->_impl.add_edge(make_edge<edge_type>(
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
+        return this->_impl.add_edge(detail::make_edge<edge_type>(
             this->get_vertex(first_id), this->get_vertex(second_id), properties
         ));
     }
@@ -152,7 +205,7 @@ public:
     const edge_type& add_edge(const vertex_type& first, const vertex_type& second) {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(make_edge<edge_type>(first, second));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second));
     }
 
     const edge_type& add_edge(
@@ -162,7 +215,37 @@ public:
     {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(make_edge<edge_type>(first, second, properties));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second, properties));
+    }
+
+    template <type_traits::c_sized_range_of<types::id_type> IdRange>
+    void add_edges_from(const types::id_type source_id, const IdRange& destination_id_range) {
+        const auto& source = this->get_vertex(source_id);
+
+        std::vector<edge_ptr_type> new_edges;
+        new_edges.reserve(std::ranges::size(destination_id_range));
+
+        for (const auto destination_id : destination_id_range) {
+            new_edges.push_back(
+                detail::make_edge<edge_type>(source, this->get_vertex(destination_id))
+            );
+        }
+        this->_impl.add_edges_from(source_id, std::move(new_edges));
+    }
+
+    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
+    void add_edges_from(const vertex_type& source, const VertexRefRange& destination_range) {
+        this->_verify_vertex(source);
+
+        std::vector<edge_ptr_type> new_edges;
+        new_edges.reserve(std::ranges::size(destination_range));
+
+        for (const auto& destination_ref : destination_range) {
+            const auto& destination = destination_ref.get();
+            this->_verify_vertex(destination);
+            new_edges.push_back(detail::make_edge<edge_type>(source, destination));
+        }
+        this->_impl.add_edges_from(source.id(), std::move(new_edges));
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(
@@ -197,10 +280,10 @@ public:
         return this->_impl.get_edge(first.id(), second.id());
     }
 
-    [[nodiscard]] inline std::vector<std::reference_wrapper<const edge_type>> get_edges(
+    [[nodiscard]] inline std::vector<types::const_ref_wrap<edge_type>> get_edges(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        using edge_ref_set = std::vector<std::reference_wrapper<const edge_type>>;
+        using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
 
         if constexpr (std::same_as<implementation_tag, impl::list_t>) {
             return this->_impl.get_edges(first_id, second_id);
@@ -211,7 +294,7 @@ public:
         }
     }
 
-    [[nodiscard]] std::vector<std::reference_wrapper<const edge_type>> get_edges(
+    [[nodiscard]] std::vector<types::const_ref_wrap<edge_type>> get_edges(
         const vertex_type& first, const vertex_type& second
     ) const {
         this->_verify_vertex(first);
@@ -221,6 +304,12 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_impl.remove_edge(edge);
+    }
+
+    template <type_traits::c_range_of<types::const_ref_wrap<edge_type>> EdgeRefRange>
+    inline void remove_edges_from(const EdgeRefRange edges) {
+        for (const auto& edge_ref : edges)
+            this->_impl.remove_edge(edge_ref.get());
     }
 
     [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
@@ -289,7 +378,7 @@ public:
 private:
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
-            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
     void _verify_vertex(const vertex_type& vertex) const {
@@ -324,11 +413,11 @@ private:
         std::for_each(
             std::next(std::begin(this->_vertices), vertex_id),
             this->_vertices.end(),
-            [](auto& v) { v._id--; }
+            [](auto& v) { v->_id--; }
         );
     }
 
-    vertex_set_type _vertices{};
+    vetex_list_type _vertices{};
     implementation_type _impl{};
 };
 

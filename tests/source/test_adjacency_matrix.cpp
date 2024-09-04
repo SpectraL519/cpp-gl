@@ -47,6 +47,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
+        SutType sut{};
+        sut.add_vertices(constants::n_elements);
+
+        CHECK_EQ(sut.n_vertices(), constants::n_elements);
+        CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -74,7 +82,9 @@ struct test_directed_adjacency_matrix {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(
+            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+        );
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -272,7 +282,9 @@ struct test_undirected_adjacency_matrix {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(
+            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+        );
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {

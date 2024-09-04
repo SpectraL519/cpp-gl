@@ -46,6 +46,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), target_n_vertices);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
+        SutType sut{};
+        sut.add_vertices(constants::n_elements);
+
+        CHECK_EQ(sut.n_vertices(), constants::n_elements);
+        CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -73,7 +81,9 @@ struct test_directed_adjacency_list {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(
+            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+        );
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -212,7 +222,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );
@@ -321,7 +331,9 @@ struct test_undirected_adjacency_list {
     }
 
     const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
-        return sut.add_edge(lib::make_edge<edge_type>(vertices[first_id], vertices[second_id]));
+        return sut.add_edge(
+            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+        );
     }
 
     void fully_connect_vertex(const lib_t::id_type first_id) {
@@ -485,7 +497,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<std::reference_wrapper<const edge_type>> expected_edges;
+    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );

@@ -53,10 +53,19 @@ struct directed_adjacency_matrix {
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        self._n_unique_edges++;
-        auto& matrix_element = self._matrix.at(edge->first().id()).at(edge->second().id());
+        auto& matrix_element = self._matrix[edge->first().id()][edge->second().id()];
         matrix_element = std::move(edge);
+        self._n_unique_edges++;
         return *matrix_element;
+    }
+
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& matrix_row_source = self._matrix[source_id];
+        for (auto& edge : new_edges)
+            matrix_row_source[edge->second().id()] = std::move(edge);
+        self._n_unique_edges += new_edges.size();
     }
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
@@ -88,12 +97,26 @@ struct undirected_adjacency_matrix {
         const auto second_id = edge->second().id();
 
         if (not edge->is_loop())
-            self._matrix.at(second_id).at(first_id) = edge;
+            self._matrix[second_id][first_id] = edge;
         auto& matrix_element = self._matrix.at(first_id).at(second_id);
         matrix_element = edge;
 
         self._n_unique_edges++;
         return *matrix_element;
+    }
+
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& matrix_row_source = self._matrix[source_id];
+
+        for (auto& edge : new_edges) {
+            if (not edge->is_loop())
+                self._matrix[edge->second().id()][source_id] = edge;
+            matrix_row_source[edge->second().id()] = std::move(edge);
+        }
+
+        self._n_unique_edges += new_edges.size();
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {

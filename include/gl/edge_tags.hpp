@@ -137,6 +137,8 @@ using edge_ptr_type = typename EdgeType::directional_tag::template edge_ptr_type
 
 } // namespace types
 
+namespace detail {
+
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
 [[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
     const typename EdgeType::vertex_type& first, const typename EdgeType::vertex_type& second
@@ -152,5 +154,7 @@ template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
 ) {
     return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
 }
+
+} // namespace detail
 
 } // namespace gl
