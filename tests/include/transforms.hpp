@@ -8,8 +8,8 @@
 
 namespace gl_testing::transforms {
 
-template <lib_tt::c_instantiation_of<lib::vertex_descriptor> Vertextype = lib::vertex_descriptor<>>
-inline lib_t::id_type extract_vertex_id(const Vertextype& vertex) {
+template <lib_tt::c_instantiation_of<lib::vertex_descriptor> VertexType = lib::vertex_descriptor<>>
+inline lib_t::id_type extract_vertex_id(const VertexType& vertex) {
     return vertex.id();
 }
 

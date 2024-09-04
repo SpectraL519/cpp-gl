@@ -66,4 +66,29 @@ private:
 template <type_traits::c_properties Properties = types::empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
+namespace types {
+
+template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
+using vertex_ptr_type = std::unique_ptr<VertexType>;
+
+} // namespace types
+
+namespace detail {
+
+template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
+[[nodiscard]] gl_attr_force_inline types::vertex_ptr_type<VertexType> make_vertex(
+    const types::id_type id
+) {
+    return std::make_unique<VertexType>(id);
+}
+
+template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
+[[nodiscard]] gl_attr_force_inline types::vertex_ptr_type<VertexType> make_vertex(
+    const types::id_type id, const typename VertexType::properties_type& properties
+) {
+    return std::make_unique<VertexType>(id, properties);
+}
+
+} // namespace detail
+
 } // namespace gl

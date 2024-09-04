@@ -22,7 +22,7 @@ struct test_directed_edge_tag : test_edge_tags {
     using sut_type = lib::directed_t;
     using edge_type = lib::directed_edge<vertex_type>;
 
-    const std::unique_ptr<edge_type> edge = lib::make_edge<edge_type>(vd_1, vd_2);
+    const std::unique_ptr<edge_type> edge = lib::detail::make_edge<edge_type>(vd_1, vd_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -44,7 +44,7 @@ TEST_CASE_FIXTURE(
     using property_edge_type = lib::directed_edge<vertex_type, types::used_property>;
 
     const types::used_property used{true};
-    const auto property_edge = lib::make_edge<property_edge_type>(vd_1, vd_2, used);
+    const auto property_edge = lib::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
 
     static_assert(std::is_same_v<
                   std::remove_cvref_t<decltype(property_edge)>,
@@ -78,7 +78,7 @@ struct test_undirected_edge_tag : test_edge_tags {
     using sut_type = lib::undirected_t;
     using edge_type = lib::undirected_edge<vertex_type>;
 
-    const std::shared_ptr<edge_type> edge = lib::make_edge<edge_type>(vd_1, vd_2);
+    const std::shared_ptr<edge_type> edge = lib::detail::make_edge<edge_type>(vd_1, vd_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -100,7 +100,7 @@ TEST_CASE_FIXTURE(
     using property_edge_type = lib::undirected_edge<vertex_type, types::used_property>;
 
     const types::used_property used{true};
-    const auto property_edge = lib::make_edge<property_edge_type>(vd_1, vd_2, used);
+    const auto property_edge = lib::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
 
     static_assert(std::is_same_v<
                   std::remove_cvref_t<decltype(property_edge)>,

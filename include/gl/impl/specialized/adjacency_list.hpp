@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <format>
+#include <unordered_set>
 
 namespace gl::impl {
 
@@ -20,7 +21,7 @@ requires std::is_invocable_r_v<
     AddressProjection,
     const typename AdjacencyList::edge_ptr_type&>
 [[nodiscard]] typename AdjacencyList::edge_iterator_type::iterator_type strict_find(
-    typename AdjacencyList::edge_set_type& edge_set, const typename AdjacencyList::edge_type* edge
+    typename AdjacencyList::edge_list_type& edge_set, const typename AdjacencyList::edge_type* edge
 ) {
     const auto it = std::ranges::find(edge_set, edge, AddressProjection{});
     if (it == edge_set.end())
@@ -43,7 +44,7 @@ struct directed_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
-    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_list_type = typename impl_type::edge_list_type;
     using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
@@ -57,21 +58,39 @@ struct directed_adjacency_list {
     };
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        for (auto& adj_edges : self._list) {
+        const auto vertex_id = vertex.id();
+
+        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+            auto& adj_edges = self._list[i];
+            if (i == vertex_id or adj_edges.empty())
+                continue;
+
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
             );
             self._n_unique_edges -= std::ranges::distance(rem_subrange.begin(), rem_subrange.end());
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
-        self._list.erase(std::next(std::begin(self._list), vertex.id()));
+
+        self._n_unique_edges -= self._list[vertex_id].size();
+        self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        auto& adjacent_edges_first = self._list.at(edge->first().id());
+        auto& adjacent_edges_first = self._list[edge->first().id()];
         adjacent_edges_first.push_back(std::move(edge));
         self._n_unique_edges++;
         return *adjacent_edges_first.back();
+    }
+
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& adjacent_edges_source = self._list[source_id];
+        adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
+        for (auto& edge : new_edges)
+            adjacent_edges_source.push_back(std::move(edge));
+        self._n_unique_edges += new_edges.size();
     }
 
     [[nodiscard]] gl_attr_force_inline static bool is_edge_incident_to(
@@ -102,7 +121,7 @@ struct undirected_adjacency_list {
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
-    using edge_set_type = typename impl_type::edge_set_type;
+    using edge_list_type = typename impl_type::edge_list_type;
     using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
@@ -116,36 +135,51 @@ struct undirected_adjacency_list {
     };
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        // TODO: optimize for multiedges
-        // * the edges adjacent to incident_vertex should be processed once
-
         const auto vertex_id = vertex.id();
+        std::unordered_set<types::id_type> incident_vertex_id_set;
 
-        for (const auto& edge : self._list.at(vertex_id)) {
-            const auto& incident_vertex = edge->incident_vertex(vertex);
-            if (incident_vertex == vertex)
-                continue; // loop: will be removed with the vertex's list
+        for (const auto& edge : self._list[vertex_id]) {
+            if (edge->is_loop())
+                continue; // will be removed with the vertex's list
+            incident_vertex_id_set.insert(edge->incident_vertex(vertex).id());
+        }
 
-            auto& adj_edges = self._list.at(incident_vertex.id());
+        for (const auto& incident_vertex_id : incident_vertex_id_set) {
+            auto& adj_edges = self._list[incident_vertex_id];
             const auto rem_subrange = std::ranges::remove_if(
                 adj_edges, [&vertex](const auto& edge) { return edge->is_incident_with(vertex); }
             );
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
 
-        self._n_unique_edges -= self._list.at(vertex_id).size();
+        self._n_unique_edges -= self._list[vertex_id].size();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        auto& adjacent_edges_first = self._list.at(edge->first().id());
+        auto& adjacent_edges_first = self._list[edge->first().id()];
 
         if (not edge->is_loop())
-            self._list.at(edge->second().id()).push_back(edge);
+            self._list[edge->second().id()].push_back(edge);
         adjacent_edges_first.push_back(std::move(edge));
 
         self._n_unique_edges++;
         return *adjacent_edges_first.back();
+    }
+
+    static void add_edges_from(
+        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+    ) {
+        auto& adjacent_edges_source = self._list[source_id];
+        adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
+
+        for (auto& edge : new_edges) {
+            if (not edge->is_loop())
+                self._list[edge->second().id()].push_back(edge);
+            adjacent_edges_source.push_back(std::move(edge));
+        }
+
+        self._n_unique_edges += new_edges.size();
     }
 
     [[nodiscard]] inline static bool is_edge_incident_to(

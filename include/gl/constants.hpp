@@ -9,6 +9,7 @@ inline constexpr types::size_type one{1ull};
 inline constexpr types::size_type two{2ull};
 
 inline constexpr types::size_type default_size{zero};
+inline constexpr types::size_type begin_idx{zero};
 inline constexpr types::id_type initial_id{zero};
 inline constexpr types::size_type one_element{one};
 
