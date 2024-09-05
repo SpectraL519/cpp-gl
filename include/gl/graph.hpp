@@ -424,19 +424,19 @@ private:
 namespace type_traits {
 
 template <typename T>
-concept c_graph_type = c_instantiation_of<T, graph>;
+concept c_graph = c_instantiation_of<T, graph>;
 
-template <c_graph_type GraphType>
+template <c_graph GraphType>
 inline constexpr bool is_directed_v<GraphType> = is_directed_v<typename GraphType::edge_type>;
 
-template <c_graph_type GraphType>
+template <c_graph GraphType>
 inline constexpr bool is_undirected_v<GraphType> = is_undirected_v<typename GraphType::edge_type>;
 
 template <typename T>
-concept c_directed_graph_type = c_graph_type<T> and is_directed_v<T>;
+concept c_directed_graph = c_graph<T> and is_directed_v<T>;
 
 template <typename T>
-concept c_undirected_graph_type = c_graph_type<T> and is_undirected_v<T>;
+concept c_undirected_graph = c_graph<T> and is_undirected_v<T>;
 
 } // namespace type_traits
 

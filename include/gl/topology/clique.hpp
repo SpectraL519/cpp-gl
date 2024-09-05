@@ -5,7 +5,7 @@
 
 namespace gl::topology {
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType clique(const types::size_type n_vertices) {
     GraphType graph{n_vertices};
 

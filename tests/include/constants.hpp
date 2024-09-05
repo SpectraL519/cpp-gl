@@ -23,6 +23,9 @@ IC lib_t::size_type one_element = one;
 // n_elements for graph topology tests
 IC lib_t::size_type n_elements_top = 10ull;
 
+// n_elements for graph algorithm tests
+IC lib_t::size_type n_elements_alg = 10ull;
+
 IC lib_t::size_type first_element_idx = zero;
 IC lib_t::size_type last_element_idx = n_elements - one_element;
 IC lib_t::size_type out_of_range_elemenet_idx = n_elements;
