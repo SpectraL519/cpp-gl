@@ -19,7 +19,7 @@ using vertex_id_range = std::vector<types::id_type>;
 
 } // namespace detail
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType complete_binary_tree(const types::size_type depth) {
     constexpr types::size_type min_non_trivial_depth = 2ull;
 
@@ -45,7 +45,7 @@ template <type_traits::c_graph_type GraphType>
     return graph;
 }
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_complete_binary_tree(const types::size_type depth) {
     if constexpr (type_traits::is_directed_v<GraphType>) {
         constexpr types::size_type min_non_trivial_depth = 2ull;

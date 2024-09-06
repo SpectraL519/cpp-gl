@@ -5,7 +5,7 @@
 
 namespace gl::topology {
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType cycle(const types::size_type n_vertices) {
     GraphType graph{n_vertices};
 
@@ -15,7 +15,7 @@ template <type_traits::c_graph_type GraphType>
     return graph;
 }
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_cycle(const types::size_type n_vertices) {
     if constexpr (type_traits::is_directed_v<GraphType>) {
         GraphType graph{n_vertices};
