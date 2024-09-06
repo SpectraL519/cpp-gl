@@ -264,13 +264,13 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::optional_ref<const edge_type> get_edge(
+    [[nodiscard]] gl_attr_force_inline types::optional_cref<edge_type> get_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
         return this->_impl.get_edge(first_id, second_id);
     }
 
-    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+    [[nodiscard]] types::optional_cref<edge_type> get_edge(
         const vertex_type& first, const vertex_type& second
     ) const {
         if (not (this->has_vertex(first) and this->has_vertex(second)))
@@ -424,19 +424,19 @@ private:
 namespace type_traits {
 
 template <typename T>
-concept c_graph_type = c_instantiation_of<T, graph>;
+concept c_graph = c_instantiation_of<T, graph>;
 
-template <c_graph_type GraphType>
+template <c_graph GraphType>
 inline constexpr bool is_directed_v<GraphType> = is_directed_v<typename GraphType::edge_type>;
 
-template <c_graph_type GraphType>
+template <c_graph GraphType>
 inline constexpr bool is_undirected_v<GraphType> = is_undirected_v<typename GraphType::edge_type>;
 
 template <typename T>
-concept c_directed_graph_type = c_graph_type<T> and is_directed_v<T>;
+concept c_directed_graph = c_graph<T> and is_directed_v<T>;
 
 template <typename T>
-concept c_undirected_graph_type = c_graph_type<T> and is_undirected_v<T>;
+concept c_undirected_graph = c_graph<T> and is_undirected_v<T>;
 
 } // namespace type_traits
 

@@ -5,7 +5,7 @@
 
 namespace gl::topology {
 
-template <type_traits::c_graph_type GraphType>
+template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType full_bipartite(
     const types::size_type n_vertices_a, const types::size_type n_vertices_b
 ) {

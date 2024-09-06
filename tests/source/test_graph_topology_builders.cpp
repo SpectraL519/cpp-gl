@@ -12,7 +12,7 @@ TEST_SUITE_BEGIN("test_graph_topology_builders");
 
 namespace {
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] lib_t::size_type n_unique_edges_for_bidir_topology(
     const lib_t::size_type n_connections
 ) {
@@ -22,7 +22,7 @@ template <lib_tt::c_graph_type GraphType>
         return n_connections / constants::two;
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 void verify_graph_size(
     const GraphType& graph,
     const lib_t::size_type expected_n_vertices,
@@ -32,7 +32,7 @@ void verify_graph_size(
     REQUIRE_EQ(graph.n_unique_edges(), expected_n_connections);
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 void verify_bidir_graph_size(
     const GraphType& graph,
     const lib_t::size_type expected_n_vertices,
@@ -48,7 +48,7 @@ void verify_bidir_graph_size(
 
 namespace predicate {
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_fully_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -59,7 +59,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -69,7 +69,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected_to_any_from(
     const GraphType& graph, const auto& vertex_it_range
 ) {
@@ -82,7 +82,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -95,7 +95,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -109,7 +109,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -127,7 +127,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_connected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -150,7 +150,7 @@ template <lib_tt::c_graph_type GraphType>
     };
 }
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source_vertex) {
@@ -190,7 +190,7 @@ template <lib_tt::c_graph_type GraphType>
 
 /*
 
-template <lib_tt::c_graph_type GraphType>
+template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto predicate(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type&) {};
