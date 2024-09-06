@@ -264,13 +264,13 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::optional_ref<const edge_type> get_edge(
+    [[nodiscard]] gl_attr_force_inline types::optional_cref<edge_type> get_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
         return this->_impl.get_edge(first_id, second_id);
     }
 
-    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+    [[nodiscard]] types::optional_cref<edge_type> get_edge(
         const vertex_type& first, const vertex_type& second
     ) const {
         if (not (this->has_vertex(first) and this->has_vertex(second)))

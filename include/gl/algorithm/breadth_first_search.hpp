@@ -1,5 +1,6 @@
 #pragma once
 
+#include "constants.hpp"
 #include "detail/search_algorithm_util.hpp"
 
 #include <iostream>
@@ -14,6 +15,7 @@ template <
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
 type_traits::alg_return_type<SearchTreeType> breadth_first_search(
     const GraphType& graph,
+    const types::optional_cref<typename GraphType::vertex_type>& root_vertex_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -38,18 +40,27 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
         }
     };
 
-    const auto enque_vertex_predicate = [&visited](const vertex_type& vertex, const edge_type& in_edge) {
-        return not visited[vertex.id()];
-    };
+    const auto enque_vertex_predicate =
+        [&visited](const vertex_type& vertex, const edge_type& in_edge) {
+            return not visited[vertex.id()];
+        };
 
-    detail::bfs_impl(
-        graph,
-        search_vertex_predicate,
-        visit,
-        enque_vertex_predicate,
-        pre_visit,
-        post_visit
-    );
+    if (root_vertex_opt) {
+        detail::rooted_bfs_impl(
+            graph,
+            root_vertex_opt->get(),
+            search_vertex_predicate,
+            visit,
+            enque_vertex_predicate,
+            pre_visit,
+            post_visit
+        );
+    }
+    else {
+        detail::bfs_impl(
+            graph, search_vertex_predicate, visit, enque_vertex_predicate, pre_visit, post_visit
+        );
+    }
 
     if constexpr (not type_traits::is_alg_no_return_type_v<SearchTreeType>)
         return search_tree;
