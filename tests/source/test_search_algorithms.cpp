@@ -401,7 +401,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::deque<lib_t::id_type> expected_previsit_order;
+    std::vector<lib_t::id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
         graph = lib::topology::clique<graph_type>(constants::zero_elements);
@@ -413,38 +413,42 @@ TEST_CASE_TEMPLATE_DEFINE(
         expected_previsit_order = {0};
     }
 
-    // SUBCASE("clique") {
-    //     graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
-    //     for (auto id = lib::constants::initial_id + constants::one; id < constants::n_elements_alg;
-    //          id++)
-    //         expected_previsit_order.push_front(id);
-    //     expected_previsit_order.push_front(lib::constants::initial_id);
-    // }
+    SUBCASE("clique") {
+        graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
+        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
+            expected_previsit_order.push_back(id);
+    }
 
-    // SUBCASE("path graph") {
-    //     graph = lib::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
-    //     for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
-    //         expected_previsit_order.push_back(id);
-    // }
+    SUBCASE("path graph") {
+        graph = lib::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
+        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
+            expected_previsit_order.push_back(id);
+    }
 
-    // SUBCASE("full bipartite graph") {
-    //     /*
-    //     A = {0, 1, 2}
-    //     B = {3, 4}
-    //     [s: <stack state without already visited vertices>]
-    //     -> root = 0 -> connected to B [s: 4 3]
-    //     -> 4 connected to A (root visited) [s: 2 1 3]
-    //     -> 2 connected to B (4 visited) [s: 3 1 3]
-    //     finally: 0 -> 4 -> 2 -> 1 -> 3
-    //     */
-    //     graph = lib::topology::full_bipartite<graph_type>(constants::three, constants::two);
-    //     expected_previsit_order = {0, 4, 2, 3, 1};
-    // }
+    SUBCASE("full bipartite graph") {
+        /*
+        A = {0, 1, 2}
+        B = {3, 4}
+        (<min not visited incident vertex>)
+        -> root = 0 -> connected to B (3)
+        -> 3 connected to A (1)
+        -> 1 connected to B (4)
+        -> 4 connected to A (2)
+        finally: 0 -> 3 -> 1 -> 4 -> 2
+        */
+        graph = lib::topology::full_bipartite<graph_type>(constants::three, constants::two);
+        expected_previsit_order = {0, 3, 1, 4, 2};
+    }
 
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
 
-    std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
+    /*
+    post visit order should be reverse of pre visit order
+    because the algorithm will search the graph recursively and call
+    post visit after return from the recursive call
+    */
+    const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
     lib::algorithm::recursive_depth_first_search(
@@ -481,63 +485,68 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         types::visited_property>> // undirected adjacency matrix
 );
 
-// TEST_CASE_TEMPLATE_DEFINE(
-//     "recursive_depth_first_search no return with root vertex should properly traverse the graph",
-//     GraphType,
-//     rdfs_no_return_with_root_graph_template
-// ) {
-//     using graph_type = GraphType;
+TEST_CASE_TEMPLATE_DEFINE(
+    "recursive_depth_first_search no return with root vertex should properly traverse the graph",
+    GraphType,
+    rdfs_no_return_with_root_graph_template
+) {
+    using graph_type = GraphType;
 
-//     graph_type graph;
-//     std::optional<lib_t::id_type> root_vertex_id;
-//     std::deque<lib_t::id_type> expected_previsit_order;
+    graph_type graph;
+    std::optional<lib_t::id_type> root_vertex_id;
+    std::vector<lib_t::id_type> expected_previsit_order;
 
-//     SUBCASE("single vertex graph") {
-//         graph = lib::topology::clique<graph_type>(constants::one_element);
-//         root_vertex_id.emplace(constants::vertex_id_1);
-//         expected_previsit_order = {0};
-//     }
+    SUBCASE("single vertex graph") {
+        graph = lib::topology::clique<graph_type>(constants::one_element);
+        root_vertex_id.emplace(constants::vertex_id_1);
+        expected_previsit_order = {0};
+    }
 
-//     SUBCASE("clique") {
-//         graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
-//         root_vertex_id.emplace(constants::vertex_id_3);
+    SUBCASE("clique") {
+        graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
+        root_vertex_id.emplace(constants::vertex_id_3);
 
-//         for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++) {
-//             if (id != constants::vertex_id_3)
-//                 expected_previsit_order.push_front(id);
-//         }
-//         expected_previsit_order.push_front(constants::vertex_id_3);
-//     }
+        expected_previsit_order.push_back(constants::vertex_id_3);
+        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++) {
+            if (id != constants::vertex_id_3)
+                expected_previsit_order.push_back(id);
+        }
+    }
 
-//     CAPTURE(graph);
-//     CAPTURE(root_vertex_id);
-//     CAPTURE(expected_previsit_order);
+    CAPTURE(graph);
+    CAPTURE(root_vertex_id);
+    CAPTURE(expected_previsit_order);
 
-//     std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
+    /*
+    post visit order should be reverse of pre visit order
+    because the algorithm will search the graph recursively and call
+    post visit after return from the recursive call
+    */
+    const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
-//     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-//     lib::algorithm::recursive_depth_first_search(
-//         graph,
-//         root_vertex_id,
-//         [&](const auto& vertex) { // previsit
-//             previsit_order.push_back(vertex.id());
-//         },
-//         [&](const auto& vertex) { // postvisit
-//             postvisit_order.push_back(vertex.id());
-//         }
-//     );
+    std::vector<lib_t::id_type> previsit_order, postvisit_order;
+    lib::algorithm::recursive_depth_first_search(
+        graph,
+        root_vertex_id,
+        [&](const auto& vertex) { // previsit
+            previsit_order.push_back(vertex.id());
+        },
+        [&](const auto& vertex) { // postvisit
+            postvisit_order.push_back(vertex.id());
+        }
+    );
 
-//     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
-//     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
-// }
+    CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
+    CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+}
 
-// TEST_CASE_TEMPLATE_INSTANTIATE(
-//     rdfs_no_return_with_root_graph_template,
-//     lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-//     lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-//     lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-//     lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
-// );
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    rdfs_no_return_with_root_graph_template,
+    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
+    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
+    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
+    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+);
 
 TEST_CASE_TEMPLATE_DEFINE(
     "recursive_depth_first_search with return should properly traverse the graph",

@@ -3,7 +3,6 @@
 #include "constants.hpp"
 #include "detail/search_algorithm_util.hpp"
 
-#include <iostream>
 #include <queue>
 
 namespace gl::algorithm {

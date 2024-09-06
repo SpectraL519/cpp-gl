@@ -3,14 +3,12 @@
 #include "constants.hpp"
 #include "detail/search_algorithm_util.hpp"
 
-#include <iostream>
 #include <queue>
 
 namespace gl::algorithm {
 
 template <
     type_traits::c_alg_return_graph SearchTreeType = no_return,
-    bool RunRecursively = run_iteratively,
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
