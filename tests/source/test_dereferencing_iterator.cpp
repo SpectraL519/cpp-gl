@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <deque>
 #include <forward_list>
-#include <iostream>
 #include <list>
 
 namespace gl_testing {

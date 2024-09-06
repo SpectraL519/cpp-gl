@@ -99,7 +99,7 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[no_unique_address]] properties_type properties{};
+    [[no_unique_address]] mutable properties_type properties{};
 
 private:
     types::homogeneous_pair<const vertex_type&> _vertices;
