@@ -7,7 +7,7 @@
 
 namespace gl::algorithm::detail {
 
-template <type_traits::c_alg_return_graph SearchTreeType, type_traits::c_directed_graph GraphType>
+template <type_traits::c_alg_return_graph SearchTreeType, type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline SearchTreeType init_search_tree(const GraphType& graph) {
     if constexpr (type_traits::is_alg_no_return_type_v<SearchTreeType>)
         return SearchTreeType{};
