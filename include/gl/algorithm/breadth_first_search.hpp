@@ -9,7 +9,7 @@
 namespace gl::algorithm {
 
 template <
-    type_traits::c_alg_return_graph SearchTreeType,
+    type_traits::c_alg_return_graph SearchTreeType = no_return,
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
