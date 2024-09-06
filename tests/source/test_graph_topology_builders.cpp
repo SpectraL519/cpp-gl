@@ -4,8 +4,6 @@
 
 #include <doctest.h>
 
-#include <iostream>
-
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_topology_builders");
