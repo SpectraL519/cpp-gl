@@ -7,7 +7,7 @@
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_algorithm");
+TEST_SUITE_BEGIN("test_search_algorithms");
 
 namespace common {
 
@@ -34,6 +34,14 @@ template <lib_tt::c_graph GraphType1, lib_tt::c_graph GraphType2>
     };
 }
 
+template <lib_tt::c_instantiation_of<lib::vertex> VertexType>
+requires(std::same_as<typename VertexType::properties_type, types::visited_property>)
+struct vertex_visited_projection {
+    [[nodiscard]] bool operator()(const VertexType& vertex) const {
+        return vertex.properties.visited;
+    }
+};
+
 } // namespace common
 
 // --- bfs tests ---
@@ -44,6 +52,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     bfs_no_return_graph_template
 ) {
     using graph_type = GraphType;
+    using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
     std::vector<lib_t::id_type> expected_previsit_order;
@@ -94,19 +103,30 @@ TEST_CASE_TEMPLATE_DEFINE(
         },
         [&](const auto& vertex) { // postvisit
             postvisit_order.push_back(vertex.id());
+            vertex.properties.visited = true;
         }
     );
 
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+    CHECK(std::ranges::all_of(
+        graph.vertices(), std::identity{}, common::vertex_visited_projection<vertex_type>{}
+    ));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_no_return_graph_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+    lib::graph<
+        lib::list_graph_traits<lib::directed_t, types::visited_property>>, // directed adjacency list
+    lib::graph<lib::list_graph_traits<
+        lib::undirected_t,
+        types::visited_property>>, // undirected adjacency list
+    lib::graph<lib::matrix_graph_traits<
+        lib::directed_t,
+        types::visited_property>>, // directed adjacency matrix
+    lib::graph<lib::matrix_graph_traits<
+        lib::undirected_t,
+        types::visited_property>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -202,6 +222,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     dfs_no_return_graph_template
 ) {
     using graph_type = GraphType;
+    using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
     std::deque<lib_t::id_type> expected_previsit_order;
@@ -258,19 +279,30 @@ TEST_CASE_TEMPLATE_DEFINE(
         },
         [&](const auto& vertex) { // postvisit
             postvisit_order.push_back(vertex.id());
+            vertex.properties.visited = true;
         }
     );
 
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+    CHECK(std::ranges::all_of(
+        graph.vertices(), std::identity{}, common::vertex_visited_projection<vertex_type>{}
+    ));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     dfs_no_return_graph_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+    lib::graph<
+        lib::list_graph_traits<lib::directed_t, types::visited_property>>, // directed adjacency list
+    lib::graph<lib::list_graph_traits<
+        lib::undirected_t,
+        types::visited_property>>, // undirected adjacency list
+    lib::graph<lib::matrix_graph_traits<
+        lib::directed_t,
+        types::visited_property>>, // directed adjacency matrix
+    lib::graph<lib::matrix_graph_traits<
+        lib::undirected_t,
+        types::visited_property>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -358,6 +390,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
 );
 
-TEST_SUITE_END(); // test_algorithm
+TEST_SUITE_END(); // test_search_algorithms
 
 } // namespace gl_testing
