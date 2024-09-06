@@ -43,11 +43,13 @@ template <typename F>
 inline constexpr bool is_empty_callback_v = is_empty_callback<F>::value;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_vertex_callback = is_empty_callback_v<F>
+concept c_vertex_callback =
+    is_empty_callback_v<F>
     or std::convertible_to<F, algorithm::vertex_callback<GraphType, ReturnType, Args...>>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_edge_callback = is_empty_callback_v<F>
+concept c_edge_callback =
+    is_empty_callback_v<F>
     or std::convertible_to<F, algorithm::edge_callback<GraphType, ReturnType, Args...>>;
 
 } // namespace type_traits
