@@ -27,31 +27,17 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
 
     auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
 
-    const auto search_vertex_predicate = [&visited](const vertex_type& vertex) -> bool {
-        return not visited[vertex.id()];
-    };
-
-    const auto visit = [&](const vertex_type& vertex, const types::id_type source_id) {
-        const auto vertex_id = vertex.id();
-        visited[vertex_id] = true;
-        if constexpr (not type_traits::is_alg_no_return_type_v<SearchTreeType>) {
-            if (source_id != vertex_id)
-                search_tree.add_edge(source_id, vertex_id);
-        }
-    };
-
-    const auto enque_vertex_predicate =
-        [&visited](const vertex_type& vertex, const edge_type& in_edge) -> bool {
-        return not visited[vertex.id()];
-    };
+    const auto search_vertex_pred = detail::default_search_vertex_predicate<GraphType>(visited);
+    const auto visit = detail::default_visit_callback<GraphType>(visited, search_tree);
+    const auto enque_vertex_pred = detail::default_enqueue_vertex_predicate<GraphType>(visited);
 
     if (root_vertex_id_opt) {
         detail::bfs_impl(
             graph,
             graph.get_vertex(root_vertex_id_opt.value()),
-            search_vertex_predicate,
+            search_vertex_pred,
             visit,
-            enque_vertex_predicate,
+            enque_vertex_pred,
             pre_visit,
             post_visit
         );
@@ -61,9 +47,9 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
             detail::bfs_impl(
                 graph,
                 root_vertex,
-                search_vertex_predicate,
+                search_vertex_pred,
                 visit,
-                enque_vertex_predicate,
+                enque_vertex_pred,
                 pre_visit,
                 post_visit
             );
