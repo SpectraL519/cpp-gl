@@ -34,7 +34,7 @@ template <lib_tt::c_graph GraphType1, lib_tt::c_graph GraphType2>
     };
 }
 
-template <lib_tt::c_instantiation_of<lib::vertex> VertexType>
+template <lib_tt::c_instantiation_of<lib::vertex_descriptor> VertexType>
 requires(std::same_as<typename VertexType::properties_type, types::visited_property>)
 struct vertex_visited_projection {
     [[nodiscard]] bool operator()(const VertexType& vertex) const {
