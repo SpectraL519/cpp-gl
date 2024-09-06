@@ -13,13 +13,11 @@ struct no_return {};
 
 struct empty_callback {};
 
-template <type_traits::c_instantiation_of<vertex_descriptor> VertexType>
-using vertex_callback = std::function<void(const VertexType&)>;
+template <type_traits::c_graph GraphType, typename ReturnType, typename... Args>
+using vertex_callback = std::function<ReturnType(const typename GraphType::vertex_type&, Args...)>;
 
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-using edge_callback = std::function<void(const EdgeType&)>;
-
-using visited_list = std::vector<bool>;
+template <type_traits::c_graph GraphType, typename ReturnType, typename... Args>
+using edge_callback = std::function<ReturnType(const typename GraphType::edge_type&, Args...)>;
 
 } // namespace algorithm
 
@@ -44,13 +42,13 @@ struct is_empty_callback : std::is_same<F, algorithm::empty_callback> {};
 template <typename F>
 inline constexpr bool is_empty_callback_v = is_empty_callback<F>::value;
 
-template <typename F, typename VertexType>
-concept c_vertex_callback =
-    c_one_of<F, algorithm::empty_callback, algorithm::vertex_callback<VertexType>>;
+template <typename F, typename GraphType, typename ReturnType, typename... Args>
+concept c_vertex_callback = is_empty_callback_v<F>
+    or std::convertible_to<F, algorithm::vertex_callback<GraphType, ReturnType, Args...>>;
 
-template <typename F, typename EdgeType>
-concept c_edge_callback =
-    c_one_of<F, algorithm::empty_callback, algorithm::edge_callback<EdgeType>>;
+template <typename F, typename GraphType, typename ReturnType, typename... Args>
+concept c_edge_callback = is_empty_callback_v<F>
+    or std::convertible_to<F, algorithm::edge_callback<GraphType, ReturnType, Args...>>;
 
 } // namespace type_traits
 
