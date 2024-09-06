@@ -13,7 +13,7 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-type_traits::alg_return_type<SearchTreeType> breadth_first_search(
+type_traits::alg_return_type<SearchTreeType> depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -46,7 +46,7 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
     };
 
     if (root_vertex_id_opt) {
-        detail::bfs_impl(
+        detail::dfs_impl(
             graph,
             graph.get_vertex(root_vertex_id_opt.value()),
             search_vertex_predicate,
@@ -58,7 +58,7 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
     }
     else {
         for (const auto& root_vertex : graph.vertices())
-            detail::bfs_impl(
+            detail::dfs_impl(
                 graph,
                 root_vertex,
                 search_vertex_predicate,

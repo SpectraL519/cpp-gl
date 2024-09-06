@@ -5,23 +5,23 @@
 
 #include <doctest.h>
 
-#include <iostream>
-
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_algorithm");
+
+// --- bfs tests ---
 
 TEST_CASE_TEMPLATE_DEFINE(
     "breadth_first_search no return should properly traverse the graph",
     GraphType,
     bfs_no_return_graph_template
 ) {
-    using graph_type = lib::graph<>;
+    using graph_type = GraphType;
 
     graph_type graph;
     std::vector<lib_t::id_type> expected_previsit_order;
 
-    SUBCASE("single vertex graph") {
+    SUBCASE("empty graph") {
         graph = lib::topology::clique<graph_type>(constants::zero_elements);
         expected_previsit_order = {};
     }
@@ -87,7 +87,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     GraphType,
     bfs_no_return_with_root_graph_template
 ) {
-    using graph_type = lib::graph<>;
+    using graph_type = GraphType;
 
     graph_type graph;
     std::optional<lib_t::id_type> root_vertex_id;
@@ -184,6 +184,85 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_return_graph_template,
+    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
+    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
+    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
+    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+);
+
+// --- dfs tests ---
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "depth_first_search no return should properly traverse the graph",
+    GraphType,
+    dfs_no_return_graph_template
+) {
+    using graph_type = GraphType;
+
+    graph_type graph;
+    std::deque<lib_t::id_type> expected_previsit_order;
+
+    SUBCASE("empty graph") {
+        graph = lib::topology::clique<graph_type>(constants::zero_elements);
+        expected_previsit_order = {};
+    }
+
+    SUBCASE("single vertex graph") {
+        graph = lib::topology::clique<graph_type>(constants::one_element);
+        expected_previsit_order = {0};
+    }
+
+    SUBCASE("clique") {
+        graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
+        for (auto id = lib::constants::initial_id + constants::one; id < constants::n_elements_alg;
+             id++)
+            expected_previsit_order.push_front(id);
+        expected_previsit_order.push_front(lib::constants::initial_id);
+    }
+
+    SUBCASE("path graph") {
+        graph = lib::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
+        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
+            expected_previsit_order.push_back(id);
+    }
+
+    SUBCASE("full bipartite graph") {
+        /*
+        A = {0, 1, 2}
+        B = {3, 4}
+        [s: <stack state without already visited vertices>]
+        -> root = 0 -> connected to B [s: 4 3]
+        -> 4 connected to A (root visited) [s: 2 1 3]
+        -> 2 connected to B (4 visited) [s: 3 1 3]
+        finally: 0 -> 4 -> 2 -> 1 -> 3
+        */
+        graph = lib::topology::full_bipartite<graph_type>(constants::three, constants::two);
+        expected_previsit_order = {0, 4, 2, 3, 1};
+    }
+
+    CAPTURE(graph);
+    CAPTURE(expected_previsit_order);
+
+    std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
+
+    std::vector<lib_t::id_type> previsit_order, postvisit_order;
+    lib::algorithm::depth_first_search<lib::algorithm::no_return>(
+        graph,
+        lib::algorithm::no_root_vertex,
+        [&](const auto& vertex) { // previsit
+            previsit_order.push_back(vertex.id());
+        },
+        [&](const auto& vertex) { // postvisit
+            postvisit_order.push_back(vertex.id());
+        }
+    );
+
+    CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
+    CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    dfs_no_return_graph_template,
     lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
     lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
     lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
