@@ -6,18 +6,6 @@
 
 #include <memory>
 
-#ifdef GL_CONFIG_GRAPH_DEFAULT_CACHE_MODE_EAGER
-#define _GL_GRAPH_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::eager
-#elif defined(GL_CONFIG_GRAPH_DEFAULT_CACHE_MODE_LAZY)
-#define _GL_GRAPH_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::lazy
-#elif defined(GL_CONFIG_GRAPH_DEFAULT_CACHE_MODE_NONE)
-#define _GL_GRAPH_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::none
-#endif
-
-#ifndef _GL_GRAPH_DEFAULT_CACHE_MODE
-#define _GL_GRAPH_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::lazy
-#endif
-
 namespace gl {
 
 template <
