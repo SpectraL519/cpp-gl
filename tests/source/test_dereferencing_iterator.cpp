@@ -27,7 +27,7 @@ struct data {
 
 using data_uptr = std::unique_ptr<data>;
 using data_sptr = std::shared_ptr<data>;
-using data_rawptr = data*;
+using data_rptr = data*;
 
 template <typename Container>
 struct test_dereferencing_iterator {
@@ -110,13 +110,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     container_type_template,
     std::deque<data_uptr>, // random access iterator
     std::deque<data_sptr>, // random access iterator
-    std::deque<data_rawptr>, // random access iterator
+    std::deque<data_rptr>, // random access iterator
     std::list<data_uptr>, // bidirectional iterator
     std::list<data_sptr>, // bidirectional iterator
-    std::list<data_rawptr>, // bidirectional iterator
+    std::list<data_rptr>, // bidirectional iterator
     std::forward_list<data_uptr>, // forward iterator
     std::forward_list<data_sptr>, // forward iterator
-    std::forward_list<data_rawptr> // forward iterator
+    std::forward_list<data_rptr> // forward iterator
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -145,8 +145,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto exepcted_size = std::ranges::distance(ptr_begin, ptr_it);
 
         // Collect elements while iterating backwards
-        std::vector<data_rawptr> sut_elements;
-        std::vector<data_rawptr> ptr_elements;
+        std::vector<data_rptr> sut_elements;
+        std::vector<data_rptr> ptr_elements;
         const address_projection proj{};
 
         do {
@@ -174,14 +174,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto exepcted_size = std::ranges::distance(ptr_begin, ptr_it);
 
         // Collect elements while iterating backwards
-        std::vector<data_rawptr> sut_elements;
-        std::vector<data_rawptr> ptr_elements;
+        std::vector<data_rptr> sut_elements;
+        std::vector<data_rptr> ptr_elements;
         const address_projection proj{};
 
         do {
             sut_elements.push_back(proj(*(--sut_it)));
             ptr_elements.push_back(proj(*(--ptr_it)));
-        } while (sut_it != sut_begin && ptr_it != ptr_begin);
+        } while (sut_it != sut_begin and ptr_it != ptr_begin);
 
         REQUIRE_EQ(sut_it, sut_begin);
         REQUIRE_EQ(ptr_it, ptr_begin);
@@ -197,10 +197,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     bidir_container_type_template,
     std::deque<data_uptr>, // random access iterator
     std::deque<data_sptr>, // random access iterator
-    std::deque<data_rawptr>, // random access iterator
+    std::deque<data_rptr>, // random access iterator
     std::list<data_uptr>, // bidirectional iterator
     std::list<data_sptr>, // bidirectional iterator
-    std::list<data_rawptr> // bidirectional iterator
+    std::list<data_rptr> // bidirectional iterator
 );
 
 TEST_SUITE_END(); // test_dereferencing_iterator
