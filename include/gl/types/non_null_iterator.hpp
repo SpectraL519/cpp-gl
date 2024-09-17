@@ -83,6 +83,10 @@ public:
         return this->_current != other._current;
     }
 
+    [[nodiscard]] gl_attr_force_inline iterator_type base() const {
+        return this->_current;
+    }
+
 private:
     static constexpr bool _is_null(const reference& ptr) {
         return ptr == nullptr;

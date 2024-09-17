@@ -78,6 +78,10 @@ public:
         return this->_it != other._it;
     }
 
+    [[nodiscard]] gl_attr_force_inline iterator_type base() const {
+        return this->_it;
+    }
+
 private:
     iterator_type _it;
 };
