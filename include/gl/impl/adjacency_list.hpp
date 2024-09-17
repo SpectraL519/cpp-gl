@@ -99,10 +99,9 @@ public:
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        const auto first_id = edge.first().id();
+        const auto first_id = edge.first_id();
         if (not (
-                this->_is_valid_vertex_id(first_id)
-                and this->_is_valid_vertex_id(edge.second().id())
+                this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(edge.second_id())
             ))
             return false;
 

@@ -21,12 +21,12 @@ template <lib_tt::c_graph GraphType1, lib_tt::c_graph GraphType2>
             return false;
 
         for (const auto& edge : adj_edges_1) {
-            if (not g2.has_edge(edge.first().id(), edge.second().id()))
+            if (not g2.has_edge(edge.first_id(), edge.second_id()))
                 return false;
         }
 
         for (const auto& edge : adj_edges_2) {
-            if (not g1.has_edge(edge.first().id(), edge.second().id()))
+            if (not g1.has_edge(edge.first_id(), edge.second_id()))
                 return false;
         }
 

@@ -18,9 +18,6 @@ template <
     type_traits::c_graph_impl_tag ImplTag>
 struct graph_traits;
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-class graph;
-
 template <type_traits::c_properties Properties = types::empty_properties>
 class vertex_descriptor {
 public:

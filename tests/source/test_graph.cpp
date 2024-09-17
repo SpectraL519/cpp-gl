@@ -54,9 +54,7 @@ struct test_graph {
     template <lib_tt::c_instantiation_of<lib::graph> GraphType>
     void validate_full_graph_edges(const GraphType& graph) {
         REQUIRE(std::ranges::all_of(
-            graph.vertices()
-                | std::views::transform(transforms::extract_vertex_id<
-                                        typename GraphType::vertex_type>),
+            graph.vertex_ids(),
             [this, &graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
                 const lib_t::id_type vertex_id
             ) { return graph.adjacent_edges(vertex_id).distance() == expected_n_edges; }
@@ -121,6 +119,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             sut.vertices() | std::views::transform(transforms::extract_vertex_id<>),
             constants::vertex_id_view
         ));
+
+        REQUIRE(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
 
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_vertex(constants::out_of_range_elemenet_idx)),
@@ -239,6 +239,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         // clang-format on
     }
 
+    SUBCASE("vertex_ids should return the correct vertex list iterator range") {
+        sut_type sut{constants::n_elements};
+        CHECK(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
+    }
+
     SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(sut.remove_vertex(fixture.out_of_range_vertex), std::out_of_range);
@@ -261,8 +266,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         const auto expected_n_incident_edges =
             fixture.n_incident_edges_for_fully_connected_vertex(sut);
 
-        const auto vertex_id_view =
-            sut.vertices() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
+        const auto vertex_id_view = sut.vertex_ids();
 
         REQUIRE(std::ranges::equal(
             vertex_id_view, std::views::iota(constants::vertex_id_1, n_vertices_after_remove)
@@ -296,8 +300,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         const auto expected_n_incident_edges =
             fixture.n_incident_edges_for_fully_connected_vertex(sut);
 
-        const auto vertex_id_view =
-            sut.vertices() | std::views::transform(transforms::extract_vertex_id<vertex_type>);
+        const auto vertex_id_view = sut.vertex_ids();
 
         REQUIRE(std::ranges::equal(
             vertex_id_view, std::views::iota(constants::vertex_id_1, n_vertices_after_remove)

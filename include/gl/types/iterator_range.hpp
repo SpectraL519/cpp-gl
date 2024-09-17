@@ -8,15 +8,15 @@
 #include <iterator>
 
 #ifdef GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_EAGER
-#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::eager
+#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::eager_cache
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_LAZY)
-#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::lazy
+#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::lazy_cache
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_NONE)
-#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::none
+#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::no_cache
 #endif
 
 #ifndef _GL_IT_RANGE_DEFAULT_CACHE_MODE
-#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::cache_mode::lazy
+#define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::lazy_cache
 #endif
 
 namespace gl {
@@ -25,7 +25,7 @@ namespace types {
 
 template <
     std::forward_iterator Iterator,
-    type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
+    type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
 class iterator_range {
 public:
     using iterator = Iterator;
@@ -35,26 +35,26 @@ public:
     using distance_type = std::ptrdiff_t;
     using value_type = std::remove_reference_t<typename iterator::value_type>;
 
-    static constexpr type_traits::cache_mode cache_mode = CacheMode;
+    using cache_mode = CacheMode;
 
     iterator_range() = delete;
 
     explicit iterator_range(iterator begin, iterator end)
-    requires(cache_mode == type_traits::cache_mode::eager)
+    requires(cache_mode::value == type_traits::cache_mode_value::eager)
     {
         this->_distance = std::ranges::distance(begin, end);
         this->_range = std::make_pair(begin, end);
     }
 
     explicit iterator_range(iterator begin, iterator end)
-    requires(cache_mode == type_traits::cache_mode::lazy)
+    requires(cache_mode::value == type_traits::cache_mode_value::lazy)
     {
         this->_range = std::make_pair(begin, end);
         this->_distance = _invalid_distance;
     }
 
     explicit iterator_range(iterator begin, iterator end)
-    requires(cache_mode == type_traits::cache_mode::none)
+    requires(cache_mode::value == type_traits::cache_mode_value::none)
     {
         this->_range = std::make_pair(begin, end);
     }
@@ -88,13 +88,13 @@ public:
 #endif
 
     [[nodiscard]] gl_attr_force_inline distance_type distance() const
-    requires(cache_mode == type_traits::cache_mode::eager)
+    requires(cache_mode::value == type_traits::cache_mode_value::eager)
     {
         return this->_distance;
     }
 
     [[nodiscard]] inline distance_type distance() const
-    requires(cache_mode == type_traits::cache_mode::lazy)
+    requires(cache_mode::value == type_traits::cache_mode_value::lazy)
     {
         if (this->_is_distance_uninitialized())
             this->_distance = std::ranges::distance(this->begin(), this->end());
@@ -102,7 +102,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline distance_type distance() const
-    requires(cache_mode == type_traits::cache_mode::none)
+    requires(cache_mode::value == type_traits::cache_mode_value::none)
     {
         return std::ranges::distance(this->begin(), this->end());
     }
@@ -136,7 +136,7 @@ public:
 
 private:
     [[nodiscard]] gl_attr_force_inline bool _is_distance_uninitialized() const
-    requires(cache_mode == type_traits::cache_mode::lazy)
+    requires(cache_mode::value == type_traits::cache_mode_value::lazy)
     {
         return this->_distance == _invalid_distance;
     }
@@ -151,9 +151,10 @@ private:
 
     homogeneous_pair<iterator> _range;
 
-    [[no_unique_address]] mutable std::
-        conditional_t<cache_mode == type_traits::cache_mode::none, std::monostate, distance_type>
-            _distance;
+    [[no_unique_address]] mutable std::conditional_t<
+        cache_mode::value == type_traits::cache_mode_value::none,
+        std::monostate,
+        distance_type> _distance;
 
     static constexpr distance_type _invalid_distance = -1;
     static constexpr distance_type _default_n = 1;
@@ -163,7 +164,7 @@ private:
 
 template <
     std::forward_iterator Iterator,
-    type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
+    type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
 [[nodiscard]] gl_attr_force_inline types::iterator_range<Iterator, CacheMode> make_iterator_range(
     Iterator begin, Iterator end
 ) {
@@ -172,7 +173,7 @@ template <
 
 template <
     type_traits::c_range Range,
-    type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
+    type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
 [[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::iterator, CacheMode>
 make_iterator_range(Range& range) {
     return types::iterator_range<typename Range::iterator, CacheMode>{
@@ -182,7 +183,7 @@ make_iterator_range(Range& range) {
 
 template <
     type_traits::c_range Range,
-    type_traits::cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
+    type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
 [[nodiscard]] gl_attr_force_inline types::iterator_range<typename Range::const_iterator, CacheMode>
 make_const_iterator_range(const Range& range) {
     return types::iterator_range<typename Range::const_iterator, CacheMode>{
