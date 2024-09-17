@@ -118,6 +118,16 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
             CHECK_EQ(std::addressof(sut.element_at(n)), std::addressof(*it++));
     }
 
+    SUBCASE("subscript operator should throw when index is out of range") {
+        CHECK_THROWS_AS(func::discard_result(sut[constants::n_elements]), std::out_of_range);
+    }
+
+    SUBCASE("subscript operator should return a reference to the correct element") {
+        iterator_type it = container.begin();
+        for (std::size_t n = 0; n < constants::n_elements; n++)
+            CHECK_EQ(std::addressof(sut[n]), std::addressof(*it++));
+    }
+
     SUBCASE("make_iterator_range should return a properly initialized iterator_range") {
         const auto range =
             lib::make_iterator_range<iterator_type, cache_mode>(container.begin(), container.end());
