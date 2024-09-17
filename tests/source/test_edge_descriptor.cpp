@@ -76,6 +76,23 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.second(), fixture.vd_2);
     }
 
+    SUBCASE("incident_vertex_ids should return the pair of ids of the vertices the edge was "
+            "initialized with") {
+        const auto& vertex_ids = sut.incident_vertex_ids();
+        CHECK_EQ(vertex_ids.first, fixture.vd_1.id());
+        CHECK_EQ(vertex_ids.second, fixture.vd_2.id());
+    }
+
+    SUBCASE("first_id should return the id of the first vertex descriptor the edge was initialized "
+            "with") {
+        CHECK_EQ(sut.first_id(), fixture.vd_1.id());
+    }
+
+    SUBCASE("second should return the id of the second vertex descriptor the edge was initialized "
+            "with") {
+        CHECK_EQ(sut.second_id(), fixture.vd_2.id());
+    }
+
     SUBCASE("incident_vertex should return throw if input vertex is not incident with the edge") {
         CHECK_THROWS_AS(
             func::discard_result(sut.incident_vertex(fixture.vd_3)), std::invalid_argument

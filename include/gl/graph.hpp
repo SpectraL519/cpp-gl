@@ -398,8 +398,8 @@ private:
         if (not this->has_edge(edge))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-                edge.first().id(),
-                edge.second().id(),
+                edge.first_id(),
+                edge.second_id(),
                 types::formatter(&edge)
             ));
     }

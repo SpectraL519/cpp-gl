@@ -71,6 +71,19 @@ public:
 
     // clang-format on
 
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertex_ids(
+    ) const {
+        return std::make_pair(this->_vertices.first.id(), this->_vertices.second.id());
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::id_type first_id() const {
+        return this->first().id();
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::id_type second_id() const {
+        return this->second().id();
+    }
+
     [[nodiscard]] const vertex_type& incident_vertex(const vertex_type& vertex) const {
         if (&vertex == &this->_vertices.first)
             return this->_vertices.second;
