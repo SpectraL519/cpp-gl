@@ -120,7 +120,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
 
-    const auto& new_edge_extracted = adjacent_edges_1.element_at(constants::first_element_idx);
+    const auto& new_edge_extracted = adjacent_edges_1[constants::first_element_idx];
     CHECK_EQ(&new_edge_extracted, &new_edge);
 }
 
@@ -223,7 +223,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_for_fully_connected_vertex);
 
-    const auto& edge_to_remove = adjacent_edges.element_at(constants::first_element_idx);
+    const auto& edge_to_remove = adjacent_edges[constants::first_element_idx];
 
     sut.remove_edge(edge_to_remove);
     REQUIRE_EQ(
@@ -323,10 +323,10 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(adjacent_edges_1.distance(), constants::one_element);
     REQUIRE_EQ(adjacent_edges_2.distance(), constants::one_element);
 
-    const auto& new_edge_extracted_1 = adjacent_edges_1.element_at(constants::first_element_idx);
+    const auto& new_edge_extracted_1 = adjacent_edges_1[constants::first_element_idx];
     CHECK_EQ(&new_edge_extracted_1, &new_edge);
 
-    const auto& new_edge_extracted_2 = adjacent_edges_2.element_at(constants::first_element_idx);
+    const auto& new_edge_extracted_2 = adjacent_edges_2[constants::first_element_idx];
     CHECK_EQ(&new_edge_extracted_2, &new_edge);
 }
 
@@ -342,7 +342,7 @@ TEST_CASE_FIXTURE(
     const auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
 
-    const auto& new_edge_extracted_1 = adjacent_edges.element_at(constants::first_element_idx);
+    const auto& new_edge_extracted_1 = adjacent_edges[constants::first_element_idx];
     CHECK_EQ(&new_edge_extracted_1, &new_edge);
 }
 
@@ -448,7 +448,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(sut.n_unique_edges(), n_incident_edges_for_fully_connected_vertex);
     REQUIRE_EQ(adjacent_edges_first.distance(), n_incident_edges_for_fully_connected_vertex);
 
-    const auto& edge_to_remove = adjacent_edges_first.element_at(constants::first_element_idx);
+    const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
     const auto second_id = edge_to_remove.second().id();
     REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
