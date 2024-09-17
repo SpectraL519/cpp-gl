@@ -171,6 +171,11 @@ public:
         return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
     }
 
+    [[nodiscard]] gl_attr_force_inline std::ranges::iota_view<types::id_type, types::id_type>
+    vertex_ids() const {
+        return std::views::iota(constants::initial_id, this->n_vertices());
+    }
+
     // --- edge methods ---
 
     // clang-format off
@@ -398,8 +403,8 @@ private:
         if (not this->has_edge(edge))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-                edge.first().id(),
-                edge.second().id(),
+                edge.first_id(),
+                edge.second_id(),
                 types::formatter(&edge)
             ));
     }

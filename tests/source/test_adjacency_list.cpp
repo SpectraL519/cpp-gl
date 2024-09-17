@@ -556,7 +556,7 @@ TEST_CASE_FIXTURE(
 
     const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
-    const auto second_id = edge_to_remove.second().id();
+    const auto second_id = edge_to_remove.second_id();
     REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
