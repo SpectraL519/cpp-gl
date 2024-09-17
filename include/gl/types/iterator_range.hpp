@@ -119,6 +119,21 @@ public:
         return *std::ranges::next(this->begin(), position);
     }
 
+    [[nodiscard]] gl_attr_force_inline value_type& operator[](types::size_type position)
+    requires(not type_traits::c_const_iterator<iterator>)
+    {
+        return this->element_at(position);
+    }
+
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
+    [[nodiscard]] gl_attr_force_inline const value_type& operator[](types::size_type position) const {
+        return this->element_at(position);
+    }
+
+    // clang-format on
+
 private:
     [[nodiscard]] gl_attr_force_inline bool _is_distance_uninitialized() const
     requires(cache_mode == type_traits::cache_mode::lazy)
