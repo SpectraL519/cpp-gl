@@ -119,9 +119,7 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
     }
 
     SUBCASE("subscript operator should throw when index is out of range") {
-        CHECK_THROWS_AS(
-            func::discard_result(sut[constants::n_elements]), std::out_of_range
-        );
+        CHECK_THROWS_AS(func::discard_result(sut[constants::n_elements]), std::out_of_range);
     }
 
     SUBCASE("subscript operator should return a reference to the correct element") {
