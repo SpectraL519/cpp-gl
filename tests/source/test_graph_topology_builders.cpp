@@ -164,9 +164,7 @@ template <lib_tt::c_graph GraphType>
             const auto adjacent_edges = graph.adjacent_edges(source_vertex);
 
             return adjacent_edges.distance() == constants::one
-               and adjacent_edges.element_at(constants::first_element_idx)
-                           .incident_vertex(source_vertex)
-                           .id()
+               and adjacent_edges[constants::first_element_idx].incident_vertex(source_vertex).id()
                        == parent_id;
         }
 
@@ -321,8 +319,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             path.vertices() | std::views::take(n_source_vertices),
             predicate::is_vertex_connected_to_next_only(path)
         ));
-        CHECK(predicate::is_vertex_not_connected(path)(path.vertices().element_at(n_source_vertices)
-        ));
+        CHECK(predicate::is_vertex_not_connected(path)(path.vertices()[n_source_vertices]));
     }
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
@@ -339,9 +336,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(
-            path.vertices().element_at(n_source_vertices)
-        ));
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
+        );
     }
 
     SUBCASE("complete_binary_tree(depth) should return a one-way complete binay tree with the "
@@ -432,9 +428,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(
-            path.vertices().element_at(n_source_vertices)
-        ));
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
+        );
     }
 
     SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
