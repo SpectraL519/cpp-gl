@@ -55,12 +55,31 @@ public:
         return tmp;
     }
 
+    inline dereferencing_iterator& operator--()
+    requires(std::bidirectional_iterator<iterator_type>)
+    {
+        this->_it--;
+        return *this;
+    }
+
+    inline dereferencing_iterator operator--(int)
+    requires(std::bidirectional_iterator<iterator_type>)
+    {
+        dereferencing_iterator tmp = *this;
+        this->_it--;
+        return tmp;
+    }
+
     [[nodiscard]] gl_attr_force_inline bool operator==(const dereferencing_iterator& other) const {
         return this->_it == other._it;
     }
 
     [[nodiscard]] gl_attr_force_inline bool operator!=(const dereferencing_iterator& other) const {
         return this->_it != other._it;
+    }
+
+    [[nodiscard]] gl_attr_force_inline iterator_type base() const {
+        return this->_it;
     }
 
 private:
