@@ -10,10 +10,13 @@
 #include <deque>
 #include <forward_list>
 #include <list>
+#include <vector>
 
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_dereferencing_iterator");
+
+// TODO: add specific tests covering the individual methods
 
 struct data {
     lib_t::id_type id;
@@ -33,17 +36,17 @@ struct test_dereferencing_iterator {
     using sut_type = lib_t::dereferencing_iterator<typename container_type::iterator>;
 
     struct address_projection {
-        auto operator()(const data& data) {
+        auto operator()(data& data) const {
             return &data;
         }
 
-        auto operator()(const data_ptr_type& data_ptr)
+        auto operator()(const data_ptr_type& data_ptr) const
         requires(lib_tt::c_strong_smart_ptr<data_ptr_type>)
         {
             return data_ptr.get();
         }
 
-        auto operator()(const data_ptr_type data_ptr)
+        auto operator()(data_ptr_type data_ptr) const
         requires(not lib_tt::c_strong_smart_ptr<data_ptr_type>)
         {
             return data_ptr;
@@ -111,12 +114,94 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     std::list<data_uptr>, // bidirectional iterator
     std::list<data_sptr>, // bidirectional iterator
     std::list<data_rawptr>, // bidirectional iterator
-    std::forward_list<data_uptr>, // bidirectional iterator
-    std::forward_list<data_sptr>, // bidirectional iterator
-    std::forward_list<data_rawptr> // bidirectional iterator
+    std::forward_list<data_uptr>, // forward iterator
+    std::forward_list<data_sptr>, // forward iterator
+    std::forward_list<data_rawptr> // forward iterator
 );
 
-// TODO: add specific tests covering the individual methods
+TEST_CASE_TEMPLATE_DEFINE(
+    "dereferencing_iterator should provide an 'equivalent' decrementable iterator range"
+    "as a reference type decrementable range",
+    ContainerType,
+    bidir_container_type_template
+) {
+    using container_type = ContainerType;
+    using fixture_type = test_dereferencing_iterator<container_type>;
+    using sut_type = typename fixture_type::sut_type;
+    using address_projection = typename fixture_type::address_projection;
+
+    static_assert(std::bidirectional_iterator<sut_type>);
+
+    fixture_type fixture;
+
+    SUBCASE("normal iterator") {
+        // Create dereferencing iterator range
+        auto sut_it = lib::deref_end(fixture.container);
+        auto sut_begin = lib::deref_begin(fixture.container);
+
+        auto ptr_it = std::ranges::end(fixture.container);
+        auto ptr_begin = std::ranges::begin(fixture.container);
+
+        const auto exepcted_size = std::ranges::distance(ptr_begin, ptr_it);
+
+        // Collect elements while iterating backwards
+        std::vector<data_rawptr> sut_elements;
+        std::vector<data_rawptr> ptr_elements;
+        const address_projection proj{};
+
+        do {
+            sut_elements.push_back(proj(*(--sut_it)));
+            ptr_elements.push_back(proj(*(--ptr_it)));
+        } while (sut_it != sut_begin && ptr_it != ptr_begin);
+
+        REQUIRE_EQ(sut_it, sut_begin);
+        REQUIRE_EQ(ptr_it, ptr_begin);
+
+        REQUIRE_EQ(sut_elements.size(), exepcted_size);
+        REQUIRE_EQ(ptr_elements.size(), exepcted_size);
+
+        CHECK_EQ(sut_elements, ptr_elements);
+    }
+
+    SUBCASE("const iterator") {
+        // Create dereferencing iterator range
+        auto sut_it = lib::deref_cend(fixture.container);
+        auto sut_begin = lib::deref_cbegin(fixture.container);
+
+        auto ptr_it = std::ranges::cend(fixture.container);
+        auto ptr_begin = std::ranges::cbegin(fixture.container);
+
+        const auto exepcted_size = std::ranges::distance(ptr_begin, ptr_it);
+
+        // Collect elements while iterating backwards
+        std::vector<data_rawptr> sut_elements;
+        std::vector<data_rawptr> ptr_elements;
+        const address_projection proj{};
+
+        do {
+            sut_elements.push_back(proj(*(--sut_it)));
+            ptr_elements.push_back(proj(*(--ptr_it)));
+        } while (sut_it != sut_begin && ptr_it != ptr_begin);
+
+        REQUIRE_EQ(sut_it, sut_begin);
+        REQUIRE_EQ(ptr_it, ptr_begin);
+
+        REQUIRE_EQ(sut_elements.size(), exepcted_size);
+        REQUIRE_EQ(ptr_elements.size(), exepcted_size);
+
+        CHECK_EQ(sut_elements, ptr_elements);
+    }
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    bidir_container_type_template,
+    std::deque<data_uptr>, // random access iterator
+    std::deque<data_sptr>, // random access iterator
+    std::deque<data_rawptr>, // random access iterator
+    std::list<data_uptr>, // bidirectional iterator
+    std::list<data_sptr>, // bidirectional iterator
+    std::list<data_rawptr> // bidirectional iterator
+);
 
 TEST_SUITE_END(); // test_dereferencing_iterator
 
