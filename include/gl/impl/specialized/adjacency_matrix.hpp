@@ -31,13 +31,14 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 inline void check_edge_override(
-    const AdjacencyMatrix& adj_matrix,
-    const typename AdjacencyMatrix::edge_ptr_type& edge
+    const AdjacencyMatrix& adj_matrix, const typename AdjacencyMatrix::edge_ptr_type& edge
 ) {
     const auto [first_id, second_id] = edge->incident_vertex_ids();
 
     if (adj_matrix.has_edge(first_id, second_id))
-        throw std::logic_error(std::format("Cannot override an existing edge without remove: ({}, {})", first_id, second_id));
+        throw std::logic_error(std::format(
+            "Cannot override an existing edge without remove: ({}, {})", first_id, second_id
+        ));
 }
 
 } // namespace detail

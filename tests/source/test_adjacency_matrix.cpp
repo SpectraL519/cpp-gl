@@ -90,22 +90,16 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut.add_edges_from(constants::vertex_id_1, std::move(new_edges));
 
-        REQUIRE(std::ranges::all_of(
-            constants::vertex_id_view,
-            [&sut](const auto destination_id) {
-                return sut.has_edge(constants::vertex_id_1, destination_id);
-            }
-        ));
+        REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto destination_id) {
+            return sut.has_edge(constants::vertex_id_1, destination_id);
+        }));
 
-        std::ranges::for_each(
-            vertex_refs,
-            [&sut, &v1](const auto& destination) {
-                std::vector<edge_ptr_type> new_edges;
-                new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
+        std::ranges::for_each(vertex_refs, [&sut, &v1](const auto& destination) {
+            std::vector<edge_ptr_type> new_edges;
+            new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
 
-                CHECK_THROWS_AS(sut.add_edges_from(v1.id(), std::move(new_edges)), std::logic_error);
-            }
-        );
+            CHECK_THROWS_AS(sut.add_edges_from(v1.id(), std::move(new_edges)), std::logic_error);
+        });
     }
 }
 
