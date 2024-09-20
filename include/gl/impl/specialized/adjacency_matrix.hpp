@@ -77,15 +77,8 @@ struct directed_adjacency_matrix {
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
         // validate new edges
-        for (auto& edge : new_edges) {
-            // TODO: add tests
-            if (edge->first_id() != source_id)
-                throw std::invalid_argument(
-                    std::format("All edges must be incident from the source vertex ({})", source_id)
-                );
-
+        for (auto& edge : new_edges)
             detail::check_edge_override(self, edge);
-        }
 
         auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges)
@@ -137,15 +130,8 @@ struct undirected_adjacency_matrix {
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
         // validate new edges
-        for (auto& edge : new_edges) {
-            // TODO: add tests
-            if (not (edge->first_id() == source_id or edge->second_id() == source_id))
-                throw std::invalid_argument(
-                    std::format("All edges must be incident from the source vertex ({})", source_id)
-                );
-
+        for (auto& edge : new_edges)
             detail::check_edge_override(self, edge);
-        }
 
         auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges) {
