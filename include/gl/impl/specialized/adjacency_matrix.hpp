@@ -76,7 +76,7 @@ struct directed_adjacency_matrix {
     static void add_edges_from(
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
-        auto& matrix_row_source = self._matrix[source_id];
+        // validate new edges
         for (auto& edge : new_edges) {
             // TODO: add tests
             if (edge->first_id() != source_id)
@@ -85,8 +85,12 @@ struct directed_adjacency_matrix {
                 );
 
             detail::check_edge_override(self, edge);
-            matrix_row_source[edge->second_id()] = std::move(edge);
         }
+
+        auto& matrix_row_source = self._matrix[source_id];
+        for (auto& edge : new_edges)
+            matrix_row_source[edge->second_id()] = std::move(edge);
+
         self._n_unique_edges += new_edges.size();
     }
 
@@ -132,21 +136,22 @@ struct undirected_adjacency_matrix {
     static void add_edges_from(
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
-        auto& matrix_row_source = self._matrix[source_id];
-
+        // validate new edges
         for (auto& edge : new_edges) {
-            const auto [first_id, second_id] = edge->incident_vertex_ids();
             // TODO: add tests
-            if (not (first_id == source_id or second_id == source_id))
+            if (not (edge->first_id() == source_id or edge->second_id() == source_id))
                 throw std::invalid_argument(
                     std::format("All edges must be incident from the source vertex ({})", source_id)
                 );
 
             detail::check_edge_override(self, edge);
+        }
 
+        auto& matrix_row_source = self._matrix[source_id];
+        for (auto& edge : new_edges) {
             if (not edge->is_loop())
-                self._matrix[second_id][source_id] = edge;
-            matrix_row_source[second_id] = std::move(edge);
+                self._matrix[edge->second_id()][source_id] = edge;
+            matrix_row_source[edge->second_id()] = std::move(edge);
         }
 
         self._n_unique_edges += new_edges.size();
