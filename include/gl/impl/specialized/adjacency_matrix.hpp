@@ -15,7 +15,7 @@ namespace detail {
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 [[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
-    typename AdjacencyMatrix::type& matrix, const typename AdjacencyMatrix::edge_type* edge
+    typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
     auto& matrix_element = matrix.at(edge->first_id()).at(edge->second_id());
     if (edge != matrix_element.get())
@@ -28,6 +28,11 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 
     return matrix_element;
 }
+
+// template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
+// inline void check_edge_override(
+//     const typename AdjacencyMatrix
+// )
 
 } // namespace detail
 

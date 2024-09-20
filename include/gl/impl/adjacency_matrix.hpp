@@ -26,7 +26,7 @@ public:
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
-    using type = std::vector<edge_list_type>;
+    using matrix_type = std::vector<edge_list_type>;
 
     adjacency_matrix(const adjacency_matrix&) = delete;
     adjacency_matrix& operator=(const adjacency_matrix&) = delete;
@@ -158,7 +158,7 @@ private:
         return vertex_id < this->_matrix.size();
     }
 
-    type _matrix{};
+    matrix_type _matrix{};
     types::size_type _n_unique_edges{constants::default_size};
 };
 
