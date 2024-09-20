@@ -8,7 +8,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+template <type_traits::c_list_graph_traits GraphTraits>
 class adjacency_list;
 
 namespace specialized {
@@ -88,8 +88,10 @@ struct directed_adjacency_list {
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
+
         for (auto& edge : new_edges)
             adjacent_edges_source.push_back(std::move(edge));
+
         self._n_unique_edges += new_edges.size();
     }
 

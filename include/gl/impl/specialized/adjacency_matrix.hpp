@@ -6,7 +6,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+template <type_traits::c_matrix_graph_traits GraphTraits>
 class adjacency_matrix;
 
 namespace specialized {
@@ -15,7 +15,7 @@ namespace detail {
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 [[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
-    typename AdjacencyMatrix::type& matrix, const typename AdjacencyMatrix::edge_type* edge
+    typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
     auto& matrix_element = matrix.at(edge->first_id()).at(edge->second_id());
     if (edge != matrix_element.get())
@@ -27,6 +27,18 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
         ));
 
     return matrix_element;
+}
+
+template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
+inline void check_edge_override(
+    const AdjacencyMatrix& adj_matrix, const typename AdjacencyMatrix::edge_ptr_type& edge
+) {
+    const auto [first_id, second_id] = edge->incident_vertex_ids();
+
+    if (adj_matrix.has_edge(first_id, second_id))
+        throw std::logic_error(std::format(
+            "Cannot override an existing edge without remove: ({}, {})", first_id, second_id
+        ));
 }
 
 } // namespace detail
@@ -53,18 +65,26 @@ struct directed_adjacency_matrix {
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        detail::check_edge_override<impl_type>(self, edge);
+
         auto& matrix_element = self._matrix[edge->first_id()][edge->second_id()];
         matrix_element = std::move(edge);
         self._n_unique_edges++;
+
         return *matrix_element;
     }
 
     static void add_edges_from(
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
+        // validate new edges
+        for (auto& edge : new_edges)
+            detail::check_edge_override(self, edge);
+
         auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges)
             matrix_row_source[edge->second_id()] = std::move(edge);
+
         self._n_unique_edges += new_edges.size();
     }
 
@@ -93,6 +113,8 @@ struct undirected_adjacency_matrix {
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        detail::check_edge_override<impl_type>(self, edge);
+
         const auto first_id = edge->first_id();
         const auto second_id = edge->second_id();
 
@@ -108,8 +130,11 @@ struct undirected_adjacency_matrix {
     static void add_edges_from(
         impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
     ) {
-        auto& matrix_row_source = self._matrix[source_id];
+        // validate new edges
+        for (auto& edge : new_edges)
+            detail::check_edge_override(self, edge);
 
+        auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges) {
             if (not edge->is_loop())
                 self._matrix[edge->second_id()][source_id] = edge;
