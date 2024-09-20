@@ -11,7 +11,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+template <type_traits::c_matrix_graph_traits GraphTraits>
 class adjacency_matrix {
 public:
     using vertex_type = typename GraphTraits::vertex_type;

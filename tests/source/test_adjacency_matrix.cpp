@@ -59,8 +59,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_directional_tag_sut_template,
-    lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>, // directed adj list
-    lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>> // undirected adj list
+    lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::directed_t>>, // directed adj list
+    lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::undirected_t>> // undirected adj list
 );
 
 namespace {
@@ -74,7 +74,7 @@ struct test_directed_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::directed_edge<vertex_type>;
     using edge_ptr_type = lib::directed_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::directed_t>>;
 
     test_directed_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
@@ -274,7 +274,7 @@ struct test_undirected_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::undirected_edge<vertex_type>;
     using edge_ptr_type = lib::undirected_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::undirected_t>>;
 
     test_undirected_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
