@@ -29,10 +29,16 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
     return matrix_element;
 }
 
-// template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-// inline void check_edge_override(
-//     const typename AdjacencyMatrix
-// )
+template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
+inline void check_edge_override(
+    const AdjacencyMatrix& adj_matrix,
+    const typename AdjacencyMatrix::edge_ptr_type& edge
+) {
+    const auto [first_id, second_id] = edge->incident_vertex_ids();
+
+    if (adj_matrix.has_edge(first_id, second_id))
+        throw std::logic_error(std::format("Cannot override an existing edge without remove: ({}, {})", first_id, second_id));
+}
 
 } // namespace detail
 
@@ -58,9 +64,12 @@ struct directed_adjacency_matrix {
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        detail::check_edge_override<impl_type>(self, edge);
+
         auto& matrix_element = self._matrix[edge->first_id()][edge->second_id()];
         matrix_element = std::move(edge);
         self._n_unique_edges++;
+
         return *matrix_element;
     }
 
@@ -98,6 +107,8 @@ struct undirected_adjacency_matrix {
     }
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
+        detail::check_edge_override<impl_type>(self, edge);
+
         const auto first_id = edge->first_id();
         const auto second_id = edge->second_id();
 

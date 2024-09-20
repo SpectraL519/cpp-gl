@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 namespace gl_testing {
 
@@ -54,6 +55,21 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK_EQ(sut.n_vertices(), constants::n_elements);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
+    }
+
+    SUBCASE("add_edge should throw an error if the vertices are already incident") {
+        using vertex_type = typename SutType::vertex_type;
+        using edge_type = typename SutType::edge_type;
+
+        SutType sut{constants::n_elements};
+
+        const vertex_type v1{constants::vertex_id_1};
+        const vertex_type v2{constants::vertex_id_2};
+
+        sut.add_edge(lib::detail::make_edge<edge_type>(v1, v2));
+        REQUIRE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+
+        CHECK_THROWS_AS(sut.add_edge(lib::detail::make_edge<edge_type>(v1, v2)), std::logic_error);
     }
 }
 
