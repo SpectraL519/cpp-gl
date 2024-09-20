@@ -55,12 +55,58 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.n_vertices(), constants::n_elements);
         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
     }
+
+    SUBCASE("add_edge should throw an error if the vertices are already incident") {
+        using vertex_type = typename SutType::vertex_type;
+        using edge_type = typename SutType::edge_type;
+
+        SutType sut{constants::n_elements};
+
+        const vertex_type v1{constants::vertex_id_1};
+        const vertex_type v2{constants::vertex_id_2};
+
+        sut.add_edge(lib::detail::make_edge<edge_type>(v1, v2));
+        REQUIRE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+
+        CHECK_THROWS_AS(sut.add_edge(lib::detail::make_edge<edge_type>(v1, v2)), std::logic_error);
+    }
+
+    SUBCASE("add_edges_from should throw an error if the vertices are already incident") {
+        using vertex_type = typename SutType::vertex_type;
+        using edge_type = typename SutType::edge_type;
+        using edge_ptr_type = typename SutType::edge_ptr_type;
+
+        SutType sut{constants::n_elements};
+
+        const vertex_type v1{constants::vertex_id_1};
+        const vertex_type v2{constants::vertex_id_2};
+        const vertex_type v3{constants::vertex_id_3};
+
+        const auto vertex_refs = {std::cref(v1), std::cref(v2), std::cref(v3)};
+
+        std::vector<edge_ptr_type> new_edges;
+        for (const auto& destination : vertex_refs)
+            new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
+
+        sut.add_edges_from(constants::vertex_id_1, std::move(new_edges));
+
+        REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto destination_id) {
+            return sut.has_edge(constants::vertex_id_1, destination_id);
+        }));
+
+        std::ranges::for_each(vertex_refs, [&sut, &v1](const auto& destination) {
+            std::vector<edge_ptr_type> new_edges;
+            new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
+
+            CHECK_THROWS_AS(sut.add_edges_from(v1.id(), std::move(new_edges)), std::logic_error);
+        });
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_directional_tag_sut_template,
-    lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>, // directed adj list
-    lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>> // undirected adj list
+    lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::directed_t>>, // directed adj list
+    lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::undirected_t>> // undirected adj list
 );
 
 namespace {
@@ -74,7 +120,7 @@ struct test_directed_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::directed_edge<vertex_type>;
     using edge_ptr_type = lib::directed_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::directed_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::directed_t>>;
 
     test_directed_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)
@@ -274,7 +320,7 @@ struct test_undirected_adjacency_matrix {
     using vertex_type = lib::vertex_descriptor<>;
     using edge_type = lib::undirected_edge<vertex_type>;
     using edge_ptr_type = lib::undirected_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_matrix<lib::graph_traits<lib::undirected_t>>;
+    using sut_type = lib_i::adjacency_matrix<lib::matrix_graph_traits<lib::undirected_t>>;
 
     test_undirected_adjacency_matrix() {
         for (const auto id : constants::vertex_id_view)

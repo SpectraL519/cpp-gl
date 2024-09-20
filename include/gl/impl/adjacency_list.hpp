@@ -11,7 +11,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+template <type_traits::c_list_graph_traits GraphTraits>
 class adjacency_list {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
@@ -26,7 +26,7 @@ public:
 
     // TODO: reverese iterators should be available for bidirectional ranges
 
-    using type = std::vector<edge_list_type>;
+    using list_type = std::vector<edge_list_type>;
 
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
@@ -169,7 +169,7 @@ private:
         return vertex_id < this->_list.size();
     }
 
-    type _list{};
+    list_type _list{};
     types::size_type _n_unique_edges{constants::default_size};
 };
 
