@@ -9,7 +9,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <iostream>
 
 namespace gl_testing {
 
@@ -70,6 +69,43 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
 
         CHECK_THROWS_AS(sut.add_edge(lib::detail::make_edge<edge_type>(v1, v2)), std::logic_error);
+    }
+
+    SUBCASE("add_edges_from should throw an error if the vertices are already incident") {
+        using vertex_type = typename SutType::vertex_type;
+        using edge_type = typename SutType::edge_type;
+        using edge_ptr_type = typename SutType::edge_ptr_type;
+
+        SutType sut{constants::n_elements};
+
+        const vertex_type v1{constants::vertex_id_1};
+        const vertex_type v2{constants::vertex_id_2};
+        const vertex_type v3{constants::vertex_id_3};
+
+        const auto vertex_refs = {std::cref(v1), std::cref(v2), std::cref(v3)};
+
+        std::vector<edge_ptr_type> new_edges;
+        for (const auto& destination : vertex_refs)
+            new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
+
+        sut.add_edges_from(constants::vertex_id_1, std::move(new_edges));
+
+        REQUIRE(std::ranges::all_of(
+            constants::vertex_id_view,
+            [&sut](const auto destination_id) {
+                return sut.has_edge(constants::vertex_id_1, destination_id);
+            }
+        ));
+
+        std::ranges::for_each(
+            vertex_refs,
+            [&sut, &v1](const auto& destination) {
+                std::vector<edge_ptr_type> new_edges;
+                new_edges.push_back(lib::detail::make_edge<edge_type>(v1, destination.get()));
+
+                CHECK_THROWS_AS(sut.add_edges_from(v1.id(), std::move(new_edges)), std::logic_error);
+            }
+        );
     }
 }
 

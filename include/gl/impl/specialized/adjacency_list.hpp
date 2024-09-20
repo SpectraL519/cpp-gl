@@ -88,8 +88,16 @@ struct directed_adjacency_list {
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
-        for (auto& edge : new_edges)
+
+        for (auto& edge : new_edges) {
+            // TODO: add tests
+            if (edge->first_id() != source_id)
+                throw std::invalid_argument(
+                    std::format("All edges must be incident from the source vertex ({})", source_id)
+                );
             adjacent_edges_source.push_back(std::move(edge));
+        }
+
         self._n_unique_edges += new_edges.size();
     }
 
@@ -174,8 +182,15 @@ struct undirected_adjacency_list {
         adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
 
         for (auto& edge : new_edges) {
+            const auto [first_id, second_id] = edge->incident_vertex_ids();
+            // TODO: add tests
+            if (not (first_id == source_id or second_id == source_id))
+                throw std::invalid_argument(
+                    std::format("All edges must be incident from the source vertex ({})", source_id)
+                );
+
             if (not edge->is_loop())
-                self._list[edge->second_id()].push_back(edge);
+                self._list[second_id].push_back(edge);
             adjacent_edges_source.push_back(std::move(edge));
         }
 
