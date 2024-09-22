@@ -3,11 +3,13 @@
 #include "edge_tags.hpp"
 #include "gl/attributes/force_inline.hpp"
 #include "gl/impl/impl_tags_decl.hpp"
+#include "io.hpp"
 #include "types/properties.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 
 #include <compare>
+#include <sstream>
 
 namespace gl {
 
@@ -27,7 +29,7 @@ public:
     template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
     friend class graph;
 
-    vertex_descriptor() = delete;
+    vertex_descriptor() = default;
     vertex_descriptor(const vertex_descriptor&) = delete;
     vertex_descriptor& operator=(const vertex_descriptor&) = delete;
 
@@ -56,7 +58,54 @@ public:
 
     [[no_unique_address]] mutable properties_type properties{};
 
+    friend std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
+        if constexpr (not type_traits::is_default_properties_type_v<properties_type>
+                      and type_traits::c_writable<properties_type>) {
+            if (io::is_option_set(os, io::option::with_vertex_properties)) {
+                os << _io_quote << vertex._id << " | " << vertex.properties << _io_quote;
+                return os;
+            }
+        }
+
+        os << _io_quote << vertex._id << _io_quote;
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream& is, vertex_descriptor& vertex) {
+        std::string input_str;
+        std::stringstream ss;
+
+        if constexpr (not type_traits::is_default_properties_type_v<properties_type>
+                      and type_traits::c_readable<properties_type>) {
+            if (io::is_option_set(is, io::option::with_vertex_properties)) {
+                is >> std::quoted(input_str, _io_quote);
+                ss << input_str;
+
+                types::id_type id;
+                std::string separator;
+
+                ss >> id >> separator;
+                if (separator.length() != constants::one or separator.front() != _io_separator)
+                    throw std::ios_base::failure("Invalid property vertex ios format! Expected: `id | <properties>`");
+
+                ss >> vertex.properties;
+                vertex._id = id;
+
+                return is;
+            }
+        }
+
+        is >> std::quoted(input_str, _io_quote);
+        ss << input_str;
+        ss >> vertex._id;
+
+        return is;
+    }
+
 private:
+    static constexpr char _io_quote = '`';
+    static constexpr char _io_separator = '|';
+
     types::id_type _id;
 };
 
