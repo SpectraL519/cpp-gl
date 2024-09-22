@@ -2,7 +2,7 @@
 
 #include "edge_tags.hpp"
 #include "gl/attributes/force_inline.hpp"
-#include "types/formatter.hpp"
+#include "io/format.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
@@ -91,9 +91,9 @@ public:
         if (&vertex == &this->_vertices.second)
             return this->_vertices.first;
 
-        throw std::invalid_argument(std::format(
-            "Got invalid vertex [id = {} | addr = ]", vertex.id(), types::formatter(&vertex)
-        ));
+        throw std::invalid_argument(
+            std::format("Got invalid vertex [id = {} | addr = ]", vertex.id(), io::format(&vertex))
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {

@@ -4,7 +4,7 @@
 #include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
-#include "types/formatter.hpp"
+#include "io/format.hpp"
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -394,8 +394,8 @@ private:
             throw std::invalid_argument(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,
-                types::formatter(&self_vertex),
-                types::formatter(&vertex)
+                io::format(&self_vertex),
+                io::format(&vertex)
             ));
     }
 
@@ -405,7 +405,7 @@ private:
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
                 edge.first_id(),
                 edge.second_id(),
-                types::formatter(&edge)
+                io::format(&edge)
             ));
     }
 

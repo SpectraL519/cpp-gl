@@ -29,7 +29,7 @@ requires std::is_invocable_r_v<
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
             edge->first_id(),
             edge->second_id(),
-            types::formatter(edge)
+            io::format(edge)
         ));
 
     return it;
