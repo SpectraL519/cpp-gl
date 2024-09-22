@@ -148,10 +148,12 @@ private:
         }
 
         if (io::is_option_set(os, io::option::verbose)) {
-            os << "[first: " << this->first() << ", second: " << this->second() << " | properties: " << this->properties << "]";
+            os << "[first: " << this->first() << ", second: " << this->second()
+               << " | properties: " << this->properties << "]";
         }
         else {
-            os << "[" << this->first() << ", " << this->second() << " | " << this->properties << "]";
+            os << "[" << this->first() << ", " << this->second() << " | " << this->properties
+               << "]";
         }
     }
 

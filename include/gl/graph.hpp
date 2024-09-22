@@ -380,6 +380,11 @@ public:
         return edge_1.is_incident_with(edge_2.first()) or edge_1.is_incident_with(edge_2.second());
     }
 
+    friend inline std::ostream& operator<<(std::ostream& os, const graph& g) {
+        g._print(os);
+        return os;
+    }
+
 private:
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
@@ -420,6 +425,63 @@ private:
             this->_vertices.end(),
             [](auto& v) { v->_id--; }
         );
+    }
+
+    void _print(std::ostream& os) const {
+        if (io::is_option_set(os, io::option::verbose))
+            this->_verbose_print(os);
+        else
+            this->_concise_print(os);
+    }
+
+    void _verbose_print(std::ostream& os) const {
+        os << "number of vertices: " << this->n_vertices()
+           << "\nnumber of edges: " << this->n_unique_edges() << "\nvertices:\n";
+
+        if (io::is_option_set(os, io::option::with_vertex_properties)) {
+            /*
+            after each vertex disable the with_vertex_properties option so that
+            the vertex properties are not printed with the adjacent edges
+            */
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << io::without_vertex_properties << "\n  adjacent edges:\n";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << "\t- " << edge << '\n';
+                os << io::with_vertex_properties;
+            }
+        }
+        else {
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << "\n  adjacent edges:\n";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << "\t- " << edge << '\n';
+            }
+        }
+    }
+
+    void _concise_print(std::ostream& os) const {
+        os << std::format("{} {}\n", this->n_vertices(), this->n_unique_edges());
+
+        if (io::is_option_set(os, io::option::with_vertex_properties)) {
+            /*
+            after each vertex disable the with_vertex_properties option so that
+            the vertex properties are not printed with the adjacent edges
+            */
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << " :" << io::without_vertex_properties;
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << ' ' << edge;
+                os << '\n' << io::with_vertex_properties;
+            }
+        }
+        else {
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << " :";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << ' ' << edge;
+                os << '\n';
+            }
+        }
     }
 
     vetex_list_type _vertices{};
