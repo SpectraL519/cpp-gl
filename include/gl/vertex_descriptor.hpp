@@ -29,7 +29,7 @@ public:
     template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
     friend class graph;
 
-    vertex_descriptor() = default;
+    vertex_descriptor() = delete;
     vertex_descriptor(const vertex_descriptor&) = delete;
     vertex_descriptor& operator=(const vertex_descriptor&) = delete;
 
