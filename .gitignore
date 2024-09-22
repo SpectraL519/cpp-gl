@@ -10,4 +10,4 @@
 documentation/
 
 # other
-tmp/
+*tmp*/
