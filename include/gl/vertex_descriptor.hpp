@@ -9,7 +9,7 @@
 #include "types/types.hpp"
 
 #include <compare>
-#include <sstream>
+#include <format>
 
 namespace gl {
 
@@ -59,52 +59,45 @@ public:
     [[no_unique_address]] mutable properties_type properties{};
 
     friend std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
-        if constexpr (not type_traits::is_default_properties_type_v<properties_type>
-                      and type_traits::c_writable<properties_type>) {
-            if (io::is_option_set(os, io::option::with_vertex_properties)) {
-                os << _io_quote << vertex._id << " | " << vertex.properties << _io_quote;
-                return os;
-            }
+        if constexpr (_are_properties_writable) {
+            vertex._print_with_properties(os);
+        }
+        else {
+            vertex._print(os);
         }
 
-        os << _io_quote << vertex._id << _io_quote;
         return os;
     }
 
-    friend std::istream& operator>>(std::istream& is, vertex_descriptor& vertex) {
-        std::string input_str;
-        std::stringstream ss;
+private:
+    static constexpr bool _are_properties_writable =
+        not type_traits::is_default_properties_type_v<properties_type>
+        and type_traits::c_writable<properties_type>;
 
-        if constexpr (not type_traits::is_default_properties_type_v<properties_type>
-                      and type_traits::c_readable<properties_type>) {
-            if (io::is_option_set(is, io::option::with_vertex_properties)) {
-                is >> std::quoted(input_str, _io_quote);
-                ss << input_str;
-
-                types::id_type id;
-                std::string separator;
-
-                ss >> id >> separator;
-                if (separator.length() != constants::one or separator.front() != _io_separator)
-                    throw std::ios_base::failure("Invalid property vertex ios format! Expected: `id | <properties>`");
-
-                ss >> vertex.properties;
-                vertex._id = id;
-
-                return is;
-            }
+    void _print(std::ostream& os) const {
+        if (io::is_option_set(os, io::option::verbose)) {
+            os << std::format("[id: {}]", this->_id);
         }
-
-        is >> std::quoted(input_str, _io_quote);
-        ss << input_str;
-        ss >> vertex._id;
-
-        return is;
+        else {
+            os << this->_id;
+        }
     }
 
-private:
-    static constexpr char _io_quote = '`';
-    static constexpr char _io_separator = '|';
+    void _print_with_properties(std::ostream& os) const
+    requires(_are_properties_writable)
+    {
+        if (not io::is_option_set(os, io::option::with_vertex_properties)) {
+            this->_print(os);
+            return;
+        }
+
+        if (io::is_option_set(os, io::option::verbose)) {
+            os << "[id: " << this->_id << " | properties: " << this->properties << "]";
+        }
+        else {
+            os << "[" << this->_id << " | " << this->properties << "]";
+        }
+    }
 
     types::id_type _id;
 };
