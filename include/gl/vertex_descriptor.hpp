@@ -59,7 +59,7 @@ public:
     [[no_unique_address]] mutable properties_type properties{};
 
     friend std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
-        if constexpr (_are_properties_writable) {
+        if constexpr (type_traits::c_writable<properties_type>) {
             vertex._print_with_properties(os);
         }
         else {
@@ -70,10 +70,6 @@ public:
     }
 
 private:
-    static constexpr bool _are_properties_writable =
-        not type_traits::is_default_properties_type_v<properties_type>
-        and type_traits::c_writable<properties_type>;
-
     void _print(std::ostream& os) const {
         if (io::is_option_set(os, io::option::verbose)) {
             os << std::format("[id: {}]", this->_id);
@@ -84,7 +80,7 @@ private:
     }
 
     void _print_with_properties(std::ostream& os) const
-    requires(_are_properties_writable)
+    requires(type_traits::c_writable<properties_type>)
     {
         if (not io::is_option_set(os, io::option::with_vertex_properties)) {
             this->_print(os);
