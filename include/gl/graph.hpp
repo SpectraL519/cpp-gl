@@ -4,7 +4,7 @@
 #include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
-#include "types/formatter.hpp"
+#include "io.hpp"
 #include "types/iterator_range.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -380,7 +380,30 @@ public:
         return edge_1.is_incident_with(edge_2.first()) or edge_1.is_incident_with(edge_2.second());
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const graph& g) {
+        if (io::is_option_set(os, io::option::gsf)) {
+            g._gsf_write(os);
+            return os;
+        }
+
+        if (io::is_option_set(os, io::option::verbose))
+            g._verbose_write(os);
+        else
+            g._concise_write(os);
+
+        return os;
+    }
+
+    friend inline std::istream& operator>>(std::istream& is, graph& g) {
+        g._gsf_read(is);
+        return is;
+    }
+
 private:
+    [[nodiscard]] static constexpr std::string _directed_type_str() {
+        return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
+    }
+
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
             throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
@@ -394,8 +417,8 @@ private:
             throw std::invalid_argument(std::format(
                 "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
                 vertex_id,
-                types::formatter(&self_vertex),
-                types::formatter(&vertex)
+                io::format(&self_vertex),
+                io::format(&vertex)
             ));
     }
 
@@ -405,7 +428,7 @@ private:
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
                 edge.first_id(),
                 edge.second_id(),
-                types::formatter(&edge)
+                io::format(&edge)
             ));
     }
 
@@ -420,6 +443,178 @@ private:
             this->_vertices.end(),
             [](auto& v) { v->_id--; }
         );
+    }
+
+    void _verbose_write(std::ostream& os) const {
+        os << std::format(
+            "type: {}\nnumber of vertices: {}\nnumber of edges: {}\nvertices:\n",
+            _directed_type_str(),
+            this->n_vertices(),
+            this->n_unique_edges()
+        );
+
+        if (io::is_option_set(os, io::option::with_vertex_properties)) {
+            /*
+            after each vertex disable the with_vertex_properties option so that
+            the vertex properties are not printed with the adjacent edges
+            */
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << io::without_vertex_properties << "\n  adjacent edges:\n";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << "\t- " << edge << '\n';
+                os << io::with_vertex_properties;
+            }
+        }
+        else {
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << "\n  adjacent edges:\n";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << "\t- " << edge << '\n';
+            }
+        }
+    }
+
+    void _concise_write(std::ostream& os) const {
+        os << std::format(
+            "{} {} {}\n", _directed_type_str(), this->n_vertices(), this->n_unique_edges()
+        );
+
+        if (io::is_option_set(os, io::option::with_vertex_properties)) {
+            /*
+            after each vertex disable the with_vertex_properties option so that
+            the vertex properties are not printed with the adjacent edges
+            */
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << " :" << io::without_vertex_properties;
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << ' ' << edge;
+                os << '\n' << io::with_vertex_properties;
+            }
+        }
+        else {
+            for (const auto& vertex : this->vertices()) {
+                os << "- " << vertex << " :";
+                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                    os << ' ' << edge;
+                os << '\n';
+            }
+        }
+    }
+
+    void _gsf_write(std::ostream& os) const {
+        const bool with_vertex_properties =
+            io::is_option_set(os, io::option::with_vertex_properties);
+        const bool with_edge_properties = io::is_option_set(os, io::option::with_edge_properties);
+
+        // print graph size
+        os << std::format(
+            "{} {} {} {} {}\n",
+            static_cast<int>(type_traits::is_directed_v<edge_type>),
+            this->n_vertices(),
+            this->n_unique_edges(),
+            static_cast<int>(with_vertex_properties),
+            static_cast<int>(with_edge_properties)
+        );
+
+        if constexpr (type_traits::c_writable<typename vertex_type::properties_type>)
+            if (with_vertex_properties)
+                for (const auto& vertex : this->vertices())
+                    os << vertex.properties << '\n';
+
+        if constexpr (type_traits::c_writable<typename edge_type::properties_type>) {
+            if (with_edge_properties) {
+                const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
+                    for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
+                        if (edge.first_id() != vertex_id)
+                            continue; // vertex is not the source
+                        os << edge.first_id() << ' ' << edge.second_id() << ' ' << edge.properties
+                           << '\n';
+                    }
+                };
+
+                for (const auto vertex_id : this->vertex_ids())
+                    print_incident_edges(vertex_id);
+
+                return;
+            }
+        }
+
+        const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
+            for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
+                if (edge.first_id() != vertex_id)
+                    continue; // vertex is not the source
+                os << edge.first_id() << ' ' << edge.second_id() << '\n';
+            }
+        };
+
+        for (const auto vertex_id : this->vertex_ids())
+            print_incident_edges(vertex_id);
+    }
+
+    void _gsf_read(std::istream& is) {
+        bool directed;
+        is >> directed;
+
+        if (directed != type_traits::is_directed_v<edge_type>)
+            throw std::ios_base::failure(std::format(
+                "Invalid graph specification: directional tag does not match - should be {}",
+                _directed_type_str()
+            ));
+
+        // read initial graph parameters
+        types::id_type n_vertices, n_edges;
+        is >> n_vertices >> n_edges;
+
+        bool with_vertex_properties, with_edge_properties;
+        is >> with_vertex_properties >> with_edge_properties;
+
+        if (with_vertex_properties) {
+            if constexpr (not type_traits::c_readable<vertex_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid graph specification: vertex_properties=true "
+                    "when vertex_properties_type is not readable"
+                );
+            }
+            else {
+                // read vertex properties and use them to initialze the vertices
+                std::vector<vertex_properties_type> vertex_properties(n_vertices);
+                for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
+                    is >> vertex_properties[i];
+                this->add_vertices_with(vertex_properties);
+            }
+        }
+        else {
+            // initialize the vertices with default (or none) properties
+            this->add_vertices(n_vertices);
+        }
+
+        if (with_edge_properties) {
+            if constexpr (not type_traits::c_readable<edge_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid graph specification: edge_properties=true "
+                    "when edge_properties_type is not readable"
+                );
+            }
+            else {
+                // read edges with their properties
+                types::id_type first_id, second_id;
+                edge_properties_type properties;
+
+                for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+                    is >> first_id >> second_id >> properties;
+                    this->add_edge(first_id, second_id, properties);
+                }
+            }
+        }
+        else {
+            // read the edges
+            types::id_type first_id, second_id;
+
+            for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+                is >> first_id >> second_id;
+                this->add_edge(first_id, second_id);
+            }
+        }
     }
 
     vetex_list_type _vertices{};

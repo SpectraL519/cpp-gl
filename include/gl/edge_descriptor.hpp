@@ -2,7 +2,7 @@
 
 #include "edge_tags.hpp"
 #include "gl/attributes/force_inline.hpp"
-#include "types/formatter.hpp"
+#include "io/format.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 #include "vertex_descriptor.hpp"
@@ -91,9 +91,9 @@ public:
         if (&vertex == &this->_vertices.second)
             return this->_vertices.first;
 
-        throw std::invalid_argument(std::format(
-            "Got invalid vertex [id = {} | addr = ]", vertex.id(), types::formatter(&vertex)
-        ));
+        throw std::invalid_argument(
+            std::format("Got invalid vertex [id = {} | addr = ]", vertex.id(), io::format(&vertex))
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {
@@ -114,7 +114,45 @@ public:
 
     [[no_unique_address]] mutable properties_type properties{};
 
+    friend std::ostream& operator<<(std::ostream& os, const edge_descriptor& vertex) {
+        if constexpr (type_traits::c_writable<properties_type>) {
+            vertex._print_with_properties(os);
+        }
+        else {
+            vertex._print(os);
+        }
+
+        return os;
+    }
+
 private:
+    void _print(std::ostream& os) const {
+        if (io::is_option_set(os, io::option::verbose)) {
+            os << "[first: " << this->first() << ", second: " << this->second() << "]";
+        }
+        else {
+            os << "[" << this->first() << ", " << this->second() << "]";
+        }
+    }
+
+    void _print_with_properties(std::ostream& os) const
+    requires(type_traits::c_writable<properties_type>)
+    {
+        if (not io::is_option_set(os, io::option::with_edge_properties)) {
+            this->_print(os);
+            return;
+        }
+
+        if (io::is_option_set(os, io::option::verbose)) {
+            os << "[first: " << this->first() << ", second: " << this->second()
+               << " | properties: " << this->properties << "]";
+        }
+        else {
+            os << "[" << this->first() << ", " << this->second() << " | " << this->properties
+               << "]";
+        }
+    }
+
     types::homogeneous_pair<const vertex_type&> _vertices;
 };
 

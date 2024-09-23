@@ -92,4 +92,10 @@ concept c_basic_arithmetic = c_comparable<T> and requires(const T a, const T b, 
     { c /= a } -> std::same_as<T&>;
 };
 
+template <typename T>
+concept c_readable = requires(T value, std::istream& is) { is >> value; };
+
+template <typename T>
+concept c_writable = requires(T value, std::ostream& os) { os << value; };
+
 } // namespace gl::type_traits

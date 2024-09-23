@@ -23,7 +23,7 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
             edge->first_id(),
             edge->second_id(),
-            types::formatter(edge)
+            io::format(edge)
         ));
 
     return matrix_element;
