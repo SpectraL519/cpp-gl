@@ -516,7 +516,8 @@ private:
                     for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
                         if (edge.first_id() != vertex_id)
                             continue; // vertex is not the source
-                        os << edge.first_id() << ' ' << edge.second_id() << ' ' << edge.properties << '\n';
+                        os << edge.first_id() << ' ' << edge.second_id() << ' ' << edge.properties
+                           << '\n';
                     }
                 };
 
@@ -540,59 +541,54 @@ private:
     }
 
     void _gsf_read(std::istream& is) {
+        // read initial graph parameters
         types::id_type n_vertices, n_edges;
         is >> n_vertices >> n_edges;
-
-        std::cout << std::format("[debug] n_vertices = {}, n_edges = {}\n", n_vertices, n_edges);
 
         bool with_vertex_properties, with_edge_properties;
         is >> with_vertex_properties >> with_edge_properties;
 
-        std::cout << std::format(
-            "[debug] with_vertex_properties = {}, with_edge_properties = {}\n",
-            with_vertex_properties, with_edge_properties
-        );
-
+        // verify specification correctness
         if constexpr (not type_traits::c_readable<vertex_properties_type>) {
             if (with_vertex_properties)
-                throw std::ios_base::failure(
-                    "Invalid graph specification: vertex_properties=true when vertex_properties_type is not readable"
-                );
+                throw std::ios_base::failure("Invalid graph specification: vertex_properties=true "
+                                             "when vertex_properties_type is not readable");
         }
 
         if constexpr (not type_traits::c_readable<edge_properties_type>) {
             if (with_edge_properties)
-                throw std::ios_base::failure(
-                    "Invalid graph specification: edge_properties=true when edge_properties_type is not readable"
-                );
+                throw std::ios_base::failure("Invalid graph specification: edge_properties=true "
+                                             "when edge_properties_type is not readable");
         }
 
         if (with_vertex_properties) {
+            // read vertex properties and use them to initialze the vertices
             std::vector<vertex_properties_type> vertex_properties(n_vertices);
             for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
                 is >> vertex_properties[i];
             this->add_vertices_with(vertex_properties);
         }
         else {
+            // initialize the vertices with default (or none) properties
             this->add_vertices(n_vertices);
         }
 
         if (with_edge_properties) {
+            // read edges with their properties
             types::id_type first_id, second_id;
             edge_properties_type properties;
 
             for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
                 is >> first_id >> second_id >> properties;
-                std::cout << std::format("[debug] edge: {}, {}\n", first_id, second_id);
                 this->add_edge(first_id, second_id, properties);
             }
         }
         else {
+            // read the edges
             types::id_type first_id, second_id;
 
             for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
                 is >> first_id >> second_id;
-                std::cout << std::format("[debug] edge: {}, {}\n", first_id, second_id);
                 this->add_edge(first_id, second_id);
             }
         }
