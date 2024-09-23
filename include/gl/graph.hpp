@@ -400,6 +400,10 @@ public:
     }
 
 private:
+    [[nodiscard]] static constexpr std::string _directed_type_str() {
+        return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
+    }
+
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
             throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
@@ -442,8 +446,12 @@ private:
     }
 
     void _verbose_write(std::ostream& os) const {
-        os << "number of vertices: " << this->n_vertices()
-           << "\nnumber of edges: " << this->n_unique_edges() << "\nvertices:\n";
+        os << std::format(
+            "type: {}\nnumber of vertices: {}\nnumber of edges: {}\nvertices:\n",
+            _directed_type_str(),
+            this->n_vertices(),
+            this->n_unique_edges()
+        );
 
         if (io::is_option_set(os, io::option::with_vertex_properties)) {
             /*
@@ -467,7 +475,9 @@ private:
     }
 
     void _concise_write(std::ostream& os) const {
-        os << std::format("{} {}\n", this->n_vertices(), this->n_unique_edges());
+        os << std::format(
+            "{} {} {}\n", _directed_type_str(), this->n_vertices(), this->n_unique_edges()
+        );
 
         if (io::is_option_set(os, io::option::with_vertex_properties)) {
             /*
@@ -498,7 +508,8 @@ private:
 
         // print graph size
         os << std::format(
-            "{} {} {} {}\n",
+            "{} {} {} {} {}\n",
+            static_cast<int>(type_traits::is_directed_v<edge_type>),
             this->n_vertices(),
             this->n_unique_edges(),
             static_cast<int>(with_vertex_properties),
@@ -541,6 +552,15 @@ private:
     }
 
     void _gsf_read(std::istream& is) {
+        bool directed;
+        is >> directed;
+
+        if (directed != type_traits::is_directed_v<edge_type>)
+            throw std::ios_base::failure(std::format(
+                "Invalid graph specification: directional tag does not match - should be {}",
+                _directed_type_str()
+            ));
+
         // read initial graph parameters
         types::id_type n_vertices, n_edges;
         is >> n_vertices >> n_edges;
@@ -548,25 +568,20 @@ private:
         bool with_vertex_properties, with_edge_properties;
         is >> with_vertex_properties >> with_edge_properties;
 
-        // verify specification correctness
-        if constexpr (not type_traits::c_readable<vertex_properties_type>) {
-            if (with_vertex_properties)
-                throw std::ios_base::failure("Invalid graph specification: vertex_properties=true "
-                                             "when vertex_properties_type is not readable");
-        }
-
-        if constexpr (not type_traits::c_readable<edge_properties_type>) {
-            if (with_edge_properties)
-                throw std::ios_base::failure("Invalid graph specification: edge_properties=true "
-                                             "when edge_properties_type is not readable");
-        }
-
         if (with_vertex_properties) {
-            // read vertex properties and use them to initialze the vertices
-            std::vector<vertex_properties_type> vertex_properties(n_vertices);
-            for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
-                is >> vertex_properties[i];
-            this->add_vertices_with(vertex_properties);
+            if constexpr (not type_traits::c_readable<vertex_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid graph specification: vertex_properties=true "
+                    "when vertex_properties_type is not readable"
+                );
+            }
+            else {
+                // read vertex properties and use them to initialze the vertices
+                std::vector<vertex_properties_type> vertex_properties(n_vertices);
+                for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
+                    is >> vertex_properties[i];
+                this->add_vertices_with(vertex_properties);
+            }
         }
         else {
             // initialize the vertices with default (or none) properties
@@ -574,13 +589,21 @@ private:
         }
 
         if (with_edge_properties) {
-            // read edges with their properties
-            types::id_type first_id, second_id;
-            edge_properties_type properties;
+            if constexpr (not type_traits::c_readable<edge_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid graph specification: edge_properties=true "
+                    "when edge_properties_type is not readable"
+                );
+            }
+            else {
+                // read edges with their properties
+                types::id_type first_id, second_id;
+                edge_properties_type properties;
 
-            for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
-                is >> first_id >> second_id >> properties;
-                this->add_edge(first_id, second_id, properties);
+                for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+                    is >> first_id >> second_id >> properties;
+                    this->add_edge(first_id, second_id, properties);
+                }
             }
         }
         else {
