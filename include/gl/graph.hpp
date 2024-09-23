@@ -380,8 +380,17 @@ public:
         return edge_1.is_incident_with(edge_2.first()) or edge_1.is_incident_with(edge_2.second());
     }
 
-    friend inline std::ostream& operator<<(std::ostream& os, const graph& g) {
-        g._print(os);
+    friend std::ostream& operator<<(std::ostream& os, const graph& g) {
+        if (io::is_option_set(os, io::option::gsf)) {
+            g._gsf_print(os);
+            return os;
+        }
+
+        if (io::is_option_set(os, io::option::verbose))
+            g._verbose_print(os);
+        else
+            g._concise_print(os);
+
         return os;
     }
 
@@ -425,13 +434,6 @@ private:
             this->_vertices.end(),
             [](auto& v) { v->_id--; }
         );
-    }
-
-    void _print(std::ostream& os) const {
-        if (io::is_option_set(os, io::option::verbose))
-            this->_verbose_print(os);
-        else
-            this->_concise_print(os);
     }
 
     void _verbose_print(std::ostream& os) const {
@@ -481,6 +483,39 @@ private:
                     os << ' ' << edge;
                 os << '\n';
             }
+        }
+    }
+
+    void _gsf_print(std::ostream& os) const {
+        const bool with_vertex_properties =
+            io::is_option_set(os, io::option::with_vertex_properties);
+        const bool with_edge_properties = io::is_option_set(os, io::option::with_edge_properties);
+
+        // print graph size
+        os << std::format(
+            "{} {} {} {}\n",
+            this->n_vertices(),
+            this->n_unique_edges(),
+            static_cast<int>(with_vertex_properties),
+            static_cast<int>(with_edge_properties)
+        );
+
+        if constexpr (vertex_type::_are_properties_writable)
+            if (with_vertex_properties)
+                for (const auto& vertex : this->vertices())
+                    os << vertex.properties << '\n';
+
+        if constexpr (edge_type::_are_properties_writable) {
+            if (with_edge_properties)
+                for (const auto vertex_id : this->vertex_ids())
+                    for (const auto& edge : this->_impl.adjacent_edges(vertex_id))
+                        os << edge.first_id() << ' ' << edge.second_id() << ' ' << edge.properties
+                           << '\n';
+        }
+        else {
+            for (const auto vertex_id : this->vertex_ids())
+                for (const auto& edge : this->_impl.adjacent_edges(vertex_id))
+                    os << edge.first_id() << ' ' << edge.second_id() << '\n';
         }
     }
 

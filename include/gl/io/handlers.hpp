@@ -14,7 +14,8 @@ using bit_position_type = unsigned;
 namespace detail {
 
 template <typename T>
-concept c_bit_position_enum = std::is_enum_v<T> and std::convertible_to<std::underlying_type_t<T>, bit_position_type>;
+concept c_bit_position_enum =
+    std::is_enum_v<T> and std::convertible_to<std::underlying_type_t<T>, bit_position_type>;
 
 } // namespace detail
 
@@ -65,7 +66,9 @@ public:
     [[nodiscard]] gl_attr_force_inline static bool is_option_set(
         std::ios_base& stream, BitPosition bit_position
     ) {
-        return (stream.iword(_iostream_property_map_index()) & (_iword_bit << _get_bit_position_value(bit_position))) != 0;
+        return (stream.iword(_iostream_property_map_index())
+                & (_iword_bit << _get_bit_position_value(bit_position)))
+            != 0;
     }
 
     static constexpr bool set = true;
@@ -78,7 +81,9 @@ private:
     }
 
     template <detail::c_bit_position_enum BitPosition>
-    [[nodiscard]] gl_attr_force_inline static bit_position_type _get_bit_position_value(BitPosition bit_position) {
+    [[nodiscard]] gl_attr_force_inline static bit_position_type _get_bit_position_value(
+        BitPosition bit_position
+    ) {
         return static_cast<bit_position_type>(util::to_underlying(bit_position));
     }
 
@@ -94,8 +99,7 @@ set_option(bit_position_type bit_position) {
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator
-set_option(BitPosition bit_position) {
+[[nodiscard]] gl_attr_force_inline stream_option_manipulator set_option(BitPosition bit_position) {
     return stream_option_manipulator{bit_position, stream_option_manipulator::set};
 }
 
@@ -105,8 +109,8 @@ unset_option(bit_position_type bit_position) {
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator
-unset_option(BitPosition bit_position) {
+[[nodiscard]] gl_attr_force_inline stream_option_manipulator unset_option(BitPosition bit_position
+) {
     return stream_option_manipulator{bit_position, stream_option_manipulator::unset};
 }
 

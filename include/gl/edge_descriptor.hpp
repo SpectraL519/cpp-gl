@@ -15,6 +15,13 @@
 namespace gl {
 
 template <
+    type_traits::c_edge_directional_tag EdgeDirectionalTag,
+    type_traits::c_properties VertexProperties,
+    type_traits::c_properties EdgeProperties,
+    type_traits::c_graph_impl_tag ImplTag>
+struct graph_traits;
+
+template <
     type_traits::c_instantiation_of<vertex_descriptor> VertexType,
     type_traits::c_edge_directional_tag DirectionalTag = directed_t,
     type_traits::c_properties Properties = types::empty_properties>
@@ -26,6 +33,9 @@ public:
     using properties_type = Properties;
 
     friend directional_tag;
+
+    template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+    friend class graph;
 
     edge_descriptor() = delete;
     edge_descriptor(const edge_descriptor&) = delete;

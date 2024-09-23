@@ -1,6 +1,6 @@
 #include "constants.hpp"
 
-#include <gl/io/io_handlers.hpp>
+#include <gl/io/handlers.hpp>
 
 #include <doctest.h>
 
