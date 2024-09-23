@@ -42,6 +42,9 @@ public:
 
     // clang-format on
 
+    [[nodiscard]] bool operator==(const name_property&) const = default;
+    [[nodiscard]] auto operator<=>(const name_property&) const = default;
+
     friend std::ostream& operator<<(std::ostream& os, const name_property& property) {
         os << std::quoted(property._name);
         return os;
