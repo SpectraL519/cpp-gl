@@ -154,12 +154,12 @@ private:
             return;
         }
         else {
-            if (not io::is_option_set(os, io::option::with_edge_properties)) {
+            if (not io::is_option_set(os, io::graph_option::with_edge_properties)) {
                 this->_write_no_properties(os, within_context);
                 return;
             }
 
-            if (io::is_option_set(os, io::option::verbose)) {
+            if (io::is_option_set(os, io::graph_option::verbose)) {
                 os << "[first: " << vertex_writer(this->first(), within_context)
                    << ", second: " << vertex_writer(this->second(), within_context)
                    << " | properties: " << this->properties << "]";
@@ -173,7 +173,7 @@ private:
     }
 
     void _write_no_properties(std::ostream& os, bool within_context = false) const {
-        if (io::is_option_set(os, io::option::verbose))
+        if (io::is_option_set(os, io::graph_option::verbose))
             os << "[first: " << vertex_writer(this->first(), within_context)
                << ", second: " << vertex_writer(this->second(), within_context) << "]";
         else

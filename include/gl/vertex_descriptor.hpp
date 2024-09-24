@@ -3,7 +3,7 @@
 #include "edge_tags.hpp"
 #include "gl/attributes/force_inline.hpp"
 #include "gl/impl/impl_tags_decl.hpp"
-#include "io.hpp"
+#include "graph_io.hpp"
 #include "types/properties.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -70,12 +70,12 @@ private:
             return;
         }
         else {
-            if (not io::is_option_set(os, io::option::with_vertex_properties)) {
+            if (not io::is_option_set(os, io::graph_option::with_vertex_properties)) {
                 this->_write_no_properties(os);
                 return;
             }
 
-            if (io::is_option_set(os, io::option::verbose)) {
+            if (io::is_option_set(os, io::graph_option::verbose)) {
                 os << "[id: " << this->_id << " | properties: " << this->properties << "]";
             }
             else {
@@ -85,7 +85,7 @@ private:
     }
 
     void _write_no_properties(std::ostream& os) const {
-        if (io::is_option_set(os, io::option::verbose)) {
+        if (io::is_option_set(os, io::graph_option::verbose)) {
             os << std::format("[id: {}]", this->_id);
         }
         else {

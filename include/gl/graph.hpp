@@ -381,12 +381,12 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
-        if (io::is_option_set(os, io::option::gsf)) {
+        if (io::is_option_set(os, io::graph_option::gsf)) {
             g._gsf_write(os);
             return os;
         }
 
-        if (io::is_option_set(os, io::option::verbose))
+        if (io::is_option_set(os, io::graph_option::verbose))
             g._verbose_write(os);
         else
             g._concise_write(os);
@@ -479,8 +479,9 @@ private:
 
     void _gsf_write(std::ostream& os) const {
         const bool with_vertex_properties =
-            io::is_option_set(os, io::option::with_vertex_properties);
-        const bool with_edge_properties = io::is_option_set(os, io::option::with_edge_properties);
+            io::is_option_set(os, io::graph_option::with_vertex_properties);
+        const bool with_edge_properties =
+            io::is_option_set(os, io::graph_option::with_edge_properties);
 
         // print graph size
         os << std::format(
