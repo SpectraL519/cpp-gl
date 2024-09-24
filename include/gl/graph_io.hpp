@@ -2,9 +2,6 @@
 
 #include "io/stream_options_manipulator.hpp"
 
-#include <filesystem>
-#include <fstream>
-
 namespace gl {
 namespace io {
 
