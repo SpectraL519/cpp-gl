@@ -24,6 +24,11 @@ inline const stream_option_manipulator with_edge_properties =
 inline const stream_option_manipulator without_edge_properties =
     unset_option(option::with_edge_properties);
 
+inline const stream_option_manipulator with_properties =
+    set_options({option::with_vertex_properties, option::with_edge_properties});
+inline const stream_option_manipulator without_properties =
+    unset_options({option::with_vertex_properties, option::with_edge_properties});
+
 inline const stream_option_manipulator enable_gsf = set_option(option::gsf);
 inline const stream_option_manipulator disable_gsf = unset_option(option::gsf);
 
