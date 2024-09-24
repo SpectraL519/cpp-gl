@@ -1,7 +1,7 @@
 #pragma once
 
+#include "attributes/force_inline.hpp"
 #include "edge_tags.hpp"
-#include "gl/attributes/force_inline.hpp"
 #include "io/format.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
