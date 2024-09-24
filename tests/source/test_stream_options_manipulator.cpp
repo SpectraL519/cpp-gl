@@ -1,6 +1,6 @@
 #include "constants.hpp"
 
-#include <gl/io/handlers.hpp>
+#include <gl/io/stream_options_manipulator.hpp>
 
 #include <doctest.h>
 
@@ -8,10 +8,10 @@
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_io_handlers");
+TEST_SUITE_BEGIN("test_stream_options_manipulator");
 
-struct test_io_handlers {
-    test_io_handlers() {
+struct test_stream_options_manipulator {
+    test_stream_options_manipulator() {
         REQUIRE_FALSE(lib::io::is_option_set(ss1, property_bit_position));
         REQUIRE_FALSE(lib::io::is_option_set(ss2, property_bit_position));
     }
@@ -23,7 +23,7 @@ struct test_io_handlers {
 };
 
 TEST_CASE_FIXTURE(
-    test_io_handlers, "stream_option_manipulator should properly handle istream property operations"
+    test_stream_options_manipulator, "stream_options_manipulator should properly handle istream property operations"
 ) {
     ss1 >> lib::io::set_option(property_bit_position);
     CHECK(lib::io::is_option_set(ss1, property_bit_position));
@@ -43,7 +43,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_io_handlers, "stream_option_manipulator should properly handle ostream property operations"
+    test_stream_options_manipulator, "stream_options_manipulator should properly handle ostream property operations"
 ) {
     ss1 << lib::io::set_option(property_bit_position);
     CHECK(lib::io::is_option_set(ss1, property_bit_position));
@@ -62,6 +62,6 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(lib::io::is_option_set(ss2, property_bit_position));
 }
 
-TEST_SUITE_END(); // test_io_handlers
+TEST_SUITE_END(); // test_stream_options_manipulator
 
 } // namespace gl_testing

@@ -21,21 +21,21 @@ concept c_bit_position_enum =
 
 } // namespace detail
 
-class stream_option_manipulator {
+class stream_options_manipulator {
 public:
-    stream_option_manipulator() = delete;
+    stream_options_manipulator() = delete;
 
-    explicit stream_option_manipulator(iword_type bitmask, bool operation = set)
+    explicit stream_options_manipulator(iword_type bitmask, bool operation = set)
     : _bitmask(bitmask), _operation(operation) {}
 
-    [[nodiscard]] gl_attr_force_inline static stream_option_manipulator from_bit_position(
+    [[nodiscard]] gl_attr_force_inline static stream_options_manipulator from_bit_position(
         bit_position_type bit_position, bool operation = set
     ) {
-        return stream_option_manipulator{iword_bit << bit_position, operation};
+        return stream_options_manipulator{iword_bit << bit_position, operation};
     }
 
     friend std::ostream& operator<<(
-        std::ostream& os, const stream_option_manipulator& property_manipulator
+        std::ostream& os, const stream_options_manipulator& property_manipulator
     ) {
         if (property_manipulator._operation == set)
             os.iword(_iostream_property_map_index()) |= property_manipulator._bitmask;
@@ -46,7 +46,7 @@ public:
     }
 
     friend std::istream& operator>>(
-        std::istream& is, const stream_option_manipulator& property_manipulator
+        std::istream& is, const stream_options_manipulator& property_manipulator
     ) {
         if (property_manipulator._operation == set)
             is.iword(_iostream_property_map_index()) |= property_manipulator._bitmask;
@@ -100,101 +100,101 @@ template <detail::c_bit_position_enum BitPosition>
 
 } // namespace detail
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator set_options(iword_type bitmask) {
-    return stream_option_manipulator{bitmask, stream_option_manipulator::set};
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator set_options(iword_type bitmask) {
+    return stream_options_manipulator{bitmask, stream_options_manipulator::set};
 }
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator set_options(
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator set_options(
     const std::initializer_list<bit_position_type>& bit_positions
 ) {
-    return stream_option_manipulator{detail::get_options_bitmask(bit_positions), stream_option_manipulator::set};
+    return stream_options_manipulator{detail::get_options_bitmask(bit_positions), stream_options_manipulator::set};
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator set_options(
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator set_options(
     const std::initializer_list<BitPosition>& bit_positions
 ) {
-    return stream_option_manipulator{detail::get_options_bitmask(bit_positions), stream_option_manipulator::set};
+    return stream_options_manipulator{detail::get_options_bitmask(bit_positions), stream_options_manipulator::set};
 }
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator
 set_option(bit_position_type bit_position) {
-    return stream_option_manipulator::from_bit_position(
-        bit_position, stream_option_manipulator::set
+    return stream_options_manipulator::from_bit_position(
+        bit_position, stream_options_manipulator::set
     );
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator set_option(BitPosition bit_position) {
-    return stream_option_manipulator::from_bit_position(
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator set_option(BitPosition bit_position) {
+    return stream_options_manipulator::from_bit_position(
         static_cast<bit_position_type>(util::to_underlying(bit_position)),
-        stream_option_manipulator::set
+        stream_options_manipulator::set
     );
 }
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator unset_options(iword_type bitmask) {
-    return stream_option_manipulator{bitmask, stream_option_manipulator::unset};
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator unset_options(iword_type bitmask) {
+    return stream_options_manipulator{bitmask, stream_options_manipulator::unset};
 }
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator unset_options(
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator unset_options(
     const std::initializer_list<bit_position_type>& bit_positions
 ) {
-    return stream_option_manipulator{detail::get_options_bitmask(bit_positions), stream_option_manipulator::unset};
+    return stream_options_manipulator{detail::get_options_bitmask(bit_positions), stream_options_manipulator::unset};
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator unset_options(
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator unset_options(
     const std::initializer_list<BitPosition>& bit_positions
 ) {
-    return stream_option_manipulator{detail::get_options_bitmask(bit_positions), stream_option_manipulator::unset};
+    return stream_options_manipulator{detail::get_options_bitmask(bit_positions), stream_options_manipulator::unset};
 }
 
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator
 unset_option(bit_position_type bit_position) {
-    return stream_option_manipulator::from_bit_position(
-        bit_position, stream_option_manipulator::unset
+    return stream_options_manipulator::from_bit_position(
+        bit_position, stream_options_manipulator::unset
     );
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline stream_option_manipulator unset_option(BitPosition bit_position
+[[nodiscard]] gl_attr_force_inline stream_options_manipulator unset_option(BitPosition bit_position
 ) {
-    return stream_option_manipulator::from_bit_position(
+    return stream_options_manipulator::from_bit_position(
         static_cast<bit_position_type>(util::to_underlying(bit_position)),
-        stream_option_manipulator::unset
+        stream_options_manipulator::unset
     );
 }
 
 [[nodiscard]] gl_attr_force_inline bool are_option_set(
     std::ios_base& stream, iword_type bitmask
 ) {
-    return stream_option_manipulator::are_options_set(stream, bitmask);
+    return stream_options_manipulator::are_options_set(stream, bitmask);
 }
 
 [[nodiscard]] gl_attr_force_inline bool are_option_set(
     std::ios_base& stream, const std::initializer_list<bit_position_type>& bit_positions
 ) {
-    return stream_option_manipulator::are_options_set(stream, detail::get_options_bitmask(bit_positions));
+    return stream_options_manipulator::are_options_set(stream, detail::get_options_bitmask(bit_positions));
 }
 
 template <detail::c_bit_position_enum BitPosition>
 [[nodiscard]] gl_attr_force_inline bool are_option_set(
     std::ios_base& stream, const std::initializer_list<BitPosition>& bit_positions
 ) {
-    return stream_option_manipulator::are_options_set(stream, detail::get_options_bitmask(bit_positions));
+    return stream_options_manipulator::are_options_set(stream, detail::get_options_bitmask(bit_positions));
 }
 
 [[nodiscard]] gl_attr_force_inline bool is_option_set(
     std::ios_base& stream, bit_position_type bit_position
 ) {
-    return stream_option_manipulator::is_option_set(stream, bit_position);
+    return stream_options_manipulator::is_option_set(stream, bit_position);
 }
 
 template <detail::c_bit_position_enum BitPosition>
 [[nodiscard]] gl_attr_force_inline bool is_option_set(
     std::ios_base& stream, BitPosition bit_position
 ) {
-    return stream_option_manipulator::is_option_set(
+    return stream_options_manipulator::is_option_set(
         stream, static_cast<bit_position_type>(util::to_underlying(bit_position))
     );
 }
