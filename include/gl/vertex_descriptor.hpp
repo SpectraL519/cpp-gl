@@ -58,40 +58,38 @@ public:
 
     [[no_unique_address]] mutable properties_type properties{};
 
-    friend std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
-        if constexpr (type_traits::c_writable<properties_type>) {
-            vertex._print_with_properties(os);
-        }
-        else {
-            vertex._print(os);
-        }
-
+    friend inline std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
+        vertex._write(os);
         return os;
     }
 
 private:
-    void _print(std::ostream& os) const {
+    void _write(std::ostream& os) const {
+        if constexpr (not type_traits::c_writable<properties_type>) {
+            this->_write_no_properties(os);
+            return;
+        }
+        else {
+            if (not io::is_option_set(os, io::option::with_vertex_properties)) {
+                this->_write_no_properties(os);
+                return;
+            }
+
+            if (io::is_option_set(os, io::option::verbose)) {
+                os << "[id: " << this->_id << " | properties: " << this->properties << "]";
+            }
+            else {
+                os << "[" << this->_id << " | " << this->properties << "]";
+            }
+        }
+    }
+
+    void _write_no_properties(std::ostream& os) const {
         if (io::is_option_set(os, io::option::verbose)) {
             os << std::format("[id: {}]", this->_id);
         }
         else {
             os << this->_id;
-        }
-    }
-
-    void _print_with_properties(std::ostream& os) const
-    requires(type_traits::c_writable<properties_type>)
-    {
-        if (not io::is_option_set(os, io::option::with_vertex_properties)) {
-            this->_print(os);
-            return;
-        }
-
-        if (io::is_option_set(os, io::option::verbose)) {
-            os << "[id: " << this->_id << " | properties: " << this->properties << "]";
-        }
-        else {
-            os << "[" << this->_id << " | " << this->properties << "]";
         }
     }
 
