@@ -15,6 +15,13 @@
 namespace gl {
 
 template <
+    type_traits::c_edge_directional_tag EdgeDirectionalTag,
+    type_traits::c_properties VertexProperties,
+    type_traits::c_properties EdgeProperties,
+    type_traits::c_graph_impl_tag ImplTag>
+struct graph_traits;
+
+template <
     type_traits::c_instantiation_of<vertex_descriptor> VertexType,
     type_traits::c_edge_directional_tag DirectionalTag = directed_t,
     type_traits::c_properties Properties = types::empty_properties>
@@ -26,6 +33,9 @@ public:
     using properties_type = Properties;
 
     friend directional_tag;
+
+    template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+    friend class graph;
 
     edge_descriptor() = delete;
     edge_descriptor(const edge_descriptor&) = delete;
@@ -114,43 +124,61 @@ public:
 
     [[no_unique_address]] mutable properties_type properties{};
 
-    friend std::ostream& operator<<(std::ostream& os, const edge_descriptor& vertex) {
-        if constexpr (type_traits::c_writable<properties_type>) {
-            vertex._print_with_properties(os);
-        }
-        else {
-            vertex._print(os);
-        }
-
+    friend inline std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
+        edge._write(os);
         return os;
     }
 
 private:
-    void _print(std::ostream& os) const {
-        if (io::is_option_set(os, io::option::verbose)) {
-            os << "[first: " << this->first() << ", second: " << this->second() << "]";
+    class vertex_writer {
+    public:
+        vertex_writer(const vertex_type& vertex, bool within_context)
+        : _vertex_ref(vertex), _within_context(within_context) {}
+
+        friend std::ostream& operator<<(std::ostream& os, const vertex_writer& vw) {
+            if (vw._within_context)
+                os << vw._vertex_ref.id();
+            else
+                os << vw._vertex_ref;
+            return os;
+        }
+
+    private:
+        const vertex_type& _vertex_ref;
+        bool _within_context;
+    };
+
+    void _write(std::ostream& os, bool within_context = false) const {
+        if constexpr (not type_traits::c_writable<properties_type>) {
+            this->_write_no_properties(os, within_context);
+            return;
         }
         else {
-            os << "[" << this->first() << ", " << this->second() << "]";
+            if (not io::is_option_set(os, io::option::with_edge_properties)) {
+                this->_write_no_properties(os, within_context);
+                return;
+            }
+
+            if (io::is_option_set(os, io::option::verbose)) {
+                os << "[first: " << vertex_writer(this->first(), within_context)
+                   << ", second: " << vertex_writer(this->second(), within_context)
+                   << " | properties: " << this->properties << "]";
+            }
+            else {
+                os << "[" << vertex_writer(this->first(), within_context) << ", "
+                   << vertex_writer(this->second(), within_context) << " | " << this->properties
+                   << "]";
+            }
         }
     }
 
-    void _print_with_properties(std::ostream& os) const
-    requires(type_traits::c_writable<properties_type>)
-    {
-        if (not io::is_option_set(os, io::option::with_edge_properties)) {
-            this->_print(os);
-            return;
-        }
-
-        if (io::is_option_set(os, io::option::verbose)) {
-            os << "[first: " << this->first() << ", second: " << this->second()
-               << " | properties: " << this->properties << "]";
-        }
-        else {
-            os << "[" << this->first() << ", " << this->second() << " | " << this->properties
-               << "]";
-        }
+    void _write_no_properties(std::ostream& os, bool within_context = false) const {
+        if (io::is_option_set(os, io::option::verbose))
+            os << "[first: " << vertex_writer(this->first(), within_context)
+               << ", second: " << vertex_writer(this->second(), within_context) << "]";
+        else
+            os << "[" << vertex_writer(this->first(), within_context) << ", "
+               << vertex_writer(this->second(), within_context) << "]";
     }
 
     types::homogeneous_pair<const vertex_type&> _vertices;

@@ -453,23 +453,13 @@ private:
             this->n_unique_edges()
         );
 
-        if (io::is_option_set(os, io::option::with_vertex_properties)) {
-            /*
-            after each vertex disable the with_vertex_properties option so that
-            the vertex properties are not printed with the adjacent edges
-            */
-            for (const auto& vertex : this->vertices()) {
-                os << "- " << vertex << io::without_vertex_properties << "\n  adjacent edges:\n";
-                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
-                    os << "\t- " << edge << '\n';
-                os << io::with_vertex_properties;
-            }
-        }
-        else {
-            for (const auto& vertex : this->vertices()) {
-                os << "- " << vertex << "\n  adjacent edges:\n";
-                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
-                    os << "\t- " << edge << '\n';
+        constexpr bool within_context = true;
+        for (const auto& vertex : this->vertices()) {
+            os << "- " << vertex << "\n  adjacent edges:\n";
+            for (const auto& edge : this->_impl.adjacent_edges(vertex.id())) {
+                os << "\t- ";
+                edge._write(os, within_context);
+                os << '\n';
             }
         }
     }
@@ -479,25 +469,11 @@ private:
             "{} {} {}\n", _directed_type_str(), this->n_vertices(), this->n_unique_edges()
         );
 
-        if (io::is_option_set(os, io::option::with_vertex_properties)) {
-            /*
-            after each vertex disable the with_vertex_properties option so that
-            the vertex properties are not printed with the adjacent edges
-            */
-            for (const auto& vertex : this->vertices()) {
-                os << "- " << vertex << " :" << io::without_vertex_properties;
-                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
-                    os << ' ' << edge;
-                os << '\n' << io::with_vertex_properties;
-            }
-        }
-        else {
-            for (const auto& vertex : this->vertices()) {
-                os << "- " << vertex << " :";
-                for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
-                    os << ' ' << edge;
-                os << '\n';
-            }
+        for (const auto& vertex : this->vertices()) {
+            os << "- " << vertex << " :";
+            for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                os << ' ' << edge;
+            os << '\n';
         }
     }
 
