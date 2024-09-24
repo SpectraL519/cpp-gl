@@ -1,4 +1,5 @@
 #include "constants.hpp"
+#include "io_common.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/io.hpp>
@@ -13,45 +14,6 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_graph_io");
 
 // Tests covering only the io functionality with the graph specification format enabled
-
-namespace common {
-
-template <lib_tt::c_graph GraphType>
-void verify_graph_structure(const GraphType& g1, const GraphType& g2) {
-    REQUIRE_EQ(g1.n_vertices(), g2.n_vertices());
-    REQUIRE_EQ(g1.n_unique_edges(), g2.n_unique_edges());
-
-    // verify that the edges of the in graph are equivalent to the edges of the out graph
-    CHECK(std::ranges::all_of(g1.vertices(), [&](const auto& v1) {
-        return std::ranges::all_of(g1.adjacent_edges(v1), [&](const auto& edge) {
-            return g2.has_edge(edge.first_id(), edge.second_id());
-        });
-    }));
-}
-
-template <lib_tt::c_graph GraphType>
-void verify_vertex_properties(const GraphType& g1, const GraphType& g2) {
-    const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
-
-    CHECK(std::ranges::equal(
-        g1.vertices(), g2.vertices(), std::ranges::equal_to{}, properties_proj, properties_proj
-    ));
-}
-
-template <lib_tt::c_graph GraphType>
-void verify_edge_properties(const GraphType& g1, const GraphType& g2) {
-    const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
-
-    CHECK(std::ranges::all_of(g1.vertices(), [&](const auto& v1) {
-        return std::ranges::all_of(g1.adjacent_edges(v1), [&](const auto& edge) {
-            // get edge returns optional<ref_wrap>
-            return edge.properties
-                == g2.get_edge(edge.first_id(), edge.second_id()).value().get().properties;
-        });
-    }));
-}
-
-} // namespace common
 
 struct test_directed_graph_io {
     using traits_type =
@@ -125,7 +87,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -135,8 +97,8 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_vertex_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -146,8 +108,8 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_edge_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -158,9 +120,9 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_vertex_properties << lib::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_vertex_properties(sut_in, sut_out);
-    common::verify_edge_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_vertex_properties(sut_in, sut_out);
+    io_common::verify_edge_properties(sut_in, sut_out);
 }
 
 struct test_undirected_graph_io {
@@ -236,7 +198,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -246,8 +208,8 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_vertex_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -257,8 +219,8 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_edge_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -269,9 +231,9 @@ TEST_CASE_FIXTURE(
     ss << lib::io::with_vertex_properties << lib::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    common::verify_graph_structure(sut_in, sut_out);
-    common::verify_vertex_properties(sut_in, sut_out);
-    common::verify_edge_properties(sut_in, sut_out);
+    io_common::verify_graph_structure(sut_in, sut_out);
+    io_common::verify_vertex_properties(sut_in, sut_out);
+    io_common::verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_SUITE_END(); // test_graph_io
