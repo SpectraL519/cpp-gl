@@ -26,8 +26,7 @@ struct test_stream_options_manipulator {
 };
 
 TEST_CASE_FIXTURE(
-    test_stream_options_manipulator,
-    "should properly handle istream option operations per stream"
+    test_stream_options_manipulator, "should properly handle istream option operations per stream"
 ) {
     ss1 >> lib::io::set_option(bit_position_1);
     CHECK(lib::io::is_option_set(ss1, bit_position_1));
@@ -47,8 +46,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_stream_options_manipulator,
-    "should properly handle ostream option operations per stream"
+    test_stream_options_manipulator, "should properly handle ostream option operations per stream"
 ) {
     ss1 << lib::io::set_option(bit_position_1);
     CHECK(lib::io::is_option_set(ss1, bit_position_1));
