@@ -176,32 +176,36 @@ public:
             this->_remove_vertex_impl(vertex_ref.get());
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) {
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
         this->_verify_vertex(vertex);
         return this->_impl.in_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
         return this->_impl.in_degree(this->get_vertex(vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex) {
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    ) const {
         this->_verify_vertex(vertex);
         return this->_impl.out_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
+    ) const {
         return this->_impl.out_degree(this->get_vertex(vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) {
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
         if constexpr (type_traits::is_directed_v<edge_type>)
             return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
         else
             return this->out_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
         if constexpr (type_traits::is_directed_v<edge_type>) {
             const auto& vertex = this->get_vertex(vertex_id);
             return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
