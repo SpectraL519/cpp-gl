@@ -62,6 +62,15 @@ public:
             this->_list.push_back(edge_list_type{});
     }
 
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
+        return specialized_impl::in_degree(*this, vertex);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    ) const {
+        return this->_list[vertex.id()].size();
+    }
+
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         specialized_impl::remove_vertex(*this, vertex);
     }

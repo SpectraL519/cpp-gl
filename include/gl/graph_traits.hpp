@@ -1,7 +1,9 @@
 #pragma once
 
+#include "decl/graph_traits.hpp"
+#include "decl/impl_tags.hpp"
 #include "edge_descriptor.hpp"
-#include "gl/impl/impl_tags_decl.hpp"
+#include "types/traits/cache_mode.hpp"
 #include "vertex_descriptor.hpp"
 
 #include <memory>
@@ -39,6 +41,19 @@ template <
     type_traits::c_properties EdgeProperties = types::empty_properties>
 using matrix_graph_traits =
     graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>;
+
+template <
+    type_traits::c_properties VertexProperties = types::empty_properties,
+    type_traits::c_properties EdgeProperties = types::empty_properties,
+    type_traits::c_graph_impl_tag ImplTag = impl::list_t>
+using directed_graph_traits = graph_traits<directed_t, VertexProperties, EdgeProperties, ImplTag>;
+
+template <
+    type_traits::c_properties VertexProperties = types::empty_properties,
+    type_traits::c_properties EdgeProperties = types::empty_properties,
+    type_traits::c_graph_impl_tag ImplTag = impl::list_t>
+using undirected_graph_traits =
+    graph_traits<undirected_t, VertexProperties, EdgeProperties, ImplTag>;
 
 namespace type_traits {
 

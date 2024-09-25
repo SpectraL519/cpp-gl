@@ -68,6 +68,36 @@ public:
 
     // --- vertex methods ---
 
+    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
+    ) const {
+        return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::ranges::iota_view<types::id_type, types::id_type>
+    vertex_ids() const {
+        return std::views::iota(constants::initial_id, this->n_vertices());
+    }
+
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
+    [[nodiscard]] gl_attr_force_inline const vertex_type& get_vertex(
+        const types::id_type vertex_id
+    ) const {
+        this->_verify_vertex_id(vertex_id);
+        return *this->_vertices[vertex_id];
+    }
+
+    // clang-format on
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
+        return vertex_id < this->n_vertices();
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+        return this->has_vertex(vertex.id()) and &vertex == this->_vertices[vertex.id()].get();
+    }
+
     const vertex_type& add_vertex() {
         this->_impl.add_vertex();
         this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
@@ -102,26 +132,6 @@ public:
                 detail::make_vertex<vertex_type>(this->n_vertices(), properties)
             );
     }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
-        return vertex_id < this->n_vertices();
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id()) and &vertex == this->_vertices[vertex.id()].get();
-    }
-
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    [[nodiscard]] gl_attr_force_inline const vertex_type& get_vertex(
-        const types::id_type vertex_id
-    ) const {
-        this->_verify_vertex_id(vertex_id);
-        return *this->_vertices[vertex_id];
-    }
-
-    // clang-format on
 
     gl_attr_force_inline void remove_vertex(const types::size_type vertex_id) {
         this->_remove_vertex_impl(this->get_vertex(vertex_id));
@@ -166,14 +176,42 @@ public:
             this->_remove_vertex_impl(vertex_ref.get());
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
-    ) const {
-        return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
+        this->_verify_vertex(vertex);
+        return this->_impl.in_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline std::ranges::iota_view<types::id_type, types::id_type>
-    vertex_ids() const {
-        return std::views::iota(constants::initial_id, this->n_vertices());
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
+        return this->_impl.in_degree(this->get_vertex(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    ) const {
+        this->_verify_vertex(vertex);
+        return this->_impl.out_degree(vertex);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
+    ) const {
+        return this->_impl.out_degree(this->get_vertex(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
+        if constexpr (type_traits::is_directed_v<edge_type>)
+            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
+        else
+            return this->out_degree(vertex);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
+        if constexpr (type_traits::is_directed_v<edge_type>) {
+            const auto& vertex = this->get_vertex(vertex_id);
+            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
+        }
+        else
+            return this->_impl.out_degree(this->get_vertex(vertex_id));
     }
 
     // --- edge methods ---
@@ -404,6 +442,8 @@ private:
         return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
     }
 
+    // --- graph element verification methods ---
+
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
             throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
@@ -432,6 +472,8 @@ private:
             ));
     }
 
+    // --- vertex methods ---
+
     void _remove_vertex_impl(const vertex_type& vertex) {
         const auto vertex_id = vertex.id();
         this->_impl.remove_vertex(vertex);
@@ -444,6 +486,8 @@ private:
             [](auto& v) { v->_id--; }
         );
     }
+
+    // --- io methods ---
 
     void _verbose_write(std::ostream& os) const {
         os << std::format(
