@@ -1,9 +1,9 @@
 #pragma once
 
 #include "attributes/force_inline.hpp"
+#include "decl/graph_traits.hpp"
 #include "edge_tags.hpp"
 #include "graph_io.hpp"
-#include "impl/impl_tags_decl.hpp"
 #include "types/properties.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
@@ -12,13 +12,6 @@
 #include <format>
 
 namespace gl {
-
-template <
-    type_traits::c_edge_directional_tag EdgeDirectionalTag,
-    type_traits::c_properties VertexProperties,
-    type_traits::c_properties EdgeProperties,
-    type_traits::c_graph_impl_tag ImplTag>
-struct graph_traits;
 
 template <type_traits::c_properties Properties = types::empty_properties>
 class vertex_descriptor {

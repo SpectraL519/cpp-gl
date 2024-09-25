@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl/impl/impl_tags_decl.hpp"
+#include "gl/decl/impl_tags.hpp"
 
 #include <algorithm>
 
