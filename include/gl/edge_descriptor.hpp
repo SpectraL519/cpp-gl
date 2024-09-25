@@ -15,13 +15,6 @@
 namespace gl {
 
 template <
-    type_traits::c_edge_directional_tag EdgeDirectionalTag,
-    type_traits::c_properties VertexProperties,
-    type_traits::c_properties EdgeProperties,
-    type_traits::c_graph_impl_tag ImplTag>
-struct graph_traits;
-
-template <
     type_traits::c_instantiation_of<vertex_descriptor> VertexType,
     type_traits::c_edge_directional_tag DirectionalTag = directed_t,
     type_traits::c_properties Properties = types::empty_properties>
@@ -101,9 +94,9 @@ public:
         if (&vertex == &this->_vertices.second)
             return this->_vertices.first;
 
-        throw std::invalid_argument(
-            std::format("Got invalid vertex [id = {} | addr = ]", vertex.id(), io::format(&vertex))
-        );
+        throw std::invalid_argument(std::format(
+            "Got invalid vertex [id = {} | addr = {}]", vertex.id(), io::format(&vertex)
+        ));
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {

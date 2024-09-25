@@ -2,7 +2,7 @@
 
 #include "adjacency_list.hpp"
 #include "adjacency_matrix.hpp"
-#include "impl_tags_decl.hpp"
+#include "gl/decl/impl_tags.hpp"
 
 namespace gl {
 

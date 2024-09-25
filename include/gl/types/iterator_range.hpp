@@ -7,15 +7,13 @@
 #include <format>
 #include <iterator>
 
-#ifdef GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_EAGER
+#if defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_EAGER)
 #define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::eager_cache
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_LAZY)
 #define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::lazy_cache
 #elif defined(GL_CONFIG_IT_RANGE_DEFAULT_CACHE_MODE_NONE)
 #define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::no_cache
-#endif
-
-#ifndef _GL_IT_RANGE_DEFAULT_CACHE_MODE
+#else
 #define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::lazy_cache
 #endif
 

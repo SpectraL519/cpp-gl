@@ -8,6 +8,7 @@
 #include <doctest.h>
 
 #include <algorithm>
+#include <functional>
 
 namespace gl_testing {
 
@@ -290,6 +291,38 @@ TEST_CASE_FIXTURE(
             adjacent_edges, &edge_to_remove, transforms::address_projection<edge_type>{}
         ),
         adjacent_edges.end()
+    );
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
+) {
+    initialize_full_graph();
+
+    std::function<lib_t::size_type(const vertex_type&)> deg_proj;
+
+    SUBCASE("in_degree") {
+        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex); };
+    }
+
+    SUBCASE("out_degree") {
+        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex); };
+    }
+
+    CAPTURE(deg_proj);
+
+    CHECK(std::ranges::all_of(
+        vertices,
+        [](const auto deg) { return deg == n_incident_edges_for_fully_connected_vertex; },
+        deg_proj
+    ));
+
+    add_edge(constants::vertex_id_1, constants::vertex_id_1);
+
+    CHECK_EQ(
+        deg_proj(vertices[constants::vertex_id_1]),
+        n_incident_edges_for_fully_connected_vertex + constants::one
     );
 }
 
@@ -585,6 +618,38 @@ TEST_CASE_FIXTURE(
             adjacent_edges_second, &edge_to_remove, transforms::address_projection<edge_type>{}
         ),
         adjacent_edges_second.end()
+    );
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
+) {
+    initialize_full_graph();
+
+    std::function<lib_t::size_type(const vertex_type&)> deg_proj;
+
+    SUBCASE("in_degree") {
+        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex); };
+    }
+
+    SUBCASE("out_degree") {
+        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex); };
+    }
+
+    CAPTURE(deg_proj);
+
+    CHECK(std::ranges::all_of(
+        vertices,
+        [](const auto deg) { return deg == n_incident_edges_for_fully_connected_vertex; },
+        deg_proj
+    ));
+
+    add_edge(constants::vertex_id_1, constants::vertex_id_1);
+
+    CHECK_EQ(
+        deg_proj(vertices[constants::vertex_id_1]),
+        n_incident_edges_for_fully_connected_vertex + constants::one
     );
 }
 
