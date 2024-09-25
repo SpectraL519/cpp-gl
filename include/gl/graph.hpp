@@ -30,8 +30,6 @@ public:
     using vertex_iterator_type =
         types::dereferencing_iterator<typename vetex_list_type::const_iterator>;
 
-    using vertex_degree_cache_mode = typename traits_type::vertex_degree_cache_mode;
-
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
@@ -178,38 +176,38 @@ public:
             this->_remove_vertex_impl(vertex_ref.get());
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) {
         this->_verify_vertex(vertex);
-        return this->_in_degree_impl(vertex);
+        return this->_impl.in_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id) {
+        return this->_impl.in_degree(this->get_vertex(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex) {
         this->_verify_vertex(vertex);
-        return this->_out_degree_impl(vertex);
+        return this->_impl.out_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        this->_verify_vertex(vertex);
-        return this->_in_degree_impl(vertex) + this->_out_degree_impl(vertex);
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id) {
+        return this->_impl.out_degree(this->get_vertex(vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        return this->_in_degree_impl(this->get_vertex(vertex_id));
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) {
+        if constexpr (type_traits::is_directed_v<edge_type>)
+            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
+        else
+            return this->out_degree(vertex);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        return this->_out_degree_impl(this->get_vertex(vertex_id));
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        const auto& vertex = this->get_vertex(vertex_id);
-        return this->_in_degree_impl(vertex) + this->_out_degree_impl(vertex);
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id) {
+        if constexpr (type_traits::is_directed_v<edge_type>) {
+            const auto& vertex = this->get_vertex(vertex_id);
+            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
+        }
+        else
+            return this->_impl.out_degree(this->get_vertex(vertex_id));
     }
 
     // --- edge methods ---
@@ -436,14 +434,6 @@ public:
     }
 
 private:
-    using vdeg_list_type = std::conditional_t<
-        vertex_degree_cache_mode::value == type_traits::cache_mode_value::none,
-        std::monostate,
-        std::conditional_t<
-            vertex_degree_cache_mode::value == type_traits::cache_mode_value::lazy,
-            std::vector<std::optional<types::size_type>>,
-            std::vector<types::size_type>>>;
-
     [[nodiscard]] static constexpr std::string _directed_type_str() {
         return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
     }
@@ -491,40 +481,6 @@ private:
             this->_vertices.end(),
             [](auto& v) { v->_id--; }
         );
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _in_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        return this->_impl.in_degree(vertex);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _out_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::none) {
-        return this->_impl.out_degree(vertex);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _in_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::lazy) {
-        // TODO: align to match the declared cache mode
-        return this->_impl.in_degree(vertex);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _out_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::lazy) {
-        // TODO: align to match the declared cache mode
-        return this->_impl.out_degree(vertex);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _in_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::eager) {
-        // TODO: align to match the declared cache mode
-        return this->_impl.in_degree(vertex);
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _out_degree_impl(const vertex_type& vertex)
-    requires (vertex_degree_cache_mode::value == type_traits::cache_mode_value::eager) {
-        // TODO: align to match the declared cache mode
-        return this->_impl.out_degree(vertex);
     }
 
     // --- io methods ---
@@ -680,9 +636,6 @@ private:
 
     vetex_list_type _vertices{};
     implementation_type _impl{};
-
-    [[no_unique_address]] mutable vdeg_list_type _vertex_in_deg_list{};
-    [[no_unique_address]] mutable vdeg_list_type _vertex_out_deg_list{};
 };
 
 namespace type_traits {
