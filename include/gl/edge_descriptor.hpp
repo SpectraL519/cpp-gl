@@ -94,9 +94,9 @@ public:
         if (&vertex == &this->_vertices.second)
             return this->_vertices.first;
 
-        throw std::invalid_argument(
-            std::format("Got invalid vertex [id = {} | addr = ]", vertex.id(), io::format(&vertex))
-        );
+        throw std::invalid_argument(std::format(
+            "Got invalid vertex [id = {} | addr = {}]", vertex.id(), io::format(&vertex)
+        ));
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {

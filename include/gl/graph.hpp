@@ -598,6 +598,17 @@ private:
 
     vetex_list_type _vertices{};
     implementation_type _impl{};
+
+    using vdeg_list_type = std::conditional_t<
+        vertex_degree_cache_mode::value == type_traits::cache_mode_value::none,
+        std::monostate,
+        std::conditional_t<
+            vertex_degree_cache_mode::value == type_traits::cache_mode_value::lazy,
+            std::vector<std::optional<types::size_type>>,
+            std::vector<types::size_type>>>;
+
+    [[no_unique_address]] mutable vdeg_list_type _vertex_in_deg_list{};
+    [[no_unique_address]] mutable vdeg_list_type _vertex_out_deg_list{};
 };
 
 namespace type_traits {

@@ -57,6 +57,25 @@ struct directed_adjacency_list {
         }
     };
 
+    [[nodiscard]] static types::size_type in_degree(
+        const impl_type& self, const vertex_type& vertex
+    ) {
+        types::size_type in_deg = constants::default_size;
+        const auto vertex_id = vertex.id();
+
+        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+            const auto& adj_edges = self._list[i];
+            if (adj_edges.empty())
+                continue;
+
+            in_deg += std::ranges::count(adj_edges, vertex_id, [](const auto& edge) {
+                return edge->second_id();
+            });
+        }
+
+        return in_deg;
+    }
+
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         const auto vertex_id = vertex.id();
 
@@ -135,6 +154,12 @@ struct undirected_adjacency_list {
             return edge.get();
         }
     };
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
+        const impl_type& self, const vertex_type& vertex
+    ) {
+        return self._list[vertex.id()].size();
+    }
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         const auto vertex_id = vertex.id();
