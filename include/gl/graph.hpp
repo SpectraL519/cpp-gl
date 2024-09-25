@@ -30,6 +30,8 @@ public:
     using vertex_iterator_type =
         types::dereferencing_iterator<typename vetex_list_type::const_iterator>;
 
+    using vertex_degree_cache_mode = typename traits_type::vertex_degree_cache_mode;
+
     // TODO: reverese iterators should be available for bidirectional ranges
 
     using edge_type = typename traits_type::edge_type;
