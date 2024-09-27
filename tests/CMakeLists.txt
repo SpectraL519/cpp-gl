@@ -5,6 +5,7 @@ project(cpp-gl-test)
 set(SOURCE_DIRS "source" "app")
 set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+set(DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 # Source files
 file(GLOB_RECURSE SOURCES "")
@@ -32,5 +33,5 @@ set_target_properties(run PROPERTIES
 )
 target_include_directories(run PRIVATE ${INCLUDE_DIRS})
 target_compile_options(run PRIVATE ${CMAKE_CXX_FLAGS})
-target_compile_definitions(run PRIVATE GL_TESTING)
+target_compile_definitions(run PRIVATE GL_TESTING TEST_DATA_PATH="${DATA_DIR}")
 target_link_libraries(run PRIVATE cpp-gl)
