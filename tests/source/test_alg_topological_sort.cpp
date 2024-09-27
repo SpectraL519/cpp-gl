@@ -7,6 +7,8 @@
 
 #include <doctest.h>
 
+#include <numeric>
+
 namespace fs = std::filesystem;
 
 namespace gl_testing {
@@ -41,56 +43,84 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = lib::graph<TraitsType>;
 
     SUBCASE("acyclic graph") {
-        std::cout << "---------------" << std::endl;
+        sut_type sut;
+        std::vector<lib_t::id_type> expected_topological_order;
 
-        std::cout << "cwd = " << fs::current_path() << std::endl;
-        std::cout << "data_path = " << data_path << std::endl;
+        SUBCASE("path graph") {
+            sut = lib::topology::path<sut_type>(constants::n_elements_alg);
 
-        const fs::path gsf_file_path = data_path / "topological_sort_directed_acyclic_graph.gsf";
-        const auto sut = lib::io::load<sut_type>(gsf_file_path);
-        std::cout << sut << std::endl;
+            for (const auto id : sut.vertex_ids())
+                expected_topological_order.push_back(id);
+        }
 
-        const fs::path order_file_path = data_path / "topological_sort_directed_acyclic_order.txt";
-        const auto expected_topological_order =
-            read_topological_order(sut.n_vertices(), order_file_path);
-        std::cout << "expected order:";
-        for (const auto id : expected_topological_order)
-            std::cout << " " << id;
-        std::cout << std::endl;
+        SUBCASE("path graph with an additional source vertex") {
+            sut = lib::topology::path<sut_type>(constants::n_elements_alg);
+
+            const auto& additional_vertex = sut.add_vertex();
+            sut.add_edge(additional_vertex.id(), constants::vertex_id_2);
+
+            expected_topological_order.push_back(constants::vertex_id_1);
+            expected_topological_order.push_back(additional_vertex.id());
+            for (lib_t::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++)
+                expected_topological_order.push_back(id);
+        }
+
+        SUBCASE("complete binary tree") {
+            const lib_t::size_type depth = 5;
+            sut = lib::topology::complete_binary_tree<sut_type>(depth);
+
+            for (const auto id : sut.vertex_ids())
+                expected_topological_order.push_back(id);
+        }
+
+        SUBCASE("custom graph") {
+            const fs::path gsf_file_path =
+                data_path / "topological_sort_directed_acyclic_graph.gsf";
+            sut = lib::io::load<sut_type>(gsf_file_path);
+
+            const fs::path order_file_path =
+                data_path / "topological_sort_directed_acyclic_order.txt";
+            expected_topological_order = read_topological_order(sut.n_vertices(), order_file_path);
+        }
+
+        CAPTURE(sut);
+        CAPTURE(expected_topological_order);
 
         const auto topological_order_opt = lib::algorithm::topological_sort(sut);
 
         REQUIRE(topological_order_opt.has_value());
-        std::cout << "actual order:";
-        for (const auto id : topological_order_opt.value())
-            std::cout << " " << id;
-        std::cout << std::endl;
-
         CHECK(std::ranges::equal(topological_order_opt.value(), expected_topological_order));
-
-        std::cout << "---------------" << std::endl;
     }
 
     SUBCASE("not acyclic graph") {
-        std::cout << "---------------" << std::endl;
+        sut_type sut;
 
-        std::cout << "cwd = " << fs::current_path() << std::endl;
-        std::cout << "data_path = " << data_path << std::endl;
+        SUBCASE("cycle graph") {
+            sut = lib::topology::cycle<sut_type>(constants::n_elements_alg);
+        }
 
-        const fs::path gsf_file_path =
-            data_path / "topological_sort_directed_not_acyclic_graph.gsf";
-        const auto sut = lib::io::load<sut_type>(gsf_file_path);
-        std::cout << sut << std::endl;
+        SUBCASE("clique") {
+            sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
+        }
+
+        SUBCASE("custom graph") {
+            const fs::path gsf_file_path =
+                data_path / "topological_sort_directed_not_acyclic_graph.gsf";
+            sut = lib::io::load<sut_type>(gsf_file_path);
+        }
+
+        CAPTURE(sut);
 
         const auto topological_order_opt = lib::algorithm::topological_sort(sut);
-
         CHECK_FALSE(topological_order_opt.has_value());
-
-        std::cout << "---------------" << std::endl;
     }
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(directed_traits_type_template, lib::list_graph_traits<lib::directed_t>, lib::matrix_graph_traits<lib::directed_t>);
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    directed_traits_type_template,
+    lib::list_graph_traits<lib::directed_t>, // adjacency list graph
+    lib::matrix_graph_traits<lib::directed_t> // adjacency matrix graph
+);
 
 TEST_SUITE_END(); // test_alg_topological_sort
 
