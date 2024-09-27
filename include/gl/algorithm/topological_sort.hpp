@@ -8,7 +8,7 @@ template <
     type_traits::c_directed_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-[[nodiscard]] std::vector<types::id_type> topological_sort(
+[[nodiscard]] std::optional<std::vector<types::id_type>> topological_sort(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
@@ -16,35 +16,44 @@ template <
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
+    const auto vertex_ids = graph.vertex_ids();
+
     // prepare the vertex in degree list
-    const auto vertex_in_deg_view =
-        graph.vertex_ids() | std::views::transform([&graph](const auto vertex_id) {
-            return graph.in_degree(vertex_id);
-        });
-    const std::vector<types::size_type> vertex_in_deg_list(
-        vertex_in_deg_view.begin(), vertex_in_deg_view.end()
-    );
+    std::vector<types::size_type> vertex_in_deg_list;
+    vertex_in_deg_list.reserve(graph.n_vertices());
+    for (const auto id : vertex_ids)
+        vertex_in_deg_list.push_back(graph.in_degree(id));
 
-    // prepare the initial queue content view (source vertices)
-    const auto source_vertex_view =
-        vertex_in_deg_list | [](const auto in_deg) { return in_deg == constants::default_size; };
+    // prepare the initial queue content (source vertices)
+    std::vector<detail::vertex_info> source_vertex_list;
+    source_vertex_list.reserve(graph.n_vertices());
+    for (const auto id : vertex_ids)
+        if (vertex_in_deg_list[id] == constants::default_size)
+            source_vertex_list.emplace_back(id);
 
-    std::vector<types::id_type> topological_order;
+    std::optional<std::vector<types::id_type>> topological_order_opt =
+        std::vector<types::id_type>{};
+    auto& topological_order = topological_order_opt.value();
     topological_order.reserve(graph.n_vertices());
 
     detail::bfs_impl(
         graph,
-        std::vector<detail::vertex_info>(source_vertex_view.begin(), source_vertex_view.end()),
-        detail::always_predicate(),
-        [&topological_order](const vertex_type& vertex) {
-            topological_order.push_back(vetex.id());
+        source_vertex_list,
+        detail::always_predicate(), // visit pred
+        [&topological_order](const vertex_type& vertex, const types::id_type source_id) { // visit
+            topological_order.push_back(vertex.id());
         },
-        [&vertex_in_deg_list](const vertex_type& vertex) {
+        [&vertex_in_deg_list](const vertex_type& vertex, const edge_type& in_edge) { // enqueue pred
+            if (in_edge.is_loop())
+                return false;
             return --vertex_in_deg_list[vertex.id()] == constants::default_size;
         },
         pre_visit,
         post_visit
     );
+
+    if (topological_order.size() != graph.n_vertices())
+        return std::nullopt;
 
     return topological_order;
 }
