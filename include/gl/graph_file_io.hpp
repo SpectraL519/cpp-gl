@@ -57,7 +57,7 @@ requires(std::same_as<Mode, append>)
     return file;
 }
 
-[[nodiscard]] std::ifstream open_infile(const std::filesystem::path& path) {
+[[nodiscard]] inline std::ifstream open_infile(const std::filesystem::path& path) {
     if (not std::filesystem::exists(path))
         throw std::filesystem::filesystem_error(
             "Cannot load from file",
