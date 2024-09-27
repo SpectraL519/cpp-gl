@@ -13,26 +13,26 @@ template <
 void dfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
-    const vertex_callback<GraphType, bool>& search_vertex_pred,
+    const vertex_callback<GraphType, bool>& visit_vertex_pred,
     const vertex_callback<GraphType, void, types::id_type>& visit,
     const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_stack_type = std::stack<search_vertex_info>;
+    using vertex_stack_type = std::stack<vertex_info>;
 
-    if (not search_vertex_pred(root_vertex))
+    if (not visit_vertex_pred(root_vertex))
         return;
 
     vertex_stack_type vertex_stack;
     vertex_stack.emplace(root_vertex.id());
 
     while (not vertex_stack.empty()) {
-        const search_vertex_info sv = vertex_stack.top();
+        const vertex_info sv = vertex_stack.top();
         vertex_stack.pop();
 
         const auto& vertex = graph.get_vertex(sv.id);
-        if (not search_vertex_pred(vertex))
+        if (not visit_vertex_pred(vertex))
             continue;
 
         if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
@@ -59,13 +59,13 @@ void rdfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,
     const types::id_type source_id,
-    const vertex_callback<GraphType, bool>& search_vertex_pred,
+    const vertex_callback<GraphType, bool>& visit_vertex_pred,
     const vertex_callback<GraphType, void, types::id_type>& visit,
     const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    if (not search_vertex_pred(vertex))
+    if (not visit_vertex_pred(vertex))
         return;
 
     if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
@@ -81,7 +81,7 @@ void rdfs_impl(
                 graph,
                 incident_vertex,
                 vertex_id,
-                search_vertex_pred,
+                visit_vertex_pred,
                 visit,
                 enque_vertex_pred,
                 pre_visit,

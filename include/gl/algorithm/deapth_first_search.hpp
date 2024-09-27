@@ -3,8 +3,6 @@
 #include "constants.hpp"
 #include "detail/dfs_impl.hpp"
 
-#include <queue>
-
 namespace gl::algorithm {
 
 template <
@@ -26,17 +24,13 @@ type_traits::alg_return_type<SearchTreeType> depth_first_search(
 
     auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
 
-    const auto search_vertex_pred = detail::default_search_vertex_predicate<GraphType>(visited);
-    const auto visit = detail::default_visit_callback<GraphType>(visited, search_tree);
-    const auto enque_vertex_pred = detail::default_enqueue_vertex_predicate<GraphType>(visited);
-
     if (root_vertex_id_opt) {
         detail::dfs_impl(
             graph,
             graph.get_vertex(root_vertex_id_opt.value()),
-            search_vertex_pred,
-            visit,
-            enque_vertex_pred,
+            detail::default_visit_vertex_predicate<GraphType>(visited),
+            detail::default_visit_callback<GraphType>(visited, search_tree),
+            detail::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
@@ -46,9 +40,9 @@ type_traits::alg_return_type<SearchTreeType> depth_first_search(
             detail::dfs_impl(
                 graph,
                 root_vertex,
-                search_vertex_pred,
-                visit,
-                enque_vertex_pred,
+                detail::default_visit_vertex_predicate<GraphType>(visited),
+                detail::default_visit_callback<GraphType>(visited, search_tree),
+                detail::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );
@@ -77,19 +71,15 @@ type_traits::alg_return_type<SearchTreeType> recursive_depth_first_search(
 
     auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
 
-    const auto search_vertex_pred = detail::default_search_vertex_predicate<GraphType>(visited);
-    const auto visit = detail::default_visit_callback<GraphType>(visited, search_tree);
-    const auto enque_vertex_pred = detail::default_enqueue_vertex_predicate<GraphType>(visited);
-
     if (root_vertex_id_opt) {
         const auto root_id = root_vertex_id_opt.value();
         detail::rdfs_impl(
             graph,
             graph.get_vertex(root_id),
             root_id,
-            search_vertex_pred,
-            visit,
-            enque_vertex_pred,
+            detail::default_visit_vertex_predicate<GraphType>(visited),
+            detail::default_visit_callback<GraphType>(visited, search_tree),
+            detail::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
@@ -100,9 +90,9 @@ type_traits::alg_return_type<SearchTreeType> recursive_depth_first_search(
                 graph,
                 root_vertex,
                 root_vertex.id(),
-                search_vertex_pred,
-                visit,
-                enque_vertex_pred,
+                detail::default_visit_vertex_predicate<GraphType>(visited),
+                detail::default_visit_callback<GraphType>(visited, search_tree),
+                detail::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );

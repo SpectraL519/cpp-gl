@@ -10,8 +10,6 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_alg_bfs");
 
-// --- bfs tests ---
-
 TEST_CASE_TEMPLATE_DEFINE(
     "breadth_first_search no return should properly traverse the graph",
     GraphType,

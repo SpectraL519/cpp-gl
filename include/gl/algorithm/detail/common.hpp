@@ -13,20 +13,23 @@ template <type_traits::c_alg_return_graph SearchTreeType, type_traits::c_graph G
         return SearchTreeType(graph.n_vertices());
 }
 
-struct search_vertex_info {
-    search_vertex_info(types::id_type id) : id(id), source_id(id) {}
+struct vertex_info {
+    vertex_info(types::id_type id) : id(id), source_id(id) {}
 
-    search_vertex_info(types::id_type id, types::id_type source_id)
-    : id(id), source_id(source_id) {}
+    vertex_info(types::id_type id, types::id_type source_id) : id(id), source_id(source_id) {}
 
     // if id == source_id then vertex_id is the id of the starting vertex
     types::id_type id;
     types::id_type source_id;
 };
 
+template <type_traits::c_sized_range_of<vertex_info> InitRangeType = std::vector<vertex_info>>
+[[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {
+    return InitRangeType{vertex_info{root_vertex_id}};
+}
+
 template <type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline auto default_search_vertex_predicate(std::vector<bool>& visited
-) {
+[[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
     return [&](const typename GraphType::vertex_type& vertex) -> bool {
         return not visited[vertex.id()];
     };
@@ -53,6 +56,10 @@ template <type_traits::c_graph GraphType>
                const typename GraphType::edge_type& in_edge) -> bool {
         return not visited[vertex.id()];
     };
+}
+
+[[nodiscard]] gl_attr_force_inline auto always_predicate() {
+    return [](const auto&) { return true; };
 }
 
 } // namespace gl::algorithm::detail

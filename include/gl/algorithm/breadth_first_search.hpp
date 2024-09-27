@@ -3,8 +3,6 @@
 #include "constants.hpp"
 #include "detail/bfs_impl.hpp"
 
-#include <queue>
-
 namespace gl::algorithm {
 
 template <
@@ -26,17 +24,13 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
 
     auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
 
-    const auto search_vertex_pred = detail::default_search_vertex_predicate<GraphType>(visited);
-    const auto visit = detail::default_visit_callback<GraphType>(visited, search_tree);
-    const auto enque_vertex_pred = detail::default_enqueue_vertex_predicate<GraphType>(visited);
-
     if (root_vertex_id_opt) {
         detail::bfs_impl(
             graph,
-            graph.get_vertex(root_vertex_id_opt.value()),
-            search_vertex_pred,
-            visit,
-            enque_vertex_pred,
+            detail::init_range(root_vertex_id_opt.value()),
+            detail::default_visit_vertex_predicate<GraphType>(visited),
+            detail::default_visit_callback<GraphType>(visited, search_tree),
+            detail::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
@@ -45,10 +39,10 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
         for (const auto& root_vertex : graph.vertices())
             detail::bfs_impl(
                 graph,
-                root_vertex,
-                search_vertex_pred,
-                visit,
-                enque_vertex_pred,
+                detail::init_range(root_vertex.id()),
+                detail::default_visit_vertex_predicate<GraphType>(visited),
+                detail::default_visit_callback<GraphType>(visited, search_tree),
+                detail::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );
