@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "detail/search_algorithm_util.hpp"
+#include "detail/bfs_impl.hpp"
 
 #include <queue>
 
