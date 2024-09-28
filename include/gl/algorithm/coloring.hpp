@@ -18,9 +18,8 @@ template <
 ) {
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using color = types::binary_color::value;
 
-    std::vector<types::binary_color> coloring(graph.n_vertices(), color::unset);
+    std::vector<types::binary_color> coloring(graph.n_vertices(), bin_color_value::unset);
 
     for (const auto& root_vertex : graph.vertices()) {
         const auto root_id = root_vertex.id();
@@ -28,7 +27,7 @@ template <
             continue;
 
         // color the root vertex
-        coloring[root_id] = color::black;
+        coloring[root_id] = bin_color_value::black;
 
         const bool is_bipartite = detail::bfs_impl(
             graph,
@@ -67,6 +66,23 @@ template <
 template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline bool is_bipartite(const GraphType& graph) {
     return bipartite_coloring(graph).has_value();
+}
+
+template <
+    type_traits::c_graph GraphType,
+    type_traits::c_sized_range_of<types::binary_color> ColorRange>
+requires(type_traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
+bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
+    if (color_range.size() != graph.n_vertices())
+        return false;
+
+    using color_type = typename GraphType::vertex_properties_type::color_type;
+    auto color_it = std::ranges::begin(color_range);
+
+    for (const auto& vertex : graph.vertices())
+        vertex.properties.color = color_type{*color_it++};
+
+    return true;
 }
 
 } // namespace gl::algorithm

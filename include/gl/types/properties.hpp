@@ -184,7 +184,6 @@ struct weight_property {
 
 } // namespace types
 
-// TODO: rename -> bin_color_value
 using bin_color_value = typename types::binary_color::value;
 
 namespace type_traits {
@@ -193,19 +192,16 @@ template <c_properties Properties>
 constexpr inline bool is_default_properties_type_v =
     std::is_same_v<Properties, gl::types::empty_properties>;
 
+template <typename Properties>
+concept c_binary_color_properties_type =
+    c_properties<Properties>
+    and (std::derived_from<Properties, types::binary_color_property> or requires(Properties p) {
+            typename Properties::color_type;
+            { p.color } -> std::same_as<typename Properties::color_type>;
+            { p.color == types::binary_color{} } -> std::convertible_to<bool>;
+            requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+        });
+
 } // namespace type_traits
 
 } // namespace gl
-
-/*
-
-for future reference:
-
-template <typename Properties>
-concept c_weight_property = requires(Properties p) {
-    typename Properties::weight_type;
-    requires c_basic_arithmetic<typename Properties::weight_type>;
-    { p.weight } -> std::same_as<typename Properties::weight_type&>;
-};
-
-*/

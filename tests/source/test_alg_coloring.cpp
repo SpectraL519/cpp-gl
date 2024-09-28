@@ -13,12 +13,16 @@ TEST_SUITE_BEGIN("test_alg_coloring");
 
 TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_template) {
     using sut_type = lib::graph<TraitsType>;
-    using color = lib_t::binary_color::value;
 
+    SUBCASE("apply_coloring should return false if the size of coloring is different then "
+            "n_vertices") {
+        sut_type sut{constants::n_elements_alg};
+        std::vector<lib_t::binary_color> empty_coloring;
+
+        CHECK_FALSE(lib::algorithm::apply_coloring(sut, empty_coloring));
+    }
 
     SUBCASE("bipartite graph") {
-        // std::cout << "\n\n------------------------\n" << std::endl;
-
         sut_type sut;
         std::vector<lib_t::binary_color> expected_coloring;
 
@@ -26,16 +30,17 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
             sut = lib::topology::full_bipartite<sut_type>(n_vertices_a, n_vertices_b);
 
-            expected_coloring = std::vector<lib_t::binary_color>(n_vertices_a, color::black);
+            expected_coloring =
+                std::vector<lib_t::binary_color>(n_vertices_a, lib::bin_color_value::black);
             for (lib_t::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
-                expected_coloring.emplace_back(color::white);
+                expected_coloring.emplace_back(lib::bin_color_value::white);
         }
 
         SUBCASE("complete binary tree") {
             sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
 
             lib_t::size_type n_vertices = constants::one_element;
-            lib_t::binary_color c{color::black};
+            lib_t::binary_color c{lib::bin_color_value::black};
 
             for (lib_t::size_type d = constants::zero; d < constants::depth; d++) {
                 for (lib_t::size_type i = constants::zero; i < n_vertices; i++)
@@ -49,7 +54,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         SUBCASE("path graph") {
             sut = lib::topology::path<sut_type>(constants::n_elements_alg);
 
-            lib_t::binary_color c{color::black};
+            lib_t::binary_color c{lib::bin_color_value::black};
             for (lib_t::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
@@ -60,7 +65,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             const auto n_vertices = constants::two * constants::n_elements_alg;
             sut = lib::topology::cycle<sut_type>(n_vertices);
 
-            lib_t::binary_color c{color::black};
+            lib_t::binary_color c{lib::bin_color_value::black};
             for (lib_t::size_type i = constants::zero; i < n_vertices; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
@@ -85,7 +90,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 coloring_values.begin(),
                 coloring_values.end(),
                 std::back_inserter(expected_coloring),
-                [](const std::uint16_t value) { return color{value}; }
+                [](const std::uint16_t value) { return lib::bin_color_value{value}; }
             );
         }
 
@@ -99,6 +104,15 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
         // check the is_bipartite function - formality
         CHECK(lib::algorithm::is_bipartite(sut));
+
+        // --- apply_coloring test ---
+        REQUIRE(lib::algorithm::apply_coloring(sut, expected_coloring));
+        CHECK(std::ranges::equal(
+            sut.vertices(),
+            expected_coloring,
+            std::ranges::equal_to{},
+            [](const auto& vertex) { return vertex.properties.color; }
+        ));
     }
 
     SUBCASE("not bipartite graph") {
@@ -147,10 +161,18 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     traits_type_template,
-    lib::list_graph_traits<lib::directed_t>, // directed adjacency list graph
-    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
-    lib::matrix_graph_traits<lib::directed_t>, // directed adjacency matrix graph
-    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
+    lib::list_graph_traits<
+        lib::directed_t,
+        lib_t::binary_color_property>, // directed adjacency list graph
+    lib::list_graph_traits<
+        lib::undirected_t,
+        lib_t::binary_color_property>, // undirected adjacency list graph
+    lib::matrix_graph_traits<
+        lib::directed_t,
+        lib_t::binary_color_property>, // directed adjacency matrix graph
+    lib::matrix_graph_traits<
+        lib::undirected_t,
+        lib_t::binary_color_property> // undirected adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_coloring
