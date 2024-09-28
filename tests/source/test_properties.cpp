@@ -165,7 +165,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "remove should properly erase the key
 
 struct test_binary_color {
     using sut_type = lib_t::binary_color;
-    using color = sut_type::color_value;
+    using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
         static_cast<color>(lib::util::to_underlying(color::unset) + 1);

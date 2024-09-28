@@ -39,9 +39,12 @@ template <
     detail::bfs_impl(
         graph,
         source_vertex_list,
-        detail::always_predicate(), // visit pred
-        [&topological_order](const vertex_type& vertex, const types::id_type source_id) { // visit
+        detail::constant_unary_predicate<true>(), // visit pred
+        [&topological_order](
+            const vertex_type& vertex, const types::id_type source_id
+        ) { // visit callback
             topological_order.push_back(vertex.id());
+            return true;
         },
         [&vertex_in_deg_list](const vertex_type& vertex, const edge_type& in_edge) { // enqueue pred
             if (in_edge.is_loop())
