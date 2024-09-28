@@ -9,33 +9,9 @@
 
 #include <numeric>
 
-namespace fs = std::filesystem;
-
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_alg_topological_sort");
-
-std::vector<lib_t::id_type> read_topological_order(
-    const lib_t::size_type n_vertices, const fs::path& order_file_path
-) {
-    std::vector<lib_t::id_type> order(n_vertices);
-
-    std::ifstream order_file(order_file_path);
-    if (not order_file) {
-        throw std::filesystem::filesystem_error(
-            "Cannot read file",
-            order_file_path,
-            std::make_error_code(std::errc::no_such_file_or_directory)
-        );
-    }
-
-    for (lib_t::size_type i = 0; i < n_vertices; i++)
-        order_file >> order[i];
-
-    return order;
-}
-
-static const fs::path data_path(TEST_DATA_PATH);
 
 TEST_CASE_TEMPLATE_DEFINE(
     "topological sort tests for directed graphs", TraitsType, directed_traits_type_template
@@ -66,8 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("complete binary tree") {
-            const lib_t::size_type depth = 5;
-            sut = lib::topology::complete_binary_tree<sut_type>(depth);
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
 
             for (const auto id : sut.vertex_ids())
                 expected_topological_order.push_back(id);
@@ -75,12 +50,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                data_path / "topological_sort_directed_acyclic_graph.gsf";
+                alg_common::data_path / "topological_sort_directed_acyclic_graph.gsf";
             sut = lib::io::load<sut_type>(gsf_file_path);
 
             const fs::path order_file_path =
-                data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order = read_topological_order(sut.n_vertices(), order_file_path);
+                alg_common::data_path / "topological_sort_directed_acyclic_order.txt";
+            expected_topological_order =
+                alg_common::read_integral_list<lib_t::id_type>(sut.n_vertices(), order_file_path);
         }
 
         CAPTURE(sut);
@@ -105,7 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                data_path / "topological_sort_directed_not_acyclic_graph.gsf";
+                alg_common::data_path / "topological_sort_directed_not_acyclic_graph.gsf";
             sut = lib::io::load<sut_type>(gsf_file_path);
         }
 

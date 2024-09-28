@@ -28,6 +28,16 @@ template <type_traits::c_sized_range_of<vertex_info> InitRangeType = std::vector
     return InitRangeType{vertex_info{root_vertex_id}};
 }
 
+template <bool B>
+[[nodiscard]] gl_attr_force_inline auto constant_unary_predicate() {
+    return [](const auto&) { return B; };
+}
+
+template <bool B>
+[[nodiscard]] gl_attr_force_inline auto constant_binary_predicate() {
+    return [](const auto&, const auto&) { return B; };
+}
+
 template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
     return [&](const typename GraphType::vertex_type& vertex) -> bool {
@@ -46,20 +56,19 @@ template <type_traits::c_graph GraphType, type_traits::c_alg_return_graph Search
             if (source_id != vertex_id)
                 search_tree.add_edge(source_id, vertex_id);
         }
+        return true;
     };
 }
 
-template <type_traits::c_graph GraphType>
+template <type_traits::c_graph GraphType, bool AsOptional = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
+    using return_type = std::conditional_t<AsOptional, std::optional<bool>, bool>;
+
     return [&](const typename GraphType::vertex_type& vertex,
-               const typename GraphType::edge_type& in_edge) -> bool {
+               const typename GraphType::edge_type& in_edge) -> return_type {
         return not visited[vertex.id()];
     };
-}
-
-[[nodiscard]] gl_attr_force_inline auto always_predicate() {
-    return [](const auto&) { return true; };
 }
 
 } // namespace gl::algorithm::detail
