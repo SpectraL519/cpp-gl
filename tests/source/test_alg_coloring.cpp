@@ -31,8 +31,22 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 expected_coloring.emplace_back(color::white);
         }
 
-        // SUBCASE("complete binary tree") {
-        // }
+        SUBCASE("complete binary tree") {
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+
+            lib_t::size_type n_vertices = constants::one_element;
+            lib_t::binary_color c{color::black};
+
+            for (lib_t::size_type d = constants::zero; d < constants::depth; d++) {
+                for (lib_t::size_type i = constants::zero; i < n_vertices; i++)
+                    expected_coloring.push_back(c);
+
+                n_vertices *= constants::two;
+                c = c.next();
+            }
+        }
+
+        // TODO: path, even cycle, custom graph
 
         CAPTURE(sut);
         CAPTURE(expected_coloring);
@@ -45,6 +59,17 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
     SUBCASE("not bipartite graph") {
         sut_type sut;
+
+        SUBCASE("clique") {
+            sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
+        }
+
+        // TODO: odd cycle, full bipartite with additional edge, custom graph
+
+        CAPTURE(sut);
+
+        const auto coloring_opt = lib::algorithm::bipartite_coloring(sut);
+        CHECK_FALSE(coloring_opt.has_value());
     }
 }
 

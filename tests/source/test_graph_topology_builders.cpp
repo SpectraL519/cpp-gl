@@ -356,7 +356,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("bidirectional_complete_binary_tree(depth) should return a two-way complete binay tree "
             "with the given depth") {
-        const auto bin_tree = lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
+        const auto bin_tree =
+            lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
             lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
@@ -439,7 +440,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("bidirectional_complete_binary_tree builder") {
-            bin_tree = lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
+            bin_tree =
+                lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
         }
 
         CAPTURE(bin_tree);

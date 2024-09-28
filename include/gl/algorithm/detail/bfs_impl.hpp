@@ -16,7 +16,8 @@ bool bfs_impl(
     const InitQueueRangeType& initial_queue_content,
     const vertex_callback<GraphType, bool>& visit_vertex_pred,
     const vertex_callback<GraphType, bool, types::id_type>& visit,
-    const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -47,7 +48,12 @@ bool bfs_impl(
 
         for (const auto& edge : graph.adjacent_edges(sv.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
-            if (enque_vertex_pred(incident_vertex, edge))
+
+            const auto enqueue = enque_vertex_pred(incident_vertex, edge);
+            if (not enqueue.has_value())
+                return false;
+
+            if (enqueue.value())
                 vertex_queue.emplace(incident_vertex.id(), sv.id);
         }
 

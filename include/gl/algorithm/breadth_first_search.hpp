@@ -30,7 +30,7 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
             detail::init_range(root_vertex_id_opt.value()),
             detail::default_visit_vertex_predicate<GraphType>(visited),
             detail::default_visit_callback<GraphType>(visited, search_tree),
-            detail::default_enqueue_vertex_predicate<GraphType>(visited),
+            detail::default_enqueue_vertex_predicate<GraphType, true>(visited),
             pre_visit,
             post_visit
         );
@@ -42,7 +42,7 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
                 detail::init_range(root_vertex.id()),
                 detail::default_visit_vertex_predicate<GraphType>(visited),
                 detail::default_visit_callback<GraphType>(visited, search_tree),
-                detail::default_enqueue_vertex_predicate<GraphType>(visited),
+                detail::default_enqueue_vertex_predicate<GraphType, true>(visited),
                 pre_visit,
                 post_visit
             );

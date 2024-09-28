@@ -57,24 +57,24 @@ template <
             graph,
             detail::init_range(root_id),
             detail::constant_unary_predicate<true>(), // visit pred
-            [&coloring](
-                const vertex_type& vertex, const types::id_type source_id
-            ) { // visit callback
-                const auto vertex_id = vertex.id();
-                if (vertex_id == source_id)
-                    return true; // root vertex
-
-                if (coloring[vertex_id] == coloring[source_id])
-                    return false; // graph is not bipartite
-
-                return true;
-            },
-            [&coloring](const vertex_type& vertex, const edge_type& in_edge) { // enqueue pred
-                if (coloring[vertex.id()].is_set() or in_edge.is_loop())
+            detail::constant_binary_predicate<true>(), // visit callback
+            [&coloring](const vertex_type& vertex, const edge_type& in_edge)
+                -> std::optional<bool> { // enqueue pred
+                if (in_edge.is_loop())
                     return false;
 
-                coloring[vertex.id()] = coloring[in_edge.incident_vertex(vertex).id()].next();
-                return true;
+                const auto vertex_id = vertex.id();
+                const auto source_id = in_edge.incident_vertex(vertex).id();
+
+                if (coloring[vertex_id] == coloring[source_id])
+                    return std::nullopt; // graph is not bipartite
+
+                if (not coloring[vertex.id()].is_set()) {
+                    coloring[vertex.id()] = coloring[source_id].next();
+                    return true;
+                }
+
+                return false;
             },
             pre_visit,
             post_visit

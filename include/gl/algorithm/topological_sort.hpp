@@ -46,7 +46,8 @@ template <
             topological_order.push_back(vertex.id());
             return true;
         },
-        [&vertex_in_deg_list](const vertex_type& vertex, const edge_type& in_edge) { // enqueue pred
+        [&vertex_in_deg_list](const vertex_type& vertex, const edge_type& in_edge)
+            -> std::optional<bool> { // enqueue pred
             if (in_edge.is_loop())
                 return false;
             return --vertex_in_deg_list[vertex.id()] == constants::default_size;
