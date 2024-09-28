@@ -1,5 +1,5 @@
-#include "constants.hpp"
 #include "alg_common.hpp"
+#include "constants.hpp"
 
 #include <gl/algorithms.hpp>
 #include <gl/graph_file_io.hpp>
@@ -42,8 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("complete binary tree") {
-            const lib_t::size_type depth = 5;
-            sut = lib::topology::complete_binary_tree<sut_type>(depth);
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
 
             for (const auto id : sut.vertex_ids())
                 expected_topological_order.push_back(id);
@@ -56,7 +55,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             const fs::path order_file_path =
                 alg_common::data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order = alg_common::read_integral_list<lib_t::id_type>(sut.n_vertices(), order_file_path);
+            expected_topological_order =
+                alg_common::read_integral_list<lib_t::id_type>(sut.n_vertices(), order_file_path);
         }
 
         CAPTURE(sut);

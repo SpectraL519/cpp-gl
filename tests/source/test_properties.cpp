@@ -204,7 +204,9 @@ TEST_CASE_FIXTURE(test_binary_color, "next should return black if the color is n
     CHECK_EQ(sut_type{}.next(), color::black);
 }
 
-TEST_CASE_FIXTURE(test_binary_color, "next should return the complimenting color if the color is set") {
+TEST_CASE_FIXTURE(
+    test_binary_color, "next should return the complimenting color if the color is set"
+) {
     CHECK_EQ(sut_type{color::black}.next(), color::white);
     CHECK_EQ(sut_type{color::white}.next(), color::black);
 }
