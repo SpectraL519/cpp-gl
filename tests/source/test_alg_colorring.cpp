@@ -7,11 +7,9 @@
 
 #include <doctest.h>
 
-#include <numeric>
-
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_alg_topological_sort");
+TEST_SUITE_BEGIN("test_alg_coloring");
 
 TEST_CASE_TEMPLATE_DEFINE(
     "topological sort tests for directed graphs", TraitsType, directed_traits_type_template
@@ -51,12 +49,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_acyclic_graph.gsf";
             sut = lib::io::load<sut_type>(gsf_file_path);
 
             const fs::path order_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order = alg_common::read_integral_list<lib_t::id_type>(sut.n_vertices(), order_file_path);
+                data_path / "topological_sort_directed_acyclic_order.txt";
+            expected_topological_order = read_topological_order(sut.n_vertices(), order_file_path);
         }
 
         CAPTURE(sut);
@@ -81,7 +79,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_not_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_not_acyclic_graph.gsf";
             sut = lib::io::load<sut_type>(gsf_file_path);
         }
 
@@ -98,6 +96,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     lib::matrix_graph_traits<lib::directed_t> // adjacency matrix graph
 );
 
-TEST_SUITE_END(); // test_alg_topological_sort
+TEST_SUITE_END(); // test_alg_coloring
 
 } // namespace gl_testing
