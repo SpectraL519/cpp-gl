@@ -25,6 +25,7 @@ IC lib_t::size_type n_elements_top = 10ull;
 
 // n_elements for graph algorithm tests
 IC lib_t::size_type n_elements_alg = 10ull;
+IC lib_t::size_type depth = 5ull;
 
 IC lib_t::size_type first_element_idx = zero;
 IC lib_t::size_type last_element_idx = n_elements - one_element;

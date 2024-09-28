@@ -165,7 +165,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "remove should properly erase the key
 
 struct test_binary_color {
     using sut_type = lib_t::binary_color;
-    using color = sut_type::color_value;
+    using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
         static_cast<color>(lib::util::to_underlying(color::unset) + 1);
@@ -198,6 +198,17 @@ TEST_CASE_FIXTURE(test_binary_color, "operator bool should be equivalent to is_s
     CHECK(std::ranges::all_of(colors, [](const sut_type& c) {
         return static_cast<bool>(c) == c.is_set();
     }));
+}
+
+TEST_CASE_FIXTURE(test_binary_color, "next should return black if the color is not set") {
+    CHECK_EQ(sut_type{}.next(), color::black);
+}
+
+TEST_CASE_FIXTURE(
+    test_binary_color, "next should return the complimenting color if the color is set"
+) {
+    CHECK_EQ(sut_type{color::black}.next(), color::white);
+    CHECK_EQ(sut_type{color::white}.next(), color::black);
 }
 
 // assertions for not tested property types

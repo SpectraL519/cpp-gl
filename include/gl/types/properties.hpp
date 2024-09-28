@@ -117,15 +117,15 @@ private:
 
 class binary_color {
 public:
-    enum class color_value : std::uint8_t {
-        black = static_cast<std::uint8_t>(0),
-        white = static_cast<std::uint8_t>(1),
-        unset = static_cast<std::uint8_t>(2),
+    enum class value : std::uint16_t {
+        black = static_cast<std::uint16_t>(0),
+        white = static_cast<std::uint16_t>(1),
+        unset = static_cast<std::uint16_t>(2),
     };
 
     binary_color() = default;
 
-    binary_color(color_value value) : _value(_restrict(value)) {}
+    binary_color(value value) : _value(_restrict(value)) {}
 
     binary_color(const binary_color&) = default;
     binary_color(binary_color&&) = default;
@@ -135,7 +135,7 @@ public:
 
     ~binary_color() = default;
 
-    binary_color& operator=(color_value value) {
+    binary_color& operator=(value value) {
         this->_value = this->_restrict(value);
         return *this;
     }
@@ -148,21 +148,25 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_set() const {
-        return this->_value < color_value::unset;
+        return this->_value < value::unset;
     }
 
-    [[nodiscard]] gl_attr_force_inline std::underlying_type_t<color_value> to_underlying() const {
+    [[nodiscard]] gl_attr_force_inline std::underlying_type_t<value> to_underlying() const {
         return util::to_underlying(this->_value);
+    }
+
+    [[nodiscard]] gl_attr_force_inline binary_color next() const {
+        return value{not this->to_underlying()};
     }
 
     // TODO: iostream operators
 
 private:
-    [[nodiscard]] color_value _restrict(const color_value value) {
-        return std::min(value, color_value::unset);
+    [[nodiscard]] value _restrict(const value value) {
+        return std::min(value, value::unset);
     }
 
-    color_value _value{color_value::unset};
+    value _value{value::unset};
 };
 
 struct binary_color_property {
@@ -180,8 +184,7 @@ struct weight_property {
 
 } // namespace types
 
-// TODO: rename -> bin_color_value
-using bin_color_value = typename types::binary_color::color_value;
+using bin_color_value = typename types::binary_color::value;
 
 namespace type_traits {
 
@@ -189,19 +192,16 @@ template <c_properties Properties>
 constexpr inline bool is_default_properties_type_v =
     std::is_same_v<Properties, gl::types::empty_properties>;
 
+template <typename Properties>
+concept c_binary_color_properties_type =
+    c_properties<Properties>
+    and (std::derived_from<Properties, types::binary_color_property> or requires(Properties p) {
+            typename Properties::color_type;
+            { p.color } -> std::same_as<typename Properties::color_type>;
+            { p.color == types::binary_color{} } -> std::convertible_to<bool>;
+            requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+        });
+
 } // namespace type_traits
 
 } // namespace gl
-
-/*
-
-for future reference:
-
-template <typename Properties>
-concept c_weight_property = requires(Properties p) {
-    typename Properties::weight_type;
-    requires c_basic_arithmetic<typename Properties::weight_type>;
-    { p.weight } -> std::same_as<typename Properties::weight_type&>;
-};
-
-*/

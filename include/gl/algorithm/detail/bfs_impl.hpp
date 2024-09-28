@@ -11,12 +11,13 @@ template <
     type_traits::c_sized_range_of<vertex_info> InitQueueRangeType = std::vector<vertex_info>,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-void bfs_impl(
+bool bfs_impl(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
     const vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const vertex_callback<GraphType, void, types::id_type>& visit,
-    const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const vertex_callback<GraphType, bool, types::id_type>& visit,
+    const vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -25,7 +26,7 @@ void bfs_impl(
 
     // prepare the vertex queue
     if (initial_queue_content.size() == constants::default_size)
-        return;
+        return false;
 
     for (const auto& vinfo : initial_queue_content)
         vertex_queue.push(vinfo);
@@ -42,17 +43,25 @@ void bfs_impl(
         if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
             pre_visit(vertex);
 
-        visit(vertex, sv.source_id);
+        if (not visit(vertex, sv.source_id))
+            return false;
 
         for (const auto& edge : graph.adjacent_edges(sv.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
-            if (enque_vertex_pred(incident_vertex, edge))
+
+            const auto enqueue = enque_vertex_pred(incident_vertex, edge);
+            if (not enqueue.has_value())
+                return false;
+
+            if (enqueue.value())
                 vertex_queue.emplace(incident_vertex.id(), sv.id);
         }
 
         if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
             post_visit(vertex);
     }
+
+    return true;
 }
 
 } // namespace gl::algorithm::detail
