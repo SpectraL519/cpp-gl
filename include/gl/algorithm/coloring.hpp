@@ -22,26 +22,6 @@ template <
 
     std::vector<types::binary_color> coloring(graph.n_vertices(), color::unset);
 
-    const auto get_color_str = [](const types::binary_color& c) {
-        switch (color{c.to_underlying()}) {
-        case color::black:
-            return "black";
-        case color::white:
-            return "white";
-        default:
-            return "unset";
-        }
-    };
-
-    const auto print_coloring = [&coloring, &get_color_str]() {
-        for (int i = 0; i < coloring.size(); i++)
-            std::cout << std::format("{} : {}\n", i, get_color_str(coloring[i]));
-        std::cout << std::endl;
-    };
-
-    // std::cout << "begin coloring:\n";
-    // print_coloring();
-
     for (const auto& root_vertex : graph.vertices()) {
         const auto root_id = root_vertex.id();
         if (coloring[root_id].is_set())
@@ -49,9 +29,6 @@ template <
 
         // color the root vertex
         coloring[root_id] = color::black;
-
-        // std::cout << std::format("bfs rooted in {}\n- initial coloring:\n", root_id);
-        // print_coloring();
 
         const bool is_bipartite = detail::bfs_impl(
             graph,
@@ -80,14 +57,16 @@ template <
             post_visit
         );
 
-        // std::cout << "- final coloring:\n";
-        // print_coloring();
-
         if (not is_bipartite)
             return std::nullopt;
     }
 
     return coloring;
+}
+
+template <type_traits::c_graph GraphType>
+[[nodiscard]] gl_attr_force_inline bool is_bipartite(const GraphType& graph) {
+    return bipartite_coloring(graph).has_value();
 }
 
 } // namespace gl::algorithm

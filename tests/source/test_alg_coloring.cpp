@@ -96,6 +96,9 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
         REQUIRE(coloring_opt.has_value());
         CHECK(std::ranges::equal(coloring_opt.value(), expected_coloring));
+
+        // check the is_bipartite function - formality
+        CHECK(lib::algorithm::is_bipartite(sut));
     }
 
     SUBCASE("not bipartite graph") {
@@ -136,6 +139,9 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
         const auto coloring_opt = lib::algorithm::bipartite_coloring(sut);
         CHECK_FALSE(coloring_opt.has_value());
+
+        // check the is_bipartite function - formality
+        CHECK_FALSE(lib::algorithm::is_bipartite(sut));
     }
 }
 
