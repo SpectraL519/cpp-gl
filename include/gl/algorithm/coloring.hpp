@@ -11,6 +11,7 @@ template <
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
 [[nodiscard]] std::optional<std::vector<types::binary_color>> bipartite_coloring(
     const GraphType& graph,
+    const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -19,6 +20,8 @@ template <
     using color = types::binary_color::value;
 
     std::vector<types::binary_color> coloring(graph.n_vertices(), color::unset);
+
+
 }
 
 } // namespace gl::algorithm

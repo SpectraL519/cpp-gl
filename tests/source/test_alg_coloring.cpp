@@ -12,7 +12,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_alg_coloring");
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "topological sort tests for directed graphs", TraitsType, directed_traits_type_template
+    "topological sort tests for directed graphs", TraitsType, traits_type_template
 ) {
     using sut_type = lib::graph<TraitsType>;
 
@@ -91,9 +91,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    directed_traits_type_template,
-    lib::list_graph_traits<lib::directed_t>, // adjacency list graph
-    lib::matrix_graph_traits<lib::directed_t> // adjacency matrix graph
+    traits_type_template,
+    lib::list_graph_traits<lib::directed_t>, // directed adjacency list graph
+    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
+    lib::matrix_graph_traits<lib::directed_t>, // directed adjacency matrix graph
+    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_coloring

@@ -200,6 +200,15 @@ TEST_CASE_FIXTURE(test_binary_color, "operator bool should be equivalent to is_s
     }));
 }
 
+TEST_CASE_FIXTURE(test_binary_color, "next should return black if the color is not set") {
+    CHECK_EQ(sut_type{}.next(), color::black);
+}
+
+TEST_CASE_FIXTURE(test_binary_color, "next should return the complimenting color if the color is set") {
+    CHECK_EQ(sut_type{color::black}.next(), color::white);
+    CHECK_EQ(sut_type{color::white}.next(), color::black);
+}
+
 // assertions for not tested property types
 static_assert(lib_tt::c_properties<lib_t::binary_color_property>);
 static_assert(lib_tt::c_properties<lib_t::weight_property<>>);

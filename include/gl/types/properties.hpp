@@ -117,10 +117,10 @@ private:
 
 class binary_color {
 public:
-    enum class value : std::uint8_t {
-        black = static_cast<std::uint8_t>(0),
-        white = static_cast<std::uint8_t>(1),
-        unset = static_cast<std::uint8_t>(2),
+    enum class value : std::int8_t {
+        black = static_cast<std::int8_t>(0),
+        white = static_cast<std::int8_t>(1),
+        unset = static_cast<std::int8_t>(2),
     };
 
     binary_color() = default;
@@ -153,6 +153,10 @@ public:
 
     [[nodiscard]] gl_attr_force_inline std::underlying_type_t<value> to_underlying() const {
         return util::to_underlying(this->_value);
+    }
+
+    [[nodiscard]] gl_attr_force_inline binary_color next() const {
+        return value{not this->to_underlying()};
     }
 
     // TODO: iostream operators
