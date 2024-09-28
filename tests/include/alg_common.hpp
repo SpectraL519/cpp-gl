@@ -16,7 +16,7 @@ template <std::integral I>
 [[nodiscard]] std::vector<I> read_integral_list(
     const lib_t::size_type n, const fs::path& file_path
 ) {
-    std::vector<lib_t::id_type> list(n);
+    std::vector<I> list(n);
 
     std::ifstream file(file_path);
     if (not file) {

@@ -46,7 +46,48 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             }
         }
 
-        // TODO: path, even cycle, custom graph
+        SUBCASE("path graph") {
+            sut = lib::topology::path<sut_type>(constants::n_elements_alg);
+
+            lib_t::binary_color c{color::black};
+            for (lib_t::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
+                expected_coloring.push_back(c);
+                c = c.next();
+            }
+        }
+
+        SUBCASE("even cycle graph") {
+            const auto n_vertices = constants::two * constants::n_elements_alg;
+            sut = lib::topology::cycle<sut_type>(n_vertices);
+
+            lib_t::binary_color c{color::black};
+            for (lib_t::size_type i = constants::zero; i < n_vertices; i++) {
+                expected_coloring.push_back(c);
+                c = c.next();
+            }
+        }
+
+        SUBCASE("custom graph") {
+            fs::path gsf_file_path =
+                alg_common::data_path
+                / (lib_tt::is_directed_v<sut_type>
+                       ? "bicoloring_directed_bipartite_graph.gsf"
+                       : "bicoloring_undirected_bipartite_graph.gsf");
+
+            sut = lib::io::load<sut_type>(gsf_file_path);
+
+            fs::path coloring_file_path =
+                alg_common::data_path / "bicoloring_bipartite_graph_coloring.txt";
+            const auto coloring_values =
+                alg_common::read_integral_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
+
+            std::transform(
+                coloring_values.begin(),
+                coloring_values.end(),
+                std::back_inserter(expected_coloring),
+                [](const std::uint16_t value) { return color{value}; }
+            );
+        }
 
         CAPTURE(sut);
         CAPTURE(expected_coloring);
@@ -64,7 +105,32 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
         }
 
-        // TODO: odd cycle, full bipartite with additional edge, custom graph
+        SUBCASE("odd cycle graph") {
+            sut = lib::topology::cycle<sut_type>(
+                constants::two * constants::n_elements_alg + constants::one
+            );
+        }
+
+        SUBCASE("complete binary tree with an additional edge between siblings") {
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+            sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
+        }
+
+        SUBCASE("full bipartite graph with an additional edge between vertices from the same set") {
+            const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
+            sut = lib::topology::full_bipartite<sut_type>(n_vertices_a, n_vertices_b);
+            sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
+        }
+
+        SUBCASE("custom graph") {
+            fs::path gsf_file_path =
+                alg_common::data_path
+                / (lib_tt::is_directed_v<sut_type>
+                       ? "bicoloring_directed_not_bipartite_graph.gsf"
+                       : "bicoloring_undirected_not_bipartite_graph.gsf");
+
+            sut = lib::io::load<sut_type>(gsf_file_path);
+        }
 
         CAPTURE(sut);
 

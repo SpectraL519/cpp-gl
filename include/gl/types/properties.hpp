@@ -117,10 +117,10 @@ private:
 
 class binary_color {
 public:
-    enum class value : std::int8_t {
-        black = static_cast<std::int8_t>(0),
-        white = static_cast<std::int8_t>(1),
-        unset = static_cast<std::int8_t>(2),
+    enum class value : std::uint16_t {
+        black = static_cast<std::uint16_t>(0),
+        white = static_cast<std::uint16_t>(1),
+        unset = static_cast<std::uint16_t>(2),
     };
 
     binary_color() = default;
