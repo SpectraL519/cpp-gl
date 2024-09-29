@@ -59,10 +59,9 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-void dijkstra_shortest_paths(
+[[nodiscard]] detail::paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
-    detail::paths_descriptor_type<GraphType>& paths,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -70,23 +69,7 @@ void dijkstra_shortest_paths(
     using edge_type = typename GraphType::edge_type;
     using distance_type = typename detail::paths_descriptor_type<GraphType>::distance_type;
 
-    const auto n_vertices = graph.n_vertices();
-
-    if (paths.predecessors.size() != n_vertices)
-        throw std::invalid_argument(std::format(
-            "[alg::dijkstra_shortest_paths] Invalid paths_descriptor parameter: expected size of "
-            "`predecessors` - {}, got - {}",
-            paths.predecessors.size(),
-            n_vertices
-        ));
-
-    if (paths.distances.size() != n_vertices)
-        throw std::invalid_argument(std::format(
-            "[alg::dijkstra_shortest_paths] Invalid paths_descriptor parameter: expected size of "
-            "`distances` - {}, got - {}",
-            paths.distances.size(),
-            n_vertices
-        ));
+    auto paths = make_paths_descriptor<GraphType>(graph);
 
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
@@ -126,6 +109,8 @@ void dijkstra_shortest_paths(
     if (found_negative_weight)
         throw std::invalid_argument("[alg::dijkstra_shortest_paths] Found an edge with a negative "
                                     "weight");
+
+    return paths;
 }
 
 } // namespace gl::algorithm
