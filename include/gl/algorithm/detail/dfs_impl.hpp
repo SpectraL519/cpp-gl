@@ -28,22 +28,22 @@ void dfs_impl(
     vertex_stack.emplace(root_vertex.id());
 
     while (not vertex_stack.empty()) {
-        const vertex_info sv = vertex_stack.top();
+        const vertex_info vi = vertex_stack.top();
         vertex_stack.pop();
 
-        const auto& vertex = graph.get_vertex(sv.id);
+        const auto& vertex = graph.get_vertex(vi.id);
         if (not visit_vertex_pred(vertex))
             continue;
 
         if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
             pre_visit(vertex);
 
-        visit(vertex, sv.source_id);
+        visit(vertex, vi.source_id);
 
-        for (const auto& edge : graph.adjacent_edges(sv.id)) {
+        for (const auto& edge : graph.adjacent_edges(vi.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
             if (enque_vertex_pred(incident_vertex, edge))
-                vertex_stack.emplace(incident_vertex.id(), sv.id);
+                vertex_stack.emplace(incident_vertex.id(), vi.id);
         }
 
         if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)

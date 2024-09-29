@@ -36,10 +36,10 @@ type_traits::alg_return_type<SearchTreeType> breadth_first_search(
         );
     }
     else {
-        for (const auto& root_vertex : graph.vertices())
+        for (const auto root_id : graph.vertex_ids())
             detail::bfs_impl(
                 graph,
-                detail::init_range(root_vertex.id()),
+                detail::init_range(root_id),
                 detail::default_visit_vertex_predicate<GraphType>(visited),
                 detail::default_visit_callback<GraphType>(visited, search_tree),
                 detail::default_enqueue_vertex_predicate<GraphType, true>(visited),

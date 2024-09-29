@@ -7,11 +7,6 @@
 
 namespace gl::algorithm {
 
-// ? what if the graph is not fully connected
-// * predecessors -> vector<opt<id>>
-// * error
-// * + connected/discovered/... -> vector<bool>
-
 template <type_traits::c_basic_arithmetic EdgeWeithType>
 struct paths_descriptor {
     using distance_type = EdgeWeithType;
@@ -22,22 +17,34 @@ struct paths_descriptor {
         distances.shrink_to_fit();
     }
 
-    std::vector<types::id_type> predecessors;
+    std::vector<std::optional<types::id_type>> predecessors;
     std::vector<distance_type> distances;
 };
 
 namespace detail {
 
+using default_vertex_distance_type = std::uint64_t;
+
 template <type_traits::c_graph GraphType>
 using graph_vertex_distance_type = std::conditional_t<
     type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>,
     typename GraphType::edge_properties_type::weight_type,
-    std::uint64_t>;
+    default_vertex_distance_type>;
 
 template <type_traits::c_graph GraphType>
 using paths_descriptor_type = paths_descriptor<graph_vertex_distance_type<GraphType>>;
 
-// TODO: visit_pred/visit/enqueue_pred depending on the properties type
+template <type_traits::c_graph GraphType>
+[[nodiscard]] gl_attr_force_inline auto dijkstra_get_edge_weight() {
+    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>) {
+        return [](const typename GraphType::edge_type& edge) { return edge.properties.weight; };
+    }
+    else {
+        return [](const typename GraphType::edge_type& edge) {
+            return default_vertex_distance_type{1ull};
+        };
+    }
+}
 
 } // namespace detail
 
@@ -61,6 +68,64 @@ void dijkstra_shortest_paths(
 ) {
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
+    using distance_type = typename detail::paths_descriptor_type<GraphType>::distance_type;
+
+    const auto n_vertices = graph.n_vertices();
+
+    if (paths.predecessors.size() != n_vertices)
+        throw std::invalid_argument(std::format(
+            "[alg::dijkstra_shortest_paths] Invalid paths_descriptor parameter: expected size of "
+            "`predecessors` - {}, got - {}",
+            paths.predecessors.size(),
+            n_vertices
+        ));
+
+    if (paths.distances.size() != n_vertices)
+        throw std::invalid_argument(std::format(
+            "[alg::dijkstra_shortest_paths] Invalid paths_descriptor parameter: expected size of "
+            "`distances` - {}, got - {}",
+            paths.distances.size(),
+            n_vertices
+        ));
+
+    paths.predecessors.at(source_id).emplace(source_id);
+    paths.distances[source_id] = distance_type{};
+
+    const auto get_edge_weight = detail::dijkstra_get_edge_weight<GraphType>();
+
+    const bool found_negative_weight = detail::pq_bfs_impl(
+        graph,
+        [&paths](const detail::vertex_info& lhs, const detail::vertex_info& rhs) {
+            return paths.distances[lhs.id] > paths.distances[rhs.id];
+        },
+        detail::init_range(source_id),
+        [&paths](const vertex_type& vertex) { // visit pred
+            return not paths.predecessors[vertex.id()].has_value();
+        },
+        detail::constant_binary_predicate<true>(), // visit callback
+        [&paths, &get_edge_weight](const vertex_type& vertex, const edge_type& in_edge)
+            -> std::optional<bool> { // enqueue pred
+            const auto vertex_id = vertex.id();
+            const auto source_id = in_edge.incident_vertex(vertex).id();
+
+            const auto edge_weight = get_edge_weight(in_edge);
+            if (edge_weight < static_cast<distance_type>(0))
+                return std::nullopt;
+
+            const auto new_distance = paths.distances[source_id] + edge_weight;
+            if (new_distance < paths.distances[source_id]) {
+                paths.distances[vertex_id] = new_distance;
+                paths.predecessors[vertex_id].emplace(source_id);
+                return true;
+            }
+
+            return false;
+        }
+    );
+
+    if (found_negative_weight)
+        throw std::invalid_argument("[alg::dijkstra_shortest_paths] Found an edge with a negative "
+                                    "weight");
 }
 
 } // namespace gl::algorithm

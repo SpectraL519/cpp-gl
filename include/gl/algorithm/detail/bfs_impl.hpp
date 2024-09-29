@@ -34,20 +34,20 @@ bool bfs_impl(
 
     // search the graph
     while (not vertex_queue.empty()) {
-        const vertex_info sv = vertex_queue.front();
+        const vertex_info vi = vertex_queue.front();
         vertex_queue.pop();
 
-        const auto& vertex = graph.get_vertex(sv.id);
+        const auto& vertex = graph.get_vertex(vi.id);
         if (not visit_vertex_pred(vertex))
             continue;
 
         if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
             pre_visit(vertex);
 
-        if (not visit(vertex, sv.source_id))
+        if (not visit(vertex, vi.source_id))
             return false;
 
-        for (const auto& edge : graph.adjacent_edges(sv.id)) {
+        for (const auto& edge : graph.adjacent_edges(vi.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
             const auto enqueue = enque_vertex_pred(incident_vertex, edge);
@@ -55,7 +55,7 @@ bool bfs_impl(
                 return false;
 
             if (enqueue.value())
-                vertex_queue.emplace(incident_vertex.id(), sv.id);
+                vertex_queue.emplace(incident_vertex.id(), vi.id);
         }
 
         if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
@@ -95,20 +95,20 @@ bool pq_bfs_impl(
 
     // search the graph
     while (not vertex_queue.empty()) {
-        const vertex_info sv = vertex_queue.top();
+        const vertex_info vi = vertex_queue.top();
         vertex_queue.pop();
 
-        const auto& vertex = graph.get_vertex(sv.id);
+        const auto& vertex = graph.get_vertex(vi.id);
         if (not visit_vertex_pred(vertex))
             continue;
 
         if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
             pre_visit(vertex);
 
-        if (not visit(vertex, sv.source_id))
+        if (not visit(vertex, vi.source_id))
             return false;
 
-        for (const auto& edge : graph.adjacent_edges(sv.id)) {
+        for (const auto& edge : graph.adjacent_edges(vi.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
             const auto enqueue = enque_vertex_pred(incident_vertex, edge);
@@ -116,7 +116,7 @@ bool pq_bfs_impl(
                 return false;
 
             if (enqueue.value())
-                vertex_queue.emplace(incident_vertex.id(), sv.id);
+                vertex_queue.emplace(incident_vertex.id(), vi.id);
         }
 
         if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
