@@ -14,9 +14,7 @@ inline const fs::path data_path(TEST_DATA_PATH);
 
 template <typename T>
 requires(lib_tt::c_readable<T>)
-[[nodiscard]] std::vector<T> load_list(
-    const lib_t::size_type n, const fs::path& file_path
-) {
+[[nodiscard]] std::vector<T> load_list(const lib_t::size_type n, const fs::path& file_path) {
     std::vector<T> list(n);
 
     std::ifstream file(file_path);

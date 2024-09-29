@@ -52,12 +52,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
             source_id = constants::first_element_idx;
 
-            expected_predecessors = std::vector<lib_t::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors =
+                std::vector<lib_t::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
             for (lib_t::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++) {
-                sut.get_edge(constants::vertex_id_1, id).value().get().properties.weight = edge_weight;
+                sut.get_edge(constants::vertex_id_1, id).value().get().properties.weight =
+                    edge_weight;
                 expected_distances.push_back(edge_weight);
             }
         }
@@ -67,10 +69,15 @@ TEST_CASE_TEMPLATE_DEFINE(
             source_id = constants::first_element_idx;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id = id == constants::zero ? constants::zero : (id - constants::one) / constants::two;
+                const auto parent_id =
+                    id == constants::zero
+                        ? constants::zero
+                        : (id - constants::one) / constants::two;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth = constants::zero ? constants::zero : static_cast<lib_t::size_type>(std::log2(id + constants::one));
+                const auto vertex_depth =
+                    constants::zero ? constants::zero
+                                    : static_cast<lib_t::size_type>(std::log2(id + constants::one));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -86,11 +93,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             const fs::path predecessors_file_path =
                 alg_common::data_path / (file_name_prefix + "predecessors.txt");
-            expected_predecessors = alg_common::load_list<lib_t::id_type>(sut.n_vertices(), predecessors_file_path);
+            expected_predecessors =
+                alg_common::load_list<lib_t::id_type>(sut.n_vertices(), predecessors_file_path);
 
             const fs::path distances_file_path =
                 alg_common::data_path / (file_name_prefix + "distances.txt");
-            expected_distances = alg_common::load_list<distance_type>(sut.n_vertices(), distances_file_path);
+            expected_distances =
+                alg_common::load_list<distance_type>(sut.n_vertices(), distances_file_path);
         }
 
         CAPTURE(sut);
@@ -100,26 +109,18 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto paths = lib::algorithm::dijkstra_shortest_paths(sut, source_id);
 
-        REQUIRE(std::ranges::all_of(
-            paths.predecessors,
-            [](const auto& id_opt) {
-                return id_opt.has_value();
-            }
-        ));
+        REQUIRE(std::ranges::all_of(paths.predecessors, [](const auto& id_opt) {
+            return id_opt.has_value();
+        }));
 
         CHECK(std::ranges::equal(
             paths.predecessors,
             expected_predecessors,
             std::ranges::equal_to{},
-            [](const auto& id_opt) {
-                return id_opt.value();
-            }
+            [](const auto& id_opt) { return id_opt.value(); }
         ));
 
-        CHECK(std::ranges::equal(
-            paths.distances,
-            expected_distances
-        ));
+        CHECK(std::ranges::equal(paths.distances, expected_distances));
     }
 }
 

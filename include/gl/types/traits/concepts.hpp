@@ -82,19 +82,18 @@ concept c_comparable = requires(const T lhs, const T rhs) {
 
 template <typename T>
 concept c_basic_arithmetic =
-    std::semiregular<T>
-    and std::constructible_from<T, std::int64_t>
-    and std::convertible_to<T, std::int64_t>
-    and c_comparable<T> and requires(const T a, const T b, T c) {
-        { a + b } -> std::same_as<T>;
-        { a - b } -> std::same_as<T>;
-        { a * b } -> std::same_as<T>;
-        { a / b } -> std::same_as<T>;
-        { c += a } -> std::same_as<T&>;
-        { c -= a } -> std::same_as<T&>;
-        { c *= a } -> std::same_as<T&>;
-        { c /= a } -> std::same_as<T&>;
-    };
+    std::semiregular<T> and std::constructible_from<T, std::int64_t>
+    and std::convertible_to<T, std::int64_t> and c_comparable<T>
+    and requires(const T a, const T b, T c) {
+            { a + b } -> std::same_as<T>;
+            { a - b } -> std::same_as<T>;
+            { a* b } -> std::same_as<T>;
+            { a / b } -> std::same_as<T>;
+            { c += a } -> std::same_as<T&>;
+            { c -= a } -> std::same_as<T&>;
+            { c *= a } -> std::same_as<T&>;
+            { c /= a } -> std::same_as<T&>;
+        };
 
 template <typename T>
 concept c_readable = requires(T value, std::istream& is) { is >> value; };

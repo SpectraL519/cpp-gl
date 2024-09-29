@@ -85,8 +85,9 @@ template <
         detail::init_range(source_id),
         detail::constant_unary_predicate<true>(), // visit pred
         detail::constant_binary_predicate<true>(), // visit callback
-        [&paths, &get_edge_weight, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
-            -> std::optional<bool> { // enqueue pred
+        [&paths, &get_edge_weight, &negative_edge](
+            const vertex_type& vertex, const edge_type& in_edge
+        ) -> std::optional<bool> { // enqueue pred
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
@@ -97,7 +98,8 @@ template <
             }
 
             const auto new_distance = paths.distances[source_id] + edge_weight;
-            if (not paths.predecessors[vertex_id].has_value() or new_distance < paths.distances[vertex_id]) {
+            if (not paths.predecessors[vertex_id].has_value()
+                or new_distance < paths.distances[vertex_id]) {
                 paths.distances[vertex_id] = new_distance;
                 paths.predecessors[vertex_id].emplace(source_id);
                 return true;
@@ -109,14 +111,12 @@ template <
 
     if (negative_edge.has_value()) {
         const auto& edge = negative_edge.value().get();
-        throw std::invalid_argument(
-            std::format(
-                "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
-                edge.first_id(),
-                edge.second_id(),
-                edge.properties.weight
-            )
-        );
+        throw std::invalid_argument(std::format(
+            "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
+            edge.first_id(),
+            edge.second_id(),
+            edge.properties.weight
+        ));
     }
 
     return paths;

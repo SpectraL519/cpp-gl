@@ -182,13 +182,15 @@ struct weight_property {
     weight_type weight = static_cast<weight_type>(1ll);
 
     friend std::ostream& operator<<(std::ostream& os, const weight_property& property)
-    requires(type_traits::c_writable<weight_type>) {
+    requires(type_traits::c_writable<weight_type>)
+    {
         os << property.weight;
         return os;
     }
 
     friend std::istream& operator>>(std::istream& is, weight_property& property)
-    requires(type_traits::c_readable<weight_type>) {
+    requires(type_traits::c_readable<weight_type>)
+    {
         is >> property.weight;
         return is;
     }
