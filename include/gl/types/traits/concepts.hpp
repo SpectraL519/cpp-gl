@@ -91,6 +91,9 @@ concept c_comparable = requires(const T lhs, const T rhs) {
     { lhs == rhs } -> std::convertible_to<bool>;
 };
 
+// clang-format off
+// "a * b" formatted as "a* b"
+
 template <typename T>
 concept c_basic_arithmetic =
     std::semiregular<T> and std::constructible_from<T, std::int64_t>
@@ -98,13 +101,15 @@ concept c_basic_arithmetic =
     and requires(const T a, const T b, T c) {
             { a + b } -> std::same_as<T>;
             { a - b } -> std::same_as<T>;
-            { a* b } -> std::same_as<T>;
+            { a * b } -> std::same_as<T>;
             { a / b } -> std::same_as<T>;
             { c += a } -> std::same_as<T&>;
             { c -= a } -> std::same_as<T&>;
             { c *= a } -> std::same_as<T&>;
             { c /= a } -> std::same_as<T&>;
         };
+
+// clang-format on
 
 template <typename T>
 concept c_readable = requires(T value, std::istream& is) { is >> value; };
