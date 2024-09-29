@@ -202,6 +202,13 @@ concept c_binary_color_properties_type =
             requires std::constructible_from<typename Properties::color_type, types::binary_color>;
         });
 
+template <typename Properties>
+concept c_weight_properties_type = c_properties<Properties> and requires(Properties p) {
+    typename Properties::weight_type;
+    { p.weight } -> std::same_as<typename Properties::weight_type>;
+    requires c_basic_arithmetic<typename Properties::weight_type>;
+};
+
 } // namespace type_traits
 
 } // namespace gl
