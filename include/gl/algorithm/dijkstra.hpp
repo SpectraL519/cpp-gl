@@ -3,7 +3,7 @@
 #include "detail/bfs_impl.hpp"
 #include "gl/types/properties.hpp"
 
-#include <iostream>
+#include <deque>
 
 namespace gl::algorithm {
 
@@ -120,6 +120,26 @@ template <
     }
 
     return paths;
+}
+
+template <type_traits::c_random_access_range_of<types::id_type> IdRange>
+[[nodiscard]] std::deque<types::id_type> reconstruct_path(
+    const IdRange& predecessor_map, const types::id_type vertex_id
+) {
+    std::deque<types::id_type> path;
+    types::id_type current_vertex = vertex_id;
+
+    while (true) {
+        path.push_front(current_vertex);
+        types::id_type predecessor = *(predecessor_map.begin() + current_vertex);
+
+        if (predecessor == current_vertex)
+            break;
+
+        current_vertex = predecessor;
+    }
+
+    return path;
 }
 
 } // namespace gl::algorithm

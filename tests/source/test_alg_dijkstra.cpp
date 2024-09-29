@@ -144,6 +144,40 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         lib_t::weight_property<>> // undirected adjacency matrix graph
 );
 
+TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {
+    const std::vector<lib_t::id_type> predecessor_map = {0, 3, 1, 0};
+
+    lib_t::id_type vertex_id;
+    std::deque<lib_t::id_type> expected_path;
+
+    SUBCASE("starting vertex = 0") {
+        vertex_id = 0;
+        expected_path = {0};
+    }
+
+    SUBCASE("starting vertex = 1") {
+        vertex_id = 1;
+        expected_path = {0, 3, 1};
+    }
+
+    SUBCASE("starting vertex = 2") {
+        vertex_id = 2;
+        expected_path = {0, 3, 1, 2};
+    }
+
+    SUBCASE("starting vertex = 3") {
+        vertex_id = 3;
+        expected_path = {0, 3};
+    }
+
+    CAPTURE(vertex_id);
+    CAPTURE(expected_path);
+
+    CHECK(std::ranges::equal(
+        lib::algorithm::reconstruct_path(predecessor_map, vertex_id), expected_path
+    ));
+}
+
 TEST_SUITE_END(); // test_alg_dijkstra
 
 } // namespace gl_testing

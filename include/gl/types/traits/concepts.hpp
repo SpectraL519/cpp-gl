@@ -40,6 +40,9 @@ concept c_range = std::ranges::range<R>;
 template <typename R>
 concept c_sized_range = std::ranges::sized_range<R>;
 
+template <typename R>
+concept c_random_access_range = std::ranges::random_access_range<R>;
+
 template <typename R, typename T>
 concept c_range_of =
     c_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
@@ -48,6 +51,10 @@ template <typename R, typename T>
 concept c_sized_range_of =
     c_sized_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
 
+template <typename R, typename T>
+concept c_random_access_range_of =
+    c_random_access_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
+
 // preserves cv qualifiers
 template <typename R, typename T>
 concept c_range_of_cv = c_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
@@ -55,6 +62,10 @@ concept c_range_of_cv = c_range<R> and std::same_as<T, std::ranges::range_value_
 // preserves cv qualifiers
 template <typename R, typename T>
 concept c_sized_range_of_cv = c_sized_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
+
+template <typename R, typename T>
+concept c_random_access_range_of_cv =
+    c_random_access_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 
 template <typename R>
 concept c_const_range = requires(R& r) {
