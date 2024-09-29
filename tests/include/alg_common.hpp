@@ -12,11 +12,12 @@ namespace gl_testing::alg_common {
 
 inline const fs::path data_path(TEST_DATA_PATH);
 
-template <std::integral I>
-[[nodiscard]] std::vector<I> read_integral_list(
+template <typename T>
+requires(lib_tt::c_readable<T>)
+[[nodiscard]] std::vector<T> load_list(
     const lib_t::size_type n, const fs::path& file_path
 ) {
-    std::vector<I> list(n);
+    std::vector<T> list(n);
 
     std::ifstream file(file_path);
     if (not file) {

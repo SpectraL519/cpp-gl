@@ -3,8 +3,6 @@
 #include "detail/bfs_impl.hpp"
 #include "gl/types/properties.hpp"
 
-#include <iostream>
-
 namespace gl::algorithm {
 
 using bicoloring_type = std::vector<types::binary_color>;

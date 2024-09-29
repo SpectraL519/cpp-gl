@@ -118,7 +118,6 @@ bool pq_bfs_impl(
             if (enqueue.value())
                 vertex_queue.emplace(incident_vertex.id(), vi.id);
         }
-
         if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
             post_visit(vertex);
     }
