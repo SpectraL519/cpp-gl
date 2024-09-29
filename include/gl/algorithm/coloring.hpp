@@ -3,15 +3,15 @@
 #include "detail/bfs_impl.hpp"
 #include "gl/types/properties.hpp"
 
-#include <iostream>
-
 namespace gl::algorithm {
+
+using bicoloring_type = std::vector<types::binary_color>;
 
 template <
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-[[nodiscard]] std::optional<std::vector<types::binary_color>> bipartite_coloring(
+[[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
@@ -19,7 +19,7 @@ template <
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
-    std::vector<types::binary_color> coloring(graph.n_vertices(), bin_color_value::unset);
+    bicoloring_type coloring(graph.n_vertices(), bin_color_value::unset);
 
     for (const auto& root_vertex : graph.vertices()) {
         const auto root_id = root_vertex.id();

@@ -179,7 +179,21 @@ struct binary_color_property {
 template <type_traits::c_basic_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
-    weight_type weight;
+    weight_type weight = static_cast<weight_type>(1ll);
+
+    friend std::ostream& operator<<(std::ostream& os, const weight_property& property)
+    requires(type_traits::c_writable<weight_type>)
+    {
+        os << property.weight;
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream& is, weight_property& property)
+    requires(type_traits::c_readable<weight_type>)
+    {
+        is >> property.weight;
+        return is;
+    }
 };
 
 } // namespace types
@@ -197,10 +211,17 @@ concept c_binary_color_properties_type =
     c_properties<Properties>
     and (std::derived_from<Properties, types::binary_color_property> or requires(Properties p) {
             typename Properties::color_type;
-            { p.color } -> std::same_as<typename Properties::color_type>;
+            { p.color } -> std::same_as<typename Properties::color_type&>;
             { p.color == types::binary_color{} } -> std::convertible_to<bool>;
             requires std::constructible_from<typename Properties::color_type, types::binary_color>;
         });
+
+template <typename Properties>
+concept c_weight_properties_type = c_properties<Properties> and requires(Properties p) {
+    typename Properties::weight_type;
+    { p.weight } -> std::same_as<typename Properties::weight_type&>;
+    requires c_basic_arithmetic<typename Properties::weight_type>;
+};
 
 } // namespace type_traits
 

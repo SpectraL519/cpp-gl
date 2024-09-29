@@ -84,7 +84,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             fs::path coloring_file_path =
                 alg_common::data_path / "bicoloring_bipartite_graph_coloring.txt";
             const auto coloring_values =
-                alg_common::read_integral_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
+                alg_common::load_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
 
             std::transform(
                 coloring_values.begin(),
