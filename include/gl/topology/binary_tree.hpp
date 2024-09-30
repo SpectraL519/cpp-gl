@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
-#include "gl/graph.hpp"
+#include "gl/graph_utility.hpp"
 #include "gl/util/pow.hpp"
 
 namespace gl::topology {

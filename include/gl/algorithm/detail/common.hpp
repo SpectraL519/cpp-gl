@@ -5,9 +5,9 @@
 
 namespace gl::algorithm::detail {
 
-template <type_traits::c_alg_return_graph SearchTreeType, type_traits::c_graph GraphType>
+template <type_traits::c_alg_return_graph_type SearchTreeType, type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline SearchTreeType init_search_tree(const GraphType& graph) {
-    if constexpr (type_traits::is_alg_no_return_type_v<SearchTreeType>)
+    if constexpr (type_traits::c_alg_no_return_type<SearchTreeType>)
         return SearchTreeType{};
     else
         return SearchTreeType(graph.n_vertices());
@@ -45,14 +45,14 @@ template <type_traits::c_graph GraphType>
     };
 }
 
-template <type_traits::c_graph GraphType, type_traits::c_alg_return_graph SearchTreeType>
+template <type_traits::c_graph GraphType, type_traits::c_alg_return_graph_type SearchTreeType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited, SearchTreeType& search_tree
 ) {
     return [&](const typename GraphType::vertex_type& vertex, const types::id_type source_id) {
         const auto vertex_id = vertex.id();
         visited[vertex_id] = true;
-        if constexpr (not type_traits::is_alg_no_return_type_v<SearchTreeType>) {
+        if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>) {
             if (source_id != vertex_id)
                 search_tree.add_edge(source_id, vertex_id);
         }
@@ -69,24 +69,6 @@ template <type_traits::c_graph GraphType, bool AsOptional = false>
                const typename GraphType::edge_type& in_edge) -> return_type {
         return not visited[vertex.id()];
     };
-}
-
-using default_vertex_distance_type = std::int64_t;
-
-template <type_traits::c_graph GraphType>
-using graph_vertex_distance_type = std::conditional_t<
-    type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>,
-    typename GraphType::edge_properties_type::weight_type,
-    default_vertex_distance_type>;
-
-template <type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline graph_vertex_distance_type<GraphType> get_edge_weight(
-    const typename GraphType::edge_type& edge
-) {
-    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
-        return edge.properties.weight;
-    else
-        return default_vertex_distance_type{1ll};
 }
 
 } // namespace gl::algorithm::detail

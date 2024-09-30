@@ -6,8 +6,8 @@ namespace gl::algorithm {
 
 template <
     type_traits::c_directed_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 [[nodiscard]] std::optional<std::vector<types::id_type>> topological_sort(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},

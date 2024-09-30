@@ -9,14 +9,14 @@ namespace gl::algorithm::detail {
 template <
     type_traits::c_graph GraphType,
     type_traits::c_sized_range_of<vertex_info> InitQueueRangeType = std::vector<vertex_info>,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 bool bfs_impl(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
-    const vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const vertex_callback<GraphType, bool, types::id_type>& visit,
-    const vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
+    const types::vertex_callback<GraphType, bool, types::id_type>& visit,
+    const types::vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
         enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
@@ -41,7 +41,7 @@ bool bfs_impl(
         if (not visit_vertex_pred(vertex))
             continue;
 
-        if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
         if (not visit(vertex, vi.source_id))
@@ -58,7 +58,7 @@ bool bfs_impl(
                 vertex_queue.emplace(incident_vertex.id(), vi.id);
         }
 
-        if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
             post_visit(vertex);
     }
 
@@ -69,15 +69,15 @@ template <
     type_traits::c_graph GraphType,
     std::predicate<vertex_info, vertex_info> PQCompare,
     type_traits::c_sized_range_of<vertex_info> InitQueueRangeType = std::vector<vertex_info>,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 bool pq_bfs_impl(
     const GraphType& graph,
     const PQCompare pq_compare,
     const InitQueueRangeType& initial_queue_content,
-    const vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const vertex_callback<GraphType, bool, types::id_type>& visit,
-    const vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
+    const types::vertex_callback<GraphType, bool, types::id_type>& visit,
+    const types::vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
         enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
@@ -102,7 +102,7 @@ bool pq_bfs_impl(
         if (not visit_vertex_pred(vertex))
             continue;
 
-        if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
         if (not visit(vertex, vi.source_id))
@@ -118,7 +118,7 @@ bool pq_bfs_impl(
             if (enqueue.value())
                 vertex_queue.emplace(incident_vertex.id(), vi.id);
         }
-        if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
             post_visit(vertex);
     }
 

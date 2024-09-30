@@ -2,7 +2,7 @@
 
 #include "namespaces.hpp"
 
-#include <gl/graph.hpp>
+#include <gl/graph_utility.hpp>
 
 #include <doctest.h>
 
