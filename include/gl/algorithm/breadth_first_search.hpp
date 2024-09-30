@@ -1,8 +1,8 @@
 #pragma once
 
 #include "constants.hpp"
-#include "types.hpp"
 #include "detail/bfs_impl.hpp"
+#include "types.hpp"
 
 namespace gl::algorithm {
 

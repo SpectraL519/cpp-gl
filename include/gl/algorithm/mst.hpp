@@ -1,101 +1,98 @@
 #pragma once
 #pragma once
 
-#include "detail/bfs_impl.hpp"
+#include "constants.hpp"
 #include "detail/common.hpp"
 #include "gl/types/properties.hpp"
 
+#include <queue>
+
 namespace gl::algorithm {
 
-template <type_traits::c_basic_arithmetic EdgeWeithType>
+template <type_traits::c_graph GraphType>
 struct mst_descriptor {
-    using distance_type = EdgeWeithType;
+    using graph_type = GraphType;
+    using edge_type = typename graph_type::edge_type;
+    using weight_type = types::vertex_distance_type<graph_type>;
 
-    mst_descriptor(const types::size_type n_vertices)
-    : predecessors(n_vertices), distances(n_vertices) {
-        predecessors.shrink_to_fit();
-        distances.shrink_to_fit();
+    mst_descriptor(const types::size_type n_vertices) {
+        edges.reserve(n_vertices - 1ull);
     }
+
+    std::vector<types::const_ref_wrap<edge_type>> edges;
+    weight_type weight = static_cast<weight_type>(0ll);
 };
 
 template <
-    type_traits::c_graph MinimumSpanningTreeType,
-    type_traits::c_graph GraphType,
+    type_traits::c_directed_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
-[[nodiscard]] MinimumSpanningTreeType prim_mst(
+[[nodiscard]] mst_descriptor<GraphType> prim_mst(
     const GraphType& graph,
-    const types::id_type source_id,
+    const std::optional<types::id_type> root_id_opt,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
+    // type definitions
+
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using distance_type = detail::vertex_distance_type<GraphType>;
+    using edge_info_type = detail::edge_info<edge_type>;
+    using distance_type = types::vertex_distance_type<GraphType>;
 
-    detail::pq_bfs_impl(
-        graph,
-        [&paths](const detail::vertex_info& lhs, const detail::vertex_info& rhs) {
-            return paths.distances[lhs.id] > paths.distances[rhs.id];
-        },
-        detail::init_range(source_id),
-        detail::constant_unary_predicate<true>(), // visit pred
-        detail::constant_binary_predicate<true>(), // visit callback
-        [&paths, &get_edge_weight, &negative_edge](
-            const vertex_type& vertex, const edge_type& in_edge
-        ) -> std::optional<bool> { // enqueue pred
-            const auto vertex_id = vertex.id();
-            const auto source_id = in_edge.incident_vertex(vertex).id();
-
-            const auto edge_weight = get_edge_weight(in_edge);
-            if (edge_weight < static_cast<distance_type>(0ll)) {
-                negative_edge = std::cref(in_edge);
-                return std::nullopt;
-            }
-
-            const auto new_distance = paths.distances[source_id] + edge_weight;
-            if (not paths.predecessors[vertex_id].has_value()
-                or new_distance < paths.distances[vertex_id]) {
-                paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id].emplace(source_id);
-                return true;
-            }
-
-            return false;
+    struct edge_info_comparator {
+        [[nodiscard]] gl_attr_force_inline bool operator()(
+            const edge_info_type& lhs, const edge_info_type& rhs
+        ) const {
+            return get_weight(lhs.edge.get()) > get_weight(rhs.edge.get());
         }
-    );
+    };
 
-    if (negative_edge.has_value()) {
-        const auto& edge = negative_edge.value().get();
-        throw std::invalid_argument(std::format(
-            "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
-            edge.first_id(),
-            edge.second_id(),
-            edge.properties.weight
-        ));
+    using queue_type =
+        std::priority_queue<edge_info_type, std::vector<edge_info_type>, edge_info_comparator>;
+
+    // prepare the necessary utility
+    const auto n_vertices = graph.n_vertices();
+    mst_descriptor mst(n_vertices);
+    std::vector<bool> visited(n_vertices, false);
+    queue_type edge_queue;
+
+    // TODO: replace with edge->incident_vertex_id(id) after it's been added to the edge_descriptor class
+    const auto get_other_vertex_id = [](const edge_type& edge, const types::id_type source_id) {
+        return edge->first_id() == source_id ? edge->second_id() : edge->first_id();
+    };
+
+    // insert the edges adjacent to the root vertex to the queue
+    const types::id_type root_id = root_id_opt.value_or(0ull);
+    for (const auto& edge : graph.adjacent_edges(root_id))
+        edge_queue.emplace(edge, root_id);
+
+    // mark the root vertex as visited
+    visited[root_id] = true;
+    types::size_type n_vertices_in_mst = 1ull;
+
+    // find the mst
+    while (n_vertices_in_mst < n_vertices) {
+        const auto min_edge_info = edge_queue.top();
+        edge_queue.pop();
+
+        const auto& min_edge = min_edge_info.edge.get();
+        const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
+
+        if (not visited[dest_vertex_id]) {
+            mst.edges.push_back(min_edge);
+            mst.weight += get_weight(min_edge);
+
+            visited[dest_vertex_id] = true;
+            ++n_vertices_in_mst;
+        }
+
+        for (const auto& edge : graph.adjacent_edges(dest_vertex_id))
+            if (not visited[edge.second_id()])
+                edge_queue.emplace(edge);
     }
 
-    return paths;
-}
-
-template <type_traits::c_random_access_range_of<types::id_type> IdRange>
-[[nodiscard]] std::deque<types::id_type> reconstruct_path(
-    const IdRange& predecessor_map, const types::id_type vertex_id
-) {
-    std::deque<types::id_type> path;
-    types::id_type current_vertex = vertex_id;
-
-    while (true) {
-        path.push_front(current_vertex);
-        types::id_type predecessor = *(predecessor_map.begin() + current_vertex);
-
-        if (predecessor == current_vertex)
-            break;
-
-        current_vertex = predecessor;
-    }
-
-    return path;
+    return mst;
 }
 
 } // namespace gl::algorithm

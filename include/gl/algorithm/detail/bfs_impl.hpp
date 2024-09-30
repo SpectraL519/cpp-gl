@@ -16,8 +16,9 @@ bool bfs_impl(
     const InitQueueRangeType& initial_queue_content,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, bool, types::id_type>& visit,
-    const types::vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
-        enque_vertex_pred,
+    const types::
+        vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+            enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -77,8 +78,9 @@ bool pq_bfs_impl(
     const InitQueueRangeType& initial_queue_content,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, bool, types::id_type>& visit,
-    const types::vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
-        enque_vertex_pred,
+    const types::
+        vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+            enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {

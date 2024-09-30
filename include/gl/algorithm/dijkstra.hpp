@@ -1,8 +1,8 @@
 #pragma once
 
 #include "detail/bfs_impl.hpp"
-#include "gl/types/properties.hpp"
 #include "gl/graph_utility.hpp"
+#include "gl/types/properties.hpp"
 
 #include <deque>
 
@@ -65,9 +65,8 @@ template <
         detail::init_range(source_id),
         detail::constant_unary_predicate<true>(), // visit pred
         detail::constant_binary_predicate<true>(), // visit callback
-        [&paths, &negative_edge](
-            const vertex_type& vertex, const edge_type& in_edge
-        ) -> std::optional<bool> { // enqueue pred
+        [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
+            -> std::optional<bool> { // enqueue pred
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 

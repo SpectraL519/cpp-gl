@@ -5,13 +5,8 @@
 
 namespace gl::algorithm::detail {
 
-template <type_traits::c_alg_return_graph_type SearchTreeType, type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline SearchTreeType init_search_tree(const GraphType& graph) {
-    if constexpr (type_traits::c_alg_no_return_type<SearchTreeType>)
-        return SearchTreeType{};
-    else
-        return SearchTreeType(graph.n_vertices());
-}
+// --- common types ---
+// ? move to algorithm/types
 
 struct vertex_info {
     vertex_info(types::id_type id) : id(id), source_id(id) {}
@@ -22,6 +17,24 @@ struct vertex_info {
     types::id_type id;
     types::id_type source_id;
 };
+
+template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+struct edge_info {
+    using edge_type = EdgeType;
+
+    types::const_ref_wrap<edge_type> edge;
+    types::id_type source_id;
+};
+
+// --- common functions ---
+
+template <type_traits::c_alg_return_graph_type SearchTreeType, type_traits::c_graph GraphType>
+[[nodiscard]] gl_attr_force_inline SearchTreeType init_search_tree(const GraphType& graph) {
+    if constexpr (type_traits::c_alg_no_return_type<SearchTreeType>)
+        return SearchTreeType{};
+    else
+        return SearchTreeType(graph.n_vertices());
+}
 
 template <type_traits::c_sized_range_of<vertex_info> InitRangeType = std::vector<vertex_info>>
 [[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {

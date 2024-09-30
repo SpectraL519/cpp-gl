@@ -15,7 +15,8 @@ void dfs_impl(
     const typename GraphType::vertex_type& root_vertex,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, void, types::id_type>& visit,
-    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -61,7 +62,8 @@ void rdfs_impl(
     const types::id_type source_id,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, void, types::id_type>& visit,
-    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
