@@ -1,6 +1,7 @@
 #pragma once
 
 #include "detail/bfs_impl.hpp"
+// #include "detail/common.hpp"
 #include "gl/types/properties.hpp"
 
 #include <deque>
@@ -23,28 +24,8 @@ struct paths_descriptor {
 
 namespace detail {
 
-using default_vertex_distance_type = std::int64_t;
-
-template <type_traits::c_graph GraphType>
-using graph_vertex_distance_type = std::conditional_t<
-    type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>,
-    typename GraphType::edge_properties_type::weight_type,
-    default_vertex_distance_type>;
-
 template <type_traits::c_graph GraphType>
 using paths_descriptor_type = paths_descriptor<graph_vertex_distance_type<GraphType>>;
-
-template <type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline auto dijkstra_get_edge_weight() {
-    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>) {
-        return [](const typename GraphType::edge_type& edge) { return edge.properties.weight; };
-    }
-    else {
-        return [](const typename GraphType::edge_type& edge) {
-            return default_vertex_distance_type{1ll};
-        };
-    }
-}
 
 } // namespace detail
 
@@ -74,7 +55,6 @@ template <
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
-    const auto get_edge_weight = detail::dijkstra_get_edge_weight<GraphType>();
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
     detail::pq_bfs_impl(
@@ -85,13 +65,13 @@ template <
         detail::init_range(source_id),
         detail::constant_unary_predicate<true>(), // visit pred
         detail::constant_binary_predicate<true>(), // visit callback
-        [&paths, &get_edge_weight, &negative_edge](
+        [&paths, &negative_edge](
             const vertex_type& vertex, const edge_type& in_edge
         ) -> std::optional<bool> { // enqueue pred
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
-            const auto edge_weight = get_edge_weight(in_edge);
+            const auto edge_weight = detail::get_edge_weight<GraphType>(in_edge);
             if (edge_weight < static_cast<distance_type>(0ll)) {
                 negative_edge = std::cref(in_edge);
                 return std::nullopt;
