@@ -19,6 +19,24 @@ using vertex_callback = std::function<ReturnType(const typename GraphType::verte
 template <type_traits::c_graph GraphType, typename ReturnType, typename... Args>
 using edge_callback = std::function<ReturnType(const typename GraphType::edge_type&, Args...)>;
 
+struct vertex_info {
+    vertex_info(types::id_type id) : id(id), source_id(id) {}
+
+    vertex_info(types::id_type id, types::id_type source_id) : id(id), source_id(source_id) {}
+
+    // if id == source_id then vertex_id is the id of the starting vertex
+    types::id_type id;
+    types::id_type source_id;
+};
+
+template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
+struct edge_info {
+    using edge_type = EdgeType;
+
+    types::const_ref_wrap<edge_type> edge;
+    types::id_type source_id;
+};
+
 } // namespace types
 
 namespace type_traits {

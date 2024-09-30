@@ -25,7 +25,7 @@ template <
         vertex_in_deg_list.push_back(graph.in_degree(id));
 
     // prepare the initial queue content (source vertices)
-    std::vector<detail::vertex_info> source_vertex_list;
+    std::vector<types::vertex_info> source_vertex_list;
     source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : vertex_ids)
         if (vertex_in_deg_list[id] == constants::default_size)

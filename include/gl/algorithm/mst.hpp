@@ -37,7 +37,7 @@ template <
 
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using edge_info_type = detail::edge_info<edge_type>;
+    using edge_info_type = types::edge_info<edge_type>;
     using distance_type = types::vertex_distance_type<GraphType>;
 
     struct edge_info_comparator {

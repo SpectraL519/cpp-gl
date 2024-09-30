@@ -59,7 +59,7 @@ template <
 
     detail::pq_bfs_impl(
         graph,
-        [&paths](const detail::vertex_info& lhs, const detail::vertex_info& rhs) {
+        [&paths](const types::vertex_info& lhs, const types::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
         detail::init_range(source_id),

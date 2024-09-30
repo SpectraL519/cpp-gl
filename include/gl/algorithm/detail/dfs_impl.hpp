@@ -20,7 +20,7 @@ void dfs_impl(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_stack_type = std::stack<vertex_info>;
+    using vertex_stack_type = std::stack<types::vertex_info>;
 
     if (not visit_vertex_pred(root_vertex))
         return;
@@ -29,22 +29,22 @@ void dfs_impl(
     vertex_stack.emplace(root_vertex.id());
 
     while (not vertex_stack.empty()) {
-        const vertex_info vi = vertex_stack.top();
+        const auto vinfo = vertex_stack.top();
         vertex_stack.pop();
 
-        const auto& vertex = graph.get_vertex(vi.id);
+        const auto& vertex = graph.get_vertex(vinfo.id);
         if (not visit_vertex_pred(vertex))
             continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
-        visit(vertex, vi.source_id);
+        visit(vertex, vinfo.source_id);
 
-        for (const auto& edge : graph.adjacent_edges(vi.id)) {
+        for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
             if (enque_vertex_pred(incident_vertex, edge))
-                vertex_stack.emplace(incident_vertex.id(), vi.id);
+                vertex_stack.emplace(incident_vertex.id(), vinfo.id);
         }
 
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
