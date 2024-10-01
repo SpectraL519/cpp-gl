@@ -59,7 +59,7 @@ public:
 
     inline void add_vertices(const types::size_type n) {
         this->_list.reserve(this->n_vertices() + n);
-        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
             this->_list.push_back(edge_list_type{});
     }
 

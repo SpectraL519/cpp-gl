@@ -76,7 +76,7 @@ public:
             std::generate_n(std::back_inserter(row), n, _make_null_edge);
         }
 
-        for (types::size_type _ = constants::begin_idx; _ < n; _++) {
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_) {
             auto& new_row = this->_matrix.emplace_back();
             new_row.reserve(new_n_vertices);
             std::generate_n(std::back_inserter(new_row), new_n_vertices, _make_null_edge);

@@ -75,7 +75,7 @@ struct directed_adjacency_matrix {
 
         auto& matrix_element = self._matrix[edge->first_id()][edge->second_id()];
         matrix_element = std::move(edge);
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
 
         return *matrix_element;
     }
@@ -96,7 +96,7 @@ struct directed_adjacency_matrix {
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
         detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 
@@ -129,7 +129,7 @@ struct undirected_adjacency_matrix {
         auto& matrix_element = self._matrix.at(first_id).at(second_id);
         matrix_element = edge;
 
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *matrix_element;
     }
 
@@ -163,7 +163,7 @@ struct undirected_adjacency_matrix {
             // it will also be present in the second matrix cell
             self._matrix[second_id][first_id] = nullptr;
         }
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 

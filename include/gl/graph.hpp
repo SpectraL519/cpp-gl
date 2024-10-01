@@ -47,7 +47,7 @@ public:
 
     graph(const types::size_type n_vertices) : _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
-        for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; vertex_id++)
+        for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; ++vertex_id)
             this->_vertices.push_back(detail::make_vertex<vertex_type>(vertex_id));
     }
 
@@ -116,7 +116,7 @@ public:
         this->_impl.add_vertices(n);
         this->_vertices.reserve(this->n_vertices() + n);
 
-        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
             this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
     }
 
@@ -483,7 +483,7 @@ private:
         std::for_each(
             std::next(std::begin(this->_vertices), vertex_id),
             this->_vertices.end(),
-            [](auto& v) { v->_id--; }
+            [](auto& v) { --v->_id; }
         );
     }
 
@@ -599,7 +599,7 @@ private:
             else {
                 // read vertex properties and use them to initialze the vertices
                 std::vector<vertex_properties_type> vertex_properties(n_vertices);
-                for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
+                for (types::size_type i = constants::begin_idx; i < n_vertices; ++i)
                     is >> vertex_properties[i];
                 this->add_vertices_with(vertex_properties);
             }
@@ -621,7 +621,7 @@ private:
                 types::id_type first_id, second_id;
                 edge_properties_type properties;
 
-                for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+                for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
                     is >> first_id >> second_id >> properties;
                     this->add_edge(first_id, second_id, properties);
                 }
@@ -631,7 +631,7 @@ private:
             // read the edges
             types::id_type first_id, second_id;
 
-            for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+            for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
                 is >> first_id >> second_id;
                 this->add_edge(first_id, second_id);
             }

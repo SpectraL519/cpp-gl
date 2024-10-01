@@ -69,7 +69,7 @@ struct directed_adjacency_list {
         types::size_type in_deg = constants::default_size;
         const auto vertex_id = vertex.id();
 
-        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+        for (types::id_type i = constants::initial_id; i < self._list.size(); ++i) {
             const auto& adj_edges = self._list[i];
             if (adj_edges.empty())
                 continue;
@@ -86,7 +86,7 @@ struct directed_adjacency_list {
         const auto vertex_id = vertex.id();
 
         // remove all edges incident to the vertex
-        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+        for (types::id_type i = constants::initial_id; i < self._list.size(); ++i) {
             auto& adj_edges = self._list[i];
             if (i == vertex_id or adj_edges.empty())
                 continue;
@@ -106,7 +106,7 @@ struct directed_adjacency_list {
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         auto& adjacent_edges_first = self._list[edge->first_id()];
         adjacent_edges_first.push_back(std::move(edge));
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *adjacent_edges_first.back();
     }
 
@@ -139,7 +139,7 @@ struct directed_adjacency_list {
     static void remove_edge(impl_type& self, const edge_type& edge) {
         auto& adj_edges = self._list.at(edge.first_id());
         adj_edges.erase(detail::strict_find<impl_type, address_projection>(adj_edges, &edge));
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 
@@ -203,7 +203,7 @@ struct undirected_adjacency_list {
             self._list[edge->second_id()].push_back(edge);
         adjacent_edges_first.push_back(std::move(edge));
 
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *adjacent_edges_first.back();
     }
 
@@ -250,7 +250,7 @@ struct undirected_adjacency_list {
             adj_edges_second.erase(std::ranges::find(adj_edges_second, &edge, address_projection{})
             );
         }
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 
