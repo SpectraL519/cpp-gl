@@ -44,7 +44,7 @@ template <
         [[nodiscard]] gl_attr_force_inline bool operator()(
             const edge_info_type& lhs, const edge_info_type& rhs
         ) const {
-            return get_weight(lhs.edge.get()) > get_weight(rhs.edge.get());
+            return get_weight<GraphType>(lhs.edge.get()) > get_weight<GraphType>(rhs.edge.get());
         }
     };
 
@@ -53,13 +53,13 @@ template <
 
     // prepare the necessary utility
     const auto n_vertices = graph.n_vertices();
-    mst_descriptor mst(n_vertices);
+    mst_descriptor<GraphType> mst(n_vertices);
     std::vector<bool> visited(n_vertices, false);
     queue_type edge_queue;
 
     // TODO: replace with edge->incident_vertex_id(id) after it's been added to the edge_descriptor class
     const auto get_other_vertex_id = [](const edge_type& edge, const types::id_type source_id) {
-        return edge->first_id() == source_id ? edge->second_id() : edge->first_id();
+        return edge.first_id() == source_id ? edge.second_id() : edge.first_id();
     };
 
     // insert the edges adjacent to the root vertex to the queue
@@ -72,16 +72,25 @@ template <
     types::size_type n_vertices_in_mst = 1ull;
 
     // find the mst
+    constexpr distance_type min_edge_weight_threshold = 0ull;
     while (n_vertices_in_mst < n_vertices) {
         const auto min_edge_info = edge_queue.top();
         edge_queue.pop();
 
         const auto& min_edge = min_edge_info.edge.get();
-        const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
+        const auto min_weight = get_weight<GraphType>(min_edge);
+        if (min_weight < min_edge_weight_threshold)
+            throw std::invalid_argument(std::format(
+                "[alg::prim_mst] Found an edge with a negative weight: [{}, {} | w={}]",
+                min_edge.first_id(),
+                min_edge.second_id(),
+                min_weight
+            ));
 
+        const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
         if (not visited[dest_vertex_id]) {
             mst.edges.push_back(min_edge);
-            mst.weight += get_weight(min_edge);
+            mst.weight += min_weight;
 
             visited[dest_vertex_id] = true;
             ++n_vertices_in_mst;

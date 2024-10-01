@@ -18,6 +18,10 @@ struct paths_descriptor {
         distances.shrink_to_fit();
     }
 
+    [[nodiscard]] gl_attr_force_inline bool is_reachable(const types::id_type vertex_id) const {
+        return this->predecessors.at(vertex_id).has_value();
+    }
+
     std::vector<std::optional<types::id_type>> predecessors;
     std::vector<distance_type> distances;
 };
@@ -55,6 +59,7 @@ template <
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
+    constexpr distance_type min_edge_weight_threshold = 0ull;
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
     detail::pq_bfs_impl(
@@ -71,7 +76,7 @@ template <
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
-            if (edge_weight < static_cast<distance_type>(0ll)) {
+            if (edge_weight < min_edge_weight_threshold) {
                 negative_edge = std::cref(in_edge);
                 return std::nullopt;
             }
@@ -94,7 +99,7 @@ template <
             "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
             edge.first_id(),
             edge.second_id(),
-            edge.properties.weight
+            get_weight<GraphType>(edge)
         ));
     }
 

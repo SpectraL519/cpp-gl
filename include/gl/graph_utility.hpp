@@ -32,10 +32,18 @@ namespace types {
 using default_vertex_distance_type = std::int64_t;
 
 template <type_traits::c_graph GraphType>
-using vertex_distance_type = std::conditional_t<
-    type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>,
-    typename GraphType::edge_properties_type::weight_type,
-    default_vertex_distance_type>;
+struct vertex_distance {
+    using type = default_vertex_distance_type;
+};
+
+template <type_traits::c_graph GraphType>
+requires(type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+struct vertex_distance<GraphType> {
+    using type = typename GraphType::edge_properties_type::weight_type;
+};
+
+template <type_traits::c_graph GraphType>
+using vertex_distance_type = typename vertex_distance<GraphType>::type;
 
 } // namespace types
 
@@ -43,11 +51,10 @@ template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline types::vertex_distance_type<GraphType> get_weight(
     const typename GraphType::edge_type& edge
 ) {
-    // TODO: add tests
     if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
         return edge.properties.weight;
     else
-        return types::default_vertex_distance_type{1ll};
+        return static_cast<types::default_vertex_distance_type>(1ll);
 }
 
 } // namespace gl
