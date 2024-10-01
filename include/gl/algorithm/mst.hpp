@@ -6,7 +6,6 @@
 
 #include "constants.hpp"
 #include "detail/common.hpp"
-#include "gl/types/properties.hpp"
 
 #include <queue>
 

@@ -8,8 +8,6 @@
 #include "types/properties.hpp"
 #include "types/type_traits.hpp"
 
-#include <memory>
-
 namespace gl {
 
 struct directed_t;

@@ -11,8 +11,6 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
 
-#include <vector>
-
 namespace gl::impl {
 
 template <type_traits::c_matrix_graph_traits GraphTraits>

@@ -4,9 +4,7 @@
 
 #pragma once
 
-#include "attributes/force_inline.hpp"
 #include "decl/graph_traits.hpp"
-#include "edge_tags.hpp"
 #include "graph_io.hpp"
 #include "types/properties.hpp"
 #include "types/type_traits.hpp"

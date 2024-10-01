@@ -4,17 +4,9 @@
 
 #pragma once
 
-#include "attributes/force_inline.hpp"
 #include "edge_tags.hpp"
 #include "io/format.hpp"
-#include "types/type_traits.hpp"
-#include "types/types.hpp"
 #include "vertex_descriptor.hpp"
-
-#include <format>
-#include <memory>
-#include <type_traits>
-#include <vector>
 
 namespace gl {
 

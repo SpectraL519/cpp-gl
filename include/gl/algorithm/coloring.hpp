@@ -5,7 +5,6 @@
 #pragma once
 
 #include "detail/bfs_impl.hpp"
-#include "gl/types/properties.hpp"
 
 namespace gl::algorithm {
 

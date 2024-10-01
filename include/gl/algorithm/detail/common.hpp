@@ -5,7 +5,6 @@
 #pragma once
 
 #include "gl/algorithm/types.hpp"
-#include "gl/graph.hpp"
 
 namespace gl::algorithm::detail {
 

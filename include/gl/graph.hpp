@@ -5,15 +5,11 @@
 #pragma once
 
 #include "constants.hpp"
-#include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
-#include "io.hpp"
+#include "io/stream_options_manipulator.hpp"
 #include "types/iterator_range.hpp"
-#include "types/type_traits.hpp"
-#include "types/types.hpp"
 
-#include <algorithm>
 #include <set>
 
 namespace gl {

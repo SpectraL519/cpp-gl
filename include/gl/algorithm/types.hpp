@@ -7,7 +7,6 @@
 #include "gl/graph_utility.hpp"
 
 #include <functional>
-#include <vector>
 
 namespace gl {
 

@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/types/types.hpp"
 

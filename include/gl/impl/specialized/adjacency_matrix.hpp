@@ -7,6 +7,7 @@
 #include "gl/decl/impl_tags.hpp"
 
 #include <algorithm>
+#include <vector>
 
 namespace gl::impl {
 

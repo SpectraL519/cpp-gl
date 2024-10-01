@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <format>
 #include <unordered_set>
+#include <vector>
 
 namespace gl::impl {
 

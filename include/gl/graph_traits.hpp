@@ -7,10 +7,6 @@
 #include "decl/graph_traits.hpp"
 #include "decl/impl_tags.hpp"
 #include "edge_descriptor.hpp"
-#include "types/traits/cache_mode.hpp"
-#include "vertex_descriptor.hpp"
-
-#include <memory>
 
 namespace gl {
 

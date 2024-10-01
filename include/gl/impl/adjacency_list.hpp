@@ -4,14 +4,11 @@
 
 #pragma once
 
-#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
-
-#include <vector>
 
 namespace gl::impl {
 

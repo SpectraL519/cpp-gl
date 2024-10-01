@@ -6,7 +6,6 @@
 
 #include "detail/bfs_impl.hpp"
 #include "gl/graph_utility.hpp"
-#include "gl/types/properties.hpp"
 
 #include <deque>
 
