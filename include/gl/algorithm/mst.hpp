@@ -6,6 +6,7 @@
 #include "gl/types/properties.hpp"
 
 #include <queue>
+#include <iostream>
 
 namespace gl::algorithm {
 
@@ -24,7 +25,7 @@ struct mst_descriptor {
 };
 
 template <
-    type_traits::c_directed_graph GraphType,
+    type_traits::c_undirected_graph GraphType,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 [[nodiscard]] mst_descriptor<GraphType> prim_mst(
@@ -64,8 +65,14 @@ template <
 
     // insert the edges adjacent to the root vertex to the queue
     const types::id_type root_id = root_id_opt.value_or(0ull);
-    for (const auto& edge : graph.adjacent_edges(root_id))
+    // std::cout << "root: " << root_id << std::endl;
+
+    // std::cout << "initial queue content:";
+    for (const auto& edge : graph.adjacent_edges(root_id)) {
+        // std::cout << std::format(" [{}, {} | s={}]", edge.first_id(), edge.second_id(), root_id);
         edge_queue.emplace(edge, root_id);
+    }
+    // std::cout << std::endl;
 
     // mark the root vertex as visited
     visited[root_id] = true;
@@ -74,11 +81,15 @@ template <
     // find the mst
     constexpr distance_type min_edge_weight_threshold = 0ull;
     while (n_vertices_in_mst < n_vertices) {
+        // std::cout << std::format("loop[n_vertices_in_mst = {}]", n_vertices_in_mst) << std::endl;
+
         const auto min_edge_info = edge_queue.top();
         edge_queue.pop();
 
         const auto& min_edge = min_edge_info.edge.get();
         const auto min_weight = get_weight<GraphType>(min_edge);
+        // std::cout << std::format("\tmin_edge = [{}, {}, w={}]", min_edge.first_id(), min_edge.second_id(), min_weight) << std::endl;
+
         if (min_weight < min_edge_weight_threshold)
             throw std::invalid_argument(std::format(
                 "[alg::prim_mst] Found an edge with a negative weight: [{}, {} | w={}]",
@@ -88,17 +99,27 @@ template <
             ));
 
         const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
+        // std::cout << "\tdest_vertex_id = " << dest_vertex_id << std::endl;
+
         if (not visited[dest_vertex_id]) {
-            mst.edges.push_back(min_edge);
+            // std::cout << "\tadding min_edge to mst" << std::endl;
+
+            mst.edges.emplace_back(min_edge);
             mst.weight += min_weight;
+
+            // std::cout << "\tnew mst.weight = " << mst.weight << std::endl;
 
             visited[dest_vertex_id] = true;
             ++n_vertices_in_mst;
         }
 
-        for (const auto& edge : graph.adjacent_edges(dest_vertex_id))
-            if (not visited[edge.second_id()])
-                edge_queue.emplace(edge);
+        for (const auto& edge : graph.adjacent_edges(dest_vertex_id)) {
+            const auto new_dest_vertex_id = get_other_vertex_id(edge, dest_vertex_id);
+            if (not visited[new_dest_vertex_id]) {
+                // std::cout << std::format("\tpushing edge [{}, {}, d={}] to queue", edge.first_id(), edge.second_id(), new_dest_vertex_id) << std::endl;
+                edge_queue.emplace(edge, dest_vertex_id);
+            }
+        }
     }
 
     return mst;

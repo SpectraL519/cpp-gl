@@ -37,22 +37,77 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::invalid_argument
         );
     }
+
+    SUBCASE("should return a proper mst descriptor for a valid graph") {
+        using edge_type = typename sut_type::edge_type;
+        using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
+
+        sut_type sut;
+        lib_t::id_type source_id;
+        std::vector<vertex_id_pair> expected_edges;
+        distance_type expected_weight;
+
+        SUBCASE("complete binary tree") {
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::three);
+            source_id = constants::first_element_idx;
+
+            const weight_type edge_weight = constants::three;
+            for (const auto vertex_id : sut.vertex_ids()) {
+                for (const auto& edge : sut.adjacent_edges(vertex_id)) {
+                    edge.properties.weight = edge_weight;
+                    expected_edges.emplace_back(edge.first_id(), edge.second_id());
+                }
+            }
+
+            expected_weight = edge_weight * (sut.n_vertices() - constants::one);
+        }
+
+        SUBCASE("custom graph") {
+            const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
+
+            sut = lib::io::load<sut_type>(gsf_file_path);
+            source_id = constants::first_element_idx;
+
+            const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
+            const auto n_vertex_ids = (sut.n_vertices() - constants::one) * constants::two;
+            const auto vertex_id_list = alg_common::load_list<lib_t::id_type>(n_vertex_ids, edges_file_path);
+            for (lib_t::size_type i = 0; i < n_vertex_ids; i += constants::two)
+                expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
+
+            const fs::path weight_file_path = alg_common::data_path / "mst_weight.txt";
+            expected_weight = alg_common::load_list<weight_type>(constants::one, weight_file_path).front();
+        }
+
+        CAPTURE(sut);
+        CAPTURE(source_id);
+        CAPTURE(expected_edges);
+        CAPTURE(expected_weight);
+
+        const auto mst = lib::algorithm::prim_mst(sut, source_id);
+
+        REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
+        REQUIRE_EQ(mst.weight, expected_weight);
+
+        CHECK(std::ranges::all_of(
+            mst.edges,
+            [&expected_edges](const auto& edge_ref) {
+                const auto& edge = edge_ref.get();
+                const auto [first_id, second_id] = edge.incident_vertex_ids();
+                return std::find_if(expected_edges.begin(), expected_edges.end(), [&](const vertex_id_pair& vids) {
+                    return (first_id == vids.first && second_id == vids.second) or
+                        (first_id == vids.second && second_id == vids.first);
+                }) != expected_edges.end();
+            }
+        ));
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     wieghted_edge_traits_type_template,
     lib::list_graph_traits<
-        lib::directed_t,
+        lib::undirected_t,
         lib_t::empty_properties,
-        lib_t::weight_property<>> // directed adjacency list graph
-    // lib::list_graph_traits<
-    //     lib::undirected_t,
-    //     lib_t::empty_properties,
-    //     lib_t::weight_property<>>, // undirected adjacency list graph
-    // lib::matrix_graph_traits<
-    //     lib::directed_t,
-    //     lib_t::empty_properties,
-    //     lib_t::weight_property<>>, // directed adjacency matrix graph
+        lib_t::weight_property<>> // undirected adjacency list graph
     // lib::matrix_graph_traits<
     //     lib::undirected_t,
     //     lib_t::empty_properties,
