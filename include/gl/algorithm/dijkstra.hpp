@@ -1,6 +1,7 @@
 #pragma once
 
 #include "detail/bfs_impl.hpp"
+#include "gl/graph_utility.hpp"
 #include "gl/types/properties.hpp"
 
 #include <deque>
@@ -17,34 +18,18 @@ struct paths_descriptor {
         distances.shrink_to_fit();
     }
 
+    [[nodiscard]] gl_attr_force_inline bool is_reachable(const types::id_type vertex_id) const {
+        return this->predecessors.at(vertex_id).has_value();
+    }
+
     std::vector<std::optional<types::id_type>> predecessors;
     std::vector<distance_type> distances;
 };
 
 namespace detail {
 
-using default_vertex_distance_type = std::int64_t;
-
 template <type_traits::c_graph GraphType>
-using graph_vertex_distance_type = std::conditional_t<
-    type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>,
-    typename GraphType::edge_properties_type::weight_type,
-    default_vertex_distance_type>;
-
-template <type_traits::c_graph GraphType>
-using paths_descriptor_type = paths_descriptor<graph_vertex_distance_type<GraphType>>;
-
-template <type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline auto dijkstra_get_edge_weight() {
-    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>) {
-        return [](const typename GraphType::edge_type& edge) { return edge.properties.weight; };
-    }
-    else {
-        return [](const typename GraphType::edge_type& edge) {
-            return default_vertex_distance_type{1ll};
-        };
-    }
-}
+using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
 
 } // namespace detail
 
@@ -57,8 +42,8 @@ template <type_traits::c_graph GraphType>
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 [[nodiscard]] detail::paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -67,32 +52,31 @@ template <
 ) {
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using distance_type = typename detail::paths_descriptor_type<GraphType>::distance_type;
+    using distance_type = types::vertex_distance_type<GraphType>;
 
     auto paths = make_paths_descriptor<GraphType>(graph);
 
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
-    const auto get_edge_weight = detail::dijkstra_get_edge_weight<GraphType>();
+    constexpr distance_type min_edge_weight_threshold = 0ull;
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
     detail::pq_bfs_impl(
         graph,
-        [&paths](const detail::vertex_info& lhs, const detail::vertex_info& rhs) {
+        [&paths](const types::vertex_info& lhs, const types::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
         detail::init_range(source_id),
         detail::constant_unary_predicate<true>(), // visit pred
         detail::constant_binary_predicate<true>(), // visit callback
-        [&paths, &get_edge_weight, &negative_edge](
-            const vertex_type& vertex, const edge_type& in_edge
-        ) -> std::optional<bool> { // enqueue pred
+        [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
+            -> std::optional<bool> { // enqueue pred
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
-            const auto edge_weight = get_edge_weight(in_edge);
-            if (edge_weight < static_cast<distance_type>(0ll)) {
+            const auto edge_weight = get_weight<GraphType>(in_edge);
+            if (edge_weight < min_edge_weight_threshold) {
                 negative_edge = std::cref(in_edge);
                 return std::nullopt;
             }
@@ -115,7 +99,7 @@ template <
             "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
             edge.first_id(),
             edge.second_id(),
-            edge.properties.weight
+            get_weight<GraphType>(edge)
         ));
     }
 
