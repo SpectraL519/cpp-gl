@@ -5,8 +5,8 @@
 #include "detail/common.hpp"
 #include "gl/types/properties.hpp"
 
-#include <queue>
 #include <iostream>
+#include <queue>
 
 namespace gl::algorithm {
 
