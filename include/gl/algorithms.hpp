@@ -4,4 +4,5 @@
 #include "algorithm/coloring.hpp"
 #include "algorithm/deapth_first_search.hpp"
 #include "algorithm/dijkstra.hpp"
+#include "algorithm/mst.hpp"
 #include "algorithm/topological_sort.hpp"

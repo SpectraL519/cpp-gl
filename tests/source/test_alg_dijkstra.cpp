@@ -109,8 +109,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto paths = lib::algorithm::dijkstra_shortest_paths(sut, source_id);
 
-        REQUIRE(std::ranges::all_of(paths.predecessors, [](const auto& id_opt) {
-            return id_opt.has_value();
+        REQUIRE(std::ranges::all_of(sut.vertex_ids(), [&paths](const auto vertex_id) {
+            return paths.is_reachable(vertex_id);
         }));
 
         CHECK(std::ranges::equal(
@@ -142,6 +142,84 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         lib::undirected_t,
         lib_t::empty_properties,
         lib_t::weight_property<>> // undirected adjacency matrix graph
+);
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "dijkstra shortest path finding tests for graphs with unweighted edges",
+    TraitsType,
+    unwieghted_edge_traits_type_template
+) {
+    using sut_type = lib::graph<TraitsType>;
+    using distance_type = lib_t::default_vertex_distance_type;
+
+    static_assert(not lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
+
+    SUBCASE("should return a proper paths descriptor for a valid graph") {
+        sut_type sut;
+        lib_t::id_type source_id;
+        std::vector<lib_t::id_type> expected_predecessors;
+        std::vector<distance_type> expected_distances;
+
+        const auto source_distance = static_cast<distance_type>(constants::zero);
+
+        SUBCASE("clique") {
+            sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
+            source_id = constants::first_element_idx;
+
+            expected_predecessors =
+                std::vector<lib_t::id_type>(constants::n_elements_alg, source_id);
+
+            expected_distances.push_back(source_distance);
+            for (lib_t::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++)
+                expected_distances.push_back(constants::one);
+        }
+
+        SUBCASE("complete binary tree") {
+            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+            source_id = constants::first_element_idx;
+
+            for (const auto id : sut.vertex_ids()) {
+                const auto parent_id =
+                    id == constants::zero
+                        ? constants::zero
+                        : (id - constants::one) / constants::two;
+                expected_predecessors.push_back(parent_id);
+
+                const auto vertex_depth =
+                    constants::zero ? constants::zero
+                                    : static_cast<lib_t::size_type>(std::log2(id + constants::one));
+                expected_distances.push_back(vertex_depth);
+            }
+        }
+
+        CAPTURE(sut);
+        CAPTURE(source_id);
+        CAPTURE(expected_predecessors);
+        CAPTURE(expected_distances);
+
+        const auto paths = lib::algorithm::dijkstra_shortest_paths(sut, source_id);
+
+        REQUIRE(std::ranges::all_of(sut.vertex_ids(), [&paths](const auto vertex_id) {
+            return paths.is_reachable(vertex_id);
+        }));
+
+        CHECK(std::ranges::equal(
+            paths.predecessors,
+            expected_predecessors,
+            std::ranges::equal_to{},
+            [](const auto& id_opt) { return id_opt.value(); }
+        ));
+
+        CHECK(std::ranges::equal(paths.distances, expected_distances));
+    }
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    unwieghted_edge_traits_type_template,
+    lib::list_graph_traits<lib::directed_t>, // directed adjacency list graph
+    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
+    lib::matrix_graph_traits<lib::directed_t>, // directed adjacency matrix graph
+    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
 );
 
 TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {

@@ -6,8 +6,7 @@
 
 namespace gl::types {
 
-using size_type = std::uint64_t;
-using id_type = size_type;
+// --- general types ---
 
 template <typename T>
 using homogeneous_pair = std::pair<T, T>;
@@ -20,5 +19,10 @@ using optional_cref = std::optional<std::reference_wrapper<const std::remove_cvr
 
 template <typename T>
 using const_ref_wrap = std::reference_wrapper<const T>;
+
+// --- graph specific types ---
+
+using size_type = std::uint64_t;
+using id_type = size_type;
 
 } // namespace gl::types

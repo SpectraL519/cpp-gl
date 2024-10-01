@@ -8,18 +8,19 @@ namespace gl::algorithm::detail {
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 void dfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
-    const vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const vertex_callback<GraphType, void, types::id_type>& visit,
-    const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
+    const types::vertex_callback<GraphType, void, types::id_type>& visit,
+    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_stack_type = std::stack<vertex_info>;
+    using vertex_stack_type = std::stack<types::vertex_info>;
 
     if (not visit_vertex_pred(root_vertex))
         return;
@@ -28,47 +29,48 @@ void dfs_impl(
     vertex_stack.emplace(root_vertex.id());
 
     while (not vertex_stack.empty()) {
-        const vertex_info vi = vertex_stack.top();
+        const auto vinfo = vertex_stack.top();
         vertex_stack.pop();
 
-        const auto& vertex = graph.get_vertex(vi.id);
+        const auto& vertex = graph.get_vertex(vinfo.id);
         if (not visit_vertex_pred(vertex))
             continue;
 
-        if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
-        visit(vertex, vi.source_id);
+        visit(vertex, vinfo.source_id);
 
-        for (const auto& edge : graph.adjacent_edges(vi.id)) {
+        for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
             if (enque_vertex_pred(incident_vertex, edge))
-                vertex_stack.emplace(incident_vertex.id(), vi.id);
+                vertex_stack.emplace(incident_vertex.id(), vinfo.id);
         }
 
-        if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
+        if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
             post_visit(vertex);
     }
 }
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 void rdfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,
     const types::id_type source_id,
-    const vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const vertex_callback<GraphType, void, types::id_type>& visit,
-    const vertex_callback<GraphType, bool, const typename GraphType::edge_type&>& enque_vertex_pred,
+    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
+    const types::vertex_callback<GraphType, void, types::id_type>& visit,
+    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
+        enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     if (not visit_vertex_pred(vertex))
         return;
 
-    if constexpr (not type_traits::is_empty_callback_v<PreVisitCallback>)
+    if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
         pre_visit(vertex);
 
     visit(vertex, source_id);
@@ -89,7 +91,7 @@ void rdfs_impl(
             );
     }
 
-    if constexpr (not type_traits::is_empty_callback_v<PostVisitCallback>)
+    if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
         post_visit(vertex);
 }
 

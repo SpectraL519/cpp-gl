@@ -9,8 +9,8 @@ using bicoloring_type = std::vector<types::binary_color>;
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},

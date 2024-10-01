@@ -6,11 +6,11 @@
 namespace gl::algorithm {
 
 template <
-    type_traits::c_alg_return_graph SearchTreeType = no_return,
+    type_traits::c_alg_return_graph_type SearchTreeType = types::no_return,
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-type_traits::alg_return_type<SearchTreeType> depth_first_search(
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+detail::alg_return_graph_type<SearchTreeType> depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -48,16 +48,16 @@ type_traits::alg_return_type<SearchTreeType> depth_first_search(
             );
     }
 
-    if constexpr (not type_traits::is_alg_no_return_type_v<SearchTreeType>)
+    if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>)
         return search_tree;
 }
 
 template <
-    type_traits::c_alg_return_graph SearchTreeType = no_return,
+    type_traits::c_alg_return_graph_type SearchTreeType = types::no_return,
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = empty_callback>
-type_traits::alg_return_type<SearchTreeType> recursive_depth_first_search(
+    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
+    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+detail::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -98,7 +98,7 @@ type_traits::alg_return_type<SearchTreeType> recursive_depth_first_search(
             );
     }
 
-    if constexpr (not type_traits::is_alg_no_return_type_v<SearchTreeType>)
+    if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>)
         return search_tree;
 }
 
