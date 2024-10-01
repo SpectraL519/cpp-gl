@@ -13,6 +13,7 @@
 
 namespace gl::util {
 
+// exponentation function for u64 integral type
 [[nodiscard]] inline constexpr types::size_type upow(types::size_type base, types::size_type exp) {
     types::size_type result = constants::one;
     while (exp) {
@@ -25,6 +26,7 @@ namespace gl::util {
     return result;
 }
 
+// sum of exponents: base ^ i_begin + base ^ (i_begin + 1) + ... + base ^ (i_end)
 [[nodiscard]] inline types::size_type upow_sum(
     const types::size_type base, types::size_type i_begin, types::size_type i_end
 ) {

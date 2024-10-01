@@ -10,6 +10,7 @@
 
 namespace gl::util {
 
+// TODO [C++23]: replace with std::to_underlying
 template <typename Enum>
 requires(std::is_enum_v<Enum>)
 [[nodiscard]] gl_attr_force_inline constexpr std::underlying_type_t<Enum> to_underlying(Enum e) {

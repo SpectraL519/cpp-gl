@@ -61,15 +61,25 @@ using undirected_graph_traits =
 
 namespace type_traits {
 
-template <typename T>
+template <typename TraitsType>
 concept c_list_graph_traits =
-    c_instantiation_of<T, graph_traits>
-    and std::same_as<typename T::implementation_tag, impl::list_t>;
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::implementation_tag, impl::list_t>;
 
-template <typename T>
+template <typename TraitsType>
 concept c_matrix_graph_traits =
-    c_instantiation_of<T, graph_traits>
-    and std::same_as<typename T::implementation_tag, impl::matrix_t>;
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::implementation_tag, impl::matrix_t>;
+
+template <typename TraitsType>
+concept c_directed_graph_traits =
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::edge_directional_tag, directed_t>;
+
+template <typename TraitsType>
+concept c_undirected_graph_traits =
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::edge_directional_tag, undirected_t>;
 
 } // namespace type_traits
 

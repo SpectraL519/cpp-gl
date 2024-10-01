@@ -72,6 +72,8 @@ public:
 
     [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
     ) const {
+        // TODO: move implementation to specialized_impl
+        // for undirected graphs it should be calculated as `<normal-out-edges> + 2 * <loops>`
         return this->_list[vertex.id()].size();
     }
 
@@ -118,6 +120,7 @@ public:
             ))
             return false;
 
+        // find the edge by address
         const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find(
                    adjacent_edges, &edge, typename specialized_impl::address_projection{}

@@ -8,7 +8,6 @@
 #include "detail/common.hpp"
 #include "gl/types/properties.hpp"
 
-#include <iostream>
 #include <queue>
 
 namespace gl::algorithm {
@@ -95,6 +94,7 @@ template <
 
         const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
         if (not visited[dest_vertex_id]) {
+            // add the minimum weight edge to the mst
             mst.edges.emplace_back(min_edge);
             mst.weight += min_weight;
 
@@ -102,6 +102,7 @@ template <
             ++n_vertices_in_mst;
         }
 
+        // enqueue all edges adjacent to the destination vertex if they lead to unvisited verties
         for (const auto& edge : graph.adjacent_edges(dest_vertex_id))
             if (not visited[get_other_vertex_id(edge, dest_vertex_id)])
                 edge_queue.emplace(edge, dest_vertex_id);

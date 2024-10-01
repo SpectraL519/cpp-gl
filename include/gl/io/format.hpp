@@ -7,13 +7,10 @@
 #include "gl/attributes/force_inline.hpp"
 #include "gl/types/traits/concepts.hpp"
 
-#include <memory>
-#include <type_traits>
-
 namespace gl::io {
 
 /*
-Custom format functions
+Custom format functions (casts to types compatible with std::formatter)
 Not std::formatter overloads to avoid collision with
     user defined std::formatter overloads
 */

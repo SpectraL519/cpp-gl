@@ -25,6 +25,11 @@ namespace gl {
 
 namespace types {
 
+/*
+A begin, end iterator holder class used as a view to the underlying collection.
+Designed to be compatible with the range-based loops and std algorithms.
+*/
+
 template <
     std::forward_iterator Iterator,
     type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>

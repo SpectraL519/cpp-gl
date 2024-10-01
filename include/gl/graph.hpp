@@ -160,7 +160,7 @@ public:
 
     template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
     void remove_vertices_from(const VertexRefRange& vertex_ref_range) {
-        // can be replaced with std::grater for C++26
+        // TODO [C++26]: replace with std::greater
         struct vertex_ref_greater_comparator {
             [[nodiscard]] bool operator()(
                 const types::const_ref_wrap<vertex_type>& lhs,

@@ -8,7 +8,7 @@
 
 namespace gl {
 
-// --- general utility ---
+// --- general graph utility ---
 
 namespace type_traits {
 

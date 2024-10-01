@@ -21,6 +21,7 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 [[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
     typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
+    // get the edge and validate the address
     auto& matrix_element = matrix.at(edge->first_id()).at(edge->second_id());
     if (edge != matrix_element.get())
         throw std::invalid_argument(std::format(
@@ -157,14 +158,13 @@ struct undirected_adjacency_matrix {
             const auto second_id = edge.second_id();
 
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
-            // if the edge was found in the first matrix cell, it will be in the second matrix cell
+            // if the edge was found in the first matrix cell,
+            // it will also be present in the second matrix cell
             self._matrix[second_id][first_id] = nullptr;
         }
         self._n_unique_edges--;
     }
 };
-
-// common utility
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 struct matrix_impl_traits {

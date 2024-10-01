@@ -91,6 +91,7 @@ public:
         return this->second().id();
     }
 
+    // returns the `other` vertex or throws error if the given vertex is not incident with the edge
     [[nodiscard]] const vertex_type& incident_vertex(const vertex_type& vertex) const {
         if (&vertex == &this->_vertices.first)
             return this->_vertices.second;
@@ -107,10 +108,12 @@ public:
         return &vertex == &this->_vertices.first or &vertex == &this->_vertices.second;
     }
 
+    // true if the given vertex is the `source` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }
 
+    // true if the given vertex is the `destination` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
     }

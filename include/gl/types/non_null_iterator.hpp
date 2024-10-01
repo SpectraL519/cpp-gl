@@ -13,6 +13,12 @@ namespace gl {
 
 namespace types {
 
+/*
+A forward iterator wrapper for pointer value type iterators
+The increment/decrement operators move the underlying iterator
+    to the next/previous non-null element within the specified bounds
+*/
+
 template <std::forward_iterator Iterator>
 requires(type_traits::c_strong_ptr<typename Iterator::value_type>)
 class non_null_iterator {
@@ -34,6 +40,7 @@ public:
     }
 
     non_null_iterator(iterator_type begin, iterator_type current, iterator_type end)
+    requires(std::bidirectional_iterator<iterator_type>)
     : _begin(begin), _current(current), _end(end) {
         if (this->_current != this->_end and not *this->_current)
             this->_skip_null_elements_forward();

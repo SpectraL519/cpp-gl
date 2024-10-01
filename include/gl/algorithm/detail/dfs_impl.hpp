@@ -29,9 +29,11 @@ void dfs_impl(
     if (not visit_vertex_pred(root_vertex))
         return;
 
+    // prepare the vertex stack
     vertex_stack_type vertex_stack;
     vertex_stack.emplace(root_vertex.id());
 
+    // search the graph
     while (not vertex_stack.empty()) {
         const auto vinfo = vertex_stack.top();
         vertex_stack.pop();
@@ -79,6 +81,7 @@ void rdfs_impl(
 
     visit(vertex, source_id);
 
+    // recursively search vertices adjacent to the current vertex
     const auto vertex_id = vertex.id();
     for (const auto& edge : graph.adjacent_edges(vertex_id)) {
         const auto& incident_vertex = edge.incident_vertex(vertex);
