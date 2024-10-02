@@ -1,11 +1,12 @@
-#pragma once
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "constants.hpp"
 #include "detail/common.hpp"
-#include "gl/types/properties.hpp"
 
-#include <iostream>
 #include <queue>
 
 namespace gl::algorithm {
@@ -17,11 +18,11 @@ struct mst_descriptor {
     using weight_type = types::vertex_distance_type<graph_type>;
 
     mst_descriptor(const types::size_type n_vertices) {
-        edges.reserve(n_vertices - 1ull);
+        edges.reserve(n_vertices - constants::one);
     }
 
     std::vector<types::const_ref_wrap<edge_type>> edges;
-    weight_type weight = static_cast<weight_type>(0ll);
+    weight_type weight = static_cast<weight_type>(constants::zero);
 };
 
 template <
@@ -64,17 +65,16 @@ template <
     };
 
     // insert the edges adjacent to the root vertex to the queue
-    const types::id_type root_id = root_id_opt.value_or(0ull);
+    const types::id_type root_id = root_id_opt.value_or(constants::zero);
 
     for (const auto& edge : graph.adjacent_edges(root_id))
         edge_queue.emplace(edge, root_id);
 
     // mark the root vertex as visited
     visited[root_id] = true;
-    types::size_type n_vertices_in_mst = 1ull;
+    types::size_type n_vertices_in_mst = constants::one;
 
     // find the mst
-    constexpr distance_type min_edge_weight_threshold = 0ull;
     while (n_vertices_in_mst < n_vertices) {
         const auto min_edge_info = edge_queue.top();
         edge_queue.pop();
@@ -82,7 +82,7 @@ template <
         const auto& min_edge = min_edge_info.edge.get();
         const auto min_weight = get_weight<GraphType>(min_edge);
 
-        if (min_weight < min_edge_weight_threshold)
+        if (min_weight < constants::zero)
             throw std::invalid_argument(std::format(
                 "[alg::prim_mst] Found an edge with a negative weight: [{}, {} | w={}]",
                 min_edge.first_id(),
@@ -92,6 +92,7 @@ template <
 
         const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
         if (not visited[dest_vertex_id]) {
+            // add the minimum weight edge to the mst
             mst.edges.emplace_back(min_edge);
             mst.weight += min_weight;
 
@@ -99,6 +100,7 @@ template <
             ++n_vertices_in_mst;
         }
 
+        // enqueue all edges adjacent to the destination vertex if they lead to unvisited verties
         for (const auto& edge : graph.adjacent_edges(dest_vertex_id))
             if (not visited[get_other_vertex_id(edge, dest_vertex_id)])
                 edge_queue.emplace(edge, dest_vertex_id);

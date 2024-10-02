@@ -1,12 +1,12 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "decl/graph_traits.hpp"
 #include "decl/impl_tags.hpp"
 #include "edge_descriptor.hpp"
-#include "types/traits/cache_mode.hpp"
-#include "vertex_descriptor.hpp"
-
-#include <memory>
 
 namespace gl {
 
@@ -57,15 +57,25 @@ using undirected_graph_traits =
 
 namespace type_traits {
 
-template <typename T>
+template <typename TraitsType>
 concept c_list_graph_traits =
-    c_instantiation_of<T, graph_traits>
-    and std::same_as<typename T::implementation_tag, impl::list_t>;
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::implementation_tag, impl::list_t>;
 
-template <typename T>
+template <typename TraitsType>
 concept c_matrix_graph_traits =
-    c_instantiation_of<T, graph_traits>
-    and std::same_as<typename T::implementation_tag, impl::matrix_t>;
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::implementation_tag, impl::matrix_t>;
+
+template <typename TraitsType>
+concept c_directed_graph_traits =
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::edge_directional_tag, directed_t>;
+
+template <typename TraitsType>
+concept c_undirected_graph_traits =
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::edge_directional_tag, undirected_t>;
 
 } // namespace type_traits
 

@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "gl/constants.hpp"
@@ -6,8 +10,6 @@
 #include "gl/types/non_null_iterator.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
-
-#include <vector>
 
 namespace gl::impl {
 
@@ -74,30 +76,30 @@ public:
             std::generate_n(std::back_inserter(row), n, _make_null_edge);
         }
 
-        for (types::size_type _ = constants::begin_idx; _ < n; _++) {
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_) {
             auto& new_row = this->_matrix.emplace_back();
             new_row.reserve(new_n_vertices);
             std::generate_n(std::back_inserter(new_row), new_n_vertices, _make_null_edge);
         }
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
-        return std::ranges::count_if(
-            this->_matrix,
-            [](const auto& edge) { return edge != nullptr; },
-            [col = vertex.id()](const auto& row) -> const edge_ptr_type& { return row[col]; }
-        );
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::in_degree(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
     ) const {
-        return std::ranges::count_if(this->_matrix[vertex.id()], [](const auto& edge) {
-            return edge != nullptr;
-        });
+        return specialized_impl::out_degree(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::degree(*this, vertex_id);
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized_impl::remove_vertex(*this, vertex);
+        specialized_impl::remove_vertex(*this, vertex.id());
     }
 
     // --- edge methods ---

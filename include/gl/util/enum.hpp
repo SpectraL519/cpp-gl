@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
@@ -6,6 +10,7 @@
 
 namespace gl::util {
 
+// TODO [C++23]: replace with std::to_underlying
 template <typename Enum>
 requires(std::is_enum_v<Enum>)
 [[nodiscard]] gl_attr_force_inline constexpr std::underlying_type_t<Enum> to_underlying(Enum e) {
