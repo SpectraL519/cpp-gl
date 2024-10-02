@@ -9,5 +9,8 @@
 # documentation files
 documentation/
 
+# python temporary files
+**/__pycache__/
+
 # other
 *tmp*/

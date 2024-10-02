@@ -1,17 +1,17 @@
 import argparse
-import re
 import subprocess
 import sys
 from pathlib import Path
 
+from common import find_files
+
 
 class DefaultParameters:
-    modified_files = False
-    search_paths = ["include", "tests"]
-    file_patterns = ["*.cpp", "*.hpp", "*.c", "*.h"]
-    exclude_paths = ["tests/external"]
-    check = False
-    help = False
+    modified_files: bool = False
+    search_paths: list[str] = ["include", "tests"]
+    file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
+    exclude_paths: list[str] = ["tests/external"]
+    check: bool = False
 
 
 def parse_args():
@@ -28,6 +28,7 @@ def parse_args():
         type=str,
         default=DefaultParameters.search_paths,
         nargs="*",
+        action="extend",
         help="list of search directory paths"
     )
     parser.add_argument(
@@ -35,6 +36,7 @@ def parse_args():
         type=str,
         default=DefaultParameters.file_patterns,
         nargs="*",
+        action="extend",
         help="list of file patterns to include"
     )
     parser.add_argument(
@@ -42,6 +44,7 @@ def parse_args():
         type=str,
         default=DefaultParameters.exclude_paths,
         nargs="*",
+        action="extend",
         help="list of directory paths to exclude"
     )
     parser.add_argument(
@@ -55,26 +58,7 @@ def parse_args():
     return vars(parser.parse_args())
 
 
-def find_files(
-    search_paths: list[str],
-    file_patterns: list[str],
-    exclude_paths: list[str]
-) -> set[Path]:
-    matching_files = []
-    for search_path in search_paths:
-        path = Path(search_path)
-        for pattern in file_patterns:
-            matching_files.extend(path.rglob(pattern))
-
-    filtered_files = {
-        file for file in matching_files
-        if not any(str(file.parent).startswith(path) for path in exclude_paths)
-    }
-
-    return filtered_files
-
-
-def get_modified_files(found_files: set[Path]) -> set[Path]:
+def get_modified_files(files: set[Path]) -> set[Path]:
     try:
         result = subprocess.run(
             "git diff --name-only @{u}".split(),
@@ -85,17 +69,14 @@ def get_modified_files(found_files: set[Path]) -> set[Path]:
         )
 
         modified_files = {Path(file) for file in result.stdout.splitlines() if file}
-        return modified_files & found_files
+        return modified_files & files
 
     except subprocess.CalledProcessError as e:
         print(f"Error executing git command: {e.stderr}")
         raise RuntimeError("Failed to retrieve the modified files.")
 
 
-def run_clang_format(
-    files: set[Path],
-    check: bool
-):
+def run_clang_format(files: set[Path], check: bool) -> int:
     n_files = len(files)
     if check:
         print(f"Files to check: {n_files}")

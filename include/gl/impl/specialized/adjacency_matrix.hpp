@@ -1,8 +1,13 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
 
 #include <algorithm>
+#include <vector>
 
 namespace gl::impl {
 
@@ -17,6 +22,7 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 [[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
     typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
+    // get the edge and validate the address
     auto& matrix_element = matrix.at(edge->first_id()).at(edge->second_id());
     if (edge != matrix_element.get())
         throw std::invalid_argument(std::format(
@@ -51,11 +57,33 @@ struct directed_adjacency_matrix {
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        const auto vertex_id = vertex.id();
+    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return std::ranges::count_if(
+            self._matrix,
+            [](const auto& edge) { return edge != nullptr; },
+            [vertex_id](const auto& row) -> const edge_ptr_type& { return row[vertex_id]; }
+        );
+    }
 
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return std::ranges::count_if(self._matrix[vertex_id], [](const auto& edge) {
+            return edge != nullptr;
+        });
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return in_degree(self, vertex_id) + out_degree(self, vertex_id);
+    }
+
+    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
         for (auto& row : self._matrix) {
             const auto vertex_it = std::next(std::begin(row), vertex_id);
@@ -69,7 +97,7 @@ struct directed_adjacency_matrix {
 
         auto& matrix_element = self._matrix[edge->first_id()][edge->second_id()];
         matrix_element = std::move(edge);
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
 
         return *matrix_element;
     }
@@ -90,7 +118,7 @@ struct directed_adjacency_matrix {
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
         detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 
@@ -102,11 +130,31 @@ struct undirected_adjacency_matrix {
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        const auto vertex_id = vertex.id();
+    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
 
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        types::size_type degree = constants::default_size;
+        for (const auto& edge : self._matrix[vertex_id])
+            if (edge)
+                degree += constants::one + static_cast<types::size_type>(edge->is_loop());
+        return degree;
+    }
+
+    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
@@ -123,7 +171,7 @@ struct undirected_adjacency_matrix {
         auto& matrix_element = self._matrix.at(first_id).at(second_id);
         matrix_element = edge;
 
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *matrix_element;
     }
 
@@ -153,14 +201,13 @@ struct undirected_adjacency_matrix {
             const auto second_id = edge.second_id();
 
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
-            // if the edge was found in the first matrix cell, it will be in the second matrix cell
+            // if the edge was found in the first matrix cell,
+            // it will also be present in the second matrix cell
             self._matrix[second_id][first_id] = nullptr;
         }
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
-
-// common utility
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 struct matrix_impl_traits {

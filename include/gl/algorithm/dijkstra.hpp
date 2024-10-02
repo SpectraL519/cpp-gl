@@ -1,8 +1,11 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "detail/bfs_impl.hpp"
 #include "gl/graph_utility.hpp"
-#include "gl/types/properties.hpp"
 
 #include <deque>
 
@@ -59,7 +62,6 @@ template <
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
-    constexpr distance_type min_edge_weight_threshold = 0ull;
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
     detail::pq_bfs_impl(
@@ -68,15 +70,15 @@ template <
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
         detail::init_range(source_id),
-        detail::constant_unary_predicate<true>(), // visit pred
+        detail::constant_unary_predicate<true>(), // visit predicate
         detail::constant_binary_predicate<true>(), // visit callback
         [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
-            -> std::optional<bool> { // enqueue pred
+            -> std::optional<bool> { // enqueue predicate
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
-            if (edge_weight < min_edge_weight_threshold) {
+            if (edge_weight < constants::zero) {
                 negative_edge = std::cref(in_edge);
                 return std::nullopt;
             }

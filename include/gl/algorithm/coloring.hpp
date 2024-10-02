@@ -1,7 +1,10 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "detail/bfs_impl.hpp"
-#include "gl/types/properties.hpp"
 
 namespace gl::algorithm {
 
@@ -32,10 +35,10 @@ template <
         const bool is_bipartite = detail::bfs_impl(
             graph,
             detail::init_range(root_id),
-            detail::constant_unary_predicate<true>(), // visit pred
+            detail::constant_unary_predicate<true>(), // visit predicate
             detail::constant_binary_predicate<true>(), // visit callback
             [&coloring](const vertex_type& vertex, const edge_type& in_edge)
-                -> std::optional<bool> { // enqueue pred
+                -> std::optional<bool> { // enqueue predicate
                 if (in_edge.is_loop())
                     return false;
 

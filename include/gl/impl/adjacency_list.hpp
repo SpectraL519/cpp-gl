@@ -1,13 +1,14 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
-#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/types/dereferencing_iterator.hpp"
 #include "gl/types/iterator_range.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
-
-#include <vector>
 
 namespace gl::impl {
 
@@ -58,17 +59,23 @@ public:
 
     inline void add_vertices(const types::size_type n) {
         this->_list.reserve(this->n_vertices() + n);
-        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
             this->_list.push_back(edge_list_type{});
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
-        return specialized_impl::in_degree(*this, vertex);
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::in_degree(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
     ) const {
-        return this->_list[vertex.id()].size();
+        return specialized_impl::out_degree(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::degree(*this, vertex_id);
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
@@ -114,6 +121,7 @@ public:
             ))
             return false;
 
+        // find the edge by address
         const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find(
                    adjacent_edges, &edge, typename specialized_impl::address_projection{}

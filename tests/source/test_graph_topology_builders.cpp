@@ -184,16 +184,6 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-/*
-
-template <lib_tt::c_graph GraphType>
-[[nodiscard]] auto predicate(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type&) {};
-}
-
-*/
-
 } // namespace predicate
 
 TEST_CASE_TEMPLATE_DEFINE(
