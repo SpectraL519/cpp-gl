@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
@@ -8,6 +12,12 @@
 namespace gl {
 
 namespace types {
+
+/*
+A forward iterator wrapper for pointer value type iterators
+The dereference operator dereferences the underlying operator
+    and then the held pointer object
+*/
 
 template <std::forward_iterator Iterator>
 requires(type_traits::c_strong_ptr<typename Iterator::value_type>)
@@ -45,20 +55,20 @@ public:
     }
 
     inline dereferencing_iterator& operator++() {
-        this->_it++;
+        ++this->_it;
         return *this;
     }
 
     inline dereferencing_iterator operator++(int) {
         dereferencing_iterator tmp = *this;
-        this->_it++;
+        ++this->_it;
         return tmp;
     }
 
     inline dereferencing_iterator& operator--()
     requires(std::bidirectional_iterator<iterator_type>)
     {
-        this->_it--;
+        --this->_it;
         return *this;
     }
 
@@ -66,7 +76,7 @@ public:
     requires(std::bidirectional_iterator<iterator_type>)
     {
         dereferencing_iterator tmp = *this;
-        this->_it--;
+        --this->_it;
         return tmp;
     }
 

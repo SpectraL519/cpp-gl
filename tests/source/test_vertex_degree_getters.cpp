@@ -12,10 +12,10 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_vertex_degree_getters");
 
-TEST_CASE("vertex degree getter tests for directed graphs") {
-    using traits_type =
-        lib::directed_graph_traits<lib_t::empty_properties, lib_t::empty_properties, lib_i::list_t>;
-    using sut_type = lib::graph<traits_type>;
+TEST_CASE_TEMPLATE_DEFINE(
+    "vertex degree getter tests for directed graphs", TraitsType, directed_graph_traits_template
+) {
+    using sut_type = lib::graph<TraitsType>;
     using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
@@ -77,7 +77,7 @@ TEST_CASE("vertex degree getter tests for directed graphs") {
             sut.in_degree(vertex) == expected_in_deg_list[i]
             and sut.out_degree(vertex) == expected_out_deg_list[i]
             and sut.degree(vertex) == expected_deg_list[i];
-        i++;
+        ++i;
         return result;
     }));
 
@@ -88,17 +88,23 @@ TEST_CASE("vertex degree getter tests for directed graphs") {
             const bool result = sut.in_degree(vertex_id) == expected_in_deg_list[i]
                and sut.out_degree(vertex_id) == expected_out_deg_list[i]
                and sut.degree(vertex_id) == expected_deg_list[i];
-            i++;
+            ++i;
             return result;
         },
         transforms::extract_vertex_id<vertex_type>
     ));
 }
 
-TEST_CASE("vertex degree getter tests for undirected graphs") {
-    using traits_type = lib::
-        undirected_graph_traits<lib_t::empty_properties, lib_t::empty_properties, lib_i::list_t>;
-    using sut_type = lib::graph<traits_type>;
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    directed_graph_traits_template,
+    lib::list_graph_traits<lib::directed_t>, // directed adjacency list graph
+    lib::matrix_graph_traits<lib::directed_t> // directed adjacency matrix graph
+);
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "vertex degree getter tests for undirected graphs", TraitsType, undirected_graph_traits_template
+) {
+    using sut_type = lib::graph<TraitsType>;
     using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
@@ -116,7 +122,7 @@ TEST_CASE("vertex degree getter tests for undirected graphs") {
         sut.add_edge(constants::first_element_idx, constants::first_element_idx);
 
         expected_deg_list = std::deque<lib_t::size_type>(n_vertices, n_vertices - constants::one);
-        expected_deg_list.front()++;
+        expected_deg_list.front() += constants::two; // loops counted twice
     }
 
     SUBCASE("cycle") {
@@ -142,7 +148,7 @@ TEST_CASE("vertex degree getter tests for undirected graphs") {
         const bool result =
             sut.in_degree(vertex) == expected_deg and sut.out_degree(vertex) == expected_deg
             and sut.degree(vertex) == expected_deg;
-        i++;
+        ++i;
         return result;
     }));
 
@@ -154,12 +160,18 @@ TEST_CASE("vertex degree getter tests for undirected graphs") {
             const bool result = sut.in_degree(vertex_id) == expected_deg
                and sut.out_degree(vertex_id) == expected_deg
                and sut.degree(vertex_id) == expected_deg;
-            i++;
+            ++i;
             return result;
         },
         transforms::extract_vertex_id<vertex_type>
     ));
 }
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    undirected_graph_traits_template,
+    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
+    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
+);
 
 TEST_SUITE_END(); // test_vertex_degree_getters
 

@@ -1,6 +1,9 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
-#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/types/types.hpp"
 
@@ -9,6 +12,7 @@
 
 namespace gl::util {
 
+// exponentation function for u64 integral type
 [[nodiscard]] inline constexpr types::size_type upow(types::size_type base, types::size_type exp) {
     types::size_type result = constants::one;
     while (exp) {
@@ -21,6 +25,7 @@ namespace gl::util {
     return result;
 }
 
+// sum of exponents: base ^ i_begin + base ^ (i_begin + 1) + ... + base ^ (i_end)
 [[nodiscard]] inline types::size_type upow_sum(
     const types::size_type base, types::size_type i_begin, types::size_type i_end
 ) {

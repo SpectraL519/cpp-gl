@@ -26,7 +26,7 @@ requires(lib_tt::c_readable<T>)
         );
     }
 
-    for (lib_t::size_type i = 0; i < n; i++)
+    for (lib_t::size_type i = 0; i < n; ++i)
         file >> list[i];
 
     return list;

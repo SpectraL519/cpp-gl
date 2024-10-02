@@ -1,16 +1,12 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
-#include "attributes/force_inline.hpp"
 #include "edge_tags.hpp"
 #include "io/format.hpp"
-#include "types/type_traits.hpp"
-#include "types/types.hpp"
 #include "vertex_descriptor.hpp"
-
-#include <format>
-#include <memory>
-#include <type_traits>
-#include <vector>
 
 namespace gl {
 
@@ -87,6 +83,7 @@ public:
         return this->second().id();
     }
 
+    // returns the `other` vertex or throws error if the given vertex is not incident with the edge
     [[nodiscard]] const vertex_type& incident_vertex(const vertex_type& vertex) const {
         if (&vertex == &this->_vertices.first)
             return this->_vertices.second;
@@ -103,10 +100,12 @@ public:
         return &vertex == &this->_vertices.first or &vertex == &this->_vertices.second;
     }
 
+    // true if the given vertex is the `source` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_type& vertex) const {
         return directional_tag::is_incident_from(*this, vertex);
     }
 
+    // true if the given vertex is the `destination` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
     }

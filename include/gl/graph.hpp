@@ -1,15 +1,15 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "constants.hpp"
-#include "gl/attributes/force_inline.hpp"
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
-#include "io.hpp"
+#include "io/stream_options_manipulator.hpp"
 #include "types/iterator_range.hpp"
-#include "types/type_traits.hpp"
-#include "types/types.hpp"
 
-#include <algorithm>
 #include <set>
 
 namespace gl {
@@ -47,7 +47,7 @@ public:
 
     graph(const types::size_type n_vertices) : _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
-        for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; vertex_id++)
+        for (auto vertex_id = constants::initial_id; vertex_id < n_vertices; ++vertex_id)
             this->_vertices.push_back(detail::make_vertex<vertex_type>(vertex_id));
     }
 
@@ -116,7 +116,7 @@ public:
         this->_impl.add_vertices(n);
         this->_vertices.reserve(this->n_vertices() + n);
 
-        for (types::size_type _ = constants::begin_idx; _ < n; _++)
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
             this->_vertices.push_back(detail::make_vertex<vertex_type>(this->n_vertices()));
     }
 
@@ -156,7 +156,7 @@ public:
 
     template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
     void remove_vertices_from(const VertexRefRange& vertex_ref_range) {
-        // can be replaced with std::grater for C++26
+        // TODO [C++26]: replace with std::greater
         struct vertex_ref_greater_comparator {
             [[nodiscard]] bool operator()(
                 const types::const_ref_wrap<vertex_type>& lhs,
@@ -178,40 +178,36 @@ public:
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
         this->_verify_vertex(vertex);
-        return this->_impl.in_degree(vertex);
+        return this->_impl.in_degree(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
     ) const {
-        return this->_impl.in_degree(this->get_vertex(vertex_id));
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.in_degree(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
     ) const {
         this->_verify_vertex(vertex);
-        return this->_impl.out_degree(vertex);
+        return this->_impl.out_degree(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
     ) const {
-        return this->_impl.out_degree(this->get_vertex(vertex_id));
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.out_degree(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
-        if constexpr (type_traits::is_directed_v<edge_type>)
-            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
-        else
-            return this->out_degree(vertex);
+        this->_verify_vertex(vertex);
+        return this->_impl.degree(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
     ) const {
-        if constexpr (type_traits::is_directed_v<edge_type>) {
-            const auto& vertex = this->get_vertex(vertex_id);
-            return this->_impl.in_degree(vertex) + this->_impl.out_degree(vertex);
-        }
-        else
-            return this->_impl.out_degree(this->get_vertex(vertex_id));
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.degree(vertex_id);
     }
 
     // --- edge methods ---
@@ -483,7 +479,7 @@ private:
         std::for_each(
             std::next(std::begin(this->_vertices), vertex_id),
             this->_vertices.end(),
-            [](auto& v) { v->_id--; }
+            [](auto& v) { --v->_id; }
         );
     }
 
@@ -599,7 +595,7 @@ private:
             else {
                 // read vertex properties and use them to initialze the vertices
                 std::vector<vertex_properties_type> vertex_properties(n_vertices);
-                for (types::size_type i = constants::begin_idx; i < n_vertices; i++)
+                for (types::size_type i = constants::begin_idx; i < n_vertices; ++i)
                     is >> vertex_properties[i];
                 this->add_vertices_with(vertex_properties);
             }
@@ -621,7 +617,7 @@ private:
                 types::id_type first_id, second_id;
                 edge_properties_type properties;
 
-                for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+                for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
                     is >> first_id >> second_id >> properties;
                     this->add_edge(first_id, second_id, properties);
                 }
@@ -631,7 +627,7 @@ private:
             // read the edges
             types::id_type first_id, second_id;
 
-            for (types::size_type i = constants::begin_idx; i < n_edges; i++) {
+            for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
                 is >> first_id >> second_id;
                 this->add_edge(first_id, second_id);
             }

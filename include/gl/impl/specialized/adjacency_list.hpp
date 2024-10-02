@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
@@ -5,6 +9,7 @@
 #include <algorithm>
 #include <format>
 #include <unordered_set>
+#include <vector>
 
 namespace gl::impl {
 
@@ -23,6 +28,7 @@ requires std::is_invocable_r_v<
 [[nodiscard]] typename AdjacencyList::edge_iterator_type::iterator_type strict_find(
     typename AdjacencyList::edge_list_type& edge_set, const typename AdjacencyList::edge_type* edge
 ) {
+    // find the edge by address
     const auto it = std::ranges::find(edge_set, edge, AddressProjection{});
     if (it == edge_set.end())
         throw std::invalid_argument(std::format(
@@ -48,22 +54,20 @@ struct directed_adjacency_list {
     using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
-        auto operator()(const edge_type& edge) {
+        [[nodiscard]] gl_attr_force_inline auto operator()(const edge_type& edge) {
             return &edge;
         }
 
-        auto operator()(const edge_ptr_type& edge) {
+        [[nodiscard]] gl_attr_force_inline auto operator()(const edge_ptr_type& edge) {
             return edge.get();
         }
     };
 
     [[nodiscard]] static types::size_type in_degree(
-        const impl_type& self, const vertex_type& vertex
+        const impl_type& self, const types::id_type vertex_id
     ) {
         types::size_type in_deg = constants::default_size;
-        const auto vertex_id = vertex.id();
-
-        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+        for (types::id_type i = constants::initial_id; i < self._list.size(); ++i) {
             const auto& adj_edges = self._list[i];
             if (adj_edges.empty())
                 continue;
@@ -76,10 +80,23 @@ struct directed_adjacency_list {
         return in_deg;
     }
 
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return self._list[vertex_id].size();
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return in_degree(self, vertex_id) + out_degree(self, vertex_id);
+    }
+
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         const auto vertex_id = vertex.id();
 
-        for (types::id_type i = constants::initial_id; i < self._list.size(); i++) {
+        // remove all edges incident to the vertex
+        for (types::id_type i = constants::initial_id; i < self._list.size(); ++i) {
             auto& adj_edges = self._list[i];
             if (i == vertex_id or adj_edges.empty())
                 continue;
@@ -91,6 +108,7 @@ struct directed_adjacency_list {
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
 
+        // remove the list of edges incident from the vertex entirely
         self._n_unique_edges -= self._list[vertex_id].size();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
@@ -98,7 +116,7 @@ struct directed_adjacency_list {
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         auto& adjacent_edges_first = self._list[edge->first_id()];
         adjacent_edges_first.push_back(std::move(edge));
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *adjacent_edges_first.back();
     }
 
@@ -131,7 +149,7 @@ struct directed_adjacency_list {
     static void remove_edge(impl_type& self, const edge_type& edge) {
         auto& adj_edges = self._list.at(edge.first_id());
         adj_edges.erase(detail::strict_find<impl_type, address_projection>(adj_edges, &edge));
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
 
@@ -146,31 +164,48 @@ struct undirected_adjacency_list {
     using edge_iterator_type = typename impl_type::edge_iterator_type::iterator_type;
 
     struct address_projection {
-        auto operator()(const edge_type& edge) {
+        [[nodiscard]] gl_attr_force_inline auto operator()(const edge_type& edge) {
             return &edge;
         }
 
-        auto operator()(const edge_ptr_type& edge) {
+        [[nodiscard]] gl_attr_force_inline auto operator()(const edge_ptr_type& edge) {
             return edge.get();
         }
     };
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
-        const impl_type& self, const vertex_type& vertex
+        const impl_type& self, const types::id_type vertex_id
     ) {
-        return self._list[vertex.id()].size();
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        types::size_type degree = constants::default_size;
+        for (const auto& edge : self._list[vertex_id])
+            degree += constants::one + static_cast<types::size_type>(edge->is_loop());
+        return degree;
     }
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
         const auto vertex_id = vertex.id();
         std::unordered_set<types::id_type> incident_vertex_id_set;
 
+        // select the vertices incident with the removed vertex
         for (const auto& edge : self._list[vertex_id]) {
             if (edge->is_loop())
                 continue; // will be removed with the vertex's list
             incident_vertex_id_set.insert(edge->incident_vertex(vertex).id());
         }
 
+        // remove all edges incident with the vertex (scan only the selected vertices)
         for (const auto& incident_vertex_id : incident_vertex_id_set) {
             auto& adj_edges = self._list[incident_vertex_id];
             const auto rem_subrange = std::ranges::remove_if(
@@ -179,6 +214,7 @@ struct undirected_adjacency_list {
             adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
         }
 
+        // remove the list of edges incident from the vertex entirely
         self._n_unique_edges -= self._list[vertex_id].size();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
     }
@@ -190,7 +226,7 @@ struct undirected_adjacency_list {
             self._list[edge->second_id()].push_back(edge);
         adjacent_edges_first.push_back(std::move(edge));
 
-        self._n_unique_edges++;
+        ++self._n_unique_edges;
         return *adjacent_edges_first.back();
     }
 
@@ -233,15 +269,13 @@ struct undirected_adjacency_list {
             adj_edges_first.erase(
                 detail::strict_find<impl_type, address_projection>(adj_edges_first, &edge)
             );
-            // if the edge was found in the first list, it will be in the second list
+            // if the edge was found in the first list, it will also be present in the second list
             adj_edges_second.erase(std::ranges::find(adj_edges_second, &edge, address_projection{})
             );
         }
-        self._n_unique_edges--;
+        --self._n_unique_edges;
     }
 };
-
-// common utility
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 struct list_impl_traits {
