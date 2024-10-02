@@ -19,15 +19,13 @@ namespace detail {
     );
 }
 
-using vertex_id_range = std::vector<types::id_type>;
+constexpr types::size_type min_non_trivial_bin_tree_depth = constants::two;
 
 } // namespace detail
 
 template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType complete_binary_tree(const types::size_type depth) {
-    constexpr types::size_type min_non_trivial_depth = 2ull;
-
-    if (depth < min_non_trivial_depth)
+    if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
 
     constexpr types::size_type base = constants::two;
@@ -42,7 +40,7 @@ template <type_traits::c_graph GraphType>
     for (types::id_type source_id = constants::zero; source_id < n_source_vertices; ++source_id) {
         const auto destination_ids = detail::get_binary_destination_ids(source_id);
         graph.add_edges_from(
-            source_id, detail::vertex_id_range{destination_ids.first, destination_ids.second}
+            source_id, std::vector<types::id_type>{destination_ids.first, destination_ids.second}
         );
     }
 
@@ -52,9 +50,7 @@ template <type_traits::c_graph GraphType>
 template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_complete_binary_tree(const types::size_type depth) {
     if constexpr (type_traits::is_directed_v<GraphType>) {
-        constexpr types::size_type min_non_trivial_depth = 2ull;
-
-        if (depth < min_non_trivial_depth)
+        if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};
 
         constexpr types::size_type base = constants::two;
@@ -70,7 +66,8 @@ template <type_traits::c_graph GraphType>
              ++source_id) {
             const auto destination_ids = detail::get_binary_destination_ids(source_id);
             graph.add_edges_from(
-                source_id, detail::vertex_id_range{destination_ids.first, destination_ids.second}
+                source_id,
+                std::vector<types::id_type>{destination_ids.first, destination_ids.second}
             );
             graph.add_edge(destination_ids.first, source_id);
             graph.add_edge(destination_ids.second, source_id);

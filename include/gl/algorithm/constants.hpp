@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "gl/constants.hpp"
+
 #include <optional>
 
 namespace gl::algorithm {

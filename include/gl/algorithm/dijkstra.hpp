@@ -62,7 +62,6 @@ template <
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
-    constexpr distance_type min_edge_weight_threshold = 0ull;
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
     detail::pq_bfs_impl(
@@ -79,7 +78,7 @@ template <
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
-            if (edge_weight < min_edge_weight_threshold) {
+            if (edge_weight < constants::zero) {
                 negative_edge = std::cref(in_edge);
                 return std::nullopt;
             }
