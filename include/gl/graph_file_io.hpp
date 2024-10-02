@@ -102,8 +102,6 @@ void save(
     file << graph;
 }
 
-// TODO: save_as_directed
-
 template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType load(const std::filesystem::path& path = "graph.gsf") {
     std::ifstream file = detail::open_infile(path);
