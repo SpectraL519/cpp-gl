@@ -63,7 +63,7 @@ template <
     if (topological_order.size() != graph.n_vertices())
         return std::nullopt;
 
-    return topological_order;
+    return topological_order_opt;
 }
 
 } // namespace gl::algorithm

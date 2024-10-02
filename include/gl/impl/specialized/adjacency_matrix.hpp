@@ -57,11 +57,33 @@ struct directed_adjacency_matrix {
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        const auto vertex_id = vertex.id();
+    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return std::ranges::count_if(
+            self._matrix,
+            [](const auto& edge) { return edge != nullptr; },
+            [col = vertex_id](const auto& row) -> const edge_ptr_type& { return row[col]; }
+        );
+    }
 
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return std::ranges::count_if(self._matrix[vertex_id], [](const auto& edge) {
+            return edge != nullptr;
+        });
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return in_degree(self, vertex_id) + out_degree(self, vertex_id);
+    }
+
+    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
         for (auto& row : self._matrix) {
             const auto vertex_it = std::next(std::begin(row), vertex_id);
@@ -108,11 +130,31 @@ struct undirected_adjacency_matrix {
     using edge_type = typename impl_type::edge_type;
     using edge_ptr_type = typename impl_type::edge_ptr_type;
 
-    static void remove_vertex(impl_type& self, const vertex_type& vertex) {
-        const auto vertex_id = vertex.id();
+    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
 
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        types::size_type degree = constants::default_size;
+        for (const auto& edge : self._matrix[vertex_id])
+            if (edge)
+                degree += constants::one + static_cast<types::size_type>(edge->is_loop());
+        return degree;
+    }
+
+    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex.id()));
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));

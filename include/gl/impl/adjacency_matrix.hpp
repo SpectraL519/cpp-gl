@@ -83,23 +83,23 @@ public:
         }
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
-        return std::ranges::count_if(
-            this->_matrix,
-            [](const auto& edge) { return edge != nullptr; },
-            [col = vertex.id()](const auto& row) -> const edge_ptr_type& { return row[col]; }
-        );
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::in_degree(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
     ) const {
-        return std::ranges::count_if(this->_matrix[vertex.id()], [](const auto& edge) {
-            return edge != nullptr;
-        });
+        return specialized_impl::out_degree(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::degree(*this, vertex_id);
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized_impl::remove_vertex(*this, vertex);
+        specialized_impl::remove_vertex(*this, vertex.id());
     }
 
     // --- edge methods ---

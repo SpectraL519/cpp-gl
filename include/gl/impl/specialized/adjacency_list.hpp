@@ -64,11 +64,9 @@ struct directed_adjacency_list {
     };
 
     [[nodiscard]] static types::size_type in_degree(
-        const impl_type& self, const vertex_type& vertex
+        const impl_type& self, const types::id_type vertex_id
     ) {
         types::size_type in_deg = constants::default_size;
-        const auto vertex_id = vertex.id();
-
         for (types::id_type i = constants::initial_id; i < self._list.size(); ++i) {
             const auto& adj_edges = self._list[i];
             if (adj_edges.empty())
@@ -80,6 +78,18 @@ struct directed_adjacency_list {
         }
 
         return in_deg;
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return self._list[vertex_id].size();
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return in_degree(self, vertex_id) + out_degree(self, vertex_id);
     }
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {
@@ -164,11 +174,24 @@ struct undirected_adjacency_list {
     };
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
-        const impl_type& self, const vertex_type& vertex
+        const impl_type& self, const types::id_type vertex_id
     ) {
-        // it should be calculated as `<normal-out-edges> + 2 * <loops>`
-        // extract a common function - in_degree and out_degree should call the degree function
-        return self._list[vertex.id()].size();
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        return degree(self, vertex_id);
+    }
+
+    [[nodiscard]] static types::size_type degree(
+        const impl_type& self, const types::id_type vertex_id
+    ) {
+        types::size_type degree = constants::default_size;
+        for (const auto& edge : self._list[vertex_id])
+            degree += constants::one + static_cast<types::size_type>(edge->is_loop());
+        return degree;
     }
 
     static void remove_vertex(impl_type& self, const vertex_type& vertex) {

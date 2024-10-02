@@ -303,11 +303,11 @@ TEST_CASE_FIXTURE(
     std::function<lib_t::size_type(const vertex_type&)> deg_proj;
 
     SUBCASE("in_degree") {
-        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex); };
+        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex.id()); };
     }
 
     SUBCASE("out_degree") {
-        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex); };
+        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex.id()); };
     }
 
     CAPTURE(deg_proj);
@@ -623,18 +623,22 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
-    "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
+    "{in_/out_}degree should return the number of edges incident {to/from} the given vertex"
 ) {
     initialize_full_graph();
 
     std::function<lib_t::size_type(const vertex_type&)> deg_proj;
 
+    SUBCASE("degree") {
+        deg_proj = [this](const auto& vertex) { return sut.degree(vertex.id()); };
+    }
+
     SUBCASE("in_degree") {
-        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex); };
+        deg_proj = [this](const auto& vertex) { return sut.in_degree(vertex.id()); };
     }
 
     SUBCASE("out_degree") {
-        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex); };
+        deg_proj = [this](const auto& vertex) { return sut.out_degree(vertex.id()); };
     }
 
     CAPTURE(deg_proj);
@@ -649,7 +653,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(
         deg_proj(vertices[constants::vertex_id_1]),
-        n_incident_edges_for_fully_connected_vertex + constants::one
+        n_incident_edges_for_fully_connected_vertex + constants::two // loops counted twice
     );
 }
 

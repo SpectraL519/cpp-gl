@@ -63,15 +63,19 @@ public:
             this->_list.push_back(edge_list_type{});
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
-        return specialized_impl::in_degree(*this, vertex);
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::in_degree(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const types::id_type vertex_id
     ) const {
-        // TODO: move implementation to specialized_impl
-        // for undirected graphs it should be calculated as `<normal-out-edges> + 2 * <loops>`
-        return this->_list[vertex.id()].size();
+        return specialized_impl::out_degree(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const {
+        return specialized_impl::degree(*this, vertex_id);
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
