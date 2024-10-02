@@ -63,7 +63,7 @@ struct directed_adjacency_matrix {
         return std::ranges::count_if(
             self._matrix,
             [](const auto& edge) { return edge != nullptr; },
-            [col = vertex_id](const auto& row) -> const edge_ptr_type& { return row[col]; }
+            [vertex_id](const auto& row) -> const edge_ptr_type& { return row[vertex_id]; }
         );
     }
 
