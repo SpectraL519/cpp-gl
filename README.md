@@ -1,15 +1,28 @@
 # CPP-GL
 
+General purpose header-only template graph library for C++20 and newer standards.
+
 [![g++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang++)
 [![format](https://github.com/SpectraL519/cpp-gl/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/format)
 
-<!-- TODO: modify master branch protection ruleset (require all checks to pass) -->
-
 <br />
 
 ## Overview
-`CPP-GL` is a general purpose header-only template graph library for C++20 and newer standards.
+
+* The goal of the project was to create a higlhy customizable, intuitive and easy to work with graph library for the modern C++ standards.
+* The `CPP-GL` library's implementation relies solely on the C++ standard library (it does not require installing any additional tools) and is designed to be compatible with the C++ standard tools, e.g. range-based loops, the `std::ranges` library, iostream operations, etc.
+* The library relies heavily on [concepts](https://en.cppreference.com/w/cpp/language/constraints) to acheive abstraction instead of interfaces and abstract classes to minimize the overhead associated with virtual tables and dynamic dispatch.
+
+
+> [!NOTE]
+> `v1.0` of the library has been developed as the Bachelor of Engineering Thesis at the *Wrocław University of Science and Technology*
+>
+> Faculty: *W04N - Faculty of Information and Communication Technology*
+>
+> Field of study: *Algorithmic Computer Science*
+
+<!--
 
 <br />
 
@@ -147,3 +160,5 @@ python scripts/format.py --help
 ## Licence
 
 The `CPP-GL` project uses the [MIT Licence](https://opensource.org/license/mit)
+
+-->
