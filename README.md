@@ -29,9 +29,9 @@ General purpose header-only template graph library for C++20 and newer standards
 * [CMake integration](#cmake-integration)
 * Documentation
 * Examples
-* Dev notes
+* [Dev notes](#dev-notes)
 * [Compiler support](#compiler-support)
-* Licence
+* [Licence](#licence)
 
 <br />
 
@@ -73,6 +73,12 @@ set_target_properties(my_project PROPERTIES
 # Link against the cpp-gl library
 target_link_libraries(my_project PRIVATE cpp-gl)
 ```
+
+<br />
+
+## Dev notes
+
+The instructions and requirements of working on the `CPP-GL` project can be found [here](/docs/dev_notes.md).
 
 <br />
 
