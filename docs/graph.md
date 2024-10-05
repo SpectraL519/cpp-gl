@@ -21,7 +21,7 @@ The `graph` class is the entry point and key element of the `CPP-GL` library. It
 
 The `graph` class is defined in the `gl/graph.hpp` header file, which includes most of the elements required to work with the graph structure.
 
-```c++
+```cpp
 #include <gl/graph.hpp>
 ```
 
@@ -40,7 +40,7 @@ Detailed information on the available graph operations and how to use them is pr
 
 Defining a custom `graph_traits` structure can be used to modify the underlying implementation structure and behaviour of the `graph` class.
 
-```c++
+```cpp
 using custom_traits = graph_traits<...>;
 graph<custom_traits> graph;
 ```
@@ -56,7 +56,7 @@ The table below demostrates what parameters of the graph can be modified:
 
 An example on how to define an undirected graph with a *weight* edge properties type and represented as an adjacency matrix:
 
-```c++
+```cpp
 #include <gl/graph.hpp>
 
 using traits = gl::graph_traits<
@@ -110,14 +110,16 @@ Based on the specified traits, the `graph` class defines the following types:
 * **`graph(n_vertices)`**:
   * Constructs a graph with the specified number of vertices. Each vertex is initialized with default properties and no adjacent edges.
 
+<!-- TODO: info about copy, move, destruct -->
+
 > [!IMPORTANT]
 > Constructing the graph with the number of vertices parameter is more efficient, as it avoids multiple vector reallocations which could happen when creating an empty graph and adding vertices one by one.
 
-* **`graph.n_vertices()`**:
+* **`graph.n_vertices() const`**:
   * Returns the total number of vertices in the graph.
   * *Return type*: `types::size_type`
 
-* **`graph.n_unique_edges()`**:
+* **`graph.n_unique_edges() const`**:
   * Returns the number of unique edges in the graph.
   * *Return type*: `types::size_type`
 
@@ -125,27 +127,27 @@ Based on the specified traits, the `graph` class defines the following types:
 
 ### Vertex Operations
 
-* **`graph.vertices()`**:
+* **`graph.vertices() const`**:
   * Returns an iterator range over all vertices in the graph.
   * *Return type*: `types::iterator_range<vertex_iterator_type>`
 
-* **`graph.vertex_ids()`**:
+* **`graph.vertex_ids() const`**:
   * Returns a range of vertex IDs, starting from the initial vertex ID to the number of vertices in the graph (excluded).
   * *Return type*: `std::ranges::iota_view<types::id_type, types::id_type>`
 
-* **`graph.get_vertex(vertex_id)`**:
+* **`graph.get_vertex(vertex_id) const`**:
   * Retrieves the vertex object associated with the given vertex ID.
   * *Parameters*:
     * `vertex_id: const types::id_type`
   * *Return type*: `const vertex_type&`
 
-* **`graph.has_vertex(vertex_id)`**:
+* **`graph.has_vertex(vertex_id) const`**:
   * Checks if a vertex exists for the given vertex ID.
   * *Parameters*:
     * `vertex_id: const types::id_type`
   * *Return type*: `bool`
 
-* **`graph.has_vertex(vertex)`**:
+* **`graph.has_vertex(vertex) const`**:
   * Checks if the given vertex object exists in the graph by verifying its ID as well as its memory address.
   * *Parameters*:
     * `vertex: const vertex_type&`
@@ -208,37 +210,37 @@ Based on the specified traits, the `graph` class defines the following types:
     * `vertex_ref_range: const VertexRefRange&` – A range of vertex references to remove.
   * *Return type*: `void`
 
-  * **`graph.in_degree(vertex)`**:
+  * **`graph.in_degree(vertex) const`**:
   * returns the in-degree (number of incoming edges) of the specified vertex.
   * *Parameters*:
     * `vertex: const vertex_type&` – the vertex for which to calculate the in-degree.
   * *Return type*: `types::size_type`
 
-* **`graph.in_degree(vertex_id)`**:
+* **`graph.in_degree(vertex_id) const`**:
   * returns the in-degree (number of incoming edges) of the vertex with the specified ID.
   * *Parameters*:
     * `vertex_id: types::id_type` – the ID of the vertex for which to calculate the in-degree.
   * *Return type*: `types::size_type`
 
-* **`graph.out_degree(vertex)`**:
+* **`graph.out_degree(vertex) const`**:
   * returns the out-degree (number of outgoing edges) of the specified vertex.
   * *Parameters*:
     * `vertex: const vertex_type&` – the vertex for which to calculate the out-degree.
   * *Return type*: `types::size_type`
 
-* **`graph.out_degree(vertex_id)`**:
+* **`graph.out_degree(vertex_id) const`**:
   * returns the out-degree (number of outgoing edges) of the vertex with the specified ID.
   * *Parameters*:
     * `vertex_id: types::id_type` – the ID of the vertex for which to calculate the out-degree.
   * *Return type*: `types::size_type`
 
-* **`graph.degree(vertex)`**:
+* **`graph.degree(vertex) const`**:
   * returns the degree (number of incoming and outgoing edges) of the specified vertex.
   * *Parameters*:
     * `vertex: const vertex_type&` – the vertex for which to calculate the degree.
   * *Return type*: `types::size_type`
 
-* **`graph.degree(vertex_id)`**:
+* **`graph.degree(vertex_id) const`**:
   * returns the degree (number of incoming and outgoing edges) of the vertex with the specified ID.
   * *Parameters*:
     * `vertex_id: types::id_type` – the ID of the vertex for which to calculate the degree.
@@ -304,48 +306,48 @@ Based on the specified traits, the `graph` class defines the following types:
 > * for *directed* graphs: adds a one-directional edge where `first` is the source vertex and `second` is the destination vertex
 > * for *undirected* graphs: adds a bidirectional edge where both vertices are source and destination vertices
 
-* **`graph.has_edge(first_id, second_id)`**:
+* **`graph.has_edge(first_id, second_id) const`**:
   * Returns true if there is an edge between the vertices with the specified IDs.
   * *Parameters*:
     * `first_id: types::id_type` – the ID of the first vertex.
     * `second_id: types::id_type` – the ID of the second vertex.
   * *Return type*: `bool`
 
-* **`graph.has_edge(first, second)`**:
+* **`graph.has_edge(first, second) const`**:
   * Returns true if there is an edge between the specified vertices.
   * *Parameters*:
     * `first: const vertex_type&` – the first vertex.
     * `second: const vertex_type&` – the second vertex.
   * *Return type*: `bool`
 
-* **`graph.has_edge(edge)`**:
+* **`graph.has_edge(edge) const`**:
   * Returns true if the specified edge exists in the graph.
   * *Parameters*:
     * `edge: const edge_type&` – the edge to check for existence.
   * *Return type*: `bool`
 
-* **`graph.get_edge(first_id, second_id)`**:
+* **`graph.get_edge(first_id, second_id) const`**:
   * Returns an optional reference to the edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned.
   * *Parameters*:
     * `first_id: types::id_type` – the ID of the first vertex.
     * `second_id: types::id_type` – the ID of the second vertex.
   * *Return type*: `types::optional_cref<edge_type>`
 
-* **`graph.get_edge(first, second)`**:
+* **`graph.get_edge(first, second) const`**:
   * Returns an optional reference to the edge between the specified vertices. If either vertex does not exist or if no edge exists between them, `std::nullopt` is returned.
   * *Parameters*:
     * `first: const vertex_type&` – the first vertex.
     * `second: const vertex_type&` – the second vertex.
   * *Return type*: `types::optional_cref<edge_type>`
 
-* **`graph.get_edges(first_id, second_id)`**:
+* **`graph.get_edges(first_id, second_id) const`**:
   * Returns a vector of optional references to the edges between the vertices with the specified IDs. If no edges exist, returns an empty vector.
   * *Parameters*:
     * `first_id: types::id_type` – the ID of the first vertex.
     * `second_id: types::id_type` – the ID of the second vertex.
   * *Return type*: `std::vector<types::const_ref_wrap<edge_type>>`
 
-* **`graph.get_edges(first, second)`**:
+* **`graph.get_edges(first, second) const`**:
   * Returns a vector of optional references to the edges between the specified vertices. If either vertex does not exist or if no edges exist between them, returns an empty vector.
   * *Parameters*:
     * `first: const vertex_type&` – the first vertex.
@@ -366,13 +368,13 @@ Based on the specified traits, the `graph` class defines the following types:
     * `edges: const EdgeRefRange&` – a range of edges to remove from the graph.
   * *Return type*: `void`
 
-* **`graph.adjacent_edges(vertex_id)`**:
+* **`graph.adjacent_edges(vertex_id) const`**:
   * Returns an iterator range of edges that are adjacent to the vertex with the specified ID.
   * *Parameters*:
     * `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
   * *Return type*: `types::iterator_range<edge_iterator_type>`
 
-* **`graph.adjacent_edges(vertex)`**:
+* **`graph.adjacent_edges(vertex) const`**:
   * Returns an iterator range of edges that are adjacent to the specified vertex.
   * *Parameters*:
     * `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
@@ -382,35 +384,35 @@ Based on the specified traits, the `graph` class defines the following types:
 
 ### Incidence Operations
 
-* **`graph.are_incident(first_id, second_id)`**:
+* **`graph.are_incident(first_id, second_id) const`**:
   * Returns true if the vertices with the specified IDs are incident to each other or the IDs are the same.
   * *Parameters*:
     * `first_id: types::id_type` – the ID of the first vertex.
     * `second_id: types::id_type` – the ID of the second vertex.
   * *Return type*: `bool`
 
-* **`graph.are_incident(first, second)`**:
+* **`graph.are_incident(first, second) const`**:
   * Returns true if the specified vertices are incident to each other or if they are the same.
   * *Parameters*:
     * `first: const vertex_type&` – the first vertex.
     * `second: const vertex_type&` – the second vertex.
   * *Return type*: `bool`
 
-* **`graph.are_incident(vertex, edge)`**:
+* **`graph.are_incident(vertex, edge) const`**:
   * Returns true if the given vertex is incident with the given edge.
   * *Parameters*:
     * `vertex: const vertex_type&` – the vertex to check for incidence.
     * `edge: const edge_type&` – the edge to check against.
   * *Return type*: `bool`
 
-* **`graph.are_incident(edge, vertex)`**:
+* **`graph.are_incident(edge, vertex) const`**:
   * Returns true if the given vertex is incident with the given edge.
   * *Parameters*:
     * `edge: const edge_type&` – the edge to check for incidence.
     * `vertex: const vertex_type&` – the vertex to check against.
   * *Return type*: `bool`
 
-* **`graph.are_incident(edge_1, edge_2)`**:
+* **`graph.are_incident(edge_1, edge_2) const`**:
   * Returns true if the given edges are incident.
   * *Parameters*:
     * `edge_1: const edge_type&` – the first edge.

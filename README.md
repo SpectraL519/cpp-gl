@@ -85,7 +85,7 @@ target_link_libraries(my_project PRIVATE cpp-gl)
 
 The core of the library is the template [graph class](/docs/graph.md) which holds the graph's [vertices](/docs/vertex.md) and [edges](/docs/edge.md) and defines methods allowing for the manipulation of the graph's structure.
 
-```c++
+```cpp
 #include <gl/graph.hpp>
 
 #include <iostream>
