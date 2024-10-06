@@ -4,7 +4,7 @@ The `graph` class is the entry point and key element of the `CPP-GL` library. It
 
 <br />
 
-## Table of contents
+## Table of content
 
 - [The basics](#the-basics)
 - [Graph representation](#graph-representation)

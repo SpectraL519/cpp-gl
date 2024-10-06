@@ -10,7 +10,7 @@
 namespace gl::topology {
 
 template <type_traits::c_graph GraphType>
-[[nodiscard]] GraphType full_bipartite(
+[[nodiscard]] GraphType biclique(
     const types::size_type n_vertices_a, const types::size_type n_vertices_b
 ) {
     const auto n_vertices = n_vertices_a + n_vertices_b;

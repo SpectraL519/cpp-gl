@@ -23,7 +23,7 @@ General purpose header-only template graph library for C++20 and newer standards
 
 <br />
 
-## Table of contents
+## Table of content
 
 - [Installing the library](#installing-the-library)
 - [CMake integration](#cmake-integration)

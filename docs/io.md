@@ -10,7 +10,7 @@ This documentation section details the stream operators available in the library
 
 <br />
 
-## Table of contents
+## Table of content
 
 - [Basic usage of stream I/O operations](#basic-usage-of-stream-io-operations)
 - [I/o options](#io-options)
@@ -76,15 +76,15 @@ Below you can find an example program showing how to use the I/O option setters:
 
 ```cpp
 #include <gl/graph.hpp>
-#include <gl/topologies.hpp> // necessary for `topology::full_bipartite`
+#include <gl/topologies.hpp> // necessary for `topology::biclique`
 
 int main() {
     // declare the graph traits
     using graph_traits = gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
     using graph_type = gl::graph<graph_traits>;
 
-    // initialize a full bipartite graph where |A| = 2 and |B| = 3
-    const auto graph = gl::topology::full_bipartite<graph_type>(2, 3);
+    // initialize a biclique where |A| = 2 and |B| = 3
+    const auto graph = gl::topology::biclique<graph_type>(2, 3);
 
     // set the vertex and edge properties of the graph
     std::size_t v_idx = 0, e_idx = 0;

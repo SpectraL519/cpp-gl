@@ -64,8 +64,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
         }
 
-        SUBCASE("complete binary tree") {
-            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+        SUBCASE("perfect binary tree") {
+            sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
             for (const auto id : sut.vertex_ids()) {
@@ -174,8 +174,8 @@ TEST_CASE_TEMPLATE_DEFINE(
                 expected_distances.push_back(constants::one);
         }
 
-        SUBCASE("complete binary tree") {
-            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+        SUBCASE("perfect binary tree") {
+            sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
             for (const auto id : sut.vertex_ids()) {

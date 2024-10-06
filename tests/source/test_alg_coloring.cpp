@@ -26,9 +26,9 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         sut_type sut;
         std::vector<lib_t::binary_color> expected_coloring;
 
-        SUBCASE("full bipartite graph") {
+        SUBCASE("biclique") {
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
-            sut = lib::topology::full_bipartite<sut_type>(n_vertices_a, n_vertices_b);
+            sut = lib::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
 
             expected_coloring =
                 std::vector<lib_t::binary_color>(n_vertices_a, lib::bin_color_value::black);
@@ -36,8 +36,8 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 expected_coloring.emplace_back(lib::bin_color_value::white);
         }
 
-        SUBCASE("complete binary tree") {
-            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+        SUBCASE("perfect binary tree") {
+            sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
 
             lib_t::size_type n_vertices = constants::one_element;
             lib_t::binary_color c{lib::bin_color_value::black};
@@ -128,14 +128,14 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             );
         }
 
-        SUBCASE("complete binary tree with an additional edge between siblings") {
-            sut = lib::topology::complete_binary_tree<sut_type>(constants::depth);
+        SUBCASE("perfect binary tree with an additional edge between siblings") {
+            sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
             sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
         }
 
-        SUBCASE("full bipartite graph with an additional edge between vertices from the same set") {
+        SUBCASE("biclique with an additional edge between vertices from the same set") {
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
-            sut = lib::topology::full_bipartite<sut_type>(n_vertices_a, n_vertices_b);
+            sut = lib::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
             sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
         }
 

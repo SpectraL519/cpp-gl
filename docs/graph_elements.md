@@ -4,7 +4,7 @@ This section provides an overview of the `vertex_descriptor` and `edge_descripto
 
 <br />
 
-## Table of contents
+## Table of content
 
 - [The vertex class](#the-vertex-class)
 - [The edge class](#the-edge-class)
