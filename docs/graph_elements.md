@@ -4,6 +4,14 @@ This section provides an overview of the `vertex_descriptor` and `edge_descripto
 
 <br />
 
+## Table of contents
+
+- [The vertex class](#the-vertex-class)
+- [The edge class](#the-edge-class)
+- [Related pages](#related-pages)
+
+<br />
+
 ## The vertex class
 
 The `vertex_descriptor` class represents the identity of a vertex in the graph, optionally carrying additional properties as specified by the user. This class is designed for use within the `Graph` class and serves as a lightweight identifier for vertices, providing an interface for accessing vertex properties, comparing vertex descriptors, and outputting vertex information.
@@ -56,15 +64,6 @@ The destructor is *defaulted*, allowing proper cleanup of the `vertex_descriptor
   - *Parameters*:
     - `other: const vertex_descriptor&` – the vertex descriptor to compare with.
   - *Return type*: `std::strong_ordering`
-
-- **`operator<<`**:
-  - Overloads the stream insertion operator to allow a `vertex_descriptor` to be printed to an output stream. The output includes both the vertex ID and its properties (if any), with verbosity controlled by graph I/O options.
-  - *Parameters*:
-    - `os: std::ostream&` – the output stream to print to.
-    - `vertex: const vertex_descriptor&` – the vertex descriptor to print.
-  - *Return type*: `std::ostream&`
-
-<!-- TODO: add link to io options -->
 
 ### Member variables
 
@@ -186,15 +185,6 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
   - Returns `true` if the edge is a loop (i.e., both vertices are the same).
   - *Return type*: `bool`
 
-- **`operator<<`**:
-  - Overloads the stream insertion operator to allow an `edge_descriptor` to be printed to an output stream. The output includes both connected vertices and edge properties (if any), with verbosity controlled by graph I/O options.
-  - *Parameters*:
-    - `os: std::ostream&` – the output stream to print to.
-    - `edge: const edge_descriptor&` – the edge to print.
-  - *Return type*: `std::ostream&`
-
-<!-- TODO: add link to io options -->
-
 ### Member variables
 
 - **`properties`**:
@@ -230,3 +220,11 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
       type_traits::c_properties Properties = types::empty_properties>
   using undirected_edge = edge_descriptor<VertexType, undirected_t, Properties>;
   ```
+
+<br />
+<br />
+
+## Related pages
+
+- [IO operations](/docs/io.md)
+<!-- TODO: types page -->
