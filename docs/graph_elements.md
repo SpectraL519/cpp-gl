@@ -241,5 +241,5 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
 ## Related pages
 
 - [The graph class - library's core](/docs/graph.md)
-- [IO operations](/docs/io.md)
+- [I/O operations](/docs/io.md)
 <!-- TODO: types page -->

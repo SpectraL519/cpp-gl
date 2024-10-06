@@ -9,6 +9,7 @@ The `graph` class is the entry point and key element of the `CPP-GL` library. It
 - [The basics](#the-basics)
 - [Graph representation](#graph-representation)
 - [Graph operations](#graph-operations)
+- [Additional utility](#additional-utility)
 - [Related pages](#related-pages)
 
 <br />
@@ -19,7 +20,7 @@ The `graph` class is the entry point and key element of the `CPP-GL` library. It
 > [!IMPORTANT]
 > All elements of the `CPP-GL` library are defined in the `gl` namespace.
 
-The `graph` class is defined in the `gl/graph.hpp` header file, which includes most of the elements required to work with the graph structure.
+The `graph` class is defined in the [gl/graph.hpp](/include/gl/graph.hpp) header file, which includes most of the elements required to work with the graph structure.
 
 ```cpp
 #include <gl/graph.hpp>
@@ -148,14 +149,14 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.get_vertex(vertex_id) const`**:
   - *Description*: Retrieves the vertex object associated with the given vertex ID.
-  - *Returned value*: $v \in V : v_{id} = \text{vertex\_id}$
+  - *Returned value*: $v \in V : v_{id} = \text{vertex-id}$
   - *Parameters*:
     - `vertex_id: const types::id_type`
   - *Return type*: `const vertex_type&`
 
 - **`graph.has_vertex(vertex_id) const`**:
   - *Description*: Checks if a vertex exists for the given vertex ID.
-  - *Returned value*: $\exists!(v \in V : v_{id} = \text{vertex\_id})$
+  - *Returned value*: $\exists!(v \in V : v_{id} = \text{vertex-id})$
   - *Parameters*:
     - `vertex_id: const types::id_type`
   - *Return type*: `bool`
@@ -209,7 +210,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `void`
 
 - **`graph.remove_vertices_from(vertex_id_range)`**:
-  - *Template Parameters*:
+  - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Parameters*:
@@ -236,8 +237,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.in_degree(vertex_id) const`**:
   - *Description*: Returns the in-degree (number of incoming edges) of the vertex with the specified ID.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : \text{vertex\_id} = v_{id}\}|$
-    - For unidirected graphs: $deg(\text{vertex\_id})$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex-id} = v_{id}\}|$
+    - For unidirected graphs: $deg(\text{vertex-id})$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the in-degree.
   - *Return type*: `types::size_type`
@@ -254,8 +255,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.out_degree(vertex_id) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the vertex with the specified ID.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : \text{vertex\_id} = u_{id}\}|$
-    - For unidirected graphs: $deg(\text{vertex\_id})$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex-id} = u_{id}\}|$
+    - For unidirected graphs: $deg(\text{vertex-id})$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the out-degree.
   - *Return type*: `types::size_type`
@@ -278,7 +279,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: $deg_{in}(vertex) + deg_{out}(vertex)$
     - For unidirected graphs:
 
-      $2 \times |\{(u, v) \in E : u = v \land (\text{vertex\_id} \in \{u_{id}, v_{id}\})\}| + |\{(u, v) \in E : u \ne v \land (\text{vertex\_id} \in \{u_{id}, v_{id}\})\}|$
+      $2 \times |\{(u, v) \in E : u = v \land (\text{vertex-id} \in \{u_{id}, v_{id}\})\}| + |\{(u, v) \in E : u \ne v \land (\text{vertex-id} \in \{u_{id}, v_{id}\})\}|$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the degree.
   - *Return type*: `types::size_type`
@@ -288,14 +289,14 @@ Based on the specified traits, the `graph` class defines the following types:
 ### Edge Operations
 
 - **`graph.add_edge(first_id, second_id)`**:
-  - Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge.
+  - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge.
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
   - *Return type*: `const edge_type&`
 
 - **`graph.add_edge(first_id, second_id, properties)`**:
-  - Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
+  - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
@@ -304,14 +305,14 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Requires*: non-default `edge_properties_type`
 
 - **`graph.add_edge(first, second)`**:
-  - Adds a new edge between the specified vertices and returns a reference to the newly added edge.
+  - *Description*: Adds a new edge between the specified vertices and returns a reference to the newly added edge.
   - *Parameters*:
     - `first: const vertex_type&` – the first vertex.
     - `second: const vertex_type&` – the second vertex.
   - *Return type*: `const edge_type&`
 
 - **`graph.add_edge(first, second, properties)`**:
-  - Adds a new edge between the specified vertices and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
+  - *Description*: Adds a new edge between the specified vertices and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
     - `first: const vertex_type&` – the first vertex.
     - `second: const vertex_type&` – the second vertex.
@@ -320,18 +321,18 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Requires*: non-default `edge_properties_type`
 
 - **`graph.add_edges_from(source_id, destination_id_range)`**:
-  - *Template Parameters*:
+  - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – a range of vertex IDs that must satisfy the size and type constraints.
-  - Adds multiple edges from a source vertex (specified by ID) to a range of destination vertices (also specified by IDs).
+  - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of destination vertices (also specified by IDs).
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
     - `destination_id_range: const IdRange&` – a range of destination vertex IDs to connect to the source vertex.
   - *Return type*: `void`
 
 - **`graph.add_edges_from(source, destination_range)`**:
-  - *Template Parameters*:
+  - *Template parameters*:
     - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – a range of vertex references that must satisfy the size and type constraints.
-  - Adds multiple edges from a specified source vertex to a range of destination vertices (specified by references).
+  - *Description*: Adds multiple edges from a specified source vertex to a range of destination vertices (specified by references).
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
     - `destination_range: const VertexRefRange&` – a range of destination vertex references to connect to the source vertex.
@@ -346,15 +347,15 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.has_edge(first_id, second_id) const`**:
   - *Description*: Returns true if there is an edge between the vertices with the specified IDs.
   - *Returned value*:
-    - For directed graphs: $\exists((u, v) \in E : \text{first\_id} = u_{id} \land \text{second\_id} = v_{id})$
-    - For unidirected graphs: $\exists((u, v) \in E : (\text{first\_id}, \text{second\_id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
+    - For directed graphs: $\exists((u, v) \in E : \text{first-id} = u_{id} \land \text{second-id} = v_{id})$
+    - For unidirected graphs: $\exists((u, v) \in E : (\text{first-id}, \text{second-id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
   - *Return type*: `bool`
 
 - **`graph.has_edge(first, second) const`**:
-  - Returns true if there is an edge between the specified vertices.
+  - *Description*: Returns true if there is an edge between the specified vertices.
   - *Returned value*:
     - For directed graphs: $\exists((u, v) \in E : \text{first} = u \land \text{second} = v)$
     - For unidirected graphs: $\exists((u, v) \in E : (\text{first}, \text{second}) \in \{(u, v), (v, u)\})$
@@ -404,7 +405,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `void`
 
 - **`graph.remove_edges_from(edges)`**:
-  - *Template Parameters*:
+  - *Template parameters*:
     - `EdgeRefRange: type_traits::c_range_of<types::const_ref_wrap<edge_type>>` – a range of edge references that must satisfy the type constraints.
   - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
   - *Parameters*:
@@ -429,7 +430,7 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.are_incident(first_id, second_id) const`**:
   - *Description*: Returns true if the vertices with the specified IDs are incident to each other or the IDs are the same.
-  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first\_id} \in ids(e_1) \land \text{second\_id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
+  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first-id} \in ids(e_1) \land \text{second-id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
@@ -460,7 +461,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `bool`
 
 - **`graph.are_incident(edge_1, edge_2) const`**:
-  - *Returned value*: $vertices(\text{edge\_1}) \cap vertices(\text{edge\_2}) \ne \emptyset$
+  - *Returned value*: $vertices(\text{edge-1}) \cap vertices(\text{edge-2}) \ne \emptyset$
   - *Description*: Returns true if the given edges are incident.
   - *Parameters*:
     - `edge_1: const edge_type&` – the first edge.
@@ -473,12 +474,66 @@ Based on the specified traits, the `graph` class defines the following types:
 <br />
 <br />
 
+## Additional utility
+
+In addition to the core functionality of the `graph` class, the [gl/graph_utility.hpp](/include/gl/graph_utility.hpp) file provides a set of utility functions and type traits that offer extended support for graph manipulation and property handling. Below is an overview of the key utilities provided.
+
+### Type traits
+
+To write safe and more expressive graph utility of your own, you can use the defined concepts and type traits:
+
+> [!NOTE]
+> All concepts and in the `CPP-GL` library are defined in the `gl::type_trais` namespace and are prefixed with `c_`.
+
+| **Trait** | **Description** |
+| :- | :- |
+| `c_graph<T>` | Ensures that the template parameter `T` is a specialization of the `graph` class |
+| `c_directed_graph<T>` | Equivalent to `c_graph<T> and is_directed_v<T>`<br/>Ensures that the template parameter `T` is a *directed* specialization of the `graph` class |
+| `c_undirected_graph<T>` | Equivalent to `c_graph<T> and is_undirected_v<T>`<br/>Ensures that the template parameter `T` is an *undirected* specialization of the `graph` class |
+
+> [!TIP]
+> More (not graph class specific) type traits and concepts are defined in the [gl/types/traits/](/include/gl/types/traits/) directory.
+
+### Graph element properties utility
+
+#### Types
+
+> [!NOTE]
+> All of the utility types listed below are defined in the `gl::types` namespace
+
+- `default_vertex_distance_type = std::int64_t` : Defines the default type for distance between vertices. This is used in the absence of a weight type definition in the `edge_properties_type` of a graph.
+- `vertex_distance`
+  - *Template parameters*:
+    - `GraphType: type_traits::c_graph`
+  - *Description*: A type trait which determines the type to be used for vertex distances based on the `c_weight_properties_type` concept:
+    - If the graph's `edge_properties_type` includes a `weight_type` definition, that type is used
+    - Otherwise, the default distance type is used.
+  - *Members*:
+    - `type` - the vertex distance type definition (defined as above).
+- `vertex_distance_type<GraphType>` : An alias for `typename vertex_distance<GraphType>::type`
+
+#### Functions
+
+- `get_weight(edge)`
+  - *Template parameters*:
+    - `GraphType: type_traits::c_graph`
+  - *Description*: Returns the weight of the given edge based on the `edge_properties_type` of the graph.
+  - *Parameters*:
+    - `edge: const typename GraphType::edge_type&` - the edge to get weight from
+  - *Returned value*:
+    - `edge.properties.weight` if the `edge_properties_type` satisfies the `type_traits::c_weight_properties_type` concept
+    - `static_cast<types::default_vertex_distance_type>(1ll)` otherwise
+  - *Return type*: `types::vertex_distance_type<GraphType>`
+
+<br />
+<br />
+
 ## Related pages
 
 This section provides links to additional resources and documentation that can help you further explore the capabilities of the `CPP-GL` library.
 
 - [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
-- [IO operations](/docs/io.md)
+- [I/O operations](/docs/io.md)
 - [Graph topology generators](/docs/topologies.md)
 - [Algorithms](/docs/algoithms.md)
 <!-- TODO: types page -->
