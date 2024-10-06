@@ -10,9 +10,9 @@ General purpose header-only template graph library for C++20 and newer standards
 
 ## Overview
 
-* The goal of the project was to create a higlhy customizable, intuitive and easy to work with graph library for the modern C++ standards.
-* The `CPP-GL` library's implementation relies solely on the C++ standard library (it does not require installing any additional tools) and is designed to be compatible with the C++ standard tools, e.g. range-based loops, std algorithms, the [ranges library](https://en.cppreference.com/w/cpp/ranges), stream operations, etc.
-* The library relies heavily on [concepts](https://en.cppreference.com/w/cpp/language/constraints) to acheive abstraction instead of interfaces and abstract classes to minimize the overhead associated with virtual tables and dynamic dispatch.
+- The goal of the project was to create a higlhy customizable, intuitive and easy to work with graph library for the modern C++ standards.
+- The `CPP-GL` library's implementation relies solely on the C++ standard library (it does not require installing any additional tools) and is designed to be compatible with the C++ standard tools, e.g. range-based loops, std algorithms, the [ranges library](https://en.cppreference.com/w/cpp/ranges), stream operations, etc.
+- The library relies heavily on [concepts](https://en.cppreference.com/w/cpp/language/constraints) to acheive abstraction instead of interfaces and abstract classes to minimize the overhead associated with virtual tables and dynamic dispatch.
 
 > [!NOTE]
 > `v1.0` of the library has been developed as the Bachelor of Engineering Thesis at the *Wrocław University of Science and Technology*
@@ -25,13 +25,13 @@ General purpose header-only template graph library for C++20 and newer standards
 
 ## Table of contents
 
-* [Installing the library](#installing-the-library)
-* [CMake integration](#cmake-integration)
-* [Documentation](#documentation)
-* Examples
-* [Dev notes](#dev-notes)
-* [Compiler support](#compiler-support)
-* [Licence](#licence)
+- [Installing the library](#installing-the-library)
+- [CMake integration](#cmake-integration)
+- [Documentation](#documentation)
+- Examples
+- [Dev notes](#dev-notes)
+- [Compiler support](#compiler-support)
+- [Licence](#licence)
 
 <br />
 
@@ -111,11 +111,11 @@ The [graph class](/docs/graph.md) can be easily customized to suit your needs by
 
 While the `gl::graph` class is the key element of the library, it's not the only one. The `CPP-GL` library provides a wide range of functionalities designed to handle various graph-related operations efficiently. For detailed explanations and usage examples of these features, please refer to the dedicated documentation pages linked below.
 
-* [The graph class - library's core](/docs/graph.md)
-* [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
-* [IO operations](/docs/io.md)
-* [Graph topology generators](/docs/topologies.md)
-* [Algorithms](/docs/algoithms.md)
+- [The graph class - library's core](/docs/graph.md)
+- [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
+- [IO operations](/docs/io.md)
+- [Graph topology generators](/docs/topologies.md)
+- [Algorithms](/docs/algoithms.md)
 <!-- TODO: types page -->
 
 <br />

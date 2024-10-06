@@ -124,12 +124,12 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.n_vertices() const`**:
   - *Description*: Returns the total number of vertices in the graph.
-  - *Returned value*: $|V|$
+  - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
   - *Return type*: `types::size_type`
 
 - **`graph.n_unique_edges() const`**:
   - Returns the number of unique edges in the graph.
-  - *Returned value*: $|E|$
+  - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
 
 <br />
@@ -143,26 +143,26 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.vertex_ids() const`**:
   - *Description*: Returns a range of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
-  - *Returned value*: $(id(v) : v \in V)$
+  - *Returned value*: $(v_{id} : v \in V)$
   - *Return type*: `std::ranges::iota_view<types::id_type, types::id_type>`
 
 - **`graph.get_vertex(vertex_id) const`**:
   - *Description*: Retrieves the vertex object associated with the given vertex ID.
-  - *Returned value*: $v \in V : id(v) = vertex\_id$
+  - *Returned value*: $v \in V : v_{id} = \text{vertex\_id}$
   - *Parameters*:
     - `vertex_id: const types::id_type`
   - *Return type*: `const vertex_type&`
 
 - **`graph.has_vertex(vertex_id) const`**:
   - *Description*: Checks if a vertex exists for the given vertex ID.
-  - *Returned value*: $\exists!(v \in V : id(v) = vertex\_id)$
+  - *Returned value*: $\exists!(v \in V : v_{id} = \text{vertex\_id})$
   - *Parameters*:
     - `vertex_id: const types::id_type`
   - *Return type*: `bool`
 
 - **`graph.has_vertex(vertex) const`**:
   - *Description*:  Checks if the given vertex object exists in the graph by verifying its ID as well as its memory address.
-  - *Returned value*: $\exists!(v \in V : id(v) = id(vertex)) \land addr(v) = addr(vertex)$
+  - *Returned value*: $\exists!(v \in V : v_{id} = id(\text{vertex})) \land addr(v) = addr(\text{vertex})$
   - *Parameters*:
     - `vertex: const vertex_type&`
   - *Return type*: `bool`
@@ -227,7 +227,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.in_degree(vertex) const`**:
   - *Description*: Returns the in-degree (number of incoming edges) of the specified vertex.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : vertex = v\}|$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex} = v\}|$
     - For unidirected graphs: $deg(vertex)$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the in-degree.
@@ -236,8 +236,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.in_degree(vertex_id) const`**:
   - *Description*: Returns the in-degree (number of incoming edges) of the vertex with the specified ID.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : vertex\_id = id(v)\}|$
-    - For unidirected graphs: $deg(vertex\_id)$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex\_id} = v_{id}\}|$
+    - For unidirected graphs: $deg(\text{vertex\_id})$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the in-degree.
   - *Return type*: `types::size_type`
@@ -245,7 +245,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.out_degree(vertex) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the specified vertex.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : vertex = u\}|$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex} = u\}|$
     - For unidirected graphs: $deg(vertex)$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the out-degree.
@@ -254,8 +254,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.out_degree(vertex_id) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the vertex with the specified ID.
   - *Returned value*:
-    - For directed graphs: $|\{(u, v) \in E : vertex\_id = id(u)\}|$
-    - For unidirected graphs: $deg(vertex\_id)$
+    - For directed graphs: $|\{(u, v) \in E : \text{vertex\_id} = u_{id}\}|$
+    - For unidirected graphs: $deg(\text{vertex\_id})$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the out-degree.
   - *Return type*: `types::size_type`
@@ -263,10 +263,10 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.degree(vertex) const`**:
   - *Description*: Returns the degree (number of incoming and outgoing edges) of the specified vertex.
   - *Returned value*:
-    - For directed graphs: $in_deg(vertex) + out_deg(vertex)$
+    - For directed graphs: $deg_{in}(\text{vertex}) + deg_{out}(\text{vertex})$
     - For unidirected graphs:
 
-      $2 \times |\{(u, v) \in E : u = v \land (vertex = \in \{u, v\})\}| + |\{(u, v) \in E : u \ne v \land (vertex = \in \{u, v\})\}|$
+      $2 \times |\{(u, v) \in E : u = v \land (\text{vertex} \in \{u, v\})\}| + |\{(u, v) \in E : u \ne v \land (\text{vertex} \in \{u, v\})\}|$
 
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the degree.
@@ -275,10 +275,10 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.degree(vertex_id) const`**:
   - *Description*: Returns the degree (number of incoming and outgoing edges) of the vertex with the specified ID.
   - *Returned value*:
-    - For directed graphs: $in_deg(vertex) + out_deg(vertex)$
+    - For directed graphs: $deg_{in}(vertex) + deg_{out}(vertex)$
     - For unidirected graphs:
 
-      $2 \times |\{(u, v) \in E : u = v \land (vertex\_id = \in \{id(u), id(v)\})\}| + |\{(u, v) \in E : u \ne v \land (vertex\_id = \in \{id(u), id(v)\})\}|$
+      $2 \times |\{(u, v) \in E : u = v \land (\text{vertex\_id} \in \{u_{id}, v_{id}\})\}| + |\{(u, v) \in E : u \ne v \land (\text{vertex\_id} \in \{u_{id}, v_{id}\})\}|$
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the degree.
   - *Return type*: `types::size_type`
@@ -346,8 +346,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.has_edge(first_id, second_id) const`**:
   - *Description*: Returns true if there is an edge between the vertices with the specified IDs.
   - *Returned value*:
-    - For directed graphs: $\exists|\{(u, v) \in E : first\_id = id(u) \land second\_id = id(v)\}|$
-    - For unidirected graphs: $\exists|\{(u, v) \in E : (first\_id, second\_id) \in \{(id(u), id(v)), (id(v), id(u))\}\}|$
+    - For directed graphs: $\exists((u, v) \in E : \text{first\_id} = u_{id} \land \text{second\_id} = v_{id})$
+    - For unidirected graphs: $\exists((u, v) \in E : (\text{first\_id}, \text{second\_id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
@@ -356,28 +356,28 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.has_edge(first, second) const`**:
   - Returns true if there is an edge between the specified vertices.
   - *Returned value*:
-    - For directed graphs: $\exists|\{(u, v) \in E : first = u \land second = v\}|$
-    - For unidirected graphs: $\exists|\{(u, v) \in E : (first, second) \in \{(u, v), (v, u)\}\}|$
+    - For directed graphs: $\exists((u, v) \in E : \text{first} = u \land \text{second} = v)$
+    - For unidirected graphs: $\exists((u, v) \in E : (\text{first}, \text{second}) \in \{(u, v), (v, u)\})$
   - *Parameters*:
     - `first: const vertex_type&` – the first vertex.
     - `second: const vertex_type&` – the second vertex.
   - *Return type*: `bool`
 
 - **`graph.has_edge(edge) const`**:
-  - *Description*: Returns true if the specified edge exists in the graph.
+  - *Description*: Returns true if the specified edge exists in the graph (**NOTE:** the edge is matched by it's vertices and address).
   - *Parameters*:
     - `edge: const edge_type&` – the edge to check for existence.
   - *Return type*: `bool`
 
 - **`graph.get_edge(first_id, second_id) const`**:
-  - *Description*: Returns an optional reference to the edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned.
+  - *Description*: Returns an optional reference to the edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned (**NOTE:** for the `adjacency_list` implementation the first matchin edge is returned).
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
   - *Return type*: `types::optional_cref<edge_type>`
 
 - **`graph.get_edge(first, second) const`**:
-  - *Description*: Returns an optional reference to the edge between the specified vertices. If either vertex does not exist or if no edge exists between them, `std::nullopt` is returned.
+  - *Description*: Returns an optional reference to the edge between the specified vertices. If either vertex does not exist or if no edge exists between them, `std::nullopt` is returned for the `adjacency_list` implementation the first matchin edge is returned.
   - *Parameters*:
     - `first: const vertex_type&` – the first vertex.
     - `second: const vertex_type&` – the second vertex.
@@ -429,6 +429,7 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.are_incident(first_id, second_id) const`**:
   - *Description*: Returns true if the vertices with the specified IDs are incident to each other or the IDs are the same.
+  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first\_id} \in ids(e_1) \land \text{second\_id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
     - `first_id: types::id_type` – the ID of the first vertex.
     - `second_id: types::id_type` – the ID of the second vertex.
@@ -436,6 +437,7 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.are_incident(first, second) const`**:
   - *Description*: Returns true if the specified vertices are incident to each other or if they are the same.
+  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first} \in vertices(e_1) \land \text{second} \in vertices(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
     - `first: const vertex_type&` – the first vertex.
     - `second: const vertex_type&` – the second vertex.
@@ -443,6 +445,7 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.are_incident(vertex, edge) const`**:
   - *Description*: Returns true if the given vertex is incident with the given edge.
+  - *Returned value*: $\text{vertex} \in vertices(\text{edge})$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex to check for incidence.
     - `edge: const edge_type&` – the edge to check against.
@@ -450,12 +453,14 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.are_incident(edge, vertex) const`**:
   - *Description*: Returns true if the given vertex is incident with the given edge.
+  - *Returned value*: $\text{vertex} \in vertices(\text{edge})$
   - *Parameters*:
     - `edge: const edge_type&` – the edge to check for incidence.
     - `vertex: const vertex_type&` – the vertex to check against.
   - *Return type*: `bool`
 
 - **`graph.are_incident(edge_1, edge_2) const`**:
+  - *Returned value*: $vertices(\text{edge\_1}) \cap vertices(\text{edge\_2}) \ne \emptyset$
   - *Description*: Returns true if the given edges are incident.
   - *Parameters*:
     - `edge_1: const edge_type&` – the first edge.
