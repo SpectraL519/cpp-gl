@@ -80,7 +80,7 @@ template <
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 bool pq_bfs_impl(
     const GraphType& graph,
-    const PQCompare pq_compare,
+    const PQCompare& pq_compare,
     const InitQueueRangeType& initial_queue_content,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, bool, types::id_type>& visit,
