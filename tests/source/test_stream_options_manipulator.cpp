@@ -77,20 +77,20 @@ TEST_CASE_FIXTURE(
     const auto bit_positions = {bit_position_1, bit_position_2};
 
     ss1 >> lib::io::set_options(bit_positions);
-    CHECK(lib::io::are_option_set(ss1, bit_positions));
-    CHECK(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK(lib::io::are_options_set(ss1, bit_positions));
+    CHECK(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 >> lib::io::unset_options(bit_positions);
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 >> lib::io::set_options({bit_position_1});
     CHECK(lib::io::is_option_set(ss1, bit_position_1));
-    CHECK(lib::io::are_option_set(ss1, {bit_position_1}));
+    CHECK(lib::io::are_options_set(ss1, {bit_position_1}));
     CHECK_FALSE(lib::io::is_option_set(ss1, bit_position_2));
-    CHECK_FALSE(lib::io::are_option_set(ss1, {bit_position_2}));
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, {bit_position_2}));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 }
 
 TEST_CASE_FIXTURE(
@@ -100,20 +100,20 @@ TEST_CASE_FIXTURE(
     const auto bit_positions = {bit_position_1, bit_position_2};
 
     ss1 << lib::io::set_options(bit_positions);
-    CHECK(lib::io::are_option_set(ss1, bit_positions));
-    CHECK(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK(lib::io::are_options_set(ss1, bit_positions));
+    CHECK(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 << lib::io::unset_options(bit_positions);
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 << lib::io::set_options({bit_position_1});
     CHECK(lib::io::is_option_set(ss1, bit_position_1));
-    CHECK(lib::io::are_option_set(ss1, {bit_position_1}));
+    CHECK(lib::io::are_options_set(ss1, {bit_position_1}));
     CHECK_FALSE(lib::io::is_option_set(ss1, bit_position_2));
-    CHECK_FALSE(lib::io::are_option_set(ss1, {bit_position_2}));
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, {bit_position_2}));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 }
 
 TEST_CASE_FIXTURE(
@@ -123,20 +123,20 @@ TEST_CASE_FIXTURE(
     const auto bit_positions = {BitPositionEnum::bit_position_1, BitPositionEnum::bit_position_2};
 
     ss1 >> lib::io::set_options(bit_positions);
-    CHECK(lib::io::are_option_set(ss1, bit_positions));
-    CHECK(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK(lib::io::are_options_set(ss1, bit_positions));
+    CHECK(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 >> lib::io::unset_options(bit_positions);
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 >> lib::io::set_options({BitPositionEnum::bit_position_1});
     CHECK(lib::io::is_option_set(ss1, BitPositionEnum::bit_position_1));
-    CHECK(lib::io::are_option_set(ss1, {BitPositionEnum::bit_position_1}));
+    CHECK(lib::io::are_options_set(ss1, {BitPositionEnum::bit_position_1}));
     CHECK_FALSE(lib::io::is_option_set(ss1, BitPositionEnum::bit_position_2));
-    CHECK_FALSE(lib::io::are_option_set(ss1, {BitPositionEnum::bit_position_2}));
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, {BitPositionEnum::bit_position_2}));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 }
 
 TEST_CASE_FIXTURE(
@@ -146,20 +146,20 @@ TEST_CASE_FIXTURE(
     const auto bit_positions = {BitPositionEnum::bit_position_1, BitPositionEnum::bit_position_2};
 
     ss1 << lib::io::set_options(bit_positions);
-    CHECK(lib::io::are_option_set(ss1, bit_positions));
-    CHECK(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK(lib::io::are_options_set(ss1, bit_positions));
+    CHECK(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 << lib::io::unset_options(bit_positions);
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 
     ss1 << lib::io::set_options({BitPositionEnum::bit_position_1});
     CHECK(lib::io::is_option_set(ss1, BitPositionEnum::bit_position_1));
-    CHECK(lib::io::are_option_set(ss1, {BitPositionEnum::bit_position_1}));
+    CHECK(lib::io::are_options_set(ss1, {BitPositionEnum::bit_position_1}));
     CHECK_FALSE(lib::io::is_option_set(ss1, BitPositionEnum::bit_position_2));
-    CHECK_FALSE(lib::io::are_option_set(ss1, {BitPositionEnum::bit_position_2}));
-    CHECK_FALSE(lib::io::are_option_set(ss1, bit_positions));
-    CHECK_FALSE(lib::io::are_option_set(ss1, options_bitmask));
+    CHECK_FALSE(lib::io::are_options_set(ss1, {BitPositionEnum::bit_position_2}));
+    CHECK_FALSE(lib::io::are_options_set(ss1, bit_positions));
+    CHECK_FALSE(lib::io::are_options_set(ss1, options_bitmask));
 }
 
 TEST_SUITE_END(); // test_stream_options_manipulator
