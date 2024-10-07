@@ -222,8 +222,18 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
 );
 
+TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
+    const std::vector<std::optional<lib_t::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
+    lib_t::id_type vertex_id = predecessor_map.size() - constants::one;
+
+    CHECK_THROWS_AS(
+        func::discard_result(lib::algorithm::reconstruct_path(predecessor_map, vertex_id)),
+        std::invalid_argument
+    );
+}
+
 TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {
-    const std::vector<lib_t::id_type> predecessor_map = {0, 3, 1, 0};
+    const std::vector<std::optional<lib_t::id_type>> predecessor_map = {0, 3, 1, 0};
 
     lib_t::id_type vertex_id;
     std::deque<lib_t::id_type> expected_path;

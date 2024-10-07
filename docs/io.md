@@ -181,9 +181,9 @@ You can save a graph to a file using the `io::save(graph, path, options)` functi
 
 You can load a graph from a file using the `io::load(path)` function:
 
+- **Description**: Loads a graph from the specified file path.
 - **Template parameters**:
   - `GraphType: type_traits::c_graph` – The type of the graph to be loaded.
-- **Description**: Loads a graph from the specified file path.
 
 > [!NOTE]
 >

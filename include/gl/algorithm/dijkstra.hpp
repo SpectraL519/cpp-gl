@@ -11,9 +11,9 @@
 
 namespace gl::algorithm {
 
-template <type_traits::c_basic_arithmetic EdgeWeithType>
+template <type_traits::c_basic_arithmetic VertexDistanceType>
 struct paths_descriptor {
-    using distance_type = EdgeWeithType;
+    using distance_type = VertexDistanceType;
 
     paths_descriptor(const types::size_type n_vertices)
     : predecessors(n_vertices), distances(n_vertices) {
@@ -108,16 +108,21 @@ template <
     return paths;
 }
 
-template <type_traits::c_random_access_range_of<types::id_type> IdRange>
+template <type_traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
 [[nodiscard]] std::deque<types::id_type> reconstruct_path(
     const IdRange& predecessor_map, const types::id_type vertex_id
 ) {
+    if (not std::ranges::next(predecessor_map.begin(), vertex_id)->has_value())
+        throw std::invalid_argument(
+            std::format("[alg::reconstruct_path] The given vertex is unreachable: {}", vertex_id)
+        );
+
     std::deque<types::id_type> path;
     types::id_type current_vertex = vertex_id;
 
     while (true) {
         path.push_front(current_vertex);
-        types::id_type predecessor = *(predecessor_map.begin() + current_vertex);
+        types::id_type predecessor = (predecessor_map.begin() + current_vertex)->value();
 
         if (predecessor == current_vertex)
             break;
@@ -125,6 +130,7 @@ template <type_traits::c_random_access_range_of<types::id_type> IdRange>
         current_vertex = predecessor;
     }
 
+    path.shrink_to_fit();
     return path;
 }
 

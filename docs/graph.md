@@ -186,9 +186,9 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `void`
 
 - **`graph.add_vertices_with(properties_range)`**:
+  - *Description*: Adds multiple vertices to the graph, each with the corresponding properties from the given range. The number of vertices added is determined by the size of `properties_range`.
   - *Template parameters*:
     - `VertexPropertiesRange: type_traits::c_sized_range_of<vertex_properties_type>` – A range of vertex properties that must satisfy the size and type constraints.
-  - *Description*: Adds multiple vertices to the graph, each with the corresponding properties from the given range. The number of vertices added is determined by the size of `properties_range`.
   - *Parameters*:
     - `properties_range: const VertexPropertiesRange&` – A range of properties to assign to each of the new vertices.
   - *Return type*: `void`
@@ -210,17 +210,17 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `void`
 
 - **`graph.remove_vertices_from(vertex_id_range)`**:
+  - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
-  - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Parameters*:
     - `vertex_id_range: const IdRange&` – A range of vertex IDs to remove.
   - *Return type*: `void`
 
 - **`graph.remove_vertices_from(vertex_ref_range)`**:
+  - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Template parameters*:
     - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – A range of vertex references that must satisfy the size and type constraints.
-  - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Parameters*:
     - `vertex_ref_range: const VertexRefRange&` – A range of vertex references to remove.
   - *Return type*: `void`
@@ -321,18 +321,18 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Requires*: non-default `edge_properties_type`
 
 - **`graph.add_edges_from(source_id, destination_id_range)`**:
+  - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of destination vertices (also specified by IDs).
   - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – a range of vertex IDs that must satisfy the size and type constraints.
-  - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of destination vertices (also specified by IDs).
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
     - `destination_id_range: const IdRange&` – a range of destination vertex IDs to connect to the source vertex.
   - *Return type*: `void`
 
 - **`graph.add_edges_from(source, destination_range)`**:
+  - *Description*: Adds multiple edges from a specified source vertex to a range of destination vertices (specified by references).
   - *Template parameters*:
     - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – a range of vertex references that must satisfy the size and type constraints.
-  - *Description*: Adds multiple edges from a specified source vertex to a range of destination vertices (specified by references).
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
     - `destination_range: const VertexRefRange&` – a range of destination vertex references to connect to the source vertex.
@@ -405,9 +405,9 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `void`
 
 - **`graph.remove_edges_from(edges)`**:
+  - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
   - *Template parameters*:
     - `EdgeRefRange: type_traits::c_range_of<types::const_ref_wrap<edge_type>>` – a range of edge references that must satisfy the type constraints.
-  - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
   - *Parameters*:
     - `edges: const EdgeRefRange&` – a range of edges to remove from the graph.
   - *Return type*: `void`
@@ -461,8 +461,8 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `bool`
 
 - **`graph.are_incident(edge_1, edge_2) const`**:
-  - *Returned value*: $vertices(\text{edge-1}) \cap vertices(\text{edge-2}) \ne \emptyset$
   - *Description*: Returns true if the given edges are incident.
+  - *Returned value*: $vertices(\text{edge-1}) \cap vertices(\text{edge-2}) \ne \emptyset$
   - *Parameters*:
     - `edge_1: const edge_type&` – the first edge.
     - `edge_2: const edge_type&` – the second edge.
@@ -503,9 +503,9 @@ To write safe and more expressive graph utility of your own, you can use the def
 
 - `default_vertex_distance_type = std::int64_t` : Defines the default type for distance between vertices. This is used in the absence of a weight type definition in the `edge_properties_type` of a graph.
 - `vertex_distance`
+  - *Description*: A type trait which determines the type to be used for vertex distances based on the `c_weight_properties_type` concept:
   - *Template parameters*:
     - `GraphType: type_traits::c_graph`
-  - *Description*: A type trait which determines the type to be used for vertex distances based on the `c_weight_properties_type` concept:
     - If the graph's `edge_properties_type` includes a `weight_type` definition, that type is used
     - Otherwise, the default distance type is used.
   - *Members*:
@@ -515,9 +515,9 @@ To write safe and more expressive graph utility of your own, you can use the def
 #### Functions
 
 - `get_weight(edge)`
+  - *Description*: Returns the weight of the given edge based on the `edge_properties_type` of the graph.
   - *Template parameters*:
     - `GraphType: type_traits::c_graph`
-  - *Description*: Returns the weight of the given edge based on the `edge_properties_type` of the graph.
   - *Parameters*:
     - `edge: const typename GraphType::edge_type&` - the edge to get weight from
   - *Returned value*:
