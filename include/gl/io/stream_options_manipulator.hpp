@@ -177,11 +177,11 @@ template <detail::c_bit_position_enum BitPosition>
     );
 }
 
-[[nodiscard]] gl_attr_force_inline bool are_option_set(std::ios_base& stream, iword_type bitmask) {
+[[nodiscard]] gl_attr_force_inline bool are_options_set(std::ios_base& stream, iword_type bitmask) {
     return stream_options_manipulator::are_options_set(stream, bitmask);
 }
 
-[[nodiscard]] gl_attr_force_inline bool are_option_set(
+[[nodiscard]] gl_attr_force_inline bool are_options_set(
     std::ios_base& stream, const std::initializer_list<bit_position_type>& bit_positions
 ) {
     return stream_options_manipulator::are_options_set(
@@ -190,7 +190,7 @@ template <detail::c_bit_position_enum BitPosition>
 }
 
 template <detail::c_bit_position_enum BitPosition>
-[[nodiscard]] gl_attr_force_inline bool are_option_set(
+[[nodiscard]] gl_attr_force_inline bool are_options_set(
     std::ios_base& stream, const std::initializer_list<BitPosition>& bit_positions
 ) {
     return stream_options_manipulator::are_options_set(
