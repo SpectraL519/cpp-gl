@@ -6,14 +6,12 @@ The library supports multiple output formats, controlled through predefined opti
 
 Users can save graphs to a file in multiple formats, while the library supports reading from files only in the Graph Specification Format (GSF). This ensures that graphs can be reconstructed accurately from files, preserving the graph's structure and properties.
 
-This documentation section details the stream operators available in the library, the various options for customizing the output format, and the methods used for reading graph data from streams.
-
 <br />
 
 ## Table of content
 
 - [Basic usage of stream I/O operations](#basic-usage-of-stream-io-operations)
-- [I/o options](#io-options)
+- [I/O options](#io-options)
 - [File I/O operations](#file-io-operations)
 - [GSF (Grahp Specification Format)](#gsf-graph-specification-format)
 - [Related pages](#related-pages)
