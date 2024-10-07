@@ -11,7 +11,7 @@
 
 namespace gl::algorithm {
 
-template <type_traits::c_graph GraphType>
+template <type_traits::c_undirected_graph GraphType>
 struct mst_descriptor {
     using graph_type = GraphType;
     using edge_type = typename graph_type::edge_type;

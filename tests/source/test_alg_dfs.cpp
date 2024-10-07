@@ -47,7 +47,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             expected_previsit_order.push_back(id);
     }
 
-    SUBCASE("full bipartite graph") {
+    SUBCASE("biclique") {
         /*
         A = {0, 1, 2}
         B = {3, 4}
@@ -57,7 +57,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 2 connected to B (4 visited) [s: 3 1 3]
         finally: 0 -> 4 -> 2 -> 1 -> 3
         */
-        graph = lib::topology::full_bipartite<graph_type>(constants::three, constants::two);
+        graph = lib::topology::biclique<graph_type>(constants::three, constants::two);
         expected_previsit_order = {0, 4, 2, 3, 1};
     }
 
@@ -167,7 +167,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = lib::topology::complete_binary_tree<graph_type>(constants::three);
+    const auto graph = lib::topology::perfect_binary_tree<graph_type>(constants::three);
     const auto search_tree = lib::algorithm::depth_first_search<graph_type>(graph);
 
     REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
@@ -223,7 +223,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             expected_previsit_order.push_back(id);
     }
 
-    SUBCASE("full bipartite graph") {
+    SUBCASE("biclique") {
         /*
         A = {0, 1, 2}
         B = {3, 4}
@@ -234,7 +234,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 4 connected to A (2)
         finally: 0 -> 3 -> 1 -> 4 -> 2
         */
-        graph = lib::topology::full_bipartite<graph_type>(constants::three, constants::two);
+        graph = lib::topology::biclique<graph_type>(constants::three, constants::two);
         expected_previsit_order = {0, 3, 1, 4, 2};
     }
 
@@ -354,7 +354,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = lib::topology::complete_binary_tree<graph_type>(constants::three);
+    const auto graph = lib::topology::perfect_binary_tree<graph_type>(constants::three);
     const auto search_tree = lib::algorithm::recursive_depth_first_search<graph_type>(graph);
 
     REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
