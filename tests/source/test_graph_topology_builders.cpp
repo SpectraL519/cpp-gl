@@ -203,19 +203,18 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK(std::ranges::all_of(clique.vertices(), predicate::is_vertex_fully_connected(clique)));
     }
 
-    SUBCASE("full_bipartite(n_vertices_a, n_vertices_b) should build a full bipartite graph with "
+    SUBCASE("biclique(n_vertices_a, n_vertices_b) should build a biclique with "
             "vertex sets of sizes n_vertices_a and n_vertices_b respectively") {
-        const auto full_bipatite = lib::topology::full_bipartite<graph_type>(
-            constants::n_elements_top, constants::n_elements
-        );
+        const auto biclique =
+            lib::topology::biclique<graph_type>(constants::n_elements_top, constants::n_elements);
 
         const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
         // `2x` is required to account for adding edges both ways
         const auto expected_n_connections =
             constants::two * constants::n_elements_top * constants::n_elements;
-        verify_bidir_graph_size(full_bipatite, expected_n_vertices, expected_n_connections);
+        verify_bidir_graph_size(biclique, expected_n_vertices, expected_n_connections);
 
-        const auto vertices = full_bipatite.vertices();
+        const auto vertices = biclique.vertices();
 
         const auto vertices_a = vertices | std::views::take(constants::n_elements_top);
         const auto vertices_b = lib::make_iterator_range(
@@ -228,34 +227,33 @@ TEST_CASE_TEMPLATE_DEFINE(
             vertices_a | std::views::take(constants::n_elements_top),
             [&](const vertex_type& source_vertex) {
                 return std::ranges::all_of(vertices_b, [&](const auto& vertex) {
-                    return full_bipatite.has_edge(source_vertex, vertex)
-                       and full_bipatite.has_edge(vertex, source_vertex);
+                    return biclique.has_edge(source_vertex, vertex)
+                       and biclique.has_edge(vertex, source_vertex);
                 });
             }
         ));
 
         CHECK(std::ranges::all_of(
             vertices_a,
-            predicate::is_vertex_not_connected_to_any_from<graph_type>(full_bipatite, vertices_a)
+            predicate::is_vertex_not_connected_to_any_from<graph_type>(biclique, vertices_a)
         ));
         CHECK(std::ranges::all_of(
             vertices_b,
-            predicate::is_vertex_not_connected_to_any_from<graph_type>(full_bipatite, vertices_b)
+            predicate::is_vertex_not_connected_to_any_from<graph_type>(biclique, vertices_b)
         ));
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
-    ) {
+    SUBCASE("perfect_binary_tree(depth) should return a perfect binay tree with the given depth") {
         SUBCASE("depth = 0 : empty graph") {
             const auto complete_bin_tree =
-                lib::topology::complete_binary_tree<graph_type>(constants::zero);
+                lib::topology::perfect_binary_tree<graph_type>(constants::zero);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::zero_elements);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
             const auto complete_bin_tree =
-                lib::topology::complete_binary_tree<graph_type>(constants::one);
+                lib::topology::perfect_binary_tree<graph_type>(constants::one);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::one_element);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
@@ -330,9 +328,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a one-way complete binay tree with the "
+    SUBCASE("perfect_binary_tree(depth) should return a one-way perfect binay tree with the "
             "given depth") {
-        const auto bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::depth);
+        const auto bin_tree = lib::topology::perfect_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
             lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
@@ -344,10 +342,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("bidirectional_complete_binary_tree(depth) should return a two-way complete binay tree "
+    SUBCASE("bidirectional_perfect_binary_tree(depth) should return a two-way perfect binay tree "
             "with the given depth") {
         const auto bin_tree =
-            lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
+            lib::topology::bidirectional_perfect_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
             lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
@@ -421,17 +419,16 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("complete_binary_tree(depth) should return a complete binay tree with the given depth"
-    ) {
+    SUBCASE("perfect_binary_tree(depth) should return a perfect binay tree with the given depth") {
         graph_type bin_tree;
 
-        SUBCASE("complete_binary_tree builder") {
-            bin_tree = lib::topology::complete_binary_tree<graph_type>(constants::depth);
+        SUBCASE("perfect_binary_tree builder") {
+            bin_tree = lib::topology::perfect_binary_tree<graph_type>(constants::depth);
         }
 
-        SUBCASE("bidirectional_complete_binary_tree builder") {
+        SUBCASE("bidirectional_perfect_binary_tree builder") {
             bin_tree =
-                lib::topology::bidirectional_complete_binary_tree<graph_type>(constants::depth);
+                lib::topology::bidirectional_perfect_binary_tree<graph_type>(constants::depth);
         }
 
         CAPTURE(bin_tree);

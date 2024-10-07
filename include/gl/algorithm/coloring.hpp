@@ -22,7 +22,9 @@ template <
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
-    bicoloring_type coloring(graph.n_vertices(), bin_color_value::unset);
+    std::optional<bicoloring_type> coloring_opt;
+    coloring_opt.emplace(graph.n_vertices(), bin_color_value::unset);
+    auto& coloring = coloring_opt.value();
 
     for (const auto& root_vertex : graph.vertices()) {
         const auto root_id = root_vertex.id();
@@ -63,7 +65,7 @@ template <
             return std::nullopt;
     }
 
-    return coloring;
+    return coloring_opt;
 }
 
 template <type_traits::c_graph GraphType>

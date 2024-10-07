@@ -24,7 +24,7 @@ constexpr types::size_type min_non_trivial_bin_tree_depth = constants::two;
 } // namespace detail
 
 template <type_traits::c_graph GraphType>
-[[nodiscard]] GraphType complete_binary_tree(const types::size_type depth) {
+[[nodiscard]] GraphType perfect_binary_tree(const types::size_type depth) {
     if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
 
@@ -48,7 +48,7 @@ template <type_traits::c_graph GraphType>
 }
 
 template <type_traits::c_graph GraphType>
-[[nodiscard]] GraphType bidirectional_complete_binary_tree(const types::size_type depth) {
+[[nodiscard]] GraphType bidirectional_perfect_binary_tree(const types::size_type depth) {
     if constexpr (type_traits::is_directed_v<GraphType>) {
         if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};
@@ -76,7 +76,7 @@ template <type_traits::c_graph GraphType>
         return graph;
     }
     else {
-        return complete_binary_tree<GraphType>(depth);
+        return perfect_binary_tree<GraphType>(depth);
     }
 }
 
