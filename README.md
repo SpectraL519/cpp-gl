@@ -15,7 +15,7 @@ General purpose header-only template graph library for C++20 and newer standards
 - The library relies heavily on [concepts](https://en.cppreference.com/w/cpp/language/constraints) to acheive abstraction instead of interfaces and abstract classes to minimize the overhead associated with virtual tables and dynamic dispatch.
 
 > [!NOTE]
-> Versions `v1.0.*` of the library and the `v1.0` pre-release versions have been developed as the Bachelor of Engineering Thesis at the *Wrocław University of Science and Technology*
+> `v1.0.*` and `v1.0-prerelease-*` versions of the library have been developed as the Bachelor of Engineering project at the *Wrocław University of Science and Technology*
 >
 > Faculty: *W04N - Faculty of Information and Communication Technology*
 >
