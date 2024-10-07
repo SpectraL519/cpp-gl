@@ -226,4 +226,4 @@ directed 7 12
 
 - [The graph class - library's core](/docs/graph.md)
 - [I/O operations](/docs/io.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)

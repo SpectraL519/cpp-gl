@@ -116,7 +116,7 @@ While the `gl::graph` class is the key element of the library, it's not the only
 - [I/O operations](/docs/io.md)
 - [Graph topology generators](/docs/topologies.md)
 - [Algorithms](/docs/algoithms.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)
 
 <br />
 

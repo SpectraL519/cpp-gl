@@ -331,4 +331,4 @@ Below you can find an example GSF representation of the graph from the [Exampl: 
 - [The graph class - library's core](/docs/graph.md)
 - [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
 - [Graph topology generators](/docs/topologies.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)

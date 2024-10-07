@@ -437,4 +437,4 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 - [The graph class - library's core](/docs/graph.md)
 - [Graph topology generators](/docs/topologies.md)
 - [I/O operations](/docs/io.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)

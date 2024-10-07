@@ -211,14 +211,12 @@ constexpr inline bool is_default_properties_type_v =
     std::is_same_v<Properties, gl::types::empty_properties>;
 
 template <typename Properties>
-concept c_binary_color_properties_type =
-    c_properties<Properties>
-    and (std::derived_from<Properties, types::binary_color_property> or requires(Properties p) {
-            typename Properties::color_type;
-            { p.color } -> std::same_as<typename Properties::color_type&>;
-            { p.color == types::binary_color{} } -> std::convertible_to<bool>;
-            requires std::constructible_from<typename Properties::color_type, types::binary_color>;
-        });
+concept c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {
+    typename Properties::color_type;
+    { p.color } -> std::same_as<typename Properties::color_type&>;
+    { p.color == types::binary_color{} } -> std::convertible_to<bool>;
+    requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+};
 
 template <typename Properties>
 concept c_weight_properties_type = c_properties<Properties> and requires(Properties p) {

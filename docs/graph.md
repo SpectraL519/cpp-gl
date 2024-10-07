@@ -536,4 +536,4 @@ This section provides links to additional resources and documentation that can h
 - [I/O operations](/docs/io.md)
 - [Graph topology generators](/docs/topologies.md)
 - [Algorithms](/docs/algoithms.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)

@@ -242,4 +242,4 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
 
 - [The graph class - library's core](/docs/graph.md)
 - [I/O operations](/docs/io.md)
-<!-- TODO: types page -->
+- [Core utility types](/docs/core_util_types.md)
