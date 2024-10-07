@@ -6,12 +6,20 @@ This section describes a set of fundamental types provided by the library. While
 
 ## Table of content
 
+- [Common type traits](#common-type-traits)
 - [General type aliases](#general-type-aliases)
 - [Graph element property types](#graph-element-property-types)
 - [Iterator-related types](#iterator-related-types)
-- IO types
-- Common type traits
-- [Related pages](#related-pages)
+- [I/O types](#io-types)
+
+<br />
+<br />
+
+## Common type traits
+
+The library relies heavily on concepts and type traits evaluated at compile-time to make the code more robust and readable and to reduce some of the overhead associated with abstraction.
+
+The common concepts and type traits used in the library are defined in the `gl::type_traits` namespace and most of them are declared in the [gl/types/traits/concepts.hpp](/include/gl/types/traits/concepts.hpp) header file.
 
 <br />
 <br />
@@ -474,4 +482,186 @@ This section provides the description of types used to manage range/collection i
 <br />
 <br />
 
-## Related pages
+## I/O types
+
+This section provides the description of I/O types and utility defined in the library.
+
+> [!NOTE]
+> All elements described in this section are defined in the `gl::io` namespace.
+
+### General type definitions
+
+| **Type alias** | **Underlying type** |
+| :- | :- |
+| `index_type` | `int` |
+| `iword_type` | `long` |
+| `bit_position_type` | `unsigned` |
+
+> [!NOTE]
+> The library also defines the `inline constexpr iword_type iword_bit = 1ul;` value alias.
+
+<br />
+
+## `class stream_options_manipulator
+
+- *Description*:
+  The `stream_options_manipulator` class is designed to manage stream options using bitwise operations. It allows setting and unsetting specific options in streams through bit manipulation on the `iword` attribute of a stream at a specifically allocated index.
+
+- *Constructors*:
+  - `stream_options_manipulator()` - Default constructor (*deleted*).
+  - `explicit stream_options_manipulator(iword_type bitmask, bool operation = set)` - Initializes the manipulator with a bitmask and an operation (set or unset).
+
+- *Member functions*:
+  - `static from_bit_position(bit_position, operation = set)`
+    - *Description*: Creates a `stream_options_manipulator` instance from a bit position value.
+    - *Parameters*:
+      - `bit_position: bit_position_type`: The bit position to set or unset.
+      - `operation: bool` (default = `set`): The operation (set or unset).
+    - *Return type*: `stream_options_manipulator`.
+
+  - `friend operator<<(os, property_manipulator)`
+    - *Description*: Overloads the output stream operator to set/unset options in an output stream.
+    - *Parameters*:
+      - `os: std::ostream&`: The output stream.
+      - `property_manipulator: const stream_options_manipulator&`: The manipulator object.
+    - *Return type*: `std::ostream&`.
+
+  - `friend operator>>(is, property_manipulator)`
+    - *Description*: Overloads the input stream operator to set/unset options in an input stream.
+    - *Parameters*:
+      - `is: std::istream&`: The input stream.
+      - `property_manipulator: const stream_options_manipulator&`: The manipulator object.
+    - *Return type*: `std::istream&`.
+
+  - `is_option_set(stream, bit_position)`
+    - *Description*: Checks if a specific option is set in the given stream.
+    - *Parameters*:
+      - `stream: std::ios_base&`: The stream to check.
+      - `bit_position: bit_position_type`: The bit position of the option.
+    - *Return type*: `bool`.
+
+  - `are_options_set(stream, bitmask)`
+    - *Description*: Checks if all options specified by the bitmask are set in the given stream.
+    - *Parameters*:
+      - `stream: std::ios_base&`: The stream to check.
+      - `bitmask: iword_type`: The bitmask representing the options.
+    - *Return type*: `bool`.
+
+- *Constants*:
+  - `static constexpr bool set = true;` - Represents the set operation.
+  - `static constexpr bool unset = false;` - Represents the unset operation.
+
+### Associated utility functions
+
+#### Option setters
+
+- `set_options(bitmask)`
+  - *Description*: Creates a `stream_options_manipulator` to set options specified by the bitmask.
+  - *Parameters*:
+    - `bitmask: iword_type`: The bitmask representing the options to set.
+  - *Return type*: `stream_options_manipulator`.
+
+- `set_options(bit_positions)`
+  - *Description*: Creates a `stream_options_manipulator` to set options from a list of bit positions.
+  - *Parameters*:
+    - `bit_positions: const std::initializer_list<bit_position_type>&`: The list of bit positions.
+  - *Return type*: `stream_options_manipulator`.
+
+- `set_options(bit_positions)`
+  - *Description*: Creates a `stream_options_manipulator` to set options from a list of enumerated bit positions.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `bit_positions: const std::initializer_list<BitPosition>&`: The list of enumerated bit positions.
+  - *Return type*: `stream_options_manipulator`.
+
+- `set_option(bit_position)`
+  - *Description*: Creates a `stream_options_manipulator` to set a specific option.
+  - *Parameters*:
+    - `bit_position: bit_position_type`: The bit position of the option to set.
+  - *Return type*: `stream_options_manipulator`.
+
+- `set_option(bit_position)`
+  - *Description*: Creates a `stream_options_manipulator` to set a specific enumerated option.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `bit_position`: The enumerated bit position of the option to set.
+  - *Return type*: `stream_options_manipulator`.
+
+#### Option unsetters
+
+- `unset_options(bitmask)`
+  - *Description*: Creates a `stream_options_manipulator` to unset options specified by the bitmask.
+  - *Parameters*:
+    - `bitmask: iword_type`: The bitmask representing the options to unset.
+  - *Return type*: `stream_options_manipulator`.
+
+- `unset_options(bit_positions)`
+  - *Description*: Creates a `stream_options_manipulator` to unset options from a list of bit positions.
+  - *Parameters*:
+    - `bit_positions: const std::initializer_list<bit_position_type>&`: The list of bit positions.
+  - *Return type*: `stream_options_manipulator`.
+
+- `unset_options(bit_positions)`
+  - *Description*: Creates a `stream_options_manipulator` to unset options from a list of enumerated bit positions.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `bit_positions: const std::initializer_list<BitPosition>&`: The list of enumerated bit positions.
+  - *Return type*: `stream_options_manipulator`.
+
+- `unset_option(bit_position)`
+  - *Description*: Creates a `stream_options_manipulator` to unset a specific option.
+  - *Parameters*:
+    - `bit_position: bit_position_type`: The bit position of the option to unset.
+  - *Return type*: `stream_options_manipulator`.
+
+- `unset_option(bit_position)`
+  - *Description*: Creates a `stream_options_manipulator` to unset a specific enumerated option.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `bit_position`: The enumerated bit position of the option to unset.
+  - *Return type*: `stream_options_manipulator`.
+
+### Option query fuctions
+
+- `are_options_set(stream, bitmask)`
+  - *Description*: Checks if all options specified by the bitmask are set in the given stream.
+  - *Parameters*:
+    - `stream: std::ios_base&`: The stream to check.
+    - `bitmask: iword_type`: The bitmask representing the options.
+  - *Return type*: `bool`.
+
+- `are_options_set(stream, bit_positions)`
+  - *Description*: Checks if all options specified by the bit positions are set in the given stream.
+  - *Parameters*:
+    - `stream: std::ios_base&`: The stream to check.
+    - `bit_positions: const std::initializer_list<bit_position_type>&`: The list of bit positions.
+  - *Return type*: `bool`.
+
+- `are_options_set(stream, bit_positions)`
+  - *Description*: Checks if all options specified by the enumerated bit positions are set in the given stream.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `stream: std::ios_base&`: The stream to check.
+    - `bit_positions: const std::initializer_list<BitPosition>&`: The list of enumerated bit positions.
+  - *Return type*: `bool`.
+
+- `is_option_set(stream, bit_position)`
+  - *Description*: Checks if a specific option is set in the given stream.
+  - *Parameters*:
+    - `stream: std::ios_base&`: The stream to check.
+    - `bit_position: bit_position_type`: The bit position of the option.
+  - *Return type*: `bool`.
+
+- `is_option_set(stream, bit_position)`
+  - *Description*: Checks if a specific enumerated option is set in the given stream.
+  - *Template parameters*:
+    - `BitPosition: detail::c_bit_position_enum BitPosition` - The bit position enum type
+  - *Parameters*:
+    - `stream: std::ios_base&`: The stream to check.
+    - `bit_position: BitPosition`: The enumerated bit position of the option.
+  - *Return type*: `bool`.
