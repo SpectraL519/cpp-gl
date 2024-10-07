@@ -502,7 +502,7 @@ This section provides the description of I/O types and utility defined in the li
 
 <br />
 
-## `class stream_options_manipulator
+## `class stream_options_manipulator`
 
 - *Description*:
   The `stream_options_manipulator` class is designed to manage stream options using bitwise operations. It allows setting and unsetting specific options in streams through bit manipulation on the `iword` attribute of a stream at a specifically allocated index.
