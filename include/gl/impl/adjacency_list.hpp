@@ -13,7 +13,7 @@
 namespace gl::impl {
 
 template <type_traits::c_list_graph_traits GraphTraits>
-class adjacency_list {
+class adjacency_list final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
 
