@@ -21,6 +21,12 @@
 #define _GL_IT_RANGE_DEFAULT_CACHE_MODE gl::type_traits::lazy_cache
 #endif
 
+#ifdef GL_CONFIG_IT_RANGE_NOT_FINAL
+#define _GL_IT_RANGE_NOT_FINAL
+#else
+#undef _GL_IT_RANGE_NOT_FINAL
+#endif
+
 namespace gl {
 
 namespace types {
@@ -33,7 +39,11 @@ Designed to be compatible with the range-based loops and std algorithms.
 template <
     std::forward_iterator Iterator,
     type_traits::c_cache_mode CacheMode = _GL_IT_RANGE_DEFAULT_CACHE_MODE>
-class iterator_range {
+class iterator_range
+#ifndef _GL_IT_RANGE_NOT_FINAL
+    final
+#endif
+{
 public:
     using iterator = Iterator;
 #if __cplusplus >= 202302L
@@ -72,7 +82,11 @@ public:
     iterator_range& operator=(const iterator_range&) = default;
     iterator_range& operator=(iterator_range&&) = default;
 
+#ifndef _GL_IT_RANGE_NOT_FINAL
     ~iterator_range() = default;
+#else
+    virtual ~iterator_range() = default;
+#endif
 
     bool operator==(const iterator_range&) const = default;
 
