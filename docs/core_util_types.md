@@ -196,6 +196,17 @@ The table below contains the basic type aliases defined in the library.
     - Reads the weight property from an input stream.
     - *Constraints*: `weight_type` must be readable (`type_traits::c_readable<weight_type>`).
 
+### Deriving from the property types
+
+> [!IMPORTANT]
+> The `name_property`, `dynamic_properties` and `binary_color` classes are marked `final` by default. To be able to use them as base classes you have to add:
+>
+> ```cpp
+> #define GL_CONFIG_PROPERTY_TYPES_NOT_FINAL
+> ```
+>
+> in your program or add a `-DGL_CONFIG_PROPERTY_TYPES_NOT_FINAL` flag when compiling.
+
 ### Associated type traits
 
 This section describes the type traits that are associated with the property types defined in the library. These traits help ensure that properties meet specific requirements and can be used correctly within the library.
@@ -290,6 +301,15 @@ This section provides the description of types used to manage range/collection i
   - `element_at(types::size_type position) const -> const value_type&` - Returns a reference to the element at the specified position.
   - `operator[](types::size_type position) -> value_type&` - Provides access to the element at the specified position (equivalent to `element_at`).
   - `operator[](types::size_type position) const -> const value_type&` - Provides access to the element at the specified position (equivalent to `element_at`).
+
+> [!IMPORTANT]
+> The `iterator_range` class is marked `final` by default. To use this class as a base class you have to add:
+>
+> ```cpp
+> #define GL_CONFIG_IT_RANGE_NOT_FINAL
+> ```
+>
+> in your program or add a `-DGL_CONFIG_IT_RANGE_NOT_FINAL` flag when compiling.
 
 #### Associated functions
 
