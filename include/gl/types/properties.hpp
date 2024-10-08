@@ -13,6 +13,12 @@
 #include <unordered_map>
 #include <variant>
 
+#ifdef GL_CONFIG_PROPERTY_TYPES_NOT_FINAL
+#define _GL_PROPERTY_TYPES_NOT_FINAL
+#else
+#undef _GL_PROPERTY_TYPES_NOT_FINAL
+#endif
+
 namespace gl {
 
 namespace types {
@@ -21,7 +27,11 @@ namespace types {
 
 using empty_properties = std::monostate;
 
-class name_property {
+class name_property
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
+    final
+#endif
+{
 public:
     using value_type = std::string;
 
@@ -35,7 +45,11 @@ public:
     name_property& operator=(const name_property&) = default;
     name_property& operator=(name_property&&) = default;
 
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~name_property() = default;
+#else
+    virtual ~name_property() = default;
+#endif
 
     // clang-format off
     // gl_attr_force_inline misplacement
@@ -63,7 +77,11 @@ private:
     std::string _name;
 };
 
-class dynamic_properties {
+class dynamic_properties
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
+    final
+#endif
+{
 public:
     using key_type = std::string;
     using value_type = std::any;
@@ -77,7 +95,11 @@ public:
     dynamic_properties& operator=(const dynamic_properties&) = default;
     dynamic_properties& operator=(dynamic_properties&&) = default;
 
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~dynamic_properties() = default;
+#else
+    virtual ~dynamic_properties() = default;
+#endif
 
     [[nodiscard]] gl_attr_force_inline bool is_present(const key_type& key) const {
         return this->_property_map.contains(key);
@@ -119,7 +141,11 @@ private:
 
 // --- vertex properties ---
 
-class binary_color {
+class binary_color
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
+    final
+#endif
+{
 public:
     enum class value : std::uint16_t {
         black = static_cast<std::uint16_t>(0),
@@ -137,7 +163,11 @@ public:
     binary_color& operator=(const binary_color&) = default;
     binary_color& operator=(binary_color&&) = default;
 
+#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~binary_color() = default;
+#else
+    virtual ~binary_color() = default;
+#endif
 
     binary_color& operator=(value value) {
         this->_value = this->_restrict(value);

@@ -15,7 +15,7 @@
 namespace gl {
 
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
-class graph {
+class graph final {
 public:
     using traits_type = GraphTraits;
 
