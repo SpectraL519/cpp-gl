@@ -16,7 +16,7 @@
 namespace gl {
 
 template <type_traits::c_properties Properties = types::empty_properties>
-class vertex_descriptor {
+class vertex_descriptor final {
 public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
     using properties_type = Properties;

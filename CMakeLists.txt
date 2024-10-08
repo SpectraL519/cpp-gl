@@ -8,7 +8,7 @@ else()
 endif()
 
 project(cpp-gl
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "General purpose header-only template graph library for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-gl"
     LANGUAGES CXX

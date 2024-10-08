@@ -14,7 +14,7 @@ template <
     type_traits::c_instantiation_of<vertex_descriptor> VertexType,
     type_traits::c_edge_directional_tag DirectionalTag = directed_t,
     type_traits::c_properties Properties = types::empty_properties>
-class edge_descriptor {
+class edge_descriptor final {
 public:
     using type = edge_descriptor<VertexType, DirectionalTag, Properties>;
     using vertex_type = VertexType;
