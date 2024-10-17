@@ -28,10 +28,10 @@ detail::alg_return_graph_type<SearchTreeType> depth_first_search(
 
     auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
 
-    if (root_vertex_id_opt) {
+    if (root_vertex_id_opt.has_value()) {
         detail::dfs_impl(
             graph,
-            graph.get_vertex(root_vertex_id_opt.value()),
+            detail::init_range(root_vertex_id_opt.value()),
             detail::default_visit_vertex_predicate<GraphType>(visited),
             detail::default_visit_callback<GraphType>(visited, search_tree),
             detail::default_enqueue_vertex_predicate<GraphType>(visited),
@@ -40,10 +40,10 @@ detail::alg_return_graph_type<SearchTreeType> depth_first_search(
         );
     }
     else {
-        for (const auto& root_vertex : graph.vertices())
+        for (const auto root_vertex_id : graph.vertex_ids())
             detail::dfs_impl(
                 graph,
-                root_vertex,
+                detail::init_range(root_vertex_id),
                 detail::default_visit_vertex_predicate<GraphType>(visited),
                 detail::default_visit_callback<GraphType>(visited, search_tree),
                 detail::default_enqueue_vertex_predicate<GraphType>(visited),

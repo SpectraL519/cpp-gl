@@ -29,35 +29,20 @@ bool bfs_impl(
     const PostVisitCallback& post_visit = {}
 ) {
     if (initial_queue_content.size() == constants::default_size)
-        return false;
+        return true;
 
     // prepare the vertex queue
-#ifdef ALG_DEQUE
-    using vertex_queue_type = std::deque<types::vertex_info>;
-    vertex_queue_type vertex_queue;
-
-    vertex_queue.reserve(2 * graph.n_unique_edges() / graph.n_vertices());
-    std::cout << "init capacity: " << vertex_queue.capacity() << std::endl;
-    for (const auto& vinfo : initial_queue_content)
-        vertex_queue.push_back(vinfo);
-#else
     using vertex_queue_type = std::queue<types::vertex_info>;
     vertex_queue_type vertex_queue;
 
     // TODO [C++23]: replace with push_range
     for (const auto& vinfo : initial_queue_content)
         vertex_queue.push(vinfo);
-#endif
 
     // search the graph
     while (not vertex_queue.empty()) {
         const types::vertex_info vinfo = vertex_queue.front();
-
-#ifdef ALG_DEQUE
-        vertex_queue.pop_front();
-#else
         vertex_queue.pop();
-#endif
 
         const auto& vertex = graph.get_vertex(vinfo.id);
         if (not visit_vertex_pred(vertex))
@@ -77,11 +62,7 @@ bool bfs_impl(
                 return false;
 
             if (enqueue.value())
-#ifdef ALG_DEQUE
-                vertex_queue.emplace_back(incident_vertex.id(), vinfo.id);
-#else
                 vertex_queue.emplace(incident_vertex.id(), vinfo.id);
-#endif
         }
 
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)

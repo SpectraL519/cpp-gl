@@ -12,26 +12,30 @@ namespace gl::algorithm::detail {
 
 template <
     type_traits::c_graph GraphType,
+    type_traits::c_sized_range_of<types::vertex_info> InitStackRangeType =
+        std::vector<types::vertex_info>,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
-void dfs_impl(
+bool dfs_impl(
     const GraphType& graph,
-    const typename GraphType::vertex_type& root_vertex,
+        const InitStackRangeType& initial_stack_content,
     const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
     const types::vertex_callback<GraphType, void, types::id_type>& visit,
-    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
-        enque_vertex_pred,
+    const types::
+        vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
+            enque_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_stack_type = std::stack<types::vertex_info>;
-
-    if (not visit_vertex_pred(root_vertex))
-        return;
+    if (initial_stack_content.size() == constants::default_size)
+        return true;
 
     // prepare the vertex stack
+    using vertex_stack_type = std::stack<types::vertex_info>;
+
     vertex_stack_type vertex_stack;
-    vertex_stack.emplace(root_vertex.id());
+    for (const auto& vinfo : initial_stack_content)
+        vertex_stack.push(vinfo);
 
     // search the graph
     while (not vertex_stack.empty()) {
@@ -49,13 +53,20 @@ void dfs_impl(
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
-            if (enque_vertex_pred(incident_vertex, edge))
+
+            const auto enqueue = enque_vertex_pred(incident_vertex, edge);
+            if (not enqueue.has_value())
+                return false;
+
+            if (enqueue.value())
                 vertex_stack.emplace(incident_vertex.id(), vinfo.id);
         }
 
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
             post_visit(vertex);
     }
+
+    return true;
 }
 
 template <
