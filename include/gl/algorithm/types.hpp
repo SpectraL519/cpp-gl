@@ -56,12 +56,12 @@ concept c_empty_callback = std::same_as<F, types::empty_callback>;
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_vertex_callback =
     c_empty_callback<F>
-    or std::convertible_to<F, types::vertex_callback<GraphType, ReturnType, Args...>>;
+    or std::is_invocable_r_v<ReturnType, F, const typename GraphType::vertex_type&, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_edge_callback =
     c_empty_callback<F>
-    or std::convertible_to<F, types::edge_callback<GraphType, ReturnType, Args...>>;
+    or std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
 
 } // namespace type_traits
 

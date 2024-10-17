@@ -14,16 +14,19 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
         std::vector<types::vertex_info>,
+    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::
+        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
+            EnqueueVertexPred,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 bool bfs_impl(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
-    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const types::vertex_callback<GraphType, bool, types::id_type>& visit,
-    const types::
-        vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
-            enque_vertex_pred,
+    const VisitVertexPredicate& visit_vertex_pred,
+    const VisitCallback& visit,
+    const EnqueueVertexPred& enqueue_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -56,7 +59,7 @@ bool bfs_impl(
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
-            const auto enqueue = enque_vertex_pred(incident_vertex, edge);
+            const auto enqueue = enqueue_vertex_pred(incident_vertex, edge);
             if (not enqueue.has_value())
                 return false;
 
@@ -76,17 +79,20 @@ template <
     std::predicate<types::vertex_info, types::vertex_info> PQCompare,
     type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
         std::vector<types::vertex_info>,
+    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::
+        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
+            EnqueueVertexPred,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 bool pq_bfs_impl(
     const GraphType& graph,
     const PQCompare& pq_compare,
     const InitQueueRangeType& initial_queue_content,
-    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const types::vertex_callback<GraphType, bool, types::id_type>& visit,
-    const types::
-        vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>&
-            enque_vertex_pred,
+    const VisitVertexPredicate& visit_vertex_pred,
+    const VisitCallback& visit,
+    const EnqueueVertexPred& enqueue_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -120,7 +126,7 @@ bool pq_bfs_impl(
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
-            const auto enqueue = enque_vertex_pred(incident_vertex, edge);
+            const auto enqueue = enqueue_vertex_pred(incident_vertex, edge);
             if (not enqueue.has_value())
                 return false;
 

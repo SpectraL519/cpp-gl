@@ -12,15 +12,19 @@ namespace gl::algorithm::detail {
 
 template <
     type_traits::c_graph GraphType,
+    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::
+        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
+            EnqueueVertexPred,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 void dfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
-    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const types::vertex_callback<GraphType, void, types::id_type>& visit,
-    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
-        enque_vertex_pred,
+    const VisitVertexPredicate& visit_vertex_pred,
+    const VisitCallback& visit,
+    const EnqueueVertexPred& enqueue_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -49,7 +53,7 @@ void dfs_impl(
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
-            if (enque_vertex_pred(incident_vertex, edge))
+            if (enqueue_vertex_pred(incident_vertex, edge))
                 vertex_stack.emplace(incident_vertex.id(), vinfo.id);
         }
 
@@ -60,16 +64,20 @@ void dfs_impl(
 
 template <
     type_traits::c_graph GraphType,
+    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::
+        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
+            EnqueueVertexPred,
     type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
     type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
 void rdfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,
     const types::id_type source_id,
-    const types::vertex_callback<GraphType, bool>& visit_vertex_pred,
-    const types::vertex_callback<GraphType, void, types::id_type>& visit,
-    const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&
-        enque_vertex_pred,
+    const VisitVertexPredicate& visit_vertex_pred,
+    const VisitCallback& visit,
+    const EnqueueVertexPred& enqueue_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -85,14 +93,14 @@ void rdfs_impl(
     const auto vertex_id = vertex.id();
     for (const auto& edge : graph.adjacent_edges(vertex_id)) {
         const auto& incident_vertex = edge.incident_vertex(vertex);
-        if (enque_vertex_pred(incident_vertex, edge))
+        if (enqueue_vertex_pred(incident_vertex, edge))
             rdfs_impl(
                 graph,
                 incident_vertex,
                 vertex_id,
                 visit_vertex_pred,
                 visit,
-                enque_vertex_pred,
+                enqueue_vertex_pred,
                 pre_visit,
                 post_visit
             );
