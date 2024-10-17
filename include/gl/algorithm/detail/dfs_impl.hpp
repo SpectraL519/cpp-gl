@@ -10,15 +10,18 @@
 
 namespace gl::algorithm::detail {
 
+// TODO: return bool
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 void dfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
@@ -43,8 +46,9 @@ void dfs_impl(
         vertex_stack.pop();
 
         const auto& vertex = graph.get_vertex(vinfo.id);
-        if (not visit_vertex_pred(vertex))
-            continue;
+        if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+            if (not visit_vertex_pred(vertex))
+                continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
@@ -69,8 +73,10 @@ template <
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 void rdfs_impl(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,

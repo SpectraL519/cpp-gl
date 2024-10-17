@@ -14,19 +14,21 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
         std::vector<types::vertex_info>,
-    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_optional_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 bool bfs_impl(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
-    const VisitVertexPredicate& visit_vertex_pred,
-    const VisitCallback& visit,
-    const EnqueueVertexPred& enqueue_vertex_pred,
+    const VisitVertexPredicate& visit_vertex_pred = {},
+    const VisitCallback& visit = {},
+    const EnqueueVertexPred& enqueue_vertex_pred = {},
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -47,14 +49,16 @@ bool bfs_impl(
         vertex_queue.pop();
 
         const auto& vertex = graph.get_vertex(vinfo.id);
-        if (not visit_vertex_pred(vertex))
-            continue;
+        if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+            if (not visit_vertex_pred(vertex))
+                continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
-        if (not visit(vertex, vinfo.source_id))
-            return false;
+        if constexpr (not type_traits::c_empty_callback<VisitCallback>)
+            if (not visit(vertex, vinfo.source_id))
+                return false;
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);
@@ -79,13 +83,15 @@ template <
     std::predicate<types::vertex_info, types::vertex_info> PQCompare,
     type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
         std::vector<types::vertex_info>,
-    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_optional_callback<GraphType, bool, types::id_type> VisitCallback,
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 bool pq_bfs_impl(
     const GraphType& graph,
     const PQCompare& pq_compare,
@@ -114,14 +120,16 @@ bool pq_bfs_impl(
         vertex_queue.pop();
 
         const auto& vertex = graph.get_vertex(vinfo.id);
-        if (not visit_vertex_pred(vertex))
-            continue;
+        if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+            if (not visit_vertex_pred(vertex))
+                continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vertex);
 
-        if (not visit(vertex, vinfo.source_id))
-            return false;
+        if constexpr (not type_traits::c_empty_callback<VisitCallback>)
+            if (not visit(vertex, vinfo.source_id))
+                return false;
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
             const auto& incident_vertex = edge.incident_vertex(vertex);

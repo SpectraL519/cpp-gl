@@ -53,15 +53,24 @@ concept c_alg_return_graph_type = c_graph<T> or c_alg_no_return_type<T>;
 template <typename F>
 concept c_empty_callback = std::same_as<F, types::empty_callback>;
 
+template <typename F, typename ReturnType, typename... Args>
+concept c_optional_callback = c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>;
+
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_vertex_callback =
-    c_empty_callback<F>
-    or std::is_invocable_r_v<ReturnType, F, const typename GraphType::vertex_type&, Args...>;
+    std::is_invocable_r_v<ReturnType, F, const typename GraphType::vertex_type&, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_edge_callback =
-    c_empty_callback<F>
-    or std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
+    std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
+
+template <typename F, typename GraphType, typename ReturnType, typename... Args>
+concept c_optional_vertex_callback =
+    c_optional_callback<F, ReturnType, const typename GraphType::vertex_type&, Args...>;
+
+template <typename F, typename GraphType, typename ReturnType, typename... Args>
+concept c_optional_edge_callback =
+    c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>;
 
 } // namespace type_traits
 
