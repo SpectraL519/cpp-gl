@@ -33,8 +33,9 @@ void dfs_impl(
 ) {
     using vertex_stack_type = std::stack<types::vertex_info>;
 
-    if (not visit_vertex_pred(root_vertex))
-        return;
+    if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+        if (not visit_vertex_pred(root_vertex))
+            return;
 
     // prepare the vertex stack
     vertex_stack_type vertex_stack;
@@ -87,8 +88,9 @@ void rdfs_impl(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    if (not visit_vertex_pred(vertex))
-        return;
+    if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+        if (not visit_vertex_pred(vertex))
+            return;
 
     if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
         pre_visit(vertex);
