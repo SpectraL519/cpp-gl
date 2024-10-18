@@ -10,7 +10,6 @@
 
 namespace gl::algorithm::detail {
 
-// TODO: return bool
 template <
     type_traits::c_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
