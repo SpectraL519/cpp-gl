@@ -7,6 +7,8 @@ The `CPP-GL` library provides a set of customizable graph algorithms, which are 
 ## Table of content
 
 - [Algorithm-specific types and concepts](#algorithm-specific-types-and-concepts)
+  - [Types](#types)
+  - [Concepts](#concepts)
 - [The defined algorithms](#the-defined-algorithms)
   - [Depth-first search](#depth-first-search)
   - [Breadth-first search](#breadth-first-search)
@@ -89,18 +91,22 @@ This section covers the specific types and type traits used for the algorithm im
     - `F` - the callback type to check.
   - *Equivalent to*: `std::same_as<F, types::empty_callback>`
 
+- `c_optional_callback`
+  - *Description*: Checks if the given type is a valid callback or `types::empty_callback`.
+  - *Template parameters*:
+    - `F` - the callback type to check.
+    - `ReturnType` - the expected return type of the callback type.
+    - `Args...` - variadic template representing arguments of the callback type.
+  - *Equivalent to*: `c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>`
+
 - `c_vertex_callback`
   - *Description*: Checks if a function is a valid vertex callback.
   - *Template parameters*:
     - `F` - the function type to check.
     - `GraphType` - the graph type associated with the callback.
     - `ReturnType` - the return type of the callback.
-    - `Args...` - variadic template representing additional arguments passed to the callback.
-  - *Equivalent to*:
-
-    ```cpp
-    c_empty_callback<F> or std::convertible_to<F, types::vertex_callback<GraphType, ReturnType, Args...>>
-    ```
+    - `Args...` - variadic template representing additional arguments of the callback type.
+  - *Equivalent to*: `std::is_invocable_r_v<ReturnType, F, const typename GraphType::vertex_type&, Args...>`
 
 - `c_edge_callback`
   - *Description*: Checks if a function is a valid edge callback.
@@ -108,12 +114,26 @@ This section covers the specific types and type traits used for the algorithm im
     - `F` - the function type to check.
     - `GraphType` - the graph type associated with the callback.
     - `ReturnType` - the return type of the callback.
-    - `Args...` - variadic template representing additional arguments passed to the callback.
-  - *Equivalent to*:
+    - `Args...` - variadic template representing additional arguments of the callback type.
+  - *Equivalent to*: `std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>`
 
-    ```cpp
-    c_empty_callback<F> or std::convertible_to<F, types::edge_callback<GraphType, ReturnType, Args...>>
-    ```
+- `c_optional_vertex_callback`
+  - *Description*: Checks if a function is a valid (optional) vertex callback.
+  - *Template parameters*:
+    - `F` - the function type to check.
+    - `GraphType` - the graph type associated with the callback.
+    - `ReturnType` - the return type of the callback.
+    - `Args...` - variadic template representing additional arguments of the callback type.
+  - *Equivalent to*: `c_optional_callback<F, ReturnType, const typename GraphType::vertex_type&, Args...>`
+
+- `c_optional_edge_callback`
+  - *Description*: Checks if a function is a valid (optional) edge callback.
+  - *Template parameters*:
+    - `F` - the function type to check.
+    - `GraphType` - the graph type associated with the callback.
+    - `ReturnType` - the return type of the callback.
+    - `Args...` - variadic template representing additional arguments of the callback type.
+  - *Equivalent to*: `c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>`
 
 <br />
 <br />
@@ -131,8 +151,8 @@ This section covers the specific types and type traits used for the algorithm im
   - *Template parameters*:
     - `SearchTreeType: type_traits::c_alg_return_graph_type` (default = `types::no_return`) - The type of the search tree to return, or `types::no_return`.
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform DFS on.
@@ -160,8 +180,8 @@ This section covers the specific types and type traits used for the algorithm im
   - *Template parameters*:
     - `SearchTreeType: type_traits::c_alg_return_graph_type` (default = `types::no_return`) - The type of the search tree to return, or `types::no_return`.
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform BFS on.
@@ -184,8 +204,8 @@ This section covers the specific types and type traits used for the algorithm im
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform the coloring on.
@@ -227,8 +247,8 @@ This section covers the specific types and type traits used for the algorithm im
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform the search on.
@@ -276,8 +296,8 @@ This section covers the specific types and type traits used for the algorithm im
 
   - *Template parameters*:
     - `GraphType: type_traits::c_directed_graph` - The type of the graph on which the sorting is performed (must be directed).
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform the coloring on.
@@ -296,8 +316,8 @@ This section covers the specific types and type traits used for the algorithm im
 
   - *Template parameters*:
     - `GraphType: type_traits::c_undirected_graph` - The type of the graph on which the search is performed (must be undirected).
-    - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
+    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform the search on.
@@ -344,15 +364,18 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
+    - `VisitVertexPredicate: type_traits::c_optional_vertex_callback<GraphType, bool>` - The vertex visiting unary predicate type.
+    - `VisitCallback: type_traits::c_vertex_callback<GraphType, bool, types::id_type>` - The vertex visting callback type (arguments: `vertex, source_id`).
+    - `EnqueueVertexPred: type_traits::c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex, in_edge`)
     - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform DFS on.
     - `root_vertex: const typename GraphType::vertex_type&` - The vertex from which the search will be started.
-    - `visit_vertex_pred: const types::vertex_callback<GraphType, bool>&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
-    - `visit: const types::vertex_callback<GraphType, void, types::id_type>&` - The vertex visiting function.
-    - `enque_vertex_pred: const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
+    - `visit_vertex_pred: const VisitVertexPredicate&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
+    - `visit: const VisitCallback&` - The vertex visiting function.
+    - `enque_vertex_pred: const EnqueueVertexPred&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
     - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
@@ -363,6 +386,9 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
+    - `VisitVertexPredicate: type_traits::c_optional_vertex_callback<GraphType, bool>` - The vertex visiting unary predicate type.
+    - `VisitCallback: type_traits::c_vertex_callback<GraphType, bool, types::id_type>` - The vertex visting callback type (arguments: `vertex, source_id`).
+    - `EnqueueVertexPred: type_traits::c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex, in_edge`)
     - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
@@ -370,9 +396,9 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
     - `graph: const GraphType&` - The graph to perform DFS on.
     - `vertex: const typename GraphType::vertex_type&` - The vertex to search in the current recursive call.
     - `source_id: const types::id_type` - The ID of the parent/source vertex of the currently searched vertex.
-    - `visit_vertex_pred: const types::vertex_callback<GraphType, bool>&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
-    - `visit: const types::vertex_callback<GraphType, void, types::id_type>&` - The vertex visiting function.
-    - `enque_vertex_pred: const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
+    - `visit_vertex_pred: const VisitVertexPredicate&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
+    - `visit: const VisitCallback&` - The vertex visiting function.
+    - `enque_vertex_pred: const EnqueueVertexPred&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
     - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
@@ -389,15 +415,18 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
     - `InitQueueRangeType: type_traits::c_sized_range_of<types::vertex_info>` (default = `std::vector<types::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
+    - `VisitVertexPredicate: type_traits::c_optional_vertex_callback<GraphType, bool>` - The vertex visiting unary predicate type.
+    - `VisitCallback: type_traits::c_vertex_callback<GraphType, bool, types::id_type>` - The vertex visting callback type (arguments: `vertex, source_id`).
+    - `EnqueueVertexPred: type_traits::c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex, in_edge`)
     - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
   - *Parameters*:
     - `graph: const GraphType&` - The graph to perform DFS on.
     - `initial_queue_content: const InitQueueRangeType&` - The `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
-    - `visit_vertex_pred: const types::vertex_callback<GraphType, bool>&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
-    - `visit: const types::vertex_callback<GraphType, void, types::id_type>&` - The vertex visiting function.
-    - `enque_vertex_pred: const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
+    - `visit_vertex_pred: const VisitVertexPredicate&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
+    - `visit: const VisitCallback&` - The vertex visiting function.
+    - `enque_vertex_pred: const EnqueueVertexPred&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
     - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
@@ -412,6 +441,9 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
     - `PQCompare: std::predicate<types::vertex_info, types::vertex_info>` - The type of the vertex priority queue comparator.
     - `InitQueueRangeType: type_traits::c_sized_range_of<types::vertex_info>` (default = `std::vector<types::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
+    - `VisitVertexPredicate: type_traits::c_optional_vertex_callback<GraphType, bool>` - The vertex visiting unary predicate type.
+    - `VisitCallback: type_traits::c_vertex_callback<GraphType, bool, types::id_type>` - The vertex visting callback type (arguments: `vertex, source_id`).
+    - `EnqueueVertexPred: type_traits::c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex, in_edge`)
     - `PreVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_vertex_callback<GraphType, void>` (default = `types::empty_callback`) - The type of the callback function called after visiting a vertex.
 
@@ -419,9 +451,9 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
     - `graph: const GraphType&` - The graph to perform DFS on.
     - `pq_compare: const PQCompare&` - The vertex priority queue comparator.
     - `initial_queue_content: const InitQueueRangeType&` - The `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
-    - `visit_vertex_pred: const types::vertex_callback<GraphType, bool>&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
-    - `visit: const types::vertex_callback<GraphType, void, types::id_type>&` - The vertex visiting function.
-    - `enque_vertex_pred: const types::vertex_callback<GraphType, bool, const typename GraphType::edge_type&>&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
+    - `visit_vertex_pred: const VisitVertexPredicate&` - A predicate used to determine whether a vertex should be visited based on the vertex itself and its source/parent vertex's ID.
+    - `visit: const VisitCallback&` - The vertex visiting function.
+    - `enque_vertex_pred: const EnqueueVertexPred&` - A predicate used to determine whether a vertex should be pushed to the search stack based on the vertex itself and its source edge.
     - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
