@@ -16,12 +16,6 @@ struct no_return {};
 
 struct empty_callback {};
 
-template <type_traits::c_graph GraphType, typename ReturnType, typename... Args>
-using vertex_callback = std::function<ReturnType(const typename GraphType::vertex_type&, Args...)>;
-
-template <type_traits::c_graph GraphType, typename ReturnType, typename... Args>
-using edge_callback = std::function<ReturnType(const typename GraphType::edge_type&, Args...)>;
-
 struct vertex_info {
     vertex_info(types::id_type id) : id(id), source_id(id) {}
 
