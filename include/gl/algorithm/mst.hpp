@@ -27,8 +27,10 @@ struct mst_descriptor {
 
 template <
     type_traits::c_undirected_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 [[nodiscard]] mst_descriptor<GraphType> prim_mst(
     const GraphType& graph,
     const std::optional<types::id_type> root_id_opt,

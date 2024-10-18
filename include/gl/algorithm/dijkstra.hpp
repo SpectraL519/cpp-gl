@@ -45,8 +45,10 @@ template <type_traits::c_graph GraphType>
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, void> PreVisitCallback = types::empty_callback,
-    type_traits::c_vertex_callback<GraphType, void> PostVisitCallback = types::empty_callback>
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        types::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        types::empty_callback>
 [[nodiscard]] detail::paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -70,8 +72,8 @@ template <
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
         detail::init_range(source_id),
-        detail::constant_unary_predicate<true>(), // visit predicate
-        detail::constant_binary_predicate<true>(), // visit callback
+        types::empty_callback{}, // visit predicate
+        types::empty_callback{}, // visit callback
         [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
             -> std::optional<bool> { // enqueue predicate
             const auto vertex_id = vertex.id();

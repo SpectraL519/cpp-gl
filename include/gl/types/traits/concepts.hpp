@@ -30,13 +30,7 @@ template <typename T, template <typename...> typename Template>
 concept c_instantiation_of = is_instantiation_of_v<T, Template>;
 
 template <typename T, typename... Types>
-struct is_one_of : std::disjunction<std::is_same<T, Types>...> {};
-
-template <typename T, typename... Types>
-inline constexpr bool is_one_of_v = is_one_of<T, Types...>::value;
-
-template <typename T, typename... Types>
-concept c_one_of = is_one_of_v<T, Types...>;
+concept c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
 
 template <typename R>
 concept c_range = std::ranges::range<R>;

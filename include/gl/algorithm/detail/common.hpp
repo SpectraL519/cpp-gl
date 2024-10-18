@@ -25,16 +25,6 @@ template <
     return InitRangeType{types::vertex_info{root_vertex_id}};
 }
 
-template <bool B>
-[[nodiscard]] gl_attr_force_inline auto constant_unary_predicate() {
-    return [](const auto&) { return B; };
-}
-
-template <bool B>
-[[nodiscard]] gl_attr_force_inline auto constant_binary_predicate() {
-    return [](const auto&, const auto&) { return B; };
-}
-
 template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
     return [&](const typename GraphType::vertex_type& vertex) -> bool {
