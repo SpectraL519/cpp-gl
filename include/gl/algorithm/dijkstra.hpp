@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/graph_utility.hpp"
-#include "impl/bfs_impl.hpp"
+#include "impl/bfs.hpp"
 
 #include <deque>
 
@@ -62,7 +62,7 @@ template <
 
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
-    impl::pq_bfs_impl(
+    impl::pq_bfs(
         graph,
         [&paths](const types::vertex_info& lhs, const types::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];

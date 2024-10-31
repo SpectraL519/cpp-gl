@@ -5,7 +5,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "impl/dfs_impl.hpp"
+#include "impl/dfs.hpp"
 
 namespace gl::algorithm {
 
@@ -31,7 +31,7 @@ impl::alg_return_graph_type<SearchTreeType> depth_first_search(
     auto search_tree = impl::init_search_tree<SearchTreeType>(graph);
 
     if (root_vertex_id_opt) {
-        impl::dfs_impl(
+        impl::dfs(
             graph,
             graph.get_vertex(root_vertex_id_opt.value()),
             impl::default_visit_vertex_predicate<GraphType>(visited),
@@ -43,7 +43,7 @@ impl::alg_return_graph_type<SearchTreeType> depth_first_search(
     }
     else {
         for (const auto& root_vertex : graph.vertices())
-            impl::dfs_impl(
+            impl::dfs(
                 graph,
                 root_vertex,
                 impl::default_visit_vertex_predicate<GraphType>(visited),
@@ -81,7 +81,7 @@ impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
 
     if (root_vertex_id_opt) {
         const auto root_id = root_vertex_id_opt.value();
-        impl::rdfs_impl(
+        impl::r_dfs(
             graph,
             graph.get_vertex(root_id),
             root_id,
@@ -94,7 +94,7 @@ impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
     }
     else {
         for (const auto& root_vertex : graph.vertices())
-            impl::rdfs_impl(
+            impl::r_dfs(
                 graph,
                 root_vertex,
                 root_vertex.id(),

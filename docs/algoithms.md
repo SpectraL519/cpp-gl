@@ -161,7 +161,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `detail::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `types::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
+    - `impl::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `types::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
 
   - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/deapth_first_search.hpp)
 
@@ -190,7 +190,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `detail::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `types::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
+    - `impl::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `types::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
 
   - *Defined in*: [gl/algorithm/breadth_first_search.hpp](/include/gl/algorithm/breadth_first_search.hpp)
 
@@ -352,14 +352,14 @@ This section covers the specific types and type traits used for the algorithm im
 
 To write custom graph algorithms you can use the types and concepts described in the [Algorithm-specific types and concepts](#algorithm-specific-types-and-concepts) as well as the general graph utility described in the [graph class documentation page](/docs/graph.md#additional-utility).
 
-Additionaly you can use the depth-first/breadth-first search algorithm templates which are defined in the `gl::algorithm::detail` namespace:
+Additionaly you can use the depth-first/breadth-first search algorithm templates which are defined in the `gl::algorithm::impl` namespace:
 
 ### Depth-first search templates
 
 > [!NOTE]
-> The DFS algorithm templates are defined in the [gl/algorithm/detail/dfs_impl.hpp](/include/gl/algorithm/detail/dfs_impl.hpp) file.
+> The DFS algorithm templates are defined in the [gl/algorithm/impl/dfs.hpp](/include/gl/algorithm/impl/dfs.hpp) file.
 
-- `dfs_impl(graph, root_vertex, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
+- `dfs(graph, root_vertex, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: An iterative DFS algoithm template.
 
   - *Template parameters*:
@@ -381,7 +381,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Return type*: `void`
 
-- `rdfs_impl(graph, vertex, source_id, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
+- `r_dfs(graph, vertex, source_id, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Description*: A recursive DFS algorithm template.
 
   - *Template parameters*:
@@ -407,9 +407,9 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 ### Breadth-first search templates
 
 > [!NOTE]
-> The BFS algorithm templates are defined in the [gl/algorithm/detail/bfs_impl.hpp](/include/gl/algorithm/detail/bfs_impl.hpp) file.
+> The BFS algorithm templates are defined in the [gl/algorithm/impl/bfs.hpp](/include/gl/algorithm/impl/bfs.hpp) file.
 
-- `bfs_impl(graph, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
+- `bfs(graph, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: A *standard* BFS algorithm template.
 
   - *Template parameters*:
@@ -434,7 +434,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Return type*: `void`
 
-- `pq_bfs_impl(graph, pq_compare, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
+- `pq_bfs(graph, pq_compare, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: A *priority queue* BFS algorithm template.
 
   - *Template parameters*:

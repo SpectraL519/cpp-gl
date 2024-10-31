@@ -5,7 +5,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "impl/bfs_impl.hpp"
+#include "impl/bfs.hpp"
 #include "types.hpp"
 
 namespace gl::algorithm {
@@ -32,7 +32,7 @@ impl::alg_return_graph_type<SearchTreeType> breadth_first_search(
     auto search_tree = impl::init_search_tree<SearchTreeType>(graph);
 
     if (root_vertex_id_opt) {
-        impl::bfs_impl(
+        impl::bfs(
             graph,
             impl::init_range(root_vertex_id_opt.value()),
             impl::default_visit_vertex_predicate<GraphType>(visited),
@@ -44,7 +44,7 @@ impl::alg_return_graph_type<SearchTreeType> breadth_first_search(
     }
     else {
         for (const auto root_id : graph.vertex_ids())
-            impl::bfs_impl(
+            impl::bfs(
                 graph,
                 impl::init_range(root_id),
                 impl::default_visit_vertex_predicate<GraphType>(visited),
