@@ -12,8 +12,7 @@ namespace gl::topology {
 
 namespace detail {
 
-[[nodiscard]] gl_attr_force_inline auto get_binary_destination_ids(const types::size_type source_id
-) {
+[[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(const types::size_type source_id) {
     return std::make_pair(
         constants::two * source_id + constants::one, constants::two * source_id + constants::two
     );
@@ -38,9 +37,9 @@ template <type_traits::c_graph GraphType>
     const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
     for (types::id_type source_id = constants::zero; source_id < n_source_vertices; ++source_id) {
-        const auto destination_ids = detail::get_binary_destination_ids(source_id);
+        const auto target_ids = detail::get_binary_target_ids(source_id);
         graph.add_edges_from(
-            source_id, std::vector<types::id_type>{destination_ids.first, destination_ids.second}
+            source_id, std::vector<types::id_type>{target_ids.first, target_ids.second}
         );
     }
 
@@ -64,13 +63,12 @@ template <type_traits::c_graph GraphType>
 
         for (types::id_type source_id = constants::zero; source_id < n_source_vertices;
              ++source_id) {
-            const auto destination_ids = detail::get_binary_destination_ids(source_id);
+            const auto target_ids = detail::get_binary_target_ids(source_id);
             graph.add_edges_from(
-                source_id,
-                std::vector<types::id_type>{destination_ids.first, destination_ids.second}
+                source_id, std::vector<types::id_type>{target_ids.first, target_ids.second}
             );
-            graph.add_edge(destination_ids.first, source_id);
-            graph.add_edge(destination_ids.second, source_id);
+            graph.add_edge(target_ids.first, source_id);
+            graph.add_edge(target_ids.second, source_id);
         }
 
         return graph;

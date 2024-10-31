@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "detail/bfs_impl.hpp"
 #include "gl/graph_utility.hpp"
+#include "impl/bfs.hpp"
 
 #include <deque>
 
@@ -29,18 +29,14 @@ struct paths_descriptor {
     std::vector<distance_type> distances;
 };
 
-namespace detail {
-
 template <type_traits::c_graph GraphType>
 using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
 
-} // namespace detail
-
 template <type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline detail::paths_descriptor_type<GraphType> make_paths_descriptor(
+[[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
     const GraphType& graph
 ) {
-    return detail::paths_descriptor_type<GraphType>{graph.n_vertices()};
+    return paths_descriptor_type<GraphType>{graph.n_vertices()};
 }
 
 template <
@@ -49,7 +45,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-[[nodiscard]] detail::paths_descriptor_type<GraphType> dijkstra_shortest_paths(
+[[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
     const PreVisitCallback& pre_visit = {},
@@ -66,12 +62,12 @@ template <
 
     std::optional<types::const_ref_wrap<edge_type>> negative_edge;
 
-    detail::pq_bfs_impl(
+    impl::pq_bfs(
         graph,
         [&paths](const types::vertex_info& lhs, const types::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
-        detail::init_range(source_id),
+        impl::init_range(source_id),
         types::empty_callback{}, // visit predicate
         types::empty_callback{}, // visit callback
         [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)

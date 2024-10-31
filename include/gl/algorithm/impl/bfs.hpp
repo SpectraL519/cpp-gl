@@ -8,7 +8,7 @@
 
 #include <queue>
 
-namespace gl::algorithm::detail {
+namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
@@ -23,7 +23,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-bool bfs_impl(
+bool bfs(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
     const VisitVertexPredicate& visit_vertex_pred = {},
@@ -92,7 +92,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-bool pq_bfs_impl(
+bool pq_bfs(
     const GraphType& graph,
     const PQCompare& pq_compare,
     const InitQueueRangeType& initial_queue_content,
@@ -148,4 +148,4 @@ bool pq_bfs_impl(
     return true;
 }
 
-} // namespace gl::algorithm::detail
+} // namespace gl::algorithm::impl
