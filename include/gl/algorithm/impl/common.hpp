@@ -6,7 +6,7 @@
 
 #include "gl/algorithm/types.hpp"
 
-namespace gl::algorithm::detail {
+namespace gl::algorithm::impl {
 
 // --- common functions ---
 
@@ -58,4 +58,4 @@ template <type_traits::c_graph GraphType, bool AsOptional = false>
     };
 }
 
-} // namespace gl::algorithm::detail
+} // namespace gl::algorithm::impl

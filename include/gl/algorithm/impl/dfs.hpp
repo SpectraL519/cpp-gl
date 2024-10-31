@@ -8,7 +8,7 @@
 
 #include <stack>
 
-namespace gl::algorithm::detail {
+namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
@@ -21,7 +21,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-void dfs_impl(
+void dfs(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
     const VisitVertexPredicate& visit_vertex_pred,
@@ -77,7 +77,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-void rdfs_impl(
+void r_dfs(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,
     const types::id_type source_id,
@@ -101,7 +101,7 @@ void rdfs_impl(
     for (const auto& edge : graph.adjacent_edges(vertex_id)) {
         const auto& incident_vertex = edge.incident_vertex(vertex);
         if (enqueue_vertex_pred(incident_vertex, edge))
-            rdfs_impl(
+            r_dfs(
                 graph,
                 incident_vertex,
                 vertex_id,
@@ -117,4 +117,4 @@ void rdfs_impl(
         post_visit(vertex);
 }
 
-} // namespace gl::algorithm::detail
+} // namespace gl::algorithm::impl

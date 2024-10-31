@@ -186,12 +186,12 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
   - *Return type*: `bool`
 
 - **`is_incident_to(const vertex_type& vertex) const`**:
-  - *Description*: Returns `true` if the provided vertex is the destination of the edge (for directed edges).
+  - *Description*: Returns `true` if the provided vertex is the target vertex of the edge (for directed edges).
   - *Returned value*:
     - For directed edges: $\text{vertex} = v$
     - For undirected edges: `is_incident_with(vertex)`
   - *Parameters*:
-    - `vertex: const vertex_type&` – the vertex to check if it is the destination.
+    - `vertex: const vertex_type&` – the vertex to check if it is the target.
   - *Return type*: `bool`
 
 - **`is_loop() const`**:

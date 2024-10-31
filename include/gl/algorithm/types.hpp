@@ -68,12 +68,12 @@ concept c_optional_edge_callback =
 
 } // namespace type_traits
 
-namespace algorithm::detail {
+namespace algorithm::impl {
 
 template <type_traits::c_alg_return_graph_type ReturnGraphType>
 using alg_return_graph_type =
     std::conditional_t<type_traits::c_alg_no_return_type<ReturnGraphType>, void, ReturnGraphType>;
 
-} // namespace algorithm::detail
+} // namespace algorithm::impl
 
 } // namespace gl

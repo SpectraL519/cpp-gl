@@ -105,7 +105,7 @@ public:
         return directional_tag::is_incident_from(*this, vertex);
     }
 
-    // true if the given vertex is the `destination` of the edge
+    // true if the given vertex is the `target` vertex of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
         return directional_tag::is_incident_to(*this, vertex);
     }

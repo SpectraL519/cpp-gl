@@ -5,7 +5,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "detail/common.hpp"
+#include "impl/common.hpp"
 
 #include <queue>
 
@@ -92,20 +92,20 @@ template <
                 min_weight
             ));
 
-        const auto& dest_vertex_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
-        if (not visited[dest_vertex_id]) {
+        const auto& target_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
+        if (not visited[target_id]) {
             // add the minimum weight edge to the mst
             mst.edges.emplace_back(min_edge);
             mst.weight += min_weight;
 
-            visited[dest_vertex_id] = true;
+            visited[target_id] = true;
             ++n_vertices_in_mst;
         }
 
-        // enqueue all edges adjacent to the destination vertex if they lead to unvisited verties
-        for (const auto& edge : graph.adjacent_edges(dest_vertex_id))
-            if (not visited[get_other_vertex_id(edge, dest_vertex_id)])
-                edge_queue.emplace(edge, dest_vertex_id);
+        // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
+        for (const auto& edge : graph.adjacent_edges(target_id))
+            if (not visited[get_other_vertex_id(edge, target_id)])
+                edge_queue.emplace(edge, target_id);
     }
 
     return mst;

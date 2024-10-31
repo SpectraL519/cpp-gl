@@ -462,14 +462,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             constexpr auto source_id = constants::vertex_id_1;
-            const std::vector<lib_t::id_type> destination_id_list{
+            const std::vector<lib_t::id_type> target_id_list{
                 constants::vertex_id_1, constants::vertex_id_2, constants::vertex_id_3
             };
 
-            sut.add_edges_from(source_id, destination_id_list);
+            sut.add_edges_from(source_id, target_id_list);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements);
-            CHECK(std::ranges::all_of(destination_id_list, [&sut, source_id](const auto vertex_id) {
+            CHECK(std::ranges::all_of(target_id_list, [&sut, source_id](const auto vertex_id) {
                 return sut.has_edge(source_id, vertex_id);
             }));
         }
@@ -511,12 +511,12 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             const auto& source = vertex_1;
-            const vertex_ref_list<vertex_type> destination_list{vertex_1, vertex_2, vertex_3};
+            const vertex_ref_list<vertex_type> target_list{vertex_1, vertex_2, vertex_3};
 
-            sut.add_edges_from(source, destination_list);
+            sut.add_edges_from(source, target_list);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements);
-            CHECK(std::ranges::all_of(destination_list, [&sut, &source](const auto& vertex) {
+            CHECK(std::ranges::all_of(target_list, [&sut, &source](const auto& vertex) {
                 return sut.has_edge(source, vertex);
             }));
         }
