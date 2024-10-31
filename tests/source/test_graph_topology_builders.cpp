@@ -49,10 +49,9 @@ namespace predicate {
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_fully_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
-        return std::ranges::all_of(graph.vertices(), [&](const vertex_type& destination_vertex) {
-            return source_vertex == destination_vertex
-                or graph.has_edge(source_vertex, destination_vertex);
+    return [&graph](const vertex_type& source) {
+        return std::ranges::all_of(graph.vertices(), [&](const vertex_type& target) {
+            return source == target or graph.has_edge(source, target);
         });
     };
 }
@@ -60,9 +59,9 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
-        return std::ranges::none_of(graph.vertices(), [&](const vertex_type& destination_vertex) {
-            return graph.has_edge(source_vertex, destination_vertex);
+    return [&graph](const vertex_type& source) {
+        return std::ranges::none_of(graph.vertices(), [&](const vertex_type& target) {
+            return graph.has_edge(source, target);
         });
     };
 }
@@ -72,10 +71,10 @@ template <lib_tt::c_graph GraphType>
     const GraphType& graph, const auto& vertex_it_range
 ) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&](const vertex_type& source_vertex) {
+    return [&](const vertex_type& source) {
         return std::ranges::none_of(vertex_it_range, [&](const auto& vertex) {
-            return vertex != source_vertex
-               and (graph.has_edge(source_vertex, vertex) or graph.has_edge(vertex, source_vertex));
+            return vertex != source
+               and (graph.has_edge(source, vertex) or graph.has_edge(vertex, source));
         });
     };
 }
@@ -83,12 +82,12 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
+    return [&graph](const vertex_type& source) {
         const auto& next_vertex =
-            graph.get_vertex((source_vertex.id() + constants::one_element) % graph.n_vertices());
+            graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
-            return (vertex == next_vertex) == graph.has_edge(source_vertex, vertex);
+            return (vertex == next_vertex) == graph.has_edge(source, vertex);
         });
     };
 }
@@ -96,13 +95,13 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
+    return [&graph](const vertex_type& source) {
         const auto& prev_vertex = graph.get_vertex(
-            (source_vertex.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
+            (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
         );
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
-            return (vertex == prev_vertex) == graph.has_edge(source_vertex, vertex);
+            return (vertex == prev_vertex) == graph.has_edge(source, vertex);
         });
     };
 }
@@ -110,17 +109,17 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
+    return [&graph](const vertex_type& source) {
         const auto& next_vertex =
-            graph.get_vertex((source_vertex.id() + constants::one_element) % graph.n_vertices());
+            graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
 
         const auto& prev_vertex = graph.get_vertex(
-            (source_vertex.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
+            (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
         );
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
-                == graph.has_edge(source_vertex, vertex);
+                == graph.has_edge(source, vertex);
         });
     };
 }
@@ -128,22 +127,20 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_connected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
-        const auto destination_ids =
-            lib::topology::detail::get_binary_destination_ids(source_vertex.id());
+    return [&graph](const vertex_type& source) {
+        const auto target_ids = lib::topology::detail::get_binary_target_ids(source.id());
 
-        if (destination_ids.first >= graph.n_vertices())
+        if (target_ids.first >= graph.n_vertices())
             // no need to check second as second = first + 1
-            return graph.adjacent_edges(source_vertex).distance() == constants::zero;
+            return graph.adjacent_edges(source).distance() == constants::zero;
 
-        const auto& destination_1 = graph.get_vertex(destination_ids.first);
-        const auto& destination_2 = graph.get_vertex(destination_ids.second);
+        const auto& target_1 = graph.get_vertex(target_ids.first);
+        const auto& target_2 = graph.get_vertex(target_ids.second);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
-            if (vertex == destination_1 or vertex == destination_2)
-                return graph.has_edge(source_vertex, vertex)
-                   and not graph.has_edge(vertex, source_vertex);
-            return not graph.has_edge(source_vertex, vertex);
+            if (vertex == target_1 or vertex == target_2)
+                return graph.has_edge(source, vertex) and not graph.has_edge(vertex, source);
+            return not graph.has_edge(source, vertex);
         });
     };
 }
@@ -151,35 +148,34 @@ template <lib_tt::c_graph GraphType>
 template <lib_tt::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source_vertex) {
-        const auto destination_ids =
-            lib::topology::detail::get_binary_destination_ids(source_vertex.id());
+    return [&graph](const vertex_type& source) {
+        const auto target_ids = lib::topology::detail::get_binary_target_ids(source.id());
         const lib_t::id_type parent_id =
-            source_vertex.id() == constants::zero
+            source.id() == constants::zero
                 ? constants::zero
-                : (source_vertex.id() - constants::one) / constants::two;
+                : (source.id() - constants::one) / constants::two;
 
-        if (destination_ids.first >= graph.n_vertices()) {
+        if (target_ids.first >= graph.n_vertices()) {
             // no need to check second as second = first + 1
-            const auto adjacent_edges = graph.adjacent_edges(source_vertex);
+            const auto adjacent_edges = graph.adjacent_edges(source);
 
             return adjacent_edges.distance() == constants::one
-               and adjacent_edges[constants::first_element_idx].incident_vertex(source_vertex).id()
+               and adjacent_edges[constants::first_element_idx].incident_vertex(source).id()
                        == parent_id;
         }
 
         const auto& parent = graph.get_vertex(parent_id);
-        const auto& destination_1 = graph.get_vertex(destination_ids.first);
-        const auto& destination_2 = graph.get_vertex(destination_ids.second);
+        const auto& target_1 = graph.get_vertex(target_ids.first);
+        const auto& target_2 = graph.get_vertex(target_ids.second);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
-            if (vertex == destination_1 or vertex == destination_2)
-                return graph.has_edge(source_vertex, vertex);
+            if (vertex == target_1 or vertex == target_2)
+                return graph.has_edge(source, vertex);
 
-            if (vertex == parent and source_vertex.id() != constants::zero)
-                return graph.has_edge(source_vertex, vertex);
+            if (vertex == parent and source.id() != constants::zero)
+                return graph.has_edge(source, vertex);
 
-            return not graph.has_edge(source_vertex, vertex);
+            return not graph.has_edge(source, vertex);
         });
     };
 }
@@ -225,10 +221,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         // verify that all vertices from A are connected to all vertices from B and vice versa
         CHECK(std::ranges::all_of(
             vertices_a | std::views::take(constants::n_elements_top),
-            [&](const vertex_type& source_vertex) {
+            [&](const vertex_type& source) {
                 return std::ranges::all_of(vertices_b, [&](const auto& vertex) {
-                    return biclique.has_edge(source_vertex, vertex)
-                       and biclique.has_edge(vertex, source_vertex);
+                    return biclique.has_edge(source, vertex) and biclique.has_edge(vertex, source);
                 });
             }
         ));

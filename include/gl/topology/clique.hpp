@@ -14,11 +14,10 @@ template <type_traits::c_graph GraphType>
     GraphType graph{n_vertices};
 
     for (types::id_type source_id = constants::initial_id; source_id < n_vertices; ++source_id) {
-        for (types::id_type destination_id = constants::initial_id; destination_id < source_id;
-             ++destination_id) {
-            graph.add_edge(source_id, destination_id);
+        for (types::id_type target_id = constants::initial_id; target_id < source_id; ++target_id) {
+            graph.add_edge(source_id, target_id);
             if constexpr (type_traits::is_directed_v<GraphType>)
-                graph.add_edge(destination_id, source_id);
+                graph.add_edge(target_id, source_id);
         }
     }
 

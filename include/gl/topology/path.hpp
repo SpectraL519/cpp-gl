@@ -28,9 +28,9 @@ template <type_traits::c_graph GraphType>
         for (types::id_type source_id = constants::initial_id;
              source_id < n_vertices - constants::one;
              ++source_id) {
-            const auto destination_id = source_id + constants::one;
-            graph.add_edge(source_id, destination_id);
-            graph.add_edge(destination_id, source_id);
+            const auto target_id = source_id + constants::one;
+            graph.add_edge(source_id, target_id);
+            graph.add_edge(target_id, source_id);
         }
 
         return graph;

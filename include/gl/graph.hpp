@@ -258,31 +258,29 @@ public:
     }
 
     template <type_traits::c_sized_range_of<types::id_type> IdRange>
-    void add_edges_from(const types::id_type source_id, const IdRange& destination_id_range) {
+    void add_edges_from(const types::id_type source_id, const IdRange& target_id_range) {
         const auto& source = this->get_vertex(source_id);
 
         std::vector<edge_ptr_type> new_edges;
-        new_edges.reserve(std::ranges::size(destination_id_range));
+        new_edges.reserve(std::ranges::size(target_id_range));
 
-        for (const auto destination_id : destination_id_range) {
-            new_edges.push_back(
-                detail::make_edge<edge_type>(source, this->get_vertex(destination_id))
-            );
+        for (const auto target_id : target_id_range) {
+            new_edges.push_back(detail::make_edge<edge_type>(source, this->get_vertex(target_id)));
         }
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
 
     template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
-    void add_edges_from(const vertex_type& source, const VertexRefRange& destination_range) {
+    void add_edges_from(const vertex_type& source, const VertexRefRange& target_range) {
         this->_verify_vertex(source);
 
         std::vector<edge_ptr_type> new_edges;
-        new_edges.reserve(std::ranges::size(destination_range));
+        new_edges.reserve(std::ranges::size(target_range));
 
-        for (const auto& destination_ref : destination_range) {
-            const auto& destination = destination_ref.get();
-            this->_verify_vertex(destination);
-            new_edges.push_back(detail::make_edge<edge_type>(source, destination));
+        for (const auto& target_ref : target_range) {
+            const auto& target = target_ref.get();
+            this->_verify_vertex(target);
+            new_edges.push_back(detail::make_edge<edge_type>(source, target));
         }
         this->_impl.add_edges_from(source.id(), std::move(new_edges));
     }

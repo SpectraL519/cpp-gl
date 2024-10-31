@@ -320,29 +320,29 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `const edge_type&`
   - *Requires*: non-default `edge_properties_type`
 
-- **`graph.add_edges_from(source_id, destination_id_range)`**:
-  - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of destination vertices (also specified by IDs).
+- **`graph.add_edges_from(source_id, target_id_range)`**:
+  - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of target vertices (also specified by IDs).
   - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – a range of vertex IDs that must satisfy the size and type constraints.
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
-    - `destination_id_range: const IdRange&` – a range of destination vertex IDs to connect to the source vertex.
+    - `target_id_range: const IdRange&` – a range of target vertex IDs to connect to the source vertex.
   - *Return type*: `void`
 
-- **`graph.add_edges_from(source, destination_range)`**:
-  - *Description*: Adds multiple edges from a specified source vertex to a range of destination vertices (specified by references).
+- **`graph.add_edges_from(source, target_range)`**:
+  - *Description*: Adds multiple edges from a specified source vertex to a range of target vertices (specified by references).
   - *Template parameters*:
     - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – a range of vertex references that must satisfy the size and type constraints.
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
-    - `destination_range: const VertexRefRange&` – a range of destination vertex references to connect to the source vertex.
+    - `target_range: const VertexRefRange&` – a range of target vertex references to connect to the source vertex.
   - *Return type*: `void`
 
 > [!IMPORTANT]
 > Behaviour of adding an edge between `first` and `second`:
 >
-> - for *directed* graphs: adds a one-directional edge where `first` is the source vertex and `second` is the destination vertex
-> - for *undirected* graphs: adds a bidirectional edge where both vertices are source and destination vertices
+> - for *directed* graphs: adds a one-directional edge where `first` is the source vertex and `second` is the target vertex
+> - for *undirected* graphs: adds a bidirectional edge where both vertices are source and target vertices
 
 - **`graph.has_edge(first_id, second_id) const`**:
   - *Description*: Returns true if there is an edge between the vertices with the specified IDs.
