@@ -5,7 +5,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "detail/bfs_impl.hpp"
+#include "impl/bfs_impl.hpp"
 #include "types.hpp"
 
 namespace gl::algorithm {
@@ -17,7 +17,7 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-detail::alg_return_graph_type<SearchTreeType> breadth_first_search(
+impl::alg_return_graph_type<SearchTreeType> breadth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -29,27 +29,27 @@ detail::alg_return_graph_type<SearchTreeType> breadth_first_search(
     std::vector<bool> visited(graph.n_vertices(), false);
     std::vector<types::id_type> sources(graph.n_vertices());
 
-    auto search_tree = detail::init_search_tree<SearchTreeType>(graph);
+    auto search_tree = impl::init_search_tree<SearchTreeType>(graph);
 
     if (root_vertex_id_opt) {
-        detail::bfs_impl(
+        impl::bfs_impl(
             graph,
-            detail::init_range(root_vertex_id_opt.value()),
-            detail::default_visit_vertex_predicate<GraphType>(visited),
-            detail::default_visit_callback<GraphType>(visited, search_tree),
-            detail::default_enqueue_vertex_predicate<GraphType, true>(visited),
+            impl::init_range(root_vertex_id_opt.value()),
+            impl::default_visit_vertex_predicate<GraphType>(visited),
+            impl::default_visit_callback<GraphType>(visited, search_tree),
+            impl::default_enqueue_vertex_predicate<GraphType, true>(visited),
             pre_visit,
             post_visit
         );
     }
     else {
         for (const auto root_id : graph.vertex_ids())
-            detail::bfs_impl(
+            impl::bfs_impl(
                 graph,
-                detail::init_range(root_id),
-                detail::default_visit_vertex_predicate<GraphType>(visited),
-                detail::default_visit_callback<GraphType>(visited, search_tree),
-                detail::default_enqueue_vertex_predicate<GraphType, true>(visited),
+                impl::init_range(root_id),
+                impl::default_visit_vertex_predicate<GraphType>(visited),
+                impl::default_visit_callback<GraphType>(visited, search_tree),
+                impl::default_enqueue_vertex_predicate<GraphType, true>(visited),
                 pre_visit,
                 post_visit
             );

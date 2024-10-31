@@ -8,7 +8,7 @@
 
 #include <stack>
 
-namespace gl::algorithm::detail {
+namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
@@ -117,4 +117,4 @@ void rdfs_impl(
         post_visit(vertex);
 }
 
-} // namespace gl::algorithm::detail
+} // namespace gl::algorithm::impl

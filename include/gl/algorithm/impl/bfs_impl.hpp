@@ -8,7 +8,7 @@
 
 #include <queue>
 
-namespace gl::algorithm::detail {
+namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
@@ -148,4 +148,4 @@ bool pq_bfs_impl(
     return true;
 }
 
-} // namespace gl::algorithm::detail
+} // namespace gl::algorithm::impl

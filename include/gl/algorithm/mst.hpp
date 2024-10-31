@@ -5,7 +5,7 @@
 #pragma once
 
 #include "constants.hpp"
-#include "detail/common.hpp"
+#include "impl/common.hpp"
 
 #include <queue>
 
