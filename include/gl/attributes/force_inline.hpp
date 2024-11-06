@@ -18,6 +18,6 @@
 
 #else
 
-#define gl_attr_force_inline
+#define gl_attr_force_inline inline
 
 #endif
