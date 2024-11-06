@@ -4,7 +4,9 @@
 
 #pragma once
 
-#ifndef gl_attr_force_inline
+#undef gl_attr_force_inline
+
+#ifdef GL_CONFIG_FORCE_INLINE
 
 #if defined(__clang__)
 #define gl_attr_force_inline [[clang::always_inline]] inline
@@ -13,5 +15,9 @@
 #else
 #define gl_attr_force_inline inline
 #endif
+
+#else
+
+#define gl_attr_force_inline inline
 
 #endif
