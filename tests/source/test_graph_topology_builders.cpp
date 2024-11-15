@@ -238,17 +238,17 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("perfect_binary_tree(depth) should return a perfect binay tree with the given depth") {
+    SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
         SUBCASE("depth = 0 : empty graph") {
             const auto complete_bin_tree =
-                lib::topology::perfect_binary_tree<graph_type>(constants::zero);
+                lib::topology::regular_binary_tree<graph_type>(constants::zero);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::zero_elements);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
             const auto complete_bin_tree =
-                lib::topology::perfect_binary_tree<graph_type>(constants::one);
+                lib::topology::regular_binary_tree<graph_type>(constants::one);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::one_element);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
@@ -323,9 +323,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("perfect_binary_tree(depth) should return a one-way perfect binay tree with the "
+    SUBCASE("regular_binary_tree(depth) should return a one-way regular binay tree with the "
             "given depth") {
-        const auto bin_tree = lib::topology::perfect_binary_tree<graph_type>(constants::depth);
+        const auto bin_tree = lib::topology::regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
             lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
@@ -337,10 +337,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("bidirectional_perfect_binary_tree(depth) should return a two-way perfect binay tree "
+    SUBCASE("bidirectional_regular_binary_tree(depth) should return a two-way regular binay tree "
             "with the given depth") {
         const auto bin_tree =
-            lib::topology::bidirectional_perfect_binary_tree<graph_type>(constants::depth);
+            lib::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
             lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
@@ -414,16 +414,16 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("perfect_binary_tree(depth) should return a perfect binay tree with the given depth") {
+    SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
         graph_type bin_tree;
 
-        SUBCASE("perfect_binary_tree builder") {
-            bin_tree = lib::topology::perfect_binary_tree<graph_type>(constants::depth);
+        SUBCASE("regular_binary_tree builder") {
+            bin_tree = lib::topology::regular_binary_tree<graph_type>(constants::depth);
         }
 
-        SUBCASE("bidirectional_perfect_binary_tree builder") {
+        SUBCASE("bidirectional_regular_binary_tree builder") {
             bin_tree =
-                lib::topology::bidirectional_perfect_binary_tree<graph_type>(constants::depth);
+                lib::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
         }
 
         CAPTURE(bin_tree);

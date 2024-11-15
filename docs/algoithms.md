@@ -404,13 +404,13 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Return type*: `void`
 
-### Breadth-first search templates
+### Breadth-first search template
 
 > [!NOTE]
-> The BFS algorithm templates are defined in the [gl/algorithm/impl/bfs.hpp](/include/gl/algorithm/impl/bfs.hpp) file.
+> The BFS algorithm template is defined in the [gl/algorithm/impl/bfs.hpp](/include/gl/algorithm/impl/bfs.hpp) file.
 
 - `bfs(graph, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
-  - *Desciption*: A *standard* BFS algorithm template.
+  - *Desciption*: A breadth-first search algorithm template.
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
@@ -434,8 +434,13 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Return type*: `void`
 
-- `pq_bfs(graph, pq_compare, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
-  - *Desciption*: A *priority queue* BFS algorithm template.
+### Priority-first search template
+
+> [!NOTE]
+> The PFS algorithm template is defined in the [gl/algorithm/impl/pfs.hpp](/include/gl/algorithm/impl/pfs.hpp) file.
+
+- `pfs(graph, pq_compare, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
+  - *Desciption*: A priority-first search algorithm template - modification of the BFS algorithm with a heap-based priority queue instead of a standard *FIFO* structure (queue).
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.

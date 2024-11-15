@@ -46,8 +46,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
-        SUBCASE("perfect binary tree") {
-            sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
+        SUBCASE("regular binary tree") {
+            sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
             const weight_type edge_weight = constants::three;
@@ -129,7 +129,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     static_assert(not lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
-    const auto sut = lib::topology::perfect_binary_tree<sut_type>(constants::depth);
+    const auto sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
     const lib_t::id_type source_id = constants::first_element_idx;
 
     std::vector<vertex_id_pair> expected_edges;

@@ -77,8 +77,8 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/cycle.hpp](/include/gl/topology/cycle.hpp)
 
-- `perfect_binary_tree(depth)`
-  - *Description*: Generates a [perfect binary tree graph](https://en.wikipedia.org/wiki/Binary_tree) of the specified type
+- `regular_binary_tree(depth)`
+  - *Description*: Generates a [regular binary tree](#regular_dary_tree) of the specified type
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - the type of the generated graph
   - *Parameters*:
@@ -86,16 +86,20 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/binary_tree.hpp](/include/gl/topology/binary_tree.hpp)
 
-- `bidirectional_perfect_binary_tree(depth)`
-  - *Description*: Generates a bidirectional [perfect binary tree graph](https://en.wikipedia.org/wiki/Binary_tree) of the specified type:
+- `bidirectional_regular_binary_tree(depth)`
+  - *Description*: Generates a bidirectional [regular binary tree](#regular_dary_tree) of the specified type:
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - the type of the generated graph
-    - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* perfect binary tree, an additional edge is added - $(v_j, v_i)$
-    - For undirected edges: equivalent to `perfect_binary_tree(n_vertices)`
+    - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* regular binary tree, an additional edge is added - $(v_j, v_i)$
+    - For undirected edges: equivalent to `regular_binary_tree(n_vertices)`
   - *Parameters*:
     - `depth: types::size_type` - the leaf depth of the generated binary tree graph
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/binary_tree.hpp](/include/gl/topology/binary_tree.hpp)
+
+> [!NOTE]
+> <a id="regular_dary_tree"></a>
+> A **regular d-ary tree** is a d-ary tree such that all nodes have exaclty 0 or d children and all leaves of such tree are at the same depth/level.
 
 <br />
 <br />
@@ -140,12 +144,12 @@ int main() {
     const auto bidir_cycle = gl::topology::bidirectional_cycle<graph_type>(5);
     print_graph(bidir_cycle, "bidirectional_cycle");
 
-    // perfect binary tree graphs of depth 3
-    const auto bin_tree = gl::topology::perfect_binary_tree<graph_type>(3);
-    print_graph(bin_tree, "perfect_binary_tree");
+    // regular binary tree graphs of depth 3
+    const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(3);
+    print_graph(bin_tree, "regular_binary_tree");
 
-    const auto bidir_bin_tree = gl::topology::bidirectional_perfect_binary_tree<graph_type>(3);
-    print_graph(bidir_bin_tree, "bidirectional_perfect_binary_tree");
+    const auto bidir_bin_tree = gl::topology::bidirectional_regular_binary_tree<graph_type>(3);
+    print_graph(bidir_bin_tree, "bidirectional_regular_binary_tree");
 }
 ```
 
@@ -198,7 +202,7 @@ directed 5 10
 - 3 : [3, 2] [3, 4]
 - 4 : [4, 3] [4, 0]
 
-> perfect_binary_tree:
+> regular_binary_tree:
 directed 7 6
 - 0 : [0, 1] [0, 2]
 - 1 : [1, 3] [1, 4]
@@ -208,7 +212,7 @@ directed 7 6
 - 5 :
 - 6 :
 
-> bidirectional_perfect_binary_tree:
+> bidirectional_regular_binary_tree:
 directed 7 12
 - 0 : [0, 1] [0, 2]
 - 1 : [1, 0] [1, 3] [1, 4]

@@ -12,10 +12,11 @@ namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
+    std::predicate<types::vertex_info, types::vertex_info> PQCompare,
     type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
         std::vector<types::vertex_info>,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_optional_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
+    type_traits::c_optional_callback<GraphType, bool, types::id_type> VisitCallback,
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
@@ -23,12 +24,13 @@ template <
         types::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         types::empty_callback>
-bool bfs(
+bool pfs(
     const GraphType& graph,
+    const PQCompare& pq_compare,
     const InitQueueRangeType& initial_queue_content,
-    const VisitVertexPredicate& visit_vertex_pred = {},
-    const VisitCallback& visit = {},
-    const EnqueueVertexPred& enqueue_vertex_pred = {},
+    const VisitVertexPredicate& visit_vertex_pred,
+    const VisitCallback& visit,
+    const EnqueueVertexPred& enqueue_vertex_pred,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -36,8 +38,9 @@ bool bfs(
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type = std::queue<types::vertex_info>;
-    vertex_queue_type vertex_queue;
+    using vertex_queue_type =
+        std::priority_queue<types::vertex_info, std::vector<types::vertex_info>, PQCompare>;
+    vertex_queue_type vertex_queue(pq_compare);
 
     // TODO [C++23]: replace with push_range
     for (const auto& vinfo : initial_queue_content)
@@ -45,7 +48,7 @@ bool bfs(
 
     // search the graph
     while (not vertex_queue.empty()) {
-        const types::vertex_info vinfo = vertex_queue.front();
+        const auto vinfo = vertex_queue.top();
         vertex_queue.pop();
 
         const auto& vertex = graph.get_vertex(vinfo.id);
@@ -70,7 +73,6 @@ bool bfs(
             if (enqueue.value())
                 vertex_queue.emplace(incident_vertex.id(), vinfo.id);
         }
-
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
             post_visit(vertex);
     }

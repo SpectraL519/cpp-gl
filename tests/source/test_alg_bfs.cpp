@@ -159,7 +159,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = lib::topology::perfect_binary_tree<graph_type>(constants::three);
+    const auto graph = lib::topology::regular_binary_tree<graph_type>(constants::three);
     const auto search_tree = lib::algorithm::breadth_first_search<graph_type>(graph);
 
     REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
