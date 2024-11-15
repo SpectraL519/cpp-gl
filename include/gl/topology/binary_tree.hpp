@@ -23,7 +23,7 @@ constexpr types::size_type min_non_trivial_bin_tree_depth = constants::two;
 } // namespace detail
 
 template <type_traits::c_graph GraphType>
-[[nodiscard]] GraphType perfect_binary_tree(const types::size_type depth) {
+[[nodiscard]] GraphType regular_binary_tree(const types::size_type depth) {
     if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
 
@@ -74,7 +74,7 @@ template <type_traits::c_graph GraphType>
         return graph;
     }
     else {
-        return perfect_binary_tree<GraphType>(depth);
+        return regular_binary_tree<GraphType>(depth);
     }
 }
 

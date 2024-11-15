@@ -77,7 +77,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/cycle.hpp](/include/gl/topology/cycle.hpp)
 
-- `perfect_binary_tree(depth)`
+- `regular_binary_tree(depth)`
   - *Description*: Generates a [perfect binary tree graph](https://en.wikipedia.org/wiki/Binary_tree) of the specified type
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - the type of the generated graph
@@ -91,7 +91,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - the type of the generated graph
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* perfect binary tree, an additional edge is added - $(v_j, v_i)$
-    - For undirected edges: equivalent to `perfect_binary_tree(n_vertices)`
+    - For undirected edges: equivalent to `regular_binary_tree(n_vertices)`
   - *Parameters*:
     - `depth: types::size_type` - the leaf depth of the generated binary tree graph
   - *Return type*: `GraphType`
@@ -141,8 +141,8 @@ int main() {
     print_graph(bidir_cycle, "bidirectional_cycle");
 
     // perfect binary tree graphs of depth 3
-    const auto bin_tree = gl::topology::perfect_binary_tree<graph_type>(3);
-    print_graph(bin_tree, "perfect_binary_tree");
+    const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(3);
+    print_graph(bin_tree, "regular_binary_tree");
 
     const auto bidir_bin_tree = gl::topology::bidirectional_perfect_binary_tree<graph_type>(3);
     print_graph(bidir_bin_tree, "bidirectional_perfect_binary_tree");
@@ -198,7 +198,7 @@ directed 5 10
 - 3 : [3, 2] [3, 4]
 - 4 : [4, 3] [4, 0]
 
-> perfect_binary_tree:
+> regular_binary_tree:
 directed 7 6
 - 0 : [0, 1] [0, 2]
 - 1 : [1, 3] [1, 4]
