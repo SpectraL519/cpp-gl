@@ -47,7 +47,7 @@ template <type_traits::c_graph GraphType>
 }
 
 template <type_traits::c_graph GraphType>
-[[nodiscard]] GraphType bidirectional_perfect_binary_tree(const types::size_type depth) {
+[[nodiscard]] GraphType bidirectional_regular_binary_tree(const types::size_type depth) {
     if constexpr (type_traits::is_directed_v<GraphType>) {
         if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};

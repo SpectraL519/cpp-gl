@@ -36,7 +36,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 expected_coloring.emplace_back(lib::bin_color_value::white);
         }
 
-        SUBCASE("perfect binary tree") {
+        SUBCASE("regular binary tree") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
 
             lib_t::size_type n_vertices = constants::one_element;
@@ -128,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             );
         }
 
-        SUBCASE("perfect binary tree with an additional edge between siblings") {
+        SUBCASE("regular binary tree with an additional edge between siblings") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
             sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
         }

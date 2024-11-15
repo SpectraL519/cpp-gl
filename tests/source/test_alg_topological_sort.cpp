@@ -41,7 +41,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 expected_topological_order.push_back(id);
         }
 
-        SUBCASE("perfect binary tree") {
+        SUBCASE("regular binary tree") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
 
             for (const auto id : sut.vertex_ids())

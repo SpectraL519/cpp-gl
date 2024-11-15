@@ -64,7 +64,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
         }
 
-        SUBCASE("perfect binary tree") {
+        SUBCASE("regular binary tree") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
@@ -174,7 +174,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 expected_distances.push_back(constants::one);
         }
 
-        SUBCASE("perfect binary tree") {
+        SUBCASE("regular binary tree") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 

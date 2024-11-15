@@ -46,7 +46,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
-        SUBCASE("perfect binary tree") {
+        SUBCASE("regular binary tree") {
             sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
