@@ -67,7 +67,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::depth_first_search(
+    lib::algorithm::depth_first_search<lib::algorithm::no_return>(
         graph,
         lib::algorithm::no_root_vertex,
         [&](const auto& vertex) { // previsit
@@ -136,7 +136,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::depth_first_search(
+    lib::algorithm::depth_first_search<lib::algorithm::no_return>(
         graph,
         root_vertex_id,
         [&](const auto& vertex) { // previsit
@@ -245,7 +245,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::recursive_depth_first_search(
+    lib::algorithm::recursive_depth_first_search<lib::algorithm::no_return>(
         graph,
         lib::algorithm::no_root_vertex,
         [&](const auto& vertex) { // previsit
@@ -319,7 +319,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::recursive_depth_first_search(
+    lib::algorithm::recursive_depth_first_search<lib::algorithm::no_return>(
         graph,
         root_vertex_id,
         [&](const auto& vertex) { // previsit
