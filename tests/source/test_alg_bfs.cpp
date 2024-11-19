@@ -163,11 +163,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto pd =
         lib::algorithm::breadth_first_search<lib::algorithm::default_return, graph_type>(graph);
 
-    REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
-
-    const auto vertex_id_view = std::views::iota(constants::first_element_idx, graph.n_vertices());
-
     // verify the predecessors of each vertex
+    REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
     CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
 }
 
