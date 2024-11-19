@@ -53,7 +53,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Constructors*:
     - `vertex_info(types::id_type id)` - initializes the object with the same value for `id` and `source_id` representing a starting vertex
     - `vertex_info(types::id_type id, types::id_type source_id)`
-  - *Members*:
+  - *Member variables*:
     - `id: types::id_type` - the ID of the vertex.
     - `source_id: types::id_type` - the ID of the source vertex, typically used during algorithms.
 
@@ -64,9 +64,29 @@ This section covers the specific types and type traits used for the algorithm im
   - *Constructors*:
     - `vertex_info(types::id_type id)` - initializes the object with the same value for `id` and `source_id` representing a starting vertex
     - `vertex_info(types::id_type id, types::id_type source_id)`
-  - *Members*:
+  - *Member variables*:
     - `edge: types::const_ref_wrap<EdgeType>` - a constant reference wrapper for the edge.
     - `source_id: types::id_type` - the ID of the source vertex of the held edge.
+
+- `predecessors_descriptor`
+  - *Description*: A structure that holds a collection of predecessors for a set of vertices.
+  - *Type definitions*:
+    - `predecessor_type: std::optional<types::id_type>` - the type of the predecessor, which can either be a valid vertex ID or empty (no predecessor).
+
+    **NOTE:** An empty predecessor means that a vertex is nor reachable from the source vertex, while `predecessor[ID] == ID` means that the vertex with such ID is the source vertex.
+
+  - *Constructors*:
+    - `predecessors_descriptor(types::size_type n_vertices)` - initializes the object with a vector of optional predecessors, sized to `n_vertices`.
+  - *Destructor*:
+    - `virtual ~predecessors_descriptor()` - default destructor.
+  - *Member variables*:
+    - `predecessors: std::vector<std::optional<types::id_type>>` - a vector of optional IDs, where each element represents a predecessor for a vertex. If a vertex has no predecessor, the corresponding element is empty.
+  - *Member functions*:
+    - `is_reachable(types::id_type vertex_id) const -> bool` - checks if a vertex is reachable by verifying if its predecessor exists (i.e., if the optional value is set).
+    - `operator[](types::size_type i) const` - returns a constant reference to the predecessor at index `i`.
+    - `operator[](types::size_type i)` - returns a reference to the predecessor at index `i`.
+    - `at(types::size_type i) const` - returns a constant reference to the predecessor at index `i`, with bounds checking.
+    - `at(types::size_type i)` - returns a reference to the predecessor at index `i`, with bounds checking.
 
 ### Concepts
 
@@ -146,10 +166,10 @@ This section covers the specific types and type traits used for the algorithm im
 ### Depth-first search
 
 - `depth_first_search(graph, root_vertex_id_opt, pre_visit, post_visit)`
-  - *Description*: Performs an iterative depth-first search (DFS) on the specified graph.
+  - *Description*: Performs an iterative depth-first search (DFS) on the specified graph and conditionally returns a `predecessors_descriptor` instance.
 
   - *Template parameters*:
-    - `SearchTreeType: type_traits::c_alg_return_graph_type` (default = `algorithm::no_return`) - The type of the search tree to return, or `algorithm::no_return`.
+    - `AlgReturnType: type_traits::c_alg_return_type` (default = `algorithm::default_return`) - Specifies whether the algorrithm should return the predecessors descriptor or not (can be eigher `algorithm::default_return` or `algorithm::no_return`).
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
     - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called after visiting a vertex.
@@ -161,12 +181,12 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `impl::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `algorithm::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
+    - `impl::alg_return_type<AlgReturnType, predecessors_descriptor>` - If `AlgReturnType` is `algorithm::no_return` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
   - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/deapth_first_search.hpp)
 
 - `recursive_depth_first_search(graph, root_vertex_id_opt, pre_visit, post_visit)`
-  - *Description*: Performs a recursive depth-first search (DFS) on the specified graph.
+  - *Description*: Performs a recursive depth-first search (DFS) on the specified graph and conditionally returns a `predecessors_descriptor` instance.
 
     **NOTE:** This algoithm has the same template parameters, parameters and return type as the iterative version (`depth_first_search`)
 
@@ -175,10 +195,10 @@ This section covers the specific types and type traits used for the algorithm im
 ### Breadth-first search
 
 - `breadth_first_search(graph, root_vertex_id_opt, pre_visit, post_visit)`
-  - *Description*: Performs an breadth-first search (BFS) on the specified graph.
+  - *Description*: Performs an breadth-first search (BFS) on the specified graph and conditionally returns a `predecessors_descriptor` instance.
 
   - *Template parameters*:
-    - `SearchTreeType: type_traits::c_alg_return_graph_type` (default = `algorithm::no_return`) - The type of the search tree to return, or `algorithm::no_return`.
+    - `AlgReturnType: type_traits::c_alg_return_type` (default = `algorithm::default_return`) - Specifies whether the algorrithm should return the predecessors descriptor or not (can be eigher `algorithm::default_return` or `algorithm::no_return`).
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
     - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called before visiting a vertex.
     - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called after visiting a vertex.
@@ -190,7 +210,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `impl::alg_return_graph_type<SearchTreeType>` - If `SearchTreeType` is not `algorithm::no_return`, returns a search tree of type `SearchTreeType`. Otherwise, the return type is `void`.
+    - `impl::alg_return_type<AlgReturnType, predecessors_descriptor>` - If `AlgReturnType` is `algorithm::no_return` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
   - *Defined in*: [gl/algorithm/breadth_first_search.hpp](/include/gl/algorithm/breadth_first_search.hpp)
 
@@ -277,7 +297,11 @@ This section covers the specific types and type traits used for the algorithm im
 >     **NOTE:** If a predecessor at index $i$ is null, then the vertex $v$ in the graph such that $v_{id} = i$ is unreachable.
 >   - `distances: std::vector<distance_type>` - A list of vertex distances from a source vertex.
 > - *Member functions*:
->   - `is_reachable(vertex_id) const -> bool` - equivalent to `predecessors.at(vertex_id).has_value()`
+>   - `is_reachable(types::id_type vertex_id) const -> bool` - checks if a vertex is reachable by verifying if its predecessor exists (i.e., if the optional value is set).
+>   - `operator[](types::size_type i) const` - returns a pair of constant references to the predecessor and distance at index `i`.
+>   - `operator[](types::size_type i)` - returns a pair of references to the predecessor and distance at index `i`.
+>   - `at(types::size_type i) const` - returns a pair of constant references to the predecessor and distance at index `i`, with bounds checking.
+>   - `at(types::size_type i)` - returns a pair of references to the predecessor and distance at index `i`, with bounds checking.
 
 - `reconstruct_path(predecessor_map, vetex_id)`
   - *Description*: Reconstructs a path to the search vertex $v$ such that $v_{id} = \text{vertex-id}$ from the given predecessor map
