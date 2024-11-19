@@ -10,7 +10,9 @@
 
 namespace gl {
 
-namespace types {
+namespace algorithm {
+
+struct default_return {};
 
 struct no_return {};
 
@@ -34,18 +36,53 @@ struct edge_info {
     types::id_type source_id;
 };
 
-} // namespace types
+struct predecessors_descriptor {
+    using predecessor_type = std::optional<types::id_type>;
+
+    predecessors_descriptor(const types::size_type n_vertices) : predecessors(n_vertices) {
+        predecessors.shrink_to_fit();
+    }
+
+    virtual ~predecessors_descriptor() = default;
+
+    [[nodiscard]] gl_attr_force_inline bool is_reachable(const types::id_type vertex_id) const {
+        return this->at(vertex_id).has_value();
+    }
+
+    [[nodiscard]] const predecessor_type& operator[](const types::size_type i) const {
+        return this->predecessors[i];
+    }
+
+    [[nodiscard]] predecessor_type& operator[](const types::size_type i) {
+        return this->predecessors[i];
+    }
+
+    [[nodiscard]] const predecessor_type& at(const types::size_type i) const {
+        return this->predecessors.at(i);
+    }
+
+    [[nodiscard]] predecessor_type& at(const types::size_type i) {
+        return this->predecessors.at(i);
+    }
+
+    std::vector<predecessor_type> predecessors;
+};
+
+} // namespace algorithm
 
 namespace type_traits {
 
 template <typename T>
-concept c_alg_no_return_type = std::same_as<T, types::no_return>;
+concept c_alg_default_return_type = std::same_as<T, algorithm::default_return>;
 
 template <typename T>
-concept c_alg_return_graph_type = c_graph<T> or c_alg_no_return_type<T>;
+concept c_alg_no_return_type = std::same_as<T, algorithm::no_return>;
+
+template <typename T>
+concept c_alg_return_type = c_alg_default_return_type<T> or c_alg_no_return_type<T>;
 
 template <typename F>
-concept c_empty_callback = std::same_as<F, types::empty_callback>;
+concept c_empty_callback = std::same_as<F, algorithm::empty_callback>;
 
 template <typename F, typename ReturnType, typename... Args>
 concept c_optional_callback = c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>;
@@ -70,9 +107,13 @@ concept c_optional_edge_callback =
 
 namespace algorithm::impl {
 
-template <type_traits::c_alg_return_graph_type ReturnGraphType>
-using alg_return_graph_type =
-    std::conditional_t<type_traits::c_alg_no_return_type<ReturnGraphType>, void, ReturnGraphType>;
+template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
+using alg_return_type =
+    std::conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, void, DefaultReturnType>;
+
+template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
+using alg_return_type_non_void = std::
+    conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, no_return, DefaultReturnType>;
 
 } // namespace algorithm::impl
 

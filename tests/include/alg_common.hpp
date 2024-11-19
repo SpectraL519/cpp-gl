@@ -1,8 +1,10 @@
 #pragma once
 
+#include "constants.hpp"
 #include "namespaces.hpp"
 #include "types.hpp"
 
+#include <gl/algorithms.hpp>
 #include <gl/graph.hpp>
 #include <gl/graph_file_io.hpp>
 
@@ -32,26 +34,17 @@ requires(lib_tt::c_readable<T>)
     return list;
 }
 
-template <lib_tt::c_graph GraphType1, lib_tt::c_graph GraphType2>
-[[nodiscard]] auto are_vertices_equivalent(const GraphType1& g1, const GraphType2& g2) {
-    return [&](const lib_t::id_type vertex_id) {
-        const auto adj_edges_1 = g1.adjacent_edges(vertex_id);
-        const auto adj_edges_2 = g2.adjacent_edges(vertex_id);
-
-        if (adj_edges_2.distance() != adj_edges_1.distance())
+[[nodiscard]] inline auto has_correct_bin_predecessor(
+    const lib::algorithm::predecessors_descriptor& pd
+) {
+    return [&pd](const lib_t::id_type vertex_id) {
+        if (not pd.is_reachable(vertex_id))
             return false;
 
-        for (const auto& edge : adj_edges_1) {
-            if (not g2.has_edge(edge.first_id(), edge.second_id()))
-                return false;
-        }
+        if (vertex_id == constants::first_element_idx)
+            return pd[vertex_id] == vertex_id;
 
-        for (const auto& edge : adj_edges_2) {
-            if (not g1.has_edge(edge.first_id(), edge.second_id()))
-                return false;
-        }
-
-        return true;
+        return pd[vertex_id] == ((vertex_id - constants::one) / constants::two);
     };
 }
 

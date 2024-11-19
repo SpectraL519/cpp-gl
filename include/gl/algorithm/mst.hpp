@@ -28,9 +28,9 @@ struct mst_descriptor {
 template <
     type_traits::c_undirected_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 [[nodiscard]] mst_descriptor<GraphType> prim_mst(
     const GraphType& graph,
     const std::optional<types::id_type> root_id_opt,
@@ -41,7 +41,7 @@ template <
 
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using edge_info_type = types::edge_info<edge_type>;
+    using edge_info_type = algorithm::edge_info<edge_type>;
     using distance_type = types::vertex_distance_type<GraphType>;
 
     struct edge_info_comparator {

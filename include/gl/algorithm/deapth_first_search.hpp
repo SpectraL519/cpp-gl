@@ -10,13 +10,13 @@
 namespace gl::algorithm {
 
 template <
-    type_traits::c_alg_return_graph_type SearchTreeType = types::no_return,
+    type_traits::c_alg_return_type AlgReturnType = algorithm::default_return,
     type_traits::c_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
-impl::alg_return_graph_type<SearchTreeType> depth_first_search(
+        algorithm::empty_callback>
+impl::alg_return_type<AlgReturnType, predecessors_descriptor> depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -28,14 +28,14 @@ impl::alg_return_graph_type<SearchTreeType> depth_first_search(
     std::vector<bool> visited(graph.n_vertices(), false);
     std::vector<types::id_type> sources(graph.n_vertices());
 
-    auto search_tree = impl::init_search_tree<SearchTreeType>(graph);
+    auto pd = impl::init_return_value<AlgReturnType, predecessors_descriptor>(graph);
 
     if (root_vertex_id_opt) {
         impl::dfs(
             graph,
             graph.get_vertex(root_vertex_id_opt.value()),
             impl::default_visit_vertex_predicate<GraphType>(visited),
-            impl::default_visit_callback<GraphType>(visited, search_tree),
+            impl::default_visit_callback<GraphType, AlgReturnType>(visited, pd),
             impl::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
@@ -47,25 +47,25 @@ impl::alg_return_graph_type<SearchTreeType> depth_first_search(
                 graph,
                 root_vertex,
                 impl::default_visit_vertex_predicate<GraphType>(visited),
-                impl::default_visit_callback<GraphType>(visited, search_tree),
+                impl::default_visit_callback<GraphType, AlgReturnType>(visited, pd),
                 impl::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );
     }
 
-    if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>)
-        return search_tree;
+    if constexpr (not type_traits::c_alg_no_return_type<AlgReturnType>)
+        return pd;
 }
 
 template <
-    type_traits::c_alg_return_graph_type SearchTreeType = types::no_return,
+    type_traits::c_alg_return_type AlgReturnType = algorithm::default_return,
     type_traits::c_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
-impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
+        algorithm::empty_callback>
+impl::alg_return_type<AlgReturnType, predecessors_descriptor> recursive_depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
@@ -77,7 +77,7 @@ impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
     std::vector<bool> visited(graph.n_vertices(), false);
     std::vector<types::id_type> sources(graph.n_vertices());
 
-    auto search_tree = impl::init_search_tree<SearchTreeType>(graph);
+    auto pd = impl::init_return_value<AlgReturnType, predecessors_descriptor>(graph);
 
     if (root_vertex_id_opt) {
         const auto root_id = root_vertex_id_opt.value();
@@ -86,7 +86,7 @@ impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
             graph.get_vertex(root_id),
             root_id,
             impl::default_visit_vertex_predicate<GraphType>(visited),
-            impl::default_visit_callback<GraphType>(visited, search_tree),
+            impl::default_visit_callback<GraphType, AlgReturnType>(visited, pd),
             impl::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
@@ -99,15 +99,15 @@ impl::alg_return_graph_type<SearchTreeType> recursive_depth_first_search(
                 root_vertex,
                 root_vertex.id(),
                 impl::default_visit_vertex_predicate<GraphType>(visited),
-                impl::default_visit_callback<GraphType>(visited, search_tree),
+                impl::default_visit_callback<GraphType, AlgReturnType>(visited, pd),
                 impl::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );
     }
 
-    if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>)
-        return search_tree;
+    if constexpr (not type_traits::c_alg_no_return_type<AlgReturnType>)
+        return pd;
 }
 
 } // namespace gl::algorithm

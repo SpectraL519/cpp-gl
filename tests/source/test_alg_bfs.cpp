@@ -59,7 +59,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::breadth_first_search(
+    lib::algorithm::breadth_first_search<lib::algorithm::no_return>(
         graph,
         lib::algorithm::no_root_vertex,
         [&](const auto& vertex) { // previsit
@@ -128,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::breadth_first_search(
+    lib::algorithm::breadth_first_search<lib::algorithm::no_return>(
         graph,
         root_vertex_id,
         [&](const auto& vertex) { // previsit
@@ -160,16 +160,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = lib::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto search_tree = lib::algorithm::breadth_first_search<graph_type>(graph);
+    const auto pd =
+        lib::algorithm::breadth_first_search<lib::algorithm::default_return, graph_type>(graph);
 
-    REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
-
-    const auto vertex_id_view = std::views::iota(constants::first_element_idx, graph.n_vertices());
-
-    // verify that for each vertex the edges are equivalent to those in the original graph
-    CHECK(
-        std::ranges::all_of(vertex_id_view, alg_common::are_vertices_equivalent(graph, search_tree))
-    );
+    // verify the predecessors of each vertex
+    REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
+    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

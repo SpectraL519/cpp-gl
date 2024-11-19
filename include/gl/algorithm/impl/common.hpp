@@ -10,19 +10,23 @@ namespace gl::algorithm::impl {
 
 // --- common functions ---
 
-template <type_traits::c_alg_return_graph_type SearchTreeType, type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline SearchTreeType init_search_tree(const GraphType& graph) {
-    if constexpr (type_traits::c_alg_no_return_type<SearchTreeType>)
-        return SearchTreeType{};
+template <
+    type_traits::c_alg_return_type AlgReturnType,
+    typename ReturnType,
+    type_traits::c_graph GraphType>
+[[nodiscard]] gl_attr_force_inline alg_return_type_non_void<AlgReturnType, ReturnType>
+init_return_value(const GraphType& graph) {
+    if constexpr (type_traits::c_alg_no_return_type<AlgReturnType>)
+        return AlgReturnType{};
     else
-        return SearchTreeType(graph.n_vertices());
+        return ReturnType(graph.n_vertices());
 }
 
 template <
-    type_traits::c_sized_range_of<types::vertex_info> InitRangeType =
-        std::vector<types::vertex_info>>
+    type_traits::c_sized_range_of<algorithm::vertex_info> InitRangeType =
+        std::vector<algorithm::vertex_info>>
 [[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {
-    return InitRangeType{types::vertex_info{root_vertex_id}};
+    return InitRangeType{algorithm::vertex_info{root_vertex_id}};
 }
 
 template <type_traits::c_graph GraphType>
@@ -32,17 +36,15 @@ template <type_traits::c_graph GraphType>
     };
 }
 
-template <type_traits::c_graph GraphType, type_traits::c_alg_return_graph_type SearchTreeType>
+template <type_traits::c_graph GraphType, type_traits::c_alg_return_type AlgReturnType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited, SearchTreeType& search_tree
+    std::vector<bool>& visited, alg_return_type_non_void<AlgReturnType, predecessors_descriptor>& pd
 ) {
     return [&](const typename GraphType::vertex_type& vertex, const types::id_type source_id) {
         const auto vertex_id = vertex.id();
         visited[vertex_id] = true;
-        if constexpr (not type_traits::c_alg_no_return_type<SearchTreeType>) {
-            if (source_id != vertex_id)
-                search_tree.add_edge(source_id, vertex_id);
-        }
+        if constexpr (type_traits::c_alg_default_return_type<AlgReturnType>)
+            pd[vertex_id].emplace(source_id);
         return true;
     };
 }
