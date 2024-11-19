@@ -1,8 +1,10 @@
 #pragma once
 
+#include "constants.hpp"
 #include "namespaces.hpp"
 #include "types.hpp"
 
+#include <gl/algorithms.hpp>
 #include <gl/graph.hpp>
 #include <gl/graph_file_io.hpp>
 
@@ -30,6 +32,20 @@ requires(lib_tt::c_readable<T>)
         file >> list[i];
 
     return list;
+}
+
+[[nodiscard]] inline auto has_correct_bin_predecessor(
+    const lib::algorithm::predecessors_descriptor& pd
+) {
+    return [&pd](const lib_t::id_type vertex_id) {
+        if (not pd.is_reachable(vertex_id))
+            return false;
+
+        if (vertex_id == constants::first_element_idx)
+            return pd[vertex_id] == vertex_id;
+
+        return pd[vertex_id] == ((vertex_id - constants::one) / constants::two);
+    };
 }
 
 template <lib_tt::c_graph GraphType1, lib_tt::c_graph GraphType2>

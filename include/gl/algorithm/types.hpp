@@ -108,8 +108,12 @@ concept c_optional_edge_callback =
 namespace algorithm::impl {
 
 template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
-using alg_return_type = std::
-    conditional_t<type_traits::c_alg_default_return_type<AlgReturnType>, DefaultReturnType, void>;
+using alg_return_type =
+    std::conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, void, DefaultReturnType>;
+
+template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
+using alg_return_type_non_void = std::
+    conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, no_return, DefaultReturnType>;
 
 } // namespace algorithm::impl
 
