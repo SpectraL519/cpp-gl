@@ -18,9 +18,9 @@ template <
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 void dfs(
     const GraphType& graph,
     const typename GraphType::vertex_type& root_vertex,
@@ -30,7 +30,7 @@ void dfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_stack_type = std::stack<types::vertex_info>;
+    using vertex_stack_type = std::stack<algorithm::vertex_info>;
 
     if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
         if (not visit_vertex_pred(root_vertex))
@@ -74,9 +74,9 @@ template <
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 void r_dfs(
     const GraphType& graph,
     const typename GraphType::vertex_type& vertex,

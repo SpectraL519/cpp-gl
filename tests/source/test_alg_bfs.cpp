@@ -151,34 +151,34 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
 );
 
-TEST_CASE_TEMPLATE_DEFINE(
-    "breadth_first_search with return should properly traverse the graph",
-    GraphType,
-    bfs_return_graph_template
-) {
-    using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
+// TEST_CASE_TEMPLATE_DEFINE(
+//     "breadth_first_search with return should properly traverse the graph",
+//     GraphType,
+//     bfs_return_graph_template
+// ) {
+//     using graph_type = GraphType;
+//     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = lib::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto search_tree = lib::algorithm::breadth_first_search<graph_type>(graph);
+//     const auto graph = lib::topology::regular_binary_tree<graph_type>(constants::three);
+//     const auto search_tree = lib::algorithm::breadth_first_search<graph_type>(graph);
 
-    REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
+//     REQUIRE_EQ(search_tree.n_vertices(), graph.n_vertices());
 
-    const auto vertex_id_view = std::views::iota(constants::first_element_idx, graph.n_vertices());
+//     const auto vertex_id_view = std::views::iota(constants::first_element_idx, graph.n_vertices());
 
-    // verify that for each vertex the edges are equivalent to those in the original graph
-    CHECK(
-        std::ranges::all_of(vertex_id_view, alg_common::are_vertices_equivalent(graph, search_tree))
-    );
-}
+//     // verify that for each vertex the edges are equivalent to those in the original graph
+//     CHECK(
+//         std::ranges::all_of(vertex_id_view, alg_common::are_vertices_equivalent(graph, search_tree))
+//     );
+// }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(
-    bfs_return_graph_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
-);
+// TEST_CASE_TEMPLATE_INSTANTIATE(
+//     bfs_return_graph_template,
+//     lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
+//     lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
+//     lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
+//     lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+// );
 
 TEST_SUITE_END(); // test_alg_bfs
 

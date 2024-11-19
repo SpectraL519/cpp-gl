@@ -12,17 +12,17 @@ namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_sized_range_of<types::vertex_info> InitQueueRangeType =
-        std::vector<types::vertex_info>,
+    type_traits::c_sized_range_of<algorithm::vertex_info> InitQueueRangeType =
+        std::vector<algorithm::vertex_info>,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_optional_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
     type_traits::
         c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
             EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 bool bfs(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
@@ -36,7 +36,7 @@ bool bfs(
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type = std::queue<types::vertex_info>;
+    using vertex_queue_type = std::queue<algorithm::vertex_info>;
     vertex_queue_type vertex_queue;
 
     // TODO [C++23]: replace with push_range
@@ -45,7 +45,7 @@ bool bfs(
 
     // search the graph
     while (not vertex_queue.empty()) {
-        const types::vertex_info vinfo = vertex_queue.front();
+        const algorithm::vertex_info vinfo = vertex_queue.front();
         vertex_queue.pop();
 
         const auto& vertex = graph.get_vertex(vinfo.id);

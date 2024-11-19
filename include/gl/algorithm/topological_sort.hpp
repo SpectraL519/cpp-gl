@@ -11,9 +11,9 @@ namespace gl::algorithm {
 template <
     type_traits::c_directed_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 [[nodiscard]] std::optional<std::vector<types::id_type>> topological_sort(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
@@ -31,7 +31,7 @@ template <
         vertex_in_deg_list.push_back(graph.in_degree(id));
 
     // prepare the initial queue content (source vertices)
-    std::vector<types::vertex_info> source_vertex_list;
+    std::vector<algorithm::vertex_info> source_vertex_list;
     source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : vertex_ids)
         if (vertex_in_deg_list[id] == constants::default_size)
@@ -45,7 +45,7 @@ template <
     impl::bfs(
         graph,
         source_vertex_list,
-        types::empty_callback{}, // visit predicate
+        algorithm::empty_callback{}, // visit predicate
         [&topological_order](
             const vertex_type& vertex, const types::id_type source_id
         ) { // visit callback

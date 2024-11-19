@@ -12,20 +12,44 @@
 namespace gl::algorithm {
 
 template <type_traits::c_basic_arithmetic VertexDistanceType>
-struct paths_descriptor {
+struct paths_descriptor : public predecessors_descriptor {
+    using predecessor_type = typename predecessors_descriptor::predecessor_type;
     using distance_type = VertexDistanceType;
 
     paths_descriptor(const types::size_type n_vertices)
-    : predecessors(n_vertices), distances(n_vertices) {
+    : predecessors_descriptor(n_vertices), distances(n_vertices) {
         predecessors.shrink_to_fit();
-        distances.shrink_to_fit();
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_reachable(const types::id_type vertex_id) const {
-        return this->predecessors.at(vertex_id).has_value();
+    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&> operator[](
+        const types::size_type i
+    ) const {
+        return std::make_pair<const predecessor_type&, const distance_type&>(
+            this->predecessors[i], this->distances[i]
+        );
     }
 
-    std::vector<std::optional<types::id_type>> predecessors;
+    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& operator[](const types::size_type i
+    ) {
+        return std::make_pair<predecessor_type&, distance_type&>(
+            this->predecessors[i], this->distances[i]
+        );
+    }
+
+    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&>& at(
+        const types::size_type i
+    ) const {
+        return std::make_pair<const predecessor_type&, const distance_type&>(
+            this->predecessors.at(i), this->distances.at(i)
+        );
+    }
+
+    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& at(const types::size_type i) {
+        return std::make_pair<predecessor_type&, distance_type&>(
+            this->predecessors.at(i), this->distances.at(i)
+        );
+    }
+
     std::vector<distance_type> distances;
 };
 
@@ -42,9 +66,9 @@ template <type_traits::c_graph GraphType>
 template <
     type_traits::c_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        types::empty_callback,
+        algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        types::empty_callback>
+        algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -64,12 +88,12 @@ template <
 
     impl::pfs(
         graph,
-        [&paths](const types::vertex_info& lhs, const types::vertex_info& rhs) {
+        [&paths](const algorithm::vertex_info& lhs, const algorithm::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
         impl::init_range(source_id),
-        types::empty_callback{}, // visit predicate
-        types::empty_callback{}, // visit callback
+        algorithm::empty_callback{}, // visit predicate
+        algorithm::empty_callback{}, // visit callback
         [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
             -> std::optional<bool> { // enqueue predicate
             const auto vertex_id = vertex.id();
