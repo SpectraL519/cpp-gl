@@ -7,6 +7,7 @@
 #include "constants.hpp"
 #include "impl/common.hpp"
 
+#include <iostream>
 #include <queue>
 
 namespace gl::algorithm {
@@ -99,6 +100,83 @@ template <
         for (const auto& edge : graph.adjacent_edges(target_id))
             if (not visited[get_other_vertex_id(edge, target_id)])
                 edge_queue.emplace(edge, target_id);
+    }
+
+    return mst;
+}
+
+template <
+    type_traits::c_undirected_graph GraphType,
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        algorithm::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        algorithm::empty_callback>
+[[nodiscard]] mst_descriptor<GraphType> prim_mst(
+    const GraphType& graph,
+    const PreVisitCallback& pre_visit = {},
+    const PostVisitCallback& post_visit = {}
+) {
+    // type definitions
+    using vertex_type = typename GraphType::vertex_type;
+    using edge_type = typename GraphType::edge_type;
+    using edge_info_type = algorithm::edge_info<edge_type>;
+    using distance_type = types::vertex_distance_type<GraphType>;
+
+    struct prim_vertex_info {
+        distance_type min_cost = std::numeric_limits<distance_type>::max(
+        ); // the cost of the cheapest connection to the vertex
+        const edge_type* min_cost_edge =
+            nullptr; // the edge corresponding to the cheapest connection
+        bool in_mst = false;
+    };
+
+    // prepare the necessary utility
+    const auto n_vertices = graph.n_vertices();
+    std::vector<prim_vertex_info> vinfo_list(n_vertices);
+    mst_descriptor<GraphType> mst(n_vertices);
+
+    // TODO: replace with edge->incident_vertex_id(id) after it's been added to the edge_descriptor class
+    const auto get_other_vertex_id = [](const edge_type& edge, const types::id_type source_id) {
+        return edge.first_id() == source_id ? edge.second_id() : edge.first_id();
+    };
+
+    const auto find_min_cost_vertex = [&vinfo_list]() {
+        distance_type min_cost = std::numeric_limits<distance_type>::max();
+        types::id_type min_cost_vertex_id = 0;
+
+        types::size_type i = 0;
+        for (const auto& vinfo : vinfo_list) {
+            if (not vinfo.in_mst and vinfo.min_cost <= min_cost) {
+                min_cost = vinfo.min_cost;
+                min_cost_vertex_id = i;
+            }
+            ++i;
+        }
+
+        return std::make_pair(min_cost_vertex_id, min_cost);
+    };
+
+    for (types::size_type n = constants::zero; n < n_vertices; ++n) {
+        // find a vertex with the cheapest connection which is not yet in the MST
+        const auto [min_cost_vertex_id, min_cost] = find_min_cost_vertex();
+        auto& min_cost_vertex = vinfo_list[min_cost_vertex_id];
+
+        min_cost_vertex.in_mst = true; // add the vertex to the MST
+
+        const auto* min_cost_edge = min_cost_vertex.min_cost_edge;
+        if (min_cost_edge != nullptr) { // add the edge to MST
+            mst.edges.emplace_back(*min_cost_edge);
+            mst.weight += get_weight<GraphType>(*min_cost_edge);
+        }
+
+        for (const auto& edge : graph.adjacent_edges(min_cost_vertex_id)) {
+            const auto edge_weight = get_weight<GraphType>(edge);
+            auto& incident_vinfo = vinfo_list[get_other_vertex_id(edge, min_cost_vertex_id)];
+            if (edge_weight < incident_vinfo.min_cost) {
+                incident_vinfo.min_cost = edge_weight;
+                incident_vinfo.min_cost_edge = &edge;
+            }
+        }
     }
 
     return mst;
