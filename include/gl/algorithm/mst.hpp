@@ -85,14 +85,15 @@ template <
         const auto min_weight = get_weight<GraphType>(min_edge);
 
         const auto& target_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
-        if (not visited[target_id]) {
-            // add the minimum weight edge to the mst
-            mst.edges.emplace_back(min_edge);
-            mst.weight += min_weight;
+        if (visited[target_id])
+            continue;
 
-            visited[target_id] = true;
-            ++n_vertices_in_mst;
-        }
+        // add the minimum weight edge to the mst
+        mst.edges.emplace_back(min_edge);
+        mst.weight += min_weight;
+
+        visited[target_id] = true;
+        ++n_vertices_in_mst;
 
         // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
         for (const auto& edge : graph.adjacent_edges(target_id))
