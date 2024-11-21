@@ -84,14 +84,6 @@ template <
         const auto& min_edge = min_edge_info.edge.get();
         const auto min_weight = get_weight<GraphType>(min_edge);
 
-        if (min_weight < constants::zero)
-            throw std::invalid_argument(std::format(
-                "[alg::prim_mst] Found an edge with a negative weight: [{}, {} | w={}]",
-                min_edge.first_id(),
-                min_edge.second_id(),
-                min_weight
-            ));
-
         const auto& target_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
         if (not visited[target_id]) {
             // add the minimum weight edge to the mst

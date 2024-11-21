@@ -25,19 +25,6 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     static_assert(lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
-    SUBCASE("should throw if there is an edge with a negative weight") {
-        const auto sut = lib::topology::clique<sut_type>(constants::n_elements_alg);
-        sut.get_edge(constants::vertex_id_1, constants::vertex_id_2)
-            .value()
-            .get()
-            .properties.weight = -static_cast<weight_type>(constants::n_elements_alg);
-
-        CHECK_THROWS_AS(
-            func::discard_result(lib::algorithm::prim_mst(sut, constants::vertex_id_1)),
-            std::invalid_argument
-        );
-    }
-
     SUBCASE("should return a proper mst descriptor for a valid graph") {
         using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
 
