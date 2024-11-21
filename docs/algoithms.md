@@ -335,7 +335,7 @@ This section covers the specific types and type traits used for the algorithm im
 
 ### MST finding
 
-- `prim_mst(graph, pre_visit, post_visit)`
+- `mst(graph, pre_visit, post_visit)`
   - *Description*: Returns an `mst_descriptor` object containing the [Minimum Spanning Tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) edges and its total weight.
 
   - *Template parameters*:

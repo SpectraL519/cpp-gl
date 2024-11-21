@@ -15,7 +15,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_alg_mst");
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "prim mst finding tests for graphs with explicitly weighted edges",
+    "mst finding tests for graphs with explicitly weighted edges",
     TraitsType,
     wieghted_edge_traits_type_template
 ) {
@@ -71,7 +71,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(expected_edges);
         CAPTURE(expected_weight);
 
-        const auto mst = lib::algorithm::prim_mst(sut, source_id);
+        const auto mst = lib::algorithm::mst(sut, source_id);
 
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
@@ -105,7 +105,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "prim mst finding tests for graphs with unweighted edges",
+    "mst finding tests for graphs with unweighted edges",
     TraitsType,
     unwieghted_edge_traits_type_template
 ) {
@@ -126,7 +126,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
-    const auto mst = lib::algorithm::prim_mst(sut, source_id);
+    const auto mst = lib::algorithm::mst(sut, source_id);
 
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
