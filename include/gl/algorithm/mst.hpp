@@ -182,4 +182,93 @@ template <
     return mst;
 }
 
+template <
+    type_traits::c_undirected_graph GraphType,
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        algorithm::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        algorithm::empty_callback>
+[[nodiscard]] mst_descriptor<GraphType> bin_heap_prim_mst(
+    const GraphType& graph,
+    const PreVisitCallback& pre_visit = {},
+    const PostVisitCallback& post_visit = {}
+) {
+    // type definitions
+    using vertex_type = typename GraphType::vertex_type;
+    using edge_type = typename GraphType::edge_type;
+    using distance_type = types::vertex_distance_type<GraphType>;
+
+    struct prim_vertex_info {
+        prim_vertex_info(const types::id_type id)
+        : id(id),
+          min_cost(std::numeric_limits<distance_type>::max()),
+          min_cost_edge(nullptr),
+          in_mst(false) {}
+
+        types::id_type id; // ID of the vertex
+        distance_type min_cost; // cheapest connection
+        const edge_type* min_cost_edge; // edge for the cheapest connection
+        bool in_mst = false;
+    };
+
+    // Comparator for the binary heap
+    auto heap_comparator = [](const prim_vertex_info* a, const prim_vertex_info* b) {
+        return a->min_cost > b->min_cost; // Min-heap based on min_cost
+    };
+
+    // Prepare the necessary utility
+    const auto n_vertices = graph.n_vertices();
+    std::vector<prim_vertex_info> vinfo_list;
+    std::vector<prim_vertex_info*> heap; // min-heap storing pointers to vinfo_list elements
+    mst_descriptor<GraphType> mst(n_vertices);
+
+    // Initialize the vertex info and the heap
+    vinfo_list.reserve(n_vertices);
+    for (types::id_type id = constants::initial_id; id < n_vertices; ++id) {
+        auto& vinfo = vinfo_list.emplace_back(id);
+        heap.push_back(&vinfo);
+    }
+    std::make_heap(heap.begin(), heap.end(), heap_comparator);
+
+    // Helper to find the other vertex of an edge
+    const auto get_other_vertex_id = [](const edge_type& edge, const types::id_type source_id) {
+        return edge.first_id() == source_id ? edge.second_id() : edge.first_id();
+    };
+
+    while (not heap.empty()) {
+        // Extract the vertex with the smallest cost
+        std::pop_heap(heap.begin(), heap.end(), heap_comparator);
+        auto* min_vertex_info = heap.back();
+        heap.pop_back();
+
+        if (min_vertex_info->in_mst)
+            continue; // Skip if already in MST
+        min_vertex_info->in_mst = true; // Add vertex to MST
+
+        const auto vertex_id = min_vertex_info->id;
+        const auto* min_cost_edge = min_vertex_info->min_cost_edge;
+
+        if (min_cost_edge != nullptr) { // Add the corresponding edge to MST
+            mst.edges.emplace_back(*min_cost_edge);
+            mst.weight += get_weight<GraphType>(*min_cost_edge);
+        }
+
+        // Update adjacent vertices
+        for (const auto& edge : graph.adjacent_edges(vertex_id)) {
+            const auto edge_weight = get_weight<GraphType>(edge);
+            auto& incident_vinfo = vinfo_list[get_other_vertex_id(edge, vertex_id)];
+
+            if (not incident_vinfo.in_mst && edge_weight < incident_vinfo.min_cost) {
+                incident_vinfo.min_cost = edge_weight;
+                incident_vinfo.min_cost_edge = &edge;
+            }
+        }
+
+        // Rebuild the heap for the updated vertices
+        std::make_heap(heap.begin(), heap.end(), heap_comparator);
+    }
+
+    return mst;
+}
+
 } // namespace gl::algorithm
