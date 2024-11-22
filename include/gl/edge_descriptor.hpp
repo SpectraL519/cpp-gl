@@ -96,6 +96,16 @@ public:
         ));
     }
 
+    [[nodiscard]] const types::id_type incident_vertex_id(const types::id_type vertex_id) const {
+        if (vertex_id == this->first_id())
+            return this->second_id();
+
+        if (vertex_id == this->second_id())
+            return this->first_id();
+
+        throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
+    }
+
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {
         return &vertex == &this->_vertices.first or &vertex == &this->_vertices.second;
     }
