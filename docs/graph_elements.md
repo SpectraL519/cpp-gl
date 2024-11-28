@@ -164,7 +164,14 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
 
 - **`incident_vertex(const vertex_type& vertex) const`**:
   - *Description*: Returns the vertex on the other end of the edge relative to the provided vertex. Throws an error if the provided vertex is not incident with the edge.
-  - *Returned value*: $\begin{cases} v & \text{: vertex} = u \\ u & \text{: otherwise} \end{cases}$
+  - *Returned value*: $\begin{cases} v & \text{: vertex} = u \\ u & \text{: vertex} = v  \\ \text{error} & \text{: otherwise} \end{cases}$
+  - *Parameters*:
+    - `vertex: const vertex_type&` – the vertex for which the opposite incident vertex is requested.
+  - *Return type*: `const vertex_type&`
+
+- **`incident_vertex_id(const types::id_type vertex_id) const`**:
+  - *Description*: Returns the ID of the vertex on the other end of the edge relative to the provided vertex ID. Throws an error if the provided vertex ID is invalid.
+  - *Returned value*: $\begin{cases} v_{id} & \text{: vertex-id} = u_{id} \\ u_{id} & \text{: vertex-id} = v_{id} \\ \text{error} & \text{: otherwise} \end{cases}$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which the opposite incident vertex is requested.
   - *Return type*: `const vertex_type&`
