@@ -110,6 +110,11 @@ concept c_basic_arithmetic =
 // clang-format on
 
 template <typename T>
+concept c_has_numeric_limits_max = requires {
+    { std::numeric_limits<T>::max() } -> std::same_as<T>;
+};
+
+template <typename T>
 concept c_readable = requires(T value, std::istream& is) { is >> value; };
 
 template <typename T>

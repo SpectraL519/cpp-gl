@@ -7,6 +7,7 @@
 #include "constants.hpp"
 #include "impl/common.hpp"
 
+#include <numeric>
 #include <queue>
 
 namespace gl::algorithm {
@@ -31,7 +32,7 @@ template <
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         algorithm::empty_callback>
-[[nodiscard]] mst_descriptor<GraphType> prim_mst(
+[[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
     const GraphType& graph,
     const std::optional<types::id_type> root_id_opt,
     const PreVisitCallback& pre_visit = {},
@@ -61,11 +62,6 @@ template <
     std::vector<bool> visited(n_vertices, false);
     queue_type edge_queue;
 
-    // TODO: replace with edge->incident_vertex_id(id) after it's been added to the edge_descriptor class
-    const auto get_other_vertex_id = [](const edge_type& edge, const types::id_type source_id) {
-        return edge.first_id() == source_id ? edge.second_id() : edge.first_id();
-    };
-
     // insert the edges adjacent to the root vertex to the queue
     const types::id_type root_id = root_id_opt.value_or(constants::zero);
 
@@ -84,28 +80,93 @@ template <
         const auto& min_edge = min_edge_info.edge.get();
         const auto min_weight = get_weight<GraphType>(min_edge);
 
-        if (min_weight < constants::zero)
-            throw std::invalid_argument(std::format(
-                "[alg::prim_mst] Found an edge with a negative weight: [{}, {} | w={}]",
-                min_edge.first_id(),
-                min_edge.second_id(),
-                min_weight
-            ));
+        const auto& target_id = min_edge.incident_vertex_id(min_edge_info.source_id);
+        if (visited[target_id])
+            continue;
 
-        const auto& target_id = get_other_vertex_id(min_edge, min_edge_info.source_id);
-        if (not visited[target_id]) {
-            // add the minimum weight edge to the mst
-            mst.edges.emplace_back(min_edge);
-            mst.weight += min_weight;
+        // add the minimum weight edge to the mst
+        mst.edges.emplace_back(min_edge);
+        mst.weight += min_weight;
 
-            visited[target_id] = true;
-            ++n_vertices_in_mst;
-        }
+        visited[target_id] = true;
+        ++n_vertices_in_mst;
 
         // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
         for (const auto& edge : graph.adjacent_edges(target_id))
-            if (not visited[get_other_vertex_id(edge, target_id)])
+            if (not visited[edge.incident_vertex_id(target_id)])
                 edge_queue.emplace(edge, target_id);
+    }
+
+    return mst;
+}
+
+template <
+    type_traits::c_undirected_graph GraphType,
+    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
+        algorithm::empty_callback,
+    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
+        algorithm::empty_callback>
+requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
+[[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
+    const GraphType& graph,
+    const std::optional<types::id_type> root_id_opt,
+    const PreVisitCallback& pre_visit = {},
+    const PostVisitCallback& post_visit = {}
+) {
+    // type definitions
+    using edge_type = typename GraphType::edge_type;
+    using distance_type = types::vertex_distance_type<GraphType>;
+
+    // Prepare the necessary utility
+    const auto n_vertices = graph.n_vertices();
+    mst_descriptor<GraphType> mst(n_vertices);
+
+    std::vector<bool> in_mst(n_vertices, false);
+    std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
+    std::vector<const edge_type*> min_cost_edges(n_vertices, nullptr);
+
+    // set the distance to the root vertex to 0
+    min_cost.at(root_id_opt.value_or(constants::zero)) = constants::zero;
+
+    auto heap_comparator = [&min_cost](const types::id_type lhs, const types::id_type rhs) {
+        return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost
+    };
+
+    // Initialize the vertex info and the heap
+    std::vector<types::id_type> heap(n_vertices);
+    std::iota(heap.begin(), heap.end(), constants::initial_id);
+    std::make_heap(heap.begin(), heap.end(), heap_comparator);
+
+    while (not heap.empty()) {
+        // Extract the vertex with the smallest cost
+        std::pop_heap(heap.begin(), heap.end(), heap_comparator);
+        const auto vertex_id = heap.back();
+        heap.pop_back();
+
+        if (in_mst[vertex_id])
+            continue;
+
+        in_mst[vertex_id] = true;
+
+        const auto* min_cost_edge = min_cost_edges[vertex_id];
+        if (min_cost_edge != nullptr) { // Add the corresponding edge to MST
+            mst.edges.emplace_back(*min_cost_edge);
+            mst.weight += min_cost[vertex_id];
+        }
+
+        // Update adjacent vertices
+        for (const auto& edge : graph.adjacent_edges(vertex_id)) {
+            const auto edge_weight = get_weight<GraphType>(edge);
+            const auto incident_vertex_id = edge.incident_vertex_id(vertex_id);
+
+            if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
+                min_cost[incident_vertex_id] = edge_weight;
+                min_cost_edges[incident_vertex_id] = &edge;
+            }
+        }
+
+        // Rebuild the heap for the updated vertices
+        std::make_heap(heap.begin(), heap.end(), heap_comparator);
     }
 
     return mst;
