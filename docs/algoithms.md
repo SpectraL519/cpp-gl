@@ -360,23 +360,10 @@ This section covers the specific types and type traits used for the algorithm im
   - *Description*:
     - Returns an `mst_descriptor` object containing the [Minimum Spanning Tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) edges and its total weight.
     - Performs the Prim's algorithm using a minimum binary heap of vertices.
-    > **NOTE:** The binary heap implementation in C++ doesn't allow modifying a single node within the heap, therefore the `std::make_heap` - $O(n)$ - function has to be called to rebuild the heap.
 
-  - *Template parameters*:
-    - `GraphType: type_traits::c_undirected_graph` - The type of the graph on which the search is performed (must be undirected).
-    - `PreVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: type_traits::c_optional_vertex_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called after visiting a vertex.
-
-  - *Parameters*:
-    - `graph: const GraphType&` - The graph to perform the search on.
-    - `root_id_opt: const std::optional<types::id_type>` - An optional root vertex ID. If set, the search will begin with edges adjacent to the vertex $v$ such that $v_{id} = \text{root-id-opt.value()}$. Otherwise the first vertex of the graph will be used as root.
-    - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
-    - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
-
-  - *Return type*:
-    - `algorithm::mst_descriptor<GraphType>` - An [MST](https://en.wikipedia.org/wiki/Minimum_spanning_tree) desciptor object (detailed information can be found in the note below).
-
-  - *Defined in*: [gl/algorithm/mst.hpp](/include/gl/algorithm/mst.hpp)
+    > **NOTE:**
+    > - This algoithm has the same template parameters, parameters and return type as the edge heap version (edge_heap_prim_mst), but it requires the edge weight type to have a specialization of `std::numeric_limits<WeightType>::max()`
+    > - The binary heap implementation in C++ doesn't allow modifying a single node within the heap, therefore the `std::make_heap` - $O(n)$ - function has to be called to rebuild the heap.
 
 > [!NOTE]
 > The `algorithm::mst_descriptor` structure is defined as follows:
