@@ -187,6 +187,10 @@ public:
         return this->_impl.in_degree(vertex_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> in_degree_map() const {
+        return this->_impl.in_degree_map();
+    }
+
     [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex
     ) const {
         this->_verify_vertex(vertex);
@@ -199,6 +203,10 @@ public:
         return this->_impl.out_degree(vertex_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> out_degree_map() const {
+        return this->_impl.out_degree_map();
+    }
+
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
         this->_verify_vertex(vertex);
         return this->_impl.degree(vertex.id());
@@ -208,6 +216,10 @@ public:
     ) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.degree(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map() const {
+        return this->_impl.degree_map();
     }
 
     // --- edge methods ---

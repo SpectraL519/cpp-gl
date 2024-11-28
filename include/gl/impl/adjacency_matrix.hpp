@@ -98,6 +98,18 @@ public:
         return specialized_impl::degree(*this, vertex_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> in_degree_map() const {
+        return specialized_impl::in_degree_map(*this);
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> out_degree_map() const {
+        return specialized_impl::out_degree_map(*this);
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map() const {
+        return specialized_impl::degree_map(*this);
+    }
+
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
         specialized_impl::remove_vertex(*this, vertex.id());
     }

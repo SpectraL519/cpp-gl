@@ -87,17 +87,23 @@ struct test_directed_adjacency_list {
         );
     }
 
-    void fully_connect_vertex(const lib_t::id_type first_id) {
-        for (const auto second_id : constants::vertex_id_view)
-            if (second_id != first_id)
-                add_edge(first_id, second_id);
+    void fully_connect_vertex(const lib_t::id_type first_id, const bool no_loops = true) {
+        for (const auto second_id : constants::vertex_id_view) {
+            if (second_id == first_id and no_loops)
+                continue;
+
+            add_edge(first_id, second_id);
+        }
     }
 
-    void initialize_full_graph() {
+    void init_complete_graph(const bool no_loops = true) {
         for (const auto first_id : constants::vertex_id_view)
-            fully_connect_vertex(first_id);
+            fully_connect_vertex(first_id, no_loops);
 
-        REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        if (no_loops)
+            REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        else
+            REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements * constants::n_elements);
     }
 
     sut_type sut{constants::n_elements};
@@ -298,7 +304,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
 
@@ -330,7 +336,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "degree should return the number of edges incident with the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
     const auto deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
 
     CHECK(std::ranges::all_of(
@@ -351,9 +357,47 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
+    "{in/out}_degree_map should return a map of numbers of edges incident {to/from} the "
+    "corresponding vertices"
+) {
+    init_complete_graph(false);
+    const auto expected_deg = constants::n_elements;
+
+    std::vector<lib_t::id_type> degree_map;
+
+    SUBCASE("in_degree") {
+        degree_map = sut.in_degree_map();
+    }
+
+    SUBCASE("out_degree") {
+        degree_map = sut.out_degree_map();
+    }
+
+    CAPTURE(degree_map);
+
+    REQUIRE_EQ(degree_map.size(), constants::n_elements);
+    CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "degree_map should return a map of the numbers of edges incident with the corresponding "
+    "vertices"
+) {
+    init_complete_graph(false);
+    const auto expected_deg = constants::n_elements * constants::two;
+
+    std::vector<lib_t::id_type> degree_map = sut.degree_map();
+
+    REQUIRE_EQ(degree_map.size(), constants::n_elements);
+    CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);
@@ -392,18 +436,26 @@ struct test_undirected_adjacency_list {
         );
     }
 
-    void fully_connect_vertex(const lib_t::id_type first_id) {
-        for (const auto second_id : constants::vertex_id_view)
-            if (second_id != first_id)
-                add_edge(first_id, second_id);
+    void fully_connect_vertex(const lib_t::id_type first_id, const bool no_loops = true) {
+        for (const auto second_id : constants::vertex_id_view) {
+            if (second_id == first_id and no_loops)
+                continue;
+
+            add_edge(first_id, second_id);
+        }
     }
 
-    void initialize_full_graph() {
-        for (const auto first_id : constants::vertex_id_view)
-            for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id))
+    void init_complete_graph(const bool no_loops = true) {
+        for (const auto first_id : constants::vertex_id_view) {
+            const auto bound = no_loops ? first_id : first_id + constants::one;
+            for (const auto second_id : std::views::iota(constants::vertex_id_1, bound))
                 add_edge(first_id, second_id);
+        }
 
-        REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        if (no_loops)
+            REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        else
+            REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph + constants::n_elements);
     }
 
     sut_type sut{constants::n_elements};
@@ -648,7 +700,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "{in_/out_/}degree should return the number of edges incident {to/from} the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
 
@@ -682,9 +734,37 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
+    "{in_/out_/}degree_map should return a map of numbers of edges incident {to/from/with} the "
+    "corresponding vertices"
+) {
+    init_complete_graph(false);
+    const auto expected_deg = constants::n_elements + 1;
+
+    std::vector<lib_t::id_type> degree_map;
+
+    SUBCASE("in_degree") {
+        degree_map = sut.in_degree_map();
+    }
+
+    SUBCASE("out_degree") {
+        degree_map = sut.out_degree_map();
+    }
+
+    SUBCASE("degree") {
+        degree_map = sut.degree_map();
+    }
+
+    CAPTURE(degree_map);
+
+    REQUIRE_EQ(degree_map.size(), constants::n_elements);
+    CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);

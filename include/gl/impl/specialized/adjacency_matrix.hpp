@@ -81,6 +81,43 @@ struct directed_adjacency_matrix {
         return in_degree(self, vertex_id) + out_degree(self, vertex_id);
     }
 
+    [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
+        std::vector<types::id_type> in_degree_map(self._matrix.size(), constants::zero);
+
+        for (const auto& row : self._matrix)
+            for (types::id_type id = constants::initial_id; id < self._matrix.size(); ++id)
+                if (row[id] != nullptr)
+                    ++in_degree_map[id];
+
+        return in_degree_map;
+    }
+
+    [[nodiscard]] static std::vector<types::size_type> out_degree_map(const impl_type& self) {
+        std::vector<types::id_type> out_degree_map;
+        out_degree_map.reserve(self._matrix.size());
+
+        for (types::id_type id = constants::initial_id; id < self._matrix.size(); ++id)
+            out_degree_map.push_back(out_degree(self, id));
+
+        return out_degree_map;
+    }
+
+    [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
+        std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
+
+        for (types::id_type u_id = constants::initial_id; u_id < self._matrix.size(); ++u_id) {
+            const auto& row = self._matrix[u_id];
+            for (types::id_type v_id = constants::initial_id; v_id < self._matrix.size(); ++v_id) {
+                if (row[v_id] != nullptr) {
+                    ++degree_map[u_id];
+                    ++degree_map[v_id];
+                }
+            }
+        }
+
+        return degree_map;
+    }
+
     static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
         self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
         self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
@@ -150,6 +187,34 @@ struct undirected_adjacency_matrix {
             if (edge)
                 degree += constants::one + static_cast<types::size_type>(edge->is_loop());
         return degree;
+    }
+
+    [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> in_degree_map(
+        const impl_type& self
+    ) {
+        return degree_map(self);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> out_degree_map(
+        const impl_type& self
+    ) {
+        return degree_map(self);
+    }
+
+    [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
+        std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
+
+        for (types::id_type u_id = constants::initial_id; u_id < self._matrix.size(); ++u_id) {
+            const auto& row = self._matrix[u_id];
+            for (types::id_type v_id = constants::initial_id; v_id <= u_id; ++v_id) {
+                if (row[v_id] != nullptr) {
+                    ++degree_map[u_id];
+                    ++degree_map[v_id];
+                }
+            }
+        }
+
+        return degree_map;
     }
 
     static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
