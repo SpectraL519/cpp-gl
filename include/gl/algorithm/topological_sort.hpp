@@ -24,18 +24,14 @@ template <
 
     const auto vertex_ids = graph.vertex_ids();
 
-    // prepare the vertex in degree list
-    // !!! TODO: use the in_degree_map function
-    std::vector<types::size_type> vertex_in_deg_list;
-    vertex_in_deg_list.reserve(graph.n_vertices());
-    for (const auto id : vertex_ids)
-        vertex_in_deg_list.push_back(graph.in_degree(id));
+    // prepare the vertex in degree map
+    std::vector<types::size_type> in_degree_map = graph.in_degree_map();
 
     // prepare the initial queue content (source vertices)
     std::vector<algorithm::vertex_info> source_vertex_list;
     source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : vertex_ids)
-        if (vertex_in_deg_list[id] == constants::default_size)
+        if (in_degree_map[id] == constants::default_size)
             source_vertex_list.emplace_back(id);
 
     std::optional<std::vector<types::id_type>> topological_order_opt =
@@ -53,11 +49,11 @@ template <
             topological_order.push_back(vertex.id());
             return true;
         },
-        [&vertex_in_deg_list](const vertex_type& vertex, const edge_type& in_edge)
+        [&in_degree_map](const vertex_type& vertex, const edge_type& in_edge)
             -> std::optional<bool> { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
-            return --vertex_in_deg_list[vertex.id()] == constants::default_size;
+            return --in_degree_map[vertex.id()] == constants::default_size;
         },
         pre_visit,
         post_visit
