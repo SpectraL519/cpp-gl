@@ -25,6 +25,7 @@ template <
     const auto vertex_ids = graph.vertex_ids();
 
     // prepare the vertex in degree list
+    // !!! TODO: use the in_degree_map function
     std::vector<types::size_type> vertex_in_deg_list;
     vertex_in_deg_list.reserve(graph.n_vertices());
     for (const auto id : vertex_ids)
