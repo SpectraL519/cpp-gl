@@ -436,18 +436,26 @@ struct test_undirected_adjacency_list {
         );
     }
 
-    void fully_connect_vertex(const lib_t::id_type first_id) {
-        for (const auto second_id : constants::vertex_id_view)
-            if (second_id != first_id)
-                add_edge(first_id, second_id);
+    void fully_connect_vertex(const lib_t::id_type first_id, const bool no_loops = true) {
+        for (const auto second_id : constants::vertex_id_view) {
+            if (second_id == first_id and no_loops)
+                continue;
+
+            add_edge(first_id, second_id);
+        }
     }
 
-    void init_complete_graph() {
-        for (const auto first_id : constants::vertex_id_view)
-            for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id))
+    void init_complete_graph(const bool no_loops = true) {
+        for (const auto first_id : constants::vertex_id_view) {
+            const auto bound = no_loops ? first_id : first_id + constants::one;
+            for (const auto second_id : std::views::iota(constants::vertex_id_1, bound))
                 add_edge(first_id, second_id);
+        }
 
-        REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        if (no_loops)
+            REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
+        else
+            REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph + constants::n_elements);
     }
 
     sut_type sut{constants::n_elements};
@@ -722,6 +730,34 @@ TEST_CASE_FIXTURE(
         deg_proj(constants::vertex_id_1),
         n_incident_edges_for_fully_connected_vertex + constants::two // loops counted twice
     );
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "{in_/out_/}degree_map should return a map of numbers of edges incident {to/from/with} the "
+    "corresponding vertices"
+) {
+    init_complete_graph(false);
+    const auto expected_deg = constants::n_elements + 1;
+
+    std::vector<lib_t::id_type> degree_map;
+
+    SUBCASE("in_degree") {
+        degree_map = sut.in_degree_map();
+    }
+
+    SUBCASE("out_degree") {
+        degree_map = sut.out_degree_map();
+    }
+
+    SUBCASE("degree") {
+        degree_map = sut.degree_map();
+    }
+
+    CAPTURE(degree_map);
+
+    REQUIRE_EQ(degree_map.size(), constants::n_elements);
+    CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
 }
 
 TEST_CASE_FIXTURE(
