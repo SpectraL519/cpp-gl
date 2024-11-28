@@ -243,6 +243,10 @@ Based on the specified traits, the `graph` class defines the following types:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the in-degree.
   - *Return type*: `types::size_type`
 
+- **`graph.in_degree_map() const`**:
+  - *Description*: Returns a vector containing the in-degrees of the corresponding vertices (in-degree at index `i` corresponds to the vertex with an ID equal `i`).
+  - *Return type*: `std::vector<types::size_type>`
+
 - **`graph.out_degree(vertex) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the specified vertex.
   - *Returned value*:
@@ -260,6 +264,10 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the out-degree.
   - *Return type*: `types::size_type`
+
+- **`graph.out_degree_map() const`**:
+  - *Description*: Returns a vector containing the out-degrees of the corresponding vertices (out-degree at index `i` corresponds to the vertex with an ID equal `i`).
+  - *Return type*: `std::vector<types::size_type>`
 
 - **`graph.degree(vertex) const`**:
   - *Description*: Returns the degree (number of incoming and outgoing edges) of the specified vertex.
@@ -283,6 +291,10 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Parameters*:
     - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the degree.
   - *Return type*: `types::size_type`
+
+- **`graph.degree_map() const`**:
+  - *Description*: Returns a vector containing the degrees of the corresponding vertices (degree at index `i` corresponds to the vertex with an ID equal `i`).
+  - *Return type*: `std::vector<types::size_type>`
 
 <br />
 
