@@ -106,69 +106,9 @@ template <
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         algorithm::empty_callback>
-[[nodiscard]] mst_descriptor<GraphType> prim_mst(
-    const GraphType& graph,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
-) {
-    // type definitions
-    using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
-
-    // prepare the necessary utility
-    const auto n_vertices = graph.n_vertices();
-    mst_descriptor<GraphType> mst(n_vertices);
-
-    std::vector<bool> in_mst(n_vertices, false);
-    std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
-    std::vector<const edge_type*> min_cost_edges(n_vertices, nullptr);
-
-    const auto find_min_cost_vertex = [&in_mst, &min_cost, n_vertices]() {
-        distance_type min_cost_v = std::numeric_limits<distance_type>::max();
-        types::id_type min_cost_vertex_id = 0;
-
-        for (types::size_type id = constants::initial_id; id < n_vertices; ++id) {
-            if (not in_mst[id] and min_cost[id] <= min_cost_v) {
-                min_cost_v = min_cost[id];
-                min_cost_vertex_id = id;
-            }
-        }
-
-        return std::make_pair(min_cost_vertex_id, min_cost_v);
-    };
-
-    for (types::size_type n = constants::zero; n < n_vertices; ++n) {
-        // find a vertex with the cheapest connection which is not yet in the MST
-        const auto [min_cost_vertex_id, min_cost_v] = find_min_cost_vertex();
-        in_mst[min_cost_vertex_id] = true; // add the vertex to the MST
-
-        const auto* min_cost_edge = min_cost_edges[min_cost_vertex_id];
-        if (min_cost_edge != nullptr) { // add the edge to MST
-            mst.edges.emplace_back(*min_cost_edge);
-            mst.weight += min_cost_v;
-        }
-
-        for (const auto& edge : graph.adjacent_edges(min_cost_vertex_id)) {
-            const auto edge_weight = get_weight<GraphType>(edge);
-            const auto incident_vertex_id = edge.incident_vertex_id(min_cost_vertex_id);
-            if (edge_weight < min_cost[incident_vertex_id]) {
-                min_cost[incident_vertex_id] = edge_weight;
-                min_cost_edges[incident_vertex_id] = &edge;
-            }
-        }
-    }
-
-    return mst;
-}
-
-template <
-    type_traits::c_undirected_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
 [[nodiscard]] mst_descriptor<GraphType> bin_heap_prim_mst(
     const GraphType& graph,
+    const std::optional<types::id_type> root_id_opt,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -183,6 +123,9 @@ template <
     std::vector<bool> in_mst(n_vertices, false);
     std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
     std::vector<const edge_type*> min_cost_edges(n_vertices, nullptr);
+
+    // set the distance to the root vertex to 0
+    min_cost.at(root_id_opt.value_or(constants::zero)) = constants::zero;
 
     auto heap_comparator = [&min_cost](const types::id_type lhs, const types::id_type rhs) {
         return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost
