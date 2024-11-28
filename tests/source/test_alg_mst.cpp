@@ -71,7 +71,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(expected_edges);
         CAPTURE(expected_weight);
 
-        const auto mst = lib::algorithm::mst(sut, source_id);
+        const auto mst = lib::algorithm::edge_heap_prim_mst(sut, source_id);
 
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
@@ -126,7 +126,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
-    const auto mst = lib::algorithm::mst(sut, source_id);
+    const auto mst = lib::algorithm::edge_heap_prim_mst(sut, source_id);
 
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
@@ -209,7 +209,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(expected_edges);
         CAPTURE(expected_weight);
 
-        const auto mst = lib::algorithm::bin_heap_prim_mst(sut, source_id);
+        const auto mst = lib::algorithm::vertex_heap_prim_mst(sut, source_id);
 
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
@@ -264,7 +264,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
-    const auto mst = lib::algorithm::bin_heap_prim_mst(sut, source_id);
+    const auto mst = lib::algorithm::vertex_heap_prim_mst(sut, source_id);
 
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);

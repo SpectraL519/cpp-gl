@@ -32,7 +32,7 @@ template <
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         algorithm::empty_callback>
-[[nodiscard]] mst_descriptor<GraphType> mst(
+[[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
     const GraphType& graph,
     const std::optional<types::id_type> root_id_opt,
     const PreVisitCallback& pre_visit = {},
@@ -106,7 +106,7 @@ template <
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
         algorithm::empty_callback>
-[[nodiscard]] mst_descriptor<GraphType> bin_heap_prim_mst(
+[[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
     const GraphType& graph,
     const std::optional<types::id_type> root_id_opt,
     const PreVisitCallback& pre_visit = {},
