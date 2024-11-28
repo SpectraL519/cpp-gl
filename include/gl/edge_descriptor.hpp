@@ -96,7 +96,7 @@ public:
         ));
     }
 
-    [[nodiscard]] const types::id_type incident_vertex_id(const types::id_type vertex_id) const {
+    [[nodiscard]] types::id_type incident_vertex_id(const types::id_type vertex_id) const {
         if (vertex_id == this->first_id())
             return this->second_id();
 
