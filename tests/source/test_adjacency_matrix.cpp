@@ -139,7 +139,7 @@ struct test_directed_adjacency_matrix {
                 add_edge(first_id, second_id);
     }
 
-    void initialize_full_graph() {
+    void init_complete_graph() {
         for (const auto first_id : constants::vertex_id_view)
             fully_connect_vertex(first_id);
 
@@ -294,7 +294,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
 
@@ -326,7 +326,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "degree should return the number of edges incident with the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
     const auto deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
 
     CHECK(std::ranges::all_of(
@@ -349,7 +349,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);
@@ -394,7 +394,7 @@ struct test_undirected_adjacency_matrix {
                 add_edge(first_id, second_id);
     }
 
-    void initialize_full_graph() {
+    void init_complete_graph() {
         for (const auto first_id : constants::vertex_id_view)
             for (const auto second_id : std::views::iota(constants::vertex_id_1, first_id))
                 add_edge(first_id, second_id);
@@ -587,7 +587,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix,
     "{in_/out_/}degree should return the number of edges incident {to/from/with} the given vertex"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
 
@@ -623,7 +623,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_matrix,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    initialize_full_graph();
+    init_complete_graph();
 
     const auto& removed_vertex = vertices[constants::first_element_idx];
     sut.remove_vertex(removed_vertex);

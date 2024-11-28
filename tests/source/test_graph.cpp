@@ -21,7 +21,7 @@ struct test_graph {
 
     template <lib_tt::c_instantiation_of<lib::graph> GraphType>
     requires(lib_tt::is_directed_v<typename GraphType::edge_type>)
-    void initialize_full_graph(GraphType& graph) {
+    void init_complete_graph(GraphType& graph) {
         const auto vertices = graph.vertices();
         for (const auto& first : vertices)
             for (const auto& second : vertices)
@@ -37,7 +37,7 @@ struct test_graph {
 
     template <lib_tt::c_instantiation_of<lib::graph> GraphType>
     requires(lib_tt::is_undirected_v<typename GraphType::edge_type>)
-    void initialize_full_graph(GraphType& graph) {
+    void init_complete_graph(GraphType& graph) {
         const auto vertices = graph.vertices();
         for (const auto& first : vertices)
             for (const auto& second : vertices)
@@ -257,7 +257,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
             "vertices") {
         sut_type sut{constants::n_elements};
-        fixture.initialize_full_graph(sut);
+        fixture.init_complete_graph(sut);
 
         sut.remove_vertex(constants::vertex_id_1);
 
@@ -291,7 +291,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
     ) {
         sut_type sut{constants::n_elements};
-        fixture.initialize_full_graph(sut);
+        fixture.init_complete_graph(sut);
 
         sut.remove_vertex(constants::vertex_id_1);
 
@@ -322,7 +322,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr auto n_vertices = constants::n_elements + constants::one_element;
 
         sut_type sut{n_vertices};
-        fixture.initialize_full_graph(sut);
+        fixture.init_complete_graph(sut);
 
         sut.remove_vertices_from(
             vertex_id_list{constants::vertex_id_1, constants::vertex_id_3, constants::vertex_id_1}
@@ -345,7 +345,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr auto n_vertices = constants::n_elements + constants::one_element;
 
         sut_type sut{n_vertices};
-        fixture.initialize_full_graph(sut);
+        fixture.init_complete_graph(sut);
 
         const auto& v1 = sut.get_vertex(constants::vertex_id_1);
         const auto& v3 = sut.get_vertex(constants::vertex_id_3);
