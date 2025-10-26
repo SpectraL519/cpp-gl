@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 
 # Check if cpp-gl is a top level project
 if (NOT DEFINED PROJECT_NAME)
-  set(CPP_GL_IS_TOP_LEVEL_PROJECT ON)
+    set(CPP_GL_IS_TOP_LEVEL_PROJECT ON)
 else()
-  set(CPP_GL_IS_TOP_LEVEL_PROJECT OFF)
+    set(CPP_GL_IS_TOP_LEVEL_PROJECT OFF)
 endif()
 
 project(cpp-gl
@@ -14,14 +14,15 @@ project(cpp-gl
     LANGUAGES CXX
 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build project tests" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 20)
 elseif(CMAKE_CXX_STANDARD LESS 20)
-  message(WARNING "The defined C++ standard (${CMAKE_CXX_STANDARD}) is too low - overriding!")
-  set(CMAKE_CXX_STANDARD 20)
+    message(WARNING "The defined C++ standard (${CMAKE_CXX_STANDARD}) is too low - overriding!")
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 message(STATUS "The C++ standard is set to ${CMAKE_CXX_STANDARD}")
 
@@ -82,5 +83,5 @@ export(PACKAGE cpp-gl)
 
 # Include test directory if cpp-gl is a top level project
 if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
-  add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
