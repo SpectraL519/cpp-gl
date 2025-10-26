@@ -14,7 +14,7 @@ project(cpp-gl
     LANGUAGES CXX
 )
 
-option(BUILD_TESTS "Build project tests" ON)
+option(BUILD_TESTS "Build project tests" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)
