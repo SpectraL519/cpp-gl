@@ -1,5 +1,5 @@
-#include "constants.hpp"
-#include "functional.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/functional.hpp"
 
 #include <gl/types/dereferencing_iterator.hpp>
 #include <gl/types/iterator_range.hpp>

@@ -1,5 +1,5 @@
-#include "constants.hpp"
-#include "io_common.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/io_common.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/io.hpp>

@@ -1,4 +1,4 @@
-#include "namespaces.hpp"
+#include "testing/gl/namespaces.hpp"
 
 #include <gl/util/enum.hpp>
 #include <gl/util/pow.hpp>

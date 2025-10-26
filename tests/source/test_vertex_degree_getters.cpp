@@ -1,5 +1,5 @@
-#include "constants.hpp"
-#include "transforms.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/transforms.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/topologies.hpp>

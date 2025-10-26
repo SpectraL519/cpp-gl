@@ -1,6 +1,6 @@
-#include "constants.hpp"
-#include "functional.hpp"
-#include "io_common.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/functional.hpp"
+#include "testing/gl/io_common.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/graph_file_io.hpp>

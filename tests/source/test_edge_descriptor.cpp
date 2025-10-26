@@ -1,6 +1,6 @@
-#include "constants.hpp"
-#include "functional.hpp"
-#include "types.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/functional.hpp"
+#include "testing/gl/types.hpp"
 
 #include <gl/edge_descriptor.hpp>
 

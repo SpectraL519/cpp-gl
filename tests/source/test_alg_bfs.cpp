@@ -1,5 +1,5 @@
-#include "alg_common.hpp"
-#include "constants.hpp"
+#include "testing/gl/alg_common.hpp"
+#include "testing/gl/constants.hpp"
 
 #include <gl/algorithms.hpp>
 #include <gl/topologies.hpp>
