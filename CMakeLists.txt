@@ -8,13 +8,14 @@ else()
 endif()
 
 project(cpp-gl
-    VERSION 1.0.4
+    VERSION 2.0.0
     DESCRIPTION "General purpose header-only template graph library for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-gl"
     LANGUAGES CXX
 )
 
-option(BUILD_TESTS "Build project tests" ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+option(BUILD_TESTS "Build project tests" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)

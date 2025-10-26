@@ -1,0 +1,6 @@
+{
+  "include": ["scripts"],
+  "typeCheckingMode": "basic",
+  "reportImplicitRelativeImport": false,
+  "reportUnusedCallResult": false
+}
