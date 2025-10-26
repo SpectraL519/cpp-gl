@@ -32,5 +32,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ./build/tests/run
-        continue-on-error: false
+          ./build/tests/gl
+          ./build/tests/hgl

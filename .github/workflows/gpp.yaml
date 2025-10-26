@@ -32,4 +32,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ./build/tests/run
+          ./build/tests/gl
+          ./build/tests/hgl
