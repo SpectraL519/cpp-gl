@@ -19,7 +19,7 @@ TEST_SUITE_BEGIN("test_dereferencing_iterator");
 // TODO: add specific tests covering the individual methods
 
 struct data {
-    lib_t::id_type id;
+    gl::types::id_type id;
     std::string str;
 
     friend bool operator==(const data&, const data&) = default;
@@ -33,7 +33,7 @@ template <typename Container>
 struct test_dereferencing_iterator {
     using container_type = Container;
     using data_ptr_type = typename container_type::value_type;
-    using sut_type = lib_t::dereferencing_iterator<typename container_type::iterator>;
+    using sut_type = gl::types::dereferencing_iterator<typename container_type::iterator>;
 
     struct address_projection {
         auto operator()(data& data) const {
@@ -41,13 +41,13 @@ struct test_dereferencing_iterator {
         }
 
         auto operator()(const data_ptr_type& data_ptr) const
-        requires(lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        requires(gl::type_traits::c_strong_smart_ptr<data_ptr_type>)
         {
             return data_ptr.get();
         }
 
         auto operator()(data_ptr_type data_ptr) const
-        requires(not lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        requires(not gl::type_traits::c_strong_smart_ptr<data_ptr_type>)
         {
             return data_ptr;
         }
@@ -80,10 +80,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     fixture_type fixture;
 
     SUBCASE("normal iterator") {
-        const auto sut_range = lib::make_iterator_range(
-            lib::deref_begin(fixture.container), lib::deref_end(fixture.container)
+        const auto sut_range = gl::make_iterator_range(
+            gl::deref_begin(fixture.container), gl::deref_end(fixture.container)
         );
-        const auto ptr_range = lib::make_iterator_range(fixture.container);
+        const auto ptr_range = gl::make_iterator_range(fixture.container);
 
         CHECK(std::ranges::equal(
             sut_range, ptr_range, std::ranges::equal_to{}, address_projection{}, address_projection{}
@@ -91,10 +91,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("const iterator") {
-        const auto sut_crange = lib::make_iterator_range(
-            lib::deref_cbegin(fixture.container), lib::deref_cend(fixture.container)
+        const auto sut_crange = gl::make_iterator_range(
+            gl::deref_cbegin(fixture.container), gl::deref_cend(fixture.container)
         );
-        const auto ptr_crange = lib::make_const_iterator_range(fixture.container);
+        const auto ptr_crange = gl::make_const_iterator_range(fixture.container);
 
         CHECK(std::ranges::equal(
             sut_crange,
@@ -136,8 +136,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("normal iterator") {
         // Create dereferencing iterator range
-        auto sut_it = lib::deref_end(fixture.container);
-        auto sut_begin = lib::deref_begin(fixture.container);
+        auto sut_it = gl::deref_end(fixture.container);
+        auto sut_begin = gl::deref_begin(fixture.container);
 
         auto ptr_it = std::ranges::end(fixture.container);
         auto ptr_begin = std::ranges::begin(fixture.container);
@@ -165,8 +165,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("const iterator") {
         // Create dereferencing iterator range
-        auto sut_it = lib::deref_cend(fixture.container);
-        auto sut_begin = lib::deref_cbegin(fixture.container);
+        auto sut_it = gl::deref_cend(fixture.container);
+        auto sut_begin = gl::deref_cbegin(fixture.container);
 
         auto ptr_it = std::ranges::cend(fixture.container);
         auto ptr_begin = std::ranges::cbegin(fixture.container);

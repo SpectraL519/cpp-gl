@@ -15,7 +15,7 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_iterator_range");
 
-template <typename Container, lib_tt::c_cache_mode CacheMode>
+template <typename Container, gl::type_traits::c_cache_mode CacheMode>
 struct test_iterator_range_type_params {
     using container_type = Container;
     using cache_mode = CacheMode;
@@ -25,7 +25,7 @@ template <typename TypeParams>
 struct test_iterator_range {
     using container_type = typename TypeParams::container_type;
     using iterator_type = typename container_type::iterator;
-    using sut_type = lib_t::iterator_range<iterator_type, typename TypeParams::cache_mode>;
+    using sut_type = gl::types::iterator_range<iterator_type, typename TypeParams::cache_mode>;
 
     test_iterator_range()
     : container(constants::n_elements), sut(container.begin(), container.end()) {
@@ -61,7 +61,7 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
 
     SUBCASE("should properly initialize the begin and end iterator for a range constructor") {
         sut_type range_constructed_sut =
-            lib::make_iterator_range<container_type, cache_mode>(container);
+            gl::make_iterator_range<container_type, cache_mode>(container);
 
         CHECK_EQ(range_constructed_sut.begin(), std::ranges::begin(container));
         CHECK_EQ(range_constructed_sut.end(), std::ranges::end(container));
@@ -130,19 +130,19 @@ TEST_CASE_TEMPLATE_DEFINE("iterator_range tests", TypeParams, type_params_templa
 
     SUBCASE("make_iterator_range should return a properly initialized iterator_range") {
         const auto range =
-            lib::make_iterator_range<iterator_type, cache_mode>(container.begin(), container.end());
+            gl::make_iterator_range<iterator_type, cache_mode>(container.begin(), container.end());
         CHECK(std::ranges::equal(range, container));
     }
 
     SUBCASE("make_iterator_range should return an iterator_range properly initialized with the "
             "container") {
-        const auto range = lib::make_iterator_range<container_type, cache_mode>(container);
+        const auto range = gl::make_iterator_range<container_type, cache_mode>(container);
         CHECK(std::ranges::equal(range, container));
     }
 
     SUBCASE("make_const_iterator_range should return an iterator_range properly initialized with "
             "the container") {
-        const auto range = lib::make_const_iterator_range<container_type, cache_mode>(container);
+        const auto range = gl::make_const_iterator_range<container_type, cache_mode>(container);
         CHECK(std::ranges::equal(range, container));
     }
 }
@@ -152,33 +152,33 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     // cache_mode_value::none
     test_iterator_range_type_params<
         std::vector<std::size_t>,
-        lib_tt::no_cache>, // random access iterator
+        gl::type_traits::no_cache>, // random access iterator
     test_iterator_range_type_params<
         std::list<std::size_t>,
-        lib_tt::no_cache>, // bidirectional iterator
+        gl::type_traits::no_cache>, // bidirectional iterator
     test_iterator_range_type_params<
         std::forward_list<std::size_t>,
-        lib_tt::no_cache>, // forward iterator
+        gl::type_traits::no_cache>, // forward iterator
     // cache_mode_value::lazy
     test_iterator_range_type_params<
         std::vector<std::size_t>,
-        lib_tt::lazy_cache>, // random access iterator
+        gl::type_traits::lazy_cache>, // random access iterator
     test_iterator_range_type_params<
         std::list<std::size_t>,
-        lib_tt::lazy_cache>, // bidirectional iterator
+        gl::type_traits::lazy_cache>, // bidirectional iterator
     test_iterator_range_type_params<
         std::forward_list<std::size_t>,
-        lib_tt::lazy_cache>, // forward iterator
+        gl::type_traits::lazy_cache>, // forward iterator
     // cache_mode_value::eager
     test_iterator_range_type_params<
         std::vector<std::size_t>,
-        lib_tt::eager_cache>, // random access iterator
+        gl::type_traits::eager_cache>, // random access iterator
     test_iterator_range_type_params<
         std::list<std::size_t>,
-        lib_tt::eager_cache>, // bidirectional iterator
+        gl::type_traits::eager_cache>, // bidirectional iterator
     test_iterator_range_type_params<
         std::forward_list<std::size_t>,
-        lib_tt::eager_cache> // forward iterator
+        gl::type_traits::eager_cache> // forward iterator
 );
 
 TEST_SUITE_END(); // test_iterator_range

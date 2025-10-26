@@ -19,27 +19,27 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::vector<lib_t::id_type> expected_previsit_order;
+    std::vector<gl::types::id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
-        graph = lib::topology::clique<graph_type>(constants::zero_elements);
+        graph = gl::topology::clique<graph_type>(constants::zero_elements);
         expected_previsit_order = {};
     }
 
     SUBCASE("single vertex graph") {
-        graph = lib::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(constants::one_element);
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
-        graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
+        graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
+        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
     SUBCASE("path graph") {
-        graph = lib::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
-        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++)
+        graph = gl::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
+        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
@@ -49,19 +49,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         B = {3, 4}
         root = 0 -> connected to B -> connected to A (root already visited)
         */
-        graph = lib::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
         expected_previsit_order = {0, 3, 4, 1, 2};
     }
 
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
 
-    std::vector<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
+    std::vector<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::breadth_first_search<lib::algorithm::no_return>(
+    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    gl::algorithm::breadth_first_search<gl::algorithm::no_return>(
         graph,
-        lib::algorithm::no_root_vertex,
+        gl::algorithm::no_root_vertex,
         [&](const auto& vertex) { // previsit
             previsit_order.push_back(vertex.id());
         },
@@ -80,16 +80,16 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_no_return_graph_template,
-    lib::graph<
-        lib::list_graph_traits<lib::directed_t, types::visited_property>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<
-        lib::undirected_t,
+    gl::graph<
+        gl::list_graph_traits<gl::directed_t, types::visited_property>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<
+        gl::undirected_t,
         types::visited_property>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<
-        lib::directed_t,
+    gl::graph<gl::matrix_graph_traits<
+        gl::directed_t,
         types::visited_property>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<
-        lib::undirected_t,
+    gl::graph<gl::matrix_graph_traits<
+        gl::undirected_t,
         types::visited_property>> // undirected adjacency matrix
 );
 
@@ -101,20 +101,20 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    std::optional<lib_t::id_type> root_vertex_id;
-    std::deque<lib_t::id_type> expected_previsit_order;
+    std::optional<gl::types::id_type> root_vertex_id;
+    std::deque<gl::types::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
-        graph = lib::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(constants::one_element);
         root_vertex_id.emplace(constants::vertex_id_1);
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
-        graph = lib::topology::clique<graph_type>(constants::n_elements_alg);
+        graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
         root_vertex_id.emplace(constants::vertex_id_3);
 
-        for (auto id = lib::constants::initial_id; id < constants::n_elements_alg; id++) {
+        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
             if (id != constants::vertex_id_3)
                 expected_previsit_order.push_back(id);
         }
@@ -125,10 +125,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
 
-    std::deque<lib_t::id_type> expected_postvisit_order = expected_previsit_order;
+    std::deque<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<lib_t::id_type> previsit_order, postvisit_order;
-    lib::algorithm::breadth_first_search<lib::algorithm::no_return>(
+    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    gl::algorithm::breadth_first_search<gl::algorithm::no_return>(
         graph,
         root_vertex_id,
         [&](const auto& vertex) { // previsit
@@ -145,10 +145,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_no_return_with_root_graph_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::list_graph_traits<gl::directed_t>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // undirected adjacency list
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -159,9 +159,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = lib::topology::regular_binary_tree<graph_type>(constants::three);
+    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
     const auto pd =
-        lib::algorithm::breadth_first_search<lib::algorithm::default_return, graph_type>(graph);
+        gl::algorithm::breadth_first_search<gl::algorithm::default_return, graph_type>(graph);
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
@@ -170,10 +170,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_return_graph_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::list_graph_traits<gl::directed_t>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // undirected adjacency list
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
 );
 
 TEST_SUITE_END(); // test_alg_bfs

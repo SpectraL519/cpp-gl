@@ -1,5 +1,3 @@
-#include "testing/gl/namespaces.hpp"
-
 #include <gl/util/enum.hpp>
 #include <gl/util/pow.hpp>
 
@@ -10,7 +8,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_util");
 
 TEST_CASE("upow should return the `base ^ exponent` operation result") {
-    lib_t::size_type base, exponent, expected_result;
+    gl::types::size_type base, exponent, expected_result;
 
     // clang-format off
 
@@ -27,11 +25,11 @@ TEST_CASE("upow should return the `base ^ exponent` operation result") {
     CAPTURE(exponent);
     CAPTURE(expected_result);
 
-    CHECK_EQ(lib::util::upow(base, exponent), expected_result);
+    CHECK_EQ(gl::util::upow(base, exponent), expected_result);
 }
 
 TEST_CASE("upow_sum function test") {
-    lib_t::size_type base, i_begin, i_end, expected_result;
+    gl::types::size_type base, i_begin, i_end, expected_result;
 
     // clang-format off
 
@@ -51,7 +49,7 @@ TEST_CASE("upow_sum function test") {
     CAPTURE(i_end);
     CAPTURE(expected_result);
 
-    CHECK_EQ(lib::util::upow_sum(base, i_begin, i_end), expected_result);
+    CHECK_EQ(gl::util::upow_sum(base, i_begin, i_end), expected_result);
 }
 
 TEST_CASE("to_underlying should return the underlying value of an enum class") {
@@ -62,9 +60,9 @@ TEST_CASE("to_underlying should return the underlying value of an enum class") {
 
     enum class Enum : underlying_type { value_1 = value_1, value_2 = value_2 };
 
-    CHECK_EQ(lib::util::to_underlying(Enum::value_1), value_1);
-    CHECK_EQ(lib::util::to_underlying(Enum::value_2), value_2);
-    CHECK_EQ(lib::util::to_underlying(static_cast<Enum>(out_of_bounds_value)), out_of_bounds_value);
+    CHECK_EQ(gl::util::to_underlying(Enum::value_1), value_1);
+    CHECK_EQ(gl::util::to_underlying(Enum::value_2), value_2);
+    CHECK_EQ(gl::util::to_underlying(static_cast<Enum>(out_of_bounds_value)), out_of_bounds_value);
 }
 
 TEST_SUITE_END(); // test_util

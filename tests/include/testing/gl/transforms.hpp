@@ -1,15 +1,14 @@
 #pragma once
 
-#include "namespaces.hpp"
-
 #include <gl/vertex_descriptor.hpp>
 
 #include <memory>
 
 namespace gl_testing::transforms {
 
-template <lib_tt::c_instantiation_of<lib::vertex_descriptor> VertexType = lib::vertex_descriptor<>>
-inline lib_t::id_type extract_vertex_id(const VertexType& vertex) {
+template <
+    gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType = gl::vertex_descriptor<>>
+inline gl::types::id_type extract_vertex_id(const VertexType& vertex) {
     return vertex.id();
 }
 

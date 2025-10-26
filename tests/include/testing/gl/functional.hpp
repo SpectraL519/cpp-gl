@@ -1,7 +1,5 @@
 #pragma once
 
-#include "namespaces.hpp"
-
 namespace gl_testing::func {
 
 template <typename T>

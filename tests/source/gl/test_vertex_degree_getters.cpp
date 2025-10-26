@@ -15,47 +15,47 @@ TEST_SUITE_BEGIN("test_vertex_degree_getters");
 TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for directed graphs", TraitsType, directed_graph_traits_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
+    using sut_type = gl::graph<TraitsType>;
     using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
 
     sut_type sut;
-    std::deque<lib_t::size_type> expected_in_deg_list, expected_out_deg_list;
+    std::deque<gl::types::size_type> expected_in_deg_list, expected_out_deg_list;
 
     SUBCASE("clique") {
-        sut = lib::topology::clique<sut_type>(n_vertices);
+        sut = gl::topology::clique<sut_type>(n_vertices);
         expected_in_deg_list =
-            std::deque<lib_t::size_type>(n_vertices, n_vertices - constants::one);
+            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
         expected_out_deg_list = expected_in_deg_list;
     }
 
     SUBCASE("clique with an additional loop") {
-        sut = lib::topology::clique<sut_type>(n_vertices);
+        sut = gl::topology::clique<sut_type>(n_vertices);
         sut.add_edge(constants::first_element_idx, constants::first_element_idx);
 
         expected_in_deg_list =
-            std::deque<lib_t::size_type>(n_vertices, n_vertices - constants::one);
+            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
         expected_in_deg_list.front()++;
 
         expected_out_deg_list = expected_in_deg_list;
     }
 
     SUBCASE("cycle") {
-        sut = lib::topology::cycle<sut_type>(n_vertices);
-        expected_in_deg_list = std::deque<lib_t::size_type>(n_vertices, constants::one);
+        sut = gl::topology::cycle<sut_type>(n_vertices);
+        expected_in_deg_list = std::deque<gl::types::size_type>(n_vertices, constants::one);
         expected_out_deg_list = expected_in_deg_list;
     }
 
     SUBCASE("path") {
-        sut = lib::topology::path<sut_type>(n_vertices);
+        sut = gl::topology::path<sut_type>(n_vertices);
 
         expected_in_deg_list =
-            std::deque<lib_t::size_type>(n_vertices - constants::one, constants::one);
+            std::deque<gl::types::size_type>(n_vertices - constants::one, constants::one);
         expected_in_deg_list.push_front(constants::zero);
 
         expected_out_deg_list =
-            std::deque<lib_t::size_type>(n_vertices - constants::one, constants::one);
+            std::deque<gl::types::size_type>(n_vertices - constants::one, constants::one);
         expected_out_deg_list.push_back(constants::zero);
     }
 
@@ -63,15 +63,15 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(expected_in_deg_list);
     CAPTURE(expected_out_deg_list);
 
-    std::deque<lib_t::size_type> expected_deg_list(n_vertices);
+    std::deque<gl::types::size_type> expected_deg_list(n_vertices);
     std::ranges::transform(
         expected_in_deg_list,
         expected_out_deg_list,
         expected_deg_list.begin(),
-        std::plus<lib_t::size_type>{}
+        std::plus<gl::types::size_type>{}
     );
 
-    lib_t::size_type i = constants::zero;
+    gl::types::size_type i = constants::zero;
     CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
         const bool result =
             sut.in_degree(vertex) == expected_in_deg_list[i]
@@ -97,44 +97,46 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     directed_graph_traits_template,
-    lib::list_graph_traits<lib::directed_t>, // directed adjacency list graph
-    lib::matrix_graph_traits<lib::directed_t> // directed adjacency matrix graph
+    gl::list_graph_traits<gl::directed_t>, // directed adjacency list graph
+    gl::matrix_graph_traits<gl::directed_t> // directed adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for undirected graphs", TraitsType, undirected_graph_traits_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
+    using sut_type = gl::graph<TraitsType>;
     using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
 
     sut_type sut;
-    std::deque<lib_t::size_type> expected_deg_list;
+    std::deque<gl::types::size_type> expected_deg_list;
 
     SUBCASE("clique") {
-        sut = lib::topology::clique<sut_type>(n_vertices);
-        expected_deg_list = std::deque<lib_t::size_type>(n_vertices, n_vertices - constants::one);
+        sut = gl::topology::clique<sut_type>(n_vertices);
+        expected_deg_list =
+            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
     }
 
     SUBCASE("clique with an additional loop") {
-        sut = lib::topology::clique<sut_type>(n_vertices);
+        sut = gl::topology::clique<sut_type>(n_vertices);
         sut.add_edge(constants::first_element_idx, constants::first_element_idx);
 
-        expected_deg_list = std::deque<lib_t::size_type>(n_vertices, n_vertices - constants::one);
+        expected_deg_list =
+            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
         expected_deg_list.front() += constants::two; // loops counted twice
     }
 
     SUBCASE("cycle") {
-        sut = lib::topology::cycle<sut_type>(n_vertices);
-        expected_deg_list = std::deque<lib_t::size_type>(n_vertices, constants::two);
+        sut = gl::topology::cycle<sut_type>(n_vertices);
+        expected_deg_list = std::deque<gl::types::size_type>(n_vertices, constants::two);
     }
 
     SUBCASE("path") {
-        sut = lib::topology::path<sut_type>(n_vertices);
+        sut = gl::topology::path<sut_type>(n_vertices);
 
         expected_deg_list =
-            std::deque<lib_t::size_type>(n_vertices - constants::two, constants::two);
+            std::deque<gl::types::size_type>(n_vertices - constants::two, constants::two);
         expected_deg_list.push_front(constants::one);
         expected_deg_list.push_back(constants::one);
     }
@@ -142,7 +144,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(sut);
     CAPTURE(expected_deg_list);
 
-    lib_t::size_type i = constants::zero;
+    gl::types::size_type i = constants::zero;
     CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
         const auto expected_deg = expected_deg_list[i];
         const bool result =
@@ -169,8 +171,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     undirected_graph_traits_template,
-    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
-    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
+    gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_vertex_degree_getters

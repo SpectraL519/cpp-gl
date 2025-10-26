@@ -17,13 +17,13 @@ TEST_SUITE_BEGIN("test_graph_io");
 
 struct test_directed_graph_io {
     using traits_type =
-        lib::graph_traits<lib::directed_t, lib_t::name_property, lib_t::name_property>;
-    using sut_type = lib::graph<traits_type>;
+        gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using sut_type = gl::graph<traits_type>;
 
     test_directed_graph_io() {
-        ss << lib::io::enable_gsf;
+        ss << gl::io::enable_gsf;
 
-        sut_out = lib::topology::clique<sut_type>(n_vertices);
+        sut_out = gl::topology::clique<sut_type>(n_vertices);
 
         // prepare vertex and edge properties
         std::size_t v_idx = 0, e_idx = 0;
@@ -34,7 +34,7 @@ struct test_directed_graph_io {
         }
     }
 
-    const lib_t::size_type n_vertices = 5ull;
+    const gl::types::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 
@@ -44,9 +44,9 @@ struct test_directed_graph_io {
 TEST_CASE_FIXTURE(
     test_directed_graph_io, "io read should throw if the directional tag doesn't match"
 ) {
-    using undir_traits = lib::graph_traits<lib::undirected_t>;
+    using undir_traits = gl::graph_traits<gl::undirected_t>;
 
-    lib::graph<undir_traits> invalid_sut_out{n_vertices};
+    gl::graph<undir_traits> invalid_sut_out{n_vertices};
     ss << invalid_sut_out;
 
     CHECK_THROWS_AS(ss >> sut_in, std::ios_base::failure);
@@ -60,8 +60,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        lib::graph_traits<lib::directed_t, std::monostate, lib_t::name_property>;
-    lib::graph<not_readable_vp_traits> invalid_sut_in;
+        gl::graph_traits<gl::directed_t, std::monostate, gl::types::name_property>;
+    gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
 }
@@ -73,8 +73,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        lib::graph_traits<lib::directed_t, lib_t::name_property, std::monostate>;
-    lib::graph<not_readable_vp_traits> invalid_sut_in;
+        gl::graph_traits<gl::directed_t, gl::types::name_property, std::monostate>;
+    gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
 }
@@ -94,7 +94,7 @@ TEST_CASE_FIXTURE(
     test_directed_graph_io,
     "io operators should properly write and read the graph from a stream with vertex properties"
 ) {
-    ss << lib::io::with_vertex_properties << sut_out;
+    ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);
@@ -105,7 +105,7 @@ TEST_CASE_FIXTURE(
     test_directed_graph_io,
     "io operators should properly write and read the graph from a stream with edge properties"
 ) {
-    ss << lib::io::with_edge_properties << sut_out;
+    ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);
@@ -117,7 +117,7 @@ TEST_CASE_FIXTURE(
     "io operators should properly write and read the graph from a stream with both vertex and edge "
     "properties"
 ) {
-    ss << lib::io::with_vertex_properties << lib::io::with_edge_properties << sut_out;
+    ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);
@@ -127,13 +127,13 @@ TEST_CASE_FIXTURE(
 
 struct test_undirected_graph_io {
     using traits_type =
-        lib::graph_traits<lib::undirected_t, lib_t::name_property, lib_t::name_property>;
-    using sut_type = lib::graph<traits_type>;
+        gl::graph_traits<gl::undirected_t, gl::types::name_property, gl::types::name_property>;
+    using sut_type = gl::graph<traits_type>;
 
     test_undirected_graph_io() {
-        ss << lib::io::enable_gsf;
+        ss << gl::io::enable_gsf;
 
-        sut_out = lib::topology::clique<sut_type>(n_vertices);
+        sut_out = gl::topology::clique<sut_type>(n_vertices);
 
         // prepare vertex and edge properties
         std::size_t v_idx = 0, e_idx = 0;
@@ -145,7 +145,7 @@ struct test_undirected_graph_io {
         }
     }
 
-    const lib_t::size_type n_vertices = 5ull;
+    const gl::types::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 
@@ -155,9 +155,9 @@ struct test_undirected_graph_io {
 TEST_CASE_FIXTURE(
     test_undirected_graph_io, "io read should throw if the directional tag doesn't match"
 ) {
-    using dir_traits = lib::graph_traits<lib::directed_t>;
+    using dir_traits = gl::graph_traits<gl::directed_t>;
 
-    lib::graph<dir_traits> invalid_sut_out{n_vertices};
+    gl::graph<dir_traits> invalid_sut_out{n_vertices};
     ss << invalid_sut_out;
 
     CHECK_THROWS_AS(ss >> sut_in, std::ios_base::failure);
@@ -171,8 +171,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        lib::graph_traits<lib::undirected_t, std::monostate, lib_t::name_property>;
-    lib::graph<not_readable_vp_traits> invalid_sut_in;
+        gl::graph_traits<gl::undirected_t, std::monostate, gl::types::name_property>;
+    gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
 }
@@ -184,8 +184,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        lib::graph_traits<lib::undirected_t, lib_t::name_property, std::monostate>;
-    lib::graph<not_readable_vp_traits> invalid_sut_in;
+        gl::graph_traits<gl::undirected_t, gl::types::name_property, std::monostate>;
+    gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
 }
@@ -205,7 +205,7 @@ TEST_CASE_FIXTURE(
     test_undirected_graph_io,
     "io operators should properly write and read the graph from a stream with vertex properties"
 ) {
-    ss << lib::io::with_vertex_properties << sut_out;
+    ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);
@@ -216,7 +216,7 @@ TEST_CASE_FIXTURE(
     test_undirected_graph_io,
     "io operators should properly write and read the graph from a stream with edge properties"
 ) {
-    ss << lib::io::with_edge_properties << sut_out;
+    ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);
@@ -228,7 +228,7 @@ TEST_CASE_FIXTURE(
     "io operators should properly write and read the graph from a stream with both vertex and edge "
     "properties"
 ) {
-    ss << lib::io::with_vertex_properties << lib::io::with_edge_properties << sut_out;
+    ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
     io_common::verify_graph_structure(sut_in, sut_out);

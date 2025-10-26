@@ -19,7 +19,7 @@ TEST_SUITE_BEGIN("test_non_null_iterator");
 // TODO: add specific tests covering the individual methods
 
 struct data {
-    lib_t::id_type id;
+    gl::types::id_type id;
     std::string str;
 
     friend bool operator==(const data&, const data&) = default;
@@ -33,17 +33,17 @@ template <typename Container>
 struct test_non_null_iterator {
     using container_type = Container;
     using data_ptr_type = typename container_type::value_type;
-    using sut_type = lib_t::non_null_iterator<typename container_type::iterator>;
+    using sut_type = gl::types::non_null_iterator<typename container_type::iterator>;
 
     struct reference_projection {
         auto& operator()(const data_ptr_type& data_ptr) const
-        requires(lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        requires(gl::type_traits::c_strong_smart_ptr<data_ptr_type>)
         {
             return *data_ptr;
         }
 
         auto& operator()(data_ptr_type data_ptr) const
-        requires(not lib_tt::c_strong_smart_ptr<data_ptr_type>)
+        requires(not gl::type_traits::c_strong_smart_ptr<data_ptr_type>)
         {
             return *data_ptr;
         }
@@ -82,10 +82,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     fixture_type fixture;
 
     SUBCASE("normal iterator") {
-        const auto sut_range = lib::make_iterator_range(
-            lib::non_null_begin(fixture.container), lib::non_null_end(fixture.container)
+        const auto sut_range = gl::make_iterator_range(
+            gl::non_null_begin(fixture.container), gl::non_null_end(fixture.container)
         );
-        const auto non_null_range = lib::make_iterator_range(fixture.non_null_container);
+        const auto non_null_range = gl::make_iterator_range(fixture.non_null_container);
 
         CHECK(std::ranges::equal(
             sut_range,
@@ -97,10 +97,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("cosnt iterator") {
-        const auto sut_range = lib::make_iterator_range(
-            lib::non_null_cbegin(fixture.container), lib::non_null_cend(fixture.container)
+        const auto sut_range = gl::make_iterator_range(
+            gl::non_null_cbegin(fixture.container), gl::non_null_cend(fixture.container)
         );
-        const auto non_null_range = lib::make_const_iterator_range(fixture.non_null_container);
+        const auto non_null_range = gl::make_const_iterator_range(fixture.non_null_container);
 
         CHECK(std::ranges::equal(
             sut_range,
@@ -142,8 +142,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("normal iterator") {
         // Create non_null iterator range
-        auto sut_it = lib::non_null_end(fixture.container);
-        auto sut_begin = lib::non_null_begin(fixture.container);
+        auto sut_it = gl::non_null_end(fixture.container);
+        auto sut_begin = gl::non_null_begin(fixture.container);
 
         auto ptr_it = std::ranges::end(fixture.non_null_container);
         auto ptr_begin = std::ranges::begin(fixture.non_null_container);
@@ -168,8 +168,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("const iterator") {
         // Create non_null iterator range
-        auto sut_it = lib::non_null_cend(fixture.container);
-        auto sut_begin = lib::non_null_cbegin(fixture.container);
+        auto sut_it = gl::non_null_cend(fixture.container);
+        auto sut_begin = gl::non_null_cbegin(fixture.container);
 
         auto ptr_it = std::ranges::cend(fixture.non_null_container);
         auto ptr_begin = std::ranges::cbegin(fixture.non_null_container);

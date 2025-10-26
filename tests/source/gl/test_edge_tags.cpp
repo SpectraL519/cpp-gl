@@ -10,7 +10,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_edge_tags");
 
 struct test_edge_tags {
-    using vertex_type = lib::vertex_descriptor<>;
+    using vertex_type = gl::vertex_descriptor<>;
 
     vertex_type vd_1{constants::vertex_id_1};
     vertex_type vd_2{constants::vertex_id_2};
@@ -19,10 +19,10 @@ struct test_edge_tags {
 };
 
 struct test_directed_edge_tag : test_edge_tags {
-    using sut_type = lib::directed_t;
-    using edge_type = lib::directed_edge<vertex_type>;
+    using sut_type = gl::directed_t;
+    using edge_type = gl::directed_edge<vertex_type>;
 
-    const std::unique_ptr<edge_type> edge = lib::detail::make_edge<edge_type>(vd_1, vd_2);
+    const std::unique_ptr<edge_type> edge = gl::detail::make_edge<edge_type>(vd_1, vd_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -41,10 +41,10 @@ TEST_CASE_FIXTURE(
     test_directed_edge_tag,
     "make_edge should return a unique ptr to a directed edge with the given properties"
 ) {
-    using property_edge_type = lib::directed_edge<vertex_type, types::used_property>;
+    using property_edge_type = gl::directed_edge<vertex_type, types::used_property>;
 
     const types::used_property used{true};
-    const auto property_edge = lib::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
+    const auto property_edge = gl::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
 
     static_assert(std::is_same_v<
                   std::remove_cvref_t<decltype(property_edge)>,
@@ -75,10 +75,10 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_edge_tag : test_edge_tags {
-    using sut_type = lib::undirected_t;
-    using edge_type = lib::undirected_edge<vertex_type>;
+    using sut_type = gl::undirected_t;
+    using edge_type = gl::undirected_edge<vertex_type>;
 
-    const std::shared_ptr<edge_type> edge = lib::detail::make_edge<edge_type>(vd_1, vd_2);
+    const std::shared_ptr<edge_type> edge = gl::detail::make_edge<edge_type>(vd_1, vd_2);
 };
 
 TEST_CASE_FIXTURE(
@@ -97,10 +97,10 @@ TEST_CASE_FIXTURE(
     test_directed_edge_tag,
     "make_edge should return a shared ptr to a directed edge with the given properties"
 ) {
-    using property_edge_type = lib::undirected_edge<vertex_type, types::used_property>;
+    using property_edge_type = gl::undirected_edge<vertex_type, types::used_property>;
 
     const types::used_property used{true};
-    const auto property_edge = lib::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
+    const auto property_edge = gl::detail::make_edge<property_edge_type>(vd_1, vd_2, used);
 
     static_assert(std::is_same_v<
                   std::remove_cvref_t<decltype(property_edge)>,

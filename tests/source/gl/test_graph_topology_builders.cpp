@@ -10,31 +10,31 @@ TEST_SUITE_BEGIN("test_graph_topology_builders");
 
 namespace {
 
-template <lib_tt::c_graph GraphType>
-[[nodiscard]] lib_t::size_type n_unique_edges_for_bidir_topology(
-    const lib_t::size_type n_connections
+template <gl::type_traits::c_graph GraphType>
+[[nodiscard]] gl::types::size_type n_unique_edges_for_bidir_topology(
+    const gl::types::size_type n_connections
 ) {
-    if constexpr (lib_tt::is_directed_v<GraphType>)
+    if constexpr (gl::type_traits::is_directed_v<GraphType>)
         return n_connections;
     else
         return n_connections / constants::two;
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 void verify_graph_size(
     const GraphType& graph,
-    const lib_t::size_type expected_n_vertices,
-    const lib_t::size_type expected_n_connections
+    const gl::types::size_type expected_n_vertices,
+    const gl::types::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
     REQUIRE_EQ(graph.n_unique_edges(), expected_n_connections);
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 void verify_bidir_graph_size(
     const GraphType& graph,
-    const lib_t::size_type expected_n_vertices,
-    const lib_t::size_type expected_n_connections
+    const gl::types::size_type expected_n_vertices,
+    const gl::types::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
     REQUIRE_EQ(
@@ -46,7 +46,7 @@ void verify_bidir_graph_size(
 
 namespace predicate {
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_fully_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
@@ -56,7 +56,7 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
@@ -66,7 +66,7 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected_to_any_from(
     const GraphType& graph, const auto& vertex_it_range
 ) {
@@ -79,7 +79,7 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
@@ -92,7 +92,7 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
@@ -106,7 +106,7 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
@@ -124,11 +124,11 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_connected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto target_ids = lib::topology::detail::get_binary_target_ids(source.id());
+        const auto target_ids = gl::topology::detail::get_binary_target_ids(source.id());
 
         if (target_ids.first >= graph.n_vertices())
             // no need to check second as second = first + 1
@@ -145,12 +145,12 @@ template <lib_tt::c_graph GraphType>
     };
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto target_ids = lib::topology::detail::get_binary_target_ids(source.id());
-        const lib_t::id_type parent_id =
+        const auto target_ids = gl::topology::detail::get_binary_target_ids(source.id());
+        const gl::types::id_type parent_id =
             source.id() == constants::zero
                 ? constants::zero
                 : (source.id() - constants::one) / constants::two;
@@ -190,7 +190,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using edge_type = typename graph_type::edge_type;
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
-        const auto clique = lib::topology::clique<graph_type>(constants::n_elements_top);
+        const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
 
         const auto expected_n_connections =
             constants::n_elements_top * (constants::n_elements_top - constants::one_element);
@@ -202,7 +202,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("biclique(n_vertices_a, n_vertices_b) should build a biclique with "
             "vertex sets of sizes n_vertices_a and n_vertices_b respectively") {
         const auto biclique =
-            lib::topology::biclique<graph_type>(constants::n_elements_top, constants::n_elements);
+            gl::topology::biclique<graph_type>(constants::n_elements_top, constants::n_elements);
 
         const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
         // `2x` is required to account for adding edges both ways
@@ -213,7 +213,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto vertices = biclique.vertices();
 
         const auto vertices_a = vertices | std::views::take(constants::n_elements_top);
-        const auto vertices_b = lib::make_iterator_range(
+        const auto vertices_b = gl::make_iterator_range(
             std::ranges::next(vertices.begin(), constants::n_elements_top),
             std::ranges::next(vertices.begin(), expected_n_vertices)
         );
@@ -241,14 +241,14 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
         SUBCASE("depth = 0 : empty graph") {
             const auto complete_bin_tree =
-                lib::topology::regular_binary_tree<graph_type>(constants::zero);
+                gl::topology::regular_binary_tree<graph_type>(constants::zero);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::zero_elements);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
             const auto complete_bin_tree =
-                lib::topology::regular_binary_tree<graph_type>(constants::one);
+                gl::topology::regular_binary_tree<graph_type>(constants::one);
             REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::one_element);
             REQUIRE_EQ(complete_bin_tree.n_unique_edges(), constants::zero_elements);
         }
@@ -257,10 +257,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     graph_type_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // directed adjacency list
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // undirected adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>>, // directed adjacency matrix
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::list_graph_traits<gl::directed_t>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // undirected adjacency list
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -271,7 +271,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a one-way cycle graph of size n_vertices") {
-        const auto cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+        const auto cycle = gl::topology::cycle<graph_type>(constants::n_elements_top);
         verify_graph_size(cycle, constants::n_elements_top, constants::n_elements_top);
 
         CHECK(std::ranges::all_of(
@@ -281,8 +281,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("bidirectional_cycle(n_vertices) should build a two-way cycle graph of size n_vertices"
     ) {
-        const auto cycle =
-            lib::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
+        const auto cycle = gl::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
         verify_graph_size(
             cycle, constants::n_elements_top, constants::two * constants::n_elements_top
         );
@@ -293,7 +292,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
-        const auto path = lib::topology::path<graph_type>(constants::n_elements_top);
+        const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.n_vertices() - constants::one_element;
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
@@ -306,7 +305,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
-        const auto path = lib::topology::bidirectional_path<graph_type>(constants::n_elements_top);
+        const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.n_vertices() - constants::one_element;
 
         verify_graph_size(path, constants::n_elements_top, constants::two * n_source_vertices);
@@ -325,10 +324,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("regular_binary_tree(depth) should return a one-way regular binay tree with the "
             "given depth") {
-        const auto bin_tree = lib::topology::regular_binary_tree<graph_type>(constants::depth);
+        const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
-            lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
@@ -340,10 +339,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("bidirectional_regular_binary_tree(depth) should return a two-way regular binay tree "
             "with the given depth") {
         const auto bin_tree =
-            lib::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
+            gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices =
-            lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
         const auto expected_n_connections = (expected_n_vertices - constants::one) * constants::two;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
@@ -355,8 +354,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     directed_graph_type_template,
-    lib::graph<lib::list_graph_traits<lib::directed_t>>, // adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::directed_t>> // adjacency matrix
+    gl::graph<gl::list_graph_traits<gl::directed_t>>, // adjacency list
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>> // adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -370,11 +369,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         graph_type cycle;
 
         SUBCASE("cycle builder") {
-            cycle = lib::topology::cycle<graph_type>(constants::n_elements_top);
+            cycle = gl::topology::cycle<graph_type>(constants::n_elements_top);
         }
 
         SUBCASE("bidirectional_cycle builder") {
-            cycle = lib::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
+            cycle = gl::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
         }
 
         CAPTURE(cycle);
@@ -390,11 +389,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         graph_type path;
 
         SUBCASE("path builder") {
-            path = lib::topology::path<graph_type>(constants::n_elements_top);
+            path = gl::topology::path<graph_type>(constants::n_elements_top);
         }
 
         SUBCASE("bidirectional_path builder") {
-            path = lib::topology::bidirectional_path<graph_type>(constants::n_elements_top);
+            path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         }
 
         CAPTURE(path);
@@ -418,18 +417,18 @@ TEST_CASE_TEMPLATE_DEFINE(
         graph_type bin_tree;
 
         SUBCASE("regular_binary_tree builder") {
-            bin_tree = lib::topology::regular_binary_tree<graph_type>(constants::depth);
+            bin_tree = gl::topology::regular_binary_tree<graph_type>(constants::depth);
         }
 
         SUBCASE("bidirectional_regular_binary_tree builder") {
             bin_tree =
-                lib::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
+                gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
         }
 
         CAPTURE(bin_tree);
 
         const auto expected_n_vertices =
-            lib::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
@@ -441,8 +440,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     undirected_graph_type_template,
-    lib::graph<lib::list_graph_traits<lib::undirected_t>>, // adjacency list
-    lib::graph<lib::matrix_graph_traits<lib::undirected_t>> // adjacency matrix
+    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // adjacency list
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // adjacency matrix
 );
 
 TEST_SUITE_END(); // test_graph_topology_builders

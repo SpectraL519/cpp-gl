@@ -19,22 +19,23 @@ TEST_CASE_TEMPLATE_DEFINE(
     TraitsType,
     edge_heap_prim_wieghted_edge_traits_type_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
+    using sut_type = gl::graph<TraitsType>;
     using weight_type = typename sut_type::edge_properties_type::weight_type;
     using distance_type = weight_type;
 
-    static_assert(lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
+    static_assert(gl::type_traits::c_weight_properties_type<
+                  typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper mst descriptor for a valid graph") {
-        using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
+        using vertex_id_pair = std::pair<gl::types::id_type, gl::types::id_type>;
 
         sut_type sut;
-        lib_t::id_type source_id;
+        gl::types::id_type source_id;
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
         SUBCASE("regular binary tree") {
-            sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
+            sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
             const weight_type edge_weight = constants::three;
@@ -51,14 +52,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         SUBCASE("custom graph") {
             const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
 
-            sut = lib::io::load<sut_type>(gsf_file_path);
+            sut = gl::io::load<sut_type>(gsf_file_path);
             source_id = constants::first_element_idx;
 
             const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.n_vertices() - constants::one) * constants::two;
             const auto vertex_id_list =
-                alg_common::load_list<lib_t::id_type>(n_vertex_ids, edges_file_path);
-            for (lib_t::size_type i = 0; i < n_vertex_ids; i += constants::two)
+                alg_common::load_list<gl::types::id_type>(n_vertex_ids, edges_file_path);
+            for (gl::types::size_type i = 0; i < n_vertex_ids; i += constants::two)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
             const fs::path weight_file_path = alg_common::data_path / "mst_weight.txt";
@@ -71,7 +72,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(expected_edges);
         CAPTURE(expected_weight);
 
-        const auto mst = lib::algorithm::edge_heap_prim_mst(sut, source_id);
+        const auto mst = gl::algorithm::edge_heap_prim_mst(sut, source_id);
 
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
@@ -94,14 +95,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_heap_prim_wieghted_edge_traits_type_template,
-    lib::undirected_graph_traits<
-        lib_t::empty_properties,
-        lib_t::weight_property<>,
-        lib_i::list_t>, // undirected adjacency list graph
-    lib::undirected_graph_traits<
-        lib_t::empty_properties,
-        lib_t::weight_property<>,
-        lib_i::matrix_t> // undirected adjacency matrix graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
+        gl::impl::list_t>, // undirected adjacency list graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
+        gl::impl::matrix_t> // undirected adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -109,15 +110,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     TraitsType,
     edge_heap_prim_unwieghted_edge_traits_type_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
-    using distance_type = lib_t::default_vertex_distance_type;
+    using sut_type = gl::graph<TraitsType>;
+    using distance_type = gl::types::default_vertex_distance_type;
     using weight_type = distance_type;
-    using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
+    using vertex_id_pair = std::pair<gl::types::id_type, gl::types::id_type>;
 
-    static_assert(not lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
+    static_assert(not gl::type_traits::c_weight_properties_type<
+                  typename sut_type::edge_properties_type>);
 
-    const auto sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
-    const lib_t::id_type source_id = constants::first_element_idx;
+    const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
+    const gl::types::id_type source_id = constants::first_element_idx;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
@@ -126,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
-    const auto mst = lib::algorithm::edge_heap_prim_mst(sut, source_id);
+    const auto mst = gl::algorithm::edge_heap_prim_mst(sut, source_id);
 
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
@@ -148,8 +150,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_heap_prim_unwieghted_edge_traits_type_template,
-    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
-    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
+    gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -157,22 +159,23 @@ TEST_CASE_TEMPLATE_DEFINE(
     TraitsType,
     vertex_heap_prim_wieghted_edge_traits_type_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
+    using sut_type = gl::graph<TraitsType>;
     using weight_type = typename sut_type::edge_properties_type::weight_type;
     using distance_type = weight_type;
 
-    static_assert(lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
+    static_assert(gl::type_traits::c_weight_properties_type<
+                  typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper mst descriptor for a valid graph") {
-        using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
+        using vertex_id_pair = std::pair<gl::types::id_type, gl::types::id_type>;
 
         sut_type sut;
-        lib_t::id_type source_id;
+        gl::types::id_type source_id;
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
         SUBCASE("regular binary tree") {
-            sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
+            sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_element_idx;
 
             const weight_type edge_weight = constants::three;
@@ -189,14 +192,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         SUBCASE("custom graph") {
             const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
 
-            sut = lib::io::load<sut_type>(gsf_file_path);
+            sut = gl::io::load<sut_type>(gsf_file_path);
             source_id = constants::first_element_idx;
 
             const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.n_vertices() - constants::one) * constants::two;
             const auto vertex_id_list =
-                alg_common::load_list<lib_t::id_type>(n_vertex_ids, edges_file_path);
-            for (lib_t::size_type i = 0; i < n_vertex_ids; i += constants::two)
+                alg_common::load_list<gl::types::id_type>(n_vertex_ids, edges_file_path);
+            for (gl::types::size_type i = 0; i < n_vertex_ids; i += constants::two)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
             const fs::path weight_file_path = alg_common::data_path / "mst_weight.txt";
@@ -209,7 +212,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(expected_edges);
         CAPTURE(expected_weight);
 
-        const auto mst = lib::algorithm::vertex_heap_prim_mst(sut, source_id);
+        const auto mst = gl::algorithm::vertex_heap_prim_mst(sut, source_id);
 
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
@@ -232,14 +235,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     vertex_heap_prim_wieghted_edge_traits_type_template,
-    lib::undirected_graph_traits<
-        lib_t::empty_properties,
-        lib_t::weight_property<>,
-        lib_i::list_t>, // undirected adjacency list graph
-    lib::undirected_graph_traits<
-        lib_t::empty_properties,
-        lib_t::weight_property<>,
-        lib_i::matrix_t> // undirected adjacency matrix graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
+        gl::impl::list_t>, // undirected adjacency list graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
+        gl::impl::matrix_t> // undirected adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -247,15 +250,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     TraitsType,
     vertex_heap_prim_unwieghted_edge_traits_type_template
 ) {
-    using sut_type = lib::graph<TraitsType>;
-    using distance_type = lib_t::default_vertex_distance_type;
+    using sut_type = gl::graph<TraitsType>;
+    using distance_type = gl::types::default_vertex_distance_type;
     using weight_type = distance_type;
-    using vertex_id_pair = std::pair<lib_t::id_type, lib_t::id_type>;
+    using vertex_id_pair = std::pair<gl::types::id_type, gl::types::id_type>;
 
-    static_assert(not lib_tt::c_weight_properties_type<typename sut_type::edge_properties_type>);
+    static_assert(not gl::type_traits::c_weight_properties_type<
+                  typename sut_type::edge_properties_type>);
 
-    const auto sut = lib::topology::regular_binary_tree<sut_type>(constants::depth);
-    const lib_t::id_type source_id = constants::first_element_idx;
+    const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
+    const gl::types::id_type source_id = constants::first_element_idx;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
@@ -264,7 +268,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
-    const auto mst = lib::algorithm::vertex_heap_prim_mst(sut, source_id);
+    const auto mst = gl::algorithm::vertex_heap_prim_mst(sut, source_id);
 
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
@@ -286,8 +290,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     vertex_heap_prim_unwieghted_edge_traits_type_template,
-    lib::list_graph_traits<lib::undirected_t>, // undirected adjacency list graph
-    lib::matrix_graph_traits<lib::undirected_t> // undirected adjacency matrix graph
+    gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_mst

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "namespaces.hpp"
 #include "types.hpp"
 
 #include <gl/types/types.hpp>
@@ -11,29 +10,29 @@
 
 namespace gl_testing::constants {
 
-IC lib_t::size_type zero = 0ull;
-IC lib_t::size_type one = 1ull;
-IC lib_t::size_type two = 2ull;
-IC lib_t::size_type three = 3ull;
+IC gl::types::size_type zero = 0ull;
+IC gl::types::size_type one = 1ull;
+IC gl::types::size_type two = 2ull;
+IC gl::types::size_type three = 3ull;
 
-IC lib_t::size_type n_elements = three;
-IC lib_t::size_type zero_elements = zero;
-IC lib_t::size_type one_element = one;
+IC gl::types::size_type n_elements = three;
+IC gl::types::size_type zero_elements = zero;
+IC gl::types::size_type one_element = one;
 
 // n_elements for graph topology tests
-IC lib_t::size_type n_elements_top = 10ull;
+IC gl::types::size_type n_elements_top = 10ull;
 
 // n_elements for graph algorithm tests
-IC lib_t::size_type n_elements_alg = 10ull;
-IC lib_t::size_type depth = 5ull;
+IC gl::types::size_type n_elements_alg = 10ull;
+IC gl::types::size_type depth = 5ull;
 
-IC lib_t::size_type first_element_idx = zero;
-IC lib_t::size_type last_element_idx = n_elements - one_element;
-IC lib_t::size_type out_of_range_elemenet_idx = n_elements;
+IC gl::types::size_type first_element_idx = zero;
+IC gl::types::size_type last_element_idx = n_elements - one_element;
+IC gl::types::size_type out_of_range_elemenet_idx = n_elements;
 
-IC lib_t::id_type vertex_id_1 = first_element_idx;
-IC lib_t::id_type vertex_id_2 = vertex_id_1 + one_element;
-IC lib_t::id_type vertex_id_3 = vertex_id_2 + one_element;
+IC gl::types::id_type vertex_id_1 = first_element_idx;
+IC gl::types::id_type vertex_id_2 = vertex_id_1 + one_element;
+IC gl::types::id_type vertex_id_3 = vertex_id_2 + one_element;
 
 IC auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
 

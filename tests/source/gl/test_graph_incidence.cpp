@@ -10,7 +10,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_graph_incidence");
 
 struct test_graph_incidence {
-    using vertex_type = lib::vertex_descriptor<>;
+    using vertex_type = gl::vertex_descriptor<>;
 
     vertex_type invalid_vertex{constants::vertex_id_1};
     vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
@@ -183,8 +183,8 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     graph_type_template,
-    lib::graph<lib::graph_traits<lib::directed_t>>, // directed graph
-    lib::graph<lib::graph_traits<lib::undirected_t>> // undirected graph
+    gl::graph<gl::graph_traits<gl::directed_t>>, // directed graph
+    gl::graph<gl::graph_traits<gl::undirected_t>> // undirected graph
 );
 
 TEST_SUITE_END(); // test_graph_incidence

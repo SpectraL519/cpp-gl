@@ -13,10 +13,10 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_properties");
 
 struct test_name_property {
-    using sut_type = lib_t::name_property;
+    using sut_type = gl::types::name_property;
     using value_type = typename sut_type::value_type;
 
-    static_assert(lib_tt::c_properties<sut_type>);
+    static_assert(gl::type_traits::c_properties<sut_type>);
 
     const value_type value = "element name";
     sut_type sut{value};
@@ -64,10 +64,10 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_dynamic_properties {
-    using sut_type = lib_t::dynamic_properties;
+    using sut_type = gl::types::dynamic_properties;
     using key_type = typename sut_type::key_type;
 
-    static_assert(lib_tt::c_properties<sut_type>);
+    static_assert(gl::type_traits::c_properties<sut_type>);
 
     struct compound_value {
         int x;
@@ -164,11 +164,11 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "remove should properly erase the key
 }
 
 struct test_binary_color {
-    using sut_type = lib_t::binary_color;
+    using sut_type = gl::types::binary_color;
     using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
-        static_cast<color>(lib::util::to_underlying(color::unset) + 1);
+        static_cast<color>(gl::util::to_underlying(color::unset) + 1);
 };
 
 TEST_CASE_FIXTURE(test_binary_color, "should be unset by default") {
@@ -180,7 +180,7 @@ TEST_CASE_FIXTURE(test_binary_color, "out of bounds values should be restricted 
     sut_type sut{out_of_bounds_color};
 
     REQUIRE_EQ(sut, color::unset);
-    CHECK_EQ(sut.to_underlying(), lib::util::to_underlying(color::unset));
+    CHECK_EQ(sut.to_underlying(), gl::util::to_underlying(color::unset));
 }
 
 TEST_CASE_FIXTURE(
@@ -212,8 +212,8 @@ TEST_CASE_FIXTURE(
 }
 
 // assertions for not tested property types
-static_assert(lib_tt::c_properties<lib_t::binary_color_property>);
-static_assert(lib_tt::c_properties<lib_t::weight_property<>>);
+static_assert(gl::type_traits::c_properties<gl::types::binary_color_property>);
+static_assert(gl::type_traits::c_properties<gl::types::weight_property<>>);
 
 TEST_SUITE_END(); // test_properties
 

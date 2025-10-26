@@ -1,14 +1,12 @@
 #pragma once
 
-#include "namespaces.hpp"
-
 #include <gl/graph_utility.hpp>
 
 #include <doctest.h>
 
 namespace gl_testing::io_common {
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 void verify_graph_structure(const GraphType& actual, const GraphType& expected) {
     REQUIRE_EQ(actual.n_vertices(), expected.n_vertices());
     REQUIRE_EQ(actual.n_unique_edges(), expected.n_unique_edges());
@@ -21,7 +19,7 @@ void verify_graph_structure(const GraphType& actual, const GraphType& expected) 
     }));
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 void verify_vertex_properties(const GraphType& actual, const GraphType& expected) {
     const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
 
@@ -34,7 +32,7 @@ void verify_vertex_properties(const GraphType& actual, const GraphType& expected
     ));
 }
 
-template <lib_tt::c_graph GraphType>
+template <gl::type_traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
     const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
 

@@ -29,16 +29,17 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), constants::n_elements);
         REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
-        std::ranges::for_each(constants::vertex_id_view, [&sut](const lib_t::id_type vertex_id) {
+        std::ranges::for_each(constants::vertex_id_view, [&sut](const gl::types::id_type vertex_id) {
             CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_elements);
         });
     }
 
     SUBCASE("add_vertex should properly extend the current adjacency list") {
         SutType sut{};
-        constexpr lib_t::size_type target_n_vertices = constants::n_elements;
+        constexpr gl::types::size_type target_n_vertices = constants::n_elements;
 
-        for (lib_t::size_type n_vertices = constants::one_element; n_vertices <= target_n_vertices;
+        for (gl::types::size_type n_vertices = constants::one_element;
+             n_vertices <= target_n_vertices;
              n_vertices++) {
             sut.add_vertex();
             CHECK_EQ(sut.n_vertices(), n_vertices);
@@ -59,35 +60,37 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_directional_tag_sut_template,
-    lib_i::adjacency_list<lib::list_graph_traits<lib::directed_t>>, // directed adj list
-    lib_i::adjacency_list<lib::list_graph_traits<lib::undirected_t>> // undirected adj list
+    gl::impl::adjacency_list<gl::list_graph_traits<gl::directed_t>>, // directed adj list
+    gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>> // undirected adj list
 );
 
 namespace {
 
-constexpr lib_t::size_type n_incident_edges_for_fully_connected_vertex =
+constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
     constants::n_elements - constants::one_element;
 
 } // namespace
 
 struct test_directed_adjacency_list {
-    using vertex_type = lib::vertex_descriptor<>;
-    using edge_type = lib::directed_edge<vertex_type>;
-    using edge_ptr_type = lib::directed_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_list<lib::list_graph_traits<lib::directed_t>>;
+    using vertex_type = gl::vertex_descriptor<>;
+    using edge_type = gl::directed_edge<vertex_type>;
+    using edge_ptr_type = gl::directed_t::edge_ptr_type<edge_type>;
+    using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::directed_t>>;
 
     test_directed_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
             vertices.emplace_back(id);
     }
 
-    const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+    const edge_type& add_edge(
+        const gl::types::id_type first_id, const gl::types::id_type second_id
+    ) {
         return sut.add_edge(
-            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+            gl::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
         );
     }
 
-    void fully_connect_vertex(const lib_t::id_type first_id, const bool no_loops = true) {
+    void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
         for (const auto second_id : constants::vertex_id_view) {
             if (second_id == first_id and no_loops)
                 continue;
@@ -109,7 +112,7 @@ struct test_directed_adjacency_list {
     sut_type sut{constants::n_elements};
     std::vector<vertex_type> vertices;
 
-    const lib_t::size_type n_unique_edges_in_full_graph =
+    const gl::types::size_type n_unique_edges_in_full_graph =
         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
 };
 
@@ -229,7 +232,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
+    std::vector<gl::types::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );
@@ -306,7 +309,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
+    std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
 
     SUBCASE("in_degree") {
         deg_proj = [this](const auto vertex_id) { return sut.in_degree(vertex_id); };
@@ -363,7 +366,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements;
 
-    std::vector<lib_t::id_type> degree_map;
+    std::vector<gl::types::id_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();
@@ -387,7 +390,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements * constants::two;
 
-    std::vector<lib_t::id_type> degree_map = sut.degree_map();
+    std::vector<gl::types::id_type> degree_map = sut.degree_map();
 
     REQUIRE_EQ(degree_map.size(), constants::n_elements);
     CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
@@ -420,23 +423,25 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_adjacency_list {
-    using vertex_type = lib::vertex_descriptor<>;
-    using edge_type = lib::undirected_edge<vertex_type>;
-    using edge_ptr_type = lib::undirected_t::edge_ptr_type<edge_type>;
-    using sut_type = lib_i::adjacency_list<lib::list_graph_traits<lib::undirected_t>>;
+    using vertex_type = gl::vertex_descriptor<>;
+    using edge_type = gl::undirected_edge<vertex_type>;
+    using edge_ptr_type = gl::undirected_t::edge_ptr_type<edge_type>;
+    using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>;
 
     test_undirected_adjacency_list() {
         for (const auto id : constants::vertex_id_view)
             vertices.emplace_back(id);
     }
 
-    const edge_type& add_edge(const lib_t::id_type first_id, const lib_t::id_type second_id) {
+    const edge_type& add_edge(
+        const gl::types::id_type first_id, const gl::types::id_type second_id
+    ) {
         return sut.add_edge(
-            lib::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
+            gl::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
         );
     }
 
-    void fully_connect_vertex(const lib_t::id_type first_id, const bool no_loops = true) {
+    void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
         for (const auto second_id : constants::vertex_id_view) {
             if (second_id == first_id and no_loops)
                 continue;
@@ -461,7 +466,7 @@ struct test_undirected_adjacency_list {
     sut_type sut{constants::n_elements};
     std::vector<vertex_type> vertices;
 
-    const lib_t::size_type n_unique_edges_in_full_graph =
+    const gl::types::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
 };
 
@@ -605,7 +610,7 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
 ) {
-    std::vector<lib_t::const_ref_wrap<edge_type>> expected_edges;
+    std::vector<gl::types::const_ref_wrap<edge_type>> expected_edges;
     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
         );
@@ -702,7 +707,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<lib_t::size_type(const lib_t::id_type)> deg_proj;
+    std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
 
     SUBCASE("degree") {
         deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
@@ -740,7 +745,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements + 1;
 
-    std::vector<lib_t::id_type> degree_map;
+    std::vector<gl::types::id_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();
