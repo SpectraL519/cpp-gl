@@ -1,19 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(cpp-gl-test)
 
-# Structure
-set(SOURCE_DIRS "source" "app")
-set(INCLUDE_DIRS "include" "external")
-set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-set(DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
-
-# Source files
-file(GLOB_RECURSE SOURCES "")
-foreach(SOURCE_DIR ${SOURCE_DIRS})
-    file(GLOB_RECURSE CURRENT_SOURCES ${SOURCE_DIR}/*.cpp)
-    list(APPEND SOURCES ${CURRENT_SOURCES})
-endforeach()
-
 # Set compile options
 if(NOT DEFINED CMAKE_CXX_FLAGS)
     set(
@@ -23,15 +10,43 @@ if(NOT DEFINED CMAKE_CXX_FLAGS)
     )
 endif()
 
-# Executable
-add_executable(run ${SOURCES})
-set_target_properties(run PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
-    CXX_STANDARD ${CMAKE_CXX_STANDARD}
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
-)
-target_include_directories(run PRIVATE ${INCLUDE_DIRS})
-target_compile_options(run PRIVATE ${CMAKE_CXX_FLAGS})
-target_compile_definitions(run PRIVATE GL_TESTING TEST_DATA_PATH="${DATA_DIR}")
-target_link_libraries(run PRIVATE cpp-gl)
+# Common structure
+set(SOURCE_DIRS "app")
+set(INCLUDE_DIRS "include" "external")
+set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+
+# Test target generation
+function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR)
+    set(TARGET_SOURCES "")
+    foreach(SOURCE_DIR ${SOURCE_DIRS})
+        file(GLOB_RECURSE CURRENT_SOURCES "${SOURCE_DIR}/*.cpp")
+        list(APPEND TARGET_SOURCES ${CURRENT_SOURCES})
+    endforeach()
+
+    add_executable(${TARGET_NAME} ${TARGET_SOURCES})
+
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
+        CXX_STANDARD ${CMAKE_CXX_STANDARD}
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+    )
+
+    target_include_directories(${TARGET_NAME} PRIVATE ${INCLUDE_DIRS})
+    target_compile_options(${TARGET_NAME} PRIVATE ${CMAKE_CXX_FLAGS})
+    target_compile_definitions(${TARGET_NAME} PRIVATE
+        GL_TESTING
+        TEST_DATA_PATH="${DATA_DIR}"
+    )
+    target_link_libraries(${TARGET_NAME} PRIVATE cpp-gl)
+endfunction()
+
+# GL target
+set(GL_SOURCE_DIRS "source/gl" ${SOURCE_DIRS})
+set(GL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/gl")
+add_test_target(gl "${GL_SOURCE_DIRS}" "${GL_DATA_DIR}")
+
+# HGL target
+set(HGL_SOURCE_DIRS "source/hgl" ${SOURCE_DIRS})
+set(HGL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/hgl")
+add_test_target(hgl "${HGL_SOURCE_DIRS}" "${HGL_DATA_DIR}")

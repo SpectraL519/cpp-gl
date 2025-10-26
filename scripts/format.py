@@ -17,42 +17,47 @@ class DefaultParameters:
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-m", "--modified-files",
+        "-m",
+        "--modified-files",
         type=bool,
         default=DefaultParameters.modified_files,
         action=argparse.BooleanOptionalAction,
-        help="run clang-format only on the files modified since last pushed commit"
+        help="run clang-format only on the files modified since last pushed commit",
     )
     parser.add_argument(
-        "-p", "--search-paths",
+        "-p",
+        "--search-paths",
         type=str,
         default=DefaultParameters.search_paths,
         nargs="*",
         action="extend",
-        help="list of search directory paths"
+        help="list of search directory paths",
     )
     parser.add_argument(
-        "-f", "--file-patterns",
+        "-f",
+        "--file-patterns",
         type=str,
         default=DefaultParameters.file_patterns,
         nargs="*",
         action="extend",
-        help="list of file patterns to include"
+        help="list of file patterns to include",
     )
     parser.add_argument(
-        "-e", "--exclude-paths",
+        "-e",
+        "--exclude-paths",
         type=str,
         default=DefaultParameters.exclude_paths,
         nargs="*",
         action="extend",
-        help="list of directory paths to exclude"
+        help="list of directory paths to exclude",
     )
     parser.add_argument(
-        "-c", "--check",
+        "-c",
+        "--check",
         type=bool,
         default=DefaultParameters.check,
         action=argparse.BooleanOptionalAction,
-        help="run format check"
+        help="run format check",
     )
 
     return vars(parser.parse_args())
@@ -65,7 +70,7 @@ def get_modified_files(files: set[Path]) -> set[Path]:
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
         )
 
         modified_files = {Path(file) for file in result.stdout.splitlines() if file}
@@ -95,7 +100,9 @@ def run_clang_format(files: set[Path], check: bool) -> int:
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
             return_code = result.returncode
-            print(f"[Format error]\n[stdout]\n{result.stdout}\n[stderr]\n{result.stderr}")
+            print(
+                f"[Format error]\n[stdout]\n{result.stdout}\n[stderr]\n{result.stderr}"
+            )
 
     print("Done!")
     return return_code
@@ -106,7 +113,7 @@ def main(
     search_paths: list[str],
     file_patterns: list[str],
     exclude_paths: list[str],
-    check: bool
+    check: bool,
 ):
     files_to_format = find_files(search_paths, file_patterns, exclude_paths)
     if modified_files:

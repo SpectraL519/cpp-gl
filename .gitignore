@@ -1,6 +1,7 @@
 # editor files
 .vscode/
 .idea/
+.zed/
 
 # build files
 *.exe
