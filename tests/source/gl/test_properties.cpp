@@ -93,7 +93,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "is_present should return false for a
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "is_present should return true for a present key") {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
     CHECK(sut.is_present(key));
 }
 
@@ -110,7 +110,7 @@ TEST_CASE_FIXTURE(
     test_dynamic_properties,
     "get should return a reference to the underlying object for a valid key and type"
 ) {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
 
     compound_value& value_ref = sut.get<compound_value>(key);
     REQUIRE_EQ(value_ref, value);
