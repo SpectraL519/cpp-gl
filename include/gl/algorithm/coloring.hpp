@@ -42,7 +42,7 @@ template <
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
             [&coloring](const vertex_type& vertex, const edge_type& in_edge)
-                -> std::optional<bool> { // enqueue predicate
+                -> predicate_result { // enqueue predicate
                 if (in_edge.is_loop())
                     return false;
 
@@ -50,7 +50,7 @@ template <
                 const auto source_id = in_edge.incident_vertex(vertex).id();
 
                 if (coloring[vertex_id] == coloring[source_id])
-                    return std::nullopt; // graph is not bipartite
+                    return predicate_result::unknown; // graph is not bipartite
 
                 if (not coloring[vertex.id()].is_set()) {
                     coloring[vertex.id()] = coloring[source_id].next();

@@ -12,9 +12,9 @@ namespace gl {
 
 namespace algorithm {
 
-struct default_return {};
-
-struct no_return {};
+// TODO: align docs
+enum class result_discriminator : bool { ret = true, noret = false };
+using enum result_discriminator;
 
 struct empty_callback {};
 
@@ -68,18 +68,34 @@ struct predecessors_descriptor {
     std::vector<predecessor_type> predecessors;
 };
 
+// TODO: add tests
+struct predicate_result {
+    enum class eval : std::uint8_t { ok, nok, unknown };
+    using enum eval;
+
+    constexpr predicate_result(const eval value) : value(value) {}
+
+    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::nok) {}
+
+    constexpr predicate_result& operator=(const bool value) {
+        this->value = value ? eval::ok : eval::nok;
+        return *this;
+    }
+
+    [[nodiscard]] constexpr operator bool() const {
+        return this->value == eval::ok;
+    }
+
+    [[nodiscard]] constexpr bool operator==(const eval value) const {
+        return this->value == value;
+    }
+
+    eval value;
+};
+
 } // namespace algorithm
 
 namespace type_traits {
-
-template <typename T>
-concept c_alg_default_return_type = std::same_as<T, algorithm::default_return>;
-
-template <typename T>
-concept c_alg_no_return_type = std::same_as<T, algorithm::no_return>;
-
-template <typename T>
-concept c_alg_return_type = c_alg_default_return_type<T> or c_alg_no_return_type<T>;
 
 template <typename F>
 concept c_empty_callback = std::same_as<F, algorithm::empty_callback>;
@@ -107,13 +123,12 @@ concept c_optional_edge_callback =
 
 namespace algorithm::impl {
 
-template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
-using alg_return_type =
-    std::conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, void, DefaultReturnType>;
+template <result_discriminator ResultDiscriminator, typename ReturnType>
+using alg_return_type = std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, void>;
 
-template <type_traits::c_alg_return_type AlgReturnType, typename DefaultReturnType>
-using alg_return_type_non_void = std::
-    conditional_t<type_traits::c_alg_no_return_type<AlgReturnType>, no_return, DefaultReturnType>;
+template <result_discriminator ResultDiscriminator, typename ReturnType>
+using alg_return_type_non_void =
+    std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, std::monostate>;
 
 } // namespace algorithm::impl
 

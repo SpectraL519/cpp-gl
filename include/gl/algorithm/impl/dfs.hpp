@@ -14,9 +14,8 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::
-        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
-            EnqueueVertexPred,
+    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
@@ -70,9 +69,8 @@ template <
     type_traits::c_graph GraphType,
     type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::
-        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
-            EnqueueVertexPred,
+    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =

@@ -16,9 +16,8 @@ template <
         std::vector<algorithm::vertex_info>,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_optional_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::
-        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
-            EnqueueVertexPred,
+    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
@@ -63,10 +62,10 @@ bool bfs(
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex, edge);
-            if (not enqueue.has_value())
+            if (enqueue == predicate_result::unknown)
                 return false;
 
-            if (enqueue.value())
+            if (enqueue)
                 vertex_queue.emplace(incident_vertex.id(), vinfo.id);
         }
 

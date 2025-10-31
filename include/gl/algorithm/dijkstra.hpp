@@ -95,14 +95,14 @@ template <
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
         [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
-            -> std::optional<bool> { // enqueue predicate
+            -> predicate_result { // enqueue predicate
             const auto vertex_id = vertex.id();
             const auto source_id = in_edge.incident_vertex(vertex).id();
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
             if (edge_weight < constants::zero) {
                 negative_edge = std::cref(in_edge);
-                return std::nullopt;
+                return predicate_result::unknown;
             }
 
             const auto new_distance = paths.distances[source_id] + edge_weight;

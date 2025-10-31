@@ -183,14 +183,14 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `impl::alg_return_type<AlgReturnType, predecessors_descriptor>` - If `AlgReturnType` is `algorithm::no_return` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
-  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/deapth_first_search.hpp)
+  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/depth_first_search.hpp)
 
 - `recursive_depth_first_search(graph, root_vertex_id_opt, pre_visit, post_visit)`
   - *Description*: Performs a recursive depth-first search (DFS) on the specified graph and conditionally returns a `predecessors_descriptor` instance.
 
     **NOTE:** This algoithm has the same template parameters, parameters and return type as the iterative version (`depth_first_search`)
 
-  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/deapth_first_search.hpp)
+  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/depth_first_search.hpp)
 
 ### Breadth-first search
 
