@@ -102,7 +102,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for a not present k
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for an invalid value type") {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
     CHECK_THROWS_AS(func::discard_result(sut.get<double>(key)), std::bad_any_cast);
 }
 

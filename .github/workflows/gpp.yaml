@@ -19,8 +19,8 @@ jobs:
 
       - name: Prepare
         env:
-          CC: gcc-13
-          CXX: g++-13
+          CC: gcc-14
+          CXX: g++-14
         run: |
           cmake -B build -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
         continue-on-error: false
