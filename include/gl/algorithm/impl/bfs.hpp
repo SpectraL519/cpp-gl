@@ -39,7 +39,6 @@ bool bfs(
     using vertex_queue_type = std::queue<algorithm::vertex_info>;
     vertex_queue_type vertex_queue;
 
-    // TODO [C++23]: replace with push_range
     for (const auto& vinfo : initial_queue_content)
         vertex_queue.push(vinfo);
 

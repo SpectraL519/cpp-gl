@@ -168,7 +168,7 @@ struct test_binary_color {
     using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
-        static_cast<color>(gl::util::to_underlying(color::unset) + 1);
+        static_cast<color>(std::to_underlying(color::unset) + 1);
 };
 
 TEST_CASE_FIXTURE(test_binary_color, "should be unset by default") {
@@ -180,7 +180,7 @@ TEST_CASE_FIXTURE(test_binary_color, "out of bounds values should be restricted 
     sut_type sut{out_of_bounds_color};
 
     REQUIRE_EQ(sut, color::unset);
-    CHECK_EQ(sut.to_underlying(), gl::util::to_underlying(color::unset));
+    CHECK_EQ(sut.to_underlying(), std::to_underlying(color::unset));
 }
 
 TEST_CASE_FIXTURE(

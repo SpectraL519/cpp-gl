@@ -54,13 +54,13 @@ public:
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
-        this->_list.push_back(edge_list_type{});
+        this->_list.emplace_back(edge_list_type{});
     }
 
     inline void add_vertices(const types::size_type n) {
         this->_list.reserve(this->n_vertices() + n);
         for (types::size_type _ = constants::begin_idx; _ < n; ++_)
-            this->_list.push_back(edge_list_type{});
+            this->_list.emplace_back(edge_list_type{});
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
@@ -172,7 +172,7 @@ public:
 
         for (const auto& edge : adjacent_edges)
             if (specialized_impl::is_edge_incident_to(edge, second_id, first_id))
-                matching_edges.push_back(std::cref(*edge));
+                matching_edges.emplace_back(*edge);
 
         matching_edges.shrink_to_fit();
         return matching_edges;

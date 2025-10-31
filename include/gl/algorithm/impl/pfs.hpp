@@ -42,7 +42,6 @@ bool pfs(
         std::priority_queue<algorithm::vertex_info, std::vector<algorithm::vertex_info>, PQCompare>;
     vertex_queue_type vertex_queue(pq_compare);
 
-    // TODO [C++23]: replace with push_range
     for (const auto& vinfo : initial_queue_content)
         vertex_queue.push(vinfo);
 

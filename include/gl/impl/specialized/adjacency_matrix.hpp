@@ -90,9 +90,8 @@ struct directed_adjacency_matrix {
         std::vector<types::id_type> in_degree_map(self._matrix.size(), constants::zero);
 
         for (const auto& row : self._matrix)
-            for (types::id_type id = constants::initial_id; id < self._matrix.size(); ++id)
-                if (row[id] != nullptr)
-                    ++in_degree_map[id];
+            for (auto [id, edge_ptr] : std::views::enumerate(row))
+                in_degree_map[id] += static_cast<types::size_type>(edge_ptr != nullptr);
 
         return in_degree_map;
     }
@@ -187,11 +186,10 @@ struct undirected_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        const auto& loop = self._matrix[vertex_id][vertex_id];
         return std::ranges::count_if(
                    self._matrix[vertex_id], [](const auto& edge) { return edge != nullptr; }
                )
-             + static_cast<types::size_type>(loop and loop->is_loop());
+             + static_cast<types::size_type>(self._matrix[vertex_id][vertex_id] != nullptr);
     }
 
     [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> in_degree_map(

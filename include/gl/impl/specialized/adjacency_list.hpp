@@ -67,15 +67,10 @@ struct directed_adjacency_list {
         const impl_type& self, const types::id_type vertex_id
     ) {
         types::size_type in_deg = constants::default_size;
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
-            const auto& adj_edges = self._list[id];
-            if (adj_edges.empty())
-                continue;
-
-            in_deg += std::ranges::count(adj_edges, vertex_id, [](const auto& edge) {
+        for (const auto& adjacent_edges : self._list)
+            in_deg += std::ranges::count(adjacent_edges, vertex_id, [](const auto& edge) {
                 return edge->second_id();
             });
-        }
 
         return in_deg;
     }
@@ -107,10 +102,9 @@ struct directed_adjacency_list {
     [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> out_degree_map(
         const impl_type& self
     ) {
-        const auto out_degree_view =
-            self._list
-            | std::views::transform([](const auto& adj_edges) { return adj_edges.size(); });
-        return std::vector<types::size_type>(out_degree_view.begin(), out_degree_view.end());
+        return self._list
+             | std::views::transform([](const auto& adj_edges) { return adj_edges.size(); })
+             | std::ranges::to<std::vector<types::size_type>>();
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
@@ -151,9 +145,9 @@ struct directed_adjacency_list {
 
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         auto& adjacent_edges_first = self._list[edge->first_id()];
-        adjacent_edges_first.push_back(std::move(edge));
+        auto& new_edge = adjacent_edges_first.emplace_back(std::move(edge));
         ++self._n_unique_edges;
-        return *adjacent_edges_first.back();
+        return *new_edge;
     }
 
     static void add_edges_from(
@@ -163,7 +157,7 @@ struct directed_adjacency_list {
         adjacent_edges_source.reserve(adjacent_edges_source.size() + new_edges.size());
 
         for (auto& edge : new_edges)
-            adjacent_edges_source.push_back(std::move(edge));
+            adjacent_edges_source.emplace_back(std::move(edge));
 
         self._n_unique_edges += new_edges.size();
     }
@@ -282,7 +276,7 @@ struct undirected_adjacency_list {
 
         if (not edge->is_loop())
             self._list[edge->second_id()].push_back(edge);
-        adjacent_edges_first.push_back(std::move(edge));
+        adjacent_edges_first.emplace_back(std::move(edge));
 
         ++self._n_unique_edges;
         return *adjacent_edges_first.back();
@@ -297,7 +291,7 @@ struct undirected_adjacency_list {
         for (auto& edge : new_edges) {
             if (not edge->is_loop())
                 self._list[edge->second_id()].push_back(edge);
-            adjacent_edges_source.push_back(std::move(edge));
+            adjacent_edges_source.emplace_back(std::move(edge));
         }
 
         self._n_unique_edges += new_edges.size();
