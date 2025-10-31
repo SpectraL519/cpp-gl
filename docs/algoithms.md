@@ -1,6 +1,6 @@
 # Algorithms
 
-The `CPP-GL` library provides a set of customizable graph algorithms, which are defined in the [gl/algorithms.hpp](/include/gl/algorithms.hpp) header file or in the specific header files in the [gl/algorithm/](/include/gl/algorithm/) directory.
+The `CPP-GL` library provides a set of customizable graph algorithms, which are defined in the [gl/algorithm.hpp](/include/gl/algorithm.hpp) header file or in the specific header files in the [gl/algorithm/](/include/gl/algorithm/) directory.
 
 <br />
 

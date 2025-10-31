@@ -68,17 +68,16 @@ struct predecessors_descriptor {
     std::vector<predecessor_type> predecessors;
 };
 
-// TODO: add tests
 struct predicate_result {
-    enum class eval : std::uint8_t { ok, nok, unknown };
+    enum class eval : std::uint8_t { ok, not_ok, unknown };
     using enum eval;
 
     constexpr predicate_result(const eval value) : value(value) {}
 
-    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::nok) {}
+    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::not_ok) {}
 
     constexpr predicate_result& operator=(const bool value) {
-        this->value = value ? eval::ok : eval::nok;
+        this->value = value ? eval::ok : eval::not_ok;
         return *this;
     }
 
