@@ -12,7 +12,6 @@ namespace gl {
 
 namespace algorithm {
 
-// TODO: align docs
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
@@ -34,6 +33,30 @@ struct edge_info {
 
     types::const_ref_wrap<edge_type> edge;
     types::id_type source_id;
+};
+
+struct predicate_result {
+    enum class eval : std::uint8_t { ok, not_ok, unknown };
+    using enum eval;
+
+    constexpr predicate_result(const eval value) : value(value) {}
+
+    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::not_ok) {}
+
+    constexpr predicate_result& operator=(const bool value) {
+        this->value = value ? eval::ok : eval::not_ok;
+        return *this;
+    }
+
+    [[nodiscard]] constexpr operator bool() const {
+        return this->value == eval::ok;
+    }
+
+    [[nodiscard]] constexpr bool operator==(const eval value) const {
+        return this->value == value;
+    }
+
+    eval value;
 };
 
 struct predecessors_descriptor {
@@ -66,30 +89,6 @@ struct predecessors_descriptor {
     }
 
     std::vector<predecessor_type> predecessors;
-};
-
-struct predicate_result {
-    enum class eval : std::uint8_t { ok, not_ok, unknown };
-    using enum eval;
-
-    constexpr predicate_result(const eval value) : value(value) {}
-
-    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::not_ok) {}
-
-    constexpr predicate_result& operator=(const bool value) {
-        this->value = value ? eval::ok : eval::not_ok;
-        return *this;
-    }
-
-    [[nodiscard]] constexpr operator bool() const {
-        return this->value == eval::ok;
-    }
-
-    [[nodiscard]] constexpr bool operator==(const eval value) const {
-        return this->value == value;
-    }
-
-    eval value;
 };
 
 } // namespace algorithm
