@@ -25,6 +25,7 @@ namespace types {
 // --- common properties ---
 
 using empty_properties = std::monostate;
+using empty_properties_map = std::monostate;
 
 class name_property
 #ifndef _GL_PROPERTY_TYPES_NOT_FINAL
