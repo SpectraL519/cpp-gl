@@ -35,7 +35,7 @@ public:
     // TODO: private
     explicit vertex_descriptor(const types::id_type id)
     requires(type_traits::is_default_properties_type_v<properties_type>)
-    : _id(id), _properties() {}
+    : _id(id) {}
 
     // TODO: private
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
@@ -59,7 +59,7 @@ public:
         return this->_id;
     }
 
-    [[no_unique_address]] gl_attr_force_inline properties_ref_type properties() mutable {
+    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() mutable {
         return this->_properties;
     }
 

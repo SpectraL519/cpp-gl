@@ -78,7 +78,7 @@ struct directed_t {
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
         const EdgeType& edge, const typename EdgeType::vertex_type& vertex
     ) {
-        return &vertex == &edge._vertices.first;
+        return vertex == edge._vertices.first;
     }
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
@@ -86,7 +86,7 @@ struct directed_t {
     [[nodiscard]] gl_attr_force_inline static bool is_incident_to(
         const EdgeType& edge, const typename EdgeType::vertex_type& vertex
     ) {
-        return &vertex == &edge._vertices.second;
+        return vertex == edge._vertices.second;
     }
 };
 

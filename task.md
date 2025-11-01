@@ -20,3 +20,5 @@
 - Create the descriptor object only when necessary
 - After removing a vertex align the ids of descriptors stored by graph edges:
   - Requires a warning/caution doc stating that removing a vertex invalidates the ids of returned descriptors
+- Alignment:
+  - `impl::remove_vertex` should take an id as parameter instead of a descriptor object

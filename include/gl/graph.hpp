@@ -115,9 +115,7 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    [[nodiscard]] gl_attr_force_inline const vertex_type& get_vertex(
-        const types::id_type vertex_id
-    ) const {
+    [[nodiscard]] gl_attr_force_inline vertex_type get_vertex(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
             return vertex_descriptor{vertex_id};
@@ -174,7 +172,7 @@ public:
     }
 
     gl_attr_force_inline void remove_vertex(const types::size_type vertex_id) {
-        this->_remove_vertex_impl(this->get_vertex(vertex_id));
+        this->_remove_vertex_impl(vertex_id);
     }
 
     inline void remove_vertex(const vertex_type& vertex) {
@@ -191,7 +189,7 @@ public:
 
         // TODO: optimize
         for (const auto vertex_id : vertex_id_set)
-            this->_remove_vertex_impl(this->get_vertex(vertex_id));
+            this->_remove_vertex_impl(vertex_id);
     }
 
     template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
@@ -495,17 +493,8 @@ private:
             throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
-    void _verify_vertex(const vertex_type& vertex) const {
-        const auto vertex_id = vertex.id();
-        const auto& self_vertex = this->get_vertex(vertex_id);
-
-        if (&vertex != &self_vertex)
-            throw std::invalid_argument(std::format(
-                "Got invalid vertex [id = {} | expected addr = {} | actual addr = {}]",
-                vertex_id,
-                io::format(&self_vertex),
-                io::format(&vertex)
-            ));
+    gl_attr_force_inline void _verify_vertex(const vertex_type& vertex) const {
+        this->_verify_vertex_id(vertex.id());
     }
 
     void _verify_edge(const edge_type& edge) const {
@@ -520,17 +509,14 @@ private:
 
     // --- vertex methods ---
 
-    void _remove_vertex_impl(const vertex_type& vertex) {
+    void _remove_vertex_impl(const types::id_type vertex_id) {
         const auto vertex_id = vertex.id();
-        this->_impl.remove_vertex(vertex);
-        this->_vertices.erase(std::next(std::begin(this->_vertices), vertex_id));
-
-        // align ids of remainig vertices
-        std::for_each(
-            std::next(std::begin(this->_vertices), vertex_id),
-            this->_vertices.end(),
-            [](auto& v) { --v->_id; }
-        );
+        this->_impl.remove_vertex(vertex_id);
+        if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
+            this->_vertex_properties.erase(
+                std::next(std::begin(this->_vertex_properties), vertex_id)
+            );
+        this->_n_vertices--;
     }
 
     // --- io methods ---
