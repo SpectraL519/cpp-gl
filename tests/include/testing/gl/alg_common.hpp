@@ -3,7 +3,7 @@
 #include "constants.hpp"
 #include "types.hpp"
 
-#include <gl/algorithms.hpp>
+#include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
 #include <gl/graph_file_io.hpp>
 

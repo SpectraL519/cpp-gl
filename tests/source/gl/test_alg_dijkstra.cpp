@@ -2,7 +2,7 @@
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 
-#include <gl/algorithms.hpp>
+#include <gl/algorithm.hpp>
 #include <gl/graph_file_io.hpp>
 #include <gl/topologies.hpp>
 

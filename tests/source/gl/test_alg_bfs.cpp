@@ -1,7 +1,7 @@
 #include "testing/gl/alg_common.hpp"
 #include "testing/gl/constants.hpp"
 
-#include <gl/algorithms.hpp>
+#include <gl/algorithm.hpp>
 #include <gl/topologies.hpp>
 
 #include <doctest.h>
@@ -59,7 +59,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<gl::types::id_type> previsit_order, postvisit_order;
-    gl::algorithm::breadth_first_search<gl::algorithm::no_return>(
+    gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex,
         [&](const auto& vertex) { // previsit
@@ -128,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<gl::types::id_type> previsit_order, postvisit_order;
-    gl::algorithm::breadth_first_search<gl::algorithm::no_return>(
+    gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
         [&](const auto& vertex) { // previsit
@@ -160,8 +160,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto pd =
-        gl::algorithm::breadth_first_search<gl::algorithm::default_return, graph_type>(graph);
+    const auto pd = gl::algorithm::breadth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());

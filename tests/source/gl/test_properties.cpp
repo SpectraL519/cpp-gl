@@ -93,7 +93,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "is_present should return false for a
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "is_present should return true for a present key") {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
     CHECK(sut.is_present(key));
 }
 
@@ -102,7 +102,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for a not present k
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for an invalid value type") {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
     CHECK_THROWS_AS(func::discard_result(sut.get<double>(key)), std::bad_any_cast);
 }
 
@@ -110,7 +110,7 @@ TEST_CASE_FIXTURE(
     test_dynamic_properties,
     "get should return a reference to the underlying object for a valid key and type"
 ) {
-    sut.underlying()[key] = value;
+    sut.underlying()[key] = std::any{value};
 
     compound_value& value_ref = sut.get<compound_value>(key);
     REQUIRE_EQ(value_ref, value);
@@ -168,7 +168,7 @@ struct test_binary_color {
     using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
-        static_cast<color>(gl::util::to_underlying(color::unset) + 1);
+        static_cast<color>(std::to_underlying(color::unset) + 1);
 };
 
 TEST_CASE_FIXTURE(test_binary_color, "should be unset by default") {
@@ -180,7 +180,7 @@ TEST_CASE_FIXTURE(test_binary_color, "out of bounds values should be restricted 
     sut_type sut{out_of_bounds_color};
 
     REQUIRE_EQ(sut, color::unset);
-    CHECK_EQ(sut.to_underlying(), gl::util::to_underlying(color::unset));
+    CHECK_EQ(sut.to_underlying(), std::to_underlying(color::unset));
 }
 
 TEST_CASE_FIXTURE(

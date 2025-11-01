@@ -9,20 +9,21 @@ endif()
 
 project(cpp-gl
     VERSION 2.0.0
-    DESCRIPTION "General purpose header-only template graph library for C++20"
+    DESCRIPTION "General purpose header-only template graph library for C++23"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-gl"
     LANGUAGES CXX
 )
 
+set(MIN_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build project tests" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-elseif(CMAKE_CXX_STANDARD LESS 20)
+    set(CMAKE_CXX_STANDARD ${MIN_CXX_STANDARD})
+elseif(CMAKE_CXX_STANDARD LESS ${MIN_CXX_STANDARD})
     message(WARNING "The defined C++ standard (${CMAKE_CXX_STANDARD}) is too low - overriding!")
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD ${MIN_CXX_STANDARD})
 endif()
 message(STATUS "The C++ standard is set to ${CMAKE_CXX_STANDARD}")
 

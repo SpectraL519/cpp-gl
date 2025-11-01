@@ -50,7 +50,7 @@ template <
             return true;
         },
         [&in_degree_map](const vertex_type& vertex, const edge_type& in_edge)
-            -> std::optional<bool> { // enqueue predicate
+            -> predicate_result { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
             return --in_degree_map[vertex.id()] == constants::default_size;

@@ -11,15 +11,16 @@ namespace gl::algorithm::impl {
 // --- common functions ---
 
 template <
-    type_traits::c_alg_return_type AlgReturnType,
+    result_discriminator ResultDiscriminator,
     typename ReturnType,
     type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline alg_return_type_non_void<AlgReturnType, ReturnType>
+[[nodiscard]] gl_attr_force_inline alg_return_type_non_void<ResultDiscriminator, ReturnType>
 init_return_value(const GraphType& graph) {
-    if constexpr (type_traits::c_alg_no_return_type<AlgReturnType>)
-        return AlgReturnType{};
+    using return_type = alg_return_type_non_void<ResultDiscriminator, ReturnType>;
+    if constexpr (ResultDiscriminator == algorithm::ret)
+        return return_type(graph.n_vertices());
     else
-        return ReturnType(graph.n_vertices());
+        return return_type();
 }
 
 template <
@@ -36,23 +37,24 @@ template <type_traits::c_graph GraphType>
     };
 }
 
-template <type_traits::c_graph GraphType, type_traits::c_alg_return_type AlgReturnType>
+template <type_traits::c_graph GraphType, result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited, alg_return_type_non_void<AlgReturnType, predecessors_descriptor>& pd
+    std::vector<bool>& visited,
+    alg_return_type_non_void<ResultDiscriminator, predecessors_descriptor>& pd
 ) {
     return [&](const typename GraphType::vertex_type& vertex, const types::id_type source_id) {
         const auto vertex_id = vertex.id();
         visited[vertex_id] = true;
-        if constexpr (type_traits::c_alg_default_return_type<AlgReturnType>)
+        if constexpr (ResultDiscriminator == algorithm::ret)
             pd[vertex_id].emplace(source_id);
         return true;
     };
 }
 
-template <type_traits::c_graph GraphType, bool AsOptional = false>
+template <type_traits::c_graph GraphType, bool AsResult = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
-    using return_type = std::conditional_t<AsOptional, std::optional<bool>, bool>;
+    using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
     return [&](const typename GraphType::vertex_type& vertex,
                const typename GraphType::edge_type& in_edge) -> return_type {

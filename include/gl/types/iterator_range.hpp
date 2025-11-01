@@ -98,7 +98,6 @@ public:
         return this->_range.second;
     }
 
-#if __cplusplus >= 202302L
     [[nodiscard]] gl_attr_force_inline auto cbegin() const {
         return std::make_const_iterator(this->_range.first);
     }
@@ -106,7 +105,6 @@ public:
     [[nodiscard]] gl_attr_force_inline auto cend() const {
         return std::make_const_iterator(this->_range.second);
     }
-#endif
 
     [[nodiscard]] gl_attr_force_inline distance_type distance() const
     requires(cache_mode::value == type_traits::cache_mode_value::eager)
