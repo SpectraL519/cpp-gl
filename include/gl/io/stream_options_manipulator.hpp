@@ -5,7 +5,6 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "gl/util/enum.hpp"
 
 #include <iostream>
 
@@ -102,7 +101,7 @@ template <detail::c_bit_position_enum BitPosition>
     iword_type options_bitmask = 0ul;
     for (const auto bit_position : bit_positions)
         options_bitmask |=
-            iword_bit << static_cast<bit_position_type>(util::to_underlying(bit_position));
+            iword_bit << static_cast<bit_position_type>(std::to_underlying(bit_position));
     return options_bitmask;
 }
 
@@ -137,7 +136,7 @@ set_option(bit_position_type bit_position) {
 template <detail::c_bit_position_enum BitPosition>
 [[nodiscard]] gl_attr_force_inline stream_options_manipulator set_option(BitPosition bit_position) {
     return stream_options_manipulator::from_bit_position(
-        static_cast<bit_position_type>(util::to_underlying(bit_position)),
+        static_cast<bit_position_type>(std::to_underlying(bit_position)),
         stream_options_manipulator::set
     );
 }
@@ -172,7 +171,7 @@ template <detail::c_bit_position_enum BitPosition>
 [[nodiscard]] gl_attr_force_inline stream_options_manipulator unset_option(BitPosition bit_position
 ) {
     return stream_options_manipulator::from_bit_position(
-        static_cast<bit_position_type>(util::to_underlying(bit_position)),
+        static_cast<bit_position_type>(std::to_underlying(bit_position)),
         stream_options_manipulator::unset
     );
 }
@@ -209,7 +208,7 @@ template <detail::c_bit_position_enum BitPosition>
     std::ios_base& stream, BitPosition bit_position
 ) {
     return stream_options_manipulator::is_option_set(
-        stream, static_cast<bit_position_type>(util::to_underlying(bit_position))
+        stream, static_cast<bit_position_type>(std::to_underlying(bit_position))
     );
 }
 

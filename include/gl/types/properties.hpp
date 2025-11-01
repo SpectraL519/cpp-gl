@@ -5,7 +5,6 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "gl/util/enum.hpp"
 #include "traits/concepts.hpp"
 
 #include <any>
@@ -186,7 +185,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline std::underlying_type_t<value> to_underlying() const {
-        return util::to_underlying(this->_value);
+        return std::to_underlying(this->_value);
     }
 
     [[nodiscard]] gl_attr_force_inline binary_color next() const {

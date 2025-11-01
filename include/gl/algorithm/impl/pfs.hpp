@@ -17,9 +17,8 @@ template <
         std::vector<algorithm::vertex_info>,
     type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_optional_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::
-        c_vertex_callback<GraphType, std::optional<bool>, const typename GraphType::edge_type&>
-            EnqueueVertexPred,
+    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
     type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
         algorithm::empty_callback,
     type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
@@ -42,7 +41,6 @@ bool pfs(
         std::priority_queue<algorithm::vertex_info, std::vector<algorithm::vertex_info>, PQCompare>;
     vertex_queue_type vertex_queue(pq_compare);
 
-    // TODO [C++23]: replace with push_range
     for (const auto& vinfo : initial_queue_content)
         vertex_queue.push(vinfo);
 
@@ -67,10 +65,10 @@ bool pfs(
             const auto& incident_vertex = edge.incident_vertex(vertex);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex, edge);
-            if (not enqueue.has_value())
+            if (enqueue == predicate_result::unknown)
                 return false;
 
-            if (enqueue.value())
+            if (enqueue)
                 vertex_queue.emplace(incident_vertex.id(), vinfo.id);
         }
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)

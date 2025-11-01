@@ -19,18 +19,18 @@ jobs:
 
       - name: Prepare
         env:
-          CC: clang-17
-          CXX: clang++-17
+          CC: clang-18
+          CXX: clang++-18
         run: |
-          cmake -B build -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
+          cmake -B build_clang -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
         continue-on-error: false
 
       - name: Build test executable
         run: |
-          cd build && make -j 4
+          cmake --build build_clang/ -j5
         continue-on-error: false
 
       - name: Run tests
         run: |
-          ./build/tests/gl
-          ./build/tests/hgl
+          ./build_clang/tests/gl
+          ./build_clang/tests/hgl

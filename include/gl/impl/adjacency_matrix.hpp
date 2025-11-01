@@ -62,7 +62,7 @@ public:
 
     void add_vertex() {
         for (auto& row : this->_matrix)
-            row.push_back(_make_null_edge());
+            row.emplace_back(_make_null_edge());
         auto& new_row = this->_matrix.emplace_back();
         new_row.reserve(this->n_vertices());
         std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);

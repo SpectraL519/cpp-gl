@@ -78,16 +78,20 @@ struct directed_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return in_degree(self, vertex_id) + out_degree(self, vertex_id);
+        types::size_type deg = constants::zero;
+        for (types::id_type i = constants::initial_id; i < self._matrix.size(); ++i)
+            deg += static_cast<types::size_type>(self._matrix[vertex_id][i] != nullptr)
+                 + static_cast<types::size_type>(self._matrix[i][vertex_id] != nullptr);
+
+        return deg;
     }
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
         std::vector<types::id_type> in_degree_map(self._matrix.size(), constants::zero);
 
         for (const auto& row : self._matrix)
-            for (types::id_type id = constants::initial_id; id < self._matrix.size(); ++id)
-                if (row[id] != nullptr)
-                    ++in_degree_map[id];
+            for (auto [id, edge_ptr] : std::views::enumerate(row))
+                in_degree_map[id] += static_cast<types::size_type>(edge_ptr != nullptr);
 
         return in_degree_map;
     }
@@ -182,11 +186,10 @@ struct undirected_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type degree = constants::default_size;
-        for (const auto& edge : self._matrix[vertex_id])
-            if (edge)
-                degree += constants::one + static_cast<types::size_type>(edge->is_loop());
-        return degree;
+        return std::ranges::count_if(
+                   self._matrix[vertex_id], [](const auto& edge) { return edge != nullptr; }
+               )
+             + static_cast<types::size_type>(self._matrix[vertex_id][vertex_id] != nullptr);
     }
 
     [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> in_degree_map(

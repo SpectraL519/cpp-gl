@@ -1,6 +1,6 @@
 # CPP-GL
 
-General purpose header-only template graph library for C++20 and newer standards.
+General purpose header-only template graph library for C++23 and newer standards.
 
 [![g++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang++)
@@ -65,7 +65,7 @@ FetchContent_MakeAvailable(cpp-gl)
 add_executable(my_project main.cpp)
 
 set_target_properties(my_project PROPERTIES
-    CXX_STANDARD 20 # or newer
+    CXX_STANDARD 23 # or newer
     CXX_STANDARD_REQUIRED YES
 )
 
@@ -128,13 +128,14 @@ The instructions and requirements of working on the `CPP-GL` project can be foun
 
 ## Compiler support
 
+<!--TODO: verify whether the min compiler version is correct for C++23-->
 | Compiler | Min version |
 | :-: | :-: |
-| GNU G++ | 13 |
-| Clang | 17 |
+| GNU G++ | 14 |
+| Clang | 18 |
 
 > [!NOTE]
-> Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++20 support like MSVC.
+> Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++23 support like MSVC.
 
 <br />
 
