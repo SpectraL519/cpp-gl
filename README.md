@@ -131,8 +131,8 @@ The instructions and requirements of working on the `CPP-GL` project can be foun
 <!--TODO: verify whether the min compiler version is correct for C++23-->
 | Compiler | Min version |
 | :-: | :-: |
-| GNU G++ | 13 | #
-| Clang | 17 |
+| GNU G++ | 14 |
+| Clang | 18 |
 
 > [!NOTE]
 > Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++23 support like MSVC.
