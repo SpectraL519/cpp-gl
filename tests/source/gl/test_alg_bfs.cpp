@@ -67,7 +67,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         },
         [&](const auto& vertex) { // postvisit
             postvisit_order.push_back(vertex.id());
-            vertex.properties.visited = true;
+            vertex.properties().visited = true;
         }
     );
 

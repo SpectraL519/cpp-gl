@@ -15,10 +15,10 @@ TEST_CASE("id() should return the correct vertex id") {
 }
 
 TEST_CASE("properties should be properly initialized") {
-    const gl::vertex_descriptor<types::visited_property> sut{
-        constants::vertex_id_1, constants::visited
-    };
-    CHECK_EQ(sut.properties, constants::visited);
+    types::visited_property property{constants::visited};
+
+    const gl::vertex_descriptor<types::visited_property> sut{constants::vertex_id_1, property};
+    CHECK_EQ(&sut.properties(), &property);
 }
 
 TEST_CASE("vertex_descriptor objects should be compared by id") {
