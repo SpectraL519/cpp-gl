@@ -64,7 +64,6 @@ public:
         return this->_vertices;
     }
 
-    // TODO: add tests
     [[nodiscard]] gl_attr_force_inline const types::homogeneous_pair<types::id_type> incident_vertex_ids() const {
         return std::make_pair(this->_vertices.first.id(), this->_vertices.second.id());
     }

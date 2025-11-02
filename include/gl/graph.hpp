@@ -9,6 +9,7 @@
 #include "impl/impl_tags.hpp"
 #include "io/stream_options_manipulator.hpp"
 #include "types/iterator_range.hpp"
+#include "views.hpp"
 
 #include <set>
 
@@ -83,10 +84,10 @@ public:
     [[nodiscard]] gl_attr_force_inline auto vertices() const
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
-        return std::views::enumerate(this->_vertex_properties)
-             | std::views::transform([](const auto& vertex_data) {
-                   const auto& [id, properties_ptr] = vertex_data;
-                   return vertex_descriptor{static_cast<types::id_type>(id), *properties_ptr};
+        return this->_vertex_properties | std::views::enumerate
+             | std::views::transform([](const auto& x) {
+                   const auto& [id, ptr] = x;
+                   return vertex_descriptor{static_cast<types::id_type>(id), *ptr};
                });
     }
 
@@ -123,7 +124,6 @@ public:
         if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
             return vertex_descriptor{new_vertex_id};
         else {
-            // ensure a properties object is created for the new vertex
             this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
             return vertex_descriptor{new_vertex_id, *this->_vertex_properties.back()};
         }
@@ -257,6 +257,12 @@ public:
 
     [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map() const {
         return this->_impl.degree_map();
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
+    requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
+    {
+        return views::deref(this->_vertex_properties);
     }
 
     // --- edge methods ---
@@ -514,7 +520,6 @@ private:
         this->_n_vertices--;
 
         // update vertex ids in edges
-        // TODO: add tests
         for (auto id : this->vertex_ids()) {
             for (auto& edge : this->_impl.adjacent_edges(id)) {
                 edge._vertices.first._id -= (edge._vertices.first._id > vertex_id);

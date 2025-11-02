@@ -7,8 +7,6 @@
 
 #include <doctest.h>
 
-#include <print>
-
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_alg_coloring");

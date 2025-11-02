@@ -37,7 +37,7 @@ public:
 
     name_property() = default;
 
-    name_property(std::string_view name) : _name(name) {}
+    name_property(const std::string_view name) : _name(name) {}
 
     name_property(const name_property&) = default;
     name_property(name_property&&) = default;
@@ -51,6 +51,11 @@ public:
     virtual ~name_property() = default;
 #endif
 
+    name_property& operator=(const std::string_view name) {
+        this->_name = name;
+        return *this;
+    }
+
     // clang-format off
     // gl_attr_force_inline misplacement
 
@@ -62,6 +67,14 @@ public:
 
     [[nodiscard]] bool operator==(const name_property&) const = default;
     [[nodiscard]] auto operator<=>(const name_property&) const = default;
+
+    [[nodiscard]] bool operator==(const std::string_view name) const {
+        return this->_name == name;
+    }
+
+    [[nodiscard]] auto operator<=>(const std::string_view name) const {
+        return this->_name <=> name;
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const name_property& property) {
         os << std::quoted(property._name);
