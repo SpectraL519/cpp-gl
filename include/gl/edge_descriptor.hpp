@@ -41,7 +41,7 @@ public:
         const vertex_type first, const vertex_type second, properties_type properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(std::move(first), std::move(second)), _properties(std::move(properties)) {}
+    : _vertices(std::move(first), std::move(second)), _properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
@@ -80,7 +80,7 @@ public:
             return this->_vertices.second;
 
         if (vertex_id == this->_vertices.second.id())
-            return this->_vertice.first;
+            return this->_vertices.first;
 
         throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
     }
@@ -107,7 +107,7 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const {
         return this->_properties;
     }
 
@@ -169,7 +169,7 @@ private:
     }
 
     types::homogeneous_pair<const vertex_type> _vertices;
-    [[no_unique_address]] properties_ref_type _properties;
+    [[no_unique_address]] mutable properties_type _properties{};
 };
 
 template <

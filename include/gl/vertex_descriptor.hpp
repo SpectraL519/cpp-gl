@@ -29,8 +29,6 @@ public:
     friend class graph;
 
     vertex_descriptor() = delete;
-    vertex_descriptor(const vertex_descriptor&) = delete;
-    vertex_descriptor& operator=(const vertex_descriptor&) = delete;
 
     // TODO: private
     explicit vertex_descriptor(const types::id_type id)
@@ -41,6 +39,9 @@ public:
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _id(id), _properties(properties) {}
+
+    vertex_descriptor(const vertex_descriptor&) = default;
+    vertex_descriptor& operator=(const vertex_descriptor&) = default;
 
     vertex_descriptor(vertex_descriptor&&) = default;
     vertex_descriptor& operator=(vertex_descriptor&&) = default;
