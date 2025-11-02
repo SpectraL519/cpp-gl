@@ -88,8 +88,9 @@ public:
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         return std::views::enumerate(this->_vertex_properties)
-             | std::views::transform([](types::id_type id, const auto& properties_ptr) {
-                   return vertex_descriptor{id, *properties_ptr};
+             | std::views::transform([](const auto& vertex_data) {
+                   const auto& [id, properties_ptr] = vertex_data;
+                   return vertex_descriptor{static_cast<types::id_type>(id), *properties_ptr};
                });
     }
 
@@ -115,14 +116,18 @@ public:
         return vertex_id < this->_n_vertices;
     }
 
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+        return this->has_vertex(vertex.id());
+    }
+
     vertex_type add_vertex() {
         this->_impl.add_vertex();
         const auto new_vertex_id = this->_n_vertices++;
 
         if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
-            return vertex_descriptor{new_vertex_id, *this->_vertex_properties.emplace_back()};
-        else
             return vertex_descriptor{new_vertex_id};
+        else
+            return vertex_descriptor{new_vertex_id, *this->_vertex_properties.emplace_back()};
     }
 
     vertex_type add_vertex(vertex_properties_type properties)
@@ -140,7 +145,7 @@ public:
     void add_vertices(const types::size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
-        if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
+        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>)
             this->_vertex_properties.resize(this->_n_vertices);
     }
 
@@ -153,17 +158,23 @@ public:
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
-        if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
-            this->_vertex_properties.append_range(properties_range);
+        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>) {
+            for (auto& properties : properties_range) {
+                this->_vertex_properties.emplace_back(
+                    std::make_unique<vertex_properties_type>(properties)
+                );
+            }
+        }
     }
 
     gl_attr_force_inline void remove_vertex(const types::size_type vertex_id) {
+        this->_verify_vertex_id(vertex_id);
         this->_remove_vertex_impl(vertex_id);
     }
 
     inline void remove_vertex(const vertex_type& vertex) {
         this->_verify_vertex(vertex);
-        this->_remove_vertex_impl(vertex);
+        this->_remove_vertex_impl(vertex.id());
     }
 
     template <type_traits::c_sized_range_of<types::id_type> IdRange>
@@ -197,7 +208,7 @@ public:
 
         // TODO: optimize
         for (const auto& vertex_ref : vertex_ref_set)
-            this->_remove_vertex_impl(vertex_ref.get());
+            this->_remove_vertex_impl(vertex_ref.get().id());
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const {
@@ -358,6 +369,9 @@ public:
     ) const {
         using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
 
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
+
         if constexpr (std::same_as<implementation_tag, impl::list_t>) {
             return this->_impl.get_edges(first_id, second_id);
         }
@@ -370,8 +384,6 @@ public:
     [[nodiscard]] std::vector<types::const_ref_wrap<edge_type>> get_edges(
         const vertex_type& first, const vertex_type& second
     ) const {
-        this->_verify_vertex(first);
-        this->_verify_vertex(second);
         return this->get_edges(first.id(), second.id());
     }
 
@@ -497,20 +509,21 @@ private:
 
     void _remove_vertex_impl(const types::id_type vertex_id) {
         this->_impl.remove_vertex(vertex_id);
-        if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
-            this->_vertex_properties.erase(
-                std::next(std::begin(this->_vertex_properties), vertex_id)
-            );
         this->_n_vertices--;
 
         // update vertex ids in edges
         // TODO: add tests
         for (auto id : this->vertex_ids()) {
             for (auto& edge : this->_impl.adjacent_edges(id)) {
-                edge->_vertices.first._id -= (edge->_vertices.first._id >= vertex_id);
-                edge->_vertices.second._id -= (edge->_vertices.second._id >= vertex_id);
+                edge._vertices.first._id -= (edge._vertices.first._id > vertex_id);
+                edge._vertices.second._id -= (edge._vertices.second._id > vertex_id);
             }
         }
+
+        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>)
+            this->_vertex_properties.erase(
+                std::next(std::begin(this->_vertex_properties), vertex_id)
+            );
     }
 
     // --- io methods ---

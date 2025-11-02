@@ -99,7 +99,7 @@ private:
         }
     }
 
-    types::id_type _id;
+    mutable types::id_type _id;
     [[no_unique_address]] properties_ref_type _properties;
 };
 

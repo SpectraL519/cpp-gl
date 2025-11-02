@@ -29,7 +29,7 @@ IC gl::types::size_type depth = 5ull;
 
 IC gl::types::size_type first_element_idx = zero;
 IC gl::types::size_type last_element_idx = n_elements - one_element;
-IC gl::types::size_type out_of_range_elemenet_idx = n_elements;
+IC gl::types::size_type out_of_range_element_idx = n_elements;
 
 IC gl::types::id_type vertex_id_1 = first_element_idx;
 IC gl::types::id_type vertex_id_2 = vertex_id_1 + one_element;
