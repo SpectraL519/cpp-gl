@@ -53,7 +53,7 @@ public:
     : _vertex_properties(), _impl(n_vertices) {
         this->_vertices.reserve(n_vertices);
         for (auto id : std::views::iota(constants::initial_id, n_vertices))
-            this->_vertices.emplace_back(vertex_id, this->_vertex_properties);
+            this->_vertices.emplace_back(id, this->_vertex_properties);
     }
 
     graph(const types::size_type n_vertices)
@@ -63,7 +63,7 @@ public:
         this->_vertex_properties.reserve(n_vertices);
         for (auto [id, properties] : std::views::enumerate(this->_vertex_properties))
             this->_vertices.emplace_back(
-                vertex_id,
+                id,
                 *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
             );
     }
@@ -95,8 +95,8 @@ public:
     requires(type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         return std::views::enumerate(this->_vertex_properties)
-             | std::views::transform([](auto [id, properties]) {
-                   return vertex_descriptor{id, *properties};
+             | std::views::transform([](types::id_type id, const auto& properties_ptr) {
+                   return vertex_descriptor{id, *properties_ptr};
                });
     }
 
@@ -510,7 +510,6 @@ private:
     // --- vertex methods ---
 
     void _remove_vertex_impl(const types::id_type vertex_id) {
-        const auto vertex_id = vertex.id();
         this->_impl.remove_vertex(vertex_id);
         if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
             this->_vertex_properties.erase(

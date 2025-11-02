@@ -107,7 +107,7 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() mutable {
+    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
         return this->_properties;
     }
 
