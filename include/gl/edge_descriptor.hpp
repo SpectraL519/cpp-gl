@@ -89,18 +89,32 @@ public:
         return this->incident_vertex(vertex.id());
     }
 
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id) const {
+        return vertex_id == this->_vertices.first.id() or vertex_id == this->_vertices.second.id();
+    }
+
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {
-        return vertex == this->_vertices.first or vertex == this->_vertices.second;
+        return this->is_incident_with(vertex.id());
+    }
+
+    // true if the given vertex is the `source` of the edge
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id) const {
+        return directional_tag::is_incident_from(*this, vertex_id);
     }
 
     // true if the given vertex is the `source` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_type& vertex) const {
-        return directional_tag::is_incident_from(*this, vertex);
+        return this->is_incident_from(vertex.id());
+    }
+
+    // true if the given vertex is the `target` vertex of the edge
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id) const {
+        return directional_tag::is_incident_to(*this, vertex_id);
     }
 
     // true if the given vertex is the `target` vertex of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
-        return directional_tag::is_incident_to(*this, vertex);
+        return this->is_incident_to(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_loop() const {

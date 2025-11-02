@@ -90,8 +90,8 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized_impl::remove_vertex(*this, vertex);
+    gl_attr_force_inline void remove_vertex(const types::id_type& vertex_id) {
+        specialized_impl::remove_vertex(*this, vertex_id);
     }
 
     // --- edge methods ---
@@ -113,44 +113,30 @@ public:
 
     [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
         const {
-        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
-            return false;
-
         const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find_if(
                    adjacent_edges,
                    [first_id, second_id](const auto& edge) {
-                       return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
+                       return specialized_impl::is_edge_incident_with(edge, second_id, first_id);
                    }
                )
             != adjacent_edges.end();
     }
 
-    [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        const auto first_id = edge.first_id();
-        if (not (
-                this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(edge.second_id())
-            ))
-            return false;
-
+    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         // find the edge by address
-        const auto& adjacent_edges = this->_list[first_id];
-        return std::ranges::find(
-                   adjacent_edges, &edge, typename specialized_impl::address_projection{}
-               )
-            != adjacent_edges.end();
+        return std::ranges::contains(
+            this->_list[edge.first().id()], &edge, typename specialized_impl::address_projection{}
+        );
     }
 
     [[nodiscard]] types::optional_ref<const edge_type> get_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
-            return std::nullopt;
-
         const auto& adjacent_edges = this->_list[first_id];
         const auto it =
             std::ranges::find_if(adjacent_edges, [first_id, second_id](const auto& edge) {
-                return specialized_impl::is_edge_incident_to(edge, second_id, first_id);
+                return specialized_impl::is_edge_incident_with(edge, second_id, first_id);
             });
 
         if (it == adjacent_edges.cend())
@@ -161,17 +147,13 @@ public:
     [[nodiscard]] auto get_edges(const types::id_type first_id, const types::id_type second_id)
         const {
         using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
-
-        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
-            return edge_ref_set{};
-
         const auto& adjacent_edges = this->_list[first_id];
 
         edge_ref_set matching_edges{};
         matching_edges.reserve(adjacent_edges.size());
 
         for (const auto& edge : adjacent_edges)
-            if (specialized_impl::is_edge_incident_to(edge, second_id, first_id))
+            if (specialized_impl::is_edge_incident_with(edge, second_id, first_id))
                 matching_edges.emplace_back(*edge);
 
         matching_edges.shrink_to_fit();
@@ -192,11 +174,6 @@ public:
 private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
-
-    [[nodiscard]] gl_attr_force_inline bool _is_valid_vertex_id(const types::id_type vertex_id
-    ) const {
-        return vertex_id < this->_list.size();
-    }
 
     list_type _list{};
     types::size_type _n_unique_edges{constants::default_size};
