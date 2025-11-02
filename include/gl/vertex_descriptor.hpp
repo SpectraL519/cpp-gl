@@ -82,10 +82,10 @@ private:
             }
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[id: " << this->_id << " | properties: " << this->properties << "]";
+                os << "[id: " << this->_id << " | properties: " << this->_properties << "]";
             }
             else {
-                os << "[" << this->_id << " | " << this->properties << "]";
+                os << "[" << this->_id << " | " << this->_properties << "]";
             }
         }
     }

@@ -168,11 +168,11 @@ private:
             if (io::is_option_set(os, io::graph_option::verbose)) {
                 os << "[first: " << vertex_writer(this->first(), within_context)
                    << ", second: " << vertex_writer(this->second(), within_context)
-                   << " | properties: " << this->properties << "]";
+                   << " | properties: " << this->_properties << "]";
             }
             else {
                 os << "[" << vertex_writer(this->first(), within_context) << ", "
-                   << vertex_writer(this->second(), within_context) << " | " << this->properties
+                   << vertex_writer(this->second(), within_context) << " | " << this->_properties
                    << "]";
             }
         }

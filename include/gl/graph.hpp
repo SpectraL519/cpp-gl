@@ -54,10 +54,10 @@ public:
 
     graph(const types::size_type n_vertices)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
-    : _impl(n_vertices) {
+    : _n_vertices(n_vertices), _impl(n_vertices) {
         this->_vertex_properties.reserve(n_vertices);
         for (auto id : this->vertex_ids())
-            this->_vertex_properties.emplace_back();
+            this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
     }
 
     graph(graph&&) = default;
@@ -579,7 +579,7 @@ private:
         if constexpr (type_traits::c_writable<typename vertex_type::properties_type>)
             if (with_vertex_properties)
                 for (const auto& vertex : this->vertices())
-                    os << vertex.properties << '\n';
+                    os << vertex._properties << '\n';
 
         if constexpr (type_traits::c_writable<typename edge_type::properties_type>) {
             if (with_edge_properties) {
@@ -588,7 +588,7 @@ private:
                         if (edge.first().id() != vertex_id)
                             continue; // vertex is not the source
                         os << edge.first().id() << ' ' << edge.second().id() << ' '
-                           << edge.properties << '\n';
+                           << edge._properties << '\n';
                     }
                 };
 
@@ -678,8 +678,7 @@ private:
     }
 
     types::size_type _n_vertices = 0uz;
-    [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
-    // TODO: edge properties map
+    [[no_unique_address]] vertex_properties_map_type _vertex_properties{}; // add conditional getter
 
     implementation_type _impl{};
 };
