@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <format>
+#include <ranges>
 #include <unordered_set>
 #include <vector>
 
