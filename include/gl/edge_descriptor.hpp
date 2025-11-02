@@ -20,6 +20,10 @@ public:
     using vertex_type = VertexType;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
+    using properties_ref_type = std::conditional_t<
+        type_traits::is_default_properties_type_v<properties_type>,
+        types::empty_properties,
+        properties_type&>;
 
     friend directional_tag;
 
@@ -30,14 +34,14 @@ public:
     edge_descriptor(const edge_descriptor&) = delete;
     edge_descriptor& operator=(const edge_descriptor&) = delete;
 
-    explicit edge_descriptor(const vertex_type& first, const vertex_type& second)
-    : _vertices(first, second) {}
+    explicit edge_descriptor(const vertex_type first, const vertex_type& second)
+    : _vertices(std::move(first), std::move(second)) {}
 
     explicit edge_descriptor(
-        const vertex_type& first, const vertex_type& second, const properties_type& properties
+        const vertex_type first, const vertex_type second, properties_type properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(first, second), properties(properties) {}
+    : _vertices(std::move(first), std::move(second)), _properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
@@ -56,8 +60,12 @@ public:
     // gl_attr_force_inline misplacement
 
     [[nodiscard]] gl_attr_force_inline
-    const types::homogeneous_pair<const vertex_type&>& incident_vertices() const {
+    const types::homogeneous_pair<const vertex_type>& incident_vertices() const {
         return this->_vertices;
+    }
+
+    [[nodiscard]] gl_attr_force_inline const types::homogeneous_pair<types::id_type> incident_vertex_ids() const {
+        return std::make_pair(this->_vertices.first.id(), this->_vertices.second.id());
     }
 
     [[nodiscard]] gl_attr_force_inline const vertex_type& first() const {
@@ -70,61 +78,56 @@ public:
 
     // clang-format on
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertex_ids(
-    ) const {
-        return std::make_pair(this->_vertices.first.id(), this->_vertices.second.id());
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::id_type first_id() const {
-        return this->first().id();
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::id_type second_id() const {
-        return this->second().id();
-    }
-
     // returns the `other` vertex or throws error if the given vertex is not incident with the edge
-    [[nodiscard]] const vertex_type& incident_vertex(const vertex_type& vertex) const {
-        if (&vertex == &this->_vertices.first)
+    [[nodiscard]] const vertex_type incident_vertex(const types::id_type vertex_id) const {
+        if (vertex_id == this->_vertices.first.id())
             return this->_vertices.second;
 
-        if (&vertex == &this->_vertices.second)
+        if (vertex_id == this->_vertices.second.id())
             return this->_vertices.first;
-
-        throw std::invalid_argument(std::format(
-            "Got invalid vertex [id = {} | addr = {}]", vertex.id(), io::format(&vertex)
-        ));
-    }
-
-    [[nodiscard]] types::id_type incident_vertex_id(const types::id_type vertex_id) const {
-        if (vertex_id == this->first_id())
-            return this->second_id();
-
-        if (vertex_id == this->second_id())
-            return this->first_id();
 
         throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
     }
 
+    [[nodiscard]] const vertex_type incident_vertex(const vertex_type& vertex) const {
+        return this->incident_vertex(vertex.id());
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id) const {
+        return vertex_id == this->_vertices.first.id() or vertex_id == this->_vertices.second.id();
+    }
+
     [[nodiscard]] gl_attr_force_inline bool is_incident_with(const vertex_type& vertex) const {
-        return &vertex == &this->_vertices.first or &vertex == &this->_vertices.second;
+        return this->is_incident_with(vertex.id());
+    }
+
+    // true if the given vertex is the `source` of the edge
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id) const {
+        return directional_tag::is_incident_from(*this, vertex_id);
     }
 
     // true if the given vertex is the `source` of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_from(const vertex_type& vertex) const {
-        return directional_tag::is_incident_from(*this, vertex);
+        return this->is_incident_from(vertex.id());
+    }
+
+    // true if the given vertex is the `target` vertex of the edge
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id) const {
+        return directional_tag::is_incident_to(*this, vertex_id);
     }
 
     // true if the given vertex is the `target` vertex of the edge
     [[nodiscard]] gl_attr_force_inline bool is_incident_to(const vertex_type& vertex) const {
-        return directional_tag::is_incident_to(*this, vertex);
+        return this->is_incident_to(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_loop() const {
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[no_unique_address]] mutable properties_type properties{};
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const {
+        return this->_properties;
+    }
 
     friend inline std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
         edge._write(os);
@@ -164,11 +167,11 @@ private:
             if (io::is_option_set(os, io::graph_option::verbose)) {
                 os << "[first: " << vertex_writer(this->first(), within_context)
                    << ", second: " << vertex_writer(this->second(), within_context)
-                   << " | properties: " << this->properties << "]";
+                   << " | properties: " << this->_properties << "]";
             }
             else {
                 os << "[" << vertex_writer(this->first(), within_context) << ", "
-                   << vertex_writer(this->second(), within_context) << " | " << this->properties
+                   << vertex_writer(this->second(), within_context) << " | " << this->_properties
                    << "]";
             }
         }
@@ -183,7 +186,8 @@ private:
                << vertex_writer(this->second(), within_context) << "]";
     }
 
-    types::homogeneous_pair<const vertex_type&> _vertices;
+    types::homogeneous_pair<const vertex_type> _vertices;
+    [[no_unique_address]] mutable properties_type _properties{};
 };
 
 template <

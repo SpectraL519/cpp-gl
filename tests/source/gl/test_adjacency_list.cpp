@@ -134,16 +134,6 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_directed_adjacency_list, "has_edge(id, id) should return false if either id is invalid"
-) {
-    CHECK_FALSE(sut.has_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
-    CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
-    CHECK_FALSE(
-        sut.has_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-    );
-}
-
-TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
     "with the given ids in the specified direction"
@@ -158,7 +148,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
-    "has_edge(edge_ptr) should return true if the given edge is present in the graph"
+    "has_edge(edge) should return true if the given edge is present in the graph"
 ) {
     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     CHECK(sut.has_edge(valid_edge));
@@ -173,20 +163,6 @@ TEST_CASE_FIXTURE(
         vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
     };
     CHECK_FALSE(sut.has_edge(not_present_edge));
-
-    const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
-    CHECK_FALSE(sut.has_edge(edge_type{out_of_range_vertex, vertices[constants::vertex_id_2]}));
-    CHECK_FALSE(sut.has_edge(edge_type{vertices[constants::vertex_id_1], out_of_range_vertex}));
-}
-
-TEST_CASE_FIXTURE(
-    test_directed_adjacency_list, "get_edge(id, id) should return nullopt if either id is invalid"
-) {
-    CHECK_FALSE(sut.get_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
-    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
-    CHECK_FALSE(
-        sut.get_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-    );
 }
 
 TEST_CASE_FIXTURE(
@@ -209,16 +185,6 @@ TEST_CASE_FIXTURE(
     CHECK_NE(&edge_opt->get(), &edge_2);
 
     CHECK_FALSE(sut.get_edge(constants::vertex_id_2, constants::vertex_id_2));
-}
-
-TEST_CASE_FIXTURE(
-    test_directed_adjacency_list,
-    "get_edges(id, id) should return an empty view if either id is invalid"
-) {
-    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
-    CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
-    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-              .empty());
 }
 
 TEST_CASE_FIXTURE(
@@ -251,19 +217,6 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
-    const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
-
-    CHECK_THROWS_AS(
-        sut.remove_edge(edge_type{out_of_range_vertex, vertices[constants::vertex_id_2]}),
-        std::out_of_range
-    );
-
-    // the edge with an invalid vertex will not be found in the list
-    CHECK_THROWS_AS(
-        sut.remove_edge(edge_type{vertices[constants::vertex_id_1], out_of_range_vertex}),
-        std::invalid_argument
-    );
-
     // not existing edge between valid vertices
     CHECK_THROWS_AS(
         sut.remove_edge(
@@ -402,8 +355,8 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    const auto& removed_vertex = vertices[constants::first_element_idx];
-    sut.remove_vertex(removed_vertex);
+    const auto removed_vertex_id = constants::first_element_idx;
+    sut.remove_vertex(removed_vertex_id);
 
     constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
     constexpr auto n_incident_edges_after_remove =
@@ -416,8 +369,8 @@ TEST_CASE_FIXTURE(
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
         const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
-        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
-            return edge.is_incident_with(removed_vertex);
+        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [removed_vertex_id](const auto& edge) {
+            return edge.is_incident_with(removed_vertex_id);
         }));
     }
 }
@@ -509,16 +462,6 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_directed_adjacency_list, "has_edge(id, id) should return false if either id is invalid"
-) {
-    CHECK_FALSE(sut.has_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
-    CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
-    CHECK_FALSE(
-        sut.has_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-    );
-}
-
-TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
     "with the given ids in any direction"
@@ -548,20 +491,6 @@ TEST_CASE_FIXTURE(
         vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
     };
     CHECK_FALSE(sut.has_edge(not_present_edge));
-
-    const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
-    CHECK_FALSE(sut.has_edge(edge_type{out_of_range_vertex, vertices[constants::vertex_id_2]}));
-    CHECK_FALSE(sut.has_edge(edge_type{vertices[constants::vertex_id_1], out_of_range_vertex}));
-}
-
-TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list, "get_edge(id, id) should return nullopt if either id is invalid"
-) {
-    CHECK_FALSE(sut.get_edge(constants::out_of_range_elemenet_idx, constants::vertex_id_2));
-    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::out_of_range_elemenet_idx));
-    CHECK_FALSE(
-        sut.get_edge(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-    );
 }
 
 TEST_CASE_FIXTURE(
@@ -587,16 +516,6 @@ TEST_CASE_FIXTURE(
     REQUIRE(edge_opt_2.has_value());
     CHECK_EQ(&edge_opt_2->get(), &edge_1);
     CHECK_NE(&edge_opt_2->get(), &edge_2);
-}
-
-TEST_CASE_FIXTURE(
-    test_undirected_adjacency_list,
-    "get_edges(id, id) should return an empty view if either id is invalid"
-) {
-    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::vertex_id_2).empty());
-    CHECK(sut.get_edges(constants::vertex_id_1, constants::out_of_range_elemenet_idx).empty());
-    CHECK(sut.get_edges(constants::out_of_range_elemenet_idx, constants::out_of_range_elemenet_idx)
-              .empty());
 }
 
 TEST_CASE_FIXTURE(
@@ -637,17 +556,6 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_undirected_adjacency_list, "remove_edge should throw when an edge is invalid"
 ) {
-    const vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
-
-    CHECK_THROWS_AS(
-        sut.remove_edge(edge_type{out_of_range_vertex, vertices[constants::vertex_id_2]}),
-        std::out_of_range
-    );
-    CHECK_THROWS_AS(
-        sut.remove_edge(edge_type{vertices[constants::vertex_id_1], out_of_range_vertex}),
-        std::out_of_range
-    );
-
     // not existing edge between valid vertices
     CHECK_THROWS_AS(
         sut.remove_edge(
@@ -669,7 +577,7 @@ TEST_CASE_FIXTURE(
 
     const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
-    const auto second_id = edge_to_remove.second_id();
+    const auto second_id = edge_to_remove.second().id();
     REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
@@ -771,8 +679,8 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    const auto& removed_vertex = vertices[constants::first_element_idx];
-    sut.remove_vertex(removed_vertex);
+    const auto removed_vertex_id = constants::first_element_idx;
+    sut.remove_vertex(removed_vertex_id);
 
     constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
     constexpr auto n_incident_edges_after_remove =
@@ -785,8 +693,8 @@ TEST_CASE_FIXTURE(
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
         const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
-        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
-            return edge.is_incident_with(removed_vertex);
+        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [removed_vertex_id](const auto& edge) {
+            return edge.is_incident_with(removed_vertex_id);
         }));
     }
 }

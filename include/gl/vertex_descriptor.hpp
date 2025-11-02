@@ -20,19 +20,28 @@ class vertex_descriptor final {
 public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
     using properties_type = Properties;
+    using properties_ref_type = std::conditional_t<
+        type_traits::is_default_properties_type_v<properties_type>,
+        types::empty_properties,
+        properties_type&>;
 
     template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
     friend class graph;
 
     vertex_descriptor() = delete;
-    vertex_descriptor(const vertex_descriptor&) = delete;
-    vertex_descriptor& operator=(const vertex_descriptor&) = delete;
 
-    explicit vertex_descriptor(const types::id_type id) : _id(id) {}
+    // TODO: private
+    explicit vertex_descriptor(const types::id_type id)
+    requires(type_traits::is_default_properties_type_v<properties_type>)
+    : _id(id) {}
 
-    explicit vertex_descriptor(const types::id_type id, const properties_type& properties)
+    // TODO: private
+    explicit vertex_descriptor(const types::id_type id, properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _id(id), properties(properties) {}
+    : _id(id), _properties(properties) {}
+
+    vertex_descriptor(const vertex_descriptor&) = default;
+    vertex_descriptor& operator=(const vertex_descriptor&) = default;
 
     vertex_descriptor(vertex_descriptor&&) = default;
     vertex_descriptor& operator=(vertex_descriptor&&) = default;
@@ -51,7 +60,9 @@ public:
         return this->_id;
     }
 
-    [[no_unique_address]] mutable properties_type properties{};
+    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
+        return this->_properties;
+    }
 
     friend inline std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
         vertex._write(os);
@@ -71,10 +82,10 @@ private:
             }
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[id: " << this->_id << " | properties: " << this->properties << "]";
+                os << "[id: " << this->_id << " | properties: " << this->_properties << "]";
             }
             else {
-                os << "[" << this->_id << " | " << this->properties << "]";
+                os << "[" << this->_id << " | " << this->_properties << "]";
             }
         }
     }
@@ -88,7 +99,8 @@ private:
         }
     }
 
-    types::id_type _id;
+    mutable types::id_type _id;
+    [[no_unique_address]] properties_ref_type _properties;
 };
 
 template <type_traits::c_properties Properties = types::empty_properties>

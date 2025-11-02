@@ -8,6 +8,8 @@
 
 #include <doctest.h>
 
+#include <print>
+
 namespace fs = std::filesystem;
 
 namespace gl_testing {
@@ -44,9 +46,9 @@ struct test_graph_file_io {
         // prepare vertex and edge properties
         std::size_t v_idx = 0, e_idx = 0;
         for (const auto& vertex : sut_out.vertices()) {
-            vertex.properties = {std::format("vertex_{}", v_idx++)};
+            vertex.properties() = std::format("vertex_{}", v_idx++);
             for (const auto& edge : sut_out.adjacent_edges(vertex))
-                edge.properties = {std::format("edge_{}", e_idx++)};
+                edge.properties() = std::format("edge_{}", e_idx++);
         }
     }
 

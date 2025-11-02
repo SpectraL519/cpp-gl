@@ -23,12 +23,12 @@ template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
     typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
 ) {
     // get the edge and validate the address
-    auto& matrix_element = matrix.at(edge->first_id()).at(edge->second_id());
+    auto& matrix_element = matrix.at(edge->first().id()).at(edge->second().id());
     if (edge != matrix_element.get())
         throw std::invalid_argument(std::format(
             "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-            edge->first_id(),
-            edge->second_id(),
+            edge->first().id(),
+            edge->second().id(),
             io::format(edge)
         ));
 
@@ -136,7 +136,7 @@ struct directed_adjacency_matrix {
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         detail::check_edge_override<impl_type>(self, edge);
 
-        auto& matrix_element = self._matrix[edge->first_id()][edge->second_id()];
+        auto& matrix_element = self._matrix[edge->first().id()][edge->second().id()];
         matrix_element = std::move(edge);
         ++self._n_unique_edges;
 
@@ -152,7 +152,7 @@ struct directed_adjacency_matrix {
 
         auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges)
-            matrix_row_source[edge->second_id()] = std::move(edge);
+            matrix_row_source[edge->second().id()] = std::move(edge);
 
         self._n_unique_edges += new_edges.size();
     }
@@ -231,8 +231,8 @@ struct undirected_adjacency_matrix {
     static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
         detail::check_edge_override<impl_type>(self, edge);
 
-        const auto first_id = edge->first_id();
-        const auto second_id = edge->second_id();
+        const auto first_id = edge->first().id();
+        const auto second_id = edge->second().id();
 
         if (not edge->is_loop())
             self._matrix[second_id][first_id] = edge;
@@ -253,8 +253,8 @@ struct undirected_adjacency_matrix {
         auto& matrix_row_source = self._matrix[source_id];
         for (auto& edge : new_edges) {
             if (not edge->is_loop())
-                self._matrix[edge->second_id()][source_id] = edge;
-            matrix_row_source[edge->second_id()] = std::move(edge);
+                self._matrix[edge->second().id()][source_id] = edge;
+            matrix_row_source[edge->second().id()] = std::move(edge);
         }
 
         self._n_unique_edges += new_edges.size();
@@ -265,8 +265,8 @@ struct undirected_adjacency_matrix {
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
         }
         else {
-            const auto first_id = edge.first_id();
-            const auto second_id = edge.second_id();
+            const auto first_id = edge.first().id();
+            const auto second_id = edge.second().id();
 
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
             // if the edge was found in the first matrix cell,

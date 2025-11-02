@@ -12,8 +12,7 @@ TEST_SUITE_BEGIN("test_graph_incidence");
 struct test_graph_incidence {
     using vertex_type = gl::vertex_descriptor<>;
 
-    vertex_type invalid_vertex{constants::vertex_id_1};
-    vertex_type out_of_range_vertex{constants::out_of_range_elemenet_idx};
+    vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
 };
 
 TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_template) {
@@ -27,13 +26,13 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
             func::discard_result(
-                sut.are_incident(constants::out_of_range_elemenet_idx, constants::vertex_id_2)
+                sut.are_incident(constants::out_of_range_element_idx, constants::vertex_id_2)
             ),
             std::out_of_range
         );
         CHECK_THROWS_AS(
             func::discard_result(
-                sut.are_incident(constants::vertex_id_1, constants::out_of_range_elemenet_idx)
+                sut.are_incident(constants::vertex_id_1, constants::out_of_range_element_idx)
             ),
             std::out_of_range
         );
@@ -73,19 +72,6 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
             func::discard_result(sut.are_incident(vd_1, fixture.out_of_range_vertex)),
             std::out_of_range
         );
-
-        CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, fixture.invalid_vertex)),
-            std::invalid_argument
-        );
-        CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, vd_2)),
-            std::invalid_argument
-        );
-        CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, fixture.invalid_vertex)),
-            std::invalid_argument
-        );
     }
 
     SUBCASE("are_incident(vertex, vertex) should return true if there is an edge connecting the "
@@ -109,21 +95,21 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto& edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)),
-            std::invalid_argument
+            func::discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
+            std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.invalid_vertex, edge)),
-            std::invalid_argument
+            func::discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
+            std::out_of_range
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)),
-            std::invalid_argument
+            func::discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
+            std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.invalid_vertex)),
-            std::invalid_argument
+            func::discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
+            std::out_of_range
         );
     }
 
