@@ -56,7 +56,7 @@ template <type_traits::c_graph GraphType>
     const typename GraphType::edge_type& edge
 ) {
     if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
-        return edge.properties.weight;
+        return edge.properties().weight;
     else
         return static_cast<types::default_vertex_distance_type>(1ll);
 }

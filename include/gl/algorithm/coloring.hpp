@@ -28,7 +28,7 @@ template <
     coloring_opt.emplace(graph.n_vertices(), bin_color_value::unset);
     auto& coloring = coloring_opt.value();
 
-    for (const auto& root_vertex : graph.vertices()) {
+    for (const auto root_vertex : graph.vertices()) {
         const auto root_id = root_vertex.id();
         if (coloring[root_id].is_set())
             continue;
@@ -80,14 +80,14 @@ template <
     type_traits::c_sized_range_of<types::binary_color> ColorRange>
 requires(type_traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
+    using color_type = typename GraphType::vertex_properties_type::color_type;
+
     if (color_range.size() != graph.n_vertices())
         return false;
 
-    using color_type = typename GraphType::vertex_properties_type::color_type;
-    auto color_it = std::ranges::begin(color_range);
-
-    for (const auto& vertex : graph.vertices())
-        vertex.properties.color = color_type{*color_it++};
+    auto vertices = graph.vertices(); // store the view to extend its lifetime
+    for (const auto& [vertex, color] : std::views::zip(vertices, color_range))
+        vertex.properties().color = color;
 
     return true;
 }

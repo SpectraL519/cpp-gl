@@ -31,7 +31,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.get_edge(constants::vertex_id_1, constants::vertex_id_2)
             .value()
             .get()
-            .properties.weight = -static_cast<weight_type>(constants::n_elements_alg);
+            .properties()
+            .weight = -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
             func::discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::vertex_id_1)
@@ -59,7 +60,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
             for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
                  id++) {
-                sut.get_edge(constants::vertex_id_1, id).value().get().properties.weight =
+                sut.get_edge(constants::vertex_id_1, id).value().get().properties().weight =
                     edge_weight;
                 expected_distances.push_back(edge_weight);
             }
