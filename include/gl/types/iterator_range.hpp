@@ -46,9 +46,7 @@ class iterator_range
 {
 public:
     using iterator = Iterator;
-#if __cplusplus >= 202302L
     using const_iterator = std::const_iterator<Iterator>;
-#endif
     using distance_type = std::ptrdiff_t;
     using value_type = std::remove_reference_t<typename iterator::value_type>;
 

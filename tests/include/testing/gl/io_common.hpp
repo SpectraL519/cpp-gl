@@ -14,14 +14,14 @@ void verify_graph_structure(const GraphType& actual, const GraphType& expected) 
     // verify that the edges of the in graph are equivalent to the edges of the out graph
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {
-            return expected.has_edge(edge.first_id(), edge.second_id());
+            return expected.has_edge(edge.first().id(), edge.second().id());
         });
     }));
 }
 
 template <gl::type_traits::c_graph GraphType>
 void verify_vertex_properties(const GraphType& actual, const GraphType& expected) {
-    const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
+    const auto properties_proj = [](const auto& item) { return item.properties(); };
 
     CHECK(std::ranges::equal(
         actual.vertices(),
@@ -34,13 +34,14 @@ void verify_vertex_properties(const GraphType& actual, const GraphType& expected
 
 template <gl::type_traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
-    const auto properties_proj = [](const auto& vertex) { return vertex.properties; };
-
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {
             // get edge returns optional<ref_wrap>
-            return edge.properties
-                == expected.get_edge(edge.first_id(), edge.second_id()).value().get().properties;
+            return edge.properties()
+                == expected.get_edge(edge.first().id(), edge.second().id())
+                       .value()
+                       .get()
+                       .properties();
         });
     }));
 }

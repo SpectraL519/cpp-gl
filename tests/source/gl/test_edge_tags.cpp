@@ -15,7 +15,7 @@ struct test_edge_tags {
     vertex_type vd_1{constants::vertex_id_1};
     vertex_type vd_2{constants::vertex_id_2};
 
-    vertex_type invalid_vd{constants::vertex_id_1};
+    vertex_type invalid_vd{constants::invalid_id};
 };
 
 struct test_directed_edge_tag : test_edge_tags {
@@ -55,23 +55,23 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(property_edge->first(), vd_1);
     CHECK_EQ(property_edge->second(), vd_2);
-    CHECK_EQ(property_edge->properties, used);
+    CHECK_EQ(property_edge->properties(), used);
 }
 
 TEST_CASE_FIXTURE(
     test_directed_edge_tag, "is_incident_from should return true only for the first vertex"
 ) {
-    CHECK(sut_type::is_incident_from(*edge, vd_1));
-    CHECK_FALSE(sut_type::is_incident_from(*edge, vd_2));
-    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd));
+    CHECK(sut_type::is_incident_from(*edge, vd_1.id()));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, vd_2.id()));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd.id()));
 }
 
 TEST_CASE_FIXTURE(
     test_directed_edge_tag, "is_incident_to should return true only for the second vertex"
 ) {
-    CHECK(sut_type::is_incident_to(*edge, vd_2));
-    CHECK_FALSE(sut_type::is_incident_to(*edge, vd_1));
-    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd));
+    CHECK(sut_type::is_incident_to(*edge, vd_2.id()));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, vd_1.id()));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd.id()));
 }
 
 struct test_undirected_edge_tag : test_edge_tags {
@@ -111,25 +111,25 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(property_edge->first(), vd_1);
     CHECK_EQ(property_edge->second(), vd_2);
-    CHECK_EQ(property_edge->properties, used);
+    CHECK_EQ(property_edge->properties(), used);
 }
 
 TEST_CASE_FIXTURE(
     test_undirected_edge_tag, "is_incident_from should return true for both vertices"
 ) {
-    CHECK(sut_type::is_incident_from(*edge, vd_1));
-    CHECK(sut_type::is_incident_from(*edge, vd_2));
+    CHECK(sut_type::is_incident_from(*edge, vd_1.id()));
+    CHECK(sut_type::is_incident_from(*edge, vd_2.id()));
 
-    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd));
-    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd.id()));
+    CHECK_FALSE(sut_type::is_incident_from(*edge, invalid_vd.id()));
 }
 
 TEST_CASE_FIXTURE(test_undirected_edge_tag, "is_incident_to should return true for both vertices") {
-    CHECK(sut_type::is_incident_to(*edge, vd_1));
-    CHECK(sut_type::is_incident_to(*edge, vd_2));
+    CHECK(sut_type::is_incident_to(*edge, vd_1.id()));
+    CHECK(sut_type::is_incident_to(*edge, vd_2.id()));
 
-    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd));
-    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd.id()));
+    CHECK_FALSE(sut_type::is_incident_to(*edge, invalid_vd.id()));
 }
 
 TEST_SUITE_END(); // untest_edge_tags

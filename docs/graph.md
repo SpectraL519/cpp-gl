@@ -138,14 +138,14 @@ Based on the specified traits, the `graph` class defines the following types:
 ### Vertex Operations
 
 - **`graph.vertices() const`**:
-  - *Description*: Returns an iterator range over all vertices in the graph.
+  - *Description*: Returns an view over all vertices in the graph.
   - *Returned value*: $V$
-  - *Return type*: `types::iterator_range<vertex_iterator_type>`
+  - *Return type*: A random access *view* with values of type `vertex_type`.
 
 - **`graph.vertex_ids() const`**:
   - *Description*: Returns a range of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
   - *Returned value*: $(v_{id} : v \in V)$
-  - *Return type*: `std::ranges::iota_view<types::id_type, types::id_type>`
+  - *Return type*: A random access *view* with values of type `types::id_type` : `std::ranges::iota_view`.
 
 - **`graph.get_vertex(vertex_id) const`**:
   - *Description*: Retrieves the vertex object associated with the given vertex ID.
@@ -295,6 +295,10 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.degree_map() const`**:
   - *Description*: Returns a vector containing the degrees of the corresponding vertices (degree at index `i` corresponds to the vertex with an ID equal `i`).
   - *Return type*: `std::vector<types::size_type>`
+
+- **`graph.vertex_properties_map() const`**:
+  - *Description*: Returns a *map-like view* the properties of the corresponding vertices (property at index `i` corresponds to the vertex with an ID equal `i`).
+  - *Return type*: A random access view with values of type `vertex_properties_type&`
 
 <br />
 

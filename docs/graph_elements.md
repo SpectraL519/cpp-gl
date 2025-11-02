@@ -14,17 +14,17 @@ This section provides an overview of the `vertex_descriptor` and `edge_descripto
 
 ## The vertex class
 
-The `vertex_descriptor` class represents the identity of a vertex in the graph, optionally carrying additional properties as specified by the user. This class is designed for use within the `Graph` class and serves as a lightweight identifier for vertices, providing an interface for accessing vertex properties, comparing vertex descriptors, and outputting vertex information.
+The `vertex_descriptor` class represents the vertex in the graph, optionally carrying additional properties as specified by the user. This class is designed for use within the `graph` class and serves as a lightweight identifier for vertices, providing an interface for accessing vertex properties, comparing vertex descriptors, and outputting vertex information.
 
 By default, the `vertex_descriptor` class does not carry any properties. However, properties can be associated with each vertex by passing a custom type as the template parameter `Properties`, making it highly flexible and customizable for various graph use cases.
 
-### Template parameters
+### Template Parameters
 
 - **`Properties`**: A type that defines the properties associated with each vertex.
   - *Default value*:  `types::empty_properties`
   - *Constraints*: must satisfy the **`type_traits::c_properties`** concept
 
-### Member types
+### Member Types
 
 - **`type`**: Alias for the `vertex_descriptor` itself.
 - **`properties_type`**: Type of the vertex properties as defined by the `Properties` template parameter.
@@ -37,10 +37,10 @@ By default, the `vertex_descriptor` class does not carry any properties. However
   - Constructs a `vertex_descriptor` with a unique ID and specified properties.
   - *Constraints*: the `properties_type` must be non-default.
 - **Move constructor and assignment operator**: *default*
+- **Copy constructor and assignment operator**: *default*
 
 - **Deleted**:
   - **Default constructor**: prevent creating multiple vertices with the default ID within a graph.
-  - **Copy constructor and assignment operator**: prevent copying of `vertex_descriptor` instances, as they are meant to be identificators.
 
 ### Desctructor
 
@@ -51,6 +51,10 @@ The destructor is *defaulted*, allowing proper cleanup of the `vertex_descriptor
 - **`id() const`**:
   - *Description*: Returns the unique identifier of the vertex.
   - *Return type*: `types::id_type`
+
+- **`properties()`**:
+  - *Description*: Returns a mutable reference to the properties associated with the vertex.
+  - *Return type*: `properties_type&`
 
 - **`operator==(const vertex_descriptor& other) const`**:
   - *Description*: Compares two `vertex_descriptor` objects for equality based on their vertex IDs.
@@ -63,12 +67,6 @@ The destructor is *defaulted*, allowing proper cleanup of the `vertex_descriptor
   - *Parameters*:
     - `other: const vertex_descriptor&` – the vertex descriptor to compare with.
   - *Return type*: `std::strong_ordering`
-
-### Member variables
-
-- **`properties`**:
-  - *Description*: A mutable member that stores the properties associated with the vertex.
-  - *Type*: Defined by the `Properties` template parameter.
 
 ### Additional utility
 
@@ -137,6 +135,11 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
   - *Returned value*: $(u, v)$
   - *Return type*: `types::homogeneous_pair<const vertex_type&>`
 
+- **`incident_vertex_ids() const`**:
+  - *Description*: Returns the unique IDs of the vertices connected by the edge.
+  - *Returned value*: $(u_{id}, v_{id})$
+  - *Return type*: `types::homogeneous_pair<types::id_type>`
+
 - **`first() const`**:
   - *Description*: Returns a reference to the first vertex of the edge.
   - *Returned value*: $u$
@@ -147,22 +150,7 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
   - *Returned value*: $v$
   - *Return type*: `const vertex_type&`
 
-- **`incident_vertex_ids() const`**:
-  - *Description*: Returns the unique IDs of the vertices connected by the edge.
-  - *Returned value*: $(u_{id}, v_{id})$
-  - *Return type*: `types::homogeneous_pair<types::id_type>`
-
-- **`first_id() const`**:
-  - *Description*: Returns the ID of the first vertex.
-  - *Returned value*: $u_{id}$
-  - *Return type*: `types::id_type`
-
-- **`second_id() const`**:
-  - *Description*: Returns the ID of the second vertex.
-  - *Returned value*: $v_{id}$
-  - *Return type*: `types::id_type`
-
-- **`incident_vertex(const vertex_type& vertex) const`**:
+- **`incident_vertex(vertex) const`**:
   - *Description*: Returns the vertex on the other end of the edge relative to the provided vertex. Throws an error if the provided vertex is not incident with the edge.
   - *Returned value*:
     - $v$ if $\text{vertex} = u$
@@ -172,24 +160,31 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
     - `vertex: const vertex_type&` – the vertex for which the opposite vertex is requested.
   - *Return type*: `const vertex_type&`
 
-- **`incident_vertex_id(const types::id_type vertex_id) const`**:
-  - *Description*: Returns the ID of the vertex on the other end of the edge relative to the provided vertex ID. Throws an error if the provided vertex ID is invalid.
+- **`incident_vertex(vertex_id) const`**:
+  - *Description*: Returns the vertex on the other end of the edge relative to the provided vertex ID. Throws an error if the provided vertex ID is invalid.
   - *Returned value*:
-    - $v_{id}$ if $\text{vertex-id} = u_{id}$
-    - $u_{id}$ if $\text{vertex-id} = v_{id}$
+    - $v$ if $\text{vertex-id} = u_{id}$
+    - $u$ if $\text{vertex-id} = v_{id}$
     - error otherwise
   - *Parameters*:
     - `vertex_id: const types::id_type` – the vertex ID for which the opposite vertex ID is requested.
   - *Return type*: `types::id_type`
 
-- **`is_incident_with(const vertex_type& vertex) const`**:
+- **`is_incident_with(vertex) const`**:
   - *Description*: Returns `true` if the provided vertex is connected to the edge.
   - *Returned value*: $\text{vertex} \in {u, v}$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex to check for incidence with the edge.
   - *Return type*: `bool`
 
-- **`is_incident_from(const vertex_type& vertex) const`**:
+- **`is_incident_with(vertex_id) const`**:
+  - *Description*: Returns `true` if a vertex with the given ID is connected to the edge.
+  - *Returned value*: $\text{vertex-id} \in {u_{id}, v_{id}}$
+  - *Parameters*:
+    - `vertex_id: const types::id_type` – the vertex ID to check for incidence with the edge.
+  - *Return type*: `bool`
+
+- **`is_incident_from(vertex) const`**:
   - *Description*: Returns `true` if the provided vertex is the source of the edge (for directed edges).
   - *Returned value*:
     - For directed edges: $\text{vertex} = u$
@@ -198,7 +193,16 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
     - `vertex: const vertex_type&` – the vertex to check if it is the source.
   - *Return type*: `bool`
 
-- **`is_incident_to(const vertex_type& vertex) const`**:
+- **`is_incident_from(vertex_id) const`**:
+  - *Description*: Returns `true` if a vertex with the given ID is the source of the edge.
+  - *Returned value*:
+    - For directed edges: $\text{vertex-id} = u_{id}$
+    - For undirected edges: `is_incident_with(vertex)`
+  - *Parameters*:
+    - `vertex_id: const types::id_type` – the vertex ID to check if it is the source.
+  - *Return type*: `bool`
+
+- **`is_incident_to(vertex) const`**:
   - *Description*: Returns `true` if the provided vertex is the target vertex of the edge (for directed edges).
   - *Returned value*:
     - For directed edges: $\text{vertex} = v$
@@ -207,16 +211,19 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
     - `vertex: const vertex_type&` – the vertex to check if it is the target.
   - *Return type*: `bool`
 
+- **`is_incident_to(vertex_id) const`**:
+  - *Description*: Returns `true` if a vertex with the given ID is the target of the edge.
+  - *Returned value*:
+    - For directed edges: $\text{vertex-id} = v_{id}$
+    - For undirected edges: `is_incident_with(vertex)`
+  - *Parameters*:
+    - `vertex_id: const types::id_type` – the vertex ID to check if it is the target.
+  - *Return type*: `bool`
+
 - **`is_loop() const`**:
   - *Description*: Returns `true` if the edge is a loop (i.e., both vertices are the same).
   - *Returned value*: $u = v$
   - *Return type*: `bool`
-
-### Member variables
-
-- **`properties`**:
-  - *Description*: A mutable member that stores the properties associated with the edge.
-  - *Type*: Defined by the `Properties` template parameter.
 
 ### Additional utility
 
