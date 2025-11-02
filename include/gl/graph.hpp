@@ -50,22 +50,14 @@ public:
 
     graph(const types::size_type n_vertices)
     requires(type_traits::is_default_properties_type_v<vertex_properties_type>)
-    : _vertex_properties(), _impl(n_vertices) {
-        this->_vertices.reserve(n_vertices);
-        for (auto id : std::views::iota(constants::initial_id, n_vertices))
-            this->_vertices.emplace_back(id, this->_vertex_properties);
-    }
+    : _n_vertices(n_vertices), _impl(n_vertices) {}
 
     graph(const types::size_type n_vertices)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     : _impl(n_vertices) {
-        this->_vertices.reserve(n_vertices);
         this->_vertex_properties.reserve(n_vertices);
-        for (auto [id, properties] : std::views::enumerate(this->_vertex_properties))
-            this->_vertices.emplace_back(
-                id,
-                *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
-            );
+        for (auto id : this->vertex_ids())
+            this->_vertex_properties.emplace_back();
     }
 
     graph(graph&&) = default;
@@ -85,26 +77,20 @@ public:
 
     // --- vertex methods ---
 
-    // TODO: return a view
-    // [[nodiscard]] gl_attr_force_inline types::iterator_range<vertex_iterator_type> vertices(
-    // ) const {
-    //     return make_iterator_range(deref_cbegin(this->_vertices), deref_cend(this->_vertices));
-    // }
-
     [[nodiscard]] gl_attr_force_inline auto vertices() const
     requires(type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
-        return std::views::enumerate(this->_vertex_properties)
-             | std::views::transform([](types::id_type id, const auto& properties_ptr) {
-                   return vertex_descriptor{id, *properties_ptr};
-               });
+        return this->vertex_ids()
+             | std::views::transform([](const types::id_type id) { return vertex_descriptor{id}; });
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertices() const
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
-        return this->vertex_ids()
-             | std::views::transform([](const types::id_type id) { return vertex_descriptor{id}; });
+        return std::views::enumerate(this->_vertex_properties)
+             | std::views::transform([](types::id_type id, const auto& properties_ptr) {
+                   return vertex_descriptor{id, *properties_ptr};
+               });
     }
 
     [[nodiscard]] gl_attr_force_inline std::ranges::iota_view<types::id_type, types::id_type>
@@ -501,8 +487,8 @@ private:
         if (not this->has_edge(edge))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-                edge.first_id(),
-                edge.second_id(),
+                edge.first().id(),
+                edge.second().id(),
                 io::format(&edge)
             ));
     }
@@ -516,6 +502,15 @@ private:
                 std::next(std::begin(this->_vertex_properties), vertex_id)
             );
         this->_n_vertices--;
+
+        // update vertex ids in edges
+        // TODO: add tests
+        for (auto id : this->vertex_ids()) {
+            for (auto& edge : this->_impl.adjacent_edges(id)) {
+                edge->_vertices.first._id -= (edge->_vertices.first._id >= vertex_id);
+                edge->_vertices.second._id -= (edge->_vertices.second._id >= vertex_id);
+            }
+        }
     }
 
     // --- io methods ---
@@ -577,10 +572,10 @@ private:
             if (with_edge_properties) {
                 const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
                     for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
-                        if (edge.first_id() != vertex_id)
+                        if (edge.first().id() != vertex_id)
                             continue; // vertex is not the source
-                        os << edge.first_id() << ' ' << edge.second_id() << ' ' << edge.properties
-                           << '\n';
+                        os << edge.first().id() << ' ' << edge.second().id() << ' '
+                           << edge.properties << '\n';
                     }
                 };
 
@@ -593,9 +588,9 @@ private:
 
         const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
             for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
-                if (edge.first_id() != vertex_id)
+                if (edge.first().id() != vertex_id)
                     continue; // vertex is not the source
-                os << edge.first_id() << ' ' << edge.second_id() << '\n';
+                os << edge.first().id() << ' ' << edge.second().id() << '\n';
             }
         };
 
@@ -670,7 +665,7 @@ private:
     }
 
     types::size_type _n_vertices = 0uz;
-    [[no_unique_address]] vertex_properties_map_type _vertex_properties;
+    [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
     // TODO: edge properties map
 
     implementation_type _impl{};
