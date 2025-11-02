@@ -23,10 +23,6 @@ public:
     using implementation_type = typename implementation_tag::template type<traits_type>;
 
     using vertex_type = typename traits_type::vertex_type;
-    // using vetex_list_type = std::vector<vertex_type>;
-    // using vertex_iterator_type =
-    //     types::dereferencing_iterator<typename vetex_list_type::const_iterator>;
-
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     using vertex_properties_map_type = std::conditional_t<
         type_traits::is_default_properties_type_v<vertex_properties_type>,
@@ -126,27 +122,33 @@ public:
 
         if constexpr (type_traits::is_default_properties_type_v<vertex_properties_type>)
             return vertex_descriptor{new_vertex_id};
-        else
-            return vertex_descriptor{new_vertex_id, *this->_vertex_properties.emplace_back()};
+        else {
+            // ensure a properties object is created for the new vertex
+            this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
+            return vertex_descriptor{new_vertex_id, *this->_vertex_properties.back()};
+        }
     }
 
     vertex_type add_vertex(vertex_properties_type properties)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        return vertex_descriptor{
-            this->_n_vertices++,
-            *this->_vertex_properties.emplace_back(
-                std::make_unique<vertex_properties_type>(std::move(properties))
-            )
-        };
+        this->_vertex_properties.push_back(
+            std::make_unique<vertex_properties_type>(std::move(properties))
+        );
+        return vertex_descriptor{this->_n_vertices++, *this->_vertex_properties.back()};
     }
 
     void add_vertices(const types::size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
-        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>)
-            this->_vertex_properties.resize(this->_n_vertices);
+
+        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>) {
+            const auto old_size = this->_vertex_properties.size();
+            this->_vertex_properties.reserve(this->_n_vertices);
+            for (types::size_type i = old_size; i < this->_n_vertices; ++i)
+                this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
+        }
     }
 
     template <type_traits::c_sized_range_of<vertex_properties_type> VertexPropertiesRange>
@@ -678,7 +680,8 @@ private:
     }
 
     types::size_type _n_vertices = 0uz;
-    [[no_unique_address]] vertex_properties_map_type _vertex_properties{}; // add conditional getter
+    [[no_unique_address]] vertex_properties_map_type _vertex_properties{
+    }; // add conditional getter and tests
 
     implementation_type _impl{};
 };

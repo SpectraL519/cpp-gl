@@ -1,180 +1,183 @@
-// #include "testing/gl/alg_common.hpp"
-// #include "testing/gl/constants.hpp"
+#include "testing/gl/alg_common.hpp"
+#include "testing/gl/constants.hpp"
 
-// #include <gl/algorithm.hpp>
-// #include <gl/graph_file_io.hpp>
-// #include <gl/topologies.hpp>
+#include <gl/algorithm.hpp>
+#include <gl/graph_file_io.hpp>
+#include <gl/topologies.hpp>
 
-// #include <doctest.h>
+#include <doctest.h>
 
-// namespace gl_testing {
+#include <print>
 
-// TEST_SUITE_BEGIN("test_alg_coloring");
+namespace gl_testing {
 
-// TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_template) {
-//     using sut_type = gl::graph<TraitsType>;
+TEST_SUITE_BEGIN("test_alg_coloring");
 
-//     SUBCASE("apply_coloring should return false if the size of coloring is different then "
-//             "n_vertices") {
-//         sut_type sut{constants::n_elements_alg};
-//         std::vector<gl::types::binary_color> empty_coloring;
+TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_template) {
+    using sut_type = gl::graph<TraitsType>;
 
-//         CHECK_FALSE(gl::algorithm::apply_coloring(sut, empty_coloring));
-//     }
+    SUBCASE("apply_coloring should return false if the size of coloring is different then "
+            "n_vertices") {
+        sut_type sut{constants::n_elements_alg};
+        std::vector<gl::types::binary_color> empty_coloring;
 
-//     SUBCASE("bipartite graph") {
-//         sut_type sut;
-//         std::vector<gl::types::binary_color> expected_coloring;
+        CHECK_FALSE(gl::algorithm::apply_coloring(sut, empty_coloring));
+    }
 
-//         SUBCASE("biclique") {
-//             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
-//             sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
+    SUBCASE("bipartite graph") {
+        sut_type sut;
+        std::vector<gl::types::binary_color> expected_coloring;
 
-//             expected_coloring =
-//                 std::vector<gl::types::binary_color>(n_vertices_a, gl::bin_color_value::black);
-//             for (gl::types::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
-//                 expected_coloring.emplace_back(gl::bin_color_value::white);
-//         }
+        SUBCASE("biclique") {
+            const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
+            sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
 
-//         SUBCASE("regular binary tree") {
-//             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
+            expected_coloring =
+                std::vector<gl::types::binary_color>(n_vertices_a, gl::bin_color_value::black);
+            for (gl::types::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
+                expected_coloring.emplace_back(gl::bin_color_value::white);
+        }
 
-//             gl::types::size_type n_vertices = constants::one_element;
-//             gl::types::binary_color c{gl::bin_color_value::black};
+        SUBCASE("regular binary tree") {
+            sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
 
-//             for (gl::types::size_type d = constants::zero; d < constants::depth; d++) {
-//                 for (gl::types::size_type i = constants::zero; i < n_vertices; i++)
-//                     expected_coloring.push_back(c);
+            gl::types::size_type n_vertices = constants::one_element;
+            gl::types::binary_color c{gl::bin_color_value::black};
 
-//                 n_vertices *= constants::two;
-//                 c = c.next();
-//             }
-//         }
+            for (gl::types::size_type d = constants::zero; d < constants::depth; d++) {
+                for (gl::types::size_type i = constants::zero; i < n_vertices; i++)
+                    expected_coloring.push_back(c);
 
-//         SUBCASE("path graph") {
-//             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
+                n_vertices *= constants::two;
+                c = c.next();
+            }
+        }
 
-//             gl::types::binary_color c{gl::bin_color_value::black};
-//             for (gl::types::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
-//                 expected_coloring.push_back(c);
-//                 c = c.next();
-//             }
-//         }
+        SUBCASE("path graph") {
+            sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
-//         SUBCASE("even cycle graph") {
-//             const auto n_vertices = constants::two * constants::n_elements_alg;
-//             sut = gl::topology::cycle<sut_type>(n_vertices);
+            gl::types::binary_color c{gl::bin_color_value::black};
+            for (gl::types::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
+                expected_coloring.push_back(c);
+                c = c.next();
+            }
+        }
 
-//             gl::types::binary_color c{gl::bin_color_value::black};
-//             for (gl::types::size_type i = constants::zero; i < n_vertices; i++) {
-//                 expected_coloring.push_back(c);
-//                 c = c.next();
-//             }
-//         }
+        SUBCASE("even cycle graph") {
+            const auto n_vertices = constants::two * constants::n_elements_alg;
+            sut = gl::topology::cycle<sut_type>(n_vertices);
 
-//         SUBCASE("custom graph") {
-//             fs::path gsf_file_path =
-//                 alg_common::data_path
-//                 / (gl::type_traits::is_directed_v<sut_type>
-//                        ? "bicoloring_directed_bipartite_graph.gsf"
-//                        : "bicoloring_undirected_bipartite_graph.gsf");
+            gl::types::binary_color c{gl::bin_color_value::black};
+            for (gl::types::size_type i = constants::zero; i < n_vertices; i++) {
+                expected_coloring.push_back(c);
+                c = c.next();
+            }
+        }
 
-//             sut = gl::io::load<sut_type>(gsf_file_path);
+        SUBCASE("custom graph") {
+            fs::path gsf_file_path =
+                alg_common::data_path
+                / (gl::type_traits::is_directed_v<sut_type>
+                       ? "bicoloring_directed_bipartite_graph.gsf"
+                       : "bicoloring_undirected_bipartite_graph.gsf");
 
-//             fs::path coloring_file_path =
-//                 alg_common::data_path / "bicoloring_bipartite_graph_coloring.txt";
-//             const auto coloring_values =
-//                 alg_common::load_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
+            sut = gl::io::load<sut_type>(gsf_file_path);
 
-//             std::transform(
-//                 coloring_values.begin(),
-//                 coloring_values.end(),
-//                 std::back_inserter(expected_coloring),
-//                 [](const std::uint16_t value) { return gl::bin_color_value{value}; }
-//             );
-//         }
+            fs::path coloring_file_path =
+                alg_common::data_path / "bicoloring_bipartite_graph_coloring.txt";
 
-//         CAPTURE(sut);
-//         CAPTURE(expected_coloring);
+            const auto coloring_values =
+                alg_common::load_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
 
-//         const auto coloring_opt = gl::algorithm::bipartite_coloring(sut);
+            std::transform(
+                coloring_values.begin(),
+                coloring_values.end(),
+                std::back_inserter(expected_coloring),
+                [](const std::uint16_t value) { return gl::bin_color_value{value}; }
+            );
+        }
 
-//         REQUIRE(coloring_opt.has_value());
-//         CHECK(std::ranges::equal(coloring_opt.value(), expected_coloring));
+        CAPTURE(sut);
+        CAPTURE(expected_coloring);
 
-//         // check the is_bipartite function - formality
-//         CHECK(gl::algorithm::is_bipartite(sut));
+        const auto coloring_opt = gl::algorithm::bipartite_coloring(sut);
 
-//         // --- apply_coloring test ---
-//         REQUIRE(gl::algorithm::apply_coloring(sut, expected_coloring));
-//         CHECK(std::ranges::equal(
-//             sut.vertices(),
-//             expected_coloring,
-//             std::ranges::equal_to{},
-//             [](const auto& vertex) { return vertex.properties.color; }
-//         ));
-//     }
+        REQUIRE(coloring_opt.has_value());
+        CHECK(std::ranges::equal(coloring_opt.value(), expected_coloring));
 
-//     SUBCASE("not bipartite graph") {
-//         sut_type sut;
+        // check the is_bipartite function - formality
+        CHECK(gl::algorithm::is_bipartite(sut));
 
-//         SUBCASE("clique") {
-//             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-//         }
+        // --- apply_coloring test ---
+        REQUIRE(gl::algorithm::apply_coloring(sut, expected_coloring));
+        CHECK(std::ranges::equal(
+            sut.vertices(),
+            expected_coloring,
+            std::ranges::equal_to{},
+            [](const auto& vertex) { return vertex.properties().color; }
+        ));
+    }
 
-//         SUBCASE("odd cycle graph") {
-//             sut = gl::topology::cycle<sut_type>(
-//                 constants::two * constants::n_elements_alg + constants::one
-//             );
-//         }
+    SUBCASE("not bipartite graph") {
+        sut_type sut;
 
-//         SUBCASE("regular binary tree with an additional edge between siblings") {
-//             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-//             sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
-//         }
+        SUBCASE("clique") {
+            sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
+        }
 
-//         SUBCASE("biclique with an additional edge between vertices from the same set") {
-//             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
-//             sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
-//             sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
-//         }
+        SUBCASE("odd cycle graph") {
+            sut = gl::topology::cycle<sut_type>(
+                constants::two * constants::n_elements_alg + constants::one
+            );
+        }
 
-//         SUBCASE("custom graph") {
-//             fs::path gsf_file_path =
-//                 alg_common::data_path
-//                 / (gl::type_traits::is_directed_v<sut_type>
-//                        ? "bicoloring_directed_not_bipartite_graph.gsf"
-//                        : "bicoloring_undirected_not_bipartite_graph.gsf");
+        SUBCASE("regular binary tree with an additional edge between siblings") {
+            sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
+            sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
+        }
 
-//             sut = gl::io::load<sut_type>(gsf_file_path);
-//         }
+        SUBCASE("biclique with an additional edge between vertices from the same set") {
+            const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
+            sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
+            sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
+        }
 
-//         CAPTURE(sut);
+        SUBCASE("custom graph") {
+            fs::path gsf_file_path =
+                alg_common::data_path
+                / (gl::type_traits::is_directed_v<sut_type>
+                       ? "bicoloring_directed_not_bipartite_graph.gsf"
+                       : "bicoloring_undirected_not_bipartite_graph.gsf");
 
-//         const auto coloring_opt = gl::algorithm::bipartite_coloring(sut);
-//         CHECK_FALSE(coloring_opt.has_value());
+            sut = gl::io::load<sut_type>(gsf_file_path);
+        }
 
-//         // check the is_bipartite function - formality
-//         CHECK_FALSE(gl::algorithm::is_bipartite(sut));
-//     }
-// }
+        CAPTURE(sut);
 
-// TEST_CASE_TEMPLATE_INSTANTIATE(
-//     traits_type_template,
-//     gl::list_graph_traits<
-//         gl::directed_t,
-//         gl::types::binary_color_property>, // directed adjacency list graph
-//     gl::list_graph_traits<
-//         gl::undirected_t,
-//         gl::types::binary_color_property>, // undirected adjacency list graph
-//     gl::matrix_graph_traits<
-//         gl::directed_t,
-//         gl::types::binary_color_property>, // directed adjacency matrix graph
-//     gl::matrix_graph_traits<
-//         gl::undirected_t,
-//         gl::types::binary_color_property> // undirected adjacency matrix graph
-// );
+        const auto coloring_opt = gl::algorithm::bipartite_coloring(sut);
+        CHECK_FALSE(coloring_opt.has_value());
 
-// TEST_SUITE_END(); // test_alg_coloring
+        // check the is_bipartite function - formality
+        CHECK_FALSE(gl::algorithm::is_bipartite(sut));
+    }
+}
 
-// } // namespace gl_testing
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    traits_type_template,
+    gl::list_graph_traits<
+        gl::directed_t,
+        gl::types::binary_color_property>, // directed adjacency list graph
+    gl::list_graph_traits<
+        gl::undirected_t,
+        gl::types::binary_color_property>, // undirected adjacency list graph
+    gl::matrix_graph_traits<
+        gl::directed_t,
+        gl::types::binary_color_property>, // directed adjacency matrix graph
+    gl::matrix_graph_traits<
+        gl::undirected_t,
+        gl::types::binary_color_property> // undirected adjacency matrix graph
+);
+
+TEST_SUITE_END(); // test_alg_coloring
+
+} // namespace gl_testing
