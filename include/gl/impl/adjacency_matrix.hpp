@@ -110,8 +110,10 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
-        specialized_impl::remove_vertex(*this, vertex.id());
+    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) {
+        specialized_impl::remove_vertex(*this, vertex_id);
+        // TODO: align remaining vertex ids in edges
+        // add tests - removing all vertices sequentially
     }
 
     // --- edge methods ---
@@ -138,8 +140,8 @@ public:
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        const auto first_id = edge.first_id();
-        const auto second_id = edge.second_id();
+        const auto first_id = edge.first().id();
+        const auto second_id = edge.second().id();
 
         if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
             return false;

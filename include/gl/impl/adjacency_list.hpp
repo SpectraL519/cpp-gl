@@ -92,6 +92,8 @@ public:
 
     gl_attr_force_inline void remove_vertex(const types::id_type& vertex_id) {
         specialized_impl::remove_vertex(*this, vertex_id);
+        // TODO: align remaining vertex ids in edges
+        // add tests - removing all vertices sequentially
     }
 
     // --- edge methods ---

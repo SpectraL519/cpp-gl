@@ -355,8 +355,8 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    const auto& removed_vertex = vertices[constants::first_element_idx];
-    sut.remove_vertex(removed_vertex.id());
+    const auto removed_vertex_id = constants::first_element_idx;
+    sut.remove_vertex(removed_vertex_id);
 
     constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
     constexpr auto n_incident_edges_after_remove =
@@ -369,8 +369,8 @@ TEST_CASE_FIXTURE(
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
         const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
-        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
-            return edge.is_incident_with(removed_vertex);
+        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [removed_vertex_id](const auto& edge) {
+            return edge.is_incident_with(removed_vertex_id);
         }));
     }
 }
@@ -679,8 +679,8 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    const auto& removed_vertex = vertices[constants::first_element_idx];
-    sut.remove_vertex(removed_vertex.id());
+    const auto removed_vertex_id = constants::first_element_idx;
+    sut.remove_vertex(removed_vertex_id);
 
     constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
     constexpr auto n_incident_edges_after_remove =
@@ -693,8 +693,8 @@ TEST_CASE_FIXTURE(
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
         const auto adjacent_edges = sut.adjacent_edges(vertex_id);
         REQUIRE_EQ(adjacent_edges.distance(), n_incident_edges_after_remove);
-        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [&removed_vertex](const auto& edge) {
-            return edge.is_incident_with(removed_vertex);
+        CHECK_FALSE(std::ranges::any_of(adjacent_edges, [removed_vertex_id](const auto& edge) {
+            return edge.is_incident_with(removed_vertex_id);
         }));
     }
 }

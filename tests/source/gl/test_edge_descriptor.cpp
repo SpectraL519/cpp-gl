@@ -68,6 +68,13 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(vertices.second, fixture.vd_2);
     }
 
+    SUBCASE("incident_vertex_ids should return the pair of ids of the vertices the edge was "
+            "initialized with") {
+        const auto& vertex_ids = sut.incident_vertex_ids();
+        CHECK_EQ(vertex_ids.first, fixture.vd_1.id());
+        CHECK_EQ(vertex_ids.second, fixture.vd_2.id());
+    }
+
     SUBCASE("first should return the first vertex descriptor the edge was initialized with") {
         CHECK_EQ(sut.first(), fixture.vd_1);
     }
