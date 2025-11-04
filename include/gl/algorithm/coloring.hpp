@@ -26,8 +26,7 @@ template <
     coloring_opt.emplace(graph.n_vertices(), bin_color_value::unset);
     auto& coloring = coloring_opt.value();
 
-    for (const auto root_vertex : graph.vertices()) {
-        const auto root_id = root_vertex.id();
+    for (const auto root_id : graph.vertex_ids()) {
         if (coloring[root_id].is_set())
             continue;
 
@@ -44,7 +43,7 @@ template <
                 if (in_edge.is_loop())
                     return false;
 
-                const auto pred_id = in_edge.incident_vertex(vertex_id).id();
+                const auto pred_id = in_edge.incident_vertex(vertex_id);
 
                 if (coloring[vertex_id] == coloring[pred_id])
                     return predicate_result::unknown; // graph is not bipartite

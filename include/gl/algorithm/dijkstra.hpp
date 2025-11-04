@@ -94,7 +94,7 @@ template <
         algorithm::empty_callback{}, // visit callback
         [&paths, &negative_edge](const types::id_type vertex_id, const edge_type& in_edge)
             -> predicate_result { // enqueue predicate
-            const auto pred_id = in_edge.incident_vertex(vertex_id).id();
+            const auto pred_id = in_edge.incident_vertex(vertex_id);
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
             if (edge_weight < constants::zero) {
@@ -118,8 +118,8 @@ template <
         const auto& edge = negative_edge.value().get();
         throw std::invalid_argument(std::format(
             "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
-            edge.first().id(),
-            edge.second().id(),
+            edge.first(),
+            edge.second(),
             get_weight<GraphType>(edge)
         ));
     }

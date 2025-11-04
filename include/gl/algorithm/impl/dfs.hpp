@@ -52,7 +52,7 @@ void dfs(
         visit(vinfo.id, vinfo.pred_id);
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
-            const auto incident_vertex_id = edge.incident_vertex(vinfo.id).id();
+            const auto incident_vertex_id = edge.incident_vertex(vinfo.id);
             if (enqueue_vertex_pred(incident_vertex_id, edge))
                 vertex_stack.emplace(incident_vertex_id, vinfo.id);
         }
@@ -91,7 +91,7 @@ void r_dfs(
 
     // recursively search vertices adjacent to the current vertex
     for (const auto& edge : graph.adjacent_edges(vertex_id)) {
-        const auto& incident_vertex_id = edge.incident_vertex(vertex_id).id();
+        const auto& incident_vertex_id = edge.incident_vertex(vertex_id);
         if (enqueue_vertex_pred(incident_vertex_id, edge))
             r_dfs(
                 graph,

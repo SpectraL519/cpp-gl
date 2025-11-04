@@ -42,7 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first().id(), edge.second().id());
+                    expected_edges.emplace_back(edge.first(), edge.second());
                 }
             }
 
@@ -79,7 +79,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
             const auto& edge = edge_ref.get();
-            const auto [first_id, second_id] = edge.incident_vertex_ids();
+            const auto [first_id, second_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
@@ -124,7 +124,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first().id(), edge.second().id());
+            expected_edges.emplace_back(edge.first(), edge.second());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
@@ -135,7 +135,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
         const auto& edge = edge_ref.get();
-        const auto [first_id, second_id] = edge.incident_vertex_ids();
+        const auto [first_id, second_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),
@@ -182,7 +182,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first().id(), edge.second().id());
+                    expected_edges.emplace_back(edge.first(), edge.second());
                 }
             }
 
@@ -219,7 +219,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
             const auto& edge = edge_ref.get();
-            const auto [first_id, second_id] = edge.incident_vertex_ids();
+            const auto [first_id, second_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
@@ -264,7 +264,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first().id(), edge.second().id());
+            expected_edges.emplace_back(edge.first(), edge.second());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
@@ -275,7 +275,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
         const auto& edge = edge_ref.get();
-        const auto [first_id, second_id] = edge.incident_vertex_ids();
+        const auto [first_id, second_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),

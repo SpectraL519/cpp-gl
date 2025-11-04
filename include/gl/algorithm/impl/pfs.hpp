@@ -59,7 +59,7 @@ bool pfs(
                 return false;
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
-            const auto incident_vertex_id = edge.incident_vertex(vinfo.id).id();
+            const auto incident_vertex_id = edge.incident_vertex(vinfo.id);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
             if (enqueue == predicate_result::unknown)

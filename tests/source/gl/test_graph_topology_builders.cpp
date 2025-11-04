@@ -148,34 +148,33 @@ template <gl::type_traits::c_graph GraphType>
 template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
-        const auto target_ids = gl::topology::detail::get_binary_target_ids(source.id());
+    return [&graph](const gl::types::id_type source_id) {
+        const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
         const gl::types::id_type parent_id =
-            source.id() == constants::zero
+            source_id == constants::zero
                 ? constants::zero
-                : (source.id() - constants::one) / constants::two;
+                : (source_id - constants::one) / constants::two;
 
         if (target_ids.first >= graph.n_vertices()) {
             // no need to check second as second = first + 1
-            const auto adjacent_edges = graph.adjacent_edges(source);
+            const auto adjacent_edges = graph.adjacent_edges(source_id);
 
             return adjacent_edges.distance() == constants::one
-               and adjacent_edges[constants::first_element_idx].incident_vertex(source).id()
-                       == parent_id;
+               and adjacent_edges[constants::first_element_idx].incident_vertex(source_id
+                   ) == parent_id;
         }
 
-        const auto& parent = graph.get_vertex(parent_id);
-        const auto& target_1 = graph.get_vertex(target_ids.first);
-        const auto& target_2 = graph.get_vertex(target_ids.second);
+        const auto& target_1 = target_ids.first;
+        const auto& target_2 = target_ids.second;
 
-        return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
-            if (vertex == target_1 or vertex == target_2)
-                return graph.has_edge(source, vertex);
+        return std::ranges::all_of(graph.vertex_ids(), [&](const auto vertex_id) {
+            if (vertex_id == target_1 or vertex_id == target_2)
+                return graph.has_edge(source_id, vertex_id);
 
-            if (vertex == parent and source.id() != constants::zero)
-                return graph.has_edge(source, vertex);
+            if (vertex_id == parent_id and source_id != constants::zero)
+                return graph.has_edge(source_id, vertex_id);
 
-            return not graph.has_edge(source, vertex);
+            return not graph.has_edge(source_id, vertex_id);
         });
     };
 }
@@ -347,7 +346,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
-            bin_tree.vertices(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
+            bin_tree.vertex_ids(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
         ));
     }
 }
@@ -433,7 +432,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
-            bin_tree.vertices(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
+            bin_tree.vertex_ids(), predicate::is_biconnected_to_binary_chlidren(bin_tree)
         ));
     }
 }

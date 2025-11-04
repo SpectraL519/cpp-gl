@@ -72,22 +72,16 @@ constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
 } // namespace
 
 struct test_directed_adjacency_list {
-    using vertex_type = gl::vertex_descriptor<>;
-    using edge_type = gl::directed_edge<vertex_type>;
+    using edge_type = gl::directed_edge<>;
     using edge_ptr_type = gl::directed_t::edge_ptr_type<edge_type>;
     using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::directed_t>>;
 
-    test_directed_adjacency_list() {
-        for (const auto id : constants::vertex_id_view)
-            vertices.emplace_back(id);
-    }
+    test_directed_adjacency_list() {}
 
     const edge_type& add_edge(
         const gl::types::id_type first_id, const gl::types::id_type second_id
     ) {
-        return sut.add_edge(
-            gl::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
-        );
+        return sut.add_edge(gl::detail::make_edge<edge_type>(first_id, second_id));
     }
 
     void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
@@ -110,7 +104,6 @@ struct test_directed_adjacency_list {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<vertex_type> vertices;
 
     const gl::types::size_type n_unique_edges_in_full_graph =
         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
@@ -122,8 +115,8 @@ TEST_CASE_FIXTURE(
     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
-    REQUIRE(new_edge.is_incident_from(vertices[constants::vertex_id_1]));
-    REQUIRE(new_edge.is_incident_to(vertices[constants::vertex_id_2]));
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+    REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
 
     const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
@@ -153,15 +146,11 @@ TEST_CASE_FIXTURE(
     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{
-        vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
-    };
+    const edge_type invalid_edge{constants::vertex_id_1, constants::vertex_id_2};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
-    const edge_type not_present_edge{
-        vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
-    };
+    const edge_type not_present_edge{constants::vertex_id_2, constants::vertex_id_3};
     CHECK_FALSE(sut.has_edge(not_present_edge));
 }
 
@@ -219,9 +208,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(test_directed_adjacency_list, "remove_edge should throw when an edge is invalid") {
     // not existing edge between valid vertices
     CHECK_THROWS_AS(
-        sut.remove_edge(
-            edge_type{vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]}
-        ),
+        sut.remove_edge(edge_type{constants::vertex_id_1, constants::vertex_id_2}),
         std::invalid_argument
     );
 }
@@ -376,22 +363,16 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_adjacency_list {
-    using vertex_type = gl::vertex_descriptor<>;
-    using edge_type = gl::undirected_edge<vertex_type>;
+    using edge_type = gl::undirected_edge<>;
     using edge_ptr_type = gl::undirected_t::edge_ptr_type<edge_type>;
     using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>;
 
-    test_undirected_adjacency_list() {
-        for (const auto id : constants::vertex_id_view)
-            vertices.emplace_back(id);
-    }
+    test_undirected_adjacency_list() {}
 
     const edge_type& add_edge(
         const gl::types::id_type first_id, const gl::types::id_type second_id
     ) {
-        return sut.add_edge(
-            gl::detail::make_edge<edge_type>(vertices[first_id], vertices[second_id])
-        );
+        return sut.add_edge(gl::detail::make_edge<edge_type>(first_id, second_id));
     }
 
     void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
@@ -417,7 +398,6 @@ struct test_undirected_adjacency_list {
     }
 
     sut_type sut{constants::n_elements};
-    std::vector<vertex_type> vertices;
 
     const gl::types::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
@@ -427,8 +407,8 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
 ) {
     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
-    REQUIRE(new_edge.is_incident_from(vertices[constants::vertex_id_1]));
-    REQUIRE(new_edge.is_incident_to(vertices[constants::vertex_id_2]));
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+    REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
 
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -452,7 +432,7 @@ TEST_CASE_FIXTURE(
     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_1);
     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
     REQUIRE(new_edge.is_loop());
-    REQUIRE(new_edge.is_incident_from(vertices[constants::vertex_id_1]));
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
 
     const auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
     REQUIRE_EQ(adjacent_edges.distance(), constants::one_element);
@@ -481,15 +461,11 @@ TEST_CASE_FIXTURE(
     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{
-        vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]
-    };
+    const edge_type invalid_edge{constants::vertex_id_1, constants::vertex_id_2};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
-    const edge_type not_present_edge{
-        vertices[constants::vertex_id_2], vertices[constants::vertex_id_3]
-    };
+    const edge_type not_present_edge{constants::vertex_id_2, constants::vertex_id_3};
     CHECK_FALSE(sut.has_edge(not_present_edge));
 }
 
@@ -558,9 +534,7 @@ TEST_CASE_FIXTURE(
 ) {
     // not existing edge between valid vertices
     CHECK_THROWS_AS(
-        sut.remove_edge(
-            edge_type{vertices[constants::vertex_id_1], vertices[constants::vertex_id_2]}
-        ),
+        sut.remove_edge(edge_type{constants::vertex_id_1, constants::vertex_id_2}),
         std::invalid_argument
     );
 }
@@ -577,7 +551,7 @@ TEST_CASE_FIXTURE(
 
     const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
-    const auto second_id = edge_to_remove.second().id();
+    const auto second_id = edge_to_remove.second();
     REQUIRE_EQ(sut.adjacent_edges(second_id).distance(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);

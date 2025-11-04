@@ -72,7 +72,7 @@ template <type_traits::c_undirected_graph GraphType>
         const auto& min_edge = min_edge_info.edge.get();
         const auto min_weight = get_weight<GraphType>(min_edge);
 
-        const auto& target_id = min_edge.incident_vertex(min_edge_info.source_id).id();
+        const auto& target_id = min_edge.incident_vertex(min_edge_info.source_id);
         if (visited[target_id])
             continue;
 
@@ -85,7 +85,7 @@ template <type_traits::c_undirected_graph GraphType>
 
         // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
         for (const auto& edge : graph.adjacent_edges(target_id))
-            if (not visited[edge.incident_vertex(target_id).id()])
+            if (not visited[edge.incident_vertex(target_id)])
                 edge_queue.emplace(edge, target_id);
     }
 
@@ -141,7 +141,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
         // Update adjacent vertices
         for (const auto& edge : graph.adjacent_edges(vertex_id)) {
             const auto edge_weight = get_weight<GraphType>(edge);
-            const auto incident_vertex_id = edge.incident_vertex(vertex_id).id();
+            const auto incident_vertex_id = edge.incident_vertex(vertex_id);
 
             if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;
