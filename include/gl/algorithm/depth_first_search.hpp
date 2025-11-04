@@ -12,10 +12,8 @@ namespace gl::algorithm {
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
@@ -33,21 +31,21 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_
     if (root_vertex_id_opt) {
         impl::dfs(
             graph,
-            graph.get_vertex(root_vertex_id_opt.value()),
-            impl::default_visit_vertex_predicate<GraphType>(visited),
-            impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+            root_vertex_id_opt.value(),
+            impl::default_visit_vertex_predicate(visited),
+            impl::default_visit_callback<ResultDiscriminator>(visited, pd),
             impl::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
     }
     else {
-        for (const auto& root_vertex : graph.vertices())
+        for (const auto root_vertex_id : graph.vertex_ids())
             impl::dfs(
                 graph,
-                root_vertex,
-                impl::default_visit_vertex_predicate<GraphType>(visited),
-                impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+                root_vertex_id,
+                impl::default_visit_vertex_predicate(visited),
+                impl::default_visit_callback<ResultDiscriminator>(visited, pd),
                 impl::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
@@ -61,10 +59,8 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> recursive_depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
@@ -83,23 +79,23 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> recursive_de
         const auto root_id = root_vertex_id_opt.value();
         impl::r_dfs(
             graph,
-            graph.get_vertex(root_id),
             root_id,
-            impl::default_visit_vertex_predicate<GraphType>(visited),
-            impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+            root_id, // pred_id
+            impl::default_visit_vertex_predicate(visited),
+            impl::default_visit_callback<ResultDiscriminator>(visited, pd),
             impl::default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
     }
     else {
-        for (const auto& root_vertex : graph.vertices())
+        for (const auto& root_id : graph.vertex_ids())
             impl::r_dfs(
                 graph,
-                root_vertex,
-                root_vertex.id(),
-                impl::default_visit_vertex_predicate<GraphType>(visited),
-                impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+                root_id,
+                root_id, // pred_id
+                impl::default_visit_vertex_predicate(visited),
+                impl::default_visit_callback<ResultDiscriminator>(visited, pd),
                 impl::default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit

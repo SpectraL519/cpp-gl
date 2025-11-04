@@ -14,7 +14,7 @@ void verify_graph_structure(const GraphType& actual, const GraphType& expected) 
     // verify that the edges of the in graph are equivalent to the edges of the out graph
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {
-            return expected.has_edge(edge.first().id(), edge.second().id());
+            return expected.has_edge(edge.first(), edge.second());
         });
     }));
 }
@@ -38,10 +38,7 @@ void verify_edge_properties(const GraphType& actual, const GraphType& expected) 
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {
             // get edge returns optional<ref_wrap>
             return edge.properties()
-                == expected.get_edge(edge.first().id(), edge.second().id())
-                       .value()
-                       .get()
-                       .properties();
+                == expected.get_edge(edge.first(), edge.second()).value().get().properties();
         });
     }));
 }

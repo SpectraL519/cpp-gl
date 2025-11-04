@@ -13,10 +13,8 @@ namespace gl::algorithm {
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> breadth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
@@ -35,8 +33,8 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> breadth_firs
         impl::bfs(
             graph,
             impl::init_range(root_vertex_id_opt.value()),
-            impl::default_visit_vertex_predicate<GraphType>(visited),
-            impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+            impl::default_visit_vertex_predicate(visited),
+            impl::default_visit_callback<ResultDiscriminator>(visited, pd),
             impl::default_enqueue_vertex_predicate<GraphType, true>(visited),
             pre_visit,
             post_visit
@@ -47,8 +45,8 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> breadth_firs
             impl::bfs(
                 graph,
                 impl::init_range(root_id),
-                impl::default_visit_vertex_predicate<GraphType>(visited),
-                impl::default_visit_callback<GraphType, ResultDiscriminator>(visited, pd),
+                impl::default_visit_vertex_predicate(visited),
+                impl::default_visit_callback<ResultDiscriminator>(visited, pd),
                 impl::default_enqueue_vertex_predicate<GraphType, true>(visited),
                 pre_visit,
                 post_visit

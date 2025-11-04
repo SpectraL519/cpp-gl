@@ -372,8 +372,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(ids) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
-            REQUIRE(new_edge.is_incident_from(vertices[constants::vertex_id_1]));
-            REQUIRE(new_edge.is_incident_to(vertices[constants::vertex_id_2]));
+            REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+            REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -400,8 +400,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2);
-            REQUIRE(new_edge.is_incident_from(vertex_1));
-            REQUIRE(new_edge.is_incident_to(vertex_2));
+            REQUIRE(new_edge.is_incident_from(vertex_1.id()));
+            REQUIRE(new_edge.is_incident_to(vertex_2.id()));
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
 
@@ -573,8 +573,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         SUBCASE("add_edge(ids) should properly add the new edge") {
             const auto& new_edge =
                 sut.add_edge(constants::vertex_id_1, constants::vertex_id_2, constants::used);
-            REQUIRE(new_edge.is_incident_from(vertices[constants::vertex_id_1]));
-            REQUIRE(new_edge.is_incident_to(vertices[constants::vertex_id_2]));
+            REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+            REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
@@ -608,8 +608,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
             const auto& new_edge = sut.add_edge(vertex_1, vertex_2, constants::used);
-            REQUIRE(new_edge.is_incident_from(vertex_1));
-            REQUIRE(new_edge.is_incident_to(vertex_2));
+            REQUIRE(new_edge.is_incident_from(vertex_1.id()));
+            REQUIRE(new_edge.is_incident_to(vertex_2.id()));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
             REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);

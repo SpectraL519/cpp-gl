@@ -45,11 +45,11 @@ public:
 
     graph() = default;
 
-    graph(const types::size_type n_vertices)
+    explicit graph(const types::size_type n_vertices)
     requires(type_traits::is_default_properties_type_v<vertex_properties_type>)
     : _n_vertices(n_vertices), _impl(n_vertices) {}
 
-    graph(const types::size_type n_vertices)
+    explicit graph(const types::size_type n_vertices)
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     : _n_vertices(n_vertices), _impl(n_vertices) {
         this->_vertex_properties.reserve(n_vertices);
@@ -276,7 +276,7 @@ public:
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
         return this->_impl.add_edge(
-            detail::make_edge<edge_type>(this->get_vertex(first_id), this->get_vertex(second_id))
+            detail::make_edge<edge_type>(first_id, second_id)
         );
     }
 
@@ -289,9 +289,7 @@ public:
     {
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
-        return this->_impl.add_edge(detail::make_edge<edge_type>(
-            this->get_vertex(first_id), this->get_vertex(second_id), properties
-        ));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first_id, second_id, properties));
     }
 
     // clang-format on
@@ -299,7 +297,7 @@ public:
     const edge_type& add_edge(const vertex_type& first, const vertex_type& second) {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second));
+        return this->_impl.add_edge(detail::make_edge<edge_type>(first.id(), second.id()));
     }
 
     const edge_type& add_edge(
@@ -309,18 +307,21 @@ public:
     {
         this->_verify_vertex(first);
         this->_verify_vertex(second);
-        return this->_impl.add_edge(detail::make_edge<edge_type>(first, second, properties));
+        return this->_impl.add_edge(
+            detail::make_edge<edge_type>(first.id(), second.id(), properties)
+        );
     }
 
     template <type_traits::c_sized_range_of<types::id_type> IdRange>
     void add_edges_from(const types::id_type source_id, const IdRange& target_id_range) {
-        const auto& source = this->get_vertex(source_id);
+        this->_verify_vertex_id(source_id);
 
         std::vector<edge_ptr_type> new_edges;
         new_edges.reserve(std::ranges::size(target_id_range));
 
         for (const auto target_id : target_id_range) {
-            new_edges.push_back(detail::make_edge<edge_type>(source, this->get_vertex(target_id)));
+            this->_verify_vertex_id(target_id);
+            new_edges.push_back(detail::make_edge<edge_type>(source_id, target_id));
         }
         this->_impl.add_edges_from(source_id, std::move(new_edges));
     }
@@ -335,7 +336,7 @@ public:
         for (const auto& target_ref : target_range) {
             const auto& target = target_ref.get();
             this->_verify_vertex(target);
-            new_edges.push_back(detail::make_edge<edge_type>(source, target));
+            new_edges.push_back(detail::make_edge<edge_type>(source.id(), target.id()));
         }
         this->_impl.add_edges_from(source.id(), std::move(new_edges));
     }
@@ -453,13 +454,13 @@ public:
     [[nodiscard]] bool are_incident(const vertex_type& vertex, const edge_type& edge) const {
         this->_verify_vertex(vertex);
         this->_verify_edge(edge);
-        return edge.is_incident_with(vertex);
+        return edge.is_incident_with(vertex.id());
     }
 
     [[nodiscard]] bool are_incident(const edge_type& edge, const vertex_type& vertex) const {
         this->_verify_vertex(vertex);
         this->_verify_edge(edge);
-        return edge.is_incident_with(vertex);
+        return edge.is_incident_with(vertex.id());
     }
 
     [[nodiscard]] bool are_incident(const edge_type& edge_1, const edge_type& edge_2) const {
@@ -507,8 +508,8 @@ private:
         if (not this->has_edge(edge))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-                edge.first().id(),
-                edge.second().id(),
+                edge.first(),
+                edge.second(),
                 io::format(&edge)
             ));
     }
@@ -522,8 +523,8 @@ private:
         // update vertex ids in edges
         for (auto id : this->vertex_ids()) {
             for (auto& edge : this->_impl.adjacent_edges(id)) {
-                edge._vertices.first._id -= (edge._vertices.first._id > vertex_id);
-                edge._vertices.second._id -= (edge._vertices.second._id > vertex_id);
+                edge._vertices.first -= (edge._vertices.first > vertex_id);
+                edge._vertices.second -= (edge._vertices.second > vertex_id);
             }
         }
 
@@ -543,14 +544,10 @@ private:
             this->n_unique_edges()
         );
 
-        constexpr bool within_context = true;
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << "\n  adjacent edges:\n";
-            for (const auto& edge : this->_impl.adjacent_edges(vertex.id())) {
-                os << "\t- ";
-                edge._write(os, within_context);
-                os << '\n';
-            }
+            for (const auto& edge : this->_impl.adjacent_edges(vertex.id()))
+                os << "\t- " << edge << '\n';
         }
     }
 
@@ -592,10 +589,10 @@ private:
             if (with_edge_properties) {
                 const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
                     for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
-                        if (edge.first().id() != vertex_id)
+                        if (edge.first() != vertex_id)
                             continue; // vertex is not the source
-                        os << edge.first().id() << ' ' << edge.second().id() << ' '
-                           << edge._properties << '\n';
+                        os << edge.first() << ' ' << edge.second() << ' ' << edge._properties
+                           << '\n';
                     }
                 };
 
@@ -608,9 +605,9 @@ private:
 
         const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
             for (const auto& edge : this->_impl.adjacent_edges(vertex_id)) {
-                if (edge.first().id() != vertex_id)
+                if (edge.first() != vertex_id)
                     continue; // vertex is not the source
-                os << edge.first().id() << ' ' << edge.second().id() << '\n';
+                os << edge.first() << ' ' << edge.second() << '\n';
             }
         };
 

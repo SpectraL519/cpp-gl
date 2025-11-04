@@ -20,7 +20,7 @@ struct graph_traits {
     using vertex_ptr_type = types::vertex_ptr_type<vertex_type>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
-    using edge_type = edge_descriptor<vertex_type, EdgeDirectionalTag, EdgeProperties>;
+    using edge_type = edge_descriptor<EdgeDirectionalTag, EdgeProperties>;
     using edge_ptr_type = types::edge_ptr_type<edge_type>;
     using edge_directional_tag = typename edge_type::directional_tag;
     using edge_properties_type = typename edge_type::properties_type;
