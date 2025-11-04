@@ -265,13 +265,10 @@ struct undirected_adjacency_matrix {
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
         }
         else {
-            const auto first_id = edge.first();
-            const auto second_id = edge.second();
-
             detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
             // if the edge was found in the first matrix cell,
             // it will also be present in the second matrix cell
-            self._matrix[second_id][first_id] = nullptr;
+            self._matrix[edge.second()][edge.first()] = nullptr;
         }
         --self._n_unique_edges;
     }
