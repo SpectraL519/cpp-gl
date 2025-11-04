@@ -102,14 +102,14 @@ template <typename F, typename ReturnType, typename... Args>
 concept c_optional_callback = c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>;
 
 template <typename F, typename ReturnType, typename... Args>
-concept c_id_callback = std::is_invocable_r_v<ReturnType, F, const types::id_type&, Args...>;
+concept c_id_callback = std::is_invocable_r_v<ReturnType, F, const types::id_type, Args...>;
+
+template <typename F, typename ReturnType, typename... Args>
+concept c_optional_id_callback = c_optional_callback<F, ReturnType, const types::id_type, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_edge_callback =
     std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
-
-template <typename F, typename ReturnType, typename... Args>
-concept c_optional_id_callback = c_optional_callback<F, ReturnType, const types::id_type, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_optional_edge_callback =

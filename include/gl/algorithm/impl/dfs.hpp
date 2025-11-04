@@ -20,7 +20,7 @@ template <
     type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void dfs(
     const GraphType& graph,
-    const types::id_type root_vertex_id,
+    const types::id_type root_id,
     const VisitVertexPredicate& visit_vertex_pred,
     const VisitCallback& visit,
     const EnqueueVertexPred& enqueue_vertex_pred,
@@ -30,12 +30,12 @@ void dfs(
     using vertex_stack_type = std::stack<algorithm::vertex_info>;
 
     if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
-        if (not visit_vertex_pred(root_vertex_id))
+        if (not visit_vertex_pred(root_id))
             return;
 
     // prepare the vertex stack
     vertex_stack_type vertex_stack;
-    vertex_stack.emplace(root_vertex_id);
+    vertex_stack.emplace(root_id);
 
     // search the graph
     while (not vertex_stack.empty()) {
