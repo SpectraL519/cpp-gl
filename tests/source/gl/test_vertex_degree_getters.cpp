@@ -84,7 +84,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = constants::zero;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const auto vertex_id) {
+        [&](const gl::types::id_type vertex_id) {
             const bool result = sut.in_degree(vertex_id) == expected_in_deg_list[i]
                and sut.out_degree(vertex_id) == expected_out_deg_list[i]
                and sut.degree(vertex_id) == expected_deg_list[i];
@@ -157,7 +157,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = constants::zero;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const auto vertex_id) {
+        [&](const gl::types::id_type vertex_id) {
             const auto expected_deg = expected_deg_list[i];
             const bool result = sut.in_degree(vertex_id) == expected_deg
                and sut.out_degree(vertex_id) == expected_deg

@@ -551,5 +551,5 @@ This section provides links to additional resources and documentation that can h
 - [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
 - [I/O operations](/docs/io.md)
 - [Graph topology generators](/docs/topologies.md)
-- [Algorithms](/docs/algoithms.md)
+- [Algorithms](/docs/algorithms.md)
 - [Core utility types](/docs/core_util_types.md)
