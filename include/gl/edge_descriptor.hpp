@@ -18,10 +18,6 @@ public:
     using type = edge_descriptor<DirectionalTag, Properties>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
-    using properties_ref_type = std::conditional_t<
-        type_traits::is_default_properties_type_v<properties_type>,
-        types::empty_properties,
-        properties_type&>;
 
     friend directional_tag;
 
