@@ -12,10 +12,8 @@ using bicoloring_type = std::vector<types::binary_color>;
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
@@ -41,19 +39,18 @@ template <
             impl::init_range(root_id),
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
-            [&coloring](const vertex_type& vertex, const edge_type& in_edge)
+            [&coloring](const types::id_type vertex_id, const edge_type& in_edge)
                 -> predicate_result { // enqueue predicate
                 if (in_edge.is_loop())
                     return false;
 
-                const auto vertex_id = vertex.id();
-                const auto source_id = in_edge.incident_vertex(vertex).id();
+                const auto pred_id = in_edge.incident_vertex(vertex_id).id();
 
-                if (coloring[vertex_id] == coloring[source_id])
+                if (coloring[vertex_id] == coloring[pred_id])
                     return predicate_result::unknown; // graph is not bipartite
 
-                if (not coloring[vertex.id()].is_set()) {
-                    coloring[vertex.id()] = coloring[source_id].next();
+                if (not coloring[vertex_id].is_set()) {
+                    coloring[vertex_id] = coloring[pred_id].next();
                     return true;
                 }
 

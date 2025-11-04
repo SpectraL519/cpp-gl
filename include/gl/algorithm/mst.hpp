@@ -26,17 +26,10 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(constants::zero);
 };
 
-template <
-    type_traits::c_undirected_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+template <type_traits::c_undirected_graph GraphType>
 [[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
     const GraphType& graph,
-    const std::optional<types::id_type> root_id_opt,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    const std::optional<types::id_type> root_id_opt
 ) {
     // type definitions
 
@@ -100,18 +93,11 @@ template <
     return mst;
 }
 
-template <
-    type_traits::c_undirected_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+template <type_traits::c_undirected_graph GraphType>
 requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
     const GraphType& graph,
-    const std::optional<types::id_type> root_id_opt,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    const std::optional<types::id_type> root_id_opt
 ) {
     // type definitions
     using edge_type = typename GraphType::edge_type;

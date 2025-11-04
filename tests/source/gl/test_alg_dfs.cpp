@@ -67,15 +67,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
 
     std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex,
-        [&](const auto& vertex) { // previsit
-            previsit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // previsit
+            previsit_order.push_back(vertex_id);
         },
-        [&](const auto& vertex) { // postvisit
-            postvisit_order.push_back(vertex.id());
-            vertex.properties().visited = true;
+        [&](const gl::types::id_type vertex_id) { // postvisit
+            postvisit_order.push_back(vertex_id);
+            vertex_properties[vertex_id].visited = true;
         }
     );
 
@@ -139,11 +140,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const auto& vertex) { // previsit
-            previsit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // previsit
+            previsit_order.push_back(vertex_id);
         },
-        [&](const auto& vertex) { // postvisit
-            postvisit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // postvisit
+            postvisit_order.push_back(vertex_id);
         }
     );
 
@@ -244,15 +245,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
     std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex,
-        [&](const auto& vertex) { // previsit
-            previsit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // previsit
+            previsit_order.push_back(vertex_id);
         },
-        [&](const auto& vertex) { // postvisit
-            postvisit_order.push_back(vertex.id());
-            vertex.properties().visited = true;
+        [&](const gl::types::id_type vertex_id) { // postvisit
+            postvisit_order.push_back(vertex_id);
+            vertex_properties[vertex_id].visited = true;
         }
     );
 
@@ -321,11 +323,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const auto& vertex) { // previsit
-            previsit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // previsit
+            previsit_order.push_back(vertex_id);
         },
-        [&](const auto& vertex) { // postvisit
-            postvisit_order.push_back(vertex.id());
+        [&](const gl::types::id_type vertex_id) { // postvisit
+            postvisit_order.push_back(vertex_id);
         }
     );
 

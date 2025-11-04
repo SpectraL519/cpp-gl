@@ -12,17 +12,14 @@ namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
+    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void dfs(
     const GraphType& graph,
-    const typename GraphType::vertex_type& root_vertex,
+    const types::id_type root_vertex_id,
     const VisitVertexPredicate& visit_vertex_pred,
     const VisitCallback& visit,
     const EnqueueVertexPred& enqueue_vertex_pred,
@@ -32,53 +29,50 @@ void dfs(
     using vertex_stack_type = std::stack<algorithm::vertex_info>;
 
     if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
-        if (not visit_vertex_pred(root_vertex))
+        if (not visit_vertex_pred(root_vertex_id))
             return;
 
     // prepare the vertex stack
     vertex_stack_type vertex_stack;
-    vertex_stack.emplace(root_vertex.id());
+    vertex_stack.emplace(root_vertex_id);
 
     // search the graph
     while (not vertex_stack.empty()) {
         const auto vinfo = vertex_stack.top();
         vertex_stack.pop();
 
-        const auto& vertex = graph.get_vertex(vinfo.id);
         if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
-            if (not visit_vertex_pred(vertex))
+            if (not visit_vertex_pred(vinfo.id))
                 continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
-            pre_visit(vertex);
+            pre_visit(vinfo.id);
 
-        visit(vertex, vinfo.source_id);
+        visit(vinfo.id, vinfo.pred_id);
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
-            const auto& incident_vertex = edge.incident_vertex(vertex);
-            if (enqueue_vertex_pred(incident_vertex, edge))
-                vertex_stack.emplace(incident_vertex.id(), vinfo.id);
+            const auto incident_vertex_id = edge.incident_vertex(vinfo.id).id();
+            if (enqueue_vertex_pred(incident_vertex_id, edge))
+                vertex_stack.emplace(incident_vertex_id, vinfo.id);
         }
 
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
-            post_visit(vertex);
+            post_visit(vinfo.id);
     }
 }
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_vertex_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
+    type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
+    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&>
         EnqueueVertexPred,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void r_dfs(
     const GraphType& graph,
-    const typename GraphType::vertex_type& vertex,
-    const types::id_type source_id,
+    const types::id_type vertex_id,
+    const types::id_type pred_id,
     const VisitVertexPredicate& visit_vertex_pred,
     const VisitCallback& visit,
     const EnqueueVertexPred& enqueue_vertex_pred,
@@ -86,22 +80,21 @@ void r_dfs(
     const PostVisitCallback& post_visit = {}
 ) {
     if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
-        if (not visit_vertex_pred(vertex))
+        if (not visit_vertex_pred(vertex_id))
             return;
 
     if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
-        pre_visit(vertex);
+        pre_visit(vertex_id);
 
-    visit(vertex, source_id);
+    visit(vertex_id, pred_id);
 
     // recursively search vertices adjacent to the current vertex
-    const auto vertex_id = vertex.id();
     for (const auto& edge : graph.adjacent_edges(vertex_id)) {
-        const auto& incident_vertex = edge.incident_vertex(vertex);
-        if (enqueue_vertex_pred(incident_vertex, edge))
+        const auto& incident_vertex_id = edge.incident_vertex(vertex_id).id();
+        if (enqueue_vertex_pred(incident_vertex_id, edge))
             r_dfs(
                 graph,
-                incident_vertex,
+                incident_vertex_id,
                 vertex_id,
                 visit_vertex_pred,
                 visit,
@@ -112,7 +105,7 @@ void r_dfs(
     }
 
     if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
-        post_visit(vertex);
+        post_visit(vertex_id);
 }
 
 } // namespace gl::algorithm::impl

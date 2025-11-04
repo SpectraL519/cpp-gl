@@ -30,23 +30,21 @@ template <
     return InitRangeType{algorithm::vertex_info{root_vertex_id}};
 }
 
-template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](const typename GraphType::vertex_type& vertex) -> bool {
-        return not visited[vertex.id()];
+    return [&](const types::id_type vertex_id) -> bool {
+        return not visited[vertex_id];
     };
 }
 
-template <type_traits::c_graph GraphType, result_discriminator ResultDiscriminator>
+template <result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited,
     alg_return_type_non_void<ResultDiscriminator, predecessors_descriptor>& pd
 ) {
-    return [&](const typename GraphType::vertex_type& vertex, const types::id_type source_id) {
-        const auto vertex_id = vertex.id();
+    return [&](const types::id_type vertex_id, const types::id_type pred_id) {
         visited[vertex_id] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
-            pd[vertex_id].emplace(source_id);
+            pd[vertex_id].emplace(pred_id);
         return true;
     };
 }
@@ -56,9 +54,8 @@ template <type_traits::c_graph GraphType, bool AsResult = false>
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
-    return [&](const typename GraphType::vertex_type& vertex,
-               const typename GraphType::edge_type& in_edge) -> return_type {
-        return not visited[vertex.id()];
+    return [&](const types::id_type vertex_id, const typename GraphType::edge_type& in_edge) -> return_type {
+        return not visited[vertex_id];
     };
 }
 

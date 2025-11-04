@@ -65,10 +65,8 @@ template <type_traits::c_graph GraphType>
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -94,10 +92,9 @@ template <
         impl::init_range(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
-        [&paths, &negative_edge](const vertex_type& vertex, const edge_type& in_edge)
+        [&paths, &negative_edge](const types::id_type vertex_id, const edge_type& in_edge)
             -> predicate_result { // enqueue predicate
-            const auto vertex_id = vertex.id();
-            const auto source_id = in_edge.incident_vertex(vertex).id();
+            const auto pred_id = in_edge.incident_vertex(vertex_id).id();
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
             if (edge_weight < constants::zero) {
@@ -105,11 +102,11 @@ template <
                 return predicate_result::unknown;
             }
 
-            const auto new_distance = paths.distances[source_id] + edge_weight;
+            const auto new_distance = paths.distances[pred_id] + edge_weight;
             if (not paths.predecessors[vertex_id].has_value()
                 or new_distance < paths.distances[vertex_id]) {
                 paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id].emplace(source_id);
+                paths.predecessors[vertex_id].emplace(pred_id);
                 return true;
             }
 

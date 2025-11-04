@@ -15,14 +15,11 @@ template <
     std::predicate<algorithm::vertex_info, algorithm::vertex_info> PQCompare,
     type_traits::c_sized_range_of<algorithm::vertex_info> InitQueueRangeType =
         std::vector<algorithm::vertex_info>,
-    type_traits::c_optional_vertex_callback<GraphType, bool> VisitVertexPredicate,
-    type_traits::c_optional_callback<GraphType, bool, types::id_type> VisitCallback,
-    type_traits::c_vertex_callback<GraphType, predicate_result, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    type_traits::c_optional_vertex_callback<GraphType, void> PreVisitCallback =
-        algorithm::empty_callback,
-    type_traits::c_optional_vertex_callback<GraphType, void> PostVisitCallback =
-        algorithm::empty_callback>
+    type_traits::c_optional_id_callback<GraphType, bool> VisitVertexPredicate,
+    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 bool pfs(
     const GraphType& graph,
     const PQCompare& pq_compare,
@@ -49,30 +46,29 @@ bool pfs(
         const auto vinfo = vertex_queue.top();
         vertex_queue.pop();
 
-        const auto& vertex = graph.get_vertex(vinfo.id);
         if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
-            if (not visit_vertex_pred(vertex))
+            if (not visit_vertex_pred(vinfo.id))
                 continue;
 
         if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
-            pre_visit(vertex);
+            pre_visit(vinfo.id);
 
         if constexpr (not type_traits::c_empty_callback<VisitCallback>)
-            if (not visit(vertex, vinfo.source_id))
+            if (not visit(vinfo.id, vinfo.pred_id))
                 return false;
 
         for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
-            const auto& incident_vertex = edge.incident_vertex(vertex);
+            const auto incident_vertex_id = edge.incident_vertex(vinfo.id).id();
 
-            const auto enqueue = enqueue_vertex_pred(incident_vertex, edge);
+            const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
             if (enqueue == predicate_result::unknown)
                 return false;
 
             if (enqueue)
-                vertex_queue.emplace(incident_vertex.id(), vinfo.id);
+                vertex_queue.emplace(incident_vertex_id, vinfo.id);
         }
         if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
-            post_visit(vertex);
+            post_visit(vinfo.id);
     }
 
     return true;

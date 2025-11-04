@@ -18,13 +18,13 @@ using enum result_discriminator;
 struct empty_callback {};
 
 struct vertex_info {
-    vertex_info(types::id_type id) : id(id), source_id(id) {}
+    vertex_info(types::id_type id) : id(id), pred_id(id) {}
 
-    vertex_info(types::id_type id, types::id_type source_id) : id(id), source_id(source_id) {}
+    vertex_info(types::id_type id, types::id_type pred_id) : id(id), pred_id(pred_id) {}
 
-    // if id == source_id then vertex_id is the id of the starting vertex
+    // if id == pred_id then vertex_id is the id of the starting vertex
     types::id_type id;
-    types::id_type source_id;
+    types::id_type pred_id;
 };
 
 template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
@@ -101,17 +101,17 @@ concept c_empty_callback = std::same_as<F, algorithm::empty_callback>;
 template <typename F, typename ReturnType, typename... Args>
 concept c_optional_callback = c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>;
 
-template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_vertex_callback =
-    std::is_invocable_r_v<ReturnType, F, const typename GraphType::vertex_type&, Args...>;
+template <typename F, typename ReturnType, typename... Args>
+concept c_id_callback =
+    std::is_invocable_r_v<ReturnType, F, const types::id_type&, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_edge_callback =
     std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
 
-template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_optional_vertex_callback =
-    c_optional_callback<F, ReturnType, const typename GraphType::vertex_type&, Args...>;
+template <typename F, typename ReturnType, typename... Args>
+concept c_optional_id_callback =
+    c_optional_callback<F, ReturnType, const types::id_type, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_optional_edge_callback =
