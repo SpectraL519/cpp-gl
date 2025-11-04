@@ -31,9 +31,7 @@ template <
 }
 
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](const types::id_type vertex_id) -> bool {
-        return not visited[vertex_id];
-    };
+    return [&](const types::id_type vertex_id) -> bool { return not visited[vertex_id]; };
 }
 
 template <result_discriminator ResultDiscriminator>
@@ -54,9 +52,8 @@ template <type_traits::c_graph GraphType, bool AsResult = false>
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
-    return [&](const types::id_type vertex_id, const typename GraphType::edge_type& in_edge) -> return_type {
-        return not visited[vertex_id];
-    };
+    return [&](const types::id_type vertex_id, const typename GraphType::edge_type& in_edge
+           ) -> return_type { return not visited[vertex_id]; };
 }
 
 } // namespace gl::algorithm::impl

@@ -17,7 +17,8 @@ template <
         std::vector<algorithm::vertex_info>,
     type_traits::c_optional_id_callback<GraphType, bool> VisitVertexPredicate,
     type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
-    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
     type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
     type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 bool pfs(
