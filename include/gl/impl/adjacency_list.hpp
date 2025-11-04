@@ -126,7 +126,7 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         // find the edge by address
         return std::ranges::contains(
-            this->_list[edge.first().id()], &edge, typename specialized_impl::address_projection{}
+            this->_list[edge.first()], &edge, typename specialized_impl::address_projection{}
         );
     }
 

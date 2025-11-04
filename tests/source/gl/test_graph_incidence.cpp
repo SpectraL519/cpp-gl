@@ -9,19 +9,15 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_incidence");
 
-struct test_graph_incidence {
+TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_template) {
     using vertex_type = gl::vertex_descriptor<>;
 
-    vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
-};
-
-TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_template) {
-    test_graph_incidence fixture;
-
     SutType sut{constants::n_elements};
+
     const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
     const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
     const auto& vd_3 = sut.get_vertex(constants::vertex_id_3);
+    vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
@@ -59,18 +55,14 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     SUBCASE("are_incident(vertex, vertex) should throw if at least one of the vertices is invalid"
     ) {
         CHECK_THROWS_AS(
-            func::discard_result(
-                sut.are_incident(fixture.out_of_range_vertex, fixture.out_of_range_vertex)
-            ),
+            func::discard_result(sut.are_incident(out_of_range_vertex, out_of_range_vertex)),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.out_of_range_vertex, vd_2)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(out_of_range_vertex, vd_2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, fixture.out_of_range_vertex)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(vd_1, out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -95,26 +87,22 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto& edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
-            std::out_of_range
+            func::discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
         );
     }
 
     SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
-        const typename SutType::edge_type invalid_edge{vd_1, vd_2};
+        const typename SutType::edge_type invalid_edge{vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
@@ -144,7 +132,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
         const auto& edge = sut.add_edge(vd_1, vd_2);
-        const typename SutType::edge_type invalid_edge{vd_1, vd_2};
+        const typename SutType::edge_type invalid_edge{vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
