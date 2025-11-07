@@ -28,40 +28,51 @@ public:
     edge_descriptor(const edge_descriptor&) = delete;
     edge_descriptor& operator=(const edge_descriptor&) = delete;
 
-    explicit edge_descriptor(const types::id_type first, const types::id_type second)
-    : _vertices(first, second) {}
-
+    // TODO: private
     explicit edge_descriptor(
-        const types::id_type first, const types::id_type second, properties_type properties
+        const types::id_type id, const types::id_type first, const types::id_type second
+    )
+    : _id(id), _vertices(first, second) {}
+
+    // TODO: private
+    explicit edge_descriptor(
+        const types::id_type id,
+        const types::id_type first,
+        const types::id_type second,
+        properties_type properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(first, second), _properties(properties) {}
+    : _id(id) _vertices(first, second), _properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
 
     ~edge_descriptor() = default;
 
-    [[nodiscard]] constexpr bool is_directed() const {
+    [[nodiscard]] constexpr bool is_directed() const noexcept {
         return type_traits::is_directed_v<type>;
     }
 
-    [[nodiscard]] constexpr bool is_undirected() const {
+    [[nodiscard]] constexpr bool is_undirected() const noexcept {
         return type_traits::is_undirected_v<type>;
     }
 
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices() const {
+    [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
+        return this->_id;
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices() const noexcept {
         return this->_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::id_type first() const {
+    [[nodiscard]] gl_attr_force_inline const types::id_type first() const noexcept {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::id_type second() const {
+    [[nodiscard]] gl_attr_force_inline const types::id_type second() const noexcept {
         return this->_vertices.second;
     }
 
@@ -78,25 +89,28 @@ public:
         throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id
+    ) const noexcept {
         return vertex_id == this->_vertices.first or vertex_id == this->_vertices.second;
     }
 
     // true if the given vertex is the `source` of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id
+    ) const noexcept {
         return directional_tag::is_incident_from(*this, vertex_id);
     }
 
     // true if the given vertex is the `target` vertex of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id
+    ) const noexcept {
         return directional_tag::is_incident_to(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_loop() const {
+    [[nodiscard]] gl_attr_force_inline bool is_loop() const noexcept {
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_type& properties() const {
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const noexcept {
         return this->_properties;
     }
 
@@ -136,6 +150,7 @@ private:
             os << "[" << this->_vertices.first << ", " << this->_vertices.second << "]";
     }
 
+    types::id_type _id;
     types::homogeneous_pair<types::id_type> _vertices;
     [[no_unique_address]] mutable properties_type _properties{};
 };

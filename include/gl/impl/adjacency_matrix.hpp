@@ -50,14 +50,6 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
-        return this->_matrix.size();
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
-        return this->_n_unique_edges;
-    }
-
     // --- vertex methods ---
 
     void add_vertex() {

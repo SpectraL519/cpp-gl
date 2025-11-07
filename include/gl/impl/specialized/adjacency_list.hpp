@@ -44,6 +44,14 @@ requires std::is_invocable_r_v<
 
 } // namespace detail
 
+// adjacency list edge frame
+struct al_edge_frame {
+    types::id_type id;
+    types::id_type target_id;
+
+    [[nodiscard]] bool operator==(const edge_frame&) = default;
+};
+
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {

@@ -18,10 +18,9 @@ public:
     using vertex_type = typename GraphTraits::vertex_type;
 
     using edge_type = typename GraphTraits::edge_type;
-    using edge_ptr_type = typename GraphTraits::edge_ptr_type;
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
-    using edge_list_type = std::vector<edge_ptr_type>;
+    using edge_list_type = std::vector<specialized::al_edge_frame>;
     using edge_iterator_type =
         types::dereferencing_iterator<typename edge_list_type::const_iterator>;
 
@@ -43,14 +42,6 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
-        return this->_list.size();
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
-        return this->_n_unique_edges;
-    }
-
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
@@ -58,9 +49,7 @@ public:
     }
 
     inline void add_vertices(const types::size_type n) {
-        this->_list.reserve(this->n_vertices() + n);
-        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
-            this->_list.emplace_back(edge_list_type{});
+        this->_list.resize(this->n_vertices() + n, edge_list_type{});
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
@@ -90,7 +79,7 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    gl_attr_force_inline void remove_vertex(const types::id_type& vertex_id) {
+    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) {
         specialized_impl::remove_vertex(*this, vertex_id);
     }
 
@@ -99,16 +88,18 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_type& add_edge(edge_ptr_type edge) {
+    gl_attr_force_inline void add_edge(types::id_type id, types::id_type first, types::id_type second) {
         return specialized_impl::add_edge(*this, std::move(edge));
     }
 
     // clang-format on
 
     gl_attr_force_inline void add_edges_from(
-        const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+        const type_traits::c_sized_range_od<types::id_type> auto& edge_ids,
+        const types::id_type source_id,
+        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
-        specialized_impl::add_edges_from(*this, source_id, std::move(new_edges));
+        specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
     [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
@@ -116,7 +107,8 @@ public:
         const auto& adjacent_edges = this->_list[first_id];
         return std::ranges::find_if(
                    adjacent_edges,
-                   [first_id, second_id](const auto& edge) {
+                   [first_id, second_id](const auto& frame) {
+                       // TODO: align
                        return specialized_impl::is_edge_incident_with(edge, second_id, first_id);
                    }
                )
@@ -126,49 +118,45 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         // find the edge by address
         return std::ranges::contains(
-            this->_list[edge.first()], &edge, typename specialized_impl::address_projection{}
+            this->_list[edge.first()], specialized::al_edge_frame{edge.id(), edge.second()}
         );
     }
 
-    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
+    [[nodiscard]] std::optional<types::id_type> get_edge_id(
         const types::id_type first_id, const types::id_type second_id
     ) const {
         const auto& adjacent_edges = this->_list[first_id];
-        const auto it =
-            std::ranges::find_if(adjacent_edges, [first_id, second_id](const auto& edge) {
-                return specialized_impl::is_edge_incident_with(edge, second_id, first_id);
-            });
-
+        const auto frame_it = std::ranges::find(adjacent_edges, second_id, [](const auto& frame) {
+            return frame.target_id;
+        });
         if (it == adjacent_edges.cend())
             return std::nullopt;
-        return std::cref(**it);
+        return return frame_it->id;
     }
 
-    [[nodiscard]] auto get_edges(const types::id_type first_id, const types::id_type second_id)
-        const {
-        using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
+    [[nodiscard]] std::vector<types::id_type> get_edge_ids(
+        const types::id_type first_id, const types::id_type second_id
+    ) const {
         const auto& adjacent_edges = this->_list[first_id];
 
-        edge_ref_set matching_edges{};
-        matching_edges.reserve(adjacent_edges.size());
+        std::vector<types::id_type> ids;
+        ids.reserve(adjacent_edges.size());
 
-        for (const auto& edge : adjacent_edges)
-            if (specialized_impl::is_edge_incident_with(edge, second_id, first_id))
-                matching_edges.emplace_back(*edge);
+        for (const auto& frame : adjacent_edges)
+            if (specialized_impl::is_edge_incident_with(frame, second_id, first_id)) // TODO: align
+                matching_edges.emplace_back(frame.id);
 
-        matching_edges.shrink_to_fit();
-        return matching_edges;
+        ids.shrink_to_fit();
+        return ids;
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edge_ids(const types::id_type vertex_id
     ) const {
-        const auto& adjacent_edges = this->_list[vertex_id];
-        return make_iterator_range(deref_cbegin(adjacent_edges), deref_cend(adjacent_edges));
+        return this->_list[vertex_id];
     }
 
 private:
