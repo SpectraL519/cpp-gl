@@ -20,7 +20,7 @@ public:
     using edge_type = typename GraphTraits::edge_type;
     using edge_directional_tag = typename GraphTraits::edge_directional_tag;
 
-    using edge_list_type = std::vector<specialized::al_edge_frame>;
+    using edge_list_type = std::vector<specialized::edge_list_item>;
     using edge_iterator_type =
         types::dereferencing_iterator<typename edge_list_type::const_iterator>;
 
@@ -102,61 +102,92 @@ public:
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
-    [[nodiscard]] bool has_edge(const types::id_type first_id, const types::id_type second_id)
-        const {
-        const auto& adjacent_edges = this->_list[first_id];
-        return std::ranges::find_if(
-                   adjacent_edges,
-                   [first_id, second_id](const auto& frame) {
-                       // TODO: align
-                       return specialized_impl::is_edge_incident_with(edge, second_id, first_id);
-                   }
-               )
-            != adjacent_edges.end();
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const types::id_type source_id, const types::id_type target_id
+    ) const {
+        return std::ranges::contains(this->_list[source_id], target_id, [](const auto& item) {
+            return item.target_id;
+        });
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
-        // find the edge by address
         return std::ranges::contains(
-            this->_list[edge.first()], specialized::al_edge_frame{edge.id(), edge.second()}
+            this->_list[edge.first()], specialized::edge_list_item{edge.id(), edge.second()}
         );
     }
 
-    [[nodiscard]] std::optional<types::id_type> get_edge_id(
-        const types::id_type first_id, const types::id_type second_id
+    [[nodiscard]] std::optional<edge_type> get_edge(
+        const types::id_type source_id, const types::id_type target_id
     ) const {
-        const auto& adjacent_edges = this->_list[first_id];
-        const auto frame_it = std::ranges::find(adjacent_edges, second_id, [](const auto& frame) {
-            return frame.target_id;
+        const auto& adjacent_edges = this->_list[source_id];
+        const auto item_it = std::ranges::find(adjacent_edges, target_id, [](const auto& item) {
+            return item.target_id;
         });
-        if (it == adjacent_edges.cend())
+        if (item_it == adjacent_edges.cend())
             return std::nullopt;
-        return return frame_it->id;
+        return std::make_optional<edge_type>(source_id, target_id);
     }
 
-    [[nodiscard]] std::vector<types::id_type> get_edge_ids(
-        const types::id_type first_id, const types::id_type second_id
+    [[nodiscard]] std::optional<edge_type> get_edge(
+        const types::id_type source_id,
+        const types::id_type target_id,
+        const auto& edge_properties_map
     ) const {
-        const auto& adjacent_edges = this->_list[first_id];
+        const auto& adjacent_edges = this->_list[source_id];
+        const auto item_it = std::ranges::find(adjacent_edges, target_id, [](const auto& item) {
+            return item.target_id;
+        });
+        if (item_it == adjacent_edges.cend())
+            return std::nullopt;
+        return std::make_optional<edge_type>(
+            item_it->id, source_id, target_id, edge_properties_map[item_it->id]
+        );
+    }
 
-        std::vector<types::id_type> ids;
-        ids.reserve(adjacent_edges.size());
+    [[nodiscard]] auto get_edges(const types::id_type source_id, const types::id_type target_id)
+        const {
+        return this->_list[source_id] | std::views::filter([&target_id](const auto& item) {
+                   return item.target_id == target_id;
+               })
+             | std::views::transform([source_id](const auto& item) {
+                   return edge_type{item.id, source_id, item.target_id};
+               });
+    }
 
-        for (const auto& frame : adjacent_edges)
-            if (specialized_impl::is_edge_incident_with(frame, second_id, first_id)) // TODO: align
-                matching_edges.emplace_back(frame.id);
-
-        ids.shrink_to_fit();
-        return ids;
+    [[nodiscard]] auto get_edges(
+        const types::id_type source_id,
+        const types::id_type target_id,
+        const auto& edge_properties_map
+    ) const {
+        return this->_list[source_id] | std::views::filter([&target_id](const auto& item) {
+                   return item.target_id == target_id;
+               })
+             | std::views::transform([source_id, &edge_properties_map](const auto& item) {
+                   return edge_type{
+                       item.id, source_id, item.target_id, edge_properties_map[item.id]
+                   };
+               });
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto adjacent_edge_ids(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
+        return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
+                   return edge_type{item.id, vertex_id, item.target_id};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
+        const types::id_type vertex_id, const auto& edge_properties_map
     ) const {
-        return this->_list[vertex_id];
+        return this->_list[vertex_id]
+             | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
+                   return edge_type{
+                       item.id, vertex_id, item.target_id, edge_properties_map[item.id]
+                   };
+               });
     }
 
 private:

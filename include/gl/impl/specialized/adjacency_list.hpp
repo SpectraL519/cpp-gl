@@ -45,7 +45,7 @@ requires std::is_invocable_r_v<
 } // namespace detail
 
 // adjacency list edge frame
-struct al_edge_frame {
+struct edge_list_item {
     types::id_type id;
     types::id_type target_id;
 
