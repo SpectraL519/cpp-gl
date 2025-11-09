@@ -118,10 +118,9 @@ struct directed_adjacency_matrix {
         return degree_map;
     }
 
-    template <bool GetRemovedEdgeIds>
-    static auto remove_vertex(impl_type& self, const types::id_type vertex_id)
-    requires(GetRemovedEdgeIds)
-    {
+    static std::vector<types::id_type> remove_vertex(
+        impl_type& self, const types::id_type vertex_id
+    ) {
         auto removed_edges =
             self._matrix[vertex_id]
             | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
@@ -136,15 +135,6 @@ struct directed_adjacency_matrix {
         }
 
         return removed_edges;
-    }
-
-    template <bool GetRemovedEdgeIds>
-    static auto remove_vertex(impl_type& self, const types::id_type vertex_id)
-    requires(not GetRemovedEdgeIds)
-    {
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
-        for (auto& row : self._matrix)
-            row.erase(std::next(std::begin(row), vertex_id));
     }
 
     static inline void add_edge(
@@ -170,6 +160,7 @@ struct directed_adjacency_matrix {
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
         detail::strict_get(self._matrix, edge) = constants::invalid_id;
+        // TODO: align edge ids (common)
     }
 };
 
@@ -232,22 +223,18 @@ struct undirected_adjacency_matrix {
         return degree_map;
     }
 
-    template <bool GetRemovedEdgeIds>
-    static auto remove_vertex(impl_type& self, const types::id_type vertex_id) {
+    static std::vector<types::id_type> remove_vertex(
+        impl_type& self, const types::id_type vertex_id
+    ) {
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
 
-        if constexpr (GetRemovedEdgeIds) {
-            const auto removed_edges =
-                self._matrix[vertex_id]
-                | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
-                | std::ranges::to<std::vector>;
-            self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
-            return removed_edges;
-        }
-        else {
-            self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
-        }
+        const auto removed_edges =
+            self._matrix[vertex_id]
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
+            | std::ranges::to<std::vector>;
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
+        return removed_edges;
     }
 
     static void add_edge(
@@ -287,6 +274,8 @@ struct undirected_adjacency_matrix {
             // it will also be present in the second matrix cell
             self._matrix[edge.second()][edge.first()] = constants::invalid_id;
         }
+
+        // TODO: align edge ids (common)
     }
 };
 

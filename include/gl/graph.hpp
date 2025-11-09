@@ -253,6 +253,8 @@ public:
         return this->_impl.degree_map();
     }
 
+    // TODO: add a get_vertex_properties function
+
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {

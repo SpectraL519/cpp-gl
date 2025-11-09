@@ -343,29 +343,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
-    "remove_vertex<GetRemovedEdgeIds=false> should remove the given vertex and all edges incident "
-    "with it"
-) {
-    init_complete_graph();
-
-    const auto removed_vertex_id = constants::first_element_idx;
-    sut.remove_vertex<false>(removed_vertex_id);
-
-    constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
-    constexpr auto n_incident_edges_after_remove =
-        n_incident_edges_for_fully_connected_vertex - constants::one_element;
-
-    REQUIRE_EQ(size(sut), n_vertices_after_remove);
-    for (const auto vertex_id :
-         constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_directed_adjacency_list,
-    "remove_vertex<GetRemovedEdgeIds=true> should remove the given vertex and all edges incident "
-    "with it"
+    "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
     const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
     const auto edge3 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
@@ -376,7 +354,7 @@ TEST_CASE_FIXTURE(
     const auto edge6 = add_edge(constants::vertex_id_3, constants::vertex_id_2);
 
     const auto removed_vertex_id = constants::vertex_id_1;
-    const auto removed_edge_ids = sut.remove_vertex<true>(removed_vertex_id);
+    const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
     REQUIRE_EQ(removed_edge_ids.size(), 4uz);
     for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
@@ -384,18 +362,10 @@ TEST_CASE_FIXTURE(
     for (const auto edge_id : {edge5.id(), edge6.id()})
         CHECK_FALSE(std::ranges::contains(removed_edge_ids, edge_id));
 
-    constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
-    constexpr auto n_incident_edges_after_remove =
-        n_incident_edges_for_fully_connected_vertex - constants::one_element;
-
-    REQUIRE_EQ(size(sut), n_vertices_after_remove);
-    for (const auto vertex_id :
-         constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
-    }
+    CHECK_EQ(size(sut), constants::n_elements - 1uz);
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).size(), 1uz); // IDs were aligned
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).size(), 1uz); // IDs were aligned
 }
-
-// TODO: add test case with GetRemovedEdgeIds=true
 
 struct test_undirected_adjacency_list : public test_adjacency_list {
     using edge_type = gl::undirected_edge<>;
@@ -670,20 +640,24 @@ TEST_CASE_FIXTURE(
     test_undirected_adjacency_list,
     "remove_vertex should remove the given vertex and all edges incident with it"
 ) {
-    init_complete_graph();
+    const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge3 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
+    const auto edge2 = add_edge(constants::vertex_id_1, constants::vertex_id_3);
+    const auto edge4 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
+
+    const auto edge5 = add_edge(constants::vertex_id_2, constants::vertex_id_3);
 
     const auto removed_vertex_id = constants::first_element_idx;
-    sut.remove_vertex<false>(removed_vertex_id);
+    const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
-    constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
-    constexpr auto n_incident_edges_after_remove =
-        n_incident_edges_for_fully_connected_vertex - constants::one_element;
+    REQUIRE_EQ(removed_edge_ids.size(), 4uz);
+    for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
+        CHECK(std::ranges::contains(removed_edge_ids, edge_id));
+    CHECK_FALSE(std::ranges::contains(removed_edge_ids, edge5.id()));
 
-    REQUIRE_EQ(size(sut), n_vertices_after_remove);
-    for (const auto vertex_id :
-         constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
-    }
+    CHECK_EQ(size(sut), constants::n_elements - 1uz);
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).size(), 1uz); // IDs were aligned
+    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).size(), 1uz); // IDs were aligned
 }
 
 TEST_SUITE_END(); // test_adjacency_list

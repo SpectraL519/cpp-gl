@@ -75,9 +75,10 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    template <bool GetRemovedEdgeIds>
-    gl_attr_force_inline auto remove_vertex(const types::id_type vertex_id) {
-        return specialized_impl::template remove_vertex<GetRemovedEdgeIds>(*this, vertex_id);
+    std::vector<types::id_type> remove_vertex(const types::id_type vertex_id) {
+        const auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
+        // TODO: sort removed_edge_ids & align edge ids (remapping)
+        return removed_edge_ids;
     }
 
     // --- edge methods ---
