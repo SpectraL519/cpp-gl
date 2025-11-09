@@ -1,176 +1,191 @@
-// #include "testing/gl/constants.hpp"
-// #include "testing/gl/functional.hpp"
-// #include "testing/gl/transforms.hpp"
+#include "testing/gl/constants.hpp"
+#include "testing/gl/functional.hpp"
+#include "testing/gl/transforms.hpp"
 
-// #include <gl/graph_traits.hpp>
-// #include <gl/impl/adjacency_matrix.hpp>
+#include <gl/graph_traits.hpp>
+#include <gl/impl/adjacency_matrix.hpp>
+#include <gl/util/ranges.hpp>
 
-// #include <doctest.h>
+#include <doctest.h>
 
-// #include <algorithm>
-// #include <functional>
+#include <algorithm>
+#include <functional>
 
-// namespace gl_testing {
+namespace gl_testing {
 
-// TEST_SUITE_BEGIN("test_adjacency_matrix");
+TEST_SUITE_BEGIN("test_adjacency_matrix");
 
-// TEST_CASE_TEMPLATE_DEFINE(
-//     "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
-// ) {
-//     SUBCASE("should be initialized with no vertices and no edges by default") {
-//         SutType sut{};
-//         CHECK_EQ(sut.n_vertices(), constants::zero_elements);
-//         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
-//     }
+struct test_adjacency_matrix {
+    const auto& get(const auto& sut) const {
+        return sut._matrix;
+    }
 
-//     SUBCASE("constructed with the n_vertices parameter should properly initialize the adjacency "
-//             "matrix") {
-//         SutType sut{constants::n_elements};
-//         REQUIRE_EQ(sut.n_vertices(), constants::n_elements);
-//         REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
+    gl::types::size_type size(const auto& sut) const {
+        return sut._matrix.size();
+    }
 
-//         std::ranges::for_each(constants::vertex_id_view, [&sut](const gl::types::id_type vertex_id) {
-//             CHECK_EQ(sut.adjacent_edges(vertex_id).distance(), constants::zero_elements);
-//         });
-//     }
+    gl::types::size_type next_edge_id = 0uz;
+};
 
-//     SUBCASE("add_vertex should properly extend the current adjacency matrix") {
-//         SutType sut{};
-//         constexpr gl::types::size_type target_n_vertices = constants::n_elements;
+inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
 
-//         for (gl::types::size_type n_vertices = constants::one_element;
-//              n_vertices <= target_n_vertices;
-//              n_vertices++) {
-//             sut.add_vertex();
-//             CHECK_EQ(sut.n_vertices(), n_vertices);
-//         }
+TEST_CASE_TEMPLATE_DEFINE(
+    "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
+) {
+    test_adjacency_matrix fixture;
 
-//         CHECK_EQ(sut.n_vertices(), target_n_vertices);
-//         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
-//     }
+    SUBCASE("should be initialized with no vertices and no edges by default") {
+        SutType sut{};
+        CHECK_EQ(fixture.size(sut), constants::zero_elements);
+    }
 
-//     SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
-//         SutType sut{};
-//         sut.add_vertices(constants::n_elements);
+    SUBCASE("constructed with the n_vertices parameter should properly initialize the adjacency "
+            "matrix") {
+        SutType sut{constants::n_elements};
+        REQUIRE_EQ(fixture.size(sut), constants::n_elements);
+        CHECK(std::ranges::all_of(fixture.get(sut), [](const auto& matrix_row) {
+            return std::ranges::count_if(matrix_row, is_valid_id) == constants::zero;
+        }));
+    }
 
-//         CHECK_EQ(sut.n_vertices(), constants::n_elements);
-//         CHECK_EQ(sut.n_unique_edges(), constants::zero_elements);
-//     }
+    SUBCASE("add_vertex should properly extend the current adjacency matrix") {
+        SutType sut{};
+        constexpr gl::types::size_type target_n_vertices = constants::n_elements;
 
-//     SUBCASE("add_edge should throw an error if the vertices are already incident") {
-//         using edge_type = typename SutType::edge_type;
+        for (gl::types::size_type n_vertices = constants::one_element;
+             n_vertices <= target_n_vertices;
+             n_vertices++) {
+            sut.add_vertex();
+            CHECK_EQ(fixture.size(sut), n_vertices);
+        }
 
-//         SutType sut{constants::n_elements};
-//         sut.add_edge(
-//             gl::detail::make_edge<edge_type>(constants::vertex_id_1, constants::vertex_id_2)
-//         );
-//         REQUIRE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+        CHECK_EQ(fixture.size(sut), target_n_vertices);
+        CHECK(std::ranges::all_of(fixture.get(sut), [](const auto& matrix_row) {
+            return std::ranges::count_if(matrix_row, is_valid_id) == constants::zero;
+        }));
+    }
 
-//         CHECK_THROWS_AS(
-//             sut.add_edge(
-//                 gl::detail::make_edge<edge_type>(constants::vertex_id_1, constants::vertex_id_2)
-//             ),
-//             std::logic_error
-//         );
-//     }
+    SUBCASE("add_vertices(n) should properly extend the current adjacency list") {
+        SutType sut{};
+        sut.add_vertices(constants::n_elements);
 
-//     SUBCASE("add_edges_from should throw an error if the vertices are already incident") {
-//         using edge_type = typename SutType::edge_type;
-//         using edge_ptr_type = typename SutType::edge_ptr_type;
+        CHECK_EQ(fixture.size(sut), constants::n_elements);
+        CHECK(std::ranges::all_of(fixture.get(sut), [](const auto& matrix_row) {
+            return std::ranges::count_if(matrix_row, is_valid_id) == constants::zero;
+        }));
+    }
 
-//         SutType sut{constants::n_elements};
-//         const auto vertices = {
-//             constants::vertex_id_1, constants::vertex_id_2, constants::vertex_id_3
-//         };
+    SUBCASE("add_edge should throw an error if the vertices are already incident") {
+        using edge_type = typename SutType::edge_type;
 
-//         std::vector<edge_ptr_type> new_edges;
-//         for (const auto& target : vertices)
-//             new_edges.push_back(gl::detail::make_edge<edge_type>(constants::vertex_id_1, target));
+        SutType sut{constants::n_elements};
+        sut.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_2);
+        REQUIRE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
 
-//         sut.add_edges_from(constants::vertex_id_1, std::move(new_edges));
+        CHECK_THROWS_AS(
+            sut.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_2),
+            std::logic_error
+        );
+    }
 
-//         REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto target_id) {
-//             return sut.has_edge(constants::vertex_id_1, target_id);
-//         }));
+    SUBCASE("add_edges_from should throw an error if the vertices are already incident") {
+        using edge_type = typename SutType::edge_type;
 
-//         std::ranges::for_each(vertices, [&sut](const auto target) {
-//             std::vector<edge_ptr_type> new_edges;
-//             new_edges.push_back(gl::detail::make_edge<edge_type>(constants::vertex_id_1, target));
+        SutType sut{constants::n_elements};
+        const auto target_ids = {
+            constants::vertex_id_1, constants::vertex_id_2, constants::vertex_id_3
+        };
 
-//             CHECK_THROWS_AS(
-//                 sut.add_edges_from(constants::vertex_id_1, std::move(new_edges)), std::logic_error
-//             );
-//         });
-//     }
-// }
+        sut.add_edges_from(
+            std::views::iota(0uz, target_ids.size()), constants::vertex_id_1, target_ids
+        );
 
-// TEST_CASE_TEMPLATE_INSTANTIATE(
-//     edge_directional_tag_sut_template,
-//     gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>, // directed adj list
-//     gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj list
-// );
+        REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto target_id) {
+            return sut.has_edge(constants::vertex_id_1, target_id);
+        }));
 
-// namespace {
+        std::ranges::for_each(target_ids, [&sut, &fixture](const auto target_id) {
+            CHECK_THROWS_AS(
+                sut.add_edge(fixture.next_edge_id++, constants::vertex_id_1, target_id),
+                std::logic_error
+            );
+        });
+    }
+}
 
-// constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
-//     constants::n_elements - constants::one_element;
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    edge_directional_tag_sut_template,
+    gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>, // directed adj list
+    gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj list
+);
 
-// } // namespace
+namespace {
 
-// struct test_directed_adjacency_matrix {
-//     using edge_type = gl::directed_edge<>;
-//     using edge_ptr_type = gl::directed_t::edge_ptr_type<edge_type>;
-//     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>;
+constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
+    constants::n_elements - constants::one_element;
 
-//     test_directed_adjacency_matrix() {}
+} // namespace
 
-//     const edge_type& add_edge(
-//         const gl::types::id_type first_id, const gl::types::id_type second_id
-//     ) {
-//         return sut.add_edge(gl::detail::make_edge<edge_type>(first_id, second_id));
-//     }
+struct test_directed_adjacency_matrix : public test_adjacency_matrix {
+    using edge_type = gl::directed_edge<>;
+    using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>;
 
-//     void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
-//         for (const auto second_id : constants::vertex_id_view) {
-//             if (second_id == first_id and no_loops)
-//                 continue;
+    test_directed_adjacency_matrix() {}
 
-//             add_edge(first_id, second_id);
-//         }
-//     }
+    edge_type add_edge(const gl::types::id_type first_id, const gl::types::id_type second_id) {
+        const auto new_edge_id = this->next_edge_id++;
+        sut.add_edge(new_edge_id, first_id, second_id);
+        return edge_type{new_edge_id, first_id, second_id};
+    }
 
-//     void init_complete_graph(const bool no_loops = true) {
-//         for (const auto first_id : constants::vertex_id_view)
-//             fully_connect_vertex(first_id, no_loops);
+    void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
+        for (const auto second_id : constants::vertex_id_view) {
+            if (second_id == first_id and no_loops)
+                continue;
 
-//         if (no_loops)
-//             REQUIRE_EQ(sut.n_unique_edges(), n_unique_edges_in_full_graph);
-//         else
-//             REQUIRE_EQ(sut.n_unique_edges(), constants::n_elements * constants::n_elements);
-//     }
+            add_edge(first_id, second_id);
+        }
+    }
 
-//     sut_type sut{constants::n_elements};
+    void init_complete_graph(const bool no_loops = true) {
+        for (const auto first_id : constants::vertex_id_view)
+            fully_connect_vertex(first_id, no_loops);
 
-//     static constexpr gl::types::size_type n_unique_edges_in_full_graph =
-//         n_incident_edges_for_fully_connected_vertex * constants::n_elements;
-// };
+        if (no_loops)
+            REQUIRE(std::ranges::all_of(get(sut), [&](const auto& matrix_row) {
+                return std::ranges::count_if(matrix_row, is_valid_id)
+                    == n_incident_edges_for_fully_connected_vertex;
+            }));
+        else
+            REQUIRE(std::ranges::all_of(get(sut), [&](const auto& matrix_row) {
+                return std::ranges::count_if(matrix_row, is_valid_id)
+                    == n_incident_edges_for_fully_connected_vertex + constants::one;
+            }));
+    }
 
-// TEST_CASE_FIXTURE(
-//     test_directed_adjacency_matrix, "add_edge should add the edge only to the source vertex list"
-// ) {
-//     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
-//     REQUIRE_EQ(sut.n_unique_edges(), constants::one_element);
+    sut_type sut{constants::n_elements};
 
-//     REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
-//     REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
+    static constexpr gl::types::size_type n_unique_edges_in_full_graph =
+        n_incident_edges_for_fully_connected_vertex * constants::n_elements;
+};
 
-//     const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-//     CHECK_EQ(adjacent_edges_1.distance(), constants::one_element);
-//     CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).distance(), constants::zero_elements);
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix, "add_edge should add the edge only to the source vertex list"
+) {
+    const auto new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
-//     const auto& new_edge_extracted = adjacent_edges_1[constants::first_element_idx];
-//     CHECK_EQ(&new_edge_extracted, &new_edge);
-// }
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+    REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
+
+    auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+    CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
+    CHECK_EQ(
+        gl::util::range_size(sut.adjacent_edges(constants::vertex_id_2)), constants::zero_elements
+    );
+
+    const auto& new_edge_extracted = *std::ranges::begin(adjacent_edges_1);
+    CHECK_EQ(new_edge_extracted, new_edge);
+}
 
 // TEST_CASE_FIXTURE(
 //     test_directed_adjacency_matrix,
@@ -653,6 +668,6 @@
 //     }
 // }
 
-// TEST_SUITE_END(); // test_adjacency_matrix
+TEST_SUITE_END(); // test_adjacency_matrix
 
-// } // namespace gl_testing
+} // namespace gl_testing

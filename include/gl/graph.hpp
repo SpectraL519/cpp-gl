@@ -6,6 +6,9 @@
 // - impl::add_edge should accept: id, first, second
 // - impl::add_edges_from should accept: edge_ids view, source_id, target_id_range
 // - impl::remove_edge should accept: id, first, second
+// - add a get_vertex_properties(id) function
+// - add a get_edge_properties(id) function
+// - add n_adjacent_edges(id) function
 
 #pragma once
 
@@ -252,8 +255,6 @@ public:
     [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map() const {
         return this->_impl.degree_map();
     }
-
-    // TODO: add a get_vertex_properties function
 
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)

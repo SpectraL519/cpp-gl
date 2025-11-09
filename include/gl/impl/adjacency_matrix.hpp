@@ -11,6 +11,13 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
 
+#ifdef GL_TESTING
+namespace gl_testing {
+struct test_adjacency_matrix;
+} // namespace gl_testing
+#endif
+
+
 namespace gl::impl {
 
 template <type_traits::c_matrix_graph_traits GraphTraits>
@@ -164,11 +171,13 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
         return this->_matrix[vertex_id] | std::views::enumerate
-             | std::views::filter([](const auto target_id, const auto edge_id) {
+             | std::views::filter([](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
                    return edge_id != constants::invalid_id;
                })
-             | std::views::transform([vertex_id](const auto target_id, const auto edge_id) {
-                   return edge_type{edge_id, vertex_id, target_id};
+             | std::views::transform([vertex_id](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_type{edge_id, vertex_id, static_cast<types::id_type>(target_id)};
                });
     }
 
@@ -176,17 +185,24 @@ public:
         const types::id_type vertex_id, const auto& edge_properties_map
     ) const {
         return this->_matrix[vertex_id] | std::views::enumerate
-             | std::views::filter([](const auto target_id, const auto edge_id) {
+             | std::views::filter([](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
                    return edge_id != constants::invalid_id;
                })
-             | std::views::transform(
-                   [vertex_id, &edge_properties_map](const auto target_id, const auto edge_id) {
-                       return edge_type{
-                           edge_id, vertex_id, target_id, edge_properties_map[edge_id]
-                       };
-                   }
-             );
+             | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_type{
+                       edge_id,
+                       vertex_id,
+                       static_cast<types::id_type>(target_id),
+                       edge_properties_map[edge_id]
+                   };
+               });
     }
+
+#ifdef GL_TESTING
+    friend struct gl_testing::test_adjacency_matrix;
+#endif
 
 private:
     using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;

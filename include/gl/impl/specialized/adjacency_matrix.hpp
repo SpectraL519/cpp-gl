@@ -151,7 +151,7 @@ struct directed_adjacency_matrix {
         const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
-            detail::check_edge_override(self, source_id, target_id);
+            detail::check_edge_override(self._matrix, source_id, target_id);
 
         auto& matrix_source_row = self._matrix[source_id];
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
@@ -170,7 +170,6 @@ struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
-    using edge_ptr_type = typename impl_type::edge_ptr_type;
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
@@ -240,7 +239,7 @@ struct undirected_adjacency_matrix {
     static void add_edge(
         impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
     ) {
-        detail::check_edge_override<impl_type>(self, source_id, target_id);
+        detail::check_edge_override(self._matrix, source_id, target_id);
 
         self._matrix[source_id][target_id] = edge_id;
         if (target_id != source_id)
@@ -254,7 +253,7 @@ struct undirected_adjacency_matrix {
         const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
-            detail::check_edge_override(self, source_id, target_id);
+            detail::check_edge_override(self._matrix, source_id, target_id);
 
         auto& matrix_source_row = self._matrix[source_id];
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids)) {
