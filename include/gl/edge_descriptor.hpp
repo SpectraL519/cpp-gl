@@ -42,7 +42,7 @@ public:
         properties_type properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _id(id) _vertices(first, second), _properties(properties) {}
+    : _id(id), _vertices(first, second), _properties(properties) {}
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
@@ -68,10 +68,12 @@ public:
         return this->_vertices;
     }
 
+    // TODO: rename to source
     [[nodiscard]] gl_attr_force_inline const types::id_type first() const noexcept {
         return this->_vertices.first;
     }
 
+    // TODO: rename to target
     [[nodiscard]] gl_attr_force_inline const types::id_type second() const noexcept {
         return this->_vertices.second;
     }

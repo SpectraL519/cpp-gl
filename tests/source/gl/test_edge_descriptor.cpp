@@ -13,18 +13,21 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = gl::vertex_descriptor<>;
 
-    gl::types::id_type v1 = constants::vertex_id_1;
-    gl::types::id_type v2 = constants::vertex_id_2;
-    gl::types::id_type v3 = constants::vertex_id_3;
+    static constexpr gl::types::id_type id1 = constants::first_element_idx;
+    static constexpr gl::types::id_type id2 = id1 + constants::one;
+
+    static constexpr gl::types::id_type v1 = constants::vertex_id_1;
+    static constexpr gl::types::id_type v2 = constants::vertex_id_2;
+    static constexpr gl::types::id_type v3 = constants::vertex_id_3;
 };
 
 TEST_CASE_FIXTURE(
     test_edge_descriptor, "is_directed() should return true only for edges with directed edge tag"
 ) {
-    gl::directed_edge<> directed_edge{v1, v2};
+    gl::directed_edge<> directed_edge{id1, v1, v2};
     CHECK(directed_edge.is_directed());
 
-    gl::undirected_edge<> undirected_edge{v1, v2};
+    gl::undirected_edge<> undirected_edge{id2, v1, v2};
     CHECK_FALSE(undirected_edge.is_directed());
 }
 
@@ -32,10 +35,10 @@ TEST_CASE_FIXTURE(
     test_edge_descriptor,
     "is_undirected() should return true only for edges with bidirectional edge tag"
 ) {
-    gl::undirected_edge<> undirected_edge{v1, v2};
+    gl::undirected_edge<> undirected_edge{id1, v1, v2};
     CHECK(undirected_edge.is_undirected());
 
-    gl::directed_edge<> directed_edge{v1, v2};
+    gl::directed_edge<> directed_edge{id2, v1, v2};
     CHECK_FALSE(directed_edge.is_undirected());
 }
 
@@ -45,7 +48,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     test_edge_descriptor fixture;
 
     const types::used_property used{true};
-    const EdgeType sut{fixture.v1, fixture.v2, used};
+    const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
 
     CHECK_EQ(sut.properties(), used);
 }
@@ -58,7 +61,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     test_edge_descriptor fixture{};
 
-    EdgeType sut{fixture.v1, fixture.v2};
+    EdgeType sut{fixture.id1, fixture.v1, fixture.v2};
+
+    SUBCASE("id() should return the ID of the edge") {
+        CHECK_EQ(sut.id(), fixture.id1);
+    }
 
     SUBCASE("incident_vertices should return the pair of vertex IDS the edge was initialized with"
     ) {
@@ -98,7 +105,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {
         CHECK_FALSE(sut.is_loop());
 
-        const EdgeType loop{fixture.v1, fixture.v1};
+        const EdgeType loop{fixture.id1, fixture.v1, fixture.v1};
         CHECK(loop.is_loop());
     }
 }

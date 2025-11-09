@@ -16,17 +16,9 @@ template <type_traits::c_list_graph_traits GraphTraits>
 class adjacency_list final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
-
     using edge_type = typename GraphTraits::edge_type;
-    using edge_directional_tag = typename GraphTraits::edge_directional_tag;
-
-    using edge_list_type = std::vector<specialized::edge_list_item>;
-    using edge_iterator_type =
-        types::dereferencing_iterator<typename edge_list_type::const_iterator>;
-
-    // TODO: reverese iterators should be available for bidirectional ranges
-
-    using list_type = std::vector<edge_list_type>;
+    using edge_item_list_type = std::vector<specialized::edge_list_item>;
+    using adjacency_list_type = std::vector<edge_item_list_type>;
 
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
@@ -40,16 +32,14 @@ public:
 
     ~adjacency_list() = default;
 
-    // --- general methods ---
-
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
-        this->_list.emplace_back(edge_list_type{});
+        this->_list.emplace_back(edge_item_list_type{});
     }
 
     inline void add_vertices(const types::size_type n) {
-        this->_list.resize(this->n_vertices() + n, edge_list_type{});
+        this->_list.resize(this->_list.size() + n, edge_item_list_type{});
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
@@ -79,23 +69,21 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) {
-        specialized_impl::remove_vertex(*this, vertex_id);
+    template <bool GetRemovedEdgeIds>
+    gl_attr_force_inline auto remove_vertex(const types::id_type vertex_id) {
+        return specialized_impl::template remove_vertex<GetRemovedEdgeIds>(*this, vertex_id);
     }
 
     // --- edge methods ---
 
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    gl_attr_force_inline void add_edge(types::id_type id, types::id_type first, types::id_type second) {
-        return specialized_impl::add_edge(*this, std::move(edge));
+    gl_attr_force_inline void add_edge(
+        types::id_type id, types::id_type source_id, types::id_type target_id
+    ) {
+        specialized_impl::add_edge(*this, id, source_id, target_id);
     }
 
-    // clang-format on
-
     gl_attr_force_inline void add_edges_from(
-        const type_traits::c_sized_range_od<types::id_type> auto& edge_ids,
+        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
         const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
@@ -144,17 +132,19 @@ public:
         );
     }
 
-    [[nodiscard]] auto get_edges(const types::id_type source_id, const types::id_type target_id)
-        const {
+    [[nodiscard]] std::vector<edge_type> get_edges(
+        const types::id_type source_id, const types::id_type target_id
+    ) const {
         return this->_list[source_id] | std::views::filter([&target_id](const auto& item) {
                    return item.target_id == target_id;
                })
              | std::views::transform([source_id](const auto& item) {
                    return edge_type{item.id, source_id, item.target_id};
-               });
+               })
+             | std::ranges::to<std::vector>();
     }
 
-    [[nodiscard]] auto get_edges(
+    [[nodiscard]] std::vector<edge_type> get_edges(
         const types::id_type source_id,
         const types::id_type target_id,
         const auto& edge_properties_map
@@ -166,7 +156,8 @@ public:
                    return edge_type{
                        item.id, source_id, item.target_id, edge_properties_map[item.id]
                    };
-               });
+               })
+             | std::ranges::to<std::vector>();
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
@@ -194,8 +185,7 @@ private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
 
-    list_type _list{};
-    types::size_type _n_unique_edges{constants::default_size};
+    adjacency_list_type _list{};
 };
 
 } // namespace gl::impl

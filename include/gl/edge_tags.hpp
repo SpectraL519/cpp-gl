@@ -26,6 +26,8 @@ class edge_descriptor;
 
 namespace type_traits {
 
+// TODO: use concepts
+
 template <typename T>
 inline constexpr bool is_directed_v = false;
 
@@ -44,28 +46,6 @@ inline constexpr bool is_undirected_v<EdgeType> =
 
 struct directed_t {
     using type = std::type_identity_t<directed_t>;
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_directed_v<EdgeType>)
-    using edge_ptr_type = std::unique_ptr<EdgeType>;
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_directed_v<EdgeType>)
-    [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const types::id_type first, const types::id_type second
-    ) {
-        return std::make_unique<EdgeType>(first, second);
-    }
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_directed_v<EdgeType>)
-    [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const types::id_type first,
-        const types::id_type second,
-        const typename EdgeType::properties_type& properties
-    ) {
-        return std::make_unique<EdgeType>(first, second, properties);
-    }
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_directed_v<EdgeType>)
@@ -89,28 +69,6 @@ struct undirected_t {
 
     template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(type_traits::is_undirected_v<EdgeType>)
-    using edge_ptr_type = std::shared_ptr<EdgeType>;
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_undirected_v<EdgeType>)
-    [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const types::id_type first, const types::id_type second
-    ) {
-        return std::make_shared<EdgeType>(first, second);
-    }
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_undirected_v<EdgeType>)
-    [[nodiscard]] gl_attr_force_inline static edge_ptr_type<EdgeType> make(
-        const types::id_type first,
-        const types::id_type second,
-        const typename EdgeType::properties_type& properties
-    ) {
-        return std::make_shared<EdgeType>(first, second, properties);
-    }
-
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::is_undirected_v<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
         const EdgeType& edge, const types::id_type vertex_id
     ) {
@@ -125,32 +83,5 @@ struct undirected_t {
         return edge.is_incident_with(vertex_id);
     }
 };
-
-namespace types {
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-using edge_ptr_type = typename EdgeType::directional_tag::template edge_ptr_type<EdgeType>;
-
-} // namespace types
-
-namespace detail {
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
-    const types::id_type first, const types::id_type second
-) {
-    return EdgeType::directional_tag::template make<EdgeType>(first, second);
-}
-
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-[[nodiscard]] gl_attr_force_inline types::edge_ptr_type<EdgeType> make_edge(
-    const types::id_type first,
-    const types::id_type second,
-    const typename EdgeType::properties_type& properties
-) {
-    return EdgeType::directional_tag::template make<EdgeType>(first, second, properties);
-}
-
-} // namespace detail
 
 } // namespace gl

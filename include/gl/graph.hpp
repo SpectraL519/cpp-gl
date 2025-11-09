@@ -159,8 +159,9 @@ public:
         }
     }
 
-    template <type_traits::c_sized_range_of<vertex_properties_type> VertexPropertiesRange>
-    void add_vertices_with(const VertexPropertiesRange& properties_range)
+    void add_vertices_with(
+        const type_traits::c_sized_range_of<vertex_properties_type> auto& properties_range
+    )
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
         const auto n = std::ranges::size(properties_range);
@@ -186,8 +187,9 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    template <type_traits::c_sized_range_of<types::id_type> IdRange>
-    void remove_vertices_from(const IdRange& vertex_id_range) {
+    void remove_vertices_from(
+        const type_traits::c_sized_range_of<types::id_type> auto& vertex_id_range
+    ) {
         // sorts the ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
@@ -198,26 +200,14 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
-    void remove_vertices_from(const VertexRefRange& vertex_ref_range) {
-        // TODO [C++26]: replace with std::greater
-        struct vertex_ref_greater_comparator {
-            [[nodiscard]] bool operator()(
-                const types::const_ref_wrap<vertex_type>& lhs,
-                const types::const_ref_wrap<vertex_type>& rhs
-            ) const {
-                return lhs.get() > rhs.get();
-            }
-        };
-
-        // sorts the ids in a descending order and removes duplicate ids
-        std::set<types::const_ref_wrap<vertex_type>, vertex_ref_greater_comparator> vertex_ref_set(
-            std::ranges::begin(vertex_ref_range), std::ranges::end(vertex_ref_range)
-        );
-
+    void remove_vertices_from(const type_traits::c_sized_range_of<vertex_type> auto& vertex_range) {
         // TODO: optimize
-        for (const auto& vertex_ref : vertex_ref_set)
-            this->_remove_vertex_impl(vertex_ref.get().id());
+        // sort the ids in a descending order and removes duplicate ids
+        std::set<vertex_type> vertex_set(
+            std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
+        );
+        for (const auto& vertex : vertex_set)
+            this->_remove_vertex_impl(vertex.id());
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
@@ -324,8 +314,11 @@ public:
         return this->add_edge(first.id(), second.id(), properties);
     }
 
-    template <type_traits::c_sized_range_of<types::id_type> IdRange>
-    void add_edges_from(const types::id_type source_id, const IdRange& target_id_range) {
+    void add_edges_from(
+        const types::id_type source_id,
+        const type_traits::c_sized_range_of<types::id_type> auto& target_id_range
+    ) {
+        // TODO: validate no duplicate target ids
         this->_verify_vertex_id(source_id);
 
         for (const auto target_id : target_id_range) {
@@ -342,23 +335,25 @@ public:
     }
 
     // TODO: range of convertible_to<const vertex_type&>
-    template <type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>> VertexRefRange>
     gl_attr_force_inline void add_edges_from(
-        const vertex_type& source, const VertexRefRange& target_range
+        const vertex_type& source,
+        const type_traits::c_sized_range_of<vertex_type> auto& target_range
     ) {
+        // TODO: validate no duplicate targets
         this->_verify_vertex_id(source.id());
 
-        for (const auto& target_ref : target_range) {
-            const auto& target = target_ref.get();
+        for (const auto& target : target_range) {
             this->_verify_vertex_id(target.id());
             if constexpr (not type_traits::is_default_properties_type_v<edge_properties_type>)
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
         }
 
         const auto prev_n_edges = this->_n_unique_edges;
-        this->_n_unique_edges += std::ranges::size(target_id_range);
+        this->_n_unique_edges += std::ranges::size(target_range);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_unique_edges), source_id, target_id_range
+            std::views::iota(prev_n_edges, this->_n_unique_edges),
+            source.id(),
+            target_range | std::views::transform(&vertex_type::id)
         );
     }
 
@@ -370,8 +365,9 @@ public:
         return this->_impl.has_edge(first_id, second_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline has_edge(const vertex_type& first, const vertex_type& second)
-        const {
+    [[nodiscard]] gl_attr_force_inline bool has_edge(
+        const vertex_type& first, const vertex_type& second
+    ) const {
         return this->has_edge(first.id(), second.id());
     }
 
@@ -393,21 +389,12 @@ public:
         return this->_impl.get_edge(first.id(), second.id());
     }
 
-    [[nodiscard]] inline std::vector<types::const_ref_wrap<edge_type>> get_edges(
+    [[nodiscard]] inline std::vector<edge_type> get_edges(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        using edge_ref_set = std::vector<types::const_ref_wrap<edge_type>>;
-
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
-
-        if constexpr (std::same_as<implementation_tag, impl::list_t>) {
-            return this->_impl.get_edges(first_id, second_id);
-        }
-        else {
-            const auto edge_opt = this->_impl.get_edge(first_id, second_id);
-            return edge_opt.has_value() ? edge_ref_set{edge_opt.value()} : edge_ref_set{};
-        }
+        return this->_impl.get_edges(first_id, second_id);
     }
 
     [[nodiscard]] std::vector<types::const_ref_wrap<edge_type>> get_edges(
@@ -424,8 +411,7 @@ public:
     }
 
     // TODO: range of convertible_to<const edge_type&>
-    template <type_traits::c_range_of<types::const_ref_wrap<edge_type>> EdgeRefRange>
-    inline void remove_edges_from(const EdgeRefRange edges) {
+    inline void remove_edges_from(const type_traits::c_range_of<edge_type> auto& edges) {
         // TODO: optimize
         for (const auto& edge_ref : edges)
             this->_impl.remove_edge(edge_ref.get());
