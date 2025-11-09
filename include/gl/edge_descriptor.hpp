@@ -51,7 +51,7 @@ public:
 
     // TODO: add tests
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept {
-        return this->_id == other._id and this->_vertices == other._vertices;
+        return this->_id == other._id; // compare vertices ?
     }
 
     [[nodiscard]] constexpr bool is_directed() const noexcept {

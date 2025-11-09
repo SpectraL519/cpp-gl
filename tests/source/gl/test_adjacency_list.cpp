@@ -358,321 +358,333 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(size(sut), n_vertices_after_remove);
     for (const auto vertex_id :
          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-        const auto adjacent_edges = sut.adjacent_edges(vertex_id);
-        CHECK_EQ(adjacent_edges.size(), n_incident_edges_after_remove);
+        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
     }
 }
 
-// struct test_undirected_adjacency_list {
-//     using edge_type = gl::undirected_edge<>;
-//     using edge_ptr_type = gl::undirected_t::edge_ptr_type<edge_type>;
-//     using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>;
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list,
+    "remove_vertex<GetRemovedEdgeIds=true> should remove the given vertex and all edges incident "
+    "with it"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge3 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
+    const auto edge2 = add_edge(constants::vertex_id_1, constants::vertex_id_3);
+    const auto edge4 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
 
-//     test_undirected_adjacency_list() {}
+    const auto edge5 = add_edge(constants::vertex_id_2, constants::vertex_id_3);
+    const auto edge6 = add_edge(constants::vertex_id_3, constants::vertex_id_2);
 
-//     const edge_type& add_edge(
-//         const gl::types::id_type source_id, const gl::types::id_type target_id
-//     ) {
-//         return sut.add_edge(gl::detail::make_edge<edge_type>(source_id, target_id));
-//     }
+    const auto removed_vertex_id = constants::vertex_id_1;
+    const auto removed_edge_ids = sut.remove_vertex<true>(removed_vertex_id);
 
-//     void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
-//         for (const auto target_id : constants::vertex_id_view) {
-//             if (target_id == source_id and no_loops)
-//                 continue;
+    REQUIRE_EQ(removed_edge_ids.size(), 4uz);
+    for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
+        CHECK(std::ranges::contains(removed_edge_ids, edge_id));
+    for (const auto edge_id : {edge5.id(), edge6.id()})
+        CHECK_FALSE(std::ranges::contains(removed_edge_ids, edge_id));
 
-//             add_edge(source_id, target_id);
-//         }
-//     }
+    constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
+    constexpr auto n_incident_edges_after_remove =
+        n_incident_edges_for_fully_connected_vertex - constants::one_element;
 
-//     void init_complete_graph(const bool no_loops = true) {
-//         for (const auto source_id : constants::vertex_id_view) {
-//             const auto bound = no_loops ? source_id : source_id + constants::one;
-//             for (const auto target_id : std::views::iota(constants::vertex_id_1, bound))
-//                 add_edge(source_id, target_id);
-//         }
+    REQUIRE_EQ(size(sut), n_vertices_after_remove);
+    for (const auto vertex_id :
+         constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
+        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
+    }
+}
 
-//         if (no_loops)
-//             REQUIRE_EQ(n_unique_edges, n_unique_edges_in_full_graph);
-//         else
-//             REQUIRE_EQ(n_unique_edges, n_unique_edges_in_full_graph + constants::n_elements);
-//     }
+// TODO: add test case with GetRemovedEdgeIds=true
 
-//     sut_type sut{constants::n_elements};
+struct test_undirected_adjacency_list : public test_adjacency_list {
+    using edge_type = gl::undirected_edge<>;
+    using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>;
 
-//     const gl::types::size_type n_unique_edges_in_full_graph =
-//         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
-// };
+    test_undirected_adjacency_list() {}
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
-// ) {
-//     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
-//     REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
-//     REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
+    edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
+        const auto new_edge_id = this->next_edge_id++;
+        sut.add_edge(new_edge_id, source_id, target_id);
+        return edge_type{new_edge_id, source_id, target_id};
+    }
 
-//     REQUIRE_EQ(n_unique_edges, constants::one_element);
+    void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
+        for (const auto target_id : constants::vertex_id_view) {
+            if (target_id == source_id and no_loops)
+                continue;
 
-//     const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
-//     const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+            add_edge(source_id, target_id);
+        }
+    }
 
-//     REQUIRE_EQ(adjacent_edges_1.size(), constants::one_element);
-//     REQUIRE_EQ(adjacent_edges_2.size(), constants::one_element);
+    void init_complete_graph(const bool no_loops = true) {
+        for (const auto source_id : constants::vertex_id_view) {
+            const auto bound = no_loops ? source_id : source_id + constants::one;
+            for (const auto target_id : std::views::iota(constants::vertex_id_1, bound))
+                add_edge(source_id, target_id);
+        }
 
-//     const auto& new_edge_extracted_1 = adjacent_edges_1[constants::first_element_idx];
-//     CHECK_EQ(&new_edge_extracted_1, &new_edge);
+        if (no_loops)
+            REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adjacent_items) {
+                return adjacent_items.size() == n_incident_edges_for_fully_connected_vertex;
+            }));
+        else
+            REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adjacent_items) {
+                return adjacent_items.size()
+                    == n_incident_edges_for_fully_connected_vertex + constants::one;
+            }));
+    }
 
-//     const auto& new_edge_extracted_2 = adjacent_edges_2[constants::first_element_idx];
-//     CHECK_EQ(&new_edge_extracted_2, &new_edge);
-// }
+    sut_type sut{constants::n_elements};
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "add_edge should add the edge once to the vertex list if the edge is a loop"
-// ) {
-//     const auto& new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_1);
-//     REQUIRE_EQ(n_unique_edges, constants::one_element);
-//     REQUIRE(new_edge.is_loop());
-//     REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+    const gl::types::size_type n_unique_edges_in_full_graph =
+        (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
+};
 
-//     const auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
-//     REQUIRE_EQ(adjacent_edges.size(), constants::one_element);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list, "add_edge should add the edge to the lists of both vertices"
+) {
+    const auto new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
+    REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
 
-//     const auto& new_edge_extracted_1 = adjacent_edges[constants::first_element_idx];
-//     CHECK_EQ(&new_edge_extracted_1, &new_edge);
-// }
+    const auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+    const auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
-//     "with the given ids in any direction"
-// ) {
-//     add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE_EQ(adjacent_edges_1.size(), constants::one_element);
+    REQUIRE_EQ(adjacent_edges_2.size(), constants::one_element);
 
-//     CHECK(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
-//     CHECK(sut.has_edge(constants::vertex_id_2, constants::vertex_id_1));
-//     CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_3));
-//     CHECK_FALSE(sut.has_edge(constants::vertex_id_2, constants::vertex_id_3));
-// }
+    const auto& new_edge_extracted_1 = adjacent_edges_1[constants::first_element_idx];
+    CHECK_EQ(new_edge_extracted_1, new_edge);
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "has_edge(edge_ptr) should return true if the given edge is present in the graph"
-// ) {
-//     const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
-//     CHECK(sut.has_edge(valid_edge));
+    const auto& new_edge_extracted_2 = adjacent_edges_2[constants::first_element_idx];
+    CHECK_EQ(new_edge_extracted_2, new_edge);
+}
 
-//     const edge_type invalid_edge{constants::vertex_id_1, constants::vertex_id_2};
-//     CHECK_FALSE(sut.has_edge(invalid_edge));
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "add_edge should add the edge once to the vertex list if the edge is a loop"
+) {
+    const auto new_edge = add_edge(constants::vertex_id_1, constants::vertex_id_1);
+    REQUIRE(new_edge.is_loop());
+    REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
 
-//     // edge connecting vertices not connected in the actual graph
-//     const edge_type not_present_edge{constants::vertex_id_2, constants::vertex_id_3};
-//     CHECK_FALSE(sut.has_edge(not_present_edge));
-// }
+    const auto adjacent_edges = sut.adjacent_edges(constants::vertex_id_1);
+    REQUIRE_EQ(adjacent_edges.size(), constants::one_element);
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "get_edge(id, id) should return nullopt if there is no edge connecting the given vertices"
-// ) {
-//     CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::vertex_id_2));
-// }
+    const auto& new_edge_extracted_1 = adjacent_edges[constants::first_element_idx];
+    CHECK_EQ(new_edge_extracted_1, new_edge);
+}
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "get_edge(id, id) should return the first valid edge if the given vertices are connected"
-// ) {
-//     const auto& edge_1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
-//     const auto& edge_2 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
+    "with the given ids in any direction"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
-//     const auto edge_opt_1 = sut.get_edge(constants::vertex_id_1, constants::vertex_id_2);
-//     REQUIRE(edge_opt_1.has_value());
-//     CHECK_EQ(&edge_opt_1->get(), &edge_1);
-//     CHECK_NE(&edge_opt_1->get(), &edge_2);
+    CHECK(sut.has_edge(constants::vertex_id_1, constants::vertex_id_2));
+    CHECK(sut.has_edge(constants::vertex_id_2, constants::vertex_id_1));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_1, constants::vertex_id_3));
+    CHECK_FALSE(sut.has_edge(constants::vertex_id_2, constants::vertex_id_3));
+}
 
-//     const auto edge_opt_2 = sut.get_edge(constants::vertex_id_2, constants::vertex_id_1);
-//     REQUIRE(edge_opt_2.has_value());
-//     CHECK_EQ(&edge_opt_2->get(), &edge_1);
-//     CHECK_NE(&edge_opt_2->get(), &edge_2);
-// }
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "has_edge(edge_ptr) should return true if the given edge is present in the graph"
+) {
+    const auto& valid_edge = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    CHECK(sut.has_edge(valid_edge));
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "get_edges(id, id) should return an empty if there is no edge connecting the given vertices"
-// ) {
-//     CHECK(sut.get_edges(constants::vertex_id_1, constants::vertex_id_2).empty());
-// }
+    const edge_type invalid_edge{
+        constants::invalid_id, constants::vertex_id_1, constants::vertex_id_2
+    };
+    CHECK_FALSE(sut.has_edge(invalid_edge));
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "get_edges(id, id) should return a valid edge view if the given vertices are connected"
-// ) {
-//     std::vector<gl::types::const_ref_wrap<edge_type>> expected_edges;
-//     for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
-//         expected_edges.push_back(std::cref(add_edge(constants::vertex_id_1, constants::vertex_id_2))
-//         );
+    // edge connecting vertices not connected in the actual graph
+    const edge_type not_present_edge{
+        valid_edge.id(), constants::vertex_id_2, constants::vertex_id_3
+    };
+    CHECK_FALSE(sut.has_edge(not_present_edge));
+}
 
-//     constexpr auto address_projection = [](const auto& edge_ref) { return &edge_ref.get(); };
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edge(id, id) should return nullopt if there is no edge connecting the given vertices"
+) {
+    CHECK_FALSE(sut.get_edge(constants::vertex_id_1, constants::vertex_id_2));
+}
 
-//     CHECK(std::ranges::equal(
-//         sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
-//         expected_edges,
-//         std::ranges::equal_to{},
-//         address_projection,
-//         address_projection
-//     ));
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edge(id, id) should return the first valid edge if the given vertices are connected"
+) {
+    const auto edge_1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge_2 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
 
-//     CHECK(std::ranges::equal(
-//         sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
-//         expected_edges,
-//         std::ranges::equal_to{},
-//         address_projection,
-//         address_projection
-//     ));
-// }
+    const auto edge_opt_1 = sut.get_edge(constants::vertex_id_1, constants::vertex_id_2);
+    REQUIRE(edge_opt_1.has_value());
+    CHECK_EQ(*edge_opt_1, edge_1);
+    CHECK_NE(*edge_opt_1, edge_2);
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list, "remove_edge should throw when an edge is invalid"
-// ) {
-//     // not existing edge between valid vertices
-//     CHECK_THROWS_AS(
-//         sut.remove_edge(edge_type{constants::vertex_id_1, constants::vertex_id_2}),
-//         std::invalid_argument
-//     );
-// }
+    const auto edge_opt_2 = sut.get_edge(constants::vertex_id_2, constants::vertex_id_1);
+    REQUIRE(edge_opt_2.has_value());
+    CHECK_EQ(*edge_opt_2, edge_1);
+    CHECK_NE(*edge_opt_2, edge_2);
+}
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "remove_edge should remove the edge from both the first and second vertices' list"
-// ) {
-//     fully_connect_vertex(constants::vertex_id_1);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edges(id, id) should return an empty if there is no edge connecting the given vertices"
+) {
+    CHECK(sut.get_edges(constants::vertex_id_1, constants::vertex_id_2).empty());
+}
 
-//     auto adjacent_edges_first = sut.adjacent_edges(constants::vertex_id_1);
-//     REQUIRE_EQ(n_unique_edges, n_incident_edges_for_fully_connected_vertex);
-//     REQUIRE_EQ(adjacent_edges_first.size(), n_incident_edges_for_fully_connected_vertex);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "get_edges(id, id) should return a valid edge view if the given vertices are connected"
+) {
+    std::vector<edge_type> expected_edges;
+    for (auto _ = constants::first_element_idx; _ < constants::n_elements; _++)
+        expected_edges.push_back(add_edge(constants::vertex_id_1, constants::vertex_id_2));
 
-//     const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
+    CHECK(std::ranges::equal(
+        sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
+        expected_edges,
+        std::ranges::equal_to{}
+    ));
 
-//     const auto target_id = edge_to_remove.second();
-//     REQUIRE_EQ(sut.adjacent_edges(target_id).size(), constants::one_element);
+    CHECK(std::ranges::equal(
+        sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
+        expected_edges,
+        std::ranges::equal_to{}
+    ));
+}
 
-//     sut.remove_edge(edge_to_remove);
-//     REQUIRE_EQ(
-//         n_unique_edges, n_incident_edges_for_fully_connected_vertex - constants::one_element
-//     );
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list, "remove_edge should throw when an edge is invalid"
+) {
+    // not existing edge between valid vertices
+    const edge_type not_existing_edge{
+        constants::invalid_id, constants::vertex_id_1, constants::vertex_id_2
+    };
+    CHECK_THROWS_AS(sut.remove_edge(not_existing_edge), std::invalid_argument);
+}
 
-//     // validate that the first adjacent edges list has been properly aligned
-//     adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
-//     REQUIRE_EQ(
-//         adjacent_edges_first.size(),
-//         n_incident_edges_for_fully_connected_vertex - constants::one_element
-//     );
-//     CHECK_EQ(
-//         std::ranges::find(
-//             adjacent_edges_first, &edge_to_remove, transforms::address_projection<edge_type>{}
-//         ),
-//         adjacent_edges_first.end()
-//     );
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "remove_edge should remove the edge from both the first and second vertices' list"
+) {
+    fully_connect_vertex(constants::vertex_id_1);
 
-//     // validate that the second adjacent edges list has been properly aligned
-//     const auto adjacent_edges_second = sut.adjacent_edges(target_id);
-//     REQUIRE_EQ(adjacent_edges_second.size(), constants::zero_elements);
-//     CHECK_EQ(
-//         std::ranges::find(
-//             adjacent_edges_second, &edge_to_remove, transforms::address_projection<edge_type>{}
-//         ),
-//         adjacent_edges_second.end()
-//     );
-// }
+    auto adjacent_edges_first = sut.adjacent_edges(constants::vertex_id_1);
+    REQUIRE_EQ(adjacent_edges_first.size(), n_incident_edges_for_fully_connected_vertex);
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "{in_/out_/}degree should return the number of edges incident {to/from} the given vertex"
-// ) {
-//     init_complete_graph();
+    const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
-//     std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
+    const auto target_id = edge_to_remove.second();
+    REQUIRE_EQ(sut.adjacent_edges(target_id).size(), constants::one_element);
 
-//     SUBCASE("degree") {
-//         deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
-//     }
+    sut.remove_edge(edge_to_remove);
 
-//     SUBCASE("in_degree") {
-//         deg_proj = [this](const auto vertex_id) { return sut.in_degree(vertex_id); };
-//     }
+    // validate that the first adjacent edges list has been properly aligned
+    adjacent_edges_first = sut.adjacent_edges(constants::first_element_idx);
+    REQUIRE_EQ(
+        adjacent_edges_first.size(),
+        n_incident_edges_for_fully_connected_vertex - constants::one_element
+    );
+    CHECK_EQ(std::ranges::find(adjacent_edges_first, edge_to_remove), adjacent_edges_first.end());
 
-//     SUBCASE("out_degree") {
-//         deg_proj = [this](const auto vertex_id) { return sut.out_degree(vertex_id); };
-//     }
+    // validate that the second adjacent edges list has been properly aligned
+    const auto adjacent_edges_second = sut.adjacent_edges(target_id);
+    REQUIRE_EQ(adjacent_edges_second.size(), constants::zero_elements);
+    CHECK_EQ(std::ranges::find(adjacent_edges_second, edge_to_remove), adjacent_edges_second.end());
+}
 
-//     CAPTURE(deg_proj);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "{in_/out_/}degree should return the number of edges incident {to/from} the given vertex"
+) {
+    init_complete_graph();
 
-//     CHECK(std::ranges::all_of(
-//         constants::vertex_id_view,
-//         [](const auto deg) { return deg == n_incident_edges_for_fully_connected_vertex; },
-//         deg_proj
-//     ));
+    std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
 
-//     add_edge(constants::vertex_id_1, constants::vertex_id_1);
+    SUBCASE("degree") {
+        deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
+    }
 
-//     CHECK_EQ(
-//         deg_proj(constants::vertex_id_1),
-//         n_incident_edges_for_fully_connected_vertex + constants::two // loops counted twice
-//     );
-// }
+    SUBCASE("in_degree") {
+        deg_proj = [this](const auto vertex_id) { return sut.in_degree(vertex_id); };
+    }
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "{in_/out_/}degree_map should return a map of numbers of edges incident {to/from/with} the "
-//     "corresponding vertices"
-// ) {
-//     init_complete_graph(false);
-//     const auto expected_deg = constants::n_elements + 1;
+    SUBCASE("out_degree") {
+        deg_proj = [this](const auto vertex_id) { return sut.out_degree(vertex_id); };
+    }
 
-//     std::vector<gl::types::id_type> degree_map;
+    CAPTURE(deg_proj);
 
-//     SUBCASE("in_degree") {
-//         degree_map = sut.in_degree_map();
-//     }
+    CHECK(std::ranges::all_of(
+        constants::vertex_id_view,
+        [](const auto deg) { return deg == n_incident_edges_for_fully_connected_vertex; },
+        deg_proj
+    ));
 
-//     SUBCASE("out_degree") {
-//         degree_map = sut.out_degree_map();
-//     }
+    add_edge(constants::vertex_id_1, constants::vertex_id_1);
 
-//     SUBCASE("degree") {
-//         degree_map = sut.degree_map();
-//     }
+    CHECK_EQ(
+        deg_proj(constants::vertex_id_1),
+        n_incident_edges_for_fully_connected_vertex + constants::two // loops counted twice
+    );
+}
 
-//     CAPTURE(degree_map);
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "{in_/out_/}degree_map should return a map of numbers of edges incident {to/from/with} the "
+    "corresponding vertices"
+) {
+    init_complete_graph(false);
+    const auto expected_deg = constants::n_elements + 1;
 
-//     REQUIRE_EQ(degree_map.size(), constants::n_elements);
-//     CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
-// }
+    std::vector<gl::types::id_type> degree_map;
 
-// TEST_CASE_FIXTURE(
-//     test_undirected_adjacency_list,
-//     "remove_vertex should remove the given vertex and all edges incident with it"
-// ) {
-//     init_complete_graph();
+    SUBCASE("in_degree") {
+        degree_map = sut.in_degree_map();
+    }
 
-//     const auto removed_vertex_id = constants::first_element_idx;
-//     sut.remove_vertex(removed_vertex_id);
+    SUBCASE("out_degree") {
+        degree_map = sut.out_degree_map();
+    }
 
-//     constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
-//     constexpr auto n_incident_edges_after_remove =
-//         n_incident_edges_for_fully_connected_vertex - constants::one_element;
+    SUBCASE("degree") {
+        degree_map = sut.degree_map();
+    }
 
-//     REQUIRE_EQ(sut.n_vertices(), n_vertices_after_remove);
-//     REQUIRE_EQ(n_unique_edges, (n_vertices_after_remove * n_incident_edges_after_remove) / 2);
+    CAPTURE(degree_map);
 
-//     for (const auto vertex_id :
-//          constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
-//         const auto adjacent_edges = sut.adjacent_edges(vertex_id);
-//         REQUIRE_EQ(adjacent_edges.size(), n_incident_edges_after_remove);
-//         CHECK_FALSE(std::ranges::any_of(adjacent_edges, [removed_vertex_id](const auto& edge) {
-//             return edge.is_incident_with(removed_vertex_id);
-//         }));
-//     }
-// }
+    REQUIRE_EQ(degree_map.size(), constants::n_elements);
+    CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "remove_vertex should remove the given vertex and all edges incident with it"
+) {
+    init_complete_graph();
+
+    const auto removed_vertex_id = constants::first_element_idx;
+    sut.remove_vertex<false>(removed_vertex_id);
+
+    constexpr auto n_vertices_after_remove = constants::n_elements - constants::one_element;
+    constexpr auto n_incident_edges_after_remove =
+        n_incident_edges_for_fully_connected_vertex - constants::one_element;
+
+    REQUIRE_EQ(size(sut), n_vertices_after_remove);
+    for (const auto vertex_id :
+         constants::vertex_id_view | std::views::take(n_vertices_after_remove)) {
+        CHECK_EQ(sut.adjacent_edges(vertex_id).size(), n_incident_edges_after_remove);
+    }
+}
 
 TEST_SUITE_END(); // test_adjacency_list
 

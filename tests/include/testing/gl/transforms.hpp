@@ -6,11 +6,8 @@
 
 namespace gl_testing::transforms {
 
-// TODO: replace with generic get_id
-template <
-    gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType = gl::vertex_descriptor<>>
-inline gl::types::id_type extract_vertex_id(const VertexType& vertex) {
-    return vertex.id();
+inline gl::types::id_type get_id(auto&& element) {
+    return element.id();
 }
 
 // TODO: remove

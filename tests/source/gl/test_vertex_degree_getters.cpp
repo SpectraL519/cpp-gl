@@ -91,7 +91,7 @@
 //             ++i;
 //             return result;
 //         },
-//         transforms::extract_vertex_id<vertex_type>
+//         transforms::get_id<vertex_type>
 //     ));
 // }
 
@@ -165,7 +165,7 @@
 //             ++i;
 //             return result;
 //         },
-//         transforms::extract_vertex_id<vertex_type>
+//         transforms::get_id<vertex_type>
 //     ));
 // }
 

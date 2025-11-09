@@ -190,10 +190,7 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
-    using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
-    using edge_ptr_type = typename impl_type::edge_ptr_type;
-    using edge_list_type = typename impl_type::edge_list_type;
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
@@ -237,19 +234,16 @@ struct undirected_adjacency_list {
     }
 
     template <bool GetRemovedEdgeIds>
-    static auto remove_vertex(impl_type& self, const types::id_type vertex_id)
-    requires(GetRemovedEdgeIds)
-    {
+    static auto remove_vertex(impl_type& self, const types::id_type vertex_id) {
         // remove all edges incident with the vertex (scan only the selected vertices)
         for (const auto& item : self._list[vertex_id]) {
             if (item.target_id == vertex_id)
                 continue; // will be removed with the vertex's list
 
             auto& adj_edges = self._list[item.target_id];
-            const auto removed_subrng =
-                std::ranges::remove_if(adj_edges, [vertex_id](const auto& edge) {
-                    return edge->is_incident_with(vertex_id);
-                });
+            const auto removed_subrng = std::ranges::remove_if(
+                adj_edges, [vertex_id](const auto& item) { return item.target_id == vertex_id; }
+            );
             adj_edges.erase(removed_subrng.begin(), removed_subrng.end());
         }
 
@@ -270,8 +264,8 @@ struct undirected_adjacency_list {
         impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
     ) {
         self._list[source_id].emplace_back(edge_id, target_id);
-        if (source_id != target_id)
-            self._list[target_id].push_back(edge_id, source_id);
+        if (target_id != source_id)
+            self._list[target_id].emplace_back(edge_id, source_id);
     }
 
     static void add_edges_from(

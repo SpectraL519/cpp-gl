@@ -116,7 +116,7 @@
 //         sut_type sut{constants::n_elements};
 
 //         REQUIRE(std::ranges::equal(
-//             sut.vertices() | std::views::transform(transforms::extract_vertex_id<>),
+//             sut.vertices() | std::views::transform(transforms::get_id<>),
 //             constants::vertex_id_view
 //         ));
 
@@ -223,7 +223,7 @@
 //             sut.vertices(),
 //             constants::vertex_id_view,
 //             std::ranges::equal_to{},
-//             transforms::extract_vertex_id<vertex_type>
+//             transforms::get_id<vertex_type>
 //         ));
 
 //         // clang-format on
