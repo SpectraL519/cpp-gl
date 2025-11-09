@@ -6,12 +6,14 @@
 
 namespace gl_testing::transforms {
 
+// TODO: replace with generic get_id
 template <
     gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType = gl::vertex_descriptor<>>
 inline gl::types::id_type extract_vertex_id(const VertexType& vertex) {
     return vertex.id();
 }
 
+// TODO: remove
 template <typename T>
 struct address_projection {
     auto operator()(const T& ref) const {

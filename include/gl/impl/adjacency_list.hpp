@@ -10,6 +10,12 @@
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_list.hpp"
 
+#ifdef GL_TESTING
+namespace gl_testing {
+struct test_adjacency_list;
+} // namespace gl_testing
+#endif
+
 namespace gl::impl {
 
 template <type_traits::c_list_graph_traits GraphTraits>
@@ -113,7 +119,7 @@ public:
         });
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
-        return std::make_optional<edge_type>(source_id, target_id);
+        return std::make_optional<edge_type>(item_it->id, source_id, target_id);
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(
@@ -180,6 +186,10 @@ public:
                    };
                });
     }
+
+#ifdef GL_TESTING
+    friend struct gl_testing::test_adjacency_list;
+#endif
 
 private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;

@@ -125,14 +125,14 @@ struct directed_adjacency_list {
             if (id == vertex_id or adj_edges.empty())
                 continue;
 
-            const auto rem_subrange = std::ranges::remove_if(
+            const auto removed_subrng = std::ranges::remove_if(
                 adj_edges, [vertex_id](const auto& item) { return item.target_id == vertex_id; }
             );
             std::ranges::copy(
-                rem_subrange | std::views::transform(&edge_list_item::id),
+                removed_subrng | std::views::transform(&edge_list_item::id),
                 std::back_inserter(removed_edges)
             );
-            adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
+            adj_edges.erase(removed_subrng.begin(), removed_subrng.end());
         }
 
         // remove the list of edges incident from the vertex entirely
@@ -151,10 +151,10 @@ struct directed_adjacency_list {
             if (id == vertex_id or adj_edges.empty())
                 continue;
 
-            const auto rem_subrange = std::ranges::remove_if(
+            const auto removed_subrng = std::ranges::remove_if(
                 adj_edges, [vertex_id](const auto& item) { return item.target_id == vertex_id; }
             );
-            adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
+            adj_edges.erase(removed_subrng.begin(), removed_subrng.end());
         }
 
         // remove the list of edges incident from the vertex entirely
@@ -246,11 +246,11 @@ struct undirected_adjacency_list {
                 continue; // will be removed with the vertex's list
 
             auto& adj_edges = self._list[item.target_id];
-            const auto rem_subrange =
+            const auto removed_subrng =
                 std::ranges::remove_if(adj_edges, [vertex_id](const auto& edge) {
                     return edge->is_incident_with(vertex_id);
                 });
-            adj_edges.erase(rem_subrange.begin(), rem_subrange.end());
+            adj_edges.erase(removed_subrng.begin(), removed_subrng.end());
         }
 
         // remove the list of edges incident from the vertex entirely

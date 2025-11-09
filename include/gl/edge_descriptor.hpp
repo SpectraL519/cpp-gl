@@ -49,6 +49,11 @@ public:
 
     ~edge_descriptor() = default;
 
+    // TODO: add tests
+    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept {
+        return this->_id == other._id and this->_vertices == other._vertices;
+    }
+
     [[nodiscard]] constexpr bool is_directed() const noexcept {
         return type_traits::is_directed_v<type>;
     }
