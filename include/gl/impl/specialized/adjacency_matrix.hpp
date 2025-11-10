@@ -54,12 +54,9 @@ struct directed_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return self._matrix.size()
-             - std::ranges::count_if(
-                   self._matrix,
-                   constants::invalid_id,
-                   [vertex_id](const auto& row) { return row[vertex_id]; }
-             );
+        return std::ranges::count_if(self._matrix, [vertex_id](const auto& row) {
+            return row[vertex_id] != constants::invalid_id;
+        });
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
@@ -121,10 +118,14 @@ struct directed_adjacency_matrix {
     static std::vector<types::id_type> remove_vertex(
         impl_type& self, const types::id_type vertex_id
     ) {
-        auto removed_edges =
+        auto removed_edges_view =
             self._matrix[vertex_id]
-            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
-            | std::ranges::to<std::vector>;
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
+
+        // TODO: use std::ranges::to (requires newer compiler)
+        std::vector<types::id_type> removed_edges(
+            removed_edges_view.begin(), removed_edges_view.end()
+        );
 
         self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
@@ -210,7 +211,7 @@ struct undirected_adjacency_matrix {
 
         for (types::id_type source_id = constants::initial_id; source_id < self._matrix.size();
              ++source_id) {
-            for (types::id_type target_id = constants::initial_id; target_id < self._matrix.size();
+            for (types::id_type target_id = constants::initial_id; target_id <= source_id;
                  ++target_id) {
                 if (self._matrix[source_id][target_id] != constants::invalid_id) {
                     ++degree_map[source_id];
@@ -225,14 +226,18 @@ struct undirected_adjacency_matrix {
     static std::vector<types::id_type> remove_vertex(
         impl_type& self, const types::id_type vertex_id
     ) {
+        auto removed_edges_view =
+            self._matrix[vertex_id]
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
+        // TODO: use std::ranges::to (requires newer compiler)
+        std::vector<types::id_type> removed_edges(
+            removed_edges_view.begin(), removed_edges_view.end()
+        );
+
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
 
-        const auto removed_edges =
-            self._matrix[vertex_id]
-            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
-            | std::ranges::to<std::vector>;
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
         return removed_edges;
     }
 
@@ -265,10 +270,10 @@ struct undirected_adjacency_matrix {
 
     static void remove_edge(impl_type& self, const edge_type& edge) {
         if (edge.is_loop()) {
-            detail::strict_get<impl_type>(self._matrix, edge) = constants::invalid_id;
+            detail::strict_get(self._matrix, edge) = constants::invalid_id;
         }
         else {
-            detail::strict_get<impl_type>(self._matrix, edge) = constants::invalid_id;
+            detail::strict_get(self._matrix, edge) = constants::invalid_id;
             // if the edge was found in the first matrix cell,
             // it will also be present in the second matrix cell
             self._matrix[edge.second()][edge.first()] = constants::invalid_id;

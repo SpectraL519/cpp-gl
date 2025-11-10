@@ -6,6 +6,7 @@
 
 namespace gl::util {
 
+// TODO: add tests
 template <std::ranges::range R>
 constexpr auto range_size(R&& r) {
     if constexpr (std::ranges::sized_range<R>)
