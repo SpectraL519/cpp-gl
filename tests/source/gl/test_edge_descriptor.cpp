@@ -42,6 +42,30 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(directed_edge.is_undirected());
 }
 
+TEST_CASE_FIXTURE(
+    test_edge_descriptor, "edges should be equal only if their IDs and vertices are the same"
+) {
+    // directed edges
+    gl::directed_edge<> dedge1{id1, v1, v2};
+    gl::directed_edge<> dedge2{id1, v1, v2};
+    gl::directed_edge<> dedge3{id2, v1, v2};
+    gl::directed_edge<> dedge4{id1, v2, v1};
+
+    CHECK_EQ(dedge1, dedge2);
+    CHECK_NE(dedge1, dedge3);
+    CHECK_NE(dedge1, dedge4);
+
+    // undirected edges
+    gl::undirected_edge<> uedge1{id1, v1, v2};
+    gl::undirected_edge<> uedge2{id1, v1, v2};
+    gl::undirected_edge<> uedge3{id2, v1, v2};
+    gl::undirected_edge<> uedge4{id1, v2, v1};
+
+    CHECK_EQ(uedge1, uedge2);
+    CHECK_NE(uedge1, uedge3);
+    CHECK_EQ(uedge1, uedge4);
+}
+
 TEST_CASE_TEMPLATE_DEFINE(
     "properties should be properly initialized", EdgeType, properties_edge_directional_tag_template
 ) {
@@ -60,8 +84,15 @@ TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", EdgeType, edge_directional_tag_template
 ) {
     test_edge_descriptor fixture{};
-
     EdgeType sut{fixture.id1, fixture.v1, fixture.v2};
+
+    SUBCASE("an edge should be valid if it has a valid ID and vertices") {
+        CHECK(sut.is_valid());
+        CHECK_FALSE(EdgeType{constants::invalid_id, constants::invalid_id, constants::invalid_id});
+        CHECK_FALSE(EdgeType{constants::invalid_id, fixture.v1, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, constants::invalid_id, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, fixture.v1, constants::invalid_id});
+    }
 
     SUBCASE("id() should return the ID of the edge") {
         CHECK_EQ(sut.id(), fixture.id1);
@@ -72,6 +103,13 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto& vertices = sut.incident_vertices();
         CHECK_EQ(vertices.first, fixture.v1);
         CHECK_EQ(vertices.second, fixture.v2);
+    }
+
+    SUBCASE("incident_vertices_r should return the pair of vertex IDS the edge was initialized "
+            "with but with switched order") {
+        const auto& vertices = sut.incident_vertices_r();
+        CHECK_EQ(vertices.first, fixture.v2);
+        CHECK_EQ(vertices.second, fixture.v1);
     }
 
     SUBCASE("first should return the first vertex descriptor the edge was initialized with") {

@@ -64,14 +64,27 @@ public:
 
     ~edge_descriptor() = default;
 
-    // TODO: add tests
-    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept {
-        return this->_id == other._id; // compare vertices ?
+    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
+    requires(type_traits::is_directed_v<type>)
+    {
+        return this->_id == other._id and (this->_vertices == other._vertices);
     }
 
-    // TODO: add tests
+    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
+    requires(type_traits::is_undirected_v<type>)
+    {
+        return this->_id == other._id
+           and (this->_vertices == other._vertices
+                or (this->_vertices == other.incident_vertices_r()));
+    }
+
+    [[nodiscard]] gl_attr_force_inline operator bool() const noexcept {
+        return this->is_valid();
+    }
+
     [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id;
+        return this->_id != constants::invalid_id and this->_vertices.first != constants::invalid_id
+           and this->_vertices.second != constants::invalid_id;
     }
 
     [[nodiscard]] constexpr bool is_directed() const noexcept {
@@ -91,6 +104,10 @@ public:
 
     [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices() const noexcept {
         return this->_vertices;
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices_r() const noexcept {
+        return std::make_pair(this->_vertices.second, this->_vertices.first);
     }
 
     // TODO: rename to source
