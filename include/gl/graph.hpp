@@ -8,7 +8,6 @@
 #include "graph_traits.hpp"
 #include "impl/impl_tags.hpp"
 #include "io/stream_options_manipulator.hpp"
-#include "types/iterator_range.hpp"
 #include "util/ranges.hpp"
 
 #include <set>

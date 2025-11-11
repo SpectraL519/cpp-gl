@@ -211,7 +211,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto vertices = biclique.vertices();
 
         const auto vertices_a = vertices | std::views::take(constants::n_elements_top);
-        const auto vertices_b = gl::make_iterator_range(
+        const auto vertices_b = std::ranges::subrange(
             std::ranges::next(vertices.begin(), constants::n_elements_top),
             std::ranges::next(vertices.begin(), expected_n_vertices)
         );
