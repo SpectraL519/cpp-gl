@@ -31,7 +31,7 @@ template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
 struct edge_info {
     using edge_type = EdgeType;
 
-    types::const_ref_wrap<edge_type> edge;
+    edge_type edge;
     types::id_type source_id;
 };
 

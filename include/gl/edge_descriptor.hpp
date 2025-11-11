@@ -159,7 +159,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
         // TODO: throw if edge is invalid
-        return this->_properties;
+        return this->_properties.get();
     }
 
     friend inline std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
@@ -181,11 +181,11 @@ private:
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
                 os << "[first: " << this->_vertices.first << ", second: " << this->_vertices.second
-                   << " | properties: " << this->_properties << "]";
+                   << " | properties: " << this->_properties.get() << "]";
             }
             else {
                 os << "[" << this->_vertices.first << ", " << this->_vertices.second << " | "
-                   << this->_properties << "]";
+                   << this->_properties.get() << "]";
             }
         }
     }
@@ -200,7 +200,10 @@ private:
 
     types::id_type _id;
     types::homogeneous_pair<types::id_type> _vertices;
-    [[no_unique_address]] properties_ref_type _properties;
+    [[no_unique_address]] std::conditional_t<
+        type_traits::c_empty_properties<properties_type>,
+        types::empty_properties,
+        std::reference_wrapper<properties_type>> _properties;
 };
 
 template <

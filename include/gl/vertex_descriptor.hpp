@@ -56,7 +56,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
-        return this->_properties;
+        return this->_properties.get();
     }
 
     friend inline std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
@@ -77,10 +77,10 @@ private:
             }
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[id: " << this->_id << " | properties: " << this->_properties << "]";
+                os << "[id: " << this->_id << " | properties: " << this->_properties.get() << "]";
             }
             else {
-                os << "[" << this->_id << " | " << this->_properties << "]";
+                os << "[" << this->_id << " | " << this->_properties.get() << "]";
             }
         }
     }
@@ -95,7 +95,10 @@ private:
     }
 
     types::id_type _id;
-    [[no_unique_address]] properties_ref_type _properties;
+    [[no_unique_address]] std::conditional_t<
+        type_traits::c_empty_properties<properties_type>,
+        types::empty_properties,
+        std::reference_wrapper<properties_type>> _properties;
 };
 
 template <type_traits::c_properties Properties = types::empty_properties>

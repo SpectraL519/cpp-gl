@@ -22,7 +22,7 @@ struct mst_descriptor {
         edges.reserve(n_vertices - constants::one);
     }
 
-    std::vector<types::const_ref_wrap<edge_type>> edges;
+    std::vector<edge_type> edges;
     weight_type weight = static_cast<weight_type>(constants::zero);
 };
 
@@ -41,7 +41,7 @@ template <type_traits::c_undirected_graph GraphType>
         [[nodiscard]] gl_attr_force_inline bool operator()(
             const edge_info_type& lhs, const edge_info_type& rhs
         ) const {
-            return get_weight<GraphType>(lhs.edge.get()) > get_weight<GraphType>(rhs.edge.get());
+            return get_weight<GraphType>(lhs.edge) > get_weight<GraphType>(rhs.edge);
         }
     };
 
@@ -69,7 +69,7 @@ template <type_traits::c_undirected_graph GraphType>
         const auto min_edge_info = edge_queue.top();
         edge_queue.pop();
 
-        const auto& min_edge = min_edge_info.edge.get();
+        const auto& min_edge = min_edge_info.edge;
         const auto min_weight = get_weight<GraphType>(min_edge);
 
         const auto& target_id = min_edge.incident_vertex(min_edge_info.source_id);
@@ -107,7 +107,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
     std::vector<bool> in_mst(n_vertices, false);
     std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
-    std::vector<const edge_type*> min_cost_edges(n_vertices, nullptr);
+    std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
     min_cost.at(root_id_opt.value_or(constants::zero)) = constants::zero;
@@ -132,8 +132,8 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
         in_mst[vertex_id] = true;
 
-        const auto* min_cost_edge = min_cost_edges[vertex_id];
-        if (min_cost_edge != nullptr) { // Add the corresponding edge to MST
+        const auto min_cost_edge = min_cost_edges[vertex_id];
+        if (min_cost_edge.has_value()) { // Add the corresponding edge to MST
             mst.edges.emplace_back(*min_cost_edge);
             mst.weight += min_cost[vertex_id];
         }
@@ -145,7 +145,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
             if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;
-                min_cost_edges[incident_vertex_id] = &edge;
+                min_cost_edges[incident_vertex_id].emplace(edge);
             }
         }
 
