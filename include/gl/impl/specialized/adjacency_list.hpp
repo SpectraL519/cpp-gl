@@ -137,7 +137,7 @@ struct directed_adjacency_list {
         return removed_edges;
     }
 
-    static gl_attr_force_inline void add_edge(
+    gl_attr_force_inline static void add_edge(
         impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
     ) {
         self._list[source_id].emplace_back(edge_id, target_id);
@@ -156,7 +156,7 @@ struct directed_adjacency_list {
             adjacent_edges_source.emplace_back(edge_id, target_id);
     }
 
-    static gl_attr_force_inline void remove_edge(impl_type& self, const edge_type& edge) {
+    gl_attr_force_inline static void remove_edge(impl_type& self, const edge_type& edge) {
         auto& adj_edges = self._list[edge.first()];
         adj_edges.erase(detail::strict_find(adj_edges, edge));
     }

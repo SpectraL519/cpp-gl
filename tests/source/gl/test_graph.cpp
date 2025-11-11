@@ -90,10 +90,6 @@ using add_edge_property = gl::graph_traits<
 
 using vertex_id_list = std::vector<gl::types::id_type>;
 
-// TODO: removef
-template <gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
-using vertex_ref_list = std::vector<gl::types::const_ref_wrap<VertexType>>;
-
 inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_template) {
@@ -867,13 +863,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix
 );
 
-TEST_CASE_TEMPLATE_DEFINE(
-    "vertex_properties_map() should return a correct map", TraitsType, vp_graph_traits_template
-) {
+TEST_CASE_TEMPLATE_DEFINE("vertex properties getter tests", TraitsType, vp_graph_traits_template) {
     using sut_type = gl::graph<TraitsType>;
 
     sut_type sut{constants::n_elements};
-
     for (auto vertex : sut.vertices())
         vertex.properties() = std::format("vertex_{}", vertex.id());
 
@@ -882,6 +875,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     for (auto [id, property] : std::views::zip(sut.vertex_ids(), map)) {
         CHECK_EQ(property, std::format("vertex_{}", id));
         CHECK_EQ(map[id], std::format("vertex_{}", id));
+        CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
     }
 }
 

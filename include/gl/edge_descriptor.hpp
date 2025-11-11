@@ -44,13 +44,13 @@ public:
     requires(type_traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(first, second), _properties(properties) {}
 
-    [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
+    [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(type_traits::c_empty_properties<properties_type>)
     {
         return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
     }
 
-    [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
+    [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(type_traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
