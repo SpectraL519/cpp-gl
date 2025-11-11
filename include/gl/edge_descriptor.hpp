@@ -25,9 +25,9 @@ public:
 
     friend directional_tag;
 
-    edge_descriptor() = delete;
-    edge_descriptor(const edge_descriptor&) = delete;
-    edge_descriptor& operator=(const edge_descriptor&) = delete;
+    edge_descriptor() {
+        *this = edge_descriptor::invalid();
+    }
 
     explicit edge_descriptor(
         const types::id_type id, const types::id_type first, const types::id_type second
@@ -58,6 +58,9 @@ public:
             constants::invalid_id, constants::invalid_id, constants::invalid_id, invalid_properties
         );
     }
+
+    edge_descriptor(const edge_descriptor&) = default;
+    edge_descriptor& operator=(const edge_descriptor&) = default;
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;

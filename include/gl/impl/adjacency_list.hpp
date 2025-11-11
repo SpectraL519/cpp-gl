@@ -161,7 +161,7 @@ public:
                })
              | std::views::transform([source_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.id, source_id, item.target_id, edge_properties_map[item.id]
+                       item.id, source_id, item.target_id, *edge_properties_map[item.id]
                    };
                })
              | std::ranges::to<std::vector>();
@@ -186,7 +186,7 @@ public:
         return this->_list[vertex_id]
              | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.id, vertex_id, item.target_id, edge_properties_map[item.id]
+                       item.id, vertex_id, item.target_id, *edge_properties_map[item.id]
                    };
                });
     }

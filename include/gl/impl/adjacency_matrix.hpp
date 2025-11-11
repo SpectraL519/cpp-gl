@@ -139,7 +139,7 @@ public:
         if (edge_id == constants::invalid_id)
             return std::nullopt;
         return std::make_optional<edge_type>(
-            edge_id, source_id, target_id, edge_properties_map[edge_id]
+            edge_id, source_id, target_id, *edge_properties_map[edge_id]
         );
     }
 
@@ -161,7 +161,7 @@ public:
         if (edge_id == constants::invalid_id)
             return std::vector<edge_type>();
         return std::vector<edge_type>(
-            edge_type{edge_id, source_id, target_id, edge_properties_map[edge_id]}
+            edge_type{edge_id, source_id, target_id, *edge_properties_map[edge_id]}
         );
     }
 
@@ -199,7 +199,7 @@ public:
                        edge_id,
                        vertex_id,
                        static_cast<types::id_type>(target_id),
-                       edge_properties_map[edge_id]
+                       *edge_properties_map[edge_id]
                    };
                });
     }
@@ -228,7 +228,7 @@ public:
                                   edge_id,
                                   vertex_id,
                                   static_cast<types::id_type>(target_id),
-                                  edge_properties_map[edge_id]
+                                  *edge_properties_map[edge_id]
                               };
                });
     }

@@ -143,7 +143,7 @@ struct directed_adjacency_list {
         self._list[source_id].emplace_back(edge_id, target_id);
     }
 
-    gl_attr_force_inline void add_edges_from(
+    static void add_edges_from(
         impl_type& self,
         const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,

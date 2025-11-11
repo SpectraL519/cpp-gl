@@ -8,7 +8,7 @@
 // - impl::remove_edge should accept: id, first, second
 // - add a get_vertex_properties(id) function
 // - add a get_edge_properties(id) function
-// - add operator[vertex(_id)] and/or at(vertex(_id))
+// - add at(vertex(_id))
 
 #pragma once
 
@@ -44,7 +44,7 @@ public:
     using edge_properties_type = typename traits_type::edge_properties_type;
 
     using edge_properties_map_type = std::conditional_t<
-        type_traits::is_default_properties_type_v<vertex_properties_type>,
+        type_traits::is_default_properties_type_v<edge_properties_type>,
         types::empty_properties_map,
         std::vector<std::unique_ptr<edge_properties_type>>>;
 
@@ -53,16 +53,12 @@ public:
 
     graph() = default;
 
-    explicit graph(const types::size_type n_vertices)
-    requires(type_traits::is_default_properties_type_v<vertex_properties_type>)
-    : _n_vertices(n_vertices), _impl(n_vertices) {}
-
-    explicit graph(const types::size_type n_vertices)
-    requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
-    : _n_vertices(n_vertices), _impl(n_vertices) {
-        this->_vertex_properties.reserve(n_vertices);
-        for (auto id : this->vertex_ids())
-            this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
+    explicit graph(const types::size_type n_vertices) : _n_vertices(n_vertices), _impl(n_vertices) {
+        if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>) {
+            this->_vertex_properties.reserve(n_vertices);
+            for (const auto _ : this->vertex_ids())
+                this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
+        }
     }
 
     graph(graph&&) = default;
@@ -334,7 +330,6 @@ public:
         );
     }
 
-    // TODO: range of convertible_to<const vertex_type&>
     gl_attr_force_inline void add_edges_from(
         const vertex_type& source,
         const type_traits::c_sized_range_of<vertex_type> auto& target_range
@@ -397,7 +392,7 @@ public:
         return this->_impl.get_edges(first_id, second_id);
     }
 
-    [[nodiscard]] std::vector<types::const_ref_wrap<edge_type>> get_edges(
+    [[nodiscard]] std::vector<edge_type> get_edges(
         const vertex_type& first, const vertex_type& second
     ) const {
         return this->get_edges(first.id(), second.id());
@@ -408,18 +403,21 @@ public:
         if constexpr (not type_traits::is_default_properties_type_v<edge_properties_type>)
             this->_edge_properties.erase(this->_edge_properties.begin() + edge.id());
         this->_impl.remove_edge(edge);
+        this->_n_unique_edges--;
     }
 
-    // TODO: range of convertible_to<const edge_type&>
     inline void remove_edges_from(const type_traits::c_range_of<edge_type> auto& edges) {
         // TODO: optimize
-        for (const auto& edge_ref : edges)
-            this->_impl.remove_edge(edge_ref.get());
+        for (const auto& edge : edges)
+            this->_impl.remove_edge(edge);
     }
 
     [[nodiscard]] inline auto adjacent_edges(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        return this->_impl.adjacent_edges(vertex_id);
+        if constexpr (type_traits::is_default_properties_type_v<edge_properties_type>)
+            return this->_impl.adjacent_edges(vertex_id);
+        else
+            return this->_impl.adjacent_edges(vertex_id, this->_edge_properties);
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const vertex_type& vertex) const {
