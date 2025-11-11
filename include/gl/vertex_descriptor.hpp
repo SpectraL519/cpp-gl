@@ -35,8 +35,6 @@ public:
     requires(type_traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
-    // TODO: invalid vertex builders, is_valid function, default ctor -> invalid
-
     vertex_descriptor(const vertex_descriptor&) = default;
     vertex_descriptor& operator=(const vertex_descriptor&) = default;
 
