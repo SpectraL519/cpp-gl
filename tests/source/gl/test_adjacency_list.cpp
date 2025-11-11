@@ -142,6 +142,12 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(new_edge_extracted, new_edge);
 }
 
+TEST_CASE_FIXTURE(test_directed_adjacency_list, "at should return the adjacent edges of a vertex") {
+    init_complete_graph();
+    for (const auto vertex_id : std::views::iota(0uz, constants::n_elements))
+        CHECK(std::ranges::equal(sut.at(vertex_id), sut.adjacent_edges(vertex_id)));
+}
+
 TEST_CASE_FIXTURE(
     test_directed_adjacency_list,
     "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
@@ -454,6 +460,14 @@ TEST_CASE_FIXTURE(
 
     const auto& new_edge_extracted_1 = adjacent_edges[constants::first_element_idx];
     CHECK_EQ(new_edge_extracted_1, new_edge);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list, "at should return the adjacent edges of a vertex"
+) {
+    init_complete_graph();
+    for (const auto vertex_id : std::views::iota(0uz, constants::n_elements))
+        CHECK(std::ranges::equal(sut.at(vertex_id), sut.adjacent_edges(vertex_id)));
 }
 
 TEST_CASE_FIXTURE(

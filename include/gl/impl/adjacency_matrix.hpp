@@ -167,7 +167,10 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        // TODO: align edge ids
+        for (auto& row : this->_matrix)
+            for (auto& edge_id : row)
+                if (edge_id != constants::invalid_id and edge_id > edge.id())
+                    edge_id--;
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
@@ -202,9 +205,8 @@ public:
     }
 
     // --- access operators ---
-    // TODO: add tests
 
-    [[nodiscard]] gl_attr_force_inline auto operator[](const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline auto at(const types::id_type vertex_id) const {
         return this->_matrix[vertex_id] | std::views::enumerate
              | std::views::transform([vertex_id](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
@@ -214,7 +216,7 @@ public:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto operator[](
+    [[nodiscard]] gl_attr_force_inline auto at(
         const types::id_type vertex_id, const auto& edge_properties_map
     ) const {
         return this->_matrix[vertex_id] | std::views::enumerate

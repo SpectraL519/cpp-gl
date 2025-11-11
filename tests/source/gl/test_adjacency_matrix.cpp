@@ -188,6 +188,34 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
+    "at should return a view equivalent to the matrix row of the given vertex"
+) {
+    for (const auto vertex_id : std::views::iota(0uz, constants::n_elements)) {
+        const auto edge = add_edge(vertex_id, (vertex_id + 1) % constants::n_elements);
+        auto row_view = sut.at(vertex_id);
+
+        REQUIRE_EQ(std::ranges::count_if(row_view, &edge_type::is_valid), 1uz);
+
+        const auto edge_it = std::ranges::find_if(row_view, &edge_type::is_valid);
+        REQUIRE_NE(edge_it, row_view.end());
+        REQUIRE_EQ(*edge_it, edge);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix,
+    "adjacent_edges should return a filtered view of edges adjacent with the given vertex"
+) {
+    const auto vertex_id = constants::vertex_id_1;
+    const auto edge = add_edge(vertex_id, constants::vertex_id_2);
+    auto adjacent_edges = sut.adjacent_edges(vertex_id);
+
+    REQUIRE_EQ(gl::util::range_size(adjacent_edges), 1uz);
+    CHECK_EQ(*std::ranges::begin(adjacent_edges), edge);
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix,
     "has_edge(id, id) should return true if there is an edge in the graph which connects vertices "
     "with the given ids in the specified direction"
 ) {
@@ -477,6 +505,42 @@ TEST_CASE_FIXTURE(
 
     const auto new_edge_extracted_1 = *std::ranges::begin(adjacent_edges);
     CHECK_EQ(new_edge_extracted_1, new_edge);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "at should return a view equivalent to the matrix row of the given vertex"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge2 = add_edge(constants::vertex_id_2, constants::vertex_id_3);
+    const auto edge3 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
+
+    auto v1_row_view = sut.at(constants::vertex_id_1);
+    REQUIRE_EQ(std::ranges::count_if(v1_row_view, &edge_type::is_valid), 2uz);
+    CHECK_EQ(v1_row_view[constants::vertex_id_2], edge1);
+    CHECK_EQ(v1_row_view[constants::vertex_id_3], edge3);
+
+    auto v2_row_view = sut.at(constants::vertex_id_2);
+    REQUIRE_EQ(std::ranges::count_if(v2_row_view, &edge_type::is_valid), 2uz);
+    CHECK_EQ(v2_row_view[constants::vertex_id_1], edge1);
+    CHECK_EQ(v2_row_view[constants::vertex_id_3], edge2);
+
+    auto v3_row_view = sut.at(constants::vertex_id_3);
+    REQUIRE_EQ(std::ranges::count_if(v3_row_view, &edge_type::is_valid), 2uz);
+    CHECK_EQ(v3_row_view[constants::vertex_id_1], edge3);
+    CHECK_EQ(v3_row_view[constants::vertex_id_2], edge2);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "adjacent_edges should return a filtered view of edges adjacent with the given vertex"
+) {
+    const auto vertex_id = constants::vertex_id_1;
+    const auto edge = add_edge(vertex_id, constants::vertex_id_2);
+    auto adjacent_edges = sut.adjacent_edges(vertex_id);
+
+    REQUIRE_EQ(gl::util::range_size(adjacent_edges), 1uz);
+    CHECK_EQ(*std::ranges::begin(adjacent_edges), edge);
 }
 
 TEST_CASE_FIXTURE(
