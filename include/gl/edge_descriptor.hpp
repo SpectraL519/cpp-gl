@@ -19,7 +19,7 @@ public:
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
-        type_traits::is_default_properties_type_v<properties_type>,
+        type_traits::c_empty_properties<properties_type>,
         types::empty_properties,
         properties_type&>;
 
@@ -32,7 +32,7 @@ public:
     explicit edge_descriptor(
         const types::id_type id, const types::id_type first, const types::id_type second
     )
-    requires(type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_empty_properties<properties_type>)
     : _id(id), _vertices(first, second) {}
 
     explicit edge_descriptor(
@@ -41,17 +41,17 @@ public:
         const types::id_type second,
         properties_type& properties
     )
-    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(first, second), _properties(properties) {}
 
     [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
-    requires(type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_empty_properties<properties_type>)
     {
         return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
     }
 
     [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
-    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
         return edge_descriptor(

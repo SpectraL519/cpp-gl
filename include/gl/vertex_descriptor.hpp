@@ -21,18 +21,18 @@ public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
-        type_traits::is_default_properties_type_v<properties_type>,
+        type_traits::c_empty_properties<properties_type>,
         types::empty_properties,
         properties_type&>;
 
     vertex_descriptor() = delete;
 
     explicit vertex_descriptor(const types::id_type id)
-    requires(type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_empty_properties<properties_type>)
     : _id(id) {}
 
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
-    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    requires(type_traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
     // TODO: invalid vertex builders, is_valid function, default ctor -> invalid

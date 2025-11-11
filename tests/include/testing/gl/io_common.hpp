@@ -36,9 +36,8 @@ template <gl::type_traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {
-            // get edge returns optional<ref_wrap>
             return edge.properties()
-                == expected.get_edge(edge.first(), edge.second()).value().get().properties();
+                == expected.get_edge(edge.first(), edge.second())->properties();
         });
     }));
 }
