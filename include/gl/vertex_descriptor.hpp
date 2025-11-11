@@ -25,17 +25,12 @@ public:
         types::empty_properties,
         properties_type&>;
 
-    template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-    friend class graph;
-
     vertex_descriptor() = delete;
 
-    // TODO: private
     explicit vertex_descriptor(const types::id_type id)
     requires(type_traits::is_default_properties_type_v<properties_type>)
     : _id(id) {}
 
-    // TODO: private
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _id(id), _properties(properties) {}
@@ -99,7 +94,7 @@ private:
         }
     }
 
-    mutable types::id_type _id;
+    types::id_type _id;
     [[no_unique_address]] properties_ref_type _properties;
 };
 

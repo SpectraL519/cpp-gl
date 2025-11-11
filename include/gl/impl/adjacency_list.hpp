@@ -76,8 +76,8 @@ public:
     }
 
     std::vector<types::id_type> remove_vertex(const types::id_type vertex_id) {
-        const auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
-        // TODO: sort removed_edge_ids & align edge ids (remapping)
+        auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
+        this->_remap_element_ids(vertex_id, removed_edge_ids);
         return removed_edge_ids;
     }
 
@@ -169,6 +169,7 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
+        // TODO : align edge ids
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
@@ -188,6 +189,19 @@ public:
                });
     }
 
+    // --- access operators ---
+    // TODO: add tests
+
+    [[nodiscard]] gl_attr_force_inline auto operator[](const types::id_type vertex_id) const {
+        return this->adjacent_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto operator[](
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const {
+        return this->adjacent_edges(vertex_id, edge_properties_map);
+    }
+
 #ifdef GL_TESTING
     friend struct gl_testing::test_adjacency_list;
 #endif
@@ -195,6 +209,26 @@ public:
 private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
+
+    // TODO: add tests
+    void _remap_element_ids(
+        const types::id_type removed_vertex_id, std::vector<types::id_type>& removed_edge_ids
+    ) {
+        std::ranges::sort(removed_edge_ids);
+        for (auto& adj : this->_list) {
+            for (auto& edge_item : adj) {
+                auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.id);
+                if (it != removed_edge_ids.end() && *it == edge_item.id)
+                    edge_item.id = constants::invalid_id; // edge was removed
+                else
+                    // shift by the number of removed IDs < edge-id
+                    edge_item.id -= std::ranges::distance(removed_edge_ids.begin(), it);
+
+                // align the vertex id
+                edge_item.target_id -= edge_item.target_id > removed_vertex_id;
+            }
+        }
+    }
 
     adjacency_list_type _list{};
 };

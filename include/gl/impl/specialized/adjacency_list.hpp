@@ -159,7 +159,6 @@ struct directed_adjacency_list {
     static gl_attr_force_inline void remove_edge(impl_type& self, const edge_type& edge) {
         auto& adj_edges = self._list[edge.first()];
         adj_edges.erase(detail::strict_find(adj_edges, edge));
-        // TODO: align edge ids (common)
     }
 };
 
@@ -268,8 +267,6 @@ struct undirected_adjacency_list {
             adj_edges_first.erase(detail::strict_find(adj_edges_first, edge));
             adj_edges_second.erase(detail::strict_find(adj_edges_second, edge));
         }
-
-        // TODO: align edge ids (common)
     }
 };
 

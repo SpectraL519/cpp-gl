@@ -47,7 +47,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     test_edge_descriptor fixture;
 
-    const types::used_property used{true};
+    types::used_property used{true};
     const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
 
     CHECK_EQ(sut.properties(), used);

@@ -18,31 +18,46 @@ public:
     using type = edge_descriptor<DirectionalTag, Properties>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
+    using properties_ref_type = std::conditional_t<
+        type_traits::is_default_properties_type_v<properties_type>,
+        types::empty_properties,
+        properties_type&>;
 
     friend directional_tag;
-
-    template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-    friend class graph;
 
     edge_descriptor() = delete;
     edge_descriptor(const edge_descriptor&) = delete;
     edge_descriptor& operator=(const edge_descriptor&) = delete;
 
-    // TODO: private
     explicit edge_descriptor(
         const types::id_type id, const types::id_type first, const types::id_type second
     )
+    requires(type_traits::is_default_properties_type_v<properties_type>)
     : _id(id), _vertices(first, second) {}
 
-    // TODO: private
     explicit edge_descriptor(
         const types::id_type id,
         const types::id_type first,
         const types::id_type second,
-        properties_type properties
+        properties_type& properties
     )
     requires(not type_traits::is_default_properties_type_v<properties_type>)
     : _id(id), _vertices(first, second), _properties(properties) {}
+
+    [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
+    requires(type_traits::is_default_properties_type_v<properties_type>)
+    {
+        return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
+    }
+
+    [[nodiscard]] static gl_attr_force_inline edge_descriptor invalid() noexcept
+    requires(not type_traits::is_default_properties_type_v<properties_type>)
+    {
+        static properties_type invalid_properties{};
+        return edge_descriptor(
+            constants::invalid_id, constants::invalid_id, constants::invalid_id, invalid_properties
+        );
+    }
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
@@ -52,6 +67,11 @@ public:
     // TODO: add tests
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept {
         return this->_id == other._id; // compare vertices ?
+    }
+
+    // TODO: add tests
+    [[nodiscard]] bool is_valid() const noexcept {
+        return this->_id != constants::invalid_id;
     }
 
     [[nodiscard]] constexpr bool is_directed() const noexcept {
@@ -159,7 +179,7 @@ private:
 
     types::id_type _id;
     types::homogeneous_pair<types::id_type> _vertices;
-    [[no_unique_address]] mutable properties_type _properties{};
+    [[no_unique_address]] properties_ref_type _properties;
 };
 
 template <

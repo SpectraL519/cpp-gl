@@ -2,11 +2,15 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+#pragma once
+
 #include <ranges>
 
 namespace gl::util {
 
-// TODO: add tests
+inline constexpr auto deref_view =
+    std::views::transform([](auto&& p) -> decltype(auto) { return *p; });
+
 template <std::ranges::range R>
 constexpr auto range_size(R&& r) {
     if constexpr (std::ranges::sized_range<R>)

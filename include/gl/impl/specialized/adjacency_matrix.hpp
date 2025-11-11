@@ -161,7 +161,6 @@ struct directed_adjacency_matrix {
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
         detail::strict_get(self._matrix, edge) = constants::invalid_id;
-        // TODO: align edge ids (common)
     }
 };
 
@@ -278,8 +277,6 @@ struct undirected_adjacency_matrix {
             // it will also be present in the second matrix cell
             self._matrix[edge.second()][edge.first()] = constants::invalid_id;
         }
-
-        // TODO: align edge ids (common)
     }
 };
 

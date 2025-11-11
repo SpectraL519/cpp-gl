@@ -90,8 +90,8 @@ public:
     }
 
     std::vector<types::id_type> remove_vertex(const types::id_type vertex_id) {
-        const auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
-        // TODO: sort removed_edge_ids & align edge ids (remapping)
+        auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
+        this->_remap_element_ids(removed_edge_ids);
         return removed_edge_ids;
     }
 
@@ -167,6 +167,7 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
+        // TODO: align edge ids
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
@@ -200,6 +201,36 @@ public:
                });
     }
 
+    // --- access operators ---
+    // TODO: add tests
+
+    [[nodiscard]] gl_attr_force_inline auto operator[](const types::id_type vertex_id) const {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::transform([vertex_id](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id == constants::invalid_id
+                            ? edge_type::invalid()
+                            : edge_type{edge_id, vertex_id, static_cast<types::id_type>(target_id)};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto operator[](
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id == constants::invalid_id
+                            ? edge_type::invalid()
+                            : edge_type{
+                                  edge_id,
+                                  vertex_id,
+                                  static_cast<types::id_type>(target_id),
+                                  edge_properties_map[edge_id]
+                              };
+               });
+    }
+
 #ifdef GL_TESTING
     friend struct gl_testing::test_adjacency_matrix;
 #endif
@@ -208,8 +239,25 @@ private:
     using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
+    // TODO: add tests
+    void _remap_element_ids(std::vector<types::id_type>& removed_edge_ids) {
+        std::ranges::sort(removed_edge_ids);
+        for (auto& row : this->_matrix) {
+            for (auto& edge_id : row) {
+                if (edge_id == constants::invalid_id)
+                    continue;
+
+                auto it = std::ranges::lower_bound(removed_edge_ids, edge_id);
+                if (it != removed_edge_ids.end() && *it == edge_id)
+                    edge_id = constants::invalid_id; // edge was removed
+                else
+                    // shift by the number of removed IDs < edge-id
+                    edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);
+            }
+        }
+    }
+
     matrix_type _matrix{};
-    types::size_type _n_unique_edges{constants::default_size};
 };
 
 } // namespace gl::impl

@@ -8,7 +8,7 @@
 // - impl::remove_edge should accept: id, first, second
 // - add a get_vertex_properties(id) function
 // - add a get_edge_properties(id) function
-// - add n_adjacent_edges(id) function
+// - add operator[vertex(_id)] and/or at(vertex(_id))
 
 #pragma once
 
@@ -17,7 +17,7 @@
 #include "impl/impl_tags.hpp"
 #include "io/stream_options_manipulator.hpp"
 #include "types/iterator_range.hpp"
-#include "views.hpp"
+#include "util/ranges.hpp"
 
 #include <set>
 
@@ -39,10 +39,7 @@ public:
         types::empty_properties_map,
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
-    // TODO: reverese iterators should be available for bidirectional ranges
-
     using edge_type = typename traits_type::edge_type;
-    using edge_ptr_type = typename traits_type::edge_ptr_type; // TODO: remove
     using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
@@ -80,7 +77,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
-        return this->_edges.size();
+        return this->_n_unique_edges;
     }
 
     // --- vertex methods ---
@@ -259,7 +256,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(not type_traits::is_default_properties_type_v<vertex_properties_type>)
     {
-        return views::deref(this->_vertex_properties);
+        return util::deref_view(this->_vertex_properties);
     }
 
     // --- edge methods ---
@@ -515,14 +512,6 @@ private:
     void _remove_vertex_impl(const types::id_type vertex_id) {
         this->_impl.remove_vertex(vertex_id);
         this->_n_vertices--;
-
-        // update vertex ids in edges
-        for (auto id : this->vertex_ids()) {
-            for (auto& edge : this->_impl.adjacent_edges(id)) {
-                edge._vertices.first -= (edge._vertices.first > vertex_id);
-                edge._vertices.second -= (edge._vertices.second > vertex_id);
-            }
-        }
 
         if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>)
             this->_vertex_properties.erase(

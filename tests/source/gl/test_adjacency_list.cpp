@@ -1,6 +1,5 @@
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
-#include "testing/gl/transforms.hpp"
 
 #include <gl/graph_traits.hpp>
 #include <gl/impl/adjacency_list.hpp>
@@ -356,15 +355,25 @@ TEST_CASE_FIXTURE(
     const auto removed_vertex_id = constants::vertex_id_1;
     const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
-    REQUIRE_EQ(removed_edge_ids.size(), 4uz);
+    constexpr gl::types::size_type n_removed_edges = 4uz;
+    REQUIRE_EQ(removed_edge_ids.size(), n_removed_edges);
     for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
         CHECK(std::ranges::contains(removed_edge_ids, edge_id));
     for (const auto edge_id : {edge5.id(), edge6.id()})
         CHECK_FALSE(std::ranges::contains(removed_edge_ids, edge_id));
 
+    // Check the structure of the graph considering the aligned IDs
     CHECK_EQ(size(sut), constants::n_elements - 1uz);
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).size(), 1uz); // IDs were aligned
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).size(), 1uz); // IDs were aligned
+
+    const auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+    CHECK_EQ(adj_edges_1.size(), 1uz);
+    CHECK_EQ(adj_edges_1.front().id(), edge5.id() - n_removed_edges);
+    CHECK_EQ(adj_edges_1.front().second(), constants::vertex_id_2);
+
+    const auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+    CHECK_EQ(adj_edges_2.size(), 1uz);
+    CHECK_EQ(adj_edges_2.front().id(), edge6.id() - n_removed_edges);
+    CHECK_EQ(adj_edges_2.front().second(), constants::vertex_id_1);
 }
 
 struct test_undirected_adjacency_list : public test_adjacency_list {
@@ -650,14 +659,24 @@ TEST_CASE_FIXTURE(
     const auto removed_vertex_id = constants::first_element_idx;
     const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
-    REQUIRE_EQ(removed_edge_ids.size(), 4uz);
+    constexpr gl::types::size_type n_removed_edges = 4uz;
+    REQUIRE_EQ(removed_edge_ids.size(), n_removed_edges);
     for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
         CHECK(std::ranges::contains(removed_edge_ids, edge_id));
     CHECK_FALSE(std::ranges::contains(removed_edge_ids, edge5.id()));
 
+    // Check the structure of the graph considering the aligned IDs
     CHECK_EQ(size(sut), constants::n_elements - 1uz);
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_1).size(), 1uz); // IDs were aligned
-    CHECK_EQ(sut.adjacent_edges(constants::vertex_id_2).size(), 1uz); // IDs were aligned
+
+    const auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
+    CHECK_EQ(adj_edges_1.size(), 1uz);
+    CHECK_EQ(adj_edges_1.front().id(), edge5.id() - n_removed_edges);
+    CHECK_EQ(adj_edges_1.front().second(), constants::vertex_id_2);
+
+    const auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
+    CHECK_EQ(adj_edges_2.size(), 1uz);
+    CHECK_EQ(adj_edges_2.front().id(), edge5.id() - n_removed_edges);
+    CHECK_EQ(adj_edges_2.front().second(), constants::vertex_id_1);
 }
 
 TEST_SUITE_END(); // test_adjacency_list
