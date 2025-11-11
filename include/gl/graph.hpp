@@ -273,7 +273,7 @@ public:
             return edge_type{new_edge_id, first_id, second_id};
         }
         else {
-            auto& p = this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
+            const auto& p = this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
             return edge_type{new_edge_id, first_id, second_id, *p};
         }
     }
@@ -291,7 +291,7 @@ public:
         const auto new_edge_id = this->_n_unique_edges++;
         this->_impl.add_edge(new_edge_id, first_id, second_id);
 
-        auto& p = this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
+        auto& p = this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>(properties));
         return edge_type{new_edge_id, first_id, second_id, *p};
     }
 
@@ -370,18 +370,22 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::optional_cref<edge_type> get_edge(
+    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
         const types::id_type first_id, const types::id_type second_id
     ) const {
-        return this->_impl.get_edge(first_id, second_id);
+        this->_verify_vertex_id(first_id);
+        this->_verify_vertex_id(second_id);
+
+        if constexpr (type_traits::is_default_properties_type_v<edge_properties_type>)
+            return this->_impl.get_edge(first_id, second_id);
+        else
+            return this->_impl.get_edge(first_id, second_id, this->_edge_properties);
     }
 
-    [[nodiscard]] types::optional_cref<edge_type> get_edge(
+    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
         const vertex_type& first, const vertex_type& second
     ) const {
-        if (not (this->has_vertex(first) and this->has_vertex(second)))
-            return std::nullopt;
-        return this->_impl.get_edge(first.id(), second.id());
+        return this->get_edge(first.id(), second.id());
     }
 
     [[nodiscard]] inline std::vector<edge_type> get_edges(
@@ -389,10 +393,14 @@ public:
     ) const {
         this->_verify_vertex_id(first_id);
         this->_verify_vertex_id(second_id);
-        return this->_impl.get_edges(first_id, second_id);
+
+        if constexpr (type_traits::is_default_properties_type_v<edge_properties_type>)
+            return this->_impl.get_edges(first_id, second_id);
+        else
+            return this->_impl.get_edges(first_id, second_id, this->_edge_properties);
     }
 
-    [[nodiscard]] std::vector<edge_type> get_edges(
+    [[nodiscard]] gl_attr_force_inline std::vector<edge_type> get_edges(
         const vertex_type& first, const vertex_type& second
     ) const {
         return this->get_edges(first.id(), second.id());
@@ -406,10 +414,15 @@ public:
         this->_n_unique_edges--;
     }
 
-    inline void remove_edges_from(const type_traits::c_range_of<edge_type> auto& edges) {
-        // TODO: optimize
-        for (const auto& edge : edges)
-            this->_impl.remove_edge(edge);
+    inline void remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
+        const auto removed_edge_ids = this->_impl.remove_edges(edges);
+        this->_n_unique_edges -= removed_edge_ids.size();
+
+        if constexpr (not type_traits::is_default_properties_type_v<edge_properties_type>) {
+            // IDs are sorted and do not contain duplicates
+            for (const auto edge_id : std::views::reverse(removed_edge_ids))
+                this->_edge_properties.erase(this->_edge_properties.begin() + edge_id);
+        }
     }
 
     [[nodiscard]] inline auto adjacent_edges(const types::id_type vertex_id) const {
@@ -508,13 +521,18 @@ private:
     // --- vertex methods ---
 
     void _remove_vertex_impl(const types::id_type vertex_id) {
-        this->_impl.remove_vertex(vertex_id);
+        const auto removed_edge_ids = this->_impl.remove_vertex(vertex_id);
         this->_n_vertices--;
+        this->_n_unique_edges -= removed_edge_ids.size();
 
         if constexpr (not type_traits::is_default_properties_type_v<vertex_properties_type>)
-            this->_vertex_properties.erase(
-                std::next(std::begin(this->_vertex_properties), vertex_id)
-            );
+            this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
+
+        if constexpr (not type_traits::is_default_properties_type_v<edge_properties_type>) {
+            // IDs are sorted and do not contain duplicates
+            for (const auto& edge_id : std::views::reverse(removed_edge_ids))
+                this->_edge_properties.erase(this->_edge_properties.begin() + edge_id);
+        }
     }
 
     // --- io methods ---

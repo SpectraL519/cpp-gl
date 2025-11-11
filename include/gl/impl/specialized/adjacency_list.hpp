@@ -19,8 +19,8 @@ class adjacency_list;
 
 namespace specialized {
 
-// adjacency list edge frame
-struct edge_list_item {
+// adjacency list edge item
+struct edge_list_item { // TODO: rename to adjacency_list_item
     types::id_type id;
     types::id_type target_id;
 

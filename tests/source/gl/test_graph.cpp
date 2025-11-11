@@ -510,7 +510,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::zero_elements);
         }
 
-        SUBCASE("remove_edges_from should properly erase all given edges") {
+        SUBCASE("remove_edges should properly erase all given edges") {
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             const auto edge_1 = sut.add_edge(vertex_1, vertex_2);
@@ -530,13 +530,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }));
             REQUIRE(sut.has_edge(edge_4));
 
-            sut.remove_edges_from(edges_to_remove);
+            sut.remove_edges(edges_to_remove);
 
             CHECK_EQ(sut.n_unique_edges(), constants::one_element);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
-            CHECK(sut.has_edge(edge_4));
+            CHECK(sut.has_edge(edge_4.first(), edge_4.second()));
         }
     }
 
@@ -577,13 +577,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
             const auto new_edge_extracted_1 = *std::ranges::begin(adjacent_edges_1);
-            CHECK_EQ(&new_edge_extracted_1, &new_edge);
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (gl::type_traits::is_undirected_v<edge_type>) {
                 CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::one_element);
                 const auto new_edge_extracted_2 = *std::ranges::begin(adjacent_edges_2);
-                CHECK_EQ(&new_edge_extracted_2, &new_edge);
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::zero_elements);
@@ -612,13 +612,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
             const auto new_edge_extracted_1 = *std::ranges::begin(adjacent_edges_1);
-            CHECK_EQ(&new_edge_extracted_1, &new_edge);
+            CHECK_EQ(new_edge_extracted_1, new_edge);
 
             auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
             if constexpr (gl::type_traits::is_undirected_v<edge_type>) {
                 CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::one_element);
                 const auto new_edge_extracted_2 = *std::ranges::begin(adjacent_edges_2);
-                CHECK_EQ(&new_edge_extracted_2, &new_edge);
+                CHECK_EQ(new_edge_extracted_2, new_edge);
             }
             else {
                 CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::zero_elements);
@@ -647,7 +647,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_EQ(gl::util::range_size(adjacent_edges_2), constants::zero_elements);
         }
 
-        SUBCASE("remove_edges_from should properly erase all given edges") {
+        SUBCASE("remove_edges should properly erase all given edges") {
             REQUIRE_EQ(sut.n_unique_edges(), constants::zero_elements);
 
             const auto edge_1 = sut.add_edge(vertex_1, vertex_2, constants::not_used);
@@ -667,13 +667,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }));
             REQUIRE(sut.has_edge(edge_4));
 
-            sut.remove_edges_from(edges_to_remove);
+            sut.remove_edges(edges_to_remove);
 
             CHECK_EQ(sut.n_unique_edges(), constants::one_element);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
-            CHECK(sut.has_edge(edge_4));
+            CHECK(sut.has_edge(edge_4.first(), edge_4.second()));
         }
     }
 
@@ -706,19 +706,21 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_FALSE(sut.has_edge(vd_2, vd_3));
     }
 
-    SUBCASE("get_edge(vertex, vertex) should return nullopt if either vertex is invalid") {
+    SUBCASE("get_edge(vertex, vertex) should throw if either vertex is invalid") {
         sut_type sut{constants::n_elements};
         const auto valid_vertex = sut.get_vertex(constants::vertex_id_1);
 
         const vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
-        CHECK_FALSE(sut.get_edge(valid_vertex, out_of_range_vertex));
-        CHECK_FALSE(sut.get_edge(out_of_range_vertex, valid_vertex));
-        CHECK_FALSE(sut.get_edge(out_of_range_vertex, out_of_range_vertex));
-
-        const vertex_type invalid_vertex{constants::vertex_id_1};
-        CHECK_FALSE(sut.get_edge(valid_vertex, invalid_vertex));
-        CHECK_FALSE(sut.get_edge(invalid_vertex, valid_vertex));
-        CHECK_FALSE(sut.get_edge(invalid_vertex, invalid_vertex));
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edge(valid_vertex, out_of_range_vertex)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edge(out_of_range_vertex, valid_vertex)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            func::discard_result(sut.get_edge(out_of_range_vertex, out_of_range_vertex)),
+            std::out_of_range
+        );
     }
 
     SUBCASE("get_edge(vertex, vertex) should return nullopt if the given vertices are not incident"
@@ -739,19 +741,19 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         const auto edge_opt_1 = sut.get_edge(vd_1, vd_2);
         REQUIRE(edge_opt_1.has_value());
-        CHECK_EQ(&edge_opt_1->get(), &edge);
+        CHECK_EQ(*edge_opt_1, edge);
 
         if constexpr (gl::type_traits::is_undirected_v<edge_type>) {
             const auto edge_opt_2 = sut.get_edge(vd_2, vd_1);
             REQUIRE(edge_opt_2.has_value());
-            CHECK_EQ(&edge_opt_2->get(), &edge);
+            CHECK_EQ(*edge_opt_2, edge);
         }
         else {
             CHECK_FALSE(sut.get_edge(vd_2, vd_1).has_value());
         }
     }
 
-    SUBCASE("get_edges(id, id) should throw if either id is invalid") {
+    SUBCASE("get_edges(id, id) should return an empty list if either id is invalid") {
         sut_type sut{constants::n_elements};
 
         CHECK_THROWS_AS(
@@ -791,9 +793,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         CHECK(std::ranges::equal(
-            sut.get_edges(constants::vertex_id_1, constants::vertex_id_2),
-            expected_edges,
-            std::ranges::equal_to{}
+            sut.get_edges(constants::vertex_id_1, constants::vertex_id_2), expected_edges
         ));
 
         if constexpr (gl::type_traits::is_directed_v<edge_type>) {
@@ -801,9 +801,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
         else {
             CHECK(std::ranges::equal(
-                sut.get_edges(constants::vertex_id_2, constants::vertex_id_1),
-                expected_edges,
-                std::ranges::equal_to{}
+                sut.get_edges(constants::vertex_id_2, constants::vertex_id_1), expected_edges
             ));
         }
     }
@@ -869,31 +867,31 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix
 );
 
-// TEST_CASE_TEMPLATE_DEFINE(
-//     "vertex_properties_map() should return a correct map", TraitsType, vp_graph_traits_template
-// ) {
-//     using sut_type = gl::graph<TraitsType>;
+TEST_CASE_TEMPLATE_DEFINE(
+    "vertex_properties_map() should return a correct map", TraitsType, vp_graph_traits_template
+) {
+    using sut_type = gl::graph<TraitsType>;
 
-//     sut_type sut{constants::n_elements};
+    sut_type sut{constants::n_elements};
 
-//     for (auto vertex : sut.vertices())
-//         vertex.properties() = std::format("vertex_{}", vertex.id());
+    for (auto vertex : sut.vertices())
+        vertex.properties() = std::format("vertex_{}", vertex.id());
 
-//     auto map = sut.vertex_properties_map();
-//     CHECK(map.size() == constants::n_elements);
-//     for (auto [id, property] : std::views::zip(sut.vertex_ids(), map)) {
-//         CHECK_EQ(property, std::format("vertex_{}", id));
-//         CHECK_EQ(map[id], std::format("vertex_{}", id));
-//     }
-// }
+    auto map = sut.vertex_properties_map();
+    CHECK(map.size() == constants::n_elements);
+    for (auto [id, property] : std::views::zip(sut.vertex_ids(), map)) {
+        CHECK_EQ(property, std::format("vertex_{}", id));
+        CHECK_EQ(map[id], std::format("vertex_{}", id));
+    }
+}
 
-// TEST_CASE_TEMPLATE_INSTANTIATE(
-//     vp_graph_traits_template,
-//     gl::list_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency list
-//     gl::list_graph_traits<gl::undirected_t, gl::types::name_property>, // undirected adjacency list
-//     gl::matrix_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency matrix
-//     gl::matrix_graph_traits<gl::undirected_t, gl::types::name_property> // undirected adjacency matrix
-// );
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    vp_graph_traits_template,
+    gl::list_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency list
+    gl::list_graph_traits<gl::undirected_t, gl::types::name_property>, // undirected adjacency list
+    gl::matrix_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency matrix
+    gl::matrix_graph_traits<gl::undirected_t, gl::types::name_property> // undirected adjacency matrix
+);
 
 TEST_SUITE_END(); // test_graph
 

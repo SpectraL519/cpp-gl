@@ -420,7 +420,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - `edge: const edge_type&` – the edge to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_edges_from(edges)`**:
+- **`graph.remove_edges(edges)`**:
   - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
   - *Template parameters*:
     - `EdgeRefRange: type_traits::c_range_of<types::const_ref_wrap<edge_type>>` – a range of edge references that must satisfy the type constraints.

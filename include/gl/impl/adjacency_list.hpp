@@ -174,6 +174,16 @@ public:
                 item.id -= static_cast<types::id_type>(item.id > edge.id());
     }
 
+    std::vector<types::id_type> remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
+        for (const auto& edge : edges)
+            specialized_impl::remove_edge(*this, edge);
+        auto removed_edge_ids =
+            edges | std::views::transform([](const auto& edge) { return edge.id(); })
+            | std::ranges::to<std::vector>();
+        this->_remap_element_ids(constants::invalid_id, removed_edge_ids);
+        return removed_edge_ids;
+    }
+
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
         return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
                    return edge_type{item.id, vertex_id, item.target_id};
@@ -211,11 +221,14 @@ private:
     using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
 
-    // TODO: add tests
     void _remap_element_ids(
         const types::id_type removed_vertex_id, std::vector<types::id_type>& removed_edge_ids
     ) {
         std::ranges::sort(removed_edge_ids);
+        removed_edge_ids.erase(
+            std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
+        );
+
         for (auto& adj : this->_list) {
             for (auto& edge_item : adj) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.id);

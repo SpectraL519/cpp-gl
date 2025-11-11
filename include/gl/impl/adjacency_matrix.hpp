@@ -149,7 +149,9 @@ public:
         const auto edge_id = this->_matrix[source_id][target_id];
         if (edge_id == constants::invalid_id)
             return std::vector<edge_type>();
-        return std::vector<edge_type>(edge_type{edge_id, source_id, target_id});
+        return std::vector<edge_type>{
+            edge_type{edge_id, source_id, target_id}
+        };
     }
 
     [[nodiscard]] std::vector<edge_type> get_edges(
@@ -160,9 +162,9 @@ public:
         const auto edge_id = this->_matrix[source_id][target_id];
         if (edge_id == constants::invalid_id)
             return std::vector<edge_type>();
-        return std::vector<edge_type>(
+        return std::vector<edge_type>{
             edge_type{edge_id, source_id, target_id, *edge_properties_map[edge_id]}
-        );
+        };
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
@@ -171,6 +173,16 @@ public:
             for (auto& edge_id : row)
                 if (edge_id != constants::invalid_id and edge_id > edge.id())
                     edge_id--;
+    }
+
+    std::vector<types::id_type> remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
+        for (const auto& edge : edges)
+            specialized_impl::remove_edge(*this, edge);
+        auto removed_edge_ids =
+            edges | std::views::transform([](const auto& edge) { return edge.id(); })
+            | std::ranges::to<std::vector>();
+        this->_remap_element_ids(removed_edge_ids);
+        return removed_edge_ids;
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const {
@@ -241,9 +253,12 @@ private:
     using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
-    // TODO: add tests
     void _remap_element_ids(std::vector<types::id_type>& removed_edge_ids) {
         std::ranges::sort(removed_edge_ids);
+        removed_edge_ids.erase(
+            std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
+        );
+
         for (auto& row : this->_matrix) {
             for (auto& edge_id : row) {
                 if (edge_id == constants::invalid_id)
