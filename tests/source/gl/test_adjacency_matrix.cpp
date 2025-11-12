@@ -131,24 +131,24 @@ struct test_directed_adjacency_matrix : public test_adjacency_matrix {
 
     test_directed_adjacency_matrix() {}
 
-    edge_type add_edge(const gl::types::id_type first_id, const gl::types::id_type second_id) {
+    edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
-        sut.add_edge(new_edge_id, first_id, second_id);
-        return edge_type{new_edge_id, first_id, second_id};
+        sut.add_edge(new_edge_id, source_id, target_id);
+        return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
-        for (const auto second_id : constants::vertex_id_view) {
-            if (second_id == first_id and no_loops)
+    void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
+        for (const auto target_id : constants::vertex_id_view) {
+            if (target_id == source_id and no_loops)
                 continue;
 
-            add_edge(first_id, second_id);
+            add_edge(source_id, target_id);
         }
     }
 
     void init_complete_graph(const bool no_loops = true) {
-        for (const auto first_id : constants::vertex_id_view)
-            fully_connect_vertex(first_id, no_loops);
+        for (const auto source_id : constants::vertex_id_view)
+            fully_connect_vertex(source_id, no_loops);
 
         if (no_loops)
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& matrix_row) {
@@ -432,26 +432,26 @@ struct test_undirected_adjacency_matrix : public test_adjacency_matrix {
 
     test_undirected_adjacency_matrix() {}
 
-    edge_type add_edge(const gl::types::id_type first_id, const gl::types::id_type second_id) {
+    edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
-        sut.add_edge(new_edge_id, first_id, second_id);
-        return edge_type{new_edge_id, first_id, second_id};
+        sut.add_edge(new_edge_id, source_id, target_id);
+        return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::types::id_type first_id, const bool no_loops = true) {
-        for (const auto second_id : constants::vertex_id_view) {
-            if (second_id == first_id and no_loops)
+    void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
+        for (const auto target_id : constants::vertex_id_view) {
+            if (target_id == source_id and no_loops)
                 continue;
 
-            add_edge(first_id, second_id);
+            add_edge(source_id, target_id);
         }
     }
 
     void init_complete_graph(const bool no_loops = true) {
-        for (const auto first_id : constants::vertex_id_view) {
-            const auto bound = no_loops ? first_id : first_id + constants::one;
-            for (const auto second_id : std::views::iota(constants::vertex_id_1, bound))
-                add_edge(first_id, second_id);
+        for (const auto source_id : constants::vertex_id_view) {
+            const auto bound = no_loops ? source_id : source_id + constants::one;
+            for (const auto target_id : std::views::iota(constants::vertex_id_1, bound))
+                add_edge(source_id, target_id);
         }
 
         if (no_loops)
@@ -620,8 +620,8 @@ TEST_CASE_FIXTURE(
 
     const auto edge_to_remove = *std::ranges::begin(adjacent_edges_first);
 
-    const auto second_id = edge_to_remove.target();
-    REQUIRE_EQ(gl::util::range_size(sut.adjacent_edges(second_id)), constants::one_element);
+    const auto target_id = edge_to_remove.target();
+    REQUIRE_EQ(gl::util::range_size(sut.adjacent_edges(target_id)), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
 
@@ -634,7 +634,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(std::ranges::find(adjacent_edges_first, edge_to_remove), adjacent_edges_first.end());
 
     // validate that the second adjacent edges list has been properly aligned
-    auto adjacent_edges_second = sut.adjacent_edges(second_id);
+    auto adjacent_edges_second = sut.adjacent_edges(target_id);
     REQUIRE_EQ(gl::util::range_size(adjacent_edges_second), constants::zero_elements);
     CHECK_EQ(std::ranges::find(adjacent_edges_second, edge_to_remove), adjacent_edges_second.end());
 }

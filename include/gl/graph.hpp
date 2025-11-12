@@ -59,11 +59,11 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
+    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const noexcept {
         return this->_n_unique_edges;
     }
 
@@ -112,7 +112,7 @@ public:
         return this->has_vertex(vertex.id());
     }
 
-    vertex_type add_vertex() {
+    const vertex_type add_vertex() {
         this->_impl.add_vertex();
         const auto new_vertex_id = this->_n_vertices++;
 
@@ -125,7 +125,7 @@ public:
         }
     }
 
-    vertex_type add_vertex(vertex_properties_type properties)
+    const vertex_type add_vertex(vertex_properties_type properties)
     requires(type_traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertex();
@@ -241,57 +241,81 @@ public:
         return this->_impl.degree_map();
     }
 
+    [[nodiscard]] inline auto at(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.at(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.at(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto at(const vertex_type& vertex) const {
+        return this->at(vertex.id());
+    }
+
+    [[nodiscard]] inline auto adjacent_edges(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.adjacent_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.adjacent_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const vertex_type& vertex) const {
+        return this->adjacent_edges(vertex.id());
+    }
+
     // --- edge methods ---
 
-    const edge_type add_edge(const types::id_type first_id, const types::id_type second_id) {
-        this->_verify_vertex_id(first_id);
-        this->_verify_vertex_id(second_id);
+    const edge_type add_edge(const types::id_type source_id, const types::id_type target_id) {
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
 
         const auto new_edge_id = this->_n_unique_edges++;
-        this->_impl.add_edge(new_edge_id, first_id, second_id);
+        this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
             const auto& p =
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
-            return edge_type{new_edge_id, first_id, second_id, *p};
+            return edge_type{new_edge_id, source_id, target_id, *p};
         }
         else {
-            return edge_type{new_edge_id, first_id, second_id};
+            return edge_type{new_edge_id, source_id, target_id};
         }
     }
 
     const edge_type add_edge(
-        const types::id_type first_id,
-        const types::id_type second_id,
+        const types::id_type source_id,
+        const types::id_type target_id,
         const edge_properties_type& properties
     )
     requires(type_traits::c_non_empty_properties<edge_properties_type>)
     {
-        this->_verify_vertex_id(first_id);
-        this->_verify_vertex_id(second_id);
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
 
         const auto new_edge_id = this->_n_unique_edges++;
-        this->_impl.add_edge(new_edge_id, first_id, second_id);
+        this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         auto& p =
             this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>(properties));
-        return edge_type{new_edge_id, first_id, second_id, *p};
+        return edge_type{new_edge_id, source_id, target_id, *p};
     }
 
     // clang-format off
     // gl_attr_force_inline misplacement
 
     gl_attr_force_inline const edge_type
-    add_edge(const vertex_type& first, const vertex_type& second) {
-        return this->add_edge(first.id(), second.id());
+    add_edge(const vertex_type& source, const vertex_type& target) {
+        return this->add_edge(source.id(), target.id());
     }
 
     gl_attr_force_inline const edge_type add_edge(
-        const vertex_type& first, const vertex_type& second, const edge_properties_type& properties
+        const vertex_type& source, const vertex_type& target, const edge_properties_type& properties
     )
     requires(type_traits::c_non_empty_properties<edge_properties_type>)
     {
-        return this->add_edge(first.id(), second.id(), properties);
+        return this->add_edge(source.id(), target.id(), properties);
     }
 
     // clang-format on
@@ -337,17 +361,17 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const types::id_type first_id, const types::id_type second_id
+        const types::id_type source_id, const types::id_type target_id
     ) const {
-        this->_verify_vertex_id(first_id);
-        this->_verify_vertex_id(second_id);
-        return this->_impl.has_edge(first_id, second_id);
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
+        return this->_impl.has_edge(source_id, target_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const vertex_type& first, const vertex_type& second
+        const vertex_type& source, const vertex_type& target
     ) const {
-        return this->has_edge(first.id(), second.id());
+        return this->has_edge(source.id(), target.id());
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
@@ -355,39 +379,39 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
-        const types::id_type first_id, const types::id_type second_id
+        const types::id_type source_id, const types::id_type target_id
     ) const {
-        this->_verify_vertex_id(first_id);
-        this->_verify_vertex_id(second_id);
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
 
         if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.get_edge(first_id, second_id, this->_edge_properties);
+            return this->_impl.get_edge(source_id, target_id, this->_edge_properties);
         else
-            return this->_impl.get_edge(first_id, second_id);
+            return this->_impl.get_edge(source_id, target_id);
     }
 
     [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
-        const vertex_type& first, const vertex_type& second
+        const vertex_type& source, const vertex_type& target
     ) const {
-        return this->get_edge(first.id(), second.id());
+        return this->get_edge(source.id(), target.id());
     }
 
     [[nodiscard]] inline std::vector<edge_type> get_edges(
-        const types::id_type first_id, const types::id_type second_id
+        const types::id_type source_id, const types::id_type target_id
     ) const {
-        this->_verify_vertex_id(first_id);
-        this->_verify_vertex_id(second_id);
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
 
         if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.get_edges(first_id, second_id, this->_edge_properties);
+            return this->_impl.get_edges(source_id, target_id, this->_edge_properties);
         else
-            return this->_impl.get_edges(first_id, second_id);
+            return this->_impl.get_edges(source_id, target_id);
     }
 
     [[nodiscard]] gl_attr_force_inline std::vector<edge_type> get_edges(
-        const vertex_type& first, const vertex_type& second
+        const vertex_type& source, const vertex_type& target
     ) const {
-        return this->get_edges(first.id(), second.id());
+        return this->get_edges(source.id(), target.id());
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
@@ -409,50 +433,26 @@ public:
         }
     }
 
-    [[nodiscard]] inline auto adjacent_edges(const types::id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.adjacent_edges(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.adjacent_edges(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const vertex_type& vertex) const {
-        return this->adjacent_edges(vertex.id());
-    }
-
-    [[nodiscard]] inline auto at(const types::id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.at(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.at(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto at(const vertex_type& vertex) const {
-        return this->at(vertex.id());
-    }
-
     // --- incidence methods ---
 
-    [[nodiscard]] bool are_incident(const types::id_type first_id, const types::id_type second_id)
+    [[nodiscard]] bool are_incident(const types::id_type source_id, const types::id_type target_id)
         const {
-        this->_verify_vertex_id(first_id);
-        if (first_id == second_id)
+        this->_verify_vertex_id(source_id);
+        if (source_id == target_id)
             return true;
 
-        this->_verify_vertex_id(second_id);
+        this->_verify_vertex_id(target_id);
 
         if constexpr (type_traits::is_directed_v<edge_type>)
-            return this->has_edge(first_id, second_id) or this->has_edge(second_id, first_id);
+            return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
         else
-            return this->has_edge(first_id, second_id);
+            return this->has_edge(source_id, target_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_incident(
-        const vertex_type& first, const vertex_type& second
+        const vertex_type& source, const vertex_type& target
     ) const {
-        return this->are_incident(first.id(), second.id());
+        return this->are_incident(source.id(), target.id());
     }
 
     [[nodiscard]] bool are_incident(const vertex_type& vertex, const edge_type& edge) const {
@@ -693,22 +693,22 @@ private:
             }
             else {
                 // read edges with their properties
-                types::id_type first_id, second_id;
+                types::id_type source_id, target_id;
                 edge_properties_type properties;
 
                 for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
-                    is >> first_id >> second_id >> properties;
-                    this->add_edge(first_id, second_id, properties);
+                    is >> source_id >> target_id >> properties;
+                    this->add_edge(source_id, target_id, properties);
                 }
             }
         }
         else {
             // read the edges
-            types::id_type first_id, second_id;
+            types::id_type source_id, target_id;
 
             for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
-                is >> first_id >> second_id;
-                this->add_edge(first_id, second_id);
+                is >> source_id >> target_id;
+                this->add_edge(source_id, target_id);
             }
         }
     }

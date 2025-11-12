@@ -78,13 +78,13 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(mst.weight, expected_weight);
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
-            const auto [first_id, second_id] = edge.incident_vertices();
+            const auto [source_id, target_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
                        [&](const vertex_id_pair& vids) {
-                           return (first_id == vids.first && second_id == vids.second)
-                               or (first_id == vids.second && second_id == vids.first);
+                           return (source_id == vids.first && target_id == vids.second)
+                               or (source_id == vids.second && target_id == vids.first);
                        }
                    )
                 != expected_edges.end();
@@ -133,13 +133,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     REQUIRE_EQ(mst.weight, expected_weight);
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
-        const auto [first_id, second_id] = edge.incident_vertices();
+        const auto [source_id, target_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),
                    [&](const vertex_id_pair& vids) {
-                       return (first_id == vids.first && second_id == vids.second)
-                           or (first_id == vids.second && second_id == vids.first);
+                       return (source_id == vids.first && target_id == vids.second)
+                           or (source_id == vids.second && target_id == vids.first);
                    }
                )
             != expected_edges.end();
@@ -216,13 +216,13 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(mst.weight, expected_weight);
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
-            const auto [first_id, second_id] = edge.incident_vertices();
+            const auto [source_id, target_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
                        [&](const vertex_id_pair& vids) {
-                           return (first_id == vids.first && second_id == vids.second)
-                               or (first_id == vids.second && second_id == vids.first);
+                           return (source_id == vids.first && target_id == vids.second)
+                               or (source_id == vids.second && target_id == vids.first);
                        }
                    )
                 != expected_edges.end();
@@ -271,13 +271,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     REQUIRE_EQ(mst.weight, expected_weight);
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
-        const auto [first_id, second_id] = edge.incident_vertices();
+        const auto [source_id, target_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),
                    [&](const vertex_id_pair& vids) {
-                       return (first_id == vids.first && second_id == vids.second)
-                           or (first_id == vids.second && second_id == vids.first);
+                       return (source_id == vids.first && target_id == vids.second)
+                           or (source_id == vids.second && target_id == vids.first);
                    }
                )
             != expected_edges.end();
