@@ -85,11 +85,6 @@ public:
         return this->is_valid();
     }
 
-    [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id and this->_vertices.first != constants::invalid_id
-           and this->_vertices.second != constants::invalid_id;
-    }
-
     [[nodiscard]] constexpr bool is_directed() const noexcept {
         return type_traits::is_directed_v<type>;
     }
@@ -98,27 +93,32 @@ public:
         return type_traits::is_undirected_v<type>;
     }
 
-    // clang-format off
-    // gl_attr_force_inline misplacement
+    [[nodiscard]] bool is_valid() const noexcept {
+        return this->_id != constants::invalid_id and this->_vertices.first != constants::invalid_id
+           and this->_vertices.second != constants::invalid_id;
+    }
 
     [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
         return this->_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices() const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices(
+    ) const noexcept {
         return this->_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices_r() const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices_r(
+    ) const noexcept {
         return std::make_pair(this->_vertices.second, this->_vertices.first);
     }
 
-    // TODO: rename to source
+    // clang-format off
+    // gl_attr_force_inline misplacement
+
     [[nodiscard]] gl_attr_force_inline const types::id_type source() const noexcept {
         return this->_vertices.first;
     }
 
-    // TODO: rename to target
     [[nodiscard]] gl_attr_force_inline const types::id_type target() const noexcept {
         return this->_vertices.second;
     }

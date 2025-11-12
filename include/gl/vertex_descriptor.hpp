@@ -74,7 +74,7 @@ public:
         return this->_id != constants::invalid_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::id_type id() const {
+    [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
         return this->_id;
     }
 
