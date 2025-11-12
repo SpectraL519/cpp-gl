@@ -42,7 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first(), edge.second());
+                    expected_edges.emplace_back(edge.source(), edge.target());
                 }
             }
 
@@ -77,15 +77,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
 
-        CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
-            const auto& edge = edge_ref.get();
-            const auto [first_id, second_id] = edge.incident_vertices();
+        CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
+            const auto [source_id, target_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
                        [&](const vertex_id_pair& vids) {
-                           return (first_id == vids.first && second_id == vids.second)
-                               or (first_id == vids.second && second_id == vids.first);
+                           return (source_id == vids.first && target_id == vids.second)
+                               or (source_id == vids.second && target_id == vids.first);
                        }
                    )
                 != expected_edges.end();
@@ -124,7 +123,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first(), edge.second());
+            expected_edges.emplace_back(edge.source(), edge.target());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
@@ -133,15 +132,14 @@ TEST_CASE_TEMPLATE_DEFINE(
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
 
-    CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
-        const auto& edge = edge_ref.get();
-        const auto [first_id, second_id] = edge.incident_vertices();
+    CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
+        const auto [source_id, target_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),
                    [&](const vertex_id_pair& vids) {
-                       return (first_id == vids.first && second_id == vids.second)
-                           or (first_id == vids.second && second_id == vids.first);
+                       return (source_id == vids.first && target_id == vids.second)
+                           or (source_id == vids.second && target_id == vids.first);
                    }
                )
             != expected_edges.end();
@@ -182,7 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first(), edge.second());
+                    expected_edges.emplace_back(edge.source(), edge.target());
                 }
             }
 
@@ -217,15 +215,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
         REQUIRE_EQ(mst.weight, expected_weight);
 
-        CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
-            const auto& edge = edge_ref.get();
-            const auto [first_id, second_id] = edge.incident_vertices();
+        CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
+            const auto [source_id, target_id] = edge.incident_vertices();
             return std::find_if(
                        expected_edges.begin(),
                        expected_edges.end(),
                        [&](const vertex_id_pair& vids) {
-                           return (first_id == vids.first && second_id == vids.second)
-                               or (first_id == vids.second && second_id == vids.first);
+                           return (source_id == vids.first && target_id == vids.second)
+                               or (source_id == vids.second && target_id == vids.first);
                        }
                    )
                 != expected_edges.end();
@@ -264,7 +261,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first(), edge.second());
+            expected_edges.emplace_back(edge.source(), edge.target());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
@@ -273,15 +270,14 @@ TEST_CASE_TEMPLATE_DEFINE(
     REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - constants::one);
     REQUIRE_EQ(mst.weight, expected_weight);
 
-    CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge_ref) {
-        const auto& edge = edge_ref.get();
-        const auto [first_id, second_id] = edge.incident_vertices();
+    CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
+        const auto [source_id, target_id] = edge.incident_vertices();
         return std::find_if(
                    expected_edges.begin(),
                    expected_edges.end(),
                    [&](const vertex_id_pair& vids) {
-                       return (first_id == vids.first && second_id == vids.second)
-                           or (first_id == vids.second && second_id == vids.first);
+                       return (source_id == vids.first && target_id == vids.second)
+                           or (source_id == vids.second && target_id == vids.first);
                    }
                )
             != expected_edges.end();

@@ -5,11 +5,15 @@
 #pragma once
 
 #include "gl/constants.hpp"
-#include "gl/types/dereferencing_iterator.hpp"
-#include "gl/types/iterator_range.hpp"
-#include "gl/types/non_null_iterator.hpp"
 #include "gl/types/types.hpp"
 #include "specialized/adjacency_matrix.hpp"
+
+#ifdef GL_TESTING
+namespace gl_testing {
+struct test_adjacency_matrix;
+} // namespace gl_testing
+#endif
+
 
 namespace gl::impl {
 
@@ -17,18 +21,9 @@ template <type_traits::c_matrix_graph_traits GraphTraits>
 class adjacency_matrix final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
-
     using edge_type = typename GraphTraits::edge_type;
-    using edge_ptr_type = typename GraphTraits::edge_ptr_type;
-    using edge_directional_tag = typename GraphTraits::edge_directional_tag;
-
-    using edge_list_type = std::vector<edge_ptr_type>;
-    using edge_iterator_type = types::dereferencing_iterator<
-        types::non_null_iterator<typename edge_list_type::const_iterator>>;
-
-    // TODO: reverese iterators should be available for bidirectional ranges
-
-    using matrix_type = std::vector<edge_list_type>;
+    using edge_id_list_type = std::vector<types::id_type>;
+    using matrix_type = std::vector<edge_id_list_type>;
 
     adjacency_matrix(const adjacency_matrix&) = delete;
     adjacency_matrix& operator=(const adjacency_matrix&) = delete;
@@ -37,10 +32,8 @@ public:
 
     adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
         // initialize a full n x n matrix with null elements
-        for (auto& row : this->_matrix) {
-            row.reserve(n_vertices);
-            std::generate_n(std::back_inserter(row), n_vertices, _make_null_edge);
-        }
+        for (auto& row : this->_matrix)
+            row.resize(n_vertices, constants::invalid_id);
     }
 
     adjacency_matrix(adjacency_matrix&&) = default;
@@ -48,39 +41,22 @@ public:
 
     ~adjacency_matrix() = default;
 
-    // --- general methods ---
-
-    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const {
-        return this->_matrix.size();
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type n_unique_edges() const {
-        return this->_n_unique_edges;
-    }
-
     // --- vertex methods ---
 
     void add_vertex() {
         for (auto& row : this->_matrix)
-            row.emplace_back(_make_null_edge());
-        auto& new_row = this->_matrix.emplace_back();
-        new_row.reserve(this->n_vertices());
-        std::generate_n(std::back_inserter(new_row), this->n_vertices(), _make_null_edge);
+            row.push_back(constants::invalid_id);
+        this->_matrix.emplace_back(this->_matrix.size() + 1uz, constants::invalid_id);
     }
 
     void add_vertices(const types::size_type n) {
-        const auto new_n_vertices = this->n_vertices() + n;
+        const auto new_n_vertices = this->_matrix.size() + n;
 
-        for (auto& row : this->_matrix) {
-            row.reserve(new_n_vertices);
-            std::generate_n(std::back_inserter(row), n, _make_null_edge);
-        }
+        for (auto& row : this->_matrix)
+            row.resize(new_n_vertices, constants::invalid_id);
 
-        for (types::size_type _ = constants::begin_idx; _ < n; ++_) {
-            auto& new_row = this->_matrix.emplace_back();
-            new_row.reserve(new_n_vertices);
-            std::generate_n(std::back_inserter(new_row), new_n_vertices, _make_null_edge);
-        }
+        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
+            this->_matrix.emplace_back(new_n_vertices, constants::invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const types::id_type vertex_id
@@ -110,83 +86,208 @@ public:
         return specialized_impl::degree_map(*this);
     }
 
-    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) {
-        specialized_impl::remove_vertex(*this, vertex_id);
+    std::vector<types::id_type> remove_vertex(const types::id_type vertex_id) {
+        auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
+        this->_remap_element_ids(removed_edge_ids);
+        return removed_edge_ids;
     }
 
     // --- edge methods ---
 
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    gl_attr_force_inline const edge_type& add_edge(edge_ptr_type edge) {
-        return specialized_impl::add_edge(*this, std::move(edge));
+    gl_attr_force_inline void add_edge(
+        types::id_type id, types::id_type source_id, types::id_type target_id
+    ) {
+        specialized_impl::add_edge(*this, id, source_id, target_id);
     }
 
-    // clang-format on
-
     gl_attr_force_inline void add_edges_from(
-        const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const types::id_type source_id,
+        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
-        specialized_impl::add_edges_from(*this, source_id, std::move(new_edges));
+        specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const types::id_type first_id, const types::id_type second_id
+        const types::id_type source_id, const types::id_type target_id
     ) const {
-        return this->_matrix[first_id][second_id] != nullptr;
+        return this->_matrix[source_id][target_id] != constants::invalid_id;
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        const auto [first_id, second_id] = edge.incident_vertices();
-        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
-            return false;
-
-        const auto& matrix_element = this->_matrix[first_id][second_id];
-        return matrix_element != nullptr and &edge == matrix_element.get();
+        return this->_matrix[edge.source()][edge.target()] == edge.id();
     }
 
-    [[nodiscard]] types::optional_ref<const edge_type> get_edge(
-        const types::id_type first_id, const types::id_type second_id
-    ) const {
-        if (not (this->_is_valid_vertex_id(first_id) and this->_is_valid_vertex_id(second_id)))
+    [[nodiscard]] std::optional<edge_type> get_edge(
+        const types::id_type source_id, const types::id_type target_id
+    ) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
+        const auto edge_id = this->_matrix[source_id][target_id];
+        if (edge_id == constants::invalid_id)
             return std::nullopt;
+        return std::make_optional<edge_type>(edge_id, source_id, target_id);
+    }
 
-        const auto& matrix_element = this->_matrix[first_id][second_id];
-        if (not matrix_element)
+    [[nodiscard]] std::optional<edge_type> get_edge(
+        const types::id_type source_id,
+        const types::id_type target_id,
+        const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        const auto edge_id = this->_matrix[source_id][target_id];
+        if (edge_id == constants::invalid_id)
             return std::nullopt;
-        return std::cref(*matrix_element);
+        return std::make_optional<edge_type>(
+            edge_id, source_id, target_id, *edge_properties_map[edge_id]
+        );
+    }
+
+    [[nodiscard]] std::vector<edge_type> get_edges(
+        const types::id_type source_id, const types::id_type target_id
+    ) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
+        const auto edge_id = this->_matrix[source_id][target_id];
+        if (edge_id == constants::invalid_id)
+            return std::vector<edge_type>();
+        return std::vector<edge_type>{
+            edge_type{edge_id, source_id, target_id}
+        };
+    }
+
+    [[nodiscard]] std::vector<edge_type> get_edges(
+        const types::id_type source_id,
+        const types::id_type target_id,
+        const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        const auto edge_id = this->_matrix[source_id][target_id];
+        if (edge_id == constants::invalid_id)
+            return std::vector<edge_type>();
+        return std::vector<edge_type>{
+            edge_type{edge_id, source_id, target_id, *edge_properties_map[edge_id]}
+        };
     }
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
+        for (auto& row : this->_matrix)
+            for (auto& edge_id : row)
+                if (edge_id != constants::invalid_id and edge_id > edge.id())
+                    edge_id--;
     }
 
-    [[nodiscard]] inline types::iterator_range<edge_iterator_type> adjacent_edges(
-        const types::id_type vertex_id
-    ) const {
-        const auto& row = this->_matrix[vertex_id];
-        return make_iterator_range(
-            types::dereferencing_iterator(non_null_cbegin(row)),
-            types::dereferencing_iterator(non_null_cend(row))
-        );
+    std::vector<types::id_type> remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
+        for (const auto& edge : edges)
+            specialized_impl::remove_edge(*this, edge);
+        auto removed_edge_ids =
+            edges | std::views::transform([](const auto& edge) { return edge.id(); })
+            | std::ranges::to<std::vector>();
+        this->_remap_element_ids(removed_edge_ids);
+        return removed_edge_ids;
     }
+
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::filter([](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id != constants::invalid_id;
+               })
+             | std::views::transform([vertex_id](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_type{edge_id, vertex_id, static_cast<types::id_type>(target_id)};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::filter([](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id != constants::invalid_id;
+               })
+             | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_type{
+                       edge_id,
+                       vertex_id,
+                       static_cast<types::id_type>(target_id),
+                       *edge_properties_map[edge_id]
+                   };
+               });
+    }
+
+    // --- access operators ---
+
+    [[nodiscard]] gl_attr_force_inline auto at(const types::id_type vertex_id) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::transform([vertex_id](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id == constants::invalid_id
+                            ? edge_type::invalid()
+                            : edge_type{edge_id, vertex_id, static_cast<types::id_type>(target_id)};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto at(
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        return this->_matrix[vertex_id] | std::views::enumerate
+             | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
+                   const auto& [target_id, edge_id] = edge_info;
+                   return edge_id == constants::invalid_id
+                            ? edge_type::invalid()
+                            : edge_type{
+                                  edge_id,
+                                  vertex_id,
+                                  static_cast<types::id_type>(target_id),
+                                  *edge_properties_map[edge_id]
+                              };
+               });
+    }
+
+#ifdef GL_TESTING
+    friend struct gl_testing::test_adjacency_matrix;
+#endif
 
 private:
     using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
-    static constexpr edge_ptr_type _make_null_edge() {
-        return nullptr;
-    }
+    void _remap_element_ids(std::vector<types::id_type>& removed_edge_ids) {
+        std::ranges::sort(removed_edge_ids);
+        removed_edge_ids.erase(
+            std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
+        );
 
-    [[nodiscard]] gl_attr_force_inline bool _is_valid_vertex_id(const types::id_type vertex_id
-    ) const {
-        return vertex_id < this->_matrix.size();
+        for (auto& row : this->_matrix) {
+            for (auto& edge_id : row) {
+                if (edge_id == constants::invalid_id)
+                    continue;
+
+                auto it = std::ranges::lower_bound(removed_edge_ids, edge_id);
+                if (it != removed_edge_ids.end() && *it == edge_id)
+                    edge_id = constants::invalid_id; // edge was removed
+                else
+                    // shift by the number of removed IDs < edge-id
+                    edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);
+            }
+        }
     }
 
     matrix_type _matrix{};
-    types::size_type _n_unique_edges{constants::default_size};
 };
 
 } // namespace gl::impl

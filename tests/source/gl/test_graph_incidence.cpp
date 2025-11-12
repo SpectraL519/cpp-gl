@@ -14,9 +14,9 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SutType sut{constants::n_elements};
 
-    const auto& vd_1 = sut.get_vertex(constants::vertex_id_1);
-    const auto& vd_2 = sut.get_vertex(constants::vertex_id_2);
-    const auto& vd_3 = sut.get_vertex(constants::vertex_id_3);
+    const auto vd_1 = sut.get_vertex(constants::vertex_id_1);
+    const auto vd_2 = sut.get_vertex(constants::vertex_id_2);
+    const auto vd_3 = sut.get_vertex(constants::vertex_id_3);
     vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
@@ -84,7 +84,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     }
 
     SUBCASE("are_incident(vertex and edge pair) should throw if the vertex is invalid") {
-        const auto& edge = sut.add_edge(vd_1, vd_2);
+        const auto edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
@@ -102,7 +102,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     }
 
     SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
-        const typename SutType::edge_type invalid_edge{vd_1.id(), vd_2.id()};
+        const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
@@ -121,7 +121,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(vertex and edge pair) should return true only when the edge and the "
             "vertex are incident with each other") {
-        const auto& edge = sut.add_edge(vd_1, vd_2);
+        const auto edge = sut.add_edge(vd_1, vd_2);
 
         CHECK(sut.are_incident(vd_1, edge));
         CHECK(sut.are_incident(vd_2, edge));
@@ -131,8 +131,8 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     }
 
     SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
-        const auto& edge = sut.add_edge(vd_1, vd_2);
-        const typename SutType::edge_type invalid_edge{vd_1.id(), vd_2.id()};
+        const auto edge = sut.add_edge(vd_1, vd_2);
+        const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             func::discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
@@ -144,9 +144,9 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(edge, edge) should return true only when the edges share a common vertex"
     ) {
-        const auto& edge_1 = sut.add_edge(vd_1, vd_2);
-        const auto& edge_2 = sut.add_edge(vd_2, vd_3);
-        const auto& loop_3 = sut.add_edge(vd_3, vd_3);
+        const auto edge_1 = sut.add_edge(vd_1, vd_2);
+        const auto edge_2 = sut.add_edge(vd_2, vd_3);
+        const auto loop_3 = sut.add_edge(vd_3, vd_3);
 
         CHECK(sut.are_incident(edge_1, edge_2));
         CHECK(sut.are_incident(edge_2, edge_1));

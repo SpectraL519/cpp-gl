@@ -62,17 +62,6 @@ This section covers the specific types and type traits used for the algorithm im
     - `id: types::id_type` - the ID of the vertex.
     - `source_id: types::id_type` - the ID of the source vertex, typically used during algorithms.
 
-- `edge_info`
-  - *Description*: Holds information about an edge, including the edge itself and its source vertex's ID.
-  - *Template parameters*:
-    - `EdgeType: type_traits::c_instantiation_of<edge_descriptor>` - the type of the edge.
-  - *Constructors*:
-    - `vertex_info(types::id_type id)` - initializes the object with the same value for `id` and `source_id` representing a starting vertex
-    - `vertex_info(types::id_type id, types::id_type source_id)`
-  - *Member variables*:
-    - `edge: types::const_ref_wrap<EdgeType>` - a constant reference wrapper for the edge.
-    - `source_id: types::id_type` - the ID of the source vertex of the held edge.
-
 - `predicate_result`
   - *Description*: Represents the result of a predicate evaluation.
   - *Type definitions*:
@@ -383,7 +372,7 @@ This section covers the specific types and type traits used for the algorithm im
 > - *Constructors*:
 >   - `mst_descriptor(types::size_type n_vertices)` - Initializes an empty `edges` list with the capacity of $\text{n-vertices} - 1$ and the total weight is set to $0$.
 > - *Member variables*:
->   - `edges: std::vector<types::const_ref_wrap<edge_type>>` - A list of constant edge references representing the edges of the spanning tree.
+>   - `edges: std::vector<edge_type>` - A list of edges of the spanning tree.
 >   - `weight: weight_type` - The total weight of all edges of the spanning tree.
 
 <br />

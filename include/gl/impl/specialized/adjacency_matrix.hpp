@@ -18,32 +18,27 @@ namespace specialized {
 
 namespace detail {
 
-template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-[[nodiscard]] typename AdjacencyMatrix::edge_ptr_type& strict_get(
-    typename AdjacencyMatrix::matrix_type& matrix, const typename AdjacencyMatrix::edge_type* edge
-) {
+[[nodiscard]] types::id_type& strict_get(auto& id_matrix, const auto& edge) {
     // get the edge and validate the address
-    auto& matrix_element = matrix.at(edge->first()).at(edge->second());
-    if (edge != matrix_element.get())
+    const auto [source_id, target_id] = edge.incident_vertices();
+    auto& edge_id = id_matrix[source_id][target_id];
+    if (edge.id() != edge_id)
         throw std::invalid_argument(std::format(
-            "Got invalid edge [vertices = ({}, {}) | addr = {}]",
-            edge->first(),
-            edge->second(),
-            io::format(edge)
+            "Got invalid edge [id = {} | vertices = ({}, {})]", edge.id(), source_id, target_id
         ));
 
-    return matrix_element;
+    return edge_id;
 }
 
-template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 inline void check_edge_override(
-    const AdjacencyMatrix& adj_matrix, const typename AdjacencyMatrix::edge_ptr_type& edge
+    const auto& id_matrix, const types::id_type source_id, const types::id_type target_id
 ) {
-    const auto [first_id, second_id] = edge->incident_vertices();
-
-    if (adj_matrix.has_edge(first_id, second_id))
+    if (const auto edge_id = id_matrix[source_id][target_id]; edge_id != constants::invalid_id)
         throw std::logic_error(std::format(
-            "Cannot override an existing edge without remove: ({}, {})", first_id, second_id
+            "Cannot override an existing edge: [id = {}, vertices = ({}, {})]",
+            edge_id,
+            source_id,
+            target_id
         ));
 }
 
@@ -55,33 +50,33 @@ struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
-    using edge_ptr_type = typename impl_type::edge_ptr_type;
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return std::ranges::count_if(
-            self._matrix,
-            [](const auto& edge) { return edge != nullptr; },
-            [vertex_id](const auto& row) -> const edge_ptr_type& { return row[vertex_id]; }
-        );
+        return std::ranges::count_if(self._matrix, [vertex_id](const auto& row) {
+            return row[vertex_id] != constants::invalid_id;
+        });
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return std::ranges::count_if(self._matrix[vertex_id], [](const auto& edge) {
-            return edge != nullptr;
-        });
+        return self._matrix[vertex_id].size()
+             - std::ranges::count(self._matrix[vertex_id], constants::invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
         types::size_type deg = constants::zero;
-        for (types::id_type i = constants::initial_id; i < self._matrix.size(); ++i)
-            deg += static_cast<types::size_type>(self._matrix[vertex_id][i] != nullptr)
-                 + static_cast<types::size_type>(self._matrix[i][vertex_id] != nullptr);
+        for (types::id_type v_id = constants::initial_id; v_id < self._matrix.size(); ++v_id)
+            deg += static_cast<types::size_type>(
+                       self._matrix[vertex_id][v_id] != constants::invalid_id
+                   )
+                 + static_cast<types::size_type>(
+                       self._matrix[v_id][vertex_id] != constants::invalid_id
+                 );
 
         return deg;
     }
@@ -90,31 +85,29 @@ struct directed_adjacency_matrix {
         std::vector<types::id_type> in_degree_map(self._matrix.size(), constants::zero);
 
         for (const auto& row : self._matrix)
-            for (auto [id, edge_ptr] : std::views::enumerate(row))
-                in_degree_map[id] += static_cast<types::size_type>(edge_ptr != nullptr);
+            for (auto [target_id, edge_id] : std::views::enumerate(row))
+                in_degree_map[target_id] +=
+                    static_cast<types::size_type>(edge_id != constants::invalid_id);
 
         return in_degree_map;
     }
 
     [[nodiscard]] static std::vector<types::size_type> out_degree_map(const impl_type& self) {
-        std::vector<types::id_type> out_degree_map;
-        out_degree_map.reserve(self._matrix.size());
-
-        for (types::id_type id = constants::initial_id; id < self._matrix.size(); ++id)
-            out_degree_map.push_back(out_degree(self, id));
-
-        return out_degree_map;
+        return std::views::iota(constants::initial_id, self._matrix.size())
+             | std::views::transform([&](types::id_type id) { return out_degree(self, id); })
+             | std::ranges::to<std::vector>();
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
         std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
 
-        for (types::id_type u_id = constants::initial_id; u_id < self._matrix.size(); ++u_id) {
-            const auto& row = self._matrix[u_id];
-            for (types::id_type v_id = constants::initial_id; v_id < self._matrix.size(); ++v_id) {
-                if (row[v_id] != nullptr) {
-                    ++degree_map[u_id];
-                    ++degree_map[v_id];
+        for (types::id_type source_id = constants::initial_id; source_id < self._matrix.size();
+             ++source_id) {
+            for (types::id_type target_id = constants::initial_id; target_id < self._matrix.size();
+                 ++target_id) {
+                if (self._matrix[source_id][target_id] != constants::invalid_id) {
+                    ++degree_map[source_id];
+                    ++degree_map[target_id];
                 }
             }
         }
@@ -122,44 +115,52 @@ struct directed_adjacency_matrix {
         return degree_map;
     }
 
-    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
-        self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
+    static std::vector<types::id_type> remove_vertex(
+        impl_type& self, const types::id_type vertex_id
+    ) {
+        auto removed_edges_view =
+            self._matrix[vertex_id]
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
+
+        // TODO: use std::ranges::to (requires newer compiler)
+        std::vector<types::id_type> removed_edges(
+            removed_edges_view.begin(), removed_edges_view.end()
+        );
+
         self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
         for (auto& row : self._matrix) {
-            const auto vertex_it = std::next(std::begin(row), vertex_id);
-            self._n_unique_edges -= static_cast<types::size_type>(*vertex_it != nullptr);
-            row.erase(vertex_it);
+            if (const auto edge_id = row[vertex_id]; edge_id != constants::invalid_id)
+                removed_edges.push_back(edge_id);
+            row.erase(std::next(std::begin(row), vertex_id));
         }
+
+        return removed_edges;
     }
 
-    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        detail::check_edge_override<impl_type>(self, edge);
-
-        auto& matrix_element = self._matrix[edge->first()][edge->second()];
-        matrix_element = std::move(edge);
-        ++self._n_unique_edges;
-
-        return *matrix_element;
+    static inline void add_edge(
+        impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
+    ) {
+        detail::check_edge_override(self._matrix, source_id, target_id);
+        self._matrix[source_id][target_id] = edge_id;
     }
 
     static void add_edges_from(
-        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+        impl_type& self,
+        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const types::id_type source_id,
+        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
-        // validate new edges
-        for (auto& edge : new_edges)
-            detail::check_edge_override(self, edge);
+        for (const auto target_id : target_ids)
+            detail::check_edge_override(self._matrix, source_id, target_id);
 
-        auto& matrix_row_source = self._matrix[source_id];
-        for (auto& edge : new_edges)
-            matrix_row_source[edge->second()] = std::move(edge);
-
-        self._n_unique_edges += new_edges.size();
+        auto& matrix_source_row = self._matrix[source_id];
+        for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
+            matrix_source_row[target_id] = edge_id;
     }
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
-        detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
-        --self._n_unique_edges;
+        detail::strict_get(self._matrix, edge) = constants::invalid_id;
     }
 };
 
@@ -169,7 +170,6 @@ struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
-    using edge_ptr_type = typename impl_type::edge_ptr_type;
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
@@ -186,10 +186,11 @@ struct undirected_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return std::ranges::count_if(
-                   self._matrix[vertex_id], [](const auto& edge) { return edge != nullptr; }
-               )
-             + static_cast<types::size_type>(self._matrix[vertex_id][vertex_id] != nullptr);
+        return self._matrix.size()
+             - std::ranges::count(self._matrix[vertex_id], constants::invalid_id)
+             + static_cast<types::size_type>(
+                   self._matrix[vertex_id][vertex_id] != constants::invalid_id
+             );
     }
 
     [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> in_degree_map(
@@ -207,12 +208,13 @@ struct undirected_adjacency_matrix {
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
         std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
 
-        for (types::id_type u_id = constants::initial_id; u_id < self._matrix.size(); ++u_id) {
-            const auto& row = self._matrix[u_id];
-            for (types::id_type v_id = constants::initial_id; v_id <= u_id; ++v_id) {
-                if (row[v_id] != nullptr) {
-                    ++degree_map[u_id];
-                    ++degree_map[v_id];
+        for (types::id_type source_id = constants::initial_id; source_id < self._matrix.size();
+             ++source_id) {
+            for (types::id_type target_id = constants::initial_id; target_id <= source_id;
+                 ++target_id) {
+                if (self._matrix[source_id][target_id] != constants::invalid_id) {
+                    ++degree_map[source_id];
+                    ++degree_map[target_id];
                 }
             }
         }
@@ -220,57 +222,61 @@ struct undirected_adjacency_matrix {
         return degree_map;
     }
 
-    static void remove_vertex(impl_type& self, const types::id_type vertex_id) {
-        self._n_unique_edges -= self.adjacent_edges(vertex_id).distance();
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
+    static std::vector<types::id_type> remove_vertex(
+        impl_type& self, const types::id_type vertex_id
+    ) {
+        auto removed_edges_view =
+            self._matrix[vertex_id]
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
+        // TODO: use std::ranges::to (requires newer compiler)
+        std::vector<types::id_type> removed_edges(
+            removed_edges_view.begin(), removed_edges_view.end()
+        );
 
+        self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
         for (auto& row : self._matrix)
             row.erase(std::next(std::begin(row), vertex_id));
+
+        return removed_edges;
     }
 
-    static const edge_type& add_edge(impl_type& self, edge_ptr_type edge) {
-        detail::check_edge_override<impl_type>(self, edge);
+    static void add_edge(
+        impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
+    ) {
+        detail::check_edge_override(self._matrix, source_id, target_id);
 
-        const auto first_id = edge->first();
-        const auto second_id = edge->second();
-
-        if (not edge->is_loop())
-            self._matrix[second_id][first_id] = edge;
-        auto& matrix_element = self._matrix.at(first_id).at(second_id);
-        matrix_element = edge;
-
-        ++self._n_unique_edges;
-        return *matrix_element;
+        self._matrix[source_id][target_id] = edge_id;
+        if (target_id != source_id)
+            self._matrix[target_id][source_id] = edge_id;
     }
 
     static void add_edges_from(
-        impl_type& self, const types::id_type source_id, std::vector<edge_ptr_type> new_edges
+        impl_type& self,
+        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const types::id_type source_id,
+        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
     ) {
-        // validate new edges
-        for (auto& edge : new_edges)
-            detail::check_edge_override(self, edge);
+        for (const auto target_id : target_ids)
+            detail::check_edge_override(self._matrix, source_id, target_id);
 
-        auto& matrix_row_source = self._matrix[source_id];
-        for (auto& edge : new_edges) {
-            if (not edge->is_loop())
-                self._matrix[edge->second()][source_id] = edge;
-            matrix_row_source[edge->second()] = std::move(edge);
+        auto& matrix_source_row = self._matrix[source_id];
+        for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids)) {
+            matrix_source_row[target_id] = edge_id;
+            if (target_id != source_id)
+                self._matrix[target_id][source_id] = edge_id;
         }
-
-        self._n_unique_edges += new_edges.size();
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {
         if (edge.is_loop()) {
-            detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
+            detail::strict_get(self._matrix, edge) = constants::invalid_id;
         }
         else {
-            detail::strict_get<impl_type>(self._matrix, &edge) = nullptr;
+            detail::strict_get(self._matrix, edge) = constants::invalid_id;
             // if the edge was found in the first matrix cell,
             // it will also be present in the second matrix cell
-            self._matrix[edge.second()][edge.first()] = nullptr;
+            self._matrix[edge.target()][edge.source()] = constants::invalid_id;
         }
-        --self._n_unique_edges;
     }
 };
 

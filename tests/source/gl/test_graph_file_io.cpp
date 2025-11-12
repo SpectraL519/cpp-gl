@@ -14,7 +14,7 @@ namespace fs = std::filesystem;
 
 namespace gl_testing {
 
-#define CUSTOM_REQUIRE_THROWS_FS_ERROR(expr, errc)                                             \
+#define GL_REQUIRE_THROWS_FS_ERROR(expr, errc)                                                 \
     try {                                                                                      \
         expr;                                                                                  \
         FAIL("Expected `std::filesystem::filesystem_error` but no exception was thrown");      \
@@ -73,21 +73,17 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         if (not file.is_open())
             FAIL("Could not initialize an empty file");
 
-        CUSTOM_REQUIRE_THROWS_FS_ERROR(
+        GL_REQUIRE_THROWS_FS_ERROR(
             gl::io::save(fixture.sut_out, fixture.path), std::errc::file_exists
         );
     }
 
     SUBCASE("load shoul throw if a file does not exist") {
-        CUSTOM_REQUIRE_THROWS_FS_ERROR(
+        GL_REQUIRE_THROWS_FS_ERROR(
             func::discard_result(gl::io::load<SutType>(fixture.path)),
             std::errc::no_such_file_or_directory
         );
     }
-
-    // TODO: add
-    // * invalid file type tests
-    // * could not open file tests
 
     SUBCASE("file io should properly save and load a graph in a gsf format") {
         gl::io::save(fixture.sut_out, fixture.path);

@@ -2,6 +2,7 @@
 
 #include "types.hpp"
 
+#include <gl/constants.hpp>
 #include <gl/types/types.hpp>
 
 #include <limits>
@@ -34,7 +35,7 @@ IC gl::types::size_type out_of_range_element_idx = n_elements;
 IC gl::types::id_type vertex_id_1 = first_element_idx;
 IC gl::types::id_type vertex_id_2 = vertex_id_1 + one_element;
 IC gl::types::id_type vertex_id_3 = vertex_id_2 + one_element;
-IC gl::types::id_type invalid_id = std::numeric_limits<gl::types::id_type>::max();
+IC gl::types::id_type invalid_id = gl::constants::invalid_id;
 
 IC auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
 

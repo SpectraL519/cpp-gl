@@ -121,14 +121,14 @@ Based on the specified traits, the `graph` class defines the following types:
 
 <br />
 
-### Size operations
+### Size Operations
 
-- **`graph.n_vertices() const`**:
+- **`graph.n_vertices() const noexcept`**:
   - *Description*: Returns the total number of vertices in the graph.
   - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
   - *Return type*: `types::size_type`
 
-- **`graph.n_unique_edges() const`**:
+- **`graph.n_unique_edges() const noexcept`**:
   - Returns the number of unique edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
@@ -138,21 +138,21 @@ Based on the specified traits, the `graph` class defines the following types:
 ### Vertex Operations
 
 - **`graph.vertices() const`**:
-  - *Description*: Returns an view over all vertices in the graph.
+  - *Description*: Returns a view over all vertices in the graph.
   - *Returned value*: $V$
-  - *Return type*: A random access *view* with values of type `vertex_type`.
+  - *Return type*: A *random access view* with values of type `vertex_type`.
 
 - **`graph.vertex_ids() const`**:
   - *Description*: Returns a range of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
   - *Returned value*: $(v_{id} : v \in V)$
-  - *Return type*: A random access *view* with values of type `types::id_type` : `std::ranges::iota_view`.
+  - *Return type*: A *random access view* with values of type `types::id_type` : `std::ranges::iota_view`.
 
 - **`graph.get_vertex(vertex_id) const`**:
   - *Description*: Retrieves the vertex object associated with the given vertex ID.
   - *Returned value*: $v \in V : v_{id} = \text{vertex-id}$
   - *Parameters*:
     - `vertex_id: const types::id_type`
-  - *Return type*: `const vertex_type&`
+  - *Return type*: `vertex_type`
 
 - **`graph.has_vertex(vertex_id) const`**:
   - *Description*: Checks if a vertex exists for the given vertex ID.
@@ -169,14 +169,14 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `bool`
 
 - **`graph.add_vertex()`**:
-  - *Description*: Adds a new vertex to the graph with default properties and returns a reference to the newly added vertex.
-  - *Return type*: `const vertex_type&`
+  - *Description*: Adds a new vertex to the graph with default properties and returns a descriptor object of the added vertex.
+  - *Return type*: `const vertex_type`
 
 - **`graph.add_vertex(properties)`**:
-  - *Description*: Adds a new vertex with specified properties and returns a reference to the newly added vertex. This overload is available when the vertex properties type is not the default.
+  - *Description*: Adds a new vertex with specified properties and returns a descriptor object of the newly added vertex.
   - *Parameters*:
     - `properties: const vertex_properties_type&` – Properties to assign to the new vertex.
-  - *Return type*: `const vertex_type&`
+  - *Return type*: `const vertex_type`
   - *Requires*: non-default `vertex_properties_type`
 
 - **`graph.add_vertices(n)`**:
@@ -187,10 +187,8 @@ Based on the specified traits, the `graph` class defines the following types:
 
 - **`graph.add_vertices_with(properties_range)`**:
   - *Description*: Adds multiple vertices to the graph, each with the corresponding properties from the given range. The number of vertices added is determined by the size of `properties_range`.
-  - *Template parameters*:
-    - `VertexPropertiesRange: type_traits::c_sized_range_of<vertex_properties_type>` – A range of vertex properties that must satisfy the size and type constraints.
   - *Parameters*:
-    - `properties_range: const VertexPropertiesRange&` – A range of properties to assign to each of the new vertices.
+    - `properties_range: const type_traits::c_sized_range_of<vertex_properties_type> auto&` – A range of properties to assign to each of the new vertices.
   - *Return type*: `void`
   - *Requires*: non-default `vertex_properties_type`
 
@@ -200,13 +198,13 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertex(vertex_id)`**:
   - *Description*: Removes the vertex with the given ID from the graph.
   - *Parameters*:
-    - `vertex_id: types::size_type` – The ID of the vertex to remove.
+    - `vertex_id: types::size_type` – The ID of the vertex to be removed.
   - *Return type*: `void`
 
 - **`graph.remove_vertex(vertex)`**:
   - *Description*: Removes the specified vertex from the graph.
   - *Parameters*:
-    - `vertex: const vertex_type&` – A reference to the vertex to remove.
+    - `vertex: const vertex_type&` – A reference to the vertex to be removed.
   - *Return type*: `void`
 
 - **`graph.remove_vertices_from(vertex_id_range)`**:
@@ -214,15 +212,13 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Template parameters*:
     - `IdRange: type_traits::c_sized_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Parameters*:
-    - `vertex_id_range: const IdRange&` – A range of vertex IDs to remove.
+    - `vertex_id_range: const IdRange&` – A range of vertex IDs to be removed.
   - *Return type*: `void`
 
 - **`graph.remove_vertices_from(vertex_ref_range)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
-  - *Template parameters*:
-    - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – A range of vertex references that must satisfy the size and type constraints.
   - *Parameters*:
-    - `vertex_ref_range: const VertexRefRange&` – A range of vertex references to remove.
+    - `vertex_ref_range: const type_traits::c_sized_range_of<types::id_type> auto&` – A range of vertex references to be removed.
   - *Return type*: `void`
 
 - **`graph.in_degree(vertex) const`**:
@@ -296,88 +292,112 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Description*: Returns a vector containing the degrees of the corresponding vertices (degree at index `i` corresponds to the vertex with an ID equal `i`).
   - *Return type*: `std::vector<types::size_type>`
 
-- **`graph.vertex_properties_map() const`**:
-  - *Description*: Returns a *map-like view* the properties of the corresponding vertices (property at index `i` corresponds to the vertex with an ID equal `i`).
-  - *Return type*: A random access view with values of type `vertex_properties_type&`
+- **`graph.at(vertex_id) const`**:
+  - *Description*: Returns a *random access view* over the adjacency storage entry for the given vertex ID.
+    - For an adjacency list representation, it returns a view over a list of edges adjacent to the vertex.
+    - For an adjacency matrix representation, it returns a view over a row of size $|V|$ corresponding to the vertex. **NOTE:** If the $i$-th entry of the row contains an *invalid edge descriptor*, it means there is no edge between the vertex with ID `vertex_id` and the vertex with ID `i`.
+  - *Parameters*:
+    - `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
+  - *Return type*: A *random access view* with values of type `edge_type`.
+
+- **`graph.at(vertex) const`**:
+  - *Description*: An alias for `adjacent_edges(vertex)`. Returns a *random access view* over the adjacency storage entry for the given vertex.
+    - This is equivalent to calling `at(vertex.id())`.
+  - *Parameters*:
+    - `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
+  - *Return type*: A *random access view* with values of type `edge_type`.
+
+- **`graph.adjacent_edges(vertex_id) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges adjacent with the vertex with the specified ID.
+    - For an adjacency list representation, it returns a view over a list of edges adjacent to the vertex.
+    - For an adjacency matrix representation, it returns a *filtered view* over a row of size $|V|$ corresponding to the vertex, containing only the valid edges (i.e., edges that exist between the vertex with ID `vertex_id` and other vertices).
+  - *Parameters*:
+    - `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
+
+- **`graph.adjacent_edges(vertex) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges adjacent with the specified vertex.
+    - This is equivalent to calling `adjacent_edges(vertex.id())`.
+  - *Parameters*:
+    - `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
 
 <br />
 
 ### Edge Operations
 
-- **`graph.add_edge(first_id, second_id)`**:
+- **`graph.add_edge(source_id, target_id)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge.
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
-  - *Return type*: `const edge_type&`
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
+  - *Return type*: `edge_type`
 
-- **`graph.add_edge(first_id, second_id, properties)`**:
+- **`graph.add_edge(source_id, target_id, properties)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
     - `properties: const edge_properties_type&` – properties to assign to the new edge.
-  - *Return type*: `const edge_type&`
+  - *Return type*: `const edge_type`
   - *Requires*: non-default `edge_properties_type`
 
-- **`graph.add_edge(first, second)`**:
+- **`graph.add_edge(source, target)`**:
   - *Description*: Adds a new edge between the specified vertices and returns a reference to the newly added edge.
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
-  - *Return type*: `const edge_type&`
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
+  - *Return type*: `const edge_type`
 
-- **`graph.add_edge(first, second, properties)`**:
+- **`graph.add_edge(source, target, properties)`**:
   - *Description*: Adds a new edge between the specified vertices and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
     - `properties: const edge_properties_type&` – properties to assign to the new edge.
-  - *Return type*: `const edge_type&`
+  - *Return type*: `const edge_type`
   - *Requires*: non-default `edge_properties_type`
 
 - **`graph.add_edges_from(source_id, target_id_range)`**:
   - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of target vertices (also specified by IDs).
-  - *Template parameters*:
-    - `IdRange: type_traits::c_sized_range_of<types::id_type>` – a range of vertex IDs that must satisfy the size and type constraints.
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id_range: const IdRange&` – a range of target vertex IDs to connect to the source vertex.
+    - `target_id_range: const type_traits::c_sized_range_of<types::id_type> auto&` – a range of target vertex IDs to connect to the source vertex.
   - *Return type*: `void`
+  - *NOTE:* For an adjacency matrix representation passing a range with duplicate IDs will result in an error.
 
 - **`graph.add_edges_from(source, target_range)`**:
   - *Description*: Adds multiple edges from a specified source vertex to a range of target vertices (specified by references).
-  - *Template parameters*:
-    - `VertexRefRange: type_traits::c_sized_range_of<types::const_ref_wrap<vertex_type>>` – a range of vertex references that must satisfy the size and type constraints.
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
-    - `target_range: const VertexRefRange&` – a range of target vertex references to connect to the source vertex.
+    - `target_range: const type_traits::c_sized_range_of<vertex_type> auto&` – a range of target vertex references to connect to the source vertex.
   - *Return type*: `void`
+  - *NOTE:* For an adjacency matrix representation passing a range with duplicate vertices will result in an error.
 
 > [!IMPORTANT]
-> Behaviour of adding an edge between `first` and `second`:
+> Behaviour of adding an edge between `source` and `target`:
 >
-> - for *directed* graphs: adds a one-directional edge where `first` is the source vertex and `second` is the target vertex
+> - for *directed* graphs: adds a one-directional edge where `source` is the source vertex and `target` is the target vertex
 > - for *undirected* graphs: adds a bidirectional edge where both vertices are source and target vertices
 
-- **`graph.has_edge(first_id, second_id) const`**:
+- **`graph.has_edge(source_id, target_id) const`**:
   - *Description*: Returns true if there is an edge between the vertices with the specified IDs.
   - *Returned value*:
-    - For directed graphs: $\exists((u, v) \in E : \text{first-id} = u_{id} \land \text{second-id} = v_{id})$
-    - For unidirected graphs: $\exists((u, v) \in E : (\text{first-id}, \text{second-id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
+    - For directed graphs: $\exists((u, v) \in E : \text{source-id} = u_{id} \land \text{target-id} = v_{id})$
+    - For unidirected graphs: $\exists((u, v) \in E : (\text{source-id}, \text{target-id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
   - *Return type*: `bool`
 
-- **`graph.has_edge(first, second) const`**:
+- **`graph.has_edge(source, target) const`**:
   - *Description*: Returns true if there is an edge between the specified vertices.
   - *Returned value*:
-    - For directed graphs: $\exists((u, v) \in E : \text{first} = u \land \text{second} = v)$
-    - For unidirected graphs: $\exists((u, v) \in E : (\text{first}, \text{second}) \in \{(u, v), (v, u)\})$
+    - For directed graphs: $\exists((u, v) \in E : \text{source} = u \land \text{target} = v)$
+    - For unidirected graphs: $\exists((u, v) \in E : (\text{source}, \text{target}) \in \{(u, v), (v, u)\})$
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
   - *Return type*: `bool`
 
 - **`graph.has_edge(edge) const`**:
@@ -386,33 +406,33 @@ Based on the specified traits, the `graph` class defines the following types:
     - `edge: const edge_type&` – the edge to check for existence.
   - *Return type*: `bool`
 
-- **`graph.get_edge(first_id, second_id) const`**:
-  - *Description*: Returns an optional reference to the edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned (**NOTE:** for the `adjacency_list` implementation the first matchin edge is returned).
+- **`graph.get_edge(source_id, target_id) const`**:
+  - *Description*: Returns an optional edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned (**NOTE:** for the `adjacency_list` implementation the source matchin edge is returned).
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
-  - *Return type*: `types::optional_cref<edge_type>`
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
+  - *Return type*: `std::optional<edge_type>`
 
-- **`graph.get_edge(first, second) const`**:
-  - *Description*: Returns an optional reference to the edge between the specified vertices. If either vertex does not exist or if no edge exists between them, `std::nullopt` is returned for the `adjacency_list` implementation the first matchin edge is returned.
+- **`graph.get_edge(source, target) const`**:
+  - *Description*: Returns an optional edge between the specified vertices. If either vertex does not exist or if no edge exists between them, `std::nullopt` is returned for the `adjacency_list` implementation the source matchin edge is returned.
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
-  - *Return type*: `types::optional_cref<edge_type>`
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
+  - *Return type*: `std::optional<edge_type>`
 
-- **`graph.get_edges(first_id, second_id) const`**:
-  - *Description*: Returns a vector of optional references to the edges between the vertices with the specified IDs. If no edges exist, returns an empty vector.
+- **`graph.get_edges(source_id, target_id) const`**:
+  - *Description*: Returns a vector of edges between the vertices with the specified IDs. If no edges exist, returns an empty vector.
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
-  - *Return type*: `std::vector<types::const_ref_wrap<edge_type>>`
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
+  - *Return type*: `std::vector<edge_type>`
 
-- **`graph.get_edges(first, second) const`**:
-  - *Description*: Returns a vector of optional references to the edges between the specified vertices. If either vertex does not exist or if no edges exist between them, returns an empty vector.
+- **`graph.get_edges(source, target) const`**:
+  - *Description*: Returns a vector of edges between the specified vertices. If either vertex does not exist or if no edges exist between them, returns an empty vector.
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
-  - *Return type*: `std::vector<types::const_ref_wrap<edge_type>>`
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
+  - *Return type*: `std::vector<edge_type>`
 
 - **`graph.remove_edge(edge)`**:
   - *Description*: Removes the specified edge from the graph.
@@ -420,44 +440,30 @@ Based on the specified traits, the `graph` class defines the following types:
     - `edge: const edge_type&` – the edge to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_edges_from(edges)`**:
+- **`graph.remove_edges(edges)`**:
   - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
-  - *Template parameters*:
-    - `EdgeRefRange: type_traits::c_range_of<types::const_ref_wrap<edge_type>>` – a range of edge references that must satisfy the type constraints.
   - *Parameters*:
-    - `edges: const EdgeRefRange&` – a range of edges to remove from the graph.
+    - `edges: const type_traits::c_range_of<edge_type> auto&` – a range of edges to remove from the graph.
   - *Return type*: `void`
-
-- **`graph.adjacent_edges(vertex_id) const`**:
-  - *Description*: Returns an iterator range of edges that are adjacent to the vertex with the specified ID.
-  - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
-  - *Return type*: `types::iterator_range<edge_iterator_type>`
-
-- **`graph.adjacent_edges(vertex) const`**:
-  - *Description*: Returns an iterator range of edges that are adjacent to the specified vertex.
-  - *Parameters*:
-    - `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
-  - *Return type*: `types::iterator_range<edge_iterator_type>`
 
 <br />
 
 ### Incidence Operations
 
-- **`graph.are_incident(first_id, second_id) const`**:
+- **`graph.are_incident(source_id, target_id) const`**:
   - *Description*: Returns true if the vertices with the specified IDs are incident to each other or the IDs are the same.
-  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first-id} \in ids(e_1) \land \text{second-id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
+  - *Returned value*: $\exists(e_1, e_2 \in E : \text{source-id} \in ids(e_1) \land \text{target-id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
-    - `first_id: types::id_type` – the ID of the first vertex.
-    - `second_id: types::id_type` – the ID of the second vertex.
+    - `source_id: types::id_type` – the ID of the source vertex.
+    - `target_id: types::id_type` – the ID of the target vertex.
   - *Return type*: `bool`
 
-- **`graph.are_incident(first, second) const`**:
+- **`graph.are_incident(source, target) const`**:
   - *Description*: Returns true if the specified vertices are incident to each other or if they are the same.
-  - *Returned value*: $\exists(e_1, e_2 \in E : \text{first} \in vertices(e_1) \land \text{second} \in vertices(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
+  - *Returned value*: $\exists(e_1, e_2 \in E : \text{source} \in vertices(e_1) \land \text{target} \in vertices(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
-    - `first: const vertex_type&` – the first vertex.
-    - `second: const vertex_type&` – the second vertex.
+    - `source: const vertex_type&` – the source vertex.
+    - `target: const vertex_type&` – the target vertex.
   - *Return type*: `bool`
 
 - **`graph.are_incident(vertex, edge) const`**:
@@ -480,9 +486,37 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Description*: Returns true if the given edges are incident.
   - *Returned value*: $vertices(\text{edge-1}) \cap vertices(\text{edge-2}) \ne \emptyset$
   - *Parameters*:
-    - `edge_1: const edge_type&` – the first edge.
-    - `edge_2: const edge_type&` – the second edge.
+    - `edge_1: const edge_type&` – the source edge.
+    - `edge_2: const edge_type&` – the target edge.
   - *Return type*: `bool`
+
+<br />
+
+### Properties Accessors
+
+- **`graph.vertex_properties_map() const`**:
+  - *Description*: Returns a *map-like view* over the properties of the corresponding vertices (property at index `i` corresponds to the vertex with an ID equal `i`).
+  - *Return type*: A random access view with values of type `vertex_properties_type&`
+  - *Requires*: non-default `vertex_properties_type`
+
+- **`graph.get_vertex_properties(vertex_id) const`**:
+  - *Description*: Returns a reference to the properties of the vertex with the specified ID.
+  - *Parameters*:
+    - `vertex_id: const types::id_type` – the ID of the vertex whose properties are to be retrieved.
+  - *Return type*: `vertex_properties_type&`
+  - *Requires*: non-default `vertex_properties_type`
+
+- **`graph.edge_properties_map() const`**:
+  - *Description*: Returns a *map-like view* over the properties of the corresponding edges (property at index `i` corresponds to the edge with an ID equal `i`).
+  - *Return type*: A random access view with values of type `edge_properties_type&`
+  - *Requires*: non-default `edge_properties_type`
+
+- **`graph.get_edge_properties(edge_id) const`**:
+  - *Description*: Returns a reference to the properties of the edge with the specified ID.
+  - *Parameters*:
+    - `edge_id: const types::id_type` – the ID of the edge whose properties are to be retrieved.
+  - *Return type*: `edge_properties_type&`
+  - *Requires*: non-default `edge_properties_type`
 
 > [!CAUTION]
 > All graph operations which take vertex ids, vertex references or edge references as parameters throw the `std::invalid_argument` exception if such parameter is invalid.

@@ -83,7 +83,7 @@ template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto& next_vertex =
+        const auto next_vertex =
             graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
@@ -96,7 +96,7 @@ template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto& prev_vertex = graph.get_vertex(
+        const auto prev_vertex = graph.get_vertex(
             (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
         );
 
@@ -110,10 +110,10 @@ template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto& next_vertex =
+        const auto next_vertex =
             graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
 
-        const auto& prev_vertex = graph.get_vertex(
+        const auto prev_vertex = graph.get_vertex(
             (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
         );
 
@@ -132,10 +132,10 @@ template <gl::type_traits::c_graph GraphType>
 
         if (target_ids.first >= graph.n_vertices())
             // no need to check second as second = first + 1
-            return graph.adjacent_edges(source).distance() == constants::zero;
+            return gl::util::range_size(graph.adjacent_edges(source)) == constants::zero;
 
-        const auto& target_1 = graph.get_vertex(target_ids.first);
-        const auto& target_2 = graph.get_vertex(target_ids.second);
+        const auto target_1 = graph.get_vertex(target_ids.first);
+        const auto target_2 = graph.get_vertex(target_ids.second);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             if (vertex == target_1 or vertex == target_2)
@@ -157,15 +157,14 @@ template <gl::type_traits::c_graph GraphType>
 
         if (target_ids.first >= graph.n_vertices()) {
             // no need to check second as second = first + 1
-            const auto adjacent_edges = graph.adjacent_edges(source_id);
+            auto adjacent_edges = graph.adjacent_edges(source_id);
 
-            return adjacent_edges.distance() == constants::one
-               and adjacent_edges[constants::first_element_idx].incident_vertex(source_id
-                   ) == parent_id;
+            return gl::util::range_size(adjacent_edges) == constants::one
+               and (*std::ranges::begin(adjacent_edges)).incident_vertex(source_id) == parent_id;
         }
 
-        const auto& target_1 = target_ids.first;
-        const auto& target_2 = target_ids.second;
+        const auto target_1 = target_ids.first;
+        const auto target_2 = target_ids.second;
 
         return std::ranges::all_of(graph.vertex_ids(), [&](const auto vertex_id) {
             if (vertex_id == target_1 or vertex_id == target_2)
@@ -212,7 +211,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto vertices = biclique.vertices();
 
         const auto vertices_a = vertices | std::views::take(constants::n_elements_top);
-        const auto vertices_b = gl::make_iterator_range(
+        const auto vertices_b = std::ranges::subrange(
             std::ranges::next(vertices.begin(), constants::n_elements_top),
             std::ranges::next(vertices.begin(), expected_n_vertices)
         );

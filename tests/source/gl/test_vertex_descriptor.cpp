@@ -1,4 +1,5 @@
 #include "testing/gl/constants.hpp"
+#include "testing/gl/functional.hpp"
 #include "testing/gl/types.hpp"
 
 #include <gl/vertex_descriptor.hpp>
@@ -12,13 +13,6 @@ TEST_SUITE_BEGIN("test_vertex_descriptor");
 TEST_CASE("id() should return the correct vertex id") {
     const gl::vertex_descriptor sut{constants::vertex_id_1};
     CHECK_EQ(sut.id(), constants::vertex_id_1);
-}
-
-TEST_CASE("properties should be properly initialized") {
-    types::visited_property property{constants::visited};
-
-    const gl::vertex_descriptor<types::visited_property> sut{constants::vertex_id_1, property};
-    CHECK_EQ(&sut.properties(), &property);
 }
 
 TEST_CASE("vertex_descriptor objects should be compared by id") {
@@ -36,6 +30,31 @@ TEST_CASE("vertex_descriptor objects should be compared by id") {
     CHECK_GE(vd_2, vd_2);
     CHECK_GE(vd_2, vd_1);
     CHECK_GT(vd_2, vd_1);
+}
+
+TEST_CASE("vertex_descriptor should be valid only if it has a valid id") {
+    CHECK(gl::vertex_descriptor{constants::vertex_id_1}.is_valid());
+
+    CHECK_FALSE(gl::vertex_descriptor<>::invalid().is_valid());
+    CHECK_FALSE(gl::vertex_descriptor{constants::invalid_id}.is_valid());
+}
+
+TEST_CASE("properties should be properly initialized") {
+    types::visited_property property{constants::visited};
+
+    const gl::vertex_descriptor<types::visited_property> sut{constants::vertex_id_1, property};
+    CHECK_EQ(&sut.properties(), &property);
+}
+
+TEST_CASE("accessing properties should throw for an invalid vertex") {
+    using sut_type = gl::vertex_descriptor<types::visited_property>;
+    types::visited_property property{constants::visited};
+
+    CHECK_THROWS_AS(func::discard_result(sut_type::invalid().properties()), std::logic_error);
+    CHECK_THROWS_AS(
+        func::discard_result(sut_type{constants::invalid_id, property}.properties()),
+        std::logic_error
+    );
 }
 
 TEST_SUITE_END(); // test_vertex_descriptor
