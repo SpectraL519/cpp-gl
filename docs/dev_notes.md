@@ -4,26 +4,25 @@ Here you can find the necessery information to be able to work on the project
 
 <br />
 
-## Building and testing
+## Building and Testing
 
 > [!NOTE]
 > The project uses [doctest](https://github.com/doctest/doctest) framework for unit testing, however it is already installed in the [tests/external](/tests/external/) directory, so there is no need to install it sepparately.
 
-### Build the testing executable
+### Build the testing executables
 
 ```shell
-cmake -B build
-cd build
-make # -j <n>
+cmake -B build -DBUILD_TESTS=ON
+cmake --build build # -j<n>
 ```
 
-This will build the test executable `run` in the `<project-root>/build/tests` directory.
+This will build the test executables `gl` (GL module tests) and `hgl` (HGL module tests) in the `<project-root>/build/tests` directory.
 
 ### Run the tests
 
 ```shell
-cd build
-./tests/run # -ts=<test-suite-name>
+./build/tests/gl  # -ts=<test-suite-name>
+./build/tests/hgl # -ts=<test-suite-name>
 ```
 
 > [!NOTE]

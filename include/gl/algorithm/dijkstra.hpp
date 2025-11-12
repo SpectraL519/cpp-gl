@@ -82,7 +82,7 @@ template <
     paths.predecessors.at(source_id).emplace(source_id);
     paths.distances[source_id] = distance_type{};
 
-    std::optional<types::const_ref_wrap<edge_type>> negative_edge;
+    std::optional<edge_type> negative_edge;
 
     impl::pfs(
         graph,
@@ -98,7 +98,7 @@ template <
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
             if (edge_weight < constants::zero) {
-                negative_edge = std::cref(in_edge);
+                negative_edge.emplace(in_edge);
                 return predicate_result::unknown;
             }
 
@@ -115,11 +115,11 @@ template <
     );
 
     if (negative_edge.has_value()) {
-        const auto& edge = negative_edge.value().get();
+        const auto& edge = negative_edge.value();
         throw std::invalid_argument(std::format(
             "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
-            edge.first(),
-            edge.second(),
+            edge.source(),
+            edge.target(),
             get_weight<GraphType>(edge)
         ));
     }

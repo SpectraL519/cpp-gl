@@ -249,9 +249,20 @@ using bin_color_value = typename types::binary_color::value;
 
 namespace type_traits {
 
-template <c_properties Properties>
-constexpr inline bool is_default_properties_type_v =
-    std::is_same_v<Properties, gl::types::empty_properties>;
+template <typename T>
+concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
+
+template <typename T>
+concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
+
+template <typename T>
+concept c_has_empty_properties =
+    requires { typename T::properties_type; } and c_empty_properties<typename T::properties_type>;
+
+template <typename T>
+concept c_has_non_empty_properties = requires {
+    typename T::properties_type;
+} and not c_empty_properties<typename T::properties_type>;
 
 template <typename Properties>
 concept c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {

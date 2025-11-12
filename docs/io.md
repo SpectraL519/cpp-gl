@@ -87,9 +87,9 @@ int main() {
     // set the vertex and edge properties of the graph
     std::size_t v_idx = 0, e_idx = 0;
     for (const auto& vertex : graph.vertices()) {
-        vertex.properties = {std::format("vertex_{}", ++v_idx)};
+        vertex.properties() = std::format("vertex_{}", ++v_idx);
         for (const auto& edge : graph.adjacent_edges(vertex))
-            edge.properties = {std::format("edge_{}", ++e_idx)};
+            edge.properties() = std::format("edge_{}", ++e_idx);
     }
 
     // print the graph in a concise representation and without properties
@@ -120,26 +120,26 @@ number of edges: 12
 vertices:
 - [id: 0 | properties: "vertex_1"]
   adjacent edges:
-        - [first: 0, second: 2 | properties: "edge_1"]
-        - [first: 0, second: 3 | properties: "edge_2"]
-        - [first: 0, second: 4 | properties: "edge_3"]
+        - [source: 0, target: 2 | properties: "edge_1"]
+        - [source: 0, target: 3 | properties: "edge_2"]
+        - [source: 0, target: 4 | properties: "edge_3"]
 - [id: 1 | properties: "vertex_2"]
   adjacent edges:
-        - [first: 1, second: 2 | properties: "edge_4"]
-        - [first: 1, second: 3 | properties: "edge_5"]
-        - [first: 1, second: 4 | properties: "edge_6"]
+        - [source: 1, target: 2 | properties: "edge_4"]
+        - [source: 1, target: 3 | properties: "edge_5"]
+        - [source: 1, target: 4 | properties: "edge_6"]
 - [id: 2 | properties: "vertex_3"]
   adjacent edges:
-        - [first: 2, second: 0 | properties: "edge_7"]
-        - [first: 2, second: 1 | properties: "edge_8"]
+        - [source: 2, target: 0 | properties: "edge_7"]
+        - [source: 2, target: 1 | properties: "edge_8"]
 - [id: 3 | properties: "vertex_4"]
   adjacent edges:
-        - [first: 3, second: 0 | properties: "edge_9"]
-        - [first: 3, second: 1 | properties: "edge_10"]
+        - [source: 3, target: 0 | properties: "edge_9"]
+        - [source: 3, target: 1 | properties: "edge_10"]
 - [id: 4 | properties: "vertex_5"]
   adjacent edges:
-        - [first: 4, second: 0 | properties: "edge_11"]
-        - [first: 4, second: 1 | properties: "edge_12"]
+        - [source: 4, target: 0 | properties: "edge_11"]
+        - [source: 4, target: 1 | properties: "edge_12"]
 ```
 
 <br />
@@ -216,9 +216,9 @@ int main() {
     // set the vertex and edge properties of the graph
     std::size_t v_idx = 0, e_idx = 0;
     for (const auto& vertex : clique.vertices()) {
-        vertex.properties = {std::format("vertex_{}", ++v_idx)};
+        vertex.properties() = std::format("vertex_{}", ++v_idx);
         for (const auto& edge : clique.adjacent_edges(vertex))
-            edge.properties = {std::format("edge_{}", ++e_idx)};
+            edge.properties() = std::format("edge_{}", ++e_idx);
     }
 
     // set the std::cout stream options
@@ -246,16 +246,16 @@ number of edges: 6
 vertices:
 - [id: 0 | properties: "vertex_1"]
   adjacent edges:
-        - [first: 0, second: 1 | properties: "edge_1"]
-        - [first: 0, second: 2 | properties: "edge_2"]
+        - [source: 0, target: 1 | properties: "edge_1"]
+        - [source: 0, target: 2 | properties: "edge_2"]
 - [id: 1 | properties: "vertex_2"]
   adjacent edges:
-        - [first: 1, second: 0 | properties: "edge_3"]
-        - [first: 1, second: 2 | properties: "edge_4"]
+        - [source: 1, target: 0 | properties: "edge_3"]
+        - [source: 1, target: 2 | properties: "edge_4"]
 - [id: 2 | properties: "vertex_3"]
   adjacent edges:
-        - [first: 2, second: 0 | properties: "edge_5"]
-        - [first: 2, second: 1 | properties: "edge_6"]
+        - [source: 2, target: 0 | properties: "edge_5"]
+        - [source: 2, target: 1 | properties: "edge_6"]
 
 > loaded graph:
 type: directed
@@ -264,16 +264,16 @@ number of edges: 6
 vertices:
 - [id: 0 | properties: "vertex_1"]
   adjacent edges:
-        - [first: 0, second: 1 | properties: "edge_1"]
-        - [first: 0, second: 2 | properties: "edge_2"]
+        - [source: 0, target: 1 | properties: "edge_1"]
+        - [source: 0, target: 2 | properties: "edge_2"]
 - [id: 1 | properties: "vertex_2"]
   adjacent edges:
-        - [first: 1, second: 0 | properties: "edge_3"]
-        - [first: 1, second: 2 | properties: "edge_4"]
+        - [source: 1, target: 0 | properties: "edge_3"]
+        - [source: 1, target: 2 | properties: "edge_4"]
 - [id: 2 | properties: "vertex_3"]
   adjacent edges:
-        - [first: 2, second: 0 | properties: "edge_5"]
-        - [first: 2, second: 1 | properties: "edge_6"]
+        - [source: 2, target: 0 | properties: "edge_5"]
+        - [source: 2, target: 1 | properties: "edge_6"]
 ```
 
 <br />

@@ -22,7 +22,7 @@ struct mst_descriptor {
         edges.reserve(n_vertices - constants::one);
     }
 
-    std::vector<types::const_ref_wrap<edge_type>> edges;
+    std::vector<edge_type> edges;
     weight_type weight = static_cast<weight_type>(constants::zero);
 };
 
@@ -34,19 +34,17 @@ template <type_traits::c_undirected_graph GraphType>
 
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using edge_info_type = algorithm::edge_info<edge_type>;
     using distance_type = types::vertex_distance_type<GraphType>;
 
-    struct edge_info_comparator {
+    struct edge_comparator {
         [[nodiscard]] gl_attr_force_inline bool operator()(
-            const edge_info_type& lhs, const edge_info_type& rhs
+            const edge_type& lhs, const edge_type& rhs
         ) const {
-            return get_weight<GraphType>(lhs.edge.get()) > get_weight<GraphType>(rhs.edge.get());
+            return get_weight<GraphType>(lhs) > get_weight<GraphType>(rhs);
         }
     };
 
-    using queue_type =
-        std::priority_queue<edge_info_type, std::vector<edge_info_type>, edge_info_comparator>;
+    using queue_type = std::priority_queue<edge_type, std::vector<edge_type>, edge_comparator>;
 
     // prepare the necessary utility
     const auto n_vertices = graph.n_vertices();
@@ -58,7 +56,7 @@ template <type_traits::c_undirected_graph GraphType>
     const types::id_type root_id = root_id_opt.value_or(constants::zero);
 
     for (const auto& edge : graph.adjacent_edges(root_id))
-        edge_queue.emplace(edge, root_id);
+        edge_queue.emplace(edge);
 
     // mark the root vertex as visited
     visited[root_id] = true;
@@ -66,27 +64,23 @@ template <type_traits::c_undirected_graph GraphType>
 
     // find the mst
     while (n_vertices_in_mst < n_vertices) {
-        const auto min_edge_info = edge_queue.top();
+        const auto min_edge = edge_queue.top();
         edge_queue.pop();
 
-        const auto& min_edge = min_edge_info.edge.get();
-        const auto min_weight = get_weight<GraphType>(min_edge);
-
-        const auto& target_id = min_edge.incident_vertex(min_edge_info.source_id);
-        if (visited[target_id])
+        if (visited[min_edge.target()])
             continue;
 
         // add the minimum weight edge to the mst
         mst.edges.emplace_back(min_edge);
-        mst.weight += min_weight;
+        mst.weight += get_weight<GraphType>(min_edge);
 
-        visited[target_id] = true;
+        visited[min_edge.target()] = true;
         ++n_vertices_in_mst;
 
         // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
-        for (const auto& edge : graph.adjacent_edges(target_id))
-            if (not visited[edge.incident_vertex(target_id)])
-                edge_queue.emplace(edge, target_id);
+        for (const auto& edge : graph.adjacent_edges(min_edge.target()))
+            if (not visited[edge.incident_vertex(min_edge.target())])
+                edge_queue.emplace(edge);
     }
 
     return mst;
@@ -107,7 +101,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
     std::vector<bool> in_mst(n_vertices, false);
     std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
-    std::vector<const edge_type*> min_cost_edges(n_vertices, nullptr);
+    std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
     min_cost.at(root_id_opt.value_or(constants::zero)) = constants::zero;
@@ -132,8 +126,8 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
         in_mst[vertex_id] = true;
 
-        const auto* min_cost_edge = min_cost_edges[vertex_id];
-        if (min_cost_edge != nullptr) { // Add the corresponding edge to MST
+        const auto min_cost_edge = min_cost_edges[vertex_id];
+        if (min_cost_edge.has_value()) { // Add the corresponding edge to MST
             mst.edges.emplace_back(*min_cost_edge);
             mst.weight += min_cost[vertex_id];
         }
@@ -145,7 +139,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
 
             if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;
-                min_cost_edges[incident_vertex_id] = &edge;
+                min_cost_edges[incident_vertex_id].emplace(edge);
             }
         }
 

@@ -6,6 +6,8 @@
 
 #include "types/types.hpp"
 
+#include <limits>
+
 namespace gl::constants {
 
 inline constexpr types::size_type zero{0ull};
@@ -15,5 +17,6 @@ inline constexpr types::size_type two{2ull};
 inline constexpr types::size_type default_size{zero};
 inline constexpr types::size_type begin_idx{zero};
 inline constexpr types::id_type initial_id{zero};
+inline constexpr types::id_type invalid_id{std::numeric_limits<types::id_type>::max()};
 
 } // namespace gl::constants

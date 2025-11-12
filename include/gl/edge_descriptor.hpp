@@ -18,50 +18,108 @@ public:
     using type = edge_descriptor<DirectionalTag, Properties>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
+    using properties_ref_type = std::conditional_t<
+        type_traits::c_empty_properties<properties_type>,
+        types::empty_properties,
+        properties_type&>;
 
     friend directional_tag;
 
-    template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
-    friend class graph;
-
-    edge_descriptor() = delete;
-    edge_descriptor(const edge_descriptor&) = delete;
-    edge_descriptor& operator=(const edge_descriptor&) = delete;
-
-    explicit edge_descriptor(const types::id_type first, const types::id_type second)
-    : _vertices(first, second) {}
+    edge_descriptor() {
+        *this = edge_descriptor::invalid();
+    }
 
     explicit edge_descriptor(
-        const types::id_type first, const types::id_type second, properties_type properties
+        const types::id_type id, const types::id_type source, const types::id_type target
     )
-    requires(not type_traits::is_default_properties_type_v<properties_type>)
-    : _vertices(first, second), _properties(properties) {}
+    requires(type_traits::c_empty_properties<properties_type>)
+    : _id(id), _vertices(source, target) {}
+
+    explicit edge_descriptor(
+        const types::id_type id,
+        const types::id_type source,
+        const types::id_type target,
+        properties_type& properties
+    )
+    requires(type_traits::c_non_empty_properties<properties_type>)
+    : _id(id), _vertices(source, target), _properties(properties) {}
+
+    [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
+    requires(type_traits::c_empty_properties<properties_type>)
+    {
+        return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
+    requires(type_traits::c_non_empty_properties<properties_type>)
+    {
+        static properties_type invalid_properties{};
+        return edge_descriptor(
+            constants::invalid_id, constants::invalid_id, constants::invalid_id, invalid_properties
+        );
+    }
+
+    edge_descriptor(const edge_descriptor&) = default;
+    edge_descriptor& operator=(const edge_descriptor&) = default;
 
     edge_descriptor(edge_descriptor&&) = default;
     edge_descriptor& operator=(edge_descriptor&&) = default;
 
     ~edge_descriptor() = default;
 
-    [[nodiscard]] constexpr bool is_directed() const {
+    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
+    requires(type_traits::is_directed_v<type>)
+    {
+        return this->_id == other._id and (this->_vertices == other._vertices);
+    }
+
+    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
+    requires(type_traits::is_undirected_v<type>)
+    {
+        return this->_id == other._id
+           and (this->_vertices == other._vertices
+                or (this->_vertices == other.incident_vertices_r()));
+    }
+
+    [[nodiscard]] gl_attr_force_inline operator bool() const noexcept {
+        return this->is_valid();
+    }
+
+    [[nodiscard]] constexpr bool is_directed() const noexcept {
         return type_traits::is_directed_v<type>;
     }
 
-    [[nodiscard]] constexpr bool is_undirected() const {
+    [[nodiscard]] constexpr bool is_undirected() const noexcept {
         return type_traits::is_undirected_v<type>;
+    }
+
+    [[nodiscard]] bool is_valid() const noexcept {
+        return this->_id != constants::invalid_id and this->_vertices.first != constants::invalid_id
+           and this->_vertices.second != constants::invalid_id;
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
+        return this->_id;
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices(
+    ) const noexcept {
+        return this->_vertices;
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices_r(
+    ) const noexcept {
+        return std::make_pair(this->_vertices.second, this->_vertices.first);
     }
 
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<const types::id_type> incident_vertices() const {
-        return this->_vertices;
-    }
-
-    [[nodiscard]] gl_attr_force_inline const types::id_type first() const {
+    [[nodiscard]] gl_attr_force_inline const types::id_type source() const noexcept {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::id_type second() const {
+    [[nodiscard]] gl_attr_force_inline const types::id_type target() const noexcept {
         return this->_vertices.second;
     }
 
@@ -78,26 +136,32 @@ public:
         throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id
+    ) const noexcept {
         return vertex_id == this->_vertices.first or vertex_id == this->_vertices.second;
     }
 
     // true if the given vertex is the `source` of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id
+    ) const noexcept {
         return directional_tag::is_incident_from(*this, vertex_id);
     }
 
     // true if the given vertex is the `target` vertex of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id
+    ) const noexcept {
         return directional_tag::is_incident_to(*this, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_loop() const {
+    [[nodiscard]] gl_attr_force_inline bool is_loop() const noexcept {
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_type& properties() const {
-        return this->_properties;
+    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
+        if (not this->is_valid())
+            throw std::logic_error("Cannot access properties of an invalid edge");
+
+        return this->_properties.get();
     }
 
     friend inline std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
@@ -118,26 +182,30 @@ private:
             }
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[first: " << this->_vertices.first << ", second: " << this->_vertices.second
-                   << " | properties: " << this->_properties << "]";
+                os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.second
+                   << " | properties: " << this->_properties.get() << "]";
             }
             else {
                 os << "[" << this->_vertices.first << ", " << this->_vertices.second << " | "
-                   << this->_properties << "]";
+                   << this->_properties.get() << "]";
             }
         }
     }
 
     void _write_no_properties(std::ostream& os) const {
         if (io::is_option_set(os, io::graph_option::verbose))
-            os << "[first: " << this->_vertices.first << ", second: " << this->_vertices.first
+            os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.first
                << "]";
         else
             os << "[" << this->_vertices.first << ", " << this->_vertices.second << "]";
     }
 
+    types::id_type _id;
     types::homogeneous_pair<types::id_type> _vertices;
-    [[no_unique_address]] mutable properties_type _properties{};
+    [[no_unique_address]] std::conditional_t<
+        type_traits::c_empty_properties<properties_type>,
+        types::empty_properties,
+        std::reference_wrapper<properties_type>> _properties;
 };
 
 template <
