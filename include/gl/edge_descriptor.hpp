@@ -30,19 +30,19 @@ public:
     }
 
     explicit edge_descriptor(
-        const types::id_type id, const types::id_type first, const types::id_type second
+        const types::id_type id, const types::id_type source, const types::id_type target
     )
     requires(type_traits::c_empty_properties<properties_type>)
-    : _id(id), _vertices(first, second) {}
+    : _id(id), _vertices(source, target) {}
 
     explicit edge_descriptor(
         const types::id_type id,
-        const types::id_type first,
-        const types::id_type second,
+        const types::id_type source,
+        const types::id_type target,
         properties_type& properties
     )
     requires(type_traits::c_non_empty_properties<properties_type>)
-    : _id(id), _vertices(first, second), _properties(properties) {}
+    : _id(id), _vertices(source, target), _properties(properties) {}
 
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(type_traits::c_empty_properties<properties_type>)
@@ -114,12 +114,12 @@ public:
     }
 
     // TODO: rename to source
-    [[nodiscard]] gl_attr_force_inline const types::id_type first() const noexcept {
+    [[nodiscard]] gl_attr_force_inline const types::id_type source() const noexcept {
         return this->_vertices.first;
     }
 
     // TODO: rename to target
-    [[nodiscard]] gl_attr_force_inline const types::id_type second() const noexcept {
+    [[nodiscard]] gl_attr_force_inline const types::id_type target() const noexcept {
         return this->_vertices.second;
     }
 
@@ -158,7 +158,9 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
-        // TODO: throw if edge is invalid
+        if (not this->is_valid())
+            throw std::logic_error("Cannot access properties of an invalid edge");
+
         return this->_properties.get();
     }
 
@@ -180,7 +182,7 @@ private:
             }
 
             if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[first: " << this->_vertices.first << ", second: " << this->_vertices.second
+                os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.second
                    << " | properties: " << this->_properties.get() << "]";
             }
             else {
@@ -192,7 +194,7 @@ private:
 
     void _write_no_properties(std::ostream& os) const {
         if (io::is_option_set(os, io::graph_option::verbose))
-            os << "[first: " << this->_vertices.first << ", second: " << this->_vertices.first
+            os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.first
                << "]";
         else
             os << "[" << this->_vertices.first << ", " << this->_vertices.second << "]";

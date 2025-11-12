@@ -115,7 +115,7 @@ public:
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        return this->_matrix[edge.first()][edge.second()] == edge.id();
+        return this->_matrix[edge.source()][edge.target()] == edge.id();
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(

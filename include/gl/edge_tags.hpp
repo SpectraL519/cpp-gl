@@ -26,8 +26,6 @@ class edge_descriptor;
 
 namespace type_traits {
 
-// TODO: use concepts
-
 template <typename T>
 inline constexpr bool is_directed_v = false;
 

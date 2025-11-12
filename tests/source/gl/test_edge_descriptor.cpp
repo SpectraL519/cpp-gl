@@ -67,14 +67,40 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "properties should be properly initialized", EdgeType, properties_edge_directional_tag_template
+    "properties accessing tests", EdgeType, properties_edge_directional_tag_template
 ) {
     test_edge_descriptor fixture;
-
     types::used_property used{true};
-    const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
 
-    CHECK_EQ(sut.properties(), used);
+    SUBCASE("properties should be properly initialized for valid edges") {
+        const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
+        CHECK_EQ(sut.properties(), used);
+    }
+
+    SUBCASE("accessing properties should throw for invalid edges") {
+        CHECK_THROWS_AS(
+            func::discard_result(
+                EdgeType(constants::invalid_id, fixture.v1, fixture.v2, used).properties()
+            ),
+            std::logic_error
+        );
+
+        CHECK_THROWS_AS(
+            func::discard_result(
+                EdgeType(fixture.id1, constants::invalid_id, fixture.v2, used).properties()
+            ),
+            std::logic_error
+        );
+
+        CHECK_THROWS_AS(
+            func::discard_result(
+                EdgeType(fixture.id1, fixture.v1, constants::invalid_id, used).properties()
+            ),
+            std::logic_error
+        );
+
+        CHECK_THROWS_AS(func::discard_result(EdgeType::invalid().properties()), std::logic_error);
+    }
 }
 
 // TODO: fix .clang-format to split such lines
@@ -113,11 +139,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("first should return the first vertex descriptor the edge was initialized with") {
-        CHECK_EQ(sut.first(), fixture.v1);
+        CHECK_EQ(sut.source(), fixture.v1);
     }
 
     SUBCASE("second should return the second vertex descriptor the edge was initialized with") {
-        CHECK_EQ(sut.second(), fixture.v2);
+        CHECK_EQ(sut.target(), fixture.v2);
     }
 
     SUBCASE("incident_vertex should throw if input vertex is not incident with the edge") {

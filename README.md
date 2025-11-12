@@ -128,7 +128,6 @@ The instructions and requirements of working on the `CPP-GL` project can be foun
 
 ## Compiler support
 
-<!--TODO: verify whether the min compiler version is correct for C++23-->
 | Compiler | Min version |
 | :-: | :-: |
 | GNU G++ | 14 |

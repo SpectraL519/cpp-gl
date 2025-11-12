@@ -418,12 +418,12 @@ TEST_CASE_FIXTURE(
     auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(gl::util::range_size(adj_edges_1), 1uz);
     CHECK_EQ((*std::ranges::begin(adj_edges_1)).id(), edge5.id() - n_removed_edges);
-    CHECK_EQ((*std::ranges::begin(adj_edges_1)).second(), constants::vertex_id_2);
+    CHECK_EQ((*std::ranges::begin(adj_edges_1)).target(), constants::vertex_id_2);
 
     auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
     CHECK_EQ(gl::util::range_size(adj_edges_2), 1uz);
     CHECK_EQ((*std::ranges::begin(adj_edges_2)).id(), edge6.id() - n_removed_edges);
-    CHECK_EQ((*std::ranges::begin(adj_edges_2)).second(), constants::vertex_id_1);
+    CHECK_EQ((*std::ranges::begin(adj_edges_2)).target(), constants::vertex_id_1);
 }
 
 struct test_undirected_adjacency_matrix : public test_adjacency_matrix {
@@ -620,7 +620,7 @@ TEST_CASE_FIXTURE(
 
     const auto edge_to_remove = *std::ranges::begin(adjacent_edges_first);
 
-    const auto second_id = edge_to_remove.second();
+    const auto second_id = edge_to_remove.target();
     REQUIRE_EQ(gl::util::range_size(sut.adjacent_edges(second_id)), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
@@ -726,12 +726,12 @@ TEST_CASE_FIXTURE(
     auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(gl::util::range_size(adj_edges_1), 1uz);
     CHECK_EQ((*std::ranges::begin(adj_edges_1)).id(), edge3.id() - n_removed_edges);
-    CHECK_EQ((*std::ranges::begin(adj_edges_1)).second(), constants::vertex_id_2);
+    CHECK_EQ((*std::ranges::begin(adj_edges_1)).target(), constants::vertex_id_2);
 
     auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
     CHECK_EQ(gl::util::range_size(adj_edges_2), 1uz);
     CHECK_EQ((*std::ranges::begin(adj_edges_2)).id(), edge3.id() - n_removed_edges);
-    CHECK_EQ((*std::ranges::begin(adj_edges_2)).second(), constants::vertex_id_1);
+    CHECK_EQ((*std::ranges::begin(adj_edges_2)).target(), constants::vertex_id_1);
 }
 
 TEST_SUITE_END(); // test_adjacency_matrix

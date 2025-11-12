@@ -532,7 +532,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
-            CHECK(sut.has_edge(edge_4.first(), edge_4.second()));
+            CHECK(sut.has_edge(edge_4.source(), edge_4.target()));
         }
     }
 
@@ -669,7 +669,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
-            CHECK(sut.has_edge(edge_4.first(), edge_4.second()));
+            CHECK(sut.has_edge(edge_4.source(), edge_4.target()));
         }
     }
 

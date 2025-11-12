@@ -140,7 +140,7 @@ struct test_undirected_graph_io {
         for (const auto& vertex : sut_out.vertices()) {
             vertex.properties() = std::format("vertex_{}", v_idx++);
             for (const auto& edge : sut_out.adjacent_edges(vertex))
-                if (edge.first() == vertex.id())
+                if (edge.source() == vertex.id())
                     edge.properties() = std::format("edge_{}", e_idx++);
         }
     }

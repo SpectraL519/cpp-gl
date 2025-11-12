@@ -344,6 +344,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - `source_id: types::id_type` – the ID of the source vertex.
     - `target_id_range: const IdRange&` – a range of target vertex IDs to connect to the source vertex.
   - *Return type*: `void`
+  - *NOTE:* For an adjacency matrix representation passing a range with duplicate IDs will result in an error.
 
 - **`graph.add_edges_from(source, target_range)`**:
   - *Description*: Adds multiple edges from a specified source vertex to a range of target vertices (specified by references).
@@ -353,6 +354,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - `source: const vertex_type&` – the source vertex.
     - `target_range: const VertexRefRange&` – a range of target vertex references to connect to the source vertex.
   - *Return type*: `void`
+  - *NOTE:* For an adjacency matrix representation passing a range with duplicate vertices will result in an error.
 
 > [!IMPORTANT]
 > Behaviour of adding an edge between `first` and `second`:

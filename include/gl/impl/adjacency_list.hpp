@@ -21,7 +21,7 @@ class adjacency_list final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using edge_item_list_type = std::vector<specialized::edge_list_item>;
+    using edge_item_list_type = std::vector<specialized::adjacency_list_item>;
     using adjacency_list_type = std::vector<edge_item_list_type>;
 
     adjacency_list(const adjacency_list&) = delete;
@@ -105,7 +105,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         return std::ranges::contains(
-            this->_list[edge.first()], specialized::edge_list_item{edge.id(), edge.second()}
+            this->_list[edge.source()], specialized::adjacency_list_item{edge.id(), edge.target()}
         );
     }
 

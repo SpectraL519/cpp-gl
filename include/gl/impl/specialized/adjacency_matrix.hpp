@@ -275,7 +275,7 @@ struct undirected_adjacency_matrix {
             detail::strict_get(self._matrix, edge) = constants::invalid_id;
             // if the edge was found in the first matrix cell,
             // it will also be present in the second matrix cell
-            self._matrix[edge.second()][edge.first()] = constants::invalid_id;
+            self._matrix[edge.target()][edge.source()] = constants::invalid_id;
         }
     }
 };

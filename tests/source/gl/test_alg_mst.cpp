@@ -42,7 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first(), edge.second());
+                    expected_edges.emplace_back(edge.source(), edge.target());
                 }
             }
 
@@ -123,7 +123,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first(), edge.second());
+            expected_edges.emplace_back(edge.source(), edge.target());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 
@@ -180,7 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
-                    expected_edges.emplace_back(edge.first(), edge.second());
+                    expected_edges.emplace_back(edge.source(), edge.target());
                 }
             }
 
@@ -261,7 +261,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
         for (const auto& edge : sut.adjacent_edges(vertex_id))
-            expected_edges.emplace_back(edge.first(), edge.second());
+            expected_edges.emplace_back(edge.source(), edge.target());
 
     const weight_type expected_weight = sut.n_vertices() - constants::one;
 

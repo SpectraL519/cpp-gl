@@ -300,7 +300,6 @@ public:
         const types::id_type source_id,
         const type_traits::c_sized_range_of<types::id_type> auto& target_id_range
     ) {
-        // TODO: validate no duplicate target ids
         this->_verify_vertex_id(source_id);
 
         for (const auto target_id : target_id_range) {
@@ -320,7 +319,6 @@ public:
         const vertex_type& source,
         const type_traits::c_sized_range_of<vertex_type> auto& target_range
     ) {
-        // TODO: validate no duplicate targets
         this->_verify_vertex_id(source.id());
 
         for (const auto& target : target_range) {
@@ -472,7 +470,7 @@ public:
     [[nodiscard]] bool are_incident(const edge_type& edge_1, const edge_type& edge_2) const {
         this->_verify_edge(edge_1);
         this->_verify_edge(edge_2);
-        return edge_1.is_incident_with(edge_2.first()) or edge_1.is_incident_with(edge_2.second());
+        return edge_1.is_incident_with(edge_2.source()) or edge_1.is_incident_with(edge_2.target());
     }
 
     // --- property methods ---
@@ -541,13 +539,13 @@ private:
     }
 
     void _verify_edge(const edge_type& edge) const {
-        if (edge.id() >= this->_n_unique_edges or not this->has_vertex(edge.first())
-            or not this->has_vertex(edge.second()))
+        if (edge.id() >= this->_n_unique_edges or not this->has_vertex(edge.source())
+            or not this->has_vertex(edge.target()))
             throw std::invalid_argument(std::format(
                 "Got invalid edge [id = {}, vertices = ({}, {})]",
                 edge.id(),
-                edge.first(),
-                edge.second()
+                edge.source(),
+                edge.target()
             ));
     }
 
@@ -623,9 +621,9 @@ private:
             if (with_edge_properties) {
                 const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
                     for (const auto& edge : this->adjacent_edges(vertex_id)) {
-                        if (edge.first() != vertex_id)
+                        if (edge.source() != vertex_id)
                             continue; // vertex is not the source
-                        os << edge.first() << ' ' << edge.second() << ' ' << edge.properties()
+                        os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
                            << '\n';
                     }
                 };
@@ -639,9 +637,9 @@ private:
 
         const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
             for (const auto& edge : this->adjacent_edges(vertex_id)) {
-                if (edge.first() != vertex_id)
+                if (edge.source() != vertex_id)
                     continue; // vertex is not the source
-                os << edge.first() << ' ' << edge.second() << '\n';
+                os << edge.source() << ' ' << edge.target() << '\n';
             }
         };
 

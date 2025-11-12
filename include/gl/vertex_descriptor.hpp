@@ -25,7 +25,9 @@ public:
         types::empty_properties,
         properties_type&>;
 
-    vertex_descriptor() = delete;
+    vertex_descriptor() {
+        *this = vertex_descriptor::invalid();
+    }
 
     explicit vertex_descriptor(const types::id_type id)
     requires(type_traits::c_empty_properties<properties_type>)
@@ -34,6 +36,19 @@ public:
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
     requires(type_traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
+
+    [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
+    requires(type_traits::c_empty_properties<properties_type>)
+    {
+        return vertex_descriptor(constants::invalid_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
+    requires(type_traits::c_non_empty_properties<properties_type>)
+    {
+        static properties_type invalid_properties{};
+        return vertex_descriptor(constants::invalid_id, invalid_properties);
+    }
 
     vertex_descriptor(const vertex_descriptor&) = default;
     vertex_descriptor& operator=(const vertex_descriptor&) = default;
@@ -51,11 +66,22 @@ public:
         return this->_id <=> other._id;
     }
 
+    [[nodiscard]] gl_attr_force_inline operator bool() const noexcept {
+        return this->is_valid();
+    }
+
+    [[nodiscard]] bool is_valid() const noexcept {
+        return this->_id != constants::invalid_id;
+    }
+
     [[nodiscard]] gl_attr_force_inline types::id_type id() const {
         return this->_id;
     }
 
     [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
+        if (not this->is_valid())
+            throw std::logic_error("Cannot access properties of an invalid vertex");
+
         return this->_properties.get();
     }
 

@@ -374,12 +374,12 @@ TEST_CASE_FIXTURE(
     const auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(adj_edges_1.size(), 1uz);
     CHECK_EQ(adj_edges_1.front().id(), edge5.id() - n_removed_edges);
-    CHECK_EQ(adj_edges_1.front().second(), constants::vertex_id_2);
+    CHECK_EQ(adj_edges_1.front().target(), constants::vertex_id_2);
 
     const auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
     CHECK_EQ(adj_edges_2.size(), 1uz);
     CHECK_EQ(adj_edges_2.front().id(), edge6.id() - n_removed_edges);
-    CHECK_EQ(adj_edges_2.front().second(), constants::vertex_id_1);
+    CHECK_EQ(adj_edges_2.front().target(), constants::vertex_id_1);
 }
 
 struct test_undirected_adjacency_list : public test_adjacency_list {
@@ -576,7 +576,7 @@ TEST_CASE_FIXTURE(
 
     const auto& edge_to_remove = adjacent_edges_first[constants::first_element_idx];
 
-    const auto target_id = edge_to_remove.second();
+    const auto target_id = edge_to_remove.target();
     REQUIRE_EQ(sut.adjacent_edges(target_id).size(), constants::one_element);
 
     sut.remove_edge(edge_to_remove);
@@ -685,12 +685,12 @@ TEST_CASE_FIXTURE(
     const auto adj_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
     CHECK_EQ(adj_edges_1.size(), 1uz);
     CHECK_EQ(adj_edges_1.front().id(), edge5.id() - n_removed_edges);
-    CHECK_EQ(adj_edges_1.front().second(), constants::vertex_id_2);
+    CHECK_EQ(adj_edges_1.front().target(), constants::vertex_id_2);
 
     const auto adj_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
     CHECK_EQ(adj_edges_2.size(), 1uz);
     CHECK_EQ(adj_edges_2.front().id(), edge5.id() - n_removed_edges);
-    CHECK_EQ(adj_edges_2.front().second(), constants::vertex_id_1);
+    CHECK_EQ(adj_edges_2.front().target(), constants::vertex_id_1);
 }
 
 TEST_SUITE_END(); // test_adjacency_list
