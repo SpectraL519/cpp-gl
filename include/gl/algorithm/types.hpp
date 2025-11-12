@@ -27,14 +27,6 @@ struct vertex_info {
     types::id_type pred_id;
 };
 
-template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-struct edge_info {
-    using edge_type = EdgeType;
-
-    edge_type edge;
-    types::id_type source_id;
-};
-
 struct predicate_result {
     enum class eval : std::uint8_t { ok, not_ok, unknown };
     using enum eval;
