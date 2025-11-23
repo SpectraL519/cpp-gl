@@ -10,6 +10,7 @@
 
 namespace gl::constants {
 
+// TODO: remove
 inline constexpr types::size_type zero{0ull};
 inline constexpr types::size_type one{1ull};
 inline constexpr types::size_type two{2ull};

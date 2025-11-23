@@ -1,3 +1,5 @@
+#include "hgl/vertex_descriptor.hpp"
+
 #include <doctest.h>
 
 namespace hgl_testing {
