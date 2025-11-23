@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "traits/concepts.hpp"
+#include "type_traits.hpp"
 
 #include <any>
 #include <iomanip>
