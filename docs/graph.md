@@ -90,11 +90,11 @@ Based on the specified traits, the `graph` class defines the following types:
 | `implementation_type` | The underlying data structure used to store the graph's edges and the adjacency information |
 | `vertex_type` | The type of the vertex element (an instantiation of `vertex_descriptor`) |
 | `vertex_properties_type` | The type of the properties element associated with each vertex |
-| `vertex_iterator_type` | The iterator type used for vertex traversal in the graph |
+| `vertex_properties_map_type` | The type of the properties map element associated with each vertex |
 | `edge_type` | The type of the edge element (an instantiation of `edge_descriptor`) |
 | `edge_directional_tag` | The `EdgeDirectionalTag` parameter of the `graph_traits` structure |
 | `edge_properties_type` | The type of the properties element associated with each edge |
-| `edge_iterator_type` | The iterator type used for edge traversal in the graph |
+| `edge_properties_map_type` | The type of the properties map element associated with each edge |
 
 <br />
 <br />
@@ -106,7 +106,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph()`**:
   - Default constructor. Creates an empty graph with no vertices or edges.
 
-- **`graph(n_vertices)`**:
+- **`explicit graph(n_vertices)`**:
   - Constructs a graph with the specified number of vertices. Each vertex is initialized with default properties and no adjacent edges.
 
 > [!IMPORTANT]
@@ -194,6 +194,9 @@ Based on the specified traits, the `graph` class defines the following types:
 
 > [!IMPORTANT]
 > Simliarily to the graph constructors using the `add_vertices*` methods is more efficient than calling `add_vertex` multiple times which might cause more vector reallocations.
+
+> [!WARNING]
+> Removing vertices may invalidate previously created vertex and edge descriptor objects.
 
 - **`graph.remove_vertex(vertex_id)`**:
   - *Description*: Removes the vertex with the given ID from the graph.
@@ -433,6 +436,9 @@ Based on the specified traits, the `graph` class defines the following types:
     - `source: const vertex_type&` – the source vertex.
     - `target: const vertex_type&` – the target vertex.
   - *Return type*: `std::vector<edge_type>`
+
+> [!WARNING]
+> Removing edges may previously created edge descriptor objects.
 
 - **`graph.remove_edge(edge)`**:
   - *Description*: Removes the specified edge from the graph.
