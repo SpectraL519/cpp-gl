@@ -1,4 +1,4 @@
-#include "hgl/vertex_descriptor.hpp"
+#include "hgl/hypergraph_elements.hpp"
 
 #include <doctest.h>
 

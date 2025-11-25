@@ -674,7 +674,7 @@ private:
             else {
                 // read vertex properties and use them to initialze the vertices
                 std::vector<vertex_properties_type> vertex_properties(n_vertices);
-                for (types::size_type i = constants::begin_idx; i < n_vertices; ++i)
+                for (types::id_type i = 0uz; i < n_vertices; ++i)
                     is >> vertex_properties[i];
                 this->add_vertices_with(vertex_properties);
             }
@@ -696,7 +696,7 @@ private:
                 types::id_type source_id, target_id;
                 edge_properties_type properties;
 
-                for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
+                for (types::size_type _ = 0uz; _ < n_edges; ++_) {
                     is >> source_id >> target_id >> properties;
                     this->add_edge(source_id, target_id, properties);
                 }
@@ -706,7 +706,7 @@ private:
             // read the edges
             types::id_type source_id, target_id;
 
-            for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
+            for (types::size_type _ = 0uz; _ < n_edges; ++_) {
                 is >> source_id >> target_id;
                 this->add_edge(source_id, target_id);
             }

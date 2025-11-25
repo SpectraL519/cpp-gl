@@ -55,7 +55,7 @@ public:
         for (auto& row : this->_matrix)
             row.resize(new_n_vertices, constants::invalid_id);
 
-        for (types::size_type _ = constants::begin_idx; _ < n; ++_)
+        for (types::size_type _ = 0uz; _ < n; ++_)
             this->_matrix.emplace_back(new_n_vertices, constants::invalid_id);
     }
 

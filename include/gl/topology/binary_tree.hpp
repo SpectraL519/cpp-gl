@@ -13,12 +13,10 @@ namespace gl::topology {
 namespace detail {
 
 [[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(const types::size_type source_id) {
-    return std::make_pair(
-        constants::two * source_id + constants::one, constants::two * source_id + constants::two
-    );
+    return std::make_pair(2uz * source_id + 1uz, 2uz * source_id + 2uz);
 }
 
-constexpr types::size_type min_non_trivial_bin_tree_depth = constants::two;
+constexpr types::size_type min_non_trivial_bin_tree_depth = 2uz;
 
 } // namespace detail
 
@@ -27,16 +25,16 @@ template <type_traits::c_graph GraphType>
     if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
 
-    constexpr types::size_type base = constants::two;
-    constexpr types::size_type i_begin = constants::zero;
-    const types::size_type i_end = depth - constants::one;
+    constexpr types::size_type base = 2uz;
+    constexpr types::size_type i_begin = 0uz;
+    const types::size_type i_end = depth - 1uz;
 
-    const auto n_vertices = util::upow_sum(constants::two, i_begin, i_end);
+    const auto n_vertices = util::upow_sum(base, i_begin, i_end);
     GraphType graph{n_vertices};
 
     const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-    for (types::id_type source_id = constants::zero; source_id < n_source_vertices; ++source_id) {
+    for (types::id_type source_id = 0uz; source_id < n_source_vertices; ++source_id) {
         const auto target_ids = detail::get_binary_target_ids(source_id);
         graph.add_edges_from(
             source_id, std::vector<types::id_type>{target_ids.first, target_ids.second}
@@ -52,17 +50,16 @@ template <type_traits::c_graph GraphType>
         if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};
 
-        constexpr types::size_type base = constants::two;
-        constexpr types::size_type i_begin = constants::zero;
-        const types::size_type i_end = depth - constants::one;
+        constexpr types::size_type base = 2uz;
+        constexpr types::size_type i_begin = 0uz;
+        const types::size_type i_end = depth - 1uz;
 
-        const auto n_vertices = util::upow_sum(constants::two, i_begin, i_end);
+        const auto n_vertices = util::upow_sum(base, i_begin, i_end);
         GraphType graph{n_vertices};
 
         const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-        for (types::id_type source_id = constants::zero; source_id < n_source_vertices;
-             ++source_id) {
+        for (types::id_type source_id = 0uz; source_id < n_source_vertices; ++source_id) {
             const auto target_ids = detail::get_binary_target_ids(source_id);
             graph.add_edges_from(
                 source_id, std::vector<types::id_type>{target_ids.first, target_ids.second}

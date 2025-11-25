@@ -55,7 +55,7 @@ struct directed_adjacency_list {
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type in_deg = constants::default_size;
+        types::size_type in_deg = 0uz;
         for (const auto& adjacent_edges : self._list)
             in_deg +=
                 std::ranges::count(adjacent_edges, vertex_id, &adjacency_list_item::target_id);
@@ -76,7 +76,7 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
-        std::vector<types::id_type> in_degree_map(self._list.size(), constants::zero);
+        std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
 
         for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
             std::ranges::for_each(self._list[id], [&in_degree_map](const auto& item) {
@@ -96,7 +96,7 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::id_type> degree_map(self._list.size(), constants::zero);
+        std::vector<types::size_type> degree_map(self._list.size(), 0uz);
 
         for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
             degree_map[id] += self._list[id].size();
@@ -183,9 +183,9 @@ struct undirected_adjacency_list {
     [[nodiscard]] static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type degree = constants::default_size;
+        types::size_type degree = 0uz;
         for (const auto& item : self._list[vertex_id])
-            degree += constants::one + static_cast<types::size_type>(item.target_id == vertex_id);
+            degree += 1uz + static_cast<types::size_type>(item.target_id == vertex_id);
         return degree;
     }
 

@@ -31,7 +31,7 @@ bool pfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    if (initial_queue_content.size() == constants::default_size)
+    if (std::ranges::empty(initial_queue_content))
         return false;
 
     // prepare the vertex queue
