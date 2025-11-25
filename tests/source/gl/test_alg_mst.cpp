@@ -1,4 +1,4 @@
-#include "testing/gl/alg_common.hpp"
+#include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 

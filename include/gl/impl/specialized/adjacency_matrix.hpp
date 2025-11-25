@@ -45,7 +45,7 @@ inline void check_edge_override(
 } // namespace detail
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
@@ -69,7 +69,7 @@ struct directed_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type deg = constants::zero;
+        types::size_type deg = 0uz;
         for (types::id_type v_id = constants::initial_id; v_id < self._matrix.size(); ++v_id)
             deg += static_cast<types::size_type>(
                        self._matrix[vertex_id][v_id] != constants::invalid_id
@@ -82,7 +82,7 @@ struct directed_adjacency_matrix {
     }
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
-        std::vector<types::id_type> in_degree_map(self._matrix.size(), constants::zero);
+        std::vector<types::size_type> in_degree_map(self._matrix.size(), 0uz);
 
         for (const auto& row : self._matrix)
             for (auto [target_id, edge_id] : std::views::enumerate(row))
@@ -99,7 +99,7 @@ struct directed_adjacency_matrix {
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
+        std::vector<types::size_type> degree_map(self._matrix.size(), 0uz);
 
         for (types::id_type source_id = constants::initial_id; source_id < self._matrix.size();
              ++source_id) {
@@ -147,9 +147,9 @@ struct directed_adjacency_matrix {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
             detail::check_edge_override(self._matrix, source_id, target_id);
@@ -165,7 +165,7 @@ struct directed_adjacency_matrix {
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
 struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
@@ -206,7 +206,7 @@ struct undirected_adjacency_matrix {
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::id_type> degree_map(self._matrix.size(), constants::zero);
+        std::vector<types::size_type> degree_map(self._matrix.size(), 0uz);
 
         for (types::id_type source_id = constants::initial_id; source_id < self._matrix.size();
              ++source_id) {
@@ -252,9 +252,9 @@ struct undirected_adjacency_matrix {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
             detail::check_edge_override(self._matrix, source_id, target_id);
@@ -286,13 +286,13 @@ struct matrix_impl_traits {
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
     using type = directed_adjacency_matrix<AdjacencyMatrix>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
     using type = undirected_adjacency_matrix<AdjacencyMatrix>;
 };

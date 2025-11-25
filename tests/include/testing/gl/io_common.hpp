@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl/graph_utility.hpp>
+#include <gl/graph.hpp>
 
 #include <doctest.h>
 

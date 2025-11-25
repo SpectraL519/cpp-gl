@@ -24,7 +24,7 @@ init_return_value(const GraphType& graph) {
 }
 
 template <
-    type_traits::c_sized_range_of<algorithm::vertex_info> InitRangeType =
+    type_traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
         std::vector<algorithm::vertex_info>>
 [[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {
     return InitRangeType{algorithm::vertex_info{root_vertex_id}};

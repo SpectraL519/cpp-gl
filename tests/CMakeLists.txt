@@ -16,7 +16,7 @@ set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Test target generation
-function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR)
+function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
     set(TARGET_SOURCES "")
     foreach(SOURCE_DIR ${SOURCE_DIRS})
         file(GLOB_RECURSE CURRENT_SOURCES "${SOURCE_DIR}/*.cpp")
@@ -35,7 +35,7 @@ function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR)
     target_include_directories(${TARGET_NAME} PRIVATE ${INCLUDE_DIRS})
     target_compile_options(${TARGET_NAME} PRIVATE ${CMAKE_CXX_FLAGS})
     target_compile_definitions(${TARGET_NAME} PRIVATE
-        GL_TESTING
+        ${TESTING_DEF}
         TEST_DATA_PATH="${DATA_DIR}"
     )
     target_link_libraries(${TARGET_NAME} PRIVATE cpp-gl)
@@ -44,9 +44,9 @@ endfunction()
 # GL target
 set(GL_SOURCE_DIRS "source/gl" ${SOURCE_DIRS})
 set(GL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/gl")
-add_test_target(gl "${GL_SOURCE_DIRS}" "${GL_DATA_DIR}")
+add_test_target(gl "${GL_SOURCE_DIRS}" "${GL_DATA_DIR}" GL_TESTING)
 
 # HGL target
 set(HGL_SOURCE_DIRS "source/hgl" ${SOURCE_DIRS})
 set(HGL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/hgl")
-add_test_target(hgl "${HGL_SOURCE_DIRS}" "${HGL_DATA_DIR}")
+add_test_target(hgl "${HGL_SOURCE_DIRS}" "${HGL_DATA_DIR}" HGL_TESTING)

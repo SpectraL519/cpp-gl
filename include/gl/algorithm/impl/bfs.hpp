@@ -12,7 +12,7 @@ namespace gl::algorithm::impl {
 
 template <
     type_traits::c_graph GraphType,
-    type_traits::c_sized_range_of<algorithm::vertex_info> InitQueueRangeType =
+    type_traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
         std::vector<algorithm::vertex_info>,
     type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
     type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
@@ -29,7 +29,7 @@ bool bfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    if (initial_queue_content.size() == constants::default_size)
+    if (std::ranges::empty(initial_queue_content))
         return false;
 
     // prepare the vertex queue

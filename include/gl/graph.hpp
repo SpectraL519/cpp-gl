@@ -176,7 +176,7 @@ public:
     }
 
     void remove_vertices_from(
-        const type_traits::c_sized_range_of<types::id_type> auto& vertex_id_range
+        const type_traits::c_forward_range_of<types::id_type> auto& vertex_id_range
     ) {
         // sorts the ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
@@ -191,7 +191,7 @@ public:
     void remove_vertices_from(const type_traits::c_sized_range_of<vertex_type> auto& vertex_range) {
         // TODO: optimize
         // sort the ids in a descending order and removes duplicate ids
-        std::set<vertex_type> vertex_set(
+        std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
         );
         for (const auto& vertex : vertex_set)
@@ -443,7 +443,7 @@ public:
 
         this->_verify_vertex_id(target_id);
 
-        if constexpr (type_traits::is_directed_v<edge_type>)
+        if constexpr (type_traits::c_directed_edge<edge_type>)
             return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
         else
             return this->has_edge(source_id, target_id);
@@ -528,7 +528,7 @@ public:
 
 private:
     [[nodiscard]] static constexpr std::string _directed_type_str() {
-        return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
+        return type_traits::c_directed_edge<edge_type> ? "directed" : "undirected";
     }
 
     // --- graph element verification methods ---
@@ -605,7 +605,7 @@ private:
         // print graph size
         os << std::format(
             "{} {} {} {} {}\n",
-            static_cast<int>(type_traits::is_directed_v<edge_type>),
+            static_cast<int>(type_traits::c_directed_edge<edge_type>),
             this->n_vertices(),
             this->n_unique_edges(),
             static_cast<int>(with_vertex_properties),
@@ -651,7 +651,7 @@ private:
         bool directed;
         is >> directed;
 
-        if (directed != type_traits::is_directed_v<edge_type>)
+        if (directed != type_traits::c_directed_edge<edge_type>)
             throw std::ios_base::failure(std::format(
                 "Invalid graph specification: directional tag does not match - should be {}",
                 _directed_type_str()
@@ -674,7 +674,7 @@ private:
             else {
                 // read vertex properties and use them to initialze the vertices
                 std::vector<vertex_properties_type> vertex_properties(n_vertices);
-                for (types::size_type i = constants::begin_idx; i < n_vertices; ++i)
+                for (types::id_type i = 0uz; i < n_vertices; ++i)
                     is >> vertex_properties[i];
                 this->add_vertices_with(vertex_properties);
             }
@@ -696,7 +696,7 @@ private:
                 types::id_type source_id, target_id;
                 edge_properties_type properties;
 
-                for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
+                for (types::size_type _ = 0uz; _ < n_edges; ++_) {
                     is >> source_id >> target_id >> properties;
                     this->add_edge(source_id, target_id, properties);
                 }
@@ -706,7 +706,7 @@ private:
             // read the edges
             types::id_type source_id, target_id;
 
-            for (types::size_type i = constants::begin_idx; i < n_edges; ++i) {
+            for (types::size_type _ = 0uz; _ < n_edges; ++_) {
                 is >> source_id >> target_id;
                 this->add_edge(source_id, target_id);
             }
@@ -721,5 +721,52 @@ private:
 
     implementation_type _impl{};
 };
+
+// --- general graph utility ---
+
+namespace type_traits {
+
+template <typename G>
+concept c_graph = c_instantiation_of<G, graph>;
+
+template <typename G>
+concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
+
+template <typename G>
+concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
+
+} // namespace type_traits
+
+// --- utility associated with graph's elements' properties ---
+
+namespace types {
+
+using default_vertex_distance_type = std::int64_t;
+
+template <type_traits::c_graph GraphType>
+struct vertex_distance {
+    using type = default_vertex_distance_type;
+};
+
+template <type_traits::c_graph GraphType>
+requires(type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+struct vertex_distance<GraphType> {
+    using type = typename GraphType::edge_properties_type::weight_type;
+};
+
+template <type_traits::c_graph GraphType>
+using vertex_distance_type = typename vertex_distance<GraphType>::type;
+
+} // namespace types
+
+template <type_traits::c_graph GraphType>
+[[nodiscard]] gl_attr_force_inline types::vertex_distance_type<GraphType> get_weight(
+    const typename GraphType::edge_type& edge
+) {
+    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+        return edge.properties().weight;
+    else
+        return static_cast<types::default_vertex_distance_type>(1ll);
+}
 
 } // namespace gl
