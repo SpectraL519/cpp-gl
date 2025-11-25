@@ -543,9 +543,9 @@ To write safe and more expressive graph utility of your own, you can use the def
 
 | **Trait** | **Description** |
 | :- | :- |
-| `c_graph<T>` | Ensures that the template parameter `T` is a specialization of the `graph` class |
-| `c_directed_graph<T>` | Equivalent to `c_graph<T> and is_directed_v<T>`<br/>Ensures that the template parameter `T` is a *directed* specialization of the `graph` class |
-| `c_undirected_graph<T>` | Equivalent to `c_graph<T> and is_undirected_v<T>`<br/>Ensures that the template parameter `T` is an *undirected* specialization of the `graph` class |
+| `c_graph<G>` | Ensures that the template parameter `G` is a specialization of the `graph` class |
+| `c_directed_graph<G>` | Equivalent to `c_graph<G> and c_directed_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is a *directed* specialization of the `graph` class |
+| `c_undirected_graph<G>` | Equivalent to `c_graph<G> and c_undirected_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is an *undirected* specialization of the `graph` class |
 
 > [!TIP]
 > More (not graph class specific) type traits and concepts are defined in the [gl/types/traits/](/include/gl/types/traits/) directory.

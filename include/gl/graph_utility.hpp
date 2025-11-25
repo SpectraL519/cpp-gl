@@ -14,10 +14,8 @@ namespace gl {
 
 namespace type_traits {
 
-template <typename T>
-concept c_graph = c_instantiation_of<T, graph>;
-
-// TODO: align docs (removed is_{un}directed_v)
+template <typename G>
+concept c_graph = c_instantiation_of<G, graph>;
 
 template <typename G>
 concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
