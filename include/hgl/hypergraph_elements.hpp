@@ -19,6 +19,9 @@ using vertex_descriptor = gl::vertex_descriptor<Properties>;
 
 // hyperedge descriptor
 
+// TODO: validate whether a hyperedge descriptor requires a directional-tag
+//       or if it could be replaced with a hypergraph directional-tag
+
 template <
     type_traits::c_hyperedge_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties Properties = types::empty_properties>
