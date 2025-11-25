@@ -6,6 +6,8 @@
 
 #include "graph.hpp"
 
+// move to graph.hpp?
+
 namespace gl {
 
 // --- general graph utility ---
@@ -15,17 +17,13 @@ namespace type_traits {
 template <typename T>
 concept c_graph = c_instantiation_of<T, graph>;
 
-template <c_graph GraphType>
-inline constexpr bool is_directed_v<GraphType> = is_directed_v<typename GraphType::edge_type>;
+// TODO: align docs (removed is_{un}directed_v)
 
-template <c_graph GraphType>
-inline constexpr bool is_undirected_v<GraphType> = is_undirected_v<typename GraphType::edge_type>;
+template <typename G>
+concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
 
-template <typename T>
-concept c_directed_graph = c_graph<T> and is_directed_v<T>;
-
-template <typename T>
-concept c_undirected_graph = c_graph<T> and is_undirected_v<T>;
+template <typename G>
+concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
 
 } // namespace type_traits
 

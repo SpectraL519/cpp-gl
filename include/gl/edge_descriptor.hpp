@@ -68,13 +68,13 @@ public:
     ~edge_descriptor() = default;
 
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(type_traits::is_directed_v<type>)
+    requires(type_traits::c_directed_edge<type>)
     {
         return this->_id == other._id and (this->_vertices == other._vertices);
     }
 
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(type_traits::is_undirected_v<type>)
+    requires(type_traits::c_undirected_edge<type>)
     {
         return this->_id == other._id
            and (this->_vertices == other._vertices
@@ -86,11 +86,11 @@ public:
     }
 
     [[nodiscard]] constexpr bool is_directed() const noexcept {
-        return type_traits::is_directed_v<type>;
+        return type_traits::c_directed_edge<type>;
     }
 
     [[nodiscard]] constexpr bool is_undirected() const noexcept {
-        return type_traits::is_undirected_v<type>;
+        return type_traits::c_undirected_edge<type>;
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
@@ -157,7 +157,7 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const {
+    [[nodiscard]] properties_ref_type properties() const {
         if (not this->is_valid())
             throw std::logic_error("Cannot access properties of an invalid edge");
 

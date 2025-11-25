@@ -45,7 +45,7 @@ inline void check_edge_override(
 } // namespace detail
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
 struct directed_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
@@ -165,7 +165,7 @@ struct directed_adjacency_matrix {
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
 struct undirected_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using vertex_type = typename impl_type::vertex_type;
@@ -286,13 +286,13 @@ struct matrix_impl_traits {
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_directed_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
     using type = directed_adjacency_matrix<AdjacencyMatrix>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(type_traits::is_undirected_v<typename AdjacencyMatrix::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
 struct matrix_impl_traits<AdjacencyMatrix> {
     using type = undirected_adjacency_matrix<AdjacencyMatrix>;
 };

@@ -19,7 +19,7 @@ template <type_traits::c_graph GraphType>
     for (types::id_type source_id = constants::initial_id; source_id < n_vertices_a; ++source_id) {
         for (types::id_type target_id = n_vertices_a; target_id < n_vertices; ++target_id) {
             graph.add_edge(source_id, target_id);
-            if constexpr (type_traits::is_directed_v<GraphType>)
+            if constexpr (type_traits::c_directed_graph<GraphType>)
                 graph.add_edge(target_id, source_id);
         }
     }

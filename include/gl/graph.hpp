@@ -443,7 +443,7 @@ public:
 
         this->_verify_vertex_id(target_id);
 
-        if constexpr (type_traits::is_directed_v<edge_type>)
+        if constexpr (type_traits::c_directed_edge<edge_type>)
             return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
         else
             return this->has_edge(source_id, target_id);
@@ -528,7 +528,7 @@ public:
 
 private:
     [[nodiscard]] static constexpr std::string _directed_type_str() {
-        return type_traits::is_directed_v<edge_type> ? "directed" : "undirected";
+        return type_traits::c_directed_edge<edge_type> ? "directed" : "undirected";
     }
 
     // --- graph element verification methods ---
@@ -605,7 +605,7 @@ private:
         // print graph size
         os << std::format(
             "{} {} {} {} {}\n",
-            static_cast<int>(type_traits::is_directed_v<edge_type>),
+            static_cast<int>(type_traits::c_directed_edge<edge_type>),
             this->n_vertices(),
             this->n_unique_edges(),
             static_cast<int>(with_vertex_properties),
@@ -651,7 +651,7 @@ private:
         bool directed;
         is >> directed;
 
-        if (directed != type_traits::is_directed_v<edge_type>)
+        if (directed != type_traits::c_directed_edge<edge_type>)
             throw std::ios_base::failure(std::format(
                 "Invalid graph specification: directional tag does not match - should be {}",
                 _directed_type_str()

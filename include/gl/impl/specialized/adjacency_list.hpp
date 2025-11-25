@@ -47,7 +47,7 @@ namespace detail {
 } // namespace detail
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -163,7 +163,7 @@ struct directed_adjacency_list {
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -276,13 +276,13 @@ struct list_impl_traits {
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
     using type = directed_adjacency_list<AdjacencyList>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
     using type = undirected_adjacency_list<AdjacencyList>;
 };
