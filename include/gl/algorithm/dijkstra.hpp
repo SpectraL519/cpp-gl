@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include "gl/graph_utility.hpp"
 #include "impl/pfs.hpp"
 
 #include <deque>
 
 namespace gl::algorithm {
 
-template <type_traits::c_basic_arithmetic VertexDistanceType>
+template <type_traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor : public predecessors_descriptor {
     using predecessor_type = typename predecessors_descriptor::predecessor_type;
     using distance_type = VertexDistanceType;

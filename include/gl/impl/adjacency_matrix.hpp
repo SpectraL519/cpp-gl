@@ -101,9 +101,9 @@ public:
     }
 
     gl_attr_force_inline void add_edges_from(
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }

@@ -1,6 +1,5 @@
 #include "testing/gl/constants.hpp"
 
-#include <gl/graph_utility.hpp>
 #include <gl/topologies.hpp>
 
 #include <doctest.h>

@@ -213,15 +213,15 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertices_from(vertex_id_range)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Template parameters*:
-    - `IdRange: type_traits::c_sized_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
+    - `IdRange: type_traits::c_forward_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Parameters*:
     - `vertex_id_range: const IdRange&` – A range of vertex IDs to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_vertices_from(vertex_ref_range)`**:
+- **`graph.remove_vertices_from(vertex_range)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Parameters*:
-    - `vertex_ref_range: const type_traits::c_sized_range_of<types::id_type> auto&` – A range of vertex references to be removed.
+    - `vertex_range: const type_traits::c_forward_range_of<types::id_type> auto&` – A range of vertex references to be removed.
   - *Return type*: `void`
 
 - **`graph.in_degree(vertex) const`**:
@@ -438,7 +438,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `std::vector<edge_type>`
 
 > [!WARNING]
-> Removing edges may previously created edge descriptor objects.
+> Removing edges may invalidate previously created edge descriptor objects.
 
 - **`graph.remove_edge(edge)`**:
   - *Description*: Removes the specified edge from the graph.
@@ -529,10 +529,6 @@ Based on the specified traits, the `graph` class defines the following types:
 
 <br />
 <br />
-
-## Additional utility
-
-In addition to the core functionality of the `graph` class, the [gl/graph_utility.hpp](/include/gl/graph_utility.hpp) file provides a set of utility functions and type traits that offer extended support for graph manipulation and property handling. Below is an overview of the key utilities provided.
 
 ### Type traits
 

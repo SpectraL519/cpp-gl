@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/graph_utility.hpp"
+#include "gl/graph.hpp"
 
 #include <functional>
 
@@ -101,11 +101,13 @@ concept c_optional_id_callback = c_optional_callback<F, ReturnType, const types:
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_edge_callback =
-    std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
+    c_graph<GraphType>
+    and std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
 
 template <typename F, typename GraphType, typename ReturnType, typename... Args>
 concept c_optional_edge_callback =
-    c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>;
+    c_graph<GraphType>
+    and c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>;
 
 } // namespace type_traits
 

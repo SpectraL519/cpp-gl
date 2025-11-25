@@ -26,8 +26,6 @@ class edge_descriptor;
 
 namespace type_traits {
 
-// TODO: align docs
-
 template <typename E>
 concept c_directed_edge =
     c_instantiation_of<E, edge_descriptor>

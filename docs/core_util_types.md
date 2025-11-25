@@ -240,7 +240,7 @@ This section describes the type traits that are associated with the property typ
   concept c_weight_properties_type = c_properties<Properties> && requires(Properties p) {
       typename Properties::weight_type;
       { p.weight } -> std::same_as<typename Properties::weight_type&>;
-      requires c_basic_arithmetic<typename Properties::weight_type>;
+      requires c_arithmetic<typename Properties::weight_type>;
   };
   ```
 

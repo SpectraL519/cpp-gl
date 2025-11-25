@@ -3,7 +3,6 @@
 #include "testing/gl/types.hpp"
 
 #include <gl/graph.hpp>
-#include <gl/graph_utility.hpp>
 #include <gl/util/ranges.hpp>
 
 #include <doctest.h>

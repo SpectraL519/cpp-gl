@@ -145,9 +145,9 @@ struct directed_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -242,9 +242,9 @@ struct undirected_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
