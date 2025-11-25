@@ -286,7 +286,7 @@ This section covers the specific types and type traits used for the algorithm im
 > The `algorithm::paths_descriptor` structure is defined as follows:
 >
 > - *Template parameters*:
->   - `VertexDistanceType: type_traits::c_basic_arithmetic` - The type of the distance between vertices in the graph.
+>   - `VertexDistanceType: type_traits::c_arithmetic` - The type of the distance between vertices in the graph.
 > - *Type definitions*:
 >   - `distance_type` - An alias for `VertexDistanceType`.
 > - *Constructors*:
@@ -444,7 +444,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
-    - `InitQueueRangeType: type_traits::c_sized_range_of<algorithm::vertex_info>` (default = `std::vector<algorithm::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
+    - `InitQueueRangeType: type_traits::c_forward_range_of<algorithm::vertex_info>` (default = `std::vector<algorithm::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
     - `VisitVertexPredicate: type_traits::c_optional_id_callback<bool>` - The vertex visiting unary predicate type.
     - `VisitCallback: type_traits::c_optional_id_callback<bool, types::id_type>` - The vertex visting callback type (arguments: `vertex_id, pred_id`).
     - `EnqueueVertexPred: type_traits::c_id_callback<algorithm::predicate_result, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex_id, in_edge`)
@@ -475,7 +475,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
   - *Template parameters*:
     - `GraphType: type_traits::c_graph` - The type of the graph on which the search is performed.
     - `PQCompare: std::predicate<algorithm::vertex_info, algorithm::vertex_info>` - The type of the vertex priority queue comparator.
-    - `InitQueueRangeType: type_traits::c_sized_range_of<algorithm::vertex_info>` (default = `std::vector<algorithm::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
+    - `InitQueueRangeType: type_traits::c_forward_range_of<algorithm::vertex_info>` (default = `std::vector<algorithm::vertex_info>`) - The type of the `vertex_info` range which will be inserted into the queue at the beginning of the algorithm.
     - `VisitVertexPredicate: type_traits::c_optional_id_callback<bool>` - The vertex visiting unary predicate type.
     - `VisitCallback: type_traits::c_optional_id_callback<bool, types::id_type>` - The vertex visting callback type (arguments: `vertex, source_id`).
     - `EnqueueVertexPred: type_traits::c_id_callback<algorithm::predicate_result, const typename GraphType::edge_type&>` - The vertex enqueue predicate type (arguments: `vertex, in_edge`)

@@ -14,12 +14,12 @@ namespace gl::util {
 
 // exponentation function for u64 integral type
 [[nodiscard]] inline constexpr types::size_type upow(types::size_type base, types::size_type exp) {
-    types::size_type result = constants::one;
+    types::size_type result = 1uz;
     while (exp) {
-        if (exp % constants::two == constants::one)
+        if (exp % 2uz == 1uz)
             result *= base;
         base *= base;
-        exp /= constants::two;
+        exp /= 2uz;
     }
 
     return result;
@@ -31,13 +31,13 @@ namespace gl::util {
 ) {
     std::tie(i_begin, i_end) = std::minmax(i_begin, i_end);
 
-    if (base == constants::zero)
-        return static_cast<types::size_type>(i_begin == constants::zero);
+    if (base == 0uz)
+        return static_cast<types::size_type>(i_begin == 0uz);
 
-    if (base == constants::one)
-        return i_end - i_begin + constants::one;
+    if (base == 1uz)
+        return i_end - i_begin + 1uz;
 
-    return (upow(base, i_end + constants::one) - upow(base, i_begin)) / (base - constants::one);
+    return (upow(base, i_end + 1uz) - upow(base, i_begin)) / (base - 1uz);
 }
 
 } // namespace gl::util

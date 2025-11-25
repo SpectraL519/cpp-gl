@@ -1,4 +1,4 @@
-#include "testing/gl/alg_common.hpp"
+#include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 
@@ -83,7 +83,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const std::string file_name_prefix =
-                gl::type_traits::is_directed_v<sut_type>
+                gl::type_traits::c_directed_graph<sut_type>
                     ? "dijkstra_directed_"
                     : "dijkstra_undirected_";
 

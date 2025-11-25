@@ -78,7 +78,7 @@ requires(type_traits::c_binary_color_properties_type<typename GraphType::vertex_
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
     using color_type = typename GraphType::vertex_properties_type::color_type;
 
-    if (color_range.size() != graph.n_vertices())
+    if (std::ranges::size(color_range) != graph.n_vertices())
         return false;
 
     auto vertices = graph.vertices(); // store the view to extend its lifetime

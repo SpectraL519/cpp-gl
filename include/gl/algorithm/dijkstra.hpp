@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include "gl/graph_utility.hpp"
 #include "impl/pfs.hpp"
 
 #include <deque>
 
 namespace gl::algorithm {
 
-template <type_traits::c_basic_arithmetic VertexDistanceType>
+template <type_traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor : public predecessors_descriptor {
     using predecessor_type = typename predecessors_descriptor::predecessor_type;
     using distance_type = VertexDistanceType;
@@ -97,7 +96,7 @@ template <
             const auto pred_id = in_edge.incident_vertex(vertex_id);
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
-            if (edge_weight < constants::zero) {
+            if (edge_weight < 0) {
                 negative_edge.emplace(in_edge);
                 return predicate_result::unknown;
             }

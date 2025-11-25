@@ -262,6 +262,24 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
   template <type_traits::c_properties Properties = types::empty_properties>
   using undirected_edge = edge_descriptor<undirected_t, Properties>;
   ```
+  
+- `type_traits::c_directed_edge`: A type constraint that accepts only directed edges.
+
+  ```cpp
+  template <typename E>
+  concept c_directed_edge =
+      c_instantiation_of<E, edge_descriptor>
+      and std::same_as<typename E::directional_tag, gl::directed_t>;
+  ```
+  
+- `type_traits::c_undirected_edge`: A type constraint that accepts only undirected edges.
+
+  ```cpp
+  template <typename E>
+  concept c_undirected_edge =
+      c_instantiation_of<E, edge_descriptor>
+      and std::same_as<typename E::directional_tag, gl::undirected_t>;
+  ```
 
 <br />
 <br />

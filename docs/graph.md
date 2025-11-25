@@ -90,11 +90,11 @@ Based on the specified traits, the `graph` class defines the following types:
 | `implementation_type` | The underlying data structure used to store the graph's edges and the adjacency information |
 | `vertex_type` | The type of the vertex element (an instantiation of `vertex_descriptor`) |
 | `vertex_properties_type` | The type of the properties element associated with each vertex |
-| `vertex_iterator_type` | The iterator type used for vertex traversal in the graph |
+| `vertex_properties_map_type` | The type of the properties map element associated with each vertex |
 | `edge_type` | The type of the edge element (an instantiation of `edge_descriptor`) |
 | `edge_directional_tag` | The `EdgeDirectionalTag` parameter of the `graph_traits` structure |
 | `edge_properties_type` | The type of the properties element associated with each edge |
-| `edge_iterator_type` | The iterator type used for edge traversal in the graph |
+| `edge_properties_map_type` | The type of the properties map element associated with each edge |
 
 <br />
 <br />
@@ -106,7 +106,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph()`**:
   - Default constructor. Creates an empty graph with no vertices or edges.
 
-- **`graph(n_vertices)`**:
+- **`explicit graph(n_vertices)`**:
   - Constructs a graph with the specified number of vertices. Each vertex is initialized with default properties and no adjacent edges.
 
 > [!IMPORTANT]
@@ -195,6 +195,9 @@ Based on the specified traits, the `graph` class defines the following types:
 > [!IMPORTANT]
 > Simliarily to the graph constructors using the `add_vertices*` methods is more efficient than calling `add_vertex` multiple times which might cause more vector reallocations.
 
+> [!WARNING]
+> Removing vertices may invalidate previously created vertex and edge descriptor objects.
+
 - **`graph.remove_vertex(vertex_id)`**:
   - *Description*: Removes the vertex with the given ID from the graph.
   - *Parameters*:
@@ -210,15 +213,15 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertices_from(vertex_id_range)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Template parameters*:
-    - `IdRange: type_traits::c_sized_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
+    - `IdRange: type_traits::c_forward_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Parameters*:
     - `vertex_id_range: const IdRange&` – A range of vertex IDs to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_vertices_from(vertex_ref_range)`**:
+- **`graph.remove_vertices_from(vertex_range)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Parameters*:
-    - `vertex_ref_range: const type_traits::c_sized_range_of<types::id_type> auto&` – A range of vertex references to be removed.
+    - `vertex_range: const type_traits::c_forward_range_of<types::id_type> auto&` – A range of vertex references to be removed.
   - *Return type*: `void`
 
 - **`graph.in_degree(vertex) const`**:
@@ -434,6 +437,9 @@ Based on the specified traits, the `graph` class defines the following types:
     - `target: const vertex_type&` – the target vertex.
   - *Return type*: `std::vector<edge_type>`
 
+> [!WARNING]
+> Removing edges may invalidate previously created edge descriptor objects.
+
 - **`graph.remove_edge(edge)`**:
   - *Description*: Removes the specified edge from the graph.
   - *Parameters*:
@@ -524,10 +530,6 @@ Based on the specified traits, the `graph` class defines the following types:
 <br />
 <br />
 
-## Additional utility
-
-In addition to the core functionality of the `graph` class, the [gl/graph_utility.hpp](/include/gl/graph_utility.hpp) file provides a set of utility functions and type traits that offer extended support for graph manipulation and property handling. Below is an overview of the key utilities provided.
-
 ### Type traits
 
 To write safe and more expressive graph utility of your own, you can use the defined concepts and type traits:
@@ -537,9 +539,9 @@ To write safe and more expressive graph utility of your own, you can use the def
 
 | **Trait** | **Description** |
 | :- | :- |
-| `c_graph<T>` | Ensures that the template parameter `T` is a specialization of the `graph` class |
-| `c_directed_graph<T>` | Equivalent to `c_graph<T> and is_directed_v<T>`<br/>Ensures that the template parameter `T` is a *directed* specialization of the `graph` class |
-| `c_undirected_graph<T>` | Equivalent to `c_graph<T> and is_undirected_v<T>`<br/>Ensures that the template parameter `T` is an *undirected* specialization of the `graph` class |
+| `c_graph<G>` | Ensures that the template parameter `G` is a specialization of the `graph` class |
+| `c_directed_graph<G>` | Equivalent to `c_graph<G> and c_directed_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is a *directed* specialization of the `graph` class |
+| `c_undirected_graph<G>` | Equivalent to `c_graph<G> and c_undirected_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is an *undirected* specialization of the `graph` class |
 
 > [!TIP]
 > More (not graph class specific) type traits and concepts are defined in the [gl/types/traits/](/include/gl/types/traits/) directory.

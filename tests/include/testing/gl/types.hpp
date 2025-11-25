@@ -4,8 +4,6 @@
 
 namespace gl_testing::types {
 
-using it_distance_type = std::ptrdiff_t;
-
 struct visited_property {
     bool operator==(const visited_property&) const = default;
     bool visited;

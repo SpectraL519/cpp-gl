@@ -5,7 +5,6 @@
 #include <gl/constants.hpp>
 #include <gl/types/types.hpp>
 
-#include <limits>
 #include <ranges>
 
 #define IC inline constexpr
@@ -38,8 +37,6 @@ IC gl::types::id_type vertex_id_3 = vertex_id_2 + one_element;
 IC gl::types::id_type invalid_id = gl::constants::invalid_id;
 
 IC auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
-
-IC types::it_distance_type empty_distance = static_cast<types::it_distance_type>(zero);
 
 IC types::visited_property visited{true};
 IC types::visited_property not_visited{false};

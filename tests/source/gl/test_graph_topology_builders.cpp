@@ -14,7 +14,7 @@ template <gl::type_traits::c_graph GraphType>
 [[nodiscard]] gl::types::size_type n_unique_edges_for_bidir_topology(
     const gl::types::size_type n_connections
 ) {
-    if constexpr (gl::type_traits::is_directed_v<GraphType>)
+    if constexpr (gl::type_traits::c_directed_graph<GraphType>)
         return n_connections;
     else
         return n_connections / constants::two;

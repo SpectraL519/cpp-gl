@@ -47,7 +47,7 @@ namespace detail {
 } // namespace detail
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -55,7 +55,7 @@ struct directed_adjacency_list {
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type in_deg = constants::default_size;
+        types::size_type in_deg = 0uz;
         for (const auto& adjacent_edges : self._list)
             in_deg +=
                 std::ranges::count(adjacent_edges, vertex_id, &adjacency_list_item::target_id);
@@ -76,7 +76,7 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
-        std::vector<types::id_type> in_degree_map(self._list.size(), constants::zero);
+        std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
 
         for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
             std::ranges::for_each(self._list[id], [&in_degree_map](const auto& item) {
@@ -96,7 +96,7 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::id_type> degree_map(self._list.size(), constants::zero);
+        std::vector<types::size_type> degree_map(self._list.size(), 0uz);
 
         for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
             degree_map[id] += self._list[id].size();
@@ -145,9 +145,9 @@ struct directed_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -163,7 +163,7 @@ struct directed_adjacency_list {
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -183,9 +183,9 @@ struct undirected_adjacency_list {
     [[nodiscard]] static types::size_type degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        types::size_type degree = constants::default_size;
+        types::size_type degree = 0uz;
         for (const auto& item : self._list[vertex_id])
-            degree += constants::one + static_cast<types::size_type>(item.target_id == vertex_id);
+            degree += 1uz + static_cast<types::size_type>(item.target_id == vertex_id);
         return degree;
     }
 
@@ -242,9 +242,9 @@ struct undirected_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_sized_range_of<types::id_type> auto& edge_ids,
+        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_ids
+        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -276,13 +276,13 @@ struct list_impl_traits {
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_directed_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
     using type = directed_adjacency_list<AdjacencyList>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::is_undirected_v<typename AdjacencyList::edge_type>)
+requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct list_impl_traits<AdjacencyList> {
     using type = undirected_adjacency_list<AdjacencyList>;
 };

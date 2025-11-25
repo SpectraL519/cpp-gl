@@ -19,11 +19,11 @@ struct mst_descriptor {
     using weight_type = types::vertex_distance_type<graph_type>;
 
     mst_descriptor(const types::size_type n_vertices) {
-        edges.reserve(n_vertices - constants::one);
+        edges.reserve(n_vertices - 1uz);
     }
 
     std::vector<edge_type> edges;
-    weight_type weight = static_cast<weight_type>(constants::zero);
+    weight_type weight = static_cast<weight_type>(0);
 };
 
 template <type_traits::c_undirected_graph GraphType>
@@ -53,14 +53,14 @@ template <type_traits::c_undirected_graph GraphType>
     queue_type edge_queue;
 
     // insert the edges adjacent to the root vertex to the queue
-    const types::id_type root_id = root_id_opt.value_or(constants::zero);
+    const types::id_type root_id = root_id_opt.value_or(constants::initial_id);
 
     for (const auto& edge : graph.adjacent_edges(root_id))
         edge_queue.emplace(edge);
 
     // mark the root vertex as visited
     visited[root_id] = true;
-    types::size_type n_vertices_in_mst = constants::one;
+    types::size_type n_vertices_in_mst = 1uz;
 
     // find the mst
     while (n_vertices_in_mst < n_vertices) {
@@ -104,7 +104,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
     std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
-    min_cost.at(root_id_opt.value_or(constants::zero)) = constants::zero;
+    min_cost.at(root_id_opt.value_or(constants::initial_id)) = static_cast<distance_type>(0);
 
     auto heap_comparator = [&min_cost](const types::id_type lhs, const types::id_type rhs) {
         return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost

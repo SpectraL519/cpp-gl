@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "traits/concepts.hpp"
+#include "type_traits.hpp"
 
 #include <any>
 #include <iomanip>
@@ -223,7 +223,7 @@ struct binary_color_property {
 
 // --- edge properties ---
 
-template <type_traits::c_basic_arithmetic WeightType = double>
+template <type_traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
     weight_type weight = static_cast<weight_type>(1ll);
@@ -276,7 +276,7 @@ template <typename Properties>
 concept c_weight_properties_type = c_properties<Properties> and requires(Properties p) {
     typename Properties::weight_type;
     { p.weight } -> std::same_as<typename Properties::weight_type&>;
-    requires c_basic_arithmetic<typename Properties::weight_type>;
+    requires c_arithmetic<typename Properties::weight_type>;
 };
 
 } // namespace type_traits

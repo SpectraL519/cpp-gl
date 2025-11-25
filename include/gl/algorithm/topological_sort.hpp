@@ -27,7 +27,7 @@ template <
     std::vector<algorithm::vertex_info> source_vertex_list;
     source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : graph.vertex_ids())
-        if (in_degree_map[id] == constants::default_size)
+        if (in_degree_map[id] == 0uz)
             source_vertex_list.emplace_back(id);
 
     std::optional<std::vector<types::id_type>> topological_order_opt =
@@ -49,7 +49,7 @@ template <
             -> predicate_result { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
-            return --in_degree_map[vertex_id] == constants::default_size;
+            return --in_degree_map[vertex_id] == 0uz;
         },
         pre_visit,
         post_visit
