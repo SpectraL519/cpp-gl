@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "hgl/types/type_traits.hpp"
+
 namespace hgl {
 
 namespace impl {
