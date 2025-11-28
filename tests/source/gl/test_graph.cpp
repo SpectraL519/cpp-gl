@@ -110,7 +110,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_EQ(sut.n_edges(), constants::zero_elements);
     }
 
-    SUBCASE("graph constructed with n_vertices parameter should contain n_vertices vertices and no edges") {
+    SUBCASE("graph constructed with n_vertices parameter should contain n_vertices vertices and no "
+            "edges") {
         sut_type sut{constants::n_elements};
 
         REQUIRE(std::ranges::equal(

@@ -38,6 +38,14 @@ public:
 
     hypergraph() = default;
 
+    hypergraph(const types::size_type n_vertices) : _n_vertices(n_vertices) {
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+            this->_vertex_properties.reserve(n_vertices);
+            for (const auto _ : this->vertex_ids())
+                this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
+        }
+    }
+
     // --- general methods ---
 
     [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const noexcept {
