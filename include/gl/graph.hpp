@@ -86,23 +86,17 @@ public:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline std::ranges::iota_view<types::id_type, types::id_type>
-    vertex_ids() const {
+    [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
         return std::views::iota(constants::initial_id, this->_n_vertices);
     }
 
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    [[nodiscard]] gl_attr_force_inline vertex_type get_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] vertex_type get_vertex(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
         else
             return vertex_descriptor{vertex_id};
     }
-
-    // clang-format on
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
         return vertex_id < this->_n_vertices;
@@ -116,23 +110,26 @@ public:
         this->_impl.add_vertex();
         const auto new_vertex_id = this->_n_vertices++;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
-            this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
-            return vertex_descriptor{new_vertex_id, *this->_vertex_properties.back()};
-        }
-        else {
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+            return vertex_descriptor{
+                new_vertex_id,
+                *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
+            };
+        else
             return vertex_descriptor{new_vertex_id};
-        }
     }
 
+    // TODO: rename to add_vertex_with
     const vertex_type add_vertex(vertex_properties_type properties)
     requires(type_traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        this->_vertex_properties.push_back(
-            std::make_unique<vertex_properties_type>(std::move(properties))
-        );
-        return vertex_descriptor{this->_n_vertices++, *this->_vertex_properties.back()};
+        return vertex_descriptor{
+            this->_n_vertices++,
+            *this->_vertex_properties.emplace_back(
+                std::make_unique<vertex_properties_type>(std::move(properties))
+            )
+        };
     }
 
     void add_vertices(const types::size_type n) {
