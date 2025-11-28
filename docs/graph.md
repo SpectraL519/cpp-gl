@@ -128,8 +128,8 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
   - *Return type*: `types::size_type`
 
-- **`graph.n_unique_edges() const noexcept`**:
-  - Returns the number of unique edges in the graph.
+- **`graph.n_edges() const noexcept`**:
+  - Returns the number of edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
 

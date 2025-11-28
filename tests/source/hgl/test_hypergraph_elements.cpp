@@ -64,7 +64,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::bf_directed_hyperedge<> // default directed edge
 );
 
-
 TEST_SUITE_END(); // test_hypergraph_elements
 
 } // namespace hgl_testing
