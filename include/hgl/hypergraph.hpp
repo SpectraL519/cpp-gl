@@ -72,11 +72,11 @@ public:
     }
 
     [[nodiscard]] vertex_type get_vertex(const types::id_type vertex_id) const {
-        // this->_verify_vertex_id(vertex_id);
+        this->_verify_vertex_id(vertex_id);
         if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
+            return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
         else
-            return vertex_descriptor{vertex_id};
+            return vertex_type{vertex_id};
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
@@ -92,12 +92,12 @@ public:
         const auto new_vertex_id = this->_n_vertices++;
 
         if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_descriptor{
+            return vertex_type{
                 new_vertex_id,
                 *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
             };
         else
-            return vertex_descriptor{new_vertex_id};
+            return vertex_type{new_vertex_id};
     }
 
     const vertex_type add_vertex_with(vertex_properties_type properties)
@@ -107,7 +107,7 @@ public:
         this->_vertex_properties.push_back(
             std::make_unique<vertex_properties_type>(std::move(properties))
         );
-        return vertex_descriptor{this->_n_vertices++, *this->_vertex_properties.back()};
+        return vertex_type{this->_n_vertices++, *this->_vertex_properties.back()};
     }
 
     void add_vertices(const types::size_type n) {
@@ -142,8 +142,8 @@ public:
     }
 
     void remove_vertex(const types::size_type vertex_id) {
-        // this->_verify_vertex_id(vertex_id);
-        // this->_remove_vertex_impl(vertex_id);
+        this->_verify_vertex_id(vertex_id);
+        this->_remove_vertex_impl(vertex_id);
     }
 
     gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
@@ -174,6 +174,28 @@ public:
     }
 
 private:
+    // --- vertex methods ---
+
+    gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
+        if (not this->has_vertex(vertex_id))
+            throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
+    }
+
+    void _remove_vertex_impl(const types::id_type vertex_id) {
+        // const auto removed_edge_ids = this->_impl.remove_vertex(vertex_id);
+        this->_n_vertices--;
+        // this->_n_edges -= removed_edge_ids.size();
+
+        // if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        //     this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
+
+        // if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+        //     // IDs are sorted and do not contain duplicates
+        //     for (const auto& edge_id : std::views::reverse(removed_edge_ids))
+        //         this->_edge_properties.erase(this->_edge_properties.begin() + edge_id);
+        // }
+    }
+
     types::size_type _n_vertices = 0uz;
     types::size_type _n_hyperedges = 0uz;
 
