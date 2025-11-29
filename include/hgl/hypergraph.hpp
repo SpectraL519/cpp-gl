@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "constants.hpp"
 #include "hypergraph_traits.hpp"
 
 #include <memory>
