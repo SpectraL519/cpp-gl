@@ -96,7 +96,7 @@ public:
         return this->has_vertex(vertex.id());
     }
 
-    const vertex_type add_vertex() {
+    vertex_type add_vertex() {
         // this->_impl.add_vertex();
         const auto new_vertex_id = this->_n_vertices++;
 
@@ -109,7 +109,7 @@ public:
             return vertex_type{new_vertex_id};
     }
 
-    const vertex_type add_vertex_with(vertex_properties_type properties)
+    vertex_type add_vertex_with(vertex_properties_type properties)
     requires(type_traits::c_non_empty_properties<vertex_properties_type>)
     {
         // this->_impl.add_vertex();
@@ -168,18 +168,19 @@ public:
         );
 
         // TODO: optimize
-        // for (const auto vertex_id : vertex_id_set)
-        //     this->_remove_vertex_impl(vertex_id);
+        for (const auto vertex_id : vertex_id_set)
+            this->_remove_vertex_impl(vertex_id);
     }
 
     void remove_vertices_from(const type_traits::c_sized_range_of<vertex_type> auto& vertex_range) {
-        // TODO: optimize
         // sort the ids in a descending order and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
         );
-        // for (const auto& vertex : vertex_set)
-        //     this->_remove_vertex_impl(vertex.id());
+
+        // TODO: optimize
+        for (const auto& vertex : vertex_set)
+            this->_remove_vertex_impl(vertex.id());
     }
 
 private:

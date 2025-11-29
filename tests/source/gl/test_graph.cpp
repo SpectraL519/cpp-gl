@@ -212,7 +212,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
     }
 
-    SUBCASE("vertices should return the correct vertex list iterator range") {
+    SUBCASE("vertices should return the correct vertex collection view") {
         sut_type sut{constants::n_elements};
 
         CHECK(std::ranges::equal(

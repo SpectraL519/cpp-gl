@@ -4,6 +4,11 @@
 #include <doctest.h>
 #include <hgl/hypergraph.hpp>
 
+#include <algorithm>
+
+namespace rng = std::ranges;
+namespace vw = std::views;
+
 namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_hypergraph");
@@ -34,6 +39,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = hgl::hypergraph<HypergraphTraits>;
     using vertex_type = typename sut_type::vertex_type;
 
+    // --- general tests ---
+
     SUBCASE("a hypergraph should be initialized with no vertices and no edges by default") {
         sut_type sut{};
         CHECK_EQ(sut.n_vertices(), 0uz);
@@ -47,11 +54,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
         REQUIRE_EQ(sut.n_hyperedges(), 0uz);
 
-        REQUIRE(std::ranges::equal(
-            sut.vertices() | std::views::transform(get_id), constants::vertex_ids_view
-        ));
-
-        REQUIRE(std::ranges::equal(sut.vertex_ids(), constants::vertex_ids_view));
+        REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
+        REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
 
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
@@ -59,6 +63,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         // TODO: check no edges
     }
+
+    // --- vertex method tests ---
 
     SUBCASE("add_vertex should return a vertex_descriptor with an incremented id and no edges") {
         sut_type sut;
@@ -81,9 +87,147 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto vertex = sut.add_vertex_with(constants::p_true);
         REQUIRE_EQ(sut.n_vertices(), 1uz);
 
-        CHECK_EQ(vertex.id(), hgl::constants::initial_id);
+        CHECK_EQ(vertex.id(), constants::id1);
         CHECK_EQ(vertex.properties(), constants::p_true);
         // TODO: check no edges
+    }
+
+    SUBCASE("add_vertices(n) should add n new vertices to the hypergraph") {
+        sut_type sut{};
+        sut.add_vertices(constants::n_vertices);
+
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
+        CHECK_EQ(sut.n_hyperedges(), 0uz);
+    }
+
+    SUBCASE("add_vertices_with should add new vertices to the hypergraph with the given properties"
+    ) {
+        using properties_traits_type =
+            add_vertex_property<HypergraphTraits, types::boolean_property>;
+        hgl::hypergraph<properties_traits_type> sut;
+
+        const std::vector<types::boolean_property> properties_list{
+            constants::p_true, constants::p_false, constants::p_true
+        };
+        const auto expected_n_vertices = properties_list.size();
+
+        sut.add_vertices_with(properties_list);
+
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        CHECK_EQ(sut.n_hyperedges(), 0uz);
+
+        CHECK(rng::equal(sut.vertices(), properties_list, rng::equal_to{}, [](const auto vertex) {
+            return vertex.properties();
+        }));
+    }
+
+    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
+            "the graph") {
+        sut_type sut{constants::n_vertices};
+
+        CHECK(rng::all_of(constants::vertex_ids_view, [&sut](const auto vertex_id) {
+            return sut.has_vertex(vertex_id);
+        }));
+        CHECK_FALSE(sut.has_vertex(constants::out_of_rng_vid));
+    }
+
+    SUBCASE("get_vertex should throw if the given id is invalid") {
+        sut_type sut{constants::n_vertices};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
+        );
+    }
+
+    SUBCASE("get_vertex should return a vertex with the given id") {
+        sut_type sut;
+        const auto added_vertex = sut.add_vertex();
+        CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
+    }
+
+    SUBCASE("vertices should return the correct vertex collection view") {
+        sut_type sut{constants::n_vertices};
+
+        CHECK(rng::equal(sut.vertices(), constants::vertex_ids_view, rng::equal_to{}, get_id));
+    }
+
+    SUBCASE("vertex_ids should return the correct vertex list iterator range") {
+        sut_type sut{constants::n_vertices};
+        CHECK(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
+    }
+
+    SUBCASE("remove_vertex(vertex) should throw if the given vertex is invalid") {
+        sut_type sut{constants::n_vertices};
+        CHECK_THROWS_AS(
+            sut.remove_vertex(vertex_type{constants::out_of_rng_vid}), std::out_of_range
+        );
+    }
+
+    SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
+            "vertices") {
+        // TODO: verify edges alignment
+
+        sut_type sut{constants::n_vertices};
+        sut.remove_vertex(constants::id1);
+
+        const auto vertex_id_view = sut.vertex_ids();
+        REQUIRE(std::ranges::equal(
+            vertex_id_view, std::views::iota(constants::id1, constants::n_vertices - 1uz)
+        ));
+
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
+        );
+    }
+
+    SUBCASE("remove_vertex(id) should throw if the given id is invalid") {
+        sut_type sut{constants::n_vertices};
+        CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_rng_vid), std::out_of_range);
+    }
+
+    SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
+    ) {
+        // TODO: verify edges alignment
+
+        sut_type sut{constants::n_vertices};
+        sut.remove_vertex(constants::id1);
+
+        const auto vertex_id_view = sut.vertex_ids();
+        REQUIRE(std::ranges::equal(
+            vertex_id_view, std::views::iota(constants::id1, constants::n_vertices - 1uz)
+        ));
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
+        );
+    }
+
+    SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
+            "duplicate indices)") {
+        // TODO: verify edges alignment
+
+        constexpr auto n_vertices = constants::n_vertices + 1uz;
+
+        sut_type sut{n_vertices};
+        sut.remove_vertices_from(
+            std::vector<hgl::types::id_type>{constants::id1, constants::id3, constants::id1}
+        );
+
+        constexpr auto expected_n_vertices = n_vertices - 2uz;
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+    }
+
+    SUBCASE("remove_vetices_from(vertices) should properly remove elements at given indices "
+            "(ignoring duplicate vertex references)") {
+        // TODO: verify edges alignment
+
+        constexpr auto n_vertices = constants::n_vertices + 1uz;
+
+        sut_type sut{n_vertices};
+        const auto v1 = sut.get_vertex(constants::id1);
+        const auto v3 = sut.get_vertex(constants::id3);
+        sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
+
+        constexpr auto expected_n_vertices = n_vertices - 2uz;
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 }
 
