@@ -119,8 +119,7 @@ public:
             return vertex_descriptor{new_vertex_id};
     }
 
-    // TODO: rename to add_vertex_with
-    const vertex_type add_vertex(vertex_properties_type properties)
+    const vertex_type add_vertex_with(vertex_properties_type properties)
     requires(type_traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertex();
@@ -281,7 +280,7 @@ public:
         }
     }
 
-    const edge_type add_edge(
+    const edge_type add_edge_with(
         const types::id_type source_id,
         const types::id_type target_id,
         const edge_properties_type& properties
@@ -307,12 +306,12 @@ public:
         return this->add_edge(source.id(), target.id());
     }
 
-    gl_attr_force_inline const edge_type add_edge(
+    gl_attr_force_inline const edge_type add_edge_with(
         const vertex_type& source, const vertex_type& target, const edge_properties_type& properties
     )
     requires(type_traits::c_non_empty_properties<edge_properties_type>)
     {
-        return this->add_edge(source.id(), target.id(), properties);
+        return this->add_edge_with(source.id(), target.id(), properties);
     }
 
     // clang-format on
@@ -693,7 +692,7 @@ private:
 
                 for (types::size_type _ = 0uz; _ < n_edges; ++_) {
                     is >> source_id >> target_id >> properties;
-                    this->add_edge(source_id, target_id, properties);
+                    this->add_edge_with(source_id, target_id, properties);
                 }
             }
         }
