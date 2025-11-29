@@ -6,6 +6,7 @@
 
 #include "constants.hpp"
 #include "hypergraph_traits.hpp"
+#include "util.hpp"
 
 #include <memory>
 #include <set>
@@ -183,6 +184,21 @@ public:
             this->_remove_vertex_impl(vertex.id());
     }
 
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
+    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        return util::deref_view(this->_vertex_properties);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
+        const types::id_type id
+    ) const
+    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        this->_verify_vertex_id(id);
+        return *this->_vertex_properties[id];
+    }
+
 private:
     // --- vertex methods ---
 
@@ -196,8 +212,8 @@ private:
         this->_n_vertices--;
         // this->_n_edges -= removed_edge_ids.size();
 
-        // if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
-        //     this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+            this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
 
         // if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
         //     // IDs are sorted and do not contain duplicates

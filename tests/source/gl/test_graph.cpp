@@ -863,28 +863,61 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix
 );
 
-TEST_CASE_TEMPLATE_DEFINE("vertex properties getter tests", TraitsType, vp_graph_traits_template) {
+TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_traits_template) {
     using sut_type = gl::graph<TraitsType>;
 
     sut_type sut{constants::n_elements};
-    for (auto vertex : sut.vertices())
+    for (auto vertex : sut.vertices()) {
         vertex.properties() = std::format("vertex_{}", vertex.id());
+        sut.add_edge(vertex.id(), (vertex.id() + 1uz) % constants::n_elements).properties() =
+            std::format("edge_{}", vertex.id());
+    }
 
-    auto map = sut.vertex_properties_map();
-    CHECK(map.size() == constants::n_elements);
-    for (auto [id, property] : std::views::zip(sut.vertex_ids(), map)) {
+    auto vmap = sut.vertex_properties_map();
+    CHECK(vmap.size() == constants::n_elements);
+    for (auto [id, property] : std::views::zip(sut.vertex_ids(), vmap)) {
         CHECK_EQ(property, std::format("vertex_{}", id));
-        CHECK_EQ(map[id], std::format("vertex_{}", id));
+        CHECK_EQ(vmap[id], std::format("vertex_{}", id));
         CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
     }
+
+    CHECK_THROWS_AS(
+        func::discard_result(sut.get_vertex_properties(constants::out_of_range_element_idx)),
+        std::out_of_range
+    );
+
+    auto emap = sut.edge_properties_map();
+    CHECK(emap.size() == constants::n_elements);
+    for (auto [id, property] : std::views::enumerate(emap)) {
+        CHECK_EQ(property, std::format("edge_{}", id));
+        CHECK_EQ(emap[id], std::format("edge_{}", id));
+        CHECK_EQ(sut.get_edge_properties(id), std::format("edge_{}", id));
+    }
+
+    CHECK_THROWS_AS(
+        func::discard_result(sut.get_edge_properties(constants::out_of_range_element_idx)),
+        std::out_of_range
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    vp_graph_traits_template,
-    gl::list_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency list
-    gl::list_graph_traits<gl::undirected_t, gl::types::name_property>, // undirected adjacency list
-    gl::matrix_graph_traits<gl::directed_t, gl::types::name_property>, // directed adjacency matrix
-    gl::matrix_graph_traits<gl::undirected_t, gl::types::name_property> // undirected adjacency matrix
+    property_graph_traits_template,
+    gl::list_graph_traits<
+        gl::directed_t,
+        gl::types::name_property,
+        gl::types::name_property>, // directed adjacency list
+    gl::list_graph_traits<
+        gl::undirected_t,
+        gl::types::name_property,
+        gl::types::name_property>, // undirected adjacency list
+    gl::matrix_graph_traits<
+        gl::directed_t,
+        gl::types::name_property,
+        gl::types::name_property>, // directed adjacency matrix
+    gl::matrix_graph_traits<
+        gl::undirected_t,
+        gl::types::name_property,
+        gl::types::name_property> // undirected adjacency matrix
 );
 
 TEST_SUITE_END(); // test_graph

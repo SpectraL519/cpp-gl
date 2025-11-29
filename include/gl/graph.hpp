@@ -492,12 +492,12 @@ public:
         return util::deref_view(this->_edge_properties);
     }
 
-    [[nodiscard]] gl_attr_force_inline edge_properties_type& get_edge_properties(
-        const types::id_type id
-    ) const
+    [[nodiscard]] edge_properties_type& get_edge_properties(const types::id_type id) const
     requires(type_traits::c_non_empty_properties<edge_properties_type>)
     {
-        this->_verify_vertex_edge(id);
+        if (id >= this->_n_edges)
+            throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
+
         return *this->_edge_properties[id];
     }
 

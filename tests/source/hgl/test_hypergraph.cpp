@@ -241,6 +241,71 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::incidence_matrix_hg_traits<hgl::bf_directed_t> // bf-directed incidence matrix
 );
 
+TEST_CASE_TEMPLATE_DEFINE(
+    "properties getter tests", HypergraphTraits, property_hypergraph_traits_template
+) {
+    using sut_type = hgl::hypergraph<HypergraphTraits>;
+
+    sut_type sut{constants::n_vertices};
+    for (auto vertex : sut.vertices()) {
+        vertex.properties() = std::format("vertex_{}", vertex.id());
+        // sut.add_hyperedge().properties() = std::format("hyperedge_{}", vertex.id());
+    }
+
+    auto vmap = sut.vertex_properties_map();
+    CHECK(vmap.size() == constants::n_vertices);
+    for (auto [id, property] : std::views::zip(sut.vertex_ids(), vmap)) {
+        CHECK_EQ(property, std::format("vertex_{}", id));
+        CHECK_EQ(vmap[id], std::format("vertex_{}", id));
+        CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
+    }
+
+    CHECK_THROWS_AS(
+        static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)), std::out_of_range
+    );
+
+    // auto emap = sut.hyperedge_properties_map();
+    // CHECK(emap.size() == constants::n_vertices);
+    // for (auto [id, property] : std::views::enumerate(emap)) {
+    //     CHECK_EQ(property, std::format("hyperedge_{}", id));
+    //     CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
+    //     CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
+    // }
+
+    // CHECK_THROWS_AS(
+    //     static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_vid)),
+    //     std::out_of_range
+    // );
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    property_hypergraph_traits_template,
+    hgl::edge_list_hg_traits<
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected edge list
+    hgl::edge_list_hg_traits<
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // bf-directed edge list
+    hgl::adjacency_list_hg_traits<
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected adjacency list
+    hgl::adjacency_list_hg_traits<
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // bf-directed adjacency list
+    hgl::incidence_matrix_hg_traits<
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected incidence matrix
+    hgl::incidence_matrix_hg_traits<
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property> // bf-directed incidence matrix
+);
+
 TEST_SUITE_END(); // test_hypergraph
 
 } // namespace hgl_testing
