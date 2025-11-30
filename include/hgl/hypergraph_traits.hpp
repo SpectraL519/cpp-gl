@@ -4,13 +4,14 @@
 
 #pragma once
 
+#include "directional_tags.hpp"
 #include "hypergraph_elements.hpp"
 #include "impl/impl_tags.hpp"
 
 namespace hgl {
 
 template <
-    type_traits::c_hypergraph_directional_tag HyperedgeDirectionalTag = undirected_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties,
     type_traits::c_hypergraph_impl_tag ImplTag = impl::hyperedge_list_t>
@@ -18,42 +19,33 @@ struct hypergraph_traits {
     using vertex_type = vertex_descriptor<VertexProperties>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
-    using hyperedge_type = hyperedge_descriptor<HyperedgeDirectionalTag, HyperedgeProperties>;
-    using hyperedge_directional_tag = typename hyperedge_type::directional_tag;
+    using hyperedge_type = hyperedge_descriptor<HyperedgeProperties>;
     using hyperedge_properties_type = typename hyperedge_type::properties_type;
 
+    using directional_tag = DirectionalTag;
     using implementation_tag = ImplTag;
 };
 
 template <
-    type_traits::c_hypergraph_directional_tag HyperedgeDirectionalTag = undirected_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using hyperedge_list_hg_traits = hypergraph_traits<
-    HyperedgeDirectionalTag,
-    VertexProperties,
-    HyperedgeProperties,
-    impl::hyperedge_list_t>;
+using hyperedge_list_hg_traits =
+    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::hyperedge_list_t>;
 
 template <
-    type_traits::c_hypergraph_directional_tag HyperedgeDirectionalTag = undirected_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using adjacency_list_hg_traits = hypergraph_traits<
-    HyperedgeDirectionalTag,
-    VertexProperties,
-    HyperedgeProperties,
-    impl::adjacency_list_t>;
+using adjacency_list_hg_traits =
+    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::adjacency_list_t>;
 
 template <
-    type_traits::c_hypergraph_directional_tag HyperedgeDirectionalTag = undirected_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using incidence_matrix_hg_traits = hypergraph_traits<
-    HyperedgeDirectionalTag,
-    VertexProperties,
-    HyperedgeProperties,
-    impl::incidence_matrix_t>;
+using incidence_matrix_hg_traits =
+    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::incidence_matrix_t>;
 
 template <
     type_traits::c_properties VertexProperties = types::empty_properties,

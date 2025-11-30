@@ -6,7 +6,6 @@
 
 #include "constants.hpp"
 #include "gl/vertex_descriptor.hpp"
-#include "hyperedge_tags.hpp"
 #include "types/type_traits.hpp"
 #include "types/types.hpp"
 
@@ -28,8 +27,6 @@ public:
         type_traits::c_empty_properties<properties_type>,
         types::empty_properties,
         properties_type&>;
-
-    friend directional_tag;
 
     hyperedge_descriptor() {
         *this = hyperedge_descriptor::invalid();
@@ -95,9 +92,7 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
-template <
-    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
-    type_traits::c_properties Properties = types::empty_properties>
-using hyperedge = hyperedge_descriptor<DirectionalTag, Properties>;
+template <type_traits::c_properties Properties = types::empty_properties>
+using hyperedge = hyperedge_descriptor<Properties>;
 
 } // namespace hgl

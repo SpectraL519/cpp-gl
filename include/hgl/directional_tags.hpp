@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <type_traits>
+#include "types/type_traits.hpp"
 
 namespace hgl {
 
@@ -15,5 +15,12 @@ struct undirected_t {
 struct bf_directed_t {
     using type = std::type_identity_t<bf_directed_t>;
 };
+
+namespace type_traits {
+
+template <typename T>
+concept c_hypergraph_directional_tag = c_one_of<T, undirected_t, bf_directed_t>;
+
+} // namespace type_traits
 
 } // namespace hgl

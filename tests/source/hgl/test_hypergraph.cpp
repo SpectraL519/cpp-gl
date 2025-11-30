@@ -17,7 +17,7 @@ template <
     gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
     gl::type_traits::c_properties VertexProperties>
 using add_vertex_property = hgl::hypergraph_traits<
-    typename HypergraphTraits::hyperedge_directional_tag,
+    typename HypergraphTraits::directional_tag,
     VertexProperties,
     typename HypergraphTraits::hyperedge_properties_type,
     typename HypergraphTraits::implementation_tag>;
@@ -26,7 +26,7 @@ template <
     gl::type_traits::c_instantiation_of<gl::graph_traits> HypergraphTraits,
     gl::type_traits::c_properties HyperedgeProperties>
 using add_edge_property = hgl::hypergraph_traits<
-    typename HypergraphTraits::edge_directional_tag,
+    typename HypergraphTraits::directional_tag,
     typename HypergraphTraits::vertex_properties_type,
     HyperedgeProperties,
     typename HypergraphTraits::implementation_tag>;
