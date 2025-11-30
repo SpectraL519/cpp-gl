@@ -198,7 +198,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
+    SUBCASE("remove_vertices_from(ids) should properly remove elements at given indices (ignoring "
             "duplicate indices)") {
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
@@ -211,8 +211,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
-    SUBCASE("remove_vetices_from(vertices) should properly remove elements at given indices "
-            "(ignoring duplicate vertex references)") {
+    SUBCASE("remove_vertices_from(vertices) should properly remove elements at given indices "
+            "(ignoring duplicate vertices)") {
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
         sut_type sut{n_vertices};
@@ -354,7 +354,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("remove_hyperedges_from(hyperedges) should properly remove elements at given indices "
-            "(ignoring duplicate vertex references)") {
+            "(ignoring duplicate hyperedges)") {
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
@@ -395,7 +395,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(vmap[id], std::format("vertex_{}", id));
         CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
     }
-
     CHECK_THROWS_AS(
         static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)), std::out_of_range
     );
@@ -407,7 +406,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
         CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
     }
-
     CHECK_THROWS_AS(
         static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_eid)),
         std::out_of_range
@@ -419,11 +417,11 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::hyperedge_list_hg_traits<
         hgl::undirected_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // undirected edge list
+        hgl::types::name_property>, // undirected hyperedge list
     hgl::hyperedge_list_hg_traits<
         hgl::bf_directed_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed edge list
+        hgl::types::name_property>, // bf-directed hyperedge list
     hgl::adjacency_list_hg_traits<
         hgl::undirected_t,
         hgl::types::name_property,

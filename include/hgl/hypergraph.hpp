@@ -234,7 +234,7 @@ public:
     [[nodiscard]] hyperedge_type get_hyperedge(const types::id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
-            return hyperedge_type{hyperedge_id, *this->_vertex_properties[hyperedge_id]};
+            return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
         else
             return hyperedge_type{hyperedge_id};
     }
@@ -280,7 +280,7 @@ public:
 
         if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
             const auto old_size = this->_hyperedge_properties.size();
-            this->_hyperedge_properties.reserve(this->_n_vertices);
+            this->_hyperedge_properties.reserve(this->_n_hyperedges);
             for (types::size_type i = old_size; i < this->_n_hyperedges; ++i)
                 this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
                 );

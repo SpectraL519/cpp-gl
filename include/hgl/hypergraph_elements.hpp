@@ -85,7 +85,7 @@ public:
 
     [[nodiscard]] properties_ref_type properties() const {
         if (not this->is_valid())
-            throw std::logic_error("Cannot access properties of an invalid edge");
+            throw std::logic_error("Cannot access properties of an invalid hyperedge");
 
         return this->_properties.get();
     }
