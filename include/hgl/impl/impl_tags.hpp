@@ -10,7 +10,7 @@ namespace hgl {
 
 namespace impl {
 
-struct edge_list_t {};
+struct hyperedge_list_t {};
 
 struct adjacency_list_t {};
 
@@ -22,7 +22,7 @@ namespace type_traits {
 
 template <typename T>
 concept c_hypergraph_impl_tag =
-    c_one_of<T, impl::edge_list_t, impl::adjacency_list_t, impl::incidence_matrix_t>;
+    c_one_of<T, impl::hyperedge_list_t, impl::adjacency_list_t, impl::incidence_matrix_t>;
 
 } // namespace type_traits
 

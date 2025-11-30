@@ -19,16 +19,10 @@ using vertex_descriptor = gl::vertex_descriptor<Properties>;
 
 // hyperedge descriptor
 
-// TODO: validate whether a hyperedge descriptor requires a directional-tag
-//       or if it could be replaced with a hypergraph directional-tag
-
-template <
-    type_traits::c_hyperedge_directional_tag DirectionalTag = undirected_t,
-    type_traits::c_properties Properties = types::empty_properties>
+template <type_traits::c_properties Properties = types::empty_properties>
 class hyperedge_descriptor final {
 public:
-    using type = hyperedge_descriptor<DirectionalTag, Properties>;
-    using directional_tag = DirectionalTag;
+    using type = hyperedge_descriptor<Properties>;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         type_traits::c_empty_properties<properties_type>,
@@ -78,14 +72,6 @@ public:
         return this->is_valid();
     }
 
-    [[nodiscard]] constexpr bool is_undirected() const noexcept {
-        return type_traits::c_undirected_hyperedge<type>;
-    }
-
-    [[nodiscard]] constexpr bool is_bf_directed() const noexcept {
-        return type_traits::c_bf_directed_hyperedge<type>;
-    }
-
     [[nodiscard]] gl_attr_force_inline bool is_valid() const noexcept {
         return this->_id != constants::invalid_id;
     }
@@ -110,14 +96,8 @@ private:
 };
 
 template <
-    type_traits::c_hyperedge_directional_tag DirectionalTag = undirected_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties Properties = types::empty_properties>
 using hyperedge = hyperedge_descriptor<DirectionalTag, Properties>;
-
-template <type_traits::c_properties Properties = types::empty_properties>
-using undirected_hyperedge = hyperedge_descriptor<undirected_t, Properties>;
-
-template <type_traits::c_properties Properties = types::empty_properties>
-using bf_directed_hyperedge = hyperedge_descriptor<bf_directed_t, Properties>;
 
 } // namespace hgl

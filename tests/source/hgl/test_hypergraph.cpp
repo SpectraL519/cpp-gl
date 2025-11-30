@@ -41,14 +41,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     // --- general tests ---
 
-    SUBCASE("a hypergraph should be initialized with no vertices and no edges by default") {
+    SUBCASE("a hypergraph should be initialized with no vertices and no hyperedges by default") {
         sut_type sut{};
         CHECK_EQ(sut.n_vertices(), 0uz);
         CHECK_EQ(sut.n_hyperedges(), 0uz);
     }
 
     SUBCASE("a hypergraph constructed with n_vertices parameter should contain n_vertices vertices "
-            "and no edges") {
+            "and no hyperedges") {
         sut_type sut{constants::n_vertices};
 
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
@@ -61,19 +61,37 @@ TEST_CASE_TEMPLATE_DEFINE(
             static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
         );
 
-        // TODO: check no edges
+        // TODO: check no hyperedges
+    }
+
+    SUBCASE("a hypergraph constructed with n_vertices and n_hyperedges parameters should contain "
+            "n_vertices vertices and n_hyperedges hyperedges") {
+        sut_type sut{constants::n_vertices};
+
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
+        REQUIRE_EQ(sut.n_hyperedges(), 0uz);
+
+        REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
+        REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
+
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
+        );
+
+        // TODO: check no hyperedges
     }
 
     // --- vertex method tests ---
 
-    SUBCASE("add_vertex should return a vertex_descriptor with an incremented id and no edges") {
+    SUBCASE("add_vertex should return a vertex_descriptor with an incremented id and no hyperedges"
+    ) {
         sut_type sut;
 
         for (gl::types::id_type v_id = 0uz; v_id < constants::n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
             CHECK_EQ(sut.n_vertices(), v_id + 1uz);
-            // TODO: check no edges
+            // TODO: check no hyperedges
         }
 
         CHECK_EQ(sut.n_vertices(), constants::n_vertices);
@@ -89,7 +107,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK_EQ(vertex.id(), constants::id1);
         CHECK_EQ(vertex.properties(), constants::p_true);
-        // TODO: check no edges
+        // TODO: check no hyperedges
     }
 
     SUBCASE("add_vertices(n) should add n new vertices to the hypergraph") {
@@ -164,7 +182,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
             "vertices") {
-        // TODO: verify edges alignment
+        // TODO: verify hyperedges alignment
 
         sut_type sut{constants::n_vertices};
         sut.remove_vertex(constants::id1);
@@ -186,7 +204,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
     ) {
-        // TODO: verify edges alignment
+        // TODO: verify hyperedges alignment
 
         sut_type sut{constants::n_vertices};
         sut.remove_vertex(constants::id1);
@@ -202,7 +220,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
             "duplicate indices)") {
-        // TODO: verify edges alignment
+        // TODO: verify hyperedges alignment
 
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
@@ -217,7 +235,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vetices_from(vertices) should properly remove elements at given indices "
             "(ignoring duplicate vertex references)") {
-        // TODO: verify edges alignment
+        // TODO: verify hyperedges alignment
 
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
@@ -233,8 +251,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_traits_template,
-    hgl::edge_list_hg_traits<hgl::undirected_t>, // undirected edge list
-    hgl::edge_list_hg_traits<hgl::bf_directed_t>, // bf-directed edge list
+    hgl::hyperedge_list_hg_traits<hgl::undirected_t>, // undirected edge list
+    hgl::hyperedge_list_hg_traits<hgl::bf_directed_t>, // bf-directed edge list
     hgl::adjacency_list_hg_traits<hgl::undirected_t>, // undirected adjacency list
     hgl::adjacency_list_hg_traits<hgl::bf_directed_t>, // bf-directed adjacency list
     hgl::incidence_matrix_hg_traits<hgl::undirected_t>, // undirected incidence matrix
@@ -280,11 +298,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     property_hypergraph_traits_template,
-    hgl::edge_list_hg_traits<
+    hgl::hyperedge_list_hg_traits<
         hgl::undirected_t,
         hgl::types::name_property,
         hgl::types::name_property>, // undirected edge list
-    hgl::edge_list_hg_traits<
+    hgl::hyperedge_list_hg_traits<
         hgl::bf_directed_t,
         hgl::types::name_property,
         hgl::types::name_property>, // bf-directed edge list
