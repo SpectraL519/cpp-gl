@@ -4,25 +4,22 @@
 
 #pragma once
 
-#include "hgl/types/type_traits.hpp"
+#include "types/type_traits.hpp"
 
 namespace hgl {
 
-namespace impl {
+struct undirected_t {
+    using type = std::type_identity_t<undirected_t>;
+};
 
-struct hyperedge_list_t {};
-
-struct adjacency_list_t {};
-
-struct incidence_matrix_t {};
-
-} // namespace impl
+struct bf_directed_t {
+    using type = std::type_identity_t<bf_directed_t>;
+};
 
 namespace type_traits {
 
 template <typename T>
-concept c_hypergraph_impl_tag =
-    c_one_of<T, impl::hyperedge_list_t, impl::adjacency_list_t, impl::incidence_matrix_t>;
+concept c_hypergraph_directional_tag = c_one_of<T, undirected_t, bf_directed_t>;
 
 } // namespace type_traits
 

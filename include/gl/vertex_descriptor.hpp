@@ -58,11 +58,14 @@ public:
 
     ~vertex_descriptor() = default;
 
-    gl_attr_force_inline bool operator==(const vertex_descriptor& other) const {
+    [[nodiscard]] gl_attr_force_inline bool operator==(const vertex_descriptor& other
+    ) const noexcept {
         return this->_id == other._id;
     }
 
-    gl_attr_force_inline std::strong_ordering operator<=>(const vertex_descriptor& other) const {
+    [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
+        const vertex_descriptor& other
+    ) const noexcept {
         return this->_id <=> other._id;
     }
 

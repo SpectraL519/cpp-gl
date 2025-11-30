@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstddef>
-
 namespace gl_testing::types {
 
 struct visited_property {
