@@ -69,6 +69,12 @@ public:
         return this->is_valid();
     }
 
+    [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
+        const hyperedge_descriptor& other
+    ) const noexcept {
+        return this->_id <=> other._id;
+    }
+
     [[nodiscard]] gl_attr_force_inline bool is_valid() const noexcept {
         return this->_id != constants::invalid_id;
     }

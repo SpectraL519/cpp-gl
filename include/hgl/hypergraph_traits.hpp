@@ -16,14 +16,14 @@ template <
     type_traits::c_properties HyperedgeProperties = types::empty_properties,
     type_traits::c_hypergraph_impl_tag ImplTag = impl::hyperedge_list_t>
 struct hypergraph_traits {
+    using directional_tag = DirectionalTag;
+    using implementation_tag = ImplTag;
+
     using vertex_type = vertex_descriptor<VertexProperties>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
     using hyperedge_type = hyperedge_descriptor<HyperedgeProperties>;
     using hyperedge_properties_type = typename hyperedge_type::properties_type;
-
-    using directional_tag = DirectionalTag;
-    using implementation_tag = ImplTag;
 };
 
 template <
