@@ -102,7 +102,7 @@ int main() {
 
     // print the size of the graph
     std::cout << std::format("number of vertices: {}\n", graph.n_vertices())
-              << std::format("number of edges: {}\n", graph.n_unique_edges());
+              << std::format("number of edges: {}\n", graph.n_edges());
 }
 ```
 

@@ -128,8 +128,8 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
   - *Return type*: `types::size_type`
 
-- **`graph.n_unique_edges() const noexcept`**:
-  - Returns the number of unique edges in the graph.
+- **`graph.n_edges() const noexcept`**:
+  - Returns the number of edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
 
@@ -172,7 +172,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Description*: Adds a new vertex to the graph with default properties and returns a descriptor object of the added vertex.
   - *Return type*: `const vertex_type`
 
-- **`graph.add_vertex(properties)`**:
+- **`graph.add_vertex_with(properties)`**:
   - *Description*: Adds a new vertex with specified properties and returns a descriptor object of the newly added vertex.
   - *Parameters*:
     - `properties: const vertex_properties_type&` – Properties to assign to the new vertex.
@@ -336,7 +336,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - `target_id: types::id_type` – the ID of the target vertex.
   - *Return type*: `edge_type`
 
-- **`graph.add_edge(source_id, target_id, properties)`**:
+- **`graph.add_edge_with(source_id, target_id, properties)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
@@ -352,7 +352,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - `target: const vertex_type&` – the target vertex.
   - *Return type*: `const edge_type`
 
-- **`graph.add_edge(source, target, properties)`**:
+- **`graph.add_edge_with(source, target, properties)`**:
   - *Description*: Adds a new edge between the specified vertices and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
