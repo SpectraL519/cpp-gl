@@ -371,8 +371,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_traits_template,
     hgl::hyperedge_list_hg_traits<hgl::undirected_t>, // undirected edge list
     hgl::hyperedge_list_hg_traits<hgl::bf_directed_t>, // bf-directed edge list
-    hgl::adjacency_list_hg_traits<hgl::undirected_t>, // undirected adjacency list
-    hgl::adjacency_list_hg_traits<hgl::bf_directed_t>, // bf-directed adjacency list
+    hgl::vertex_list_hg_traits<hgl::undirected_t>, // undirected adjacency list
+    hgl::vertex_list_hg_traits<hgl::bf_directed_t>, // bf-directed adjacency list
     hgl::incidence_matrix_hg_traits<hgl::undirected_t>, // undirected incidence matrix
     hgl::incidence_matrix_hg_traits<hgl::bf_directed_t> // bf-directed incidence matrix
 );
@@ -422,11 +422,11 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::bf_directed_t,
         hgl::types::name_property,
         hgl::types::name_property>, // bf-directed hyperedge list
-    hgl::adjacency_list_hg_traits<
+    hgl::vertex_list_hg_traits<
         hgl::undirected_t,
         hgl::types::name_property,
         hgl::types::name_property>, // undirected adjacency list
-    hgl::adjacency_list_hg_traits<
+    hgl::vertex_list_hg_traits<
         hgl::bf_directed_t,
         hgl::types::name_property,
         hgl::types::name_property>, // bf-directed adjacency list

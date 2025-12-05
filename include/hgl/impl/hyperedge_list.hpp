@@ -7,6 +7,7 @@
 #include "hgl/types/types.hpp"
 
 #include <algorithm>
+#include <ranges>
 #include <vector>
 
 #ifdef HGL_TESTING
@@ -45,11 +46,36 @@ public:
 
     // --- vertex methods ---
 
-    gl_attr_force_inline void add_vertices(const types::size_type) const noexcept {}
+    // clang-format off
+
+    gl_attr_force_inline void add_vertices([[maybe_unused]] const types::size_type) const noexcept {}
+
+    // clang-format on
 
     void remove_vertex(const types::id_type vertex_id) noexcept {
-        for (auto& hyperedge_vertices : this->_storage)
-            this->_unbind_impl(hyperedge_vertices, vertex_id);
+        for (auto& hyperedge : this->_storage) {
+            auto vertex_it = std::ranges::lower_bound(hyperedge, vertex_id);
+            if (vertex_it != hyperedge.end() and *vertex_it == vertex_id)
+                vertex_it = hyperedge.erase(vertex_it); // unbind the vertex
+            while (vertex_it != hyperedge.end())
+                --(*vertex_it++); // decrement ids > vertex_id
+        }
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    ) const noexcept {
+        return std::views::iota(0uz, this->_storage.size())
+             | std::views::filter([this, vertex_id](types::id_type hid) {
+                   return this->_are_bound_impl(this->_storage[hid], vertex_id);
+               });
+    }
+
+    [[nodiscard]] types::size_type degree(const types::id_type vertex_id) const noexcept {
+        types::size_type deg = 0uz;
+        for (const auto& hyperedge : this->_storage)
+            if (this->_are_bound_impl(hyperedge, vertex_id))
+                ++deg;
+        return deg;
     }
 
     // --- hyperedge methods ---
@@ -62,39 +88,41 @@ public:
         this->_storage.erase(this->_storage.begin() + hyperedge_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    ) const noexcept {
+        return std::views::all(this->_storage[hyperedge_id]);
+    }
+
     [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
         const types::id_type hyperedge_id
     ) const noexcept {
         return this->_storage[hyperedge_id].size();
     }
 
-    [[nodiscard]] gl_attr_force_inline auto hyperedge_vertices(const types::id_type hyperedge_id
-    ) const noexcept {
-        return std::views::all(this->_storage[hyperedge_id]);
-    }
-
     // --- binding methods ---
 
-    void bind(const types::id_type hyperedge_id, const types::id_type vertex_id) noexcept {
-        auto& hyperedge_vertices = this->_storage[hyperedge_id];
+    void bind(const types::id_type vertex_id, const types::id_type hyperedge_id) noexcept {
+        auto& hyperedge = this->_storage[hyperedge_id];
 
         // insert the id at the correct position to keep the vertex-id collection sorted
-        const auto it = std::ranges::lower_bound(hyperedge_vertices, vertex_id);
-        if (it == hyperedge_vertices.end() or *it != vertex_id)
-            hyperedge_vertices.insert(it, vertex_id);
+        const auto it = std::ranges::lower_bound(hyperedge, vertex_id);
+        if (it == hyperedge.end() or *it != vertex_id)
+            hyperedge.insert(it, vertex_id);
     }
 
     gl_attr_force_inline void unbind(
-        const types::id_type hyperedge_id, const types::id_type vertex_id
+        const types::id_type vertex_id, const types::id_type hyperedge_id
     ) noexcept {
-        this->_unbind_impl(this->_storage[hyperedge_id], vertex_id);
+        auto& hyperedge = this->_storage[hyperedge_id];
+        const auto vertex_it = std::ranges::lower_bound(hyperedge, vertex_id);
+        if (vertex_it != hyperedge.end() and *vertex_it == vertex_id)
+            hyperedge.erase(vertex_it);
     }
 
-    [[nodiscard]] bool are_bound(const types::id_type hyperedge_id, const types::id_type vertex_id)
-        const noexcept {
-        auto& hyperedge_vertices = this->_storage[hyperedge_id];
-        const auto vertex_it = std::ranges::lower_bound(hyperedge_vertices, vertex_id);
-        return vertex_it != hyperedge_vertices.end() and *vertex_it == vertex_id;
+    [[nodiscard]] gl_attr_force_inline bool are_bound(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) const noexcept {
+        return this->_are_bound_impl(this->_storage[hyperedge_id], vertex_id);
     }
 
 #ifdef HGL_TESTING
@@ -102,12 +130,11 @@ public:
 #endif
 
 private:
-    void _unbind_impl(
-        hyperedge_storage_type& hyperedge_vertices, const types::id_type vertex_id
-    ) noexcept {
-        const auto vertex_it = std::ranges::lower_bound(hyperedge_vertices, vertex_id);
-        if (vertex_it != hyperedge_vertices.end() and *vertex_it == vertex_id)
-            hyperedge_vertices.erase(vertex_it);
+    [[nodiscard]] bool _are_bound_impl(
+        const hyperedge_storage_type& hyperedge, const types::id_type vertex_id
+    ) const noexcept {
+        const auto vertex_it = std::ranges::lower_bound(hyperedge, vertex_id);
+        return vertex_it != hyperedge.end() and *vertex_it == vertex_id;
     }
 
     hypergraph_storage_type _storage;
