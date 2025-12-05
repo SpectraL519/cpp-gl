@@ -37,8 +37,8 @@ template <
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using adjacency_list_hg_traits =
-    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::adjacency_list_t>;
+using vertex_list_hg_traits =
+    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::vertex_list_t>;
 
 template <
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
@@ -69,9 +69,9 @@ concept c_hyperedge_list_hg_traits =
     and std::same_as<typename TraitsType::implementation_tag, impl::hyperedge_list_t>;
 
 template <typename TraitsType>
-concept c_adjacency_list_hg_traits =
+concept c_vertex_list_hg_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::implementation_tag, impl::adjacency_list_t>;
+    and std::same_as<typename TraitsType::implementation_tag, impl::vertex_list_t>;
 
 template <typename TraitsType>
 concept c_incidence_matrix_hg_traits =

@@ -368,6 +368,7 @@ private:
         this->_n_vertices--;
         if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
             this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
+        // TODO: impl::remove_vertex(vertex_id)
     }
 
     // --- hyperedge methods ---
