@@ -9,6 +9,12 @@
 #include <algorithm>
 #include <vector>
 
+#ifdef HGL_TESTING
+namespace hgl_testing {
+struct test_hyperedge_list;
+} // namespace hgl_testing
+#endif
+
 namespace hgl::impl {
 
 // *** BENCHMARKS ***
@@ -90,6 +96,10 @@ public:
         const auto vertex_it = std::ranges::lower_bound(hyperedge_vertices, vertex_id);
         return vertex_it != hyperedge_vertices.end() and *vertex_it == vertex_id;
     }
+
+#ifdef HGL_TESTING
+    friend struct hgl_testing::test_hyperedge_list;
+#endif
 
 private:
     void _unbind_impl(
