@@ -5,24 +5,35 @@
 #pragma once
 
 #include "hgl/types/type_traits.hpp"
+#include "hgl/types/types.hpp"
+#include "layout_tags.hpp"
 
 namespace hgl {
 
 namespace impl {
 
-struct hyperedge_list_t {};
+template <type_traits::c_hypergraph_layout_tag LayoutTag>
+struct list_t {
+    using layout_tag = LayoutTag;
+};
 
-struct vertex_list_t {};
-
-struct incidence_matrix_t {};
+template <type_traits::c_hypergraph_layout_tag LayoutTag>
+struct matrix_t {
+    using layout_tag = LayoutTag;
+};
 
 } // namespace impl
 
 namespace type_traits {
 
 template <typename T>
-concept c_hypergraph_impl_tag =
-    c_one_of<T, impl::hyperedge_list_t, impl::vertex_list_t, impl::incidence_matrix_t>;
+concept c_hypergraph_list_impl = c_instantiation_of<T, impl::list_t>;
+
+template <typename T>
+concept c_hypergraph_matrix_impl = c_instantiation_of<T, impl::matrix_t>;
+
+template <typename T>
+concept c_hypergraph_impl_tag = c_hypergraph_list_impl<T> or c_hypergraph_matrix_impl<T>;
 
 } // namespace type_traits
 
