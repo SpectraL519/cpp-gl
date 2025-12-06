@@ -369,12 +369,30 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_traits_template,
-    hgl::hyperedge_list_hg_traits<hgl::undirected_t>, // undirected edge list
-    hgl::hyperedge_list_hg_traits<hgl::bf_directed_t>, // bf-directed edge list
-    hgl::vertex_list_hg_traits<hgl::undirected_t>, // undirected adjacency list
-    hgl::vertex_list_hg_traits<hgl::bf_directed_t>, // bf-directed adjacency list
-    hgl::incidence_matrix_hg_traits<hgl::undirected_t>, // undirected incidence matrix
-    hgl::incidence_matrix_hg_traits<hgl::bf_directed_t> // bf-directed incidence matrix
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::undirected_t>, // undirected hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t>, // undirected vertex-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t>, // bf-directed vertex-major incidence list
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::undirected_t>, // undirected hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t>, // undirected vertex-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -414,30 +432,46 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     property_hypergraph_traits_template,
-    hgl::hyperedge_list_hg_traits<
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // undirected hyperedge list
-    hgl::hyperedge_list_hg_traits<
+        hgl::types::name_property>, // undirected hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge list
-    hgl::vertex_list_hg_traits<
+        hgl::types::name_property>, // bf-directed hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // undirected adjacency list
-    hgl::vertex_list_hg_traits<
+        hgl::types::name_property>, // undirected vertex-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
         hgl::bf_directed_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed adjacency list
-    hgl::incidence_matrix_hg_traits<
+        hgl::types::name_property>, // bf-directed vertex-major incidence list
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // undirected incidence matrix
-    hgl::incidence_matrix_hg_traits<
+        hgl::types::name_property>, // undirected hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
         hgl::types::name_property,
-        hgl::types::name_property> // bf-directed incidence matrix
+        hgl::types::name_property>, // bf-directed hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected vertex-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property> // bf-directed vertex-major incidence matrix
 );
 
 TEST_SUITE_END(); // test_hypergraph
