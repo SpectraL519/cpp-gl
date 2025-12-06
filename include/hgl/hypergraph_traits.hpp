@@ -7,6 +7,7 @@
 #include "directional_tags.hpp"
 #include "hypergraph_elements.hpp"
 #include "impl/impl_tags.hpp"
+#include "impl/layout_tags.hpp"
 
 namespace hgl {
 
@@ -14,7 +15,7 @@ template <
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties,
-    type_traits::c_hypergraph_impl_tag ImplTag = impl::hyperedge_list_t>
+    type_traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>>
 struct hypergraph_traits {
     using directional_tag = DirectionalTag;
     using implementation_tag = ImplTag;
@@ -27,64 +28,57 @@ struct hypergraph_traits {
 };
 
 template <
+    type_traits::c_hypergraph_layout_tag LayoutTag = impl::hyperedge_major_t,
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using hyperedge_list_hg_traits =
-    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::hyperedge_list_t>;
+using list_hypergraph_traits =
+    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::list_t<LayoutTag>>;
 
 template <
+    type_traits::c_hypergraph_layout_tag LayoutTag = impl::hyperedge_major_t,
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using vertex_list_hg_traits =
-    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::vertex_list_t>;
-
-template <
-    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
-    type_traits::c_properties VertexProperties = types::empty_properties,
-    type_traits::c_properties HyperedgeProperties = types::empty_properties>
-using incidence_matrix_hg_traits =
-    hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::incidence_matrix_t>;
+using matrix_hypergraph_traits = hypergraph_traits<
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    impl::matrix_t<LayoutTag>>;
 
 template <
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties,
-    type_traits::c_hypergraph_impl_tag ImplTag = impl::hyperedge_list_t>
-using undirected_hg_traits =
+    type_traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>>
+using undirected_hypergraph_traits =
     hypergraph_traits<undirected_t, VertexProperties, HyperedgeProperties, ImplTag>;
 
 template <
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties HyperedgeProperties = types::empty_properties,
-    type_traits::c_hypergraph_impl_tag ImplTag = impl::hyperedge_list_t>
-using bf_directed_hg_traits =
+    type_traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>>
+using bf_directed_hypergraph_traits =
     hypergraph_traits<bf_directed_t, VertexProperties, HyperedgeProperties, ImplTag>;
 
 namespace type_traits {
 
 template <typename TraitsType>
-concept c_hyperedge_list_hg_traits =
+concept c_list_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::implementation_tag, impl::hyperedge_list_t>;
+    and c_hypergraph_list_impl<typename TraitsType::implementation_tag>;
 
 template <typename TraitsType>
-concept c_vertex_list_hg_traits =
+concept c_matrix_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::implementation_tag, impl::vertex_list_t>;
+    and c_hypergraph_matrix_impl<typename TraitsType::implementation_tag>;
 
 template <typename TraitsType>
-concept c_incidence_matrix_hg_traits =
-    c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::implementation_tag, impl::incidence_matrix_t>;
-
-template <typename TraitsType>
-concept c_undirected_hg_traits =
+concept c_undirected_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
     and std::same_as<typename TraitsType::hyperedge_directional_tag, undirected_t>;
 
 template <typename TraitsType>
-concept c_bf_directed_hg_traits =
+concept c_bf_directed_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
     and std::same_as<typename TraitsType::hyperedge_directional_tag, bf_directed_t>;
 
