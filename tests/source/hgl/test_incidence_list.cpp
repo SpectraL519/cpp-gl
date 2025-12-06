@@ -315,7 +315,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_undirected_hyperedge_major_incidence_list,
-    "bind should add the vertex to the given hyperedge's storage only if the they are not bound"
+    "bind should add the vertex to the given hyperedge's storage only if they are not bound"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
@@ -335,7 +335,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_undirected_hyperedge_major_incidence_list,
-    "unbind should remove the vertex from the given hyperedge's storage only if the they are bound"
+    "unbind should remove the vertex from the given hyperedge's storage only if they are bound"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
