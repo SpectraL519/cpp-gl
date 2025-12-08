@@ -4,8 +4,9 @@
 
 #pragma once
 
+#include "hgl/directional_tags.hpp"
+#include "hgl/impl/layout_tags.hpp"
 #include "hgl/types/types.hpp"
-#include "layout_tags.hpp"
 
 #include <algorithm>
 #include <ranges>
@@ -19,28 +20,31 @@ struct test_incidence_matrix;
 
 namespace hgl::impl {
 
+template <
+    type_traits::c_hypergraph_directional_tag DirectionalTag,
+    type_traits::c_hypergraph_layout_tag LayoutTag>
+class incidence_matrix;
+
 template <type_traits::c_hypergraph_layout_tag LayoutTag>
-class undirected_incidence_matrix final {
+class incidence_matrix<hgl::undirected_t, LayoutTag> final {
 public:
     using layout_tag = LayoutTag;
 
-    undirected_incidence_matrix(const undirected_incidence_matrix&) = delete;
-    undirected_incidence_matrix& operator=(const undirected_incidence_matrix&) = delete;
+    incidence_matrix(const incidence_matrix&) = delete;
+    incidence_matrix& operator=(const incidence_matrix&) = delete;
 
-    undirected_incidence_matrix() = default;
+    incidence_matrix() = default;
 
-    undirected_incidence_matrix(
-        const types::size_type n_vertices, const types::size_type n_hyperedges
-    )
+    incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _matrix_row_size{layout_tag::minor(n_vertices, n_hyperedges)},
       _matrix(
           layout_tag::major(n_vertices, n_hyperedges), matrix_row_type(_matrix_row_size, false)
       ) {}
 
-    undirected_incidence_matrix(undirected_incidence_matrix&&) = default;
-    undirected_incidence_matrix& operator=(undirected_incidence_matrix&&) = default;
+    incidence_matrix(incidence_matrix&&) = default;
+    incidence_matrix& operator=(incidence_matrix&&) = default;
 
-    ~undirected_incidence_matrix() = default;
+    ~incidence_matrix() = default;
 
     // --- vertex methods ---
 

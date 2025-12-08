@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "hgl/directional_tags.hpp"
+#include "hgl/impl/layout_tags.hpp"
 #include "hgl/types/type_traits.hpp"
 #include "hgl/types/types.hpp"
-#include "layout_tags.hpp"
 
 namespace hgl {
 

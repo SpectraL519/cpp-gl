@@ -4,8 +4,9 @@
 
 #pragma once
 
+#include "hgl/directional_tags.hpp"
+#include "hgl/impl/layout_tags.hpp"
 #include "hgl/types/types.hpp"
-#include "layout_tags.hpp"
 
 #include <algorithm>
 #include <ranges>
@@ -19,23 +20,28 @@ struct test_incidence_list;
 
 namespace hgl::impl {
 
+template <
+    type_traits::c_hypergraph_directional_tag DirectionalTag,
+    type_traits::c_hypergraph_layout_tag LayoutTag>
+class incidence_list;
+
 template <type_traits::c_hypergraph_layout_tag LayoutTag>
-class undirected_incidence_list final {
+class incidence_list<hgl::undirected_t, LayoutTag> final {
 public:
     using layout_tag = LayoutTag;
 
-    undirected_incidence_list(const undirected_incidence_list&) = delete;
-    undirected_incidence_list& operator=(const undirected_incidence_list&) = delete;
+    incidence_list(const incidence_list&) = delete;
+    incidence_list& operator=(const incidence_list&) = delete;
 
-    undirected_incidence_list() = default;
+    incidence_list() = default;
 
-    undirected_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
+    incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _major_storage{layout_tag::major(n_vertices, n_hyperedges)} {}
 
-    undirected_incidence_list(undirected_incidence_list&&) = default;
-    undirected_incidence_list& operator=(undirected_incidence_list&&) = default;
+    incidence_list(incidence_list&&) = default;
+    incidence_list& operator=(incidence_list&&) = default;
 
-    ~undirected_incidence_list() = default;
+    ~incidence_list() = default;
 
     // --- vertex methods ---
 

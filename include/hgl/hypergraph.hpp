@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "constants.hpp"
-#include "hypergraph_traits.hpp"
-#include "util.hpp"
+#include "hgl/constants.hpp"
+#include "hgl/hypergraph_traits.hpp"
+#include "hgl/util.hpp"
 
 #include <memory>
 #include <set>
