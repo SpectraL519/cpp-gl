@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "directional_tags.hpp"
-#include "hypergraph_elements.hpp"
-#include "impl/impl_tags.hpp"
-#include "impl/layout_tags.hpp"
+#include "hgl/directional_tags.hpp"
+#include "hgl/hypergraph_elements.hpp"
+#include "hgl/impl/impl_tags.hpp"
+#include "hgl/impl/layout_tags.hpp"
 
 namespace hgl {
 

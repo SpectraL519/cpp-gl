@@ -19,7 +19,7 @@ struct test_incidence_matrix {
 };
 
 struct test_undirected_vertex_major_incidence_matrix : public test_incidence_matrix {
-    using sut_type = hgl::impl::undirected_incidence_matrix<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::incidence_matrix<hgl::undirected_t, hgl::impl::vertex_major_t>;
 };
 
 TEST_CASE_FIXTURE(
@@ -296,7 +296,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_hyperedge_major_incidence_matrix : public test_incidence_matrix {
-    using sut_type = hgl::impl::undirected_incidence_matrix<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::incidence_matrix<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
 };
 
 TEST_CASE_FIXTURE(

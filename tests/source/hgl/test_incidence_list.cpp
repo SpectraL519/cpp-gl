@@ -18,7 +18,7 @@ struct test_incidence_list {
 };
 
 struct test_undirected_vertex_major_incidence_list : public test_incidence_list {
-    using sut_type = hgl::impl::undirected_incidence_list<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::incidence_list<hgl::undirected_t, hgl::impl::vertex_major_t>;
 };
 
 TEST_CASE_FIXTURE(
@@ -250,7 +250,7 @@ TEST_CASE_FIXTURE(test_undirected_vertex_major_incidence_list, "add_hyperedges s
 }
 
 struct test_undirected_hyperedge_major_incidence_list : public test_incidence_list {
-    using sut_type = hgl::impl::undirected_incidence_list<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
 };
 
 TEST_CASE_FIXTURE(
