@@ -21,7 +21,8 @@ public:
     using traits_type = HypergraphTraits;
     using directional_tag = typename traits_type::directional_tag;
     using implementation_tag = typename traits_type::implementation_tag;
-    using implementation_type = typename implementation_tag::implementation_type<directional_tag>;
+    using implementation_type =
+        typename implementation_tag::template implementation_type<directional_tag>;
 
     using vertex_type = typename traits_type::vertex_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
