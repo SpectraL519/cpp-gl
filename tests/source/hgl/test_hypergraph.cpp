@@ -376,6 +376,66 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     // --- incidence method tests ---
 
+    SUBCASE("bind, unbind and are_incident should throw if either of the fiven elements is invalid"
+    ) {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+        CHECK_THROWS_AS(
+            sut.bind(constants::out_of_rng_vid, constants::out_of_rng_eid), std::out_of_range
+        );
+        CHECK_THROWS_AS(sut.bind(constants::id1, constants::out_of_rng_eid), std::out_of_range);
+        CHECK_THROWS_AS(sut.bind(constants::out_of_rng_vid, constants::id1), std::out_of_range);
+
+        CHECK_THROWS_AS(
+            sut.unbind(constants::out_of_rng_vid, constants::out_of_rng_eid), std::out_of_range
+        );
+        CHECK_THROWS_AS(sut.unbind(constants::id1, constants::out_of_rng_eid), std::out_of_range);
+        CHECK_THROWS_AS(sut.unbind(constants::out_of_rng_vid, constants::id1), std::out_of_range);
+
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::out_of_rng_eid)
+            ),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::id1, constants::out_of_rng_eid)),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::id1)),
+            std::out_of_range
+        );
+    }
+
+    SUBCASE("are_incident should return false by default") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        for (const auto vertex : sut.vertices())
+            for (const auto hyperedge : sut.hyperedges())
+                CHECK_FALSE(sut.are_incident(vertex, hyperedge));
+    }
+
+    SUBCASE("bind should properly mark the given vertex and hyperedge as incident and unbind "
+            "should mark them as not incident") {
+        constexpr auto vertex_id = constants::id1;
+        constexpr auto hyperedge_id = constants::id2;
+        constexpr auto unbound_id = constants::id3;
+
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        REQUIRE_FALSE(sut.are_incident(vertex_id, hyperedge_id));
+        REQUIRE_FALSE(sut.are_incident(vertex_id, unbound_id));
+        REQUIRE_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+
+        sut.bind(vertex_id, hyperedge_id);
+        CHECK(sut.are_incident(vertex_id, hyperedge_id));
+        CHECK_FALSE(sut.are_incident(vertex_id, unbound_id));
+        CHECK_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+
+        sut.unbind(vertex_id, hyperedge_id);
+        CHECK_FALSE(sut.are_incident(vertex_id, hyperedge_id));
+        CHECK_FALSE(sut.are_incident(vertex_id, unbound_id));
+        CHECK_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+    }
+
     SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(

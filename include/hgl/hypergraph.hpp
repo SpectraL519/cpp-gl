@@ -351,6 +351,20 @@ public:
         this->unbind(vertex.id(), hyperedge.id());
     }
 
+    [[nodiscard]] bool are_incident(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) const {
+        this->_verify_vertex_id(vertex_id);
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.are_bound(vertex_id, hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool are_incident(
+        const vertex_type& vertex, const hyperedge_type& hyperedge
+    ) const {
+        return this->are_incident(vertex.id(), hyperedge.id());
+    }
+
     [[nodiscard]] auto incident_hyperedges(const types::id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.incident_hyperedges(vertex_id)
