@@ -93,7 +93,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
             CHECK_EQ(sut.n_vertices(), v_id + 1uz);
-            // TODO: check no hyperedges
+            CHECK_EQ(sut.degree(v_id), 0uz);
         }
 
         CHECK_EQ(sut.n_vertices(), constants::n_vertices);
@@ -109,7 +109,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK_EQ(vertex.id(), constants::id1);
         CHECK_EQ(vertex.properties(), constants::p_true);
-        // TODO: check no hyperedges
+        CHECK_EQ(sut.degree(vertex), 0uz);
     }
 
     SUBCASE("add_vertices(n) should add n new vertices to the hypergraph") {
@@ -164,11 +164,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
     }
 
-    SUBCASE("remove_vertex(vertex) should throw if the given vertex is invalid") {
+    SUBCASE("remove_vertex(vertex) should do nothing if the given vertex is invalid") {
         sut_type sut{constants::n_vertices};
-        CHECK_THROWS_AS(
-            sut.remove_vertex(vertex_type{constants::out_of_rng_vid}), std::out_of_range
-        );
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
+
+        CHECK_NOTHROW(sut.remove_vertex(vertex_type{constants::out_of_rng_vid}));
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
     }
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
@@ -182,9 +183,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("remove_vertex(id) should throw if the given id is invalid") {
+    SUBCASE("remove_vertex(id) should do nothing if the given id is invalid") {
         sut_type sut{constants::n_vertices};
-        CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_rng_vid), std::out_of_range);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
+
+        CHECK_NOTHROW(sut.remove_vertex(constants::out_of_rng_vid));
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
     }
 
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
@@ -306,11 +310,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.get_hyperedge(added_hyperedge.id()), added_hyperedge);
     }
 
-    SUBCASE("remove_hyperedge(hyperedge) should throw if the given hyperedge is invalid") {
+    SUBCASE("remove_hyperedge(hyperedge) should do nothing if the given hyperedge is invalid") {
         sut_type sut{0uz, constants::n_hyperedges};
-        CHECK_THROWS_AS(
-            sut.remove_hyperedge(hyperedge_type{constants::out_of_rng_eid}), std::out_of_range
-        );
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
+
+        CHECK_NOTHROW(sut.remove_hyperedge(hyperedge_type{constants::out_of_rng_eid}));
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("remove_hyperedge(hyperedge) should remove the given hyperedge and align ids of "
@@ -324,9 +329,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("remove_hyperedge(id) should throw if the given id is invalid") {
+    SUBCASE("remove_hyperedge(id) should do nothing if the given id is invalid") {
         sut_type sut{0uz, constants::n_hyperedges};
-        CHECK_THROWS_AS(sut.remove_hyperedge(constants::out_of_rng_eid), std::out_of_range);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
+
+        CHECK_NOTHROW(sut.remove_hyperedge(constants::out_of_rng_eid));
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("remove_hyperedge(id) should remove the given hyperedge and align ids of remaining "
@@ -365,6 +373,178 @@ TEST_CASE_TEMPLATE_DEFINE(
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
     }
+
+    // --- incidence method tests ---
+
+    SUBCASE("bind, unbind and are_incident should throw if either of the fiven elements is invalid"
+    ) {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+        CHECK_THROWS_AS(
+            sut.bind(constants::out_of_rng_vid, constants::out_of_rng_eid), std::out_of_range
+        );
+        CHECK_THROWS_AS(sut.bind(constants::id1, constants::out_of_rng_eid), std::out_of_range);
+        CHECK_THROWS_AS(sut.bind(constants::out_of_rng_vid, constants::id1), std::out_of_range);
+
+        CHECK_THROWS_AS(
+            sut.unbind(constants::out_of_rng_vid, constants::out_of_rng_eid), std::out_of_range
+        );
+        CHECK_THROWS_AS(sut.unbind(constants::id1, constants::out_of_rng_eid), std::out_of_range);
+        CHECK_THROWS_AS(sut.unbind(constants::out_of_rng_vid, constants::id1), std::out_of_range);
+
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::out_of_rng_eid)
+            ),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::id1, constants::out_of_rng_eid)),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::id1)),
+            std::out_of_range
+        );
+    }
+
+    SUBCASE("are_incident should return false by default") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        for (const auto vertex : sut.vertices())
+            for (const auto hyperedge : sut.hyperedges())
+                CHECK_FALSE(sut.are_incident(vertex, hyperedge));
+    }
+
+    SUBCASE("bind should properly mark the given vertex and hyperedge as incident and unbind "
+            "should mark them as not incident") {
+        constexpr auto vertex_id = constants::id1;
+        constexpr auto hyperedge_id = constants::id2;
+        constexpr auto unbound_id = constants::id3;
+
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        REQUIRE_FALSE(sut.are_incident(vertex_id, hyperedge_id));
+        REQUIRE_FALSE(sut.are_incident(vertex_id, unbound_id));
+        REQUIRE_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+
+        sut.bind(vertex_id, hyperedge_id);
+        CHECK(sut.are_incident(vertex_id, hyperedge_id));
+        CHECK_FALSE(sut.are_incident(vertex_id, unbound_id));
+        CHECK_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+
+        sut.unbind(vertex_id, hyperedge_id);
+        CHECK_FALSE(sut.are_incident(vertex_id, hyperedge_id));
+        CHECK_FALSE(sut.are_incident(vertex_id, unbound_id));
+        CHECK_FALSE(sut.are_incident(unbound_id, hyperedge_id));
+    }
+
+    SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.incident_hyperedges(vertex_type{constants::out_of_rng_vid})),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.degree(vertex_type{constants::out_of_rng_vid})), std::out_of_range
+        );
+    }
+
+    SUBCASE("incident_hyperedges should return an empty view by default and degree should return 0 "
+            "by default") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& vertex) {
+            return std::ranges::empty(sut.incident_hyperedges(vertex));
+        }));
+        CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& vertex) {
+            return sut.degree(vertex) == 0uz;
+        }));
+    }
+
+    SUBCASE("incident_hyperedges should return a view containing ids of hyperedges incident with "
+            "the given vertex, and degree should return their count") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        constexpr auto vertex_id = constants::id1;
+
+        SUBCASE("sequential hyperedges") {
+            std::vector<hgl::types::id_type> expected_hyperedges{};
+            for (const auto eid : sut.hyperedge_ids()) {
+                sut.bind(vertex_id, eid);
+                expected_hyperedges.push_back(eid);
+            }
+
+            CHECK(std::ranges::equal(
+                sut.incident_hyperedges(vertex_id), expected_hyperedges, std::equal_to{}, get_id
+            ));
+            CHECK_EQ(sut.degree(vertex_id), expected_hyperedges.size());
+        }
+
+        SUBCASE("specific hyperedges") {
+            sut.bind(vertex_id, constants::id2);
+            sut.bind(vertex_id, constants::id4);
+
+            CHECK(std::ranges::equal(
+                sut.incident_hyperedges(vertex_id),
+                std::vector<hgl::types::id_type>{constants::id2, constants::id4},
+                std::equal_to{},
+                get_id
+            ));
+            CHECK_EQ(sut.degree(vertex_id), 2uz);
+        }
+    }
+
+    SUBCASE("incident_vertices and hyperedge_size should throw if the given hyperedge (id) is "
+            "invalid") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.incident_vertices(hyperedge_type{constants::out_of_rng_eid})),
+            std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.hyperedge_size(hyperedge_type{constants::out_of_rng_eid})),
+            std::out_of_range
+        );
+    }
+
+    SUBCASE("incident_vertices should return an empty view by default and hyperedge_size should "
+            "return 0 by default") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK(std::ranges::all_of(sut.hyperedges(), [&sut](const auto& hyperedge) {
+            return std::ranges::empty(sut.incident_vertices(hyperedge));
+        }));
+        CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& hyperedge) {
+            return sut.hyperedge_size(hyperedge) == 0uz;
+        }));
+    }
+
+    SUBCASE("incident_vertices should return a view containing ids of vertices incident with the "
+            "given hyperedge, and hyperedge_size should return their count") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        constexpr auto hyperedge_id = constants::id1;
+
+        SUBCASE("sequential vertices") {
+            std::vector<hgl::types::id_type> expected_vertices{};
+            for (const auto vid : sut.vertex_ids()) {
+                sut.bind(vid, hyperedge_id);
+                expected_vertices.push_back(vid);
+            }
+
+            CHECK(std::ranges::equal(
+                sut.incident_vertices(hyperedge_id), expected_vertices, std::equal_to{}, get_id
+            ));
+            CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_vertices.size());
+        }
+
+        SUBCASE("specific vertices") {
+            sut.bind(constants::id1, hyperedge_id);
+            sut.bind(constants::id3, hyperedge_id);
+
+            CHECK(std::ranges::equal(
+                sut.incident_vertices(hyperedge_id),
+                std::vector<hgl::types::id_type>{constants::id1, constants::id3},
+                std::equal_to{},
+                get_id
+            ));
+            CHECK_EQ(sut.hyperedge_size(hyperedge_id), 2uz);
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -373,32 +553,35 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t>, // undirected hyperedge-major incidence list
     hgl::list_hypergraph_traits<
-        hgl::impl::hyperedge_major_t,
-        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
-    hgl::list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t>, // undirected vertex-major incidence list
-    hgl::list_hypergraph_traits<
-        hgl::impl::vertex_major_t,
-        hgl::bf_directed_t>, // bf-directed vertex-major incidence list
     hgl::matrix_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t>, // undirected hyperedge-major incidence matrix
     hgl::matrix_hypergraph_traits<
-        hgl::impl::hyperedge_major_t,
-        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence matrix
-    hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
-        hgl::undirected_t>, // undirected vertex-major incidence matrix
-    hgl::matrix_hypergraph_traits<
-        hgl::impl::vertex_major_t,
-        hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
+        hgl::undirected_t> // undirected vertex-major incidence matrix
+    // TODO: uncomment after the bf-directed models are implemented
+    // hgl::list_hypergraph_traits<
+    //     hgl::impl::hyperedge_major_t,
+    //     hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
+    // hgl::list_hypergraph_traits<
+    //     hgl::impl::vertex_major_t,
+    //     hgl::bf_directed_t>, // bf-directed vertex-major incidence list
+    // hgl::matrix_hypergraph_traits<
+    //     hgl::impl::hyperedge_major_t,
+    //     hgl::bf_directed_t>, // bf-directed hyperedge-major incidence matrix
+    // hgl::matrix_hypergraph_traits<
+    //     hgl::impl::vertex_major_t,
+    //     hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
     "properties getter tests", HypergraphTraits, property_hypergraph_traits_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
+    using vertex_properties_type = typename sut_type::vertex_properties_type;
+    using hyperedge_properties_type = typename sut_type::hyperedge_properties_type;
 
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     for (auto vertex : sut.vertices())
@@ -406,28 +589,107 @@ TEST_CASE_TEMPLATE_DEFINE(
     for (auto hyperedge : sut.hyperedges())
         hyperedge.properties() = std::format("hyperedge_{}", hyperedge.id());
 
-    auto vmap = sut.vertex_properties_map();
-    CHECK(vmap.size() == constants::n_vertices);
-    for (auto [id, property] : vw::zip(sut.vertex_ids(), vmap)) {
-        CHECK_EQ(property, std::format("vertex_{}", id));
-        CHECK_EQ(vmap[id], std::format("vertex_{}", id));
-        CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
+    SUBCASE("vertex property getters should return proper property objects/view") {
+        auto vmap = sut.vertex_properties_map();
+        CHECK(vmap.size() == constants::n_vertices);
+        for (auto [id, property] : vw::zip(sut.vertex_ids(), vmap)) {
+            CHECK_EQ(property, std::format("vertex_{}", id));
+            CHECK_EQ(vmap[id], std::format("vertex_{}", id));
+            CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
+        }
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)),
+            std::out_of_range
+        );
     }
-    CHECK_THROWS_AS(
-        static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)), std::out_of_range
-    );
 
-    auto emap = sut.hyperedge_properties_map();
-    CHECK(emap.size() == constants::n_hyperedges);
-    for (auto [id, property] : vw::zip(sut.hyperedge_ids(), emap)) {
-        CHECK_EQ(property, std::format("hyperedge_{}", id));
-        CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
-        CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
+    SUBCASE("hyperedge property getters should return proper property objects/view") {
+        auto emap = sut.hyperedge_properties_map();
+        CHECK(emap.size() == constants::n_hyperedges);
+        for (auto [id, property] : vw::zip(sut.hyperedge_ids(), emap)) {
+            CHECK_EQ(property, std::format("hyperedge_{}", id));
+            CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
+            CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
+        }
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_eid)),
+            std::out_of_range
+        );
     }
-    CHECK_THROWS_AS(
-        static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_eid)),
-        std::out_of_range
-    );
+
+    constexpr auto get_property_addr = [](const auto& descriptor) {
+        return &descriptor.properties();
+    };
+
+    SUBCASE("incident_hyperedges should return a view of hyperedge_descriptor objects containing "
+            "correct property references") {
+        constexpr auto vertex_id = constants::id1;
+
+        SUBCASE("sequential hyperedges") {
+            std::vector<hyperedge_properties_type*> expected_properties{};
+            for (const auto hyperedge_id : sut.hyperedge_ids()) {
+                sut.bind(vertex_id, hyperedge_id);
+                expected_properties.push_back(&sut.get_hyperedge_properties(hyperedge_id));
+
+                CHECK(std::ranges::equal(
+                    sut.incident_hyperedges(vertex_id),
+                    expected_properties,
+                    std::equal_to{},
+                    get_property_addr
+                ));
+            }
+        }
+
+        SUBCASE("specific hyperedges") {
+            sut.bind(vertex_id, constants::id2);
+            sut.bind(vertex_id, constants::id4);
+
+            CHECK(std::ranges::equal(
+                sut.incident_hyperedges(vertex_id),
+                std::vector<hyperedge_properties_type*>{
+                    &sut.get_hyperedge_properties(constants::id2),
+                    &sut.get_hyperedge_properties(constants::id4)
+                },
+                std::equal_to{},
+                get_property_addr
+            ));
+        }
+    }
+
+    SUBCASE("incident_vertices should return a view of vertex_descriptor objects containing "
+            "correct property references") {
+        constexpr auto hyperedge_id = constants::id1;
+
+        SUBCASE("sequential vertices") {
+            std::vector<vertex_properties_type*> expected_properties{};
+            for (const auto vertex_id : sut.vertex_ids()) {
+                sut.bind(vertex_id, hyperedge_id);
+                expected_properties.push_back(&sut.get_vertex_properties(vertex_id));
+
+                CHECK(std::ranges::equal(
+                    sut.incident_vertices(hyperedge_id),
+                    expected_properties,
+                    std::equal_to{},
+                    get_property_addr
+                ));
+            }
+        }
+
+        SUBCASE("specific vertices") {
+            sut.bind(constants::id1, hyperedge_id);
+            sut.bind(constants::id3, hyperedge_id);
+
+            CHECK(std::ranges::equal(
+                sut.incident_vertices(hyperedge_id),
+                std::vector<vertex_properties_type*>{
+                    &sut.get_vertex_properties(constants::id1),
+                    &sut.get_vertex_properties(constants::id3)
+                },
+                std::equal_to{},
+                get_property_addr
+            ));
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -438,40 +700,41 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::types::name_property,
         hgl::types::name_property>, // undirected hyperedge-major incidence list
     hgl::list_hypergraph_traits<
-        hgl::impl::hyperedge_major_t,
-        hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge-major incidence list
-    hgl::list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
         hgl::types::name_property>, // undirected vertex-major incidence list
-    hgl::list_hypergraph_traits<
-        hgl::impl::vertex_major_t,
-        hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed vertex-major incidence list
     hgl::matrix_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
         hgl::types::name_property>, // undirected hyperedge-major incidence matrix
     hgl::matrix_hypergraph_traits<
-        hgl::impl::hyperedge_major_t,
-        hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge-major incidence matrix
-    hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t,
         hgl::types::name_property,
-        hgl::types::name_property>, // undirected vertex-major incidence matrix
-    hgl::matrix_hypergraph_traits<
-        hgl::impl::vertex_major_t,
-        hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property> // bf-directed vertex-major incidence matrix
+        hgl::types::name_property> // undirected vertex-major incidence matrix
+    // TODO: uncomment after the bf-directed models are implemented
+    // hgl::list_hypergraph_traits<
+    //     hgl::impl::hyperedge_major_t,
+    //     hgl::bf_directed_t,
+    //     hgl::types::name_property,
+    //     hgl::types::name_property>, // bf-directed hyperedge-major incidence list
+    // hgl::list_hypergraph_traits<
+    //     hgl::impl::vertex_major_t,
+    //     hgl::bf_directed_t,
+    //     hgl::types::name_property,
+    //     hgl::types::name_property>, // bf-directed vertex-major incidence list
+    // hgl::matrix_hypergraph_traits<
+    //     hgl::impl::hyperedge_major_t,
+    //     hgl::bf_directed_t,
+    //     hgl::types::name_property,
+    //     hgl::types::name_property>, // bf-directed hyperedge-major incidence matrix
+    // hgl::matrix_hypergraph_traits<
+    //     hgl::impl::vertex_major_t,
+    //     hgl::bf_directed_t,
+    //     hgl::types::name_property,
+    //     hgl::types::name_property> // bf-directed vertex-major incidence matrix
 );
 
 TEST_SUITE_END(); // test_hypergraph
