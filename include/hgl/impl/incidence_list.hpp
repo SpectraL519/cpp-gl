@@ -60,9 +60,9 @@ public:
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
-            return this->_incident_to_major(vertex_id);
+            return this->_incident_with_major(vertex_id);
         else
-            return this->_incident_to_minor(vertex_id);
+            return this->_incident_with_minor(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
@@ -90,9 +90,9 @@ public:
     [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
-            return this->_incident_to_major(hyperedge_id);
+            return this->_incident_with_major(hyperedge_id);
         else
-            return this->_incident_to_minor(hyperedge_id);
+            return this->_incident_with_minor(hyperedge_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
@@ -155,12 +155,12 @@ private:
         }
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_to_major(const types::id_type major_id
+    [[nodiscard]] gl_attr_force_inline auto _incident_with_major(const types::id_type major_id
     ) const noexcept {
         return std::views::all(this->_major_storage[major_id]);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_to_minor(const types::id_type minor_id
+    [[nodiscard]] gl_attr_force_inline auto _incident_with_minor(const types::id_type minor_id
     ) const noexcept {
         return std::views::iota(0uz, this->_major_storage.size())
              | std::views::filter([this, minor_id](types::id_type major_id) {
