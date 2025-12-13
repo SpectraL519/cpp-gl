@@ -9,9 +9,10 @@
 #include "hgl/types/types.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <ranges>
 #include <vector>
-#include <cstdint>
 
 #ifdef HGL_TESTING
 namespace hgl_testing {
@@ -63,7 +64,8 @@ public:
             this->_remove_minor(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
             return this->_incident_with_major(vertex_id);
@@ -94,7 +96,8 @@ public:
             this->_remove_minor(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
             return this->_incident_with_major(hyperedge_id);
@@ -102,8 +105,7 @@ public:
             return this->_incident_with_minor(hyperedge_id);
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
             return this->_count_major(hyperedge_id);
         else
@@ -154,7 +156,7 @@ private:
     }
 
     gl_attr_force_inline void _remove_major(const types::id_type major_id) noexcept {
-        this->_matrix.erase(this->_matrix.begin() + major_id);
+        this->_matrix.erase(this->_matrix.begin() + static_cast<std::ptrdiff_t>(major_id));
     }
 
     gl_attr_force_inline void _remove_minor(const types::id_type minor_id) noexcept {
@@ -162,7 +164,7 @@ private:
             return;
         this->_matrix_row_size--;
         for (auto& row : this->_matrix) {
-            row.erase(row.begin() + minor_id);
+            row.erase(row.begin() + static_cast<std::ptrdiff_t>(minor_id));
         }
     }
 
@@ -211,7 +213,8 @@ public:
     incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _matrix_row_size{layout_tag::minor(n_vertices, n_hyperedges)},
       _matrix(
-          layout_tag::major(n_vertices, n_hyperedges), matrix_row_type(_matrix_row_size, incidence_type::none)
+          layout_tag::major(n_vertices, n_hyperedges),
+          matrix_row_type(_matrix_row_size, incidence_type::none)
       ) {}
 
     incidence_matrix(incidence_matrix&&) = default;
@@ -235,7 +238,8 @@ public:
             this->_remove_minor(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
             return this->_incident_with_major(vertex_id);
@@ -268,7 +272,8 @@ public:
             this->_remove_minor(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
             return this->_incident_with_major(hyperedge_id);
@@ -276,8 +281,7 @@ public:
             return this->_incident_with_minor(hyperedge_id);
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
             return this->_count_major(hyperedge_id);
         else
@@ -317,15 +321,14 @@ public:
 
 private:
     enum class incidence_type : std::int8_t {
-        none = 0,      // v not in E
+        none = 0, // v not in E
         backward = -1, // v in T(E)
-        forward = 1,   // v in H(E)
+        forward = 1, // v in H(E)
     };
 
-    template <typename P>
-    concept c_incidence_pred = std::predicate<P, incidence_type>;
-
-    static constexpr auto _are_incident_pred = [](const incidence_type t) { return t != incidence_type::none; };
+    static constexpr auto _are_incident_pred = [](const incidence_type t) {
+        return t != incidence_type::none;
+    };
 
     using matrix_row_type = std::vector<incidence_type>;
     using hypergraph_storage_type = std::vector<matrix_row_type>;
@@ -370,7 +373,7 @@ private:
 
     [[nodiscard]] types::size_type _count_major(
         const types::id_type major_id,
-        const c_incidence_pred auto pred = incidence_matrix::_are_incident_pred
+        const std::predicate<incidence_type> auto pred = incidence_matrix::_are_incident_pred
     ) const noexcept {
         types::size_type count = 0;
         for (const incidence_type t : this->_matrix[major_id])
@@ -380,7 +383,7 @@ private:
 
     [[nodiscard]] types::size_type _count_minor(
         const types::id_type minor_id,
-        const c_incidence_pred auto pred = incidence_matrix::_are_incident_pred
+        const std::predicate<incidence_type> auto pred = incidence_matrix::_are_incident_pred
     ) const noexcept {
         types::size_type count = 0;
         for (const auto& row : this->_matrix)

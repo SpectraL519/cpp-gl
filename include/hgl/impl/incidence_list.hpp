@@ -9,6 +9,7 @@
 #include "hgl/types/types.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <ranges>
 #include <vector>
 
@@ -57,7 +58,8 @@ public:
             this->_remove_minor(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
             return this->_incident_with_major(vertex_id);
@@ -65,7 +67,8 @@ public:
             return this->_incident_with_minor(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(
+        const types::id_type vertex_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
             return this->_major_size(vertex_id);
@@ -87,7 +90,8 @@ public:
             this->_remove_minor(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
         if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
             return this->_incident_with_major(hyperedge_id);
@@ -142,7 +146,9 @@ private:
     using major_storage_type = std::vector<major_element_type>;
 
     gl_attr_force_inline void _remove_major(const types::id_type major_id) noexcept {
-        this->_major_storage.erase(this->_major_storage.begin() + major_id);
+        this->_major_storage.erase(
+            this->_major_storage.begin() + static_cast<std::ptrdiff_t>(major_id)
+        );
     }
 
     void _remove_minor(const types::id_type minor_id) noexcept {
@@ -155,12 +161,14 @@ private:
         }
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_with_major(const types::id_type major_id
+    [[nodiscard]] gl_attr_force_inline auto _incident_with_major(
+        const types::id_type major_id
     ) const noexcept {
         return std::views::all(this->_major_storage[major_id]);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_with_minor(const types::id_type minor_id
+    [[nodiscard]] gl_attr_force_inline auto _incident_with_minor(
+        const types::id_type minor_id
     ) const noexcept {
         return std::views::iota(0uz, this->_major_storage.size())
              | std::views::filter([this, minor_id](types::id_type major_id) {
@@ -168,7 +176,8 @@ private:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type _major_size(const types::id_type major_id
+    [[nodiscard]] gl_attr_force_inline types::size_type _major_size(
+        const types::id_type major_id
     ) const noexcept {
         return this->_major_storage[major_id].size();
     }
@@ -181,6 +190,7 @@ private:
         return size;
     }
 
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     void _bind_impl(const types::id_type major_id, const types::id_type minor_id) noexcept {
         auto& minor_storage = this->_major_storage[major_id];
 
@@ -191,7 +201,9 @@ private:
     }
 
     gl_attr_force_inline void _unbind_impl(
-        const types::id_type major_id, const types::id_type minor_id
+        // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+        const types::id_type major_id,
+        const types::id_type minor_id
     ) noexcept {
         auto& minor_storage = this->_major_storage[major_id];
         const auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);

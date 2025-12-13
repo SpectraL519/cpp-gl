@@ -52,7 +52,8 @@ public:
         if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
             this->_hyperedge_properties.reserve(n_hyperedges);
             for (const auto _ : this->hyperedge_ids())
-                this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
+                this->_hyperedge_properties.push_back(
+                    std::make_unique<hyperedge_properties_type>()
                 );
         }
     }
@@ -257,7 +258,8 @@ public:
             const auto old_size = this->_hyperedge_properties.size();
             this->_hyperedge_properties.reserve(this->_n_hyperedges);
             for (types::size_type i = old_size; i < this->_n_hyperedges; ++i)
-                this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
+                this->_hyperedge_properties.push_back(
+                    std::make_unique<hyperedge_properties_type>()
                 );
         }
     }
