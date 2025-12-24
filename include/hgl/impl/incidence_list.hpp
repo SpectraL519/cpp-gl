@@ -52,28 +52,17 @@ public:
     }
 
     gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) noexcept {
-        if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
-            this->_remove_major(vertex_id);
-        else
-            this->_remove_minor(vertex_id);
+        this->_remove<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
     ) const noexcept {
-        if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
-            return this->_incident_with_major(vertex_id);
-        else
-            return this->_incident_with_minor(vertex_id);
+        return this->_incident_with<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
     ) const noexcept {
-        if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
-            return this->_major_size(vertex_id);
-        else
-            return this->_minor_size(vertex_id);
+        return this->_size<impl::element_type::vertex>(vertex_id);
     }
 
     // --- hyperedge methods ---
@@ -84,28 +73,18 @@ public:
     }
 
     gl_attr_force_inline void remove_hyperedge(const types::id_type hyperedge_id) noexcept {
-        if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
-            this->_remove_major(hyperedge_id);
-        else
-            this->_remove_minor(hyperedge_id);
+        this->_remove<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
-        const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
     ) const noexcept {
-        if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
-            return this->_incident_with_major(hyperedge_id);
-        else
-            return this->_incident_with_minor(hyperedge_id);
+        return this->_incident_with<impl::element_type::hyperedge>(hyperedge_id);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
         const types::id_type hyperedge_id
     ) const noexcept {
-        if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
-            return this->_major_size(hyperedge_id);
-        else
-            return this->_minor_size(hyperedge_id);
+        return this->_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
     // --- binding methods ---
@@ -145,49 +124,49 @@ private:
     using major_element_type = minor_storage_type;
     using major_storage_type = std::vector<major_element_type>;
 
-    gl_attr_force_inline void _remove_major(const types::id_type major_id) noexcept {
-        this->_major_storage.erase(
-            this->_major_storage.begin() + static_cast<std::ptrdiff_t>(major_id)
-        );
-    }
-
-    void _remove_minor(const types::id_type minor_id) noexcept {
-        for (auto& minor_storage : this->_major_storage) {
-            auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);
-            if (minor_it != minor_storage.end() and *minor_it == minor_id)
-                minor_it = minor_storage.erase(minor_it); // unbind the element
-            while (minor_it != minor_storage.end())
-                --(*minor_it++); // decrement ids > minor_id
+    template <impl::element_type Element>
+    void _remove(const types::id_type id) noexcept {
+        if constexpr (Element == layout_tag::major_element) { // remove major
+            this->_major_storage.erase(
+                this->_major_storage.begin() + static_cast<std::ptrdiff_t>(id)
+            );
+        }
+        else { // remove minor
+            for (auto& minor_storage : this->_major_storage) {
+                auto minor_it = std::ranges::lower_bound(minor_storage, id);
+                if (minor_it != minor_storage.end() and *minor_it == id)
+                    minor_it = minor_storage.erase(minor_it); // unbind the element
+                while (minor_it != minor_storage.end())
+                    --(*minor_it++); // decrement ids > id (minor)
+            }
         }
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_with_major(
-        const types::id_type major_id
-    ) const noexcept {
-        return std::views::all(this->_major_storage[major_id]);
+    template <impl::element_type Element>
+    [[nodiscard]] gl_attr_force_inline auto _incident_with(const types::id_type id) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // incident with major
+            return std::views::all(this->_major_storage[id]);
+        }
+        else { // incident with minor
+            return std::views::iota(0uz, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
+                       return this->_are_bound_impl(this->_major_storage[major_id], minor_id);
+                   });
+        }
     }
 
-    [[nodiscard]] gl_attr_force_inline auto _incident_with_minor(
-        const types::id_type minor_id
-    ) const noexcept {
-        return std::views::iota(0uz, this->_major_storage.size())
-             | std::views::filter([this, minor_id](types::id_type major_id) {
-                   return this->_are_bound_impl(this->_major_storage[major_id], minor_id);
-               });
-    }
-
-    [[nodiscard]] gl_attr_force_inline types::size_type _major_size(
-        const types::id_type major_id
-    ) const noexcept {
-        return this->_major_storage[major_id].size();
-    }
-
-    [[nodiscard]] types::size_type _minor_size(const types::id_type minor_id) const noexcept {
-        types::size_type size = 0uz;
-        for (const auto& major_el : this->_major_storage)
-            if (this->_are_bound_impl(major_el, minor_id))
-                ++size;
-        return size;
+    template <impl::element_type Element>
+    [[nodiscard]] types::size_type _size(const types::id_type id) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // size major
+            return this->_major_storage[id].size();
+        }
+        else { // size minor
+            types::size_type size = 0uz;
+            for (const auto& major_el : this->_major_storage)
+                if (this->_are_bound_impl(major_el, id))
+                    ++size;
+            return size;
+        }
     }
 
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)

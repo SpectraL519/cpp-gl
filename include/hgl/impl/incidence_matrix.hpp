@@ -157,8 +157,8 @@ private:
         }
         else { // incident with minor
             return std::views::iota(0uz, this->_matrix.size())
-                 | std::views::filter([this, id](const types::id_type major_id) {
-                       return this->_matrix[major_id][id];
+                 | std::views::filter([this, minor_id = id](const types::id_type major_id) {
+                       return this->_matrix[major_id][minor_id];
                    });
         }
     }
