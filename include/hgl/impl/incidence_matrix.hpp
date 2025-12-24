@@ -30,6 +30,7 @@ class incidence_matrix;
 template <type_traits::c_hypergraph_layout_tag LayoutTag>
 class incidence_matrix<hgl::undirected_t, LayoutTag> final {
 public:
+    using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
     incidence_matrix(const incidence_matrix&) = delete;
@@ -184,6 +185,7 @@ private:
 template <type_traits::c_hypergraph_layout_tag LayoutTag>
 class incidence_matrix<hgl::bf_directed_t, LayoutTag> final {
 public:
+    using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
     incidence_matrix(const incidence_matrix&) = delete;
@@ -342,9 +344,11 @@ private:
     static constexpr auto _is_incident = [](const incidence_type t) {
         return t != incidence_type::none;
     };
+
     static constexpr auto _is_tail = [](const incidence_type t) {
         return t == incidence_type::backward;
     };
+
     static constexpr auto _is_head = [](const incidence_type t) {
         return t == incidence_type::forward;
     };
