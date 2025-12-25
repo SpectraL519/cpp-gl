@@ -18,10 +18,15 @@ struct test_incidence_matrix {
     }
 
     template <typename IncidenceMatrix>
-    using incidence_descriptor_type = std::conditional_t<
-        std::same_as<typename IncidenceMatrix::directional_tag, hgl::bf_directed_t>,
-        typename IncidenceMatrix::incidence_type,
-        bool>;
+    struct incidence_descriptor {
+        using type = std::conditional_t<
+            std::same_as<typename IncidenceMatrix::directional_tag, hgl::bf_directed_t>,
+            typename IncidenceMatrix::incidence_type,
+            bool>;
+    };
+
+    template <typename IncidenceMatrix>
+    using incidence_descriptor_type = typename incidence_descriptor<IncidenceMatrix>::type;
 };
 
 struct test_undirected_vertex_major_incidence_matrix : public test_incidence_matrix {
