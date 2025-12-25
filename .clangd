@@ -1,0 +1,23 @@
+CompileFlags:
+  Add:
+    - -std=c++23
+    - -xc++-header
+    - -Iinclude
+    - -Itests/include
+    - -Itests/external
+    - -Wall
+    - -Wextra
+    - -ftemplate-depth=512
+
+Diagnostics:
+  UnusedIncludes: None
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - modernize-*
+      - performance-*
+    Remove:
+      - modernize-use-trailing-return-type
+
+Index:
+  Background: Build
