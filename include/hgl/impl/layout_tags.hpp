@@ -13,7 +13,6 @@ namespace hgl {
 
 namespace impl {
 
-// element_discriminator ?
 enum class element_type : bool { vertex, hyperedge };
 
 struct vertex_major_t {
