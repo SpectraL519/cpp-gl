@@ -16,6 +16,17 @@ struct test_incidence_matrix {
     typename IncidenceMatrix::hypergraph_storage_type& matrix(IncidenceMatrix& sut) const noexcept {
         return sut._matrix;
     }
+
+    template <typename IncidenceMatrix>
+    struct incidence_descriptor {
+        using type = std::conditional_t<
+            std::same_as<typename IncidenceMatrix::directional_tag, hgl::bf_directed_t>,
+            typename IncidenceMatrix::incidence_type,
+            bool>;
+    };
+
+    template <typename IncidenceMatrix>
+    using incidence_descriptor_type = typename incidence_descriptor<IncidenceMatrix>::type;
 };
 
 struct test_undirected_vertex_major_incidence_matrix : public test_incidence_matrix {
@@ -44,7 +55,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "add_vertices should properly extend matrix"
+    test_undirected_vertex_major_incidence_matrix, "add_vertices should properly extend the matrix"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     const auto initial_size = matrix(sut).size();
@@ -181,45 +192,45 @@ TEST_CASE_FIXTURE(
     sut.bind(vertex_id, constants::id2);
     sut.bind(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_heid;
+    hgl::types::id_type rem_eid;
     hgl::types::size_type expected_vertex_degree;
     std::vector<hgl::types::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
-        rem_heid = constants::id1;
+        rem_eid = constants::id1;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2 - 1uz, constants::id4 - 1uz};
     }
 
     SUBCASE("present hyperedge = first incident hyperedge") {
-        rem_heid = constants::id2;
+        rem_eid = constants::id2;
         expected_vertex_degree = 1uz;
         expected_hyperedges = {constants::id4 - 1uz};
     }
 
     SUBCASE("not present hyperedge > first incident hyperedge") {
-        rem_heid = constants::id3;
+        rem_eid = constants::id3;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2, constants::id4 - 1uz};
     }
 
     SUBCASE("present hyperedge = last incident hyperedge") {
-        rem_heid = constants::id4;
+        rem_eid = constants::id4;
         expected_vertex_degree = 1uz;
         expected_hyperedges = {constants::id2};
     }
 
     SUBCASE("not present hyperedge > last incident hyperedge") {
-        rem_heid = constants::id4 + 1uz;
+        rem_eid = constants::id4 + 1uz;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2, constants::id4};
     }
 
-    CAPTURE(rem_heid);
+    CAPTURE(rem_eid);
     CAPTURE(expected_vertex_degree);
     CAPTURE(expected_hyperedges);
 
-    sut.remove_hyperedge(rem_heid);
+    sut.remove_hyperedge(rem_eid);
     CHECK_EQ(matrix(sut)[vertex_id].size(), n_hyperedges - 1uz);
     CHECK_EQ(sut.degree(vertex_id), expected_vertex_degree);
     CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), expected_hyperedges));
@@ -458,45 +469,45 @@ TEST_CASE_FIXTURE(
     sut.bind(vertex_id, constants::id2);
     sut.bind(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_heid;
+    hgl::types::id_type rem_eid;
     hgl::types::size_type expected_vertex_degree;
     std::vector<hgl::types::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
-        rem_heid = constants::id1;
+        rem_eid = constants::id1;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2 - 1uz, constants::id4 - 1uz};
     }
 
     SUBCASE("present hyperedge = first incident hyperedge") {
-        rem_heid = constants::id2;
+        rem_eid = constants::id2;
         expected_vertex_degree = 1uz;
         expected_hyperedges = {constants::id4 - 1uz};
     }
 
     SUBCASE("not present hyperedge > first incident hyperedge") {
-        rem_heid = constants::id3;
+        rem_eid = constants::id3;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2, constants::id4 - 1uz};
     }
 
     SUBCASE("present hyperedge = last incident hyperedge") {
-        rem_heid = constants::id4;
+        rem_eid = constants::id4;
         expected_vertex_degree = 1uz;
         expected_hyperedges = {constants::id2};
     }
 
     SUBCASE("not present hyperedge > last incident hyperedge") {
-        rem_heid = constants::id4 + 1uz;
+        rem_eid = constants::id4 + 1uz;
         expected_vertex_degree = 2uz;
         expected_hyperedges = {constants::id2, constants::id4};
     }
 
-    CAPTURE(rem_heid);
+    CAPTURE(rem_eid);
     CAPTURE(expected_vertex_degree);
     CAPTURE(expected_hyperedges);
 
-    sut.remove_hyperedge(rem_heid);
+    sut.remove_hyperedge(rem_eid);
     CHECK_EQ(matrix(sut).size(), n_hyperedges - 1uz);
     CHECK_EQ(sut.degree(vertex_id), expected_vertex_degree);
     CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), expected_hyperedges));
@@ -570,6 +581,724 @@ TEST_CASE_FIXTURE(
     CHECK(sut.are_bound(constants::id1, constants::id1));
     CHECK_FALSE(sut.are_bound(constants::id1, constants::id2));
     CHECK_FALSE(sut.are_bound(constants::id2, constants::id1));
+}
+
+struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
+    template <typename SutType>
+    auto is_incident_pred() {
+        using incidence_type = incidence_descriptor_type<SutType>;
+        return [](const incidence_type t) { return t != incidence_type::none; };
+    }
+
+    auto altbind_to_vertex(
+        auto& sut, const hgl::types::id_type vertex_id, const hgl::types::size_type n_hyperedges
+    ) {
+        std::vector<hgl::types::id_type> tail_bound, head_bound;
+
+        for (std::size_t i = 0uz; i < n_hyperedges; ++i) {
+            if (i % 2 == 0) {
+                sut.bind_tail(vertex_id, i);
+                tail_bound.push_back(i);
+            }
+            else {
+                sut.bind_head(vertex_id, i);
+                head_bound.push_back(i);
+            }
+        }
+
+        return std::make_pair(std::move(tail_bound), std::move(head_bound));
+    }
+
+    auto altbind_to_hyperedge(
+        auto& sut, const hgl::types::id_type hyperedge_id, const hgl::types::size_type n_vertices
+    ) {
+        std::vector<hgl::types::id_type> tail_bound, head_bound;
+
+        for (std::size_t i = 0uz; i < n_vertices; ++i) {
+            if (i % 2 == 0) {
+                sut.bind_tail(i, hyperedge_id);
+                tail_bound.push_back(i);
+            }
+            else {
+                sut.bind_head(i, hyperedge_id);
+                head_bound.push_back(i);
+            }
+        }
+
+        return std::make_pair(std::move(tail_bound), std::move(head_bound));
+    }
+};
+
+struct test_bf_directed_vertex_major_incidence_matrix : public test_bf_directed_incidence_matrix {
+    using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, hgl::impl::vertex_major_t>;
+    using incidence_type = incidence_descriptor_type<sut_type>;
+};
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix, "should initialize empty matrix by default"
+) {
+    sut_type sut{};
+    CHECK(matrix(sut).empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "initialization with size parameters should properly initialize the matrix"
+) {
+    sut_type sut(constants::n_vertices, constants::n_hyperedges);
+    CHECK_EQ(matrix(sut).size(), constants::n_vertices);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_hyperedges;
+    }));
+    CHECK(std::ranges::all_of(matrix(sut), [this](const auto& row) {
+        return std::ranges::none_of(row, is_incident_pred<sut_type>());
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix, "add_vertices should properly extend the matrix"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    const auto initial_size = matrix(sut).size();
+
+    sut.add_vertices(2uz);
+
+    CHECK_EQ(matrix(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_hyperedges;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "remove_vertex should properly remove the row and implicitly shift vertex IDs"
+) {
+    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+
+    sut_type sut{n_vertices, n_hyperedges};
+    sut.bind_tail(constants::id2, hyperedge_id);
+    sut.bind_head(constants::id4, hyperedge_id);
+
+    hgl::types::id_type rem_vid;
+    hgl::types::size_type expected_hyperedge_size;
+    std::vector<hgl::types::id_type> expected_vertices;
+
+    SUBCASE("not present vertex < first incident vertex") {
+        rem_vid = constants::id1;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2 - 1uz, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present vertex = first incident vertex") {
+        rem_vid = constants::id2;
+        expected_hyperedge_size = 1uz;
+        expected_vertices = {constants::id4 - 1uz};
+    }
+
+    SUBCASE("not present vertex > first incident vertex") {
+        rem_vid = constants::id3;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present vertex = last incident vertex") {
+        rem_vid = constants::id4;
+        expected_hyperedge_size = 1uz;
+        expected_vertices = {constants::id2};
+    }
+
+    SUBCASE("not present vertex > last incident vertex") {
+        rem_vid = constants::id4 + 1uz;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2, constants::id4};
+    }
+
+    CAPTURE(rem_vid);
+    CAPTURE(expected_hyperedge_size);
+    CAPTURE(expected_vertices);
+
+    sut.remove_vertex(rem_vid);
+    CHECK_EQ(matrix(sut).size(), n_vertices - 1uz);
+    CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_hyperedge_size);
+    CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), expected_vertices));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
+    "outgoing_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
+    "incoming_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto vertex_id = constants::id1;
+    REQUIRE(std::ranges::empty(sut.incident_hyperedges(vertex_id)));
+
+    const auto [tail_bound_hyperedges, head_bound_hyperedges] =
+        altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
+
+    CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view));
+    CHECK(std::ranges::equal(sut.outgoing_hyperedges(vertex_id), tail_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.incoming_hyperedges(vertex_id), head_bound_hyperedges));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "degree should return the number of the vertex's incident hyperedges,"
+    "out_degree should return the number of the vertex's outgoing hyperedges (v in T(e)),"
+    "in_degree should return the number of the vertex's incoming hyperedges (v in H(e))"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto vertex_id = constants::id1;
+    REQUIRE_EQ(sut.degree(vertex_id), 0uz);
+
+    const auto [tail_bound_hyperedges, head_bound_hyperedges] =
+        altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
+
+    CHECK_EQ(sut.degree(vertex_id), constants::n_hyperedges);
+    CHECK_EQ(sut.out_degree(vertex_id), tail_bound_hyperedges.size());
+    CHECK_EQ(sut.in_degree(vertex_id), head_bound_hyperedges.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "add_hyperedges should properly extend the hypergraph matrix (resize columns)"
+) {
+    sut_type sut{constants::n_vertices, 0uz};
+    REQUIRE_EQ(matrix(sut).size(), constants::n_vertices);
+    REQUIRE(std::ranges::all_of(matrix(sut), [](const auto& row) { return row.size() == 0uz; }));
+
+    sut.add_hyperedges(constants::n_hyperedges);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_hyperedges;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "remove_hyperedge should properly erase the proper hyperedge matrix entries (column)"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    sut.remove_hyperedge(constants::id1);
+
+    CHECK_EQ(matrix(sut).size(), constants::n_vertices);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_hyperedges - 1uz;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "remove_hyperedge should properly remove the column and implicitly shift hyperedge IDs"
+) {
+    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::types::id_type vertex_id = constants::id1;
+
+    sut_type sut{n_vertices, n_hyperedges};
+    sut.bind_tail(vertex_id, constants::id2);
+    sut.bind_head(vertex_id, constants::id4);
+
+    hgl::types::id_type rem_eid;
+    hgl::types::size_type expected_vertex_degree;
+    std::vector<hgl::types::id_type> expected_hyperedges;
+
+    SUBCASE("not present hyperedge < first incident hyperedge") {
+        rem_eid = constants::id1;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2 - 1uz, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present hyperedge = first incident hyperedge") {
+        rem_eid = constants::id2;
+        expected_vertex_degree = 1uz;
+        expected_hyperedges = {constants::id4 - 1uz};
+    }
+
+    SUBCASE("not present hyperedge > first incident hyperedge") {
+        rem_eid = constants::id3;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present hyperedge = last incident hyperedge") {
+        rem_eid = constants::id4;
+        expected_vertex_degree = 1uz;
+        expected_hyperedges = {constants::id2};
+    }
+
+    SUBCASE("not present hyperedge > last incident hyperedge") {
+        rem_eid = constants::id4 + 1uz;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2, constants::id4};
+    }
+
+    CAPTURE(rem_eid);
+    CAPTURE(expected_vertex_degree);
+    CAPTURE(expected_hyperedges);
+
+    sut.remove_hyperedge(rem_eid);
+    CHECK_EQ(matrix(sut)[vertex_id].size(), n_hyperedges - 1uz);
+    CHECK_EQ(sut.degree(vertex_id), expected_vertex_degree);
+    CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), expected_hyperedges));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "incident_vertices should return a view of the hyperedge's incident vertex ids, "
+    "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
+    "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto hyperedge_id = constants::id1;
+    REQUIRE(std::ranges::empty(sut.incident_vertices(hyperedge_id)));
+
+    const auto [tail_bound_vertices, head_bound_vertices] =
+        altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
+
+    CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view));
+    CHECK(std::ranges::equal(sut.tail_vertices(hyperedge_id), tail_bound_vertices));
+    CHECK(std::ranges::equal(sut.head_vertices(hyperedge_id), head_bound_vertices));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "hyperedge_size should return the number of the hyperedge's incident vertices, "
+    "tail_size should return the number of the hyperedge's tail vertices: |T(e)|, "
+    "head_size should return the number of the hyperedge's head vertices: |H(e)|"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto hyperedge_id = constants::id1;
+    REQUIRE_EQ(sut.hyperedge_size(hyperedge_id), 0uz);
+
+    const auto [tail_bound_vertices, head_bound_vertices] =
+        altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
+
+    CHECK_EQ(sut.hyperedge_size(hyperedge_id), constants::n_vertices);
+    CHECK_EQ(sut.tail_size(hyperedge_id), tail_bound_vertices.size());
+    CHECK_EQ(sut.head_size(hyperedge_id), head_bound_vertices.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "bind_tail should set the corresponding matrix entry to backward incidence"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+
+    sut.bind_tail(constants::id1, constants::id1);
+
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::backward);
+
+    const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.tail_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "bind_head should set the corresponding matrix entry to forward incidence"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+
+    sut.bind_head(constants::id1, constants::id1);
+
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::forward);
+
+    const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.head_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix, "unbind should clear the corresponding bit"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    SUBCASE("tail bound") {
+        sut.bind_tail(constants::id1, constants::id1);
+    }
+    SUBCASE("head bound") {
+        sut.bind_head(constants::id1, constants::id1);
+    }
+    CAPTURE(sut);
+
+    REQUIRE_EQ(sut.hyperedge_size(constants::id1), 1uz);
+    REQUIRE_NE(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
+
+    sut.unbind(constants::id1, constants::id2);
+    CHECK_EQ(sut.hyperedge_size(constants::id1), 1uz);
+
+    sut.unbind(constants::id1, constants::id1);
+    CHECK(std::ranges::empty(sut.incident_vertices(constants::id1)));
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
+    "set to a valid, matching incidence type"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    sut.bind_tail(constants::id1, constants::id1);
+    sut.bind_head(constants::id2, constants::id1);
+
+    CHECK(sut.are_bound(constants::id1, constants::id1));
+    CHECK(sut.is_tail(constants::id1, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id1, constants::id1));
+
+    CHECK(sut.are_bound(constants::id2, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id2, constants::id1));
+    CHECK(sut.is_head(constants::id2, constants::id1));
+
+    CHECK_FALSE(sut.are_bound(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
+}
+
+struct test_bf_directed_hyperedge_major_incidence_matrix
+: public test_bf_directed_incidence_matrix {
+    using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, hgl::impl::hyperedge_major_t>;
+    using incidence_type = incidence_descriptor_type<sut_type>;
+};
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix, "should initialize empty matrix by default"
+) {
+    sut_type sut{};
+    CHECK(matrix(sut).empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "initialization with size parameters should properly initialize the matrix"
+) {
+    sut_type sut(constants::n_vertices, constants::n_hyperedges);
+    CHECK_EQ(matrix(sut).size(), constants::n_hyperedges);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_vertices;
+    }));
+    CHECK(std::ranges::all_of(matrix(sut), [this](const auto& row) {
+        return std::ranges::none_of(row, is_incident_pred<sut_type>());
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "add_vertices should properly extend the hypergraph matrix (resize columns)"
+) {
+    sut_type sut{0uz, constants::n_hyperedges};
+    REQUIRE_EQ(matrix(sut).size(), constants::n_hyperedges);
+    REQUIRE(std::ranges::all_of(matrix(sut), [](const auto& row) { return row.size() == 0uz; }));
+
+    sut.add_vertices(constants::n_vertices);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_vertices;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "remove_vertex should properly erase the proper vertex matrix entries (column)"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    sut.remove_vertex(constants::id1);
+
+    CHECK_EQ(matrix(sut).size(), constants::n_hyperedges);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_vertices - 1uz;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "remove_vertex should properly remove the column and implicitly shift vertex IDs"
+) {
+    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+
+    sut_type sut{n_vertices, n_hyperedges};
+    sut.bind_tail(constants::id2, hyperedge_id);
+    sut.bind_head(constants::id4, hyperedge_id);
+
+    hgl::types::id_type rem_vid;
+    hgl::types::size_type expected_hyperedge_size;
+    std::vector<hgl::types::id_type> expected_vertices;
+
+    SUBCASE("not present vertex < first incident vertex") {
+        rem_vid = constants::id1;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2 - 1uz, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present vertex = first incident vertex") {
+        rem_vid = constants::id2;
+        expected_hyperedge_size = 1uz;
+        expected_vertices = {constants::id4 - 1uz};
+    }
+
+    SUBCASE("not present vertex > first incident vertex") {
+        rem_vid = constants::id3;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present vertex = last incident vertex") {
+        rem_vid = constants::id4;
+        expected_hyperedge_size = 1uz;
+        expected_vertices = {constants::id2};
+    }
+
+    SUBCASE("not present vertex > last incident vertex") {
+        rem_vid = constants::id4 + 1uz;
+        expected_hyperedge_size = 2uz;
+        expected_vertices = {constants::id2, constants::id4};
+    }
+
+    CAPTURE(rem_vid);
+    CAPTURE(expected_hyperedge_size);
+    CAPTURE(expected_vertices);
+
+    sut.remove_vertex(rem_vid);
+    CHECK_EQ(matrix(sut)[hyperedge_id].size(), n_vertices - 1uz);
+    CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_hyperedge_size);
+    CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), expected_vertices));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
+    "outgoing_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
+    "incoming_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto vertex_id = constants::id1;
+    REQUIRE(std::ranges::empty(sut.incident_hyperedges(vertex_id)));
+
+    const auto [tail_bound_hyperedges, head_bound_hyperedges] =
+        altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
+
+    CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view));
+    CHECK(std::ranges::equal(sut.outgoing_hyperedges(vertex_id), tail_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.incoming_hyperedges(vertex_id), head_bound_hyperedges));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "degree should return the number of the vertex's incident hyperedges,"
+    "out_degree should return the number of the vertex's outgoing hyperedges (v in T(e)),"
+    "in_degree should return the number of the vertex's incoming hyperedges (v in H(e))"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto vertex_id = constants::id1;
+    REQUIRE_EQ(sut.degree(vertex_id), 0uz);
+
+    const auto [tail_bound_hyperedges, head_bound_hyperedges] =
+        altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
+
+    CHECK_EQ(sut.degree(vertex_id), constants::n_hyperedges);
+    CHECK_EQ(sut.out_degree(vertex_id), tail_bound_hyperedges.size());
+    CHECK_EQ(sut.in_degree(vertex_id), head_bound_hyperedges.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "add_hyperedges should properly extend matrix"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    const auto initial_size = matrix(sut).size();
+
+    sut.add_hyperedges(2uz);
+
+    CHECK_EQ(matrix(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return row.size() == constants::n_vertices;
+    }));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_matrix,
+    "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
+) {
+    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::types::id_type vertex_id = constants::id1;
+
+    sut_type sut{n_vertices, n_hyperedges};
+    sut.bind_tail(vertex_id, constants::id2);
+    sut.bind_head(vertex_id, constants::id4);
+
+    hgl::types::id_type rem_eid;
+    hgl::types::size_type expected_vertex_degree;
+    std::vector<hgl::types::id_type> expected_hyperedges;
+
+    SUBCASE("not present hyperedge < first incident hyperedge") {
+        rem_eid = constants::id1;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2 - 1uz, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present hyperedge = first incident hyperedge") {
+        rem_eid = constants::id2;
+        expected_vertex_degree = 1uz;
+        expected_hyperedges = {constants::id4 - 1uz};
+    }
+
+    SUBCASE("not present hyperedge > first incident hyperedge") {
+        rem_eid = constants::id3;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2, constants::id4 - 1uz};
+    }
+
+    SUBCASE("present hyperedge = last incident hyperedge") {
+        rem_eid = constants::id4;
+        expected_vertex_degree = 1uz;
+        expected_hyperedges = {constants::id2};
+    }
+
+    SUBCASE("not present hyperedge > last incident hyperedge") {
+        rem_eid = constants::id4 + 1uz;
+        expected_vertex_degree = 2uz;
+        expected_hyperedges = {constants::id2, constants::id4};
+    }
+
+    CAPTURE(rem_eid);
+    CAPTURE(expected_vertex_degree);
+    CAPTURE(expected_hyperedges);
+
+    sut.remove_hyperedge(rem_eid);
+    CHECK_EQ(matrix(sut).size(), n_hyperedges - 1uz);
+    CHECK_EQ(sut.degree(vertex_id), expected_vertex_degree);
+    CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), expected_hyperedges));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "incident_vertices should return a view of the hyperedge's incident vertex ids, "
+    "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
+    "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto hyperedge_id = constants::id1;
+    REQUIRE(std::ranges::empty(sut.incident_vertices(hyperedge_id)));
+
+    const auto [tail_bound_vertices, head_bound_vertices] =
+        altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
+
+    CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view));
+    CHECK(std::ranges::equal(sut.tail_vertices(hyperedge_id), tail_bound_vertices));
+    CHECK(std::ranges::equal(sut.head_vertices(hyperedge_id), head_bound_vertices));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "hyperedge_size should return the number of the hyperedge's incident vertices, "
+    "tail_size should return the number of the hyperedge's tail vertices: |T(e)|, "
+    "head_size should return the number of the hyperedge's head vertices: |H(e)|"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    constexpr auto hyperedge_id = constants::id1;
+    REQUIRE_EQ(sut.hyperedge_size(hyperedge_id), 0uz);
+
+    const auto [tail_bound_vertices, head_bound_vertices] =
+        altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
+
+    CHECK_EQ(sut.hyperedge_size(hyperedge_id), constants::n_vertices);
+    CHECK_EQ(sut.tail_size(hyperedge_id), tail_bound_vertices.size());
+    CHECK_EQ(sut.head_size(hyperedge_id), head_bound_vertices.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "bind_tail should set the corresponding matrix entry to backward incidence"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+
+    sut.bind_tail(constants::id1, constants::id1);
+
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::backward);
+
+    const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.tail_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "bind_head should set the corresponding matrix entry to forward incidence"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+
+    sut.bind_head(constants::id1, constants::id1);
+
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::forward);
+
+    const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.head_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix, "unbind should clear the corresponding bit"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    SUBCASE("tail bound") {
+        sut.bind_tail(constants::id1, constants::id1);
+    }
+    SUBCASE("head bound") {
+        sut.bind_head(constants::id1, constants::id1);
+    }
+    CAPTURE(sut);
+
+    REQUIRE_EQ(sut.hyperedge_size(constants::id1), 1uz);
+    REQUIRE_NE(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
+
+    sut.unbind(constants::id1, constants::id2);
+    CHECK_EQ(sut.hyperedge_size(constants::id1), 1uz);
+
+    sut.unbind(constants::id1, constants::id1);
+    CHECK(std::ranges::empty(sut.incident_vertices(constants::id1)));
+    CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_matrix,
+    "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
+    "set to a valid, matching incidence type"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+    sut.bind_tail(constants::id1, constants::id1);
+    sut.bind_head(constants::id2, constants::id1);
+
+    CHECK(sut.are_bound(constants::id1, constants::id1));
+    CHECK(sut.is_tail(constants::id1, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id1, constants::id1));
+
+    CHECK(sut.are_bound(constants::id2, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id2, constants::id1));
+    CHECK(sut.is_head(constants::id2, constants::id1));
+
+    CHECK_FALSE(sut.are_bound(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
 }
 
 TEST_SUITE_END(); // test_incidence_matrix

@@ -59,11 +59,11 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_vertices() const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::size_type order() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_hyperedges() const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::size_type size() const noexcept {
         return this->_n_hyperedges;
     }
 

@@ -13,7 +13,12 @@ namespace hgl {
 
 namespace impl {
 
+enum class element_type : bool { vertex, hyperedge };
+
 struct vertex_major_t {
+    static constexpr element_type major_element = element_type::vertex;
+    static constexpr element_type minor_element = element_type::hyperedge;
+
     template <std::regular T>
     [[nodiscard]] static constexpr T major(const T& vertex_el, const T& hyperedge_el) noexcept {
         return vertex_el;
@@ -33,6 +38,9 @@ struct vertex_major_t {
 };
 
 struct hyperedge_major_t {
+    static constexpr element_type major_element = element_type::hyperedge;
+    static constexpr element_type minor_element = element_type::vertex;
+
     template <std::regular T>
     [[nodiscard]] static constexpr T major(const T& vertex_el, const T& hyperedge_el) noexcept {
         return hyperedge_el;
