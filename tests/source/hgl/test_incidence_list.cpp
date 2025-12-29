@@ -747,86 +747,95 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.head_size(hyperedge_id), head_bound_vertices.size());
 }
 
-// TEST_CASE_FIXTURE(
-//     test_bf_directed_vertex_major_incidence_list,
-//     "bind_tail should set the corresponding matrix entry to backward incidence"
-// ) {
-//     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-//     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "bind_tail should insert the hyperedge id to the tail list of an appropriate vertex entry"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
 
-//     sut.bind_tail(constants::id1, constants::id1);
+    sut.bind_tail(constants::id1, constants::id1);
 
-//     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::backward);
+    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 1uz);
+    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 0uz);
+    CHECK_EQ(storage(sut)[constants::id1].tail.front(), constants::id1);
 
-//     const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
-//     CHECK_EQ(sut.tail_size(constants::id1), 1uz);
-//     CHECK_EQ(std::ranges::size(vertices), 1uz);
-//     CHECK(std::ranges::contains(vertices, constants::id1));
-// }
+    const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.tail_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
 
-// TEST_CASE_FIXTURE(
-//     test_bf_directed_vertex_major_incidence_list,
-//     "bind_head should set the corresponding matrix entry to forward incidence"
-// ) {
-//     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-//     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "bind_head should insert the hyperedge id to the head list of an appropriate vertex entry"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
 
-//     sut.bind_head(constants::id1, constants::id1);
+    sut.bind_head(constants::id1, constants::id1);
 
-//     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::forward);
+    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 1uz);
+    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 0uz);
+    CHECK_EQ(storage(sut)[constants::id1].head.front(), constants::id1);
 
-//     const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
-//     CHECK_EQ(sut.head_size(constants::id1), 1uz);
-//     CHECK_EQ(std::ranges::size(vertices), 1uz);
-//     CHECK(std::ranges::contains(vertices, constants::id1));
-// }
+    const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
+    CHECK_EQ(sut.head_size(constants::id1), 1uz);
+    CHECK_EQ(std::ranges::size(vertices), 1uz);
+    CHECK(std::ranges::contains(vertices, constants::id1));
+}
 
-// TEST_CASE_FIXTURE(
-//     test_bf_directed_vertex_major_incidence_list, "unbind should clear the corresponding bit"
-// ) {
-//     sut_type sut{constants::n_vertices, constants::n_hyperedges};
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "unbind should erase the hyperedge id from a proper vertex entry"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    std::vector<hgl::types::id_type> expected_storage;
 
-//     SUBCASE("tail bound") {
-//         sut.bind_tail(constants::id1, constants::id1);
-//     }
-//     SUBCASE("head bound") {
-//         sut.bind_head(constants::id1, constants::id1);
-//     }
-//     CAPTURE(sut);
+    SUBCASE("tail bound") {
+        sut.bind_tail(constants::id1, constants::id1);
+        expected_storage = storage(sut)[constants::id1].tail;
+    }
+    SUBCASE("head bound") {
+        sut.bind_head(constants::id1, constants::id1);
+        expected_storage = storage(sut)[constants::id1].head;
+    }
+    CAPTURE(sut);
+    CAPTURE(expected_storage);
 
-//     REQUIRE_EQ(sut.hyperedge_size(constants::id1), 1uz);
-//     REQUIRE_NE(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
+    REQUIRE_EQ(sut.hyperedge_size(constants::id1), 1uz);
+    REQUIRE_EQ(expected_storage.size(), 1uz);
+    REQUIRE_EQ(expected_storage.front(), constants::id1);
 
-//     sut.unbind(constants::id1, constants::id2);
-//     CHECK_EQ(sut.hyperedge_size(constants::id1), 1uz);
+    sut.unbind(constants::id1, constants::id2);
+    CHECK_EQ(sut.hyperedge_size(constants::id1), 1uz);
 
-//     sut.unbind(constants::id1, constants::id1);
-//     CHECK(std::ranges::empty(sut.incident_vertices(constants::id1)));
-//     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::none);
-// }
+    sut.unbind(constants::id1, constants::id1);
+    CHECK(std::ranges::empty(sut.incident_vertices(constants::id1)));
+}
 
-// TEST_CASE_FIXTURE(
-//     test_bf_directed_vertex_major_incidence_list,
-//     "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
-//     "set to a valid, matching incidence type"
-// ) {
-//     sut_type sut{constants::n_vertices, constants::n_hyperedges};
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
+    "set to a valid, matching incidence type"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
-//     sut.bind_tail(constants::id1, constants::id1);
-//     sut.bind_head(constants::id2, constants::id1);
+    sut.bind_tail(constants::id1, constants::id1);
+    sut.bind_head(constants::id2, constants::id1);
 
-//     CHECK(sut.are_bound(constants::id1, constants::id1));
-//     CHECK(sut.is_tail(constants::id1, constants::id1));
-//     CHECK_FALSE(sut.is_head(constants::id1, constants::id1));
+    CHECK(sut.are_bound(constants::id1, constants::id1));
+    CHECK(sut.is_tail(constants::id1, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id1, constants::id1));
 
-//     CHECK(sut.are_bound(constants::id2, constants::id1));
-//     CHECK_FALSE(sut.is_tail(constants::id2, constants::id1));
-//     CHECK(sut.is_head(constants::id2, constants::id1));
+    CHECK(sut.are_bound(constants::id2, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id2, constants::id1));
+    CHECK(sut.is_head(constants::id2, constants::id1));
 
-//     CHECK_FALSE(sut.are_bound(constants::id3, constants::id1));
-//     CHECK_FALSE(sut.is_tail(constants::id3, constants::id1));
-//     CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
-// }
+    CHECK_FALSE(sut.are_bound(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_tail(constants::id3, constants::id1));
+    CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
+}
 
 // struct test_bf_directed_hyperedge_major_incidence_matrix
 // : public test_bf_directed_incidence_list {
