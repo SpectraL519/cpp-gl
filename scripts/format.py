@@ -12,6 +12,7 @@ class DefaultParameters:
     file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
     exclude_paths: list[str] = ["tests/external"]
     check: bool = False
+    clang_format_executable: str = "clang-format"
 
 
 def parse_args():
@@ -19,7 +20,6 @@ def parse_args():
     parser.add_argument(
         "-m",
         "--modified-files",
-        type=bool,
         default=DefaultParameters.modified_files,
         action=argparse.BooleanOptionalAction,
         help="run clang-format only on the files modified since last pushed commit",
@@ -30,7 +30,6 @@ def parse_args():
         type=str,
         default=DefaultParameters.search_paths,
         nargs="*",
-        action="extend",
         help="list of search directory paths",
     )
     parser.add_argument(
@@ -39,7 +38,6 @@ def parse_args():
         type=str,
         default=DefaultParameters.file_patterns,
         nargs="*",
-        action="extend",
         help="list of file patterns to include",
     )
     parser.add_argument(
@@ -48,16 +46,21 @@ def parse_args():
         type=str,
         default=DefaultParameters.exclude_paths,
         nargs="*",
-        action="extend",
         help="list of directory paths to exclude",
     )
     parser.add_argument(
         "-c",
         "--check",
-        type=bool,
         default=DefaultParameters.check,
         action=argparse.BooleanOptionalAction,
         help="run format check",
+    )
+    parser.add_argument(
+        "-exe",
+        "--clang-format-executable",
+        type=str,
+        default=DefaultParameters.clang_format_executable,
+        help="path or name of the clang-format executable (default: clang-format)",
     )
 
     return vars(parser.parse_args())
@@ -81,7 +84,7 @@ def get_modified_files(files: set[Path]) -> set[Path]:
         raise RuntimeError("Failed to retrieve the modified files.")
 
 
-def run_clang_format(files: set[Path], check: bool) -> int:
+def run_clang_format(clang_format_exec: str, files: set[Path], check: bool) -> int:
     n_files = len(files)
     if check:
         print(f"Files to check: {n_files}")
@@ -92,7 +95,7 @@ def run_clang_format(files: set[Path], check: bool) -> int:
     for i, file in enumerate(files):
         print(f"[{i + 1}/{n_files}] {file}")
 
-        cmd = ["clang-format-18", str(file)]
+        cmd = [clang_format_exec, str(file)]
         if check:
             cmd.extend(["--dry-run", "--Werror"])
         else:
@@ -114,12 +117,13 @@ def main(
     file_patterns: list[str],
     exclude_paths: list[str],
     check: bool,
+    clang_format_executable: str,
 ):
     files_to_format = find_files(search_paths, file_patterns, exclude_paths)
     if modified_files:
         files_to_format = get_modified_files(files_to_format)
 
-    sys.exit(run_clang_format(files_to_format, check))
+    sys.exit(run_clang_format(clang_format_executable, files_to_format, check))
 
 
 if __name__ == "__main__":

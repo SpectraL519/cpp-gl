@@ -2,7 +2,7 @@ name: format
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/format.yaml
       - scripts/format.py
@@ -10,7 +10,6 @@ on:
       - tests/include/**
       - tests/source/**
       - tests/app/**
-
 
 jobs:
   build:
@@ -29,4 +28,4 @@ jobs:
       - name: Test formatting
         shell: bash
         run: |
-          python3 scripts/format.py --check
+          python3 scripts/format.py --check --clang-format-executable clang-format-18
