@@ -165,7 +165,8 @@ private:
     }
 
     template <impl::element_type Element>
-    gl_attr_force_inline types::size_type _count(const types::id_type id) const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::size_type _count(const types::id_type id
+    ) const noexcept {
         types::size_type count = 0uz;
         if constexpr (Element == layout_tag::major_element) { // count major
             for (const bool bit : this->_matrix[id])
