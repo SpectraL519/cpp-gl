@@ -2,12 +2,11 @@ name: licence
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/licence.yaml
       - scripts/check_licence.py
       - include/**
-
 
 jobs:
   build:

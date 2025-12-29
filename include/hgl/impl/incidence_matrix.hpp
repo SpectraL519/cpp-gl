@@ -59,8 +59,7 @@ public:
         this->_remove<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_incident_with<impl::element_type::vertex>(vertex_id);
     }
@@ -79,13 +78,13 @@ public:
         this->_remove<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
-        const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_incident_with<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const noexcept {
+    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
+    ) const noexcept {
         return this->_count<impl::element_type::hyperedge>(hyperedge_id);
     }
 
@@ -166,8 +165,7 @@ private:
     }
 
     template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline types::size_type _count(
-        const types::id_type id
+    [[nodiscard]] gl_attr_force_inline types::size_type _count(const types::id_type id
     ) const noexcept {
         types::size_type count = 0uz;
         if constexpr (Element == layout_tag::major_element) { // count major
@@ -220,8 +218,7 @@ public:
 
     // --- vertex methods : incidence queries ---
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_incident);
     }
@@ -230,8 +227,7 @@ public:
         return this->_count<impl::element_type::vertex>(vertex_id, _is_incident);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_tail);
     }
@@ -240,8 +236,7 @@ public:
         return this->_count<impl::element_type::vertex>(vertex_id, _is_tail);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(
-        const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_head);
     }
@@ -262,18 +257,17 @@ public:
 
     // --- hyperedge methods : incidence queries ---
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
-        const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_query<impl::element_type::hyperedge>(hyperedge_id, _is_incident);
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const noexcept {
+    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
+    ) const noexcept {
         return this->_count<impl::element_type::hyperedge>(hyperedge_id, _is_incident);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(
-        const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_query<impl::element_type::hyperedge>(hyperedge_id, _is_tail);
     }
@@ -282,8 +276,7 @@ public:
         return this->_count<impl::element_type::hyperedge>(hyperedge_id, _is_tail);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(
-        const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_query<impl::element_type::hyperedge>(hyperedge_id, _is_head);
     }
@@ -401,10 +394,8 @@ private:
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // query major
             return std::views::iota(0uz, this->_matrix_row_size)
-                 | std::views::filter([&row = this->_matrix[id],
-                                       pred](const types::id_type minor_id) {
-                       return pred(row[minor_id]);
-                   });
+                 | std::views::filter([&row = this->_matrix[id], pred](const types::id_type minor_id
+                                      ) { return pred(row[minor_id]); });
         }
         else { // query minor
             return std::views::iota(0uz, this->_matrix.size())

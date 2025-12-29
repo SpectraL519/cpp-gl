@@ -116,7 +116,8 @@ template <
     if (negative_edge.has_value()) {
         const auto& edge = negative_edge.value();
         throw std::invalid_argument(std::format(
-            "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
+            "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | "
+            "w={}]",
             edge.source(),
             edge.target(),
             get_weight<GraphType>(edge)
