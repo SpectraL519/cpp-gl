@@ -20,12 +20,16 @@ struct vertex_major_t {
     static constexpr element_type minor_element = element_type::hyperedge;
 
     template <std::regular T>
-    [[nodiscard]] static constexpr T major(const T& vertex_el, const T& hyperedge_el) noexcept {
+    [[nodiscard]] static constexpr T major(
+        const T& vertex_el, [[maybe_unused]] const T& hyperedge_el
+    ) noexcept {
         return vertex_el;
     }
 
     template <std::regular T>
-    [[nodiscard]] static constexpr T minor(const T& vertex_el, const T& hyperedge_el) noexcept {
+    [[nodiscard]] static constexpr T minor(
+        [[maybe_unused]] const T& vertex_el, const T& hyperedge_el
+    ) noexcept {
         return hyperedge_el;
     }
 
@@ -42,12 +46,16 @@ struct hyperedge_major_t {
     static constexpr element_type minor_element = element_type::vertex;
 
     template <std::regular T>
-    [[nodiscard]] static constexpr T major(const T& vertex_el, const T& hyperedge_el) noexcept {
+    [[nodiscard]] static constexpr T major(
+        [[maybe_unused]] const T& vertex_el, const T& hyperedge_el
+    ) noexcept {
         return hyperedge_el;
     }
 
     template <std::regular T>
-    [[nodiscard]] static constexpr T minor(const T& vertex_el, const T& hyperedge_el) noexcept {
+    [[nodiscard]] static constexpr T minor(
+        const T& vertex_el, [[maybe_unused]] const T& hyperedge_el
+    ) noexcept {
         return vertex_el;
     }
 

@@ -56,12 +56,14 @@ public:
         this->_remove<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
         return this->_incident_with<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(
+        const types::id_type vertex_id
     ) const noexcept {
         return this->_size<impl::element_type::vertex>(vertex_id);
     }
@@ -77,7 +79,8 @@ public:
         this->_remove<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
         return this->_incident_with<impl::element_type::hyperedge>(hyperedge_id);
     }
@@ -115,7 +118,7 @@ public:
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) const noexcept {
-        return this->_are_bound_impl(
+        return this->_contains(
             this->_major_storage[layout_tag::major(vertex_id, hyperedge_id)],
             layout_tag::minor(vertex_id, hyperedge_id)
         );
@@ -157,7 +160,7 @@ private:
         else { // incident with minor
             return std::views::iota(0uz, this->_major_storage.size())
                  | std::views::filter([this, minor_id = id](types::id_type major_id) {
-                       return this->_are_bound_impl(this->_major_storage[major_id], minor_id);
+                       return this->_contains(this->_major_storage[major_id], minor_id);
                    });
         }
     }
@@ -170,17 +173,17 @@ private:
         else { // size minor
             types::size_type size = 0uz;
             for (const auto& major_el : this->_major_storage)
-                if (this->_are_bound_impl(major_el, id))
+                if (this->_contains(major_el, id))
                     ++size;
             return size;
         }
     }
 
-    [[nodiscard]] bool _are_bound_impl(
-        const major_element_type& major_el, const types::id_type minor_id
+    [[nodiscard]] bool _contains(
+        const minor_storage_type& minor_storage, const types::id_type minor_id
     ) const noexcept {
-        const auto minor_it = std::ranges::lower_bound(major_el, minor_id);
-        return minor_it != major_el.end() and *minor_it == minor_id;
+        const auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);
+        return minor_it != minor_storage.end() and *minor_it == minor_id;
     }
 
     major_storage_type _major_storage;
@@ -217,7 +220,8 @@ public:
 
     // --- vertex methods : incidence queries ---
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
         return this->_get<impl::element_type::vertex>(vertex_id);
     }
@@ -226,22 +230,24 @@ public:
         return this->_size<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
-        return this->_get<impl::element_type::vertex>(vertex_id);
+        return this->_get_tail<impl::element_type::vertex>(vertex_id);
     }
 
     [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const noexcept {
-        return this->_size<impl::element_type::vertex>(vertex_id);
+        return this->_tail_size<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(
+        const types::id_type vertex_id
     ) const noexcept {
-        return this->_get<impl::element_type::vertex>(vertex_id);
+        return this->_get_head<impl::element_type::vertex>(vertex_id);
     }
 
     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept {
-        return this->_size<impl::element_type::vertex>(vertex_id);
+        return this->_head_size<impl::element_type::vertex>(vertex_id);
     }
 
     // --- hyperedge methods : general ---
@@ -256,32 +262,34 @@ public:
 
     // --- hyperedge methods : incidence queries ---
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
         return this->_get<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const noexcept {
         return this->_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
-        return this->_get<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_get_tail<impl::element_type::hyperedge>(hyperedge_id);
     }
 
     [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const noexcept {
-        return this->_size<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_tail_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(
+        const types::id_type hyperedge_id
     ) const noexcept {
-        return this->_get<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_get_head<impl::element_type::hyperedge>(hyperedge_id);
     }
 
     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept {
-        return this->_size<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_head_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
     // --- binding methods ---
@@ -290,14 +298,14 @@ public:
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_major_storage[major_id].tail.push_back(minor_id);
+        this->_unique_insert(this->_major_storage[major_id].tail, minor_id);
     }
 
     gl_attr_force_inline void bind_head(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_major_storage[major_id].head.push_back(minor_id);
+        this->_unique_insert(this->_major_storage[major_id].head, minor_id);
     }
 
     gl_attr_force_inline void unbind(
@@ -305,27 +313,29 @@ public:
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         auto& entry = this->_major_storage[major_id];
+        this->_remove_no_align(entry.tail, minor_id);
+        this->_remove_no_align(entry.head, minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-
+        return this->_contains(this->_major_storage[major_id], minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_tail(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-
+        return this->_contains(this->_major_storage[major_id].tail, minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_head(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-
+        return this->_contains(this->_major_storage[major_id].head, minor_id);
     }
 
 #ifdef HGL_TESTING
@@ -336,6 +346,13 @@ private:
     using minor_element_type = types::id_type;
     using minor_storage_type = std::vector<minor_element_type>;
 
+    /**
+     * For hyperedge-major representation: tail = T(e), head = H(e)
+     * For vertex-major representation:
+     * - tail = {e in E(G) : v in T(e)}
+     * - head = {e in E(G) : v in H(e)}
+     * where G is the hypergraph and v is the vertex entry in the outer list
+     */
     struct major_element_type {
         minor_storage_type tail;
         minor_storage_type head;
@@ -358,18 +375,23 @@ private:
         }
         else { // remove minor
             for (auto& minor_storage : this->_major_storage) {
-                this->_remove_minor(minor_storage.tail, id);
-                this->_remove_minor(minor_storage.head, id);
+                this->_remove(minor_storage.tail, id);
+                this->_remove(minor_storage.head, id);
             }
         }
     }
 
-    void _remove_minor(minor_storage_type& minor_storage, const types::id_type minor_id) noexcept {
-        auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);
-        if (minor_it != minor_storage.end() and *minor_it == minor_id)
-            minor_it = minor_storage.erase(minor_it); // unbind the element
+    void _remove(minor_storage_type& minor_storage, const types::id_type id) noexcept {
+        auto minor_it = this->_remove_no_align(minor_storage, id);
         while (minor_it != minor_storage.end())
-            --(*minor_it++); // decrement ids > minor_id
+            --(*minor_it++); // decrement ids > id
+    }
+
+    auto _remove_no_align(minor_storage_type& minor_storage, const types::id_type id) noexcept {
+        auto minor_it = std::ranges::lower_bound(minor_storage, id);
+        if (minor_it != minor_storage.end() and *minor_it == id)
+            minor_it = minor_storage.erase(minor_it); // unbind the element
+        return minor_it;
     }
 
     template <impl::element_type Element>
@@ -379,20 +401,105 @@ private:
             return std::views::join(entry.tail, entry.head);
         }
         else { // get minor
-
+            return std::views::iota(0uz, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
+                       return this->_contains(this->_major_storage[major_id], minor_id);
+                   });
         }
     }
 
     template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline types::size_type _size(const types::id_type id) const noexcept {
+    [[nodiscard]] gl_attr_force_inline auto _get_tail(const types::id_type id) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // get major
+            return std::views::all(this->_major_storage[id].tail);
+        }
+        else { // get minor
+            return std::views::iota(0uz, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
+                       return this->_contains(this->_major_storage[major_id].tail, minor_id);
+                   });
+        }
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] gl_attr_force_inline auto _get_head(const types::id_type id) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // get major
+            return std::views::all(this->_major_storage[id].head);
+        }
+        else { // get minor
+            return std::views::iota(0uz, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
+                       return this->_contains(this->_major_storage[major_id].head, minor_id);
+                   });
+        }
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] gl_attr_force_inline types::size_type _size(
+        const types::id_type id
+    ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
             const auto& entry = this->_major_storage[id];
             return entry.tail.size() + entry.head.size();
         }
         else { // size minor
             types::size_type size = 0uz;
+            for (const auto& major_el : this->_major_storage)
+                if (this->_contains(major_el, id))
+                    ++size;
             return size;
         }
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] gl_attr_force_inline types::size_type _tail_size(
+        const types::id_type id
+    ) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // size major
+            return this->_major_storage[id].tail.size();
+        }
+        else { // size minor
+            types::size_type size = 0uz;
+            for (const auto& major_el : this->_major_storage)
+                if (this->_contains(major_el.tail, id))
+                    ++size;
+            return size;
+        }
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] gl_attr_force_inline types::size_type _head_size(
+        const types::id_type id
+    ) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // size major
+            return this->_major_storage[id].head.size();
+        }
+        else { // size minor
+            types::size_type size = 0uz;
+            for (const auto& major_el : this->_major_storage)
+                if (this->_contains(major_el.head, id))
+                    ++size;
+            return size;
+        }
+    }
+
+    void _unique_insert(minor_storage_type& minor_storage, const types::id_type id) noexcept {
+        const auto minor_it = std::ranges::lower_bound(minor_storage, id);
+        if (minor_it == minor_storage.end() or *minor_it != id)
+            minor_storage.insert(minor_it, id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool _contains(
+        const major_element_type& major_el, const types::id_type id
+    ) const noexcept {
+        return this->_contains(major_el.tail, id) or this->_contains(major_el.head, id);
+    }
+
+    [[nodiscard]] bool _contains(
+        const minor_storage_type& minor_storage, const types::id_type id
+    ) const noexcept {
+        const auto minor_it = std::ranges::lower_bound(minor_storage, id);
+        return minor_it != minor_storage.end() and *minor_it == id;
     }
 
     major_storage_type _major_storage;
