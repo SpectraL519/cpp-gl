@@ -618,11 +618,9 @@ TEST_CASE_FIXTURE(
     const auto [tail_bound_hyperedges, head_bound_hyperedges] =
         altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
 
-    CHECK(
-        std::ranges::is_permutation(
-            sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
-        )
-    );
+    CHECK(std::ranges::is_permutation(
+        sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
+    ));
     CHECK(std::ranges::equal(sut.outgoing_hyperedges(vertex_id), tail_bound_hyperedges));
     CHECK(std::ranges::equal(sut.incoming_hyperedges(vertex_id), head_bound_hyperedges));
 }
