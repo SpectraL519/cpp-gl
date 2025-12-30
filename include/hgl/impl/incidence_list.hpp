@@ -289,7 +289,7 @@ public:
     gl_attr_force_inline void bind_tail(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) noexcept {
-        // TODO: validate if minor_id is not in head
+        // TODO: validate if minor_id is not in head - if yes, unbind
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         this->_unique_insert(this->_major_storage[major_id].tail, minor_id);
     }
@@ -297,7 +297,7 @@ public:
     gl_attr_force_inline void bind_head(
         const types::id_type vertex_id, const types::id_type hyperedge_id
     ) noexcept {
-        // TODO: validate if minor_id is not in tail
+        // TODO: validate if minor_id is not in tail - if yes, unbind
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         this->_unique_insert(this->_major_storage[major_id].head, minor_id);
     }
