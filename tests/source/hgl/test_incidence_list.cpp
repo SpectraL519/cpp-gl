@@ -785,6 +785,36 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_list,
+    "binding methods should rebind the elements if they are already bound"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    constexpr auto vertex_id = constants::id1, hyperedge_id = constants::id2;
+
+    REQUIRE_FALSE(sut.are_bound(vertex_id, hyperedge_id));
+    REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
+    REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
+
+    // initial bind
+    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+
+    // rebind tail
+    sut.bind_tail(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
+
+    // rebind head
+    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
     "unbind should erase the hyperedge id from a proper vertex entry"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1102,6 +1132,36 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.head_size(constants::id1), 1uz);
     CHECK_EQ(std::ranges::size(hyperedges), 1uz);
     CHECK(std::ranges::contains(hyperedges, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "binding methods should rebind the elements if they are already bound"
+) {
+    sut_type sut{constants::n_vertices, constants::n_hyperedges};
+    constexpr auto vertex_id = constants::id1, hyperedge_id = constants::id2;
+
+    REQUIRE_FALSE(sut.are_bound(vertex_id, hyperedge_id));
+    REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
+    REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
+
+    // initial bind
+    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+
+    // rebind tail
+    sut.bind_tail(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
+
+    // rebind head
+    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
 }
 
 TEST_CASE_FIXTURE(
