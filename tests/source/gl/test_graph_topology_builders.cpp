@@ -27,7 +27,7 @@ void verify_graph_size(
     const gl::types::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
-    REQUIRE_EQ(graph.n_edges(), expected_n_connections);
+    REQUIRE_EQ(graph.size(), expected_n_connections);
 }
 
 template <gl::type_traits::c_graph GraphType>
@@ -37,9 +37,7 @@ void verify_bidir_graph_size(
     const gl::types::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
-    REQUIRE_EQ(
-        graph.n_edges(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections)
-    );
+    REQUIRE_EQ(graph.size(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
 }
 
 } // namespace
@@ -241,14 +239,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             const auto complete_bin_tree =
                 gl::topology::regular_binary_tree<graph_type>(constants::zero);
             REQUIRE_EQ(complete_bin_tree.order(), constants::zero_elements);
-            REQUIRE_EQ(complete_bin_tree.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
             const auto complete_bin_tree =
                 gl::topology::regular_binary_tree<graph_type>(constants::one);
             REQUIRE_EQ(complete_bin_tree.order(), constants::one_element);
-            REQUIRE_EQ(complete_bin_tree.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
         }
     }
 }

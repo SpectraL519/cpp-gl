@@ -9,7 +9,7 @@ namespace gl_testing::io_common {
 template <gl::type_traits::c_graph GraphType>
 void verify_graph_structure(const GraphType& actual, const GraphType& expected) {
     REQUIRE_EQ(actual.order(), expected.order());
-    REQUIRE_EQ(actual.n_edges(), expected.n_edges());
+    REQUIRE_EQ(actual.size(), expected.size());
 
     // verify that the edges of the in graph are equivalent to the edges of the out graph
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {

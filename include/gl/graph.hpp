@@ -63,7 +63,7 @@ public:
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type n_edges() const noexcept {
+    [[nodiscard]] gl_attr_force_inline types::size_type size() const noexcept {
         return this->_n_edges;
     }
 
@@ -569,7 +569,7 @@ private:
             "type: {}\nnumber of vertices: {}\nnumber of edges: {}\nvertices:\n",
             _directed_type_str(),
             this->order(),
-            this->n_edges()
+            this->size()
         );
 
         for (const auto& vertex : this->vertices()) {
@@ -580,7 +580,7 @@ private:
     }
 
     void _concise_write(std::ostream& os) const {
-        os << std::format("{} {} {}\n", _directed_type_str(), this->order(), this->n_edges());
+        os << std::format("{} {} {}\n", _directed_type_str(), this->order(), this->size());
 
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << " :";
@@ -601,7 +601,7 @@ private:
             "{} {} {} {} {}\n",
             static_cast<int>(type_traits::c_directed_edge<edge_type>),
             this->order(),
-            this->n_edges(),
+            this->size(),
             static_cast<int>(with_vertex_properties),
             static_cast<int>(with_edge_properties)
         );
