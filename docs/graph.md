@@ -123,13 +123,13 @@ Based on the specified traits, the `graph` class defines the following types:
 
 ### Size Operations
 
-- **`graph.n_vertices() const noexcept`**:
+- **`graph.order() const noexcept`**:
   - *Description*: Returns the total number of vertices in the graph.
   - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
   - *Return type*: `types::size_type`
 
-- **`graph.n_edges() const noexcept`**:
-  - Returns the number of edges in the graph.
+- **`graph.size() const noexcept`**:
+  - *Description*: Returns the number of edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
 

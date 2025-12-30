@@ -26,8 +26,8 @@ void verify_graph_size(
     const gl::types::size_type expected_n_vertices,
     const gl::types::size_type expected_n_connections
 ) {
-    REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
-    REQUIRE_EQ(graph.n_edges(), expected_n_connections);
+    REQUIRE_EQ(graph.order(), expected_n_vertices);
+    REQUIRE_EQ(graph.size(), expected_n_connections);
 }
 
 template <gl::type_traits::c_graph GraphType>
@@ -36,10 +36,8 @@ void verify_bidir_graph_size(
     const gl::types::size_type expected_n_vertices,
     const gl::types::size_type expected_n_connections
 ) {
-    REQUIRE_EQ(graph.n_vertices(), expected_n_vertices);
-    REQUIRE_EQ(
-        graph.n_edges(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections)
-    );
+    REQUIRE_EQ(graph.order(), expected_n_vertices);
+    REQUIRE_EQ(graph.size(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
 }
 
 } // namespace
@@ -84,7 +82,7 @@ template <gl::type_traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
         const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
+            graph.get_vertex((source.id() + constants::one_element) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -97,7 +95,7 @@ template <gl::type_traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
         const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
+            (source.id() + graph.order() - constants::one_element) % graph.order()
         );
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
@@ -111,10 +109,10 @@ template <gl::type_traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
         const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.n_vertices());
+            graph.get_vertex((source.id() + constants::one_element) % graph.order());
 
         const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.n_vertices() - constants::one_element) % graph.n_vertices()
+            (source.id() + graph.order() - constants::one_element) % graph.order()
         );
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
@@ -130,7 +128,7 @@ template <gl::type_traits::c_graph GraphType>
     return [&graph](const vertex_type& source) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source.id());
 
-        if (target_ids.first >= graph.n_vertices())
+        if (target_ids.first >= graph.order())
             // no need to check second as second = first + 1
             return gl::util::range_size(graph.adjacent_edges(source)) == constants::zero;
 
@@ -155,7 +153,7 @@ template <gl::type_traits::c_graph GraphType>
                 ? constants::zero
                 : (source_id - constants::one) / constants::two;
 
-        if (target_ids.first >= graph.n_vertices()) {
+        if (target_ids.first >= graph.order()) {
             // no need to check second as second = first + 1
             auto adjacent_edges = graph.adjacent_edges(source_id);
 
@@ -240,15 +238,15 @@ TEST_CASE_TEMPLATE_DEFINE(
         SUBCASE("depth = 0 : empty graph") {
             const auto complete_bin_tree =
                 gl::topology::regular_binary_tree<graph_type>(constants::zero);
-            REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::zero_elements);
-            REQUIRE_EQ(complete_bin_tree.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.order(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
             const auto complete_bin_tree =
                 gl::topology::regular_binary_tree<graph_type>(constants::one);
-            REQUIRE_EQ(complete_bin_tree.n_vertices(), constants::one_element);
-            REQUIRE_EQ(complete_bin_tree.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(complete_bin_tree.order(), constants::one_element);
+            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
         }
     }
 }
@@ -291,7 +289,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.n_vertices() - constants::one_element;
+        const auto n_source_vertices = path.order() - constants::one_element;
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -304,7 +302,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.n_vertices() - constants::one_element;
+        const auto n_source_vertices = path.order() - constants::one_element;
 
         verify_graph_size(path, constants::n_elements_top, constants::two * n_source_vertices);
 
@@ -396,7 +394,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CAPTURE(path);
 
-        const auto n_source_vertices = path.n_vertices() - constants::one_element;
+        const auto n_source_vertices = path.order() - constants::one_element;
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();

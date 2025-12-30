@@ -59,7 +59,7 @@ template <type_traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
     const GraphType& graph
 ) {
-    return paths_descriptor_type<GraphType>{graph.n_vertices()};
+    return paths_descriptor_type<GraphType>{graph.order()};
 }
 
 template <

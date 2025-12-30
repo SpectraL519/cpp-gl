@@ -47,7 +47,7 @@ template <type_traits::c_undirected_graph GraphType>
     using queue_type = std::priority_queue<edge_type, std::vector<edge_type>, edge_comparator>;
 
     // prepare the necessary utility
-    const auto n_vertices = graph.n_vertices();
+    const auto n_vertices = graph.order();
     mst_descriptor<GraphType> mst(n_vertices);
     std::vector<bool> visited(n_vertices, false);
     queue_type edge_queue;
@@ -96,7 +96,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
     using distance_type = types::vertex_distance_type<GraphType>;
 
     // Prepare the necessary utility
-    const auto n_vertices = graph.n_vertices();
+    const auto n_vertices = graph.order();
     mst_descriptor<GraphType> mst(n_vertices);
 
     std::vector<bool> in_mst(n_vertices, false);

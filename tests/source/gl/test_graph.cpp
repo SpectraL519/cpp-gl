@@ -29,9 +29,9 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const gl::types::size_type n_unique_edges_in_full_graph =
-            n_incident_edges_for_fully_connected_vertex(graph) * graph.n_vertices();
+            n_incident_edges_for_fully_connected_vertex(graph) * graph.order();
 
-        REQUIRE_EQ(graph.n_edges(), n_unique_edges_in_full_graph);
+        REQUIRE_EQ(graph.size(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
     }
 
@@ -45,9 +45,9 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const gl::types::size_type n_unique_edges_in_full_graph =
-            (n_incident_edges_for_fully_connected_vertex(graph) * graph.n_vertices()) / 2;
+            (n_incident_edges_for_fully_connected_vertex(graph) * graph.order()) / 2;
 
-        REQUIRE_EQ(graph.n_edges(), n_unique_edges_in_full_graph);
+        REQUIRE_EQ(graph.size(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
     }
 
@@ -63,7 +63,7 @@ struct test_graph {
 
     template <gl::type_traits::c_instantiation_of<gl::graph> GraphType>
     gl::types::size_type n_incident_edges_for_fully_connected_vertex(const GraphType& graph) {
-        return graph.n_vertices() - constants::one_element;
+        return graph.order() - constants::one_element;
     }
 
     const vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
@@ -106,8 +106,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("graph should be initialized with no vertices and no edges by default") {
         sut_type sut;
 
-        CHECK_EQ(sut.n_vertices(), constants::zero_elements);
-        CHECK_EQ(sut.n_edges(), constants::zero_elements);
+        CHECK_EQ(sut.order(), constants::zero_elements);
+        CHECK_EQ(sut.size(), constants::zero_elements);
     }
 
     SUBCASE("graph constructed with n_vertices parameter should contain n_vertices vertices and no "
@@ -142,11 +142,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         for (gl::types::id_type v_id = constants::zero_elements; v_id < target_n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
-            CHECK_EQ(sut.n_vertices(), v_id + constants::one_element);
+            CHECK_EQ(sut.order(), v_id + constants::one_element);
             CHECK(sut.adjacent_edges(v_id).empty());
         }
 
-        CHECK_EQ(sut.n_vertices(), target_n_vertices);
+        CHECK_EQ(sut.order(), target_n_vertices);
     }
 
     SUBCASE("add_vertex_with should initialize a new vertex with the input properties structure") {
@@ -154,7 +154,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         gl::graph<properties_traits_type> sut;
 
         const auto vertex = sut.add_vertex_with(constants::visited);
-        REQUIRE_EQ(sut.n_vertices(), constants::one_element);
+        REQUIRE_EQ(sut.order(), constants::one_element);
 
         CHECK_EQ(vertex.id(), constants::vertex_id_1);
         CHECK_EQ(vertex.properties(), constants::visited);
@@ -164,8 +164,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut_type sut{};
         sut.add_vertices(constants::n_elements);
 
-        CHECK_EQ(sut.n_vertices(), constants::n_elements);
-        CHECK_EQ(sut.n_edges(), constants::zero_elements);
+        CHECK_EQ(sut.order(), constants::n_elements);
+        CHECK_EQ(sut.size(), constants::zero_elements);
     }
 
     SUBCASE("add_vertices_with should properly extend the current adjacency list with the given "
@@ -180,8 +180,8 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         sut.add_vertices_with(properties_list);
 
-        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
-        CHECK_EQ(sut.n_edges(), constants::zero_elements);
+        REQUIRE_EQ(sut.order(), expected_n_vertices);
+        CHECK_EQ(sut.size(), constants::zero_elements);
 
         CHECK(std::ranges::equal(
             sut.vertices(),
@@ -203,7 +203,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("get_vertex should throw if the given id is invalid") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(sut.n_vertices())), std::out_of_range);
+        CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(sut.order())), std::out_of_range);
     }
 
     SUBCASE("get_vertex should return a vertex with the given id") {
@@ -307,7 +307,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
 
         constexpr auto expected_n_vertices = n_vertices - constants::two;
-        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        REQUIRE_EQ(sut.order(), expected_n_vertices);
 
         constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
         CHECK(std::ranges::all_of(
@@ -332,7 +332,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - constants::two;
-        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        REQUIRE_EQ(sut.order(), expected_n_vertices);
 
         constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
         CHECK(std::ranges::all_of(
@@ -370,7 +370,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE(new_edge.is_incident_from(constants::vertex_id_1));
             REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
@@ -398,7 +398,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE(new_edge.is_incident_from(vertex_1.id()));
             REQUIRE(new_edge.is_incident_to(vertex_2.id()));
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
@@ -417,13 +417,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("add_edges_from(ids) should throw if any id is invalid and not extend the graph") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(constants::out_of_range_element_idx, vertex_id_list{}),
                 std::out_of_range
             );
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(
@@ -432,11 +432,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 ),
                 std::out_of_range
             );
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
         }
 
         SUBCASE("add_edges_from(ids) should properly extend the graph if all ids are valid") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             constexpr auto source_id = constants::vertex_id_1;
             const std::vector<gl::types::id_type> target_id_list{
@@ -445,7 +445,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             sut.add_edges_from(source_id, target_id_list);
 
-            REQUIRE_EQ(sut.n_edges(), constants::n_elements);
+            REQUIRE_EQ(sut.size(), constants::n_elements);
             CHECK(std::ranges::all_of(target_id_list, [&sut, source_id](const auto vertex_id) {
                 return sut.has_edge(source_id, vertex_id);
             }));
@@ -453,13 +453,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         SUBCASE("add_edges_from(vertices) should throw if any vertex is invalid and not extend the "
                 "graph") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(fixture.out_of_range_vertex, std::vector<vertex_type>{}),
                 std::out_of_range
             );
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(
@@ -467,18 +467,18 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 ),
                 std::out_of_range
             );
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
         }
 
         SUBCASE("add_edges_from(vertices) should properly extend the graph if all ids are valid") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             const auto source = vertex_1;
             const std::vector<vertex_type> target_list{vertex_1, vertex_2, vertex_3};
 
             sut.add_edges_from(source, target_list);
 
-            REQUIRE_EQ(sut.n_edges(), constants::n_elements);
+            REQUIRE_EQ(sut.size(), constants::n_elements);
             CHECK(std::ranges::all_of(target_list, [&sut, &source](const auto& vertex) {
                 return sut.has_edge(source, vertex);
             }));
@@ -487,7 +487,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         SUBCASE("remove_edge should properly remove the edge for both incident vertices") {
             const auto added_edge = sut.add_edge(vertex_1, vertex_2);
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
@@ -497,7 +497,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 REQUIRE_EQ(gl::util::range_size(adjacent_edges_2), constants::one_element);
 
             sut.remove_edge(added_edge);
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
 
             adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
@@ -507,7 +507,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("remove_edges should properly erase all given edges") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             const auto edge_1 = sut.add_edge(vertex_1, vertex_2);
             const auto edge_2 = sut.add_edge(vertex_2, vertex_3);
@@ -517,7 +517,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             const auto vertex_4 = sut.add_vertex();
             const auto edge_4 = sut.add_edge(vertex_1, vertex_4);
 
-            REQUIRE_EQ(sut.n_edges(), constants::n_elements + constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::n_elements + constants::one_element);
 
             std::vector<edge_type> edges_to_remove{edge_1, edge_2, edge_3};
 
@@ -528,7 +528,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             sut.remove_edges(edges_to_remove);
 
-            CHECK_EQ(sut.n_edges(), constants::one_element);
+            CHECK_EQ(sut.size(), constants::one_element);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
@@ -568,7 +568,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE(new_edge.is_incident_to(constants::vertex_id_2));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
@@ -603,7 +603,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE(new_edge.is_incident_to(vertex_2.id()));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             CHECK_EQ(gl::util::range_size(adjacent_edges_1), constants::one_element);
@@ -624,7 +624,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         SUBCASE("remove_edge should properly remove the edge for both incident vertices") {
             const auto added_edge = sut.add_edge_with(vertex_1, vertex_2, constants::used);
 
-            REQUIRE_EQ(sut.n_edges(), constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::one_element);
 
             auto adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             auto adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
@@ -634,7 +634,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
                 REQUIRE_EQ(gl::util::range_size(adjacent_edges_2), constants::one_element);
 
             sut.remove_edge(added_edge);
-            CHECK_EQ(sut.n_edges(), constants::zero_elements);
+            CHECK_EQ(sut.size(), constants::zero_elements);
 
             adjacent_edges_1 = sut.adjacent_edges(constants::vertex_id_1);
             adjacent_edges_2 = sut.adjacent_edges(constants::vertex_id_2);
@@ -644,7 +644,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
 
         SUBCASE("remove_edges should properly erase all given edges") {
-            REQUIRE_EQ(sut.n_edges(), constants::zero_elements);
+            REQUIRE_EQ(sut.size(), constants::zero_elements);
 
             const auto edge_1 = sut.add_edge_with(vertex_1, vertex_2, constants::not_used);
             const auto edge_2 = sut.add_edge_with(vertex_2, vertex_3, constants::not_used);
@@ -654,7 +654,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             const auto vertex_4 = sut.add_vertex();
             const auto edge_4 = sut.add_edge_with(vertex_1, vertex_4, constants::used);
 
-            REQUIRE_EQ(sut.n_edges(), constants::n_elements + constants::one_element);
+            REQUIRE_EQ(sut.size(), constants::n_elements + constants::one_element);
 
             const std::vector<property_edge_type> edges_to_remove{edge_1, edge_2, edge_3};
 
@@ -665,7 +665,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
             sut.remove_edges(edges_to_remove);
 
-            CHECK_EQ(sut.n_edges(), constants::one_element);
+            CHECK_EQ(sut.size(), constants::one_element);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));

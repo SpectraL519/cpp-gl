@@ -18,7 +18,7 @@ template <
 init_return_value(const GraphType& graph) {
     using return_type = alg_return_type_non_void<ResultDiscriminator, ReturnType>;
     if constexpr (ResultDiscriminator == algorithm::ret)
-        return return_type(graph.n_vertices());
+        return return_type(graph.order());
     else
         return return_type();
 }
