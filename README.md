@@ -101,7 +101,7 @@ int main() {
     graph.add_edge(4, 3);
 
     // print the size of the graph
-    std::cout << std::format("number of vertices: {}\n", graph.n_vertices())
+    std::cout << std::format("number of vertices: {}\n", graph.order())
               << std::format("number of edges: {}\n", graph.n_edges());
 }
 ```

@@ -95,12 +95,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path predecessors_file_path =
                 alg_common::data_path / (file_name_prefix + "predecessors.txt");
             expected_predecessors =
-                alg_common::load_list<gl::types::id_type>(sut.n_vertices(), predecessors_file_path);
+                alg_common::load_list<gl::types::id_type>(sut.order(), predecessors_file_path);
 
             const fs::path distances_file_path =
                 alg_common::data_path / (file_name_prefix + "distances.txt");
             expected_distances =
-                alg_common::load_list<distance_type>(sut.n_vertices(), distances_file_path);
+                alg_common::load_list<distance_type>(sut.order(), distances_file_path);
         }
 
         CAPTURE(sut);

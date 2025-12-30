@@ -23,7 +23,7 @@ template <
     using edge_type = typename GraphType::edge_type;
 
     std::optional<bicoloring_type> coloring_opt;
-    coloring_opt.emplace(graph.n_vertices(), bin_color_value::unset);
+    coloring_opt.emplace(graph.order(), bin_color_value::unset);
     auto& coloring = coloring_opt.value();
 
     for (const auto root_id : graph.vertex_ids()) {
@@ -78,7 +78,7 @@ requires(type_traits::c_binary_color_properties_type<typename GraphType::vertex_
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
     using color_type = typename GraphType::vertex_properties_type::color_type;
 
-    if (std::ranges::size(color_range) != graph.n_vertices())
+    if (std::ranges::size(color_range) != graph.order())
         return false;
 
     auto vertices = graph.vertices(); // store the view to extend its lifetime

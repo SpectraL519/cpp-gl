@@ -172,7 +172,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto pd = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
+    REQUIRE_EQ(pd.predecessors.size(), graph.order());
     CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
 }
 
@@ -356,7 +356,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         gl::algorithm::recursive_depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.n_vertices());
+    REQUIRE_EQ(pd.predecessors.size(), graph.order());
     CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
 }
 
