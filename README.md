@@ -87,8 +87,7 @@ The core of the library is the template [graph class](/docs/graph.md) which hold
 ```cpp
 #include <gl/graph.hpp>
 
-#include <iostream>
-#include <format>
+#include <print>
 
 int main() {
     // initialize the graph with 5 vertices
@@ -101,8 +100,7 @@ int main() {
     graph.add_edge(4, 3);
 
     // print the size of the graph
-    std::cout << std::format("number of vertices: {}\n", graph.order())
-              << std::format("number of edges: {}\n", graph.size());
+    std::println("number of vertices: {}\nnumber of edges: {}", graph.order(), graph.size());
 }
 ```
 

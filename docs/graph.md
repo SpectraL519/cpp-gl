@@ -129,7 +129,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `types::size_type`
 
 - **`graph.size() const noexcept`**:
-  - Returns the number of edges in the graph.
+  - *Description*: Returns the number of edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
   - *Return type*: `types::size_type`
 
