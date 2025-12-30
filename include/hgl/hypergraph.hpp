@@ -5,6 +5,7 @@
 #pragma once
 
 #include "hgl/constants.hpp"
+#include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
 #include "hgl/util.hpp"
 
@@ -332,14 +333,46 @@ public:
 
     // --- incidence methods ---
 
-    void bind(const types::id_type vertex_id, const types::id_type hyperedge_id) {
+    void bind(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, undirected_t>
+    {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
         this->_impl.bind(vertex_id, hyperedge_id);
     }
 
-    gl_attr_force_inline void bind(const vertex_type& vertex, const hyperedge_type& hyperedge) {
+    gl_attr_force_inline void bind(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, undirected_t>
+    {
         this->bind(vertex.id(), hyperedge.id());
+    }
+
+    void bind_head(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        this->_verify_hyperedge_id(hyperedge_id);
+        this->_impl.bind_head(vertex_id, hyperedge_id);
+    }
+
+    gl_attr_force_inline void bind_head(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_head(vertex.id(), hyperedge.id());
+    }
+
+    void bind_tail(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        this->_verify_hyperedge_id(hyperedge_id);
+        this->_impl.bind_tail(vertex_id, hyperedge_id);
+    }
+
+    gl_attr_force_inline void bind_tail(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_tail(vertex.id(), hyperedge.id());
     }
 
     void unbind(const types::id_type vertex_id, const types::id_type hyperedge_id) {
@@ -366,6 +399,40 @@ public:
         return this->are_incident(vertex.id(), hyperedge.id());
     }
 
+    [[nodiscard]] bool is_tail(const types::id_type vertex_id, const types::id_type hyperedge_id)
+        const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.is_tail(vertex_id, hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool is_tail(
+        const vertex_type& vertex, const hyperedge_type& hyperedge
+    ) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->is_tail(vertex.id(), hyperedge.id());
+    }
+
+    [[nodiscard]] bool is_head(const types::id_type vertex_id, const types::id_type hyperedge_id)
+        const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.is_head(vertex_id, hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool is_head(
+        const vertex_type& vertex, const hyperedge_type& hyperedge
+    ) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->is_head(vertex.id(), hyperedge.id());
+    }
+
     [[nodiscard]] auto incident_hyperedges(const types::id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.incident_hyperedges(vertex_id)
@@ -383,6 +450,60 @@ public:
 
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
         return this->degree(vertex.id());
+    }
+
+    [[nodiscard]] auto outgoing_hyperedges(const types::id_type vertex_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.outgoing_hyperedges(vertex_id)
+             | std::views::transform(this->_create_hyperedge_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const vertex_type& vertex)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->outgoing_hyperedges(vertex.id());
+    }
+
+    [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.out_degree(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->out_degree(vertex.id());
+    }
+
+    [[nodiscard]] auto incoming_hyperedges(const types::id_type vertex_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.incoming_hyperedges(vertex_id)
+             | std::views::transform(this->_create_hyperedge_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const vertex_type& vertex)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->incoming_hyperedges(vertex.id());
+    }
+
+    [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.in_degree(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->in_degree(vertex.id());
     }
 
     [[nodiscard]] auto incident_vertices(const types::id_type hyperedge_id) {
@@ -404,6 +525,62 @@ public:
         const hyperedge_type& hyperedge
     ) const {
         return this->hyperedge_size(hyperedge.id());
+    }
+
+    [[nodiscard]] auto tail_vertices(const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.tail_vertices(hyperedge_id)
+             | std::views::transform(this->_create_vertex_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->tail_vertices(hyperedge.id());
+    }
+
+    [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.tail_size(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type tail_size(const hyperedge_type& hyperedge
+    ) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->tail_size(hyperedge.id());
+    }
+
+    [[nodiscard]] auto head_vertices(const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.head_vertices(hyperedge_id)
+             | std::views::transform(this->_create_vertex_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->head_vertices(hyperedge.id());
+    }
+
+    [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.head_size(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline types::size_type head_size(const hyperedge_type& hyperedge
+    ) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->head_size(hyperedge.id());
     }
 
 private:
