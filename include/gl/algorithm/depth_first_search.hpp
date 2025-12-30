@@ -23,8 +23,8 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
-    std::vector<bool> visited(graph.n_vertices(), false);
-    std::vector<types::id_type> sources(graph.n_vertices());
+    std::vector<bool> visited(graph.order(), false);
+    std::vector<types::id_type> sources(graph.order());
 
     auto pd = impl::init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
 
@@ -70,8 +70,8 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> recursive_de
     using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
-    std::vector<bool> visited(graph.n_vertices(), false);
-    std::vector<types::id_type> sources(graph.n_vertices());
+    std::vector<bool> visited(graph.order(), false);
+    std::vector<types::id_type> sources(graph.order());
 
     auto pd = impl::init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
 
