@@ -659,4 +659,21 @@ private:
     [[no_unique_address]] hyperedge_properties_map_type _hyperedge_properties{};
 };
 
+// --- general hypergraph utility ---
+
+namespace type_traits {
+
+template <typename G>
+concept c_hypergraph = c_instantiation_of<G, hypergraph>;
+
+template <typename G>
+concept c_undirected_hypergraph =
+    c_hypergraph<G> and std::same_as<typename G::directional_tag, undirected_t>;
+
+template <typename G>
+concept c_bf_directed_hypergraph =
+    c_hypergraph<G> and std::same_as<typename G::directional_tag, bf_directed_t>;
+
+} // namespace type_traits
+
 } // namespace hgl
