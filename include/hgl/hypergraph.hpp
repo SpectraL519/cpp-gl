@@ -10,6 +10,7 @@
 #include "hgl/hypergraph_traits.hpp"
 #include "hgl/util.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <set>
 #include <type_traits>
@@ -708,5 +709,155 @@ concept c_bf_directed_hypergraph =
     c_hypergraph<G> and std::same_as<typename G::directional_tag, bf_directed_t>;
 
 } // namespace type_traits
+
+// --- degree bounds ---
+
+[[nodiscard]] types::size_type max_degree(const type_traits::c_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
+}
+
+[[nodiscard]] types::size_type min_degree(const type_traits::c_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
+}
+
+[[nodiscard]] types::size_type max_out_degree(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.out_degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
+}
+
+[[nodiscard]] types::size_type min_out_degree(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.out_degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
+}
+
+[[nodiscard]] types::size_type max_in_degree(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.in_degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
+}
+
+[[nodiscard]] types::size_type min_in_degree(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto degrees = hypergraph.in_degree_map();
+    return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
+}
+
+// --- hyperedge size bounds ---
+
+[[nodiscard]] types::size_type rank(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+    const auto sizes = hypergraph.hyperedge_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
+}
+
+[[nodiscard]] types::size_type corank(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+    const auto sizes = hypergraph.hyperedge_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
+}
+
+[[nodiscard]] types::size_type max_tail_size(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto sizes = hypergraph.tail_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
+}
+
+[[nodiscard]] types::size_type min_tail_size(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto sizes = hypergraph.tail_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
+}
+
+[[nodiscard]] types::size_type max_head_size(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto sizes = hypergraph.head_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
+}
+
+[[nodiscard]] types::size_type min_head_size(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    const auto sizes = hypergraph.head_size_map();
+    return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
+}
+
+// --- regularity ---
+
+[[nodiscard]] bool is_regular(
+    const type_traits::c_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.degree_map(), k);
+}
+
+[[nodiscard]] bool is_regular(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+    return util::is_constant(hypergraph.degree_map());
+}
+
+[[nodiscard]] bool is_out_regular(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.out_degree_map(), k);
+}
+
+[[nodiscard]] bool is_out_regular(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    return util::is_constant(hypergraph.out_degree_map());
+}
+
+[[nodiscard]] bool is_in_regular(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.in_degree_map(), k);
+}
+
+[[nodiscard]] bool is_in_regular(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    return util::is_constant(hypergraph.in_degree_map());
+}
+
+// --- uniformity ---
+
+[[nodiscard]] bool is_uniform(
+    const type_traits::c_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.hyperedge_size_map(), k);
+}
+
+[[nodiscard]] bool is_uniform(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+    return util::is_constant(hypergraph.hyperedge_size_map());
+}
+
+[[nodiscard]] bool is_tail_uniform(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.tail_size_map(), k);
+}
+
+[[nodiscard]] bool is_tail_uniform(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    return util::is_constant(hypergraph.tail_size_map());
+}
+
+[[nodiscard]] bool is_head_uniform(
+    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+) noexcept {
+    return util::all_equal(hypergraph.head_size_map(), k);
+}
+
+[[nodiscard]] bool is_head_uniform(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+) noexcept {
+    return util::is_constant(hypergraph.head_size_map());
+}
 
 } // namespace hgl

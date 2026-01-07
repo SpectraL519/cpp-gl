@@ -193,20 +193,26 @@ private:
     template <impl::element_type Element>
     [[nodiscard]] std::vector<types::size_type> _count_map(const types::size_type n_elements
     ) const noexcept {
-        std::vector<types::size_type> size_map(this->_matrix.size(), 0uz);
+        std::vector<types::size_type> size_map(n_elements, 0uz);
 
         if constexpr (Element == layout_tag::major_element) { // count map major
-            for (const auto& [i, row] : this->_matrix | std::views::enumerate)
-                size_map[i] = static_cast<types::size_type>(std::ranges::count(row, true));
+            const types::size_type limit =
+                std::min(n_elements, static_cast<types::size_type>(this->_matrix.size()));
+            for (types::size_type i = 0uz; i < limit; ++i) {
+                size_map[i] =
+                    static_cast<types::size_type>(std::ranges::count(this->_matrix[i], true));
+            }
         }
         else { // count map minor
-            for (const auto& row : this->_matrix)
-                for (types::size_type j = 0uz; j < this->_matrix_row_size; j++)
-                    if (row[j])
+            const types::size_type limit = std::min(n_elements, this->_matrix_row_size);
+            for (const auto& row : this->_matrix) {
+                for (types::size_type j = 0uz; j < limit; ++j) {
+                    if (row[j]) {
                         ++size_map[j];
+                    }
+                }
+            }
         }
-
-        size_map.resize(n_elements, 0uz);
         return size_map;
     }
 
@@ -487,22 +493,30 @@ private:
     [[nodiscard]] std::vector<types::size_type> _count_map(
         const types::size_type n_elements, std::predicate<incidence_type> auto&& pred
     ) const noexcept {
-        std::vector<types::size_type> size_map(this->_matrix.size(), 0uz);
+        std::vector<types::size_type> size_map(n_elements, 0uz);
 
         if constexpr (Element == layout_tag::major_element) { // count map major
-            for (types::size_type i = 0uz; i < this->_matrix.size(); i++)
-                for (const auto val : this->_matrix[i])
-                    if (pred(val))
+            const types::size_type limit =
+                std::min(n_elements, static_cast<types::size_type>(this->_matrix.size()));
+            for (types::size_type i = 0uz; i < limit; ++i) {
+                for (const auto val : this->_matrix[i]) {
+                    if (pred(val)) {
                         ++size_map[i];
+                    }
+                }
+            }
         }
         else { // count map minor
-            for (const auto& row : this->_matrix)
-                for (types::size_type j = 0uz; j < this->_matrix_row_size; j++)
-                    if (pred(row[j]))
+            for (const auto& row : this->_matrix) {
+                const types::size_type limit = std::min(n_elements, this->_matrix_row_size);
+                for (types::size_type j = 0uz; j < limit; ++j) {
+                    if (pred(row[j])) {
                         ++size_map[j];
+                    }
+                }
+            }
         }
 
-        size_map.resize(n_elements, 0uz);
         return size_map;
     }
 

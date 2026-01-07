@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <ranges>
 
 namespace gl::util {
@@ -18,6 +19,24 @@ constexpr auto range_size(R&& r) {
     else
         // Will consume input ranges!
         return std::ranges::distance(std::begin(r), std::end(r));
+}
+
+template <std::ranges::forward_range R>
+[[nodiscard]] constexpr bool is_constant(R&& range) noexcept {
+    if (std::ranges::empty(range))
+        return true;
+
+    return std::ranges::all_of(range, [target = *std::ranges::begin(range)](const auto& val) {
+        return val == target;
+    });
+}
+
+template <std::ranges::forward_range R>
+[[nodiscard]] constexpr bool all_equal(R&& range, const std::ranges::range_value_t<R>& k) noexcept {
+    if (std::ranges::empty(range))
+        return true;
+
+    return std::ranges::all_of(range, [&k](const auto& val) { return val == k; });
 }
 
 } // namespace gl::util
