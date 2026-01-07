@@ -1,10 +1,18 @@
-# CPP-GL
+<p align="center">
+  <a href="https://github.com/SpectraL519/cpp-gl">
+    <img src="docs/img/cpp-gl-hex.png" alt="CPP-GL" width="360" />
+  </a>
+</p>
 
-General purpose header-only template graph library for C++23 and newer standards.
+<br />
+
+<div align="center">
 
 [![g++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang++)
 [![format](https://github.com/SpectraL519/cpp-gl/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/format)
+
+</div>
 
 <br />
 
