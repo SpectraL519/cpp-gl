@@ -775,6 +775,62 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
         }
     }
+
+    SUBCASE("element size map getters should return maps of properly calculated element sizes") {
+        constexpr auto n_elements = 5ull;
+        sut_type sut{n_elements, n_elements};
+
+        constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+        REQUIRE(std::ranges::all_of(sut.degree_map(), is_zero));
+        REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(), is_zero));
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            for (std::size_t i = 0uz; i < n_elements; i++)
+                for (std::size_t j = 0uz; j <= i; j++)
+                    sut.bind(i, j);
+
+            const auto deg_map = sut.degree_map();
+            const auto esize_map = sut.hyperedge_size_map();
+
+            for (std::size_t i = 0uz; i < n_elements; i++) {
+                CHECK_EQ(deg_map[i], i + 1uz);
+                CHECK_EQ(esize_map[i], n_elements - i);
+            }
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            REQUIRE(std::ranges::all_of(sut.out_degree_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.in_degree_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.tail_size_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.head_size_map(), is_zero));
+
+            for (std::size_t i = 0uz; i < n_elements; i++) {
+                for (std::size_t j = 0uz; j <= i; j++) {
+                    if (i == j)
+                        sut.bind_tail(i, j);
+                    else
+                        sut.bind_head(i, j);
+                }
+            }
+
+            const auto deg_map = sut.degree_map();
+            const auto out_deg_map = sut.out_degree_map();
+            const auto in_deg_map = sut.in_degree_map();
+            const auto esize_map = sut.hyperedge_size_map();
+            const auto tsize_map = sut.tail_size_map();
+            const auto hsize_map = sut.head_size_map();
+
+            for (std::size_t k = 0uz; k < n_elements; k++) {
+                CHECK_EQ(deg_map[k], k + 1uz);
+                CHECK_EQ(out_deg_map[k], 1uz);
+                CHECK_EQ(in_deg_map[k], k);
+
+                CHECK_EQ(esize_map[k], n_elements - k);
+                CHECK_EQ(tsize_map[k], 1uz);
+                CHECK_EQ(hsize_map[k], n_elements - k - 1uz);
+            }
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -1164,5 +1220,205 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_SUITE_END(); // test_hypergraph
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "hypergraph size utility tests", HypergraphTraits, hypergraph_traits_util_template
+) {
+    using sut_type = hgl::hypergraph<HypergraphTraits>;
+    using directional_tag = typename sut_type::directional_tag;
+
+    SUBCASE("utilities on empty hypergraph should return zero or true") {
+        sut_type sut;
+
+        // --- Degree Bounds ---
+        CHECK_EQ(hgl::min_degree(sut), 0uz);
+        CHECK_EQ(hgl::max_degree(sut), 0uz);
+
+        // --- Size Bounds ---
+        CHECK_EQ(hgl::rank(sut), 0uz);
+        CHECK_EQ(hgl::corank(sut), 0uz);
+
+        // --- Regularity/Uniformity ---
+        CHECK(hgl::is_regular(sut));
+        CHECK(hgl::is_regular(sut, 0uz));
+        CHECK(hgl::is_uniform(sut));
+        CHECK(hgl::is_uniform(sut, 0uz));
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            // --- Degree Bounds ---
+            CHECK_EQ(hgl::min_out_degree(sut), 0uz);
+            CHECK_EQ(hgl::max_out_degree(sut), 0uz);
+            CHECK_EQ(hgl::min_in_degree(sut), 0uz);
+            CHECK_EQ(hgl::max_in_degree(sut), 0uz);
+
+            // --- Size Bounds ---
+            CHECK_EQ(hgl::min_tail_size(sut), 0uz);
+            CHECK_EQ(hgl::max_tail_size(sut), 0uz);
+            CHECK_EQ(hgl::min_head_size(sut), 0uz);
+            CHECK_EQ(hgl::max_head_size(sut), 0uz);
+
+            // --- Regularity/Uniformity ---
+            CHECK(hgl::is_out_regular(sut));
+            CHECK(hgl::is_in_regular(sut));
+            CHECK(hgl::is_tail_uniform(sut));
+            CHECK(hgl::is_head_uniform(sut));
+        }
+    }
+
+    SUBCASE("utilities on a symmetric topology (Cycle C3) should report constant properties") {
+        // Setup: 3 Vertices, 3 Hyperedges forming a cycle.
+        // Undirected: Edges are {0,1}, {1,2}, {2,0}.
+        // Directed: Edges are 0->1, 1->2, 2->0.
+        constexpr auto n_elements = 3uz;
+        sut_type sut{n_elements, n_elements};
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut.bind(0uz, 0uz);
+            sut.bind(1uz, 0uz); // e0: {0,1}
+            sut.bind(1uz, 1uz);
+            sut.bind(2uz, 1uz); // e1: {1,2}
+            sut.bind(2uz, 2uz);
+            sut.bind(0uz, 2uz); // e2: {2,0}
+
+            // Expected: 2-regular, 2-uniform
+            CHECK_EQ(hgl::max_degree(sut), 2uz);
+            CHECK_EQ(hgl::min_degree(sut), 2uz);
+            CHECK(hgl::is_regular(sut));
+            CHECK(hgl::is_regular(sut, 2uz));
+            CHECK_FALSE(hgl::is_regular(sut, 1uz));
+
+            CHECK_EQ(hgl::rank(sut), 2uz);
+            CHECK_EQ(hgl::corank(sut), 2uz);
+            CHECK(hgl::is_uniform(sut));
+            CHECK(hgl::is_uniform(sut, 2uz));
+            CHECK_FALSE(hgl::is_uniform(sut, 1uz));
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut.bind_tail(0, 0);
+            sut.bind_head(1, 0); // e0: 0 -> 1
+            sut.bind_tail(1, 1);
+            sut.bind_head(2, 1); // e1: 1 -> 2
+            sut.bind_tail(2, 2);
+            sut.bind_head(0, 2); // e2: 2 -> 0
+
+            // Expected General: Degree 2 (1 in + 1 out), Size 2 (1 tail + 1 head)
+            CHECK_EQ(hgl::min_degree(sut), 2uz);
+            CHECK_EQ(hgl::max_degree(sut), 2uz);
+            CHECK(hgl::is_regular(sut, 2uz));
+            CHECK_FALSE(hgl::is_regular(sut, 1uz));
+            CHECK(hgl::is_uniform(sut, 2uz));
+            CHECK_FALSE(hgl::is_uniform(sut, 1uz));
+
+            // Expected Directed: 1-out-regular, 1-in-regular
+            CHECK_EQ(hgl::min_out_degree(sut), 1uz);
+            CHECK_EQ(hgl::max_out_degree(sut), 1uz);
+            CHECK(hgl::is_out_regular(sut, 1uz));
+            CHECK_FALSE(hgl::is_out_regular(sut, 2uz));
+
+            CHECK_EQ(hgl::min_in_degree(sut), 1uz);
+            CHECK_EQ(hgl::max_in_degree(sut), 1uz);
+            CHECK(hgl::is_in_regular(sut, 1uz));
+            CHECK_FALSE(hgl::is_in_regular(sut, 2uz));
+
+            // Expected Directed Sizes: 1-tail, 1-head
+            CHECK_EQ(hgl::min_tail_size(sut), 1uz);
+            CHECK_EQ(hgl::max_tail_size(sut), 1uz);
+            CHECK(hgl::is_tail_uniform(sut, 1uz));
+            CHECK_FALSE(hgl::is_tail_uniform(sut, 2uz));
+
+            CHECK_EQ(hgl::min_head_size(sut), 1uz);
+            CHECK_EQ(hgl::max_head_size(sut), 1uz);
+            CHECK(hgl::is_head_uniform(sut, 1uz));
+            CHECK_FALSE(hgl::is_head_uniform(sut, 2uz));
+        }
+    }
+
+    SUBCASE("utilities on asymmetric topology should report divergent bounds and false checks") {
+        // Setup: 3 Vertices, 2 Hyperedges.
+        // Undirected: e0={0,1,2} (size 3), e1={0} (size 1)
+        // Directed:   e0: 0 -> {1,2} (1 tail, 2 heads), e1: {0,1} -> 2 (2 tails, 1 head)
+        sut_type sut{3, 2};
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut.bind(0, 0);
+            sut.bind(1, 0);
+            sut.bind(2, 0); // e0 size 3
+            sut.bind(0, 1); // e1 size 1
+
+            // Sizes: 3, 1 -> Non-uniform
+            CHECK_EQ(hgl::rank(sut), 3uz);
+            CHECK_EQ(hgl::corank(sut), 1uz);
+            CHECK_FALSE(hgl::is_uniform(sut));
+
+            // Degrees: v0=2, v1=1, v2=1 -> Irregular
+            CHECK_EQ(hgl::max_degree(sut), 2uz);
+            CHECK_EQ(hgl::min_degree(sut), 1uz);
+            CHECK_FALSE(hgl::is_regular(sut));
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            // e0: 0 -> {1, 2}
+            sut.bind_tail(0, 0);
+            sut.bind_head(1, 0);
+            sut.bind_head(2, 0);
+
+            // e1: {0, 1} -> 2
+            sut.bind_tail(0, 1);
+            sut.bind_tail(1, 1);
+            sut.bind_head(2, 1);
+
+            // --- Size Checks ---
+            // Tail sizes: e0=1, e1=2
+            CHECK_EQ(hgl::max_tail_size(sut), 2uz);
+            CHECK_EQ(hgl::min_tail_size(sut), 1uz);
+            CHECK_FALSE(hgl::is_tail_uniform(sut));
+
+            // Head sizes: e0=2, e1=1
+            CHECK_EQ(hgl::max_head_size(sut), 2uz);
+            CHECK_EQ(hgl::min_head_size(sut), 1uz);
+            CHECK_FALSE(hgl::is_head_uniform(sut));
+
+            // --- Degree Checks ---
+            // Out degrees: v0(2), v1(1), v2(0)
+            CHECK_EQ(hgl::max_out_degree(sut), 2uz);
+            CHECK_EQ(hgl::min_out_degree(sut), 0uz);
+            CHECK_FALSE(hgl::is_out_regular(sut));
+
+            // In degrees: v0(0), v1(1), v2(2)
+            CHECK_EQ(hgl::max_in_degree(sut), 2uz);
+            CHECK_EQ(hgl::min_in_degree(sut), 0uz);
+            CHECK_FALSE(hgl::is_in_regular(sut));
+        }
+    }
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    hypergraph_traits_util_template,
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::undirected_t>, // undirected hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t>, // undirected vertex-major incidence list
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::undirected_t>, // undirected hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t>, // undirected vertex-major incidence matrix
+    hgl::list_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
+    hgl::list_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t>, // bf-directed vertex-major incidence list
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::bf_directed_t>, // bf-directed hyperedge-major incidence matrix
+    hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
+);
 
 } // namespace hgl_testing

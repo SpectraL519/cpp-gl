@@ -68,6 +68,11 @@ public:
         return this->_count<impl::element_type::vertex>(vertex_id);
     }
 
+    [[nodiscard]] std::vector<types::size_type> degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_count_map<impl::element_type::vertex>(n_vertices);
+    }
+
     // --- hyperedge methods ---
 
     gl_attr_force_inline void add_hyperedges(const types::size_type n) noexcept {
@@ -86,6 +91,12 @@ public:
     [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_count<impl::element_type::hyperedge>(hyperedge_id);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_count_map<impl::element_type::hyperedge>(n_hyperedges);
     }
 
     // --- binding methods ---
@@ -179,6 +190,32 @@ private:
         return count;
     }
 
+    template <impl::element_type Element>
+    [[nodiscard]] std::vector<types::size_type> _count_map(const types::size_type n_elements
+    ) const noexcept {
+        std::vector<types::size_type> size_map(n_elements, 0uz);
+
+        if constexpr (Element == layout_tag::major_element) { // count map major
+            const types::size_type limit =
+                std::min(n_elements, static_cast<types::size_type>(this->_matrix.size()));
+            for (types::size_type i = 0uz; i < limit; ++i) {
+                size_map[i] =
+                    static_cast<types::size_type>(std::ranges::count(this->_matrix[i], true));
+            }
+        }
+        else { // count map minor
+            const types::size_type limit = std::min(n_elements, this->_matrix_row_size);
+            for (const auto& row : this->_matrix) {
+                for (types::size_type j = 0uz; j < limit; ++j) {
+                    if (row[j]) {
+                        ++size_map[j];
+                    }
+                }
+            }
+        }
+        return size_map;
+    }
+
     types::size_type _matrix_row_size = 0uz;
     hypergraph_storage_type _matrix;
 };
@@ -227,6 +264,11 @@ public:
         return this->_count<impl::element_type::vertex>(vertex_id, _is_incident);
     }
 
+    [[nodiscard]] std::vector<types::size_type> degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_count_map<impl::element_type::vertex>(n_vertices, _is_incident);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_tail);
@@ -236,6 +278,11 @@ public:
         return this->_count<impl::element_type::vertex>(vertex_id, _is_tail);
     }
 
+    [[nodiscard]] std::vector<types::size_type> out_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_count_map<impl::element_type::vertex>(n_vertices, _is_tail);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_head);
@@ -243,6 +290,11 @@ public:
 
     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept {
         return this->_count<impl::element_type::vertex>(vertex_id, _is_head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> in_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_count_map<impl::element_type::vertex>(n_vertices, _is_head);
     }
 
     // --- hyperedge methods : general ---
@@ -267,6 +319,12 @@ public:
         return this->_count<impl::element_type::hyperedge>(hyperedge_id, _is_incident);
     }
 
+    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_count_map<impl::element_type::hyperedge>(n_hyperedges, _is_incident);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_query<impl::element_type::hyperedge>(hyperedge_id, _is_tail);
@@ -276,6 +334,11 @@ public:
         return this->_count<impl::element_type::hyperedge>(hyperedge_id, _is_tail);
     }
 
+    [[nodiscard]] std::vector<types::size_type> tail_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_count_map<impl::element_type::hyperedge>(n_hyperedges, _is_tail);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_query<impl::element_type::hyperedge>(hyperedge_id, _is_head);
@@ -283,6 +346,11 @@ public:
 
     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept {
         return this->_count<impl::element_type::hyperedge>(hyperedge_id, _is_head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> head_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_count_map<impl::element_type::hyperedge>(n_hyperedges, _is_head);
     }
 
     // --- binding methods ---
@@ -419,6 +487,37 @@ private:
                 count += static_cast<types::size_type>(pred(row[id]));
         }
         return count;
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] std::vector<types::size_type> _count_map(
+        const types::size_type n_elements, std::predicate<incidence_type> auto&& pred
+    ) const noexcept {
+        std::vector<types::size_type> size_map(n_elements, 0uz);
+
+        if constexpr (Element == layout_tag::major_element) { // count map major
+            const types::size_type limit =
+                std::min(n_elements, static_cast<types::size_type>(this->_matrix.size()));
+            for (types::size_type i = 0uz; i < limit; ++i) {
+                for (const auto val : this->_matrix[i]) {
+                    if (pred(val)) {
+                        ++size_map[i];
+                    }
+                }
+            }
+        }
+        else { // count map minor
+            for (const auto& row : this->_matrix) {
+                const types::size_type limit = std::min(n_elements, this->_matrix_row_size);
+                for (types::size_type j = 0uz; j < limit; ++j) {
+                    if (pred(row[j])) {
+                        ++size_map[j];
+                    }
+                }
+            }
+        }
+
+        return size_map;
     }
 
     types::size_type _matrix_row_size = 0uz;
