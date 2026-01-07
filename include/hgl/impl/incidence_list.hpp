@@ -208,7 +208,7 @@ private:
             std::vector<types::size_type> size_map(n_elements, 0ull);
             for (const auto& major_entry : this->_major_storage)
                 for (const auto& minor_id : major_entry)
-                    size_map[static_cast<std::size_t>(minor_id)]++;
+                    ++size_map[static_cast<std::size_t>(minor_id)];
             return size_map;
         }
     }
@@ -263,6 +263,11 @@ public:
         return this->_size<impl::element_type::vertex>(vertex_id);
     }
 
+    [[nodiscard]] std::vector<types::size_type> degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_get<impl::element_type::vertex>(vertex_id, &major_element_type::tail);
@@ -272,6 +277,11 @@ public:
         return this->_size<impl::element_type::vertex>(vertex_id, &major_element_type::tail);
     }
 
+    [[nodiscard]] std::vector<types::size_type> out_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices, &major_element_type::tail);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_get<impl::element_type::vertex>(vertex_id, &major_element_type::head);
@@ -279,6 +289,11 @@ public:
 
     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept {
         return this->_size<impl::element_type::vertex>(vertex_id, &major_element_type::head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> in_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices, &major_element_type::head);
     }
 
     // --- hyperedge methods : general ---
@@ -303,6 +318,12 @@ public:
         return this->_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
+    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(n_hyperedges);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_get<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::tail);
@@ -312,6 +333,13 @@ public:
         return this->_size<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::tail);
     }
 
+    [[nodiscard]] std::vector<types::size_type> tail_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(
+            n_hyperedges, &major_element_type::tail
+        );
+    }
+
     [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
     ) const noexcept {
         return this->_get<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::head);
@@ -319,6 +347,13 @@ public:
 
     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept {
         return this->_size<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> head_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(
+            n_hyperedges, &major_element_type::head
+        );
     }
 
     // --- binding methods ---
@@ -479,7 +514,7 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             auto size_map =
                 this->_major_storage | std::views::transform(subset_proj)
-                | std::views::transform([](const auto& container) { return container.size(); })
+                | std::views::transform([](const auto& ctr) { return ctr.size(); })
                 | std::ranges::to<std::vector<types::size_type>>();
             size_map.resize(n_elements, 0ull);
             return size_map;
@@ -488,7 +523,7 @@ private:
             std::vector<types::size_type> size_map(n_elements, 0ull);
             for (const auto& major_entry : this->_major_storage)
                 for (const auto& minor_id : _view_of(std::invoke(subset_proj, major_entry)))
-                    size_map[static_cast<std::size_t>(minor_id)]++;
+                    ++size_map[static_cast<std::size_t>(minor_id)];
             return size_map;
         }
     }
