@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/types/types.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
@@ -452,6 +453,10 @@ public:
         return this->degree(vertex.id());
     }
 
+    [[nodiscard]] std::vector<types::size_type> degree_map() const {
+        return this->_impl.degree_map(this->_n_vertices);
+    }
+
     [[nodiscard]] auto outgoing_hyperedges(const types::id_type vertex_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -477,6 +482,12 @@ public:
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_degree(vertex.id());
+    }
+
+    [[nodiscard]] std::vector<types::size_type> out_degree_map() const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->_impl.out_degree_map(this->_n_vertices);
     }
 
     [[nodiscard]] auto incoming_hyperedges(const types::id_type vertex_id)
@@ -506,6 +517,12 @@ public:
         return this->in_degree(vertex.id());
     }
 
+    [[nodiscard]] std::vector<types::size_type> in_degree_map() const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->_impl.in_degree_map(this->_n_vertices);
+    }
+
     [[nodiscard]] auto incident_vertices(const types::id_type hyperedge_id) {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.incident_vertices(hyperedge_id)
@@ -525,6 +542,10 @@ public:
         const hyperedge_type& hyperedge
     ) const {
         return this->hyperedge_size(hyperedge.id());
+    }
+
+    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map() const {
+        return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
     [[nodiscard]] auto tail_vertices(const types::id_type hyperedge_id)
@@ -555,6 +576,12 @@ public:
         return this->tail_size(hyperedge.id());
     }
 
+    [[nodiscard]] std::vector<types::size_type> tail_size_map() const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->_impl.tail_size_map(this->_n_hyperedges);
+    }
+
     [[nodiscard]] auto head_vertices(const types::id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -581,6 +608,12 @@ public:
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_size(hyperedge.id());
+    }
+
+    [[nodiscard]] std::vector<types::size_type> head_size_map() const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->_impl.head_size_map(this->_n_hyperedges);
     }
 
 private:

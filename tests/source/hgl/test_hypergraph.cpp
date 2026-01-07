@@ -775,6 +775,62 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
         }
     }
+
+    SUBCASE("element size map getters should return maps of properly calculated element sizes") {
+        constexpr auto n_elements = 5ull;
+        sut_type sut{n_elements, n_elements};
+
+        constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+        REQUIRE(std::ranges::all_of(sut.degree_map(), is_zero));
+        REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(), is_zero));
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            for (std::size_t i = 0uz; i < n_elements; i++)
+                for (std::size_t j = 0uz; j <= i; j++)
+                    sut.bind(i, j);
+
+            const auto deg_map = sut.degree_map();
+            const auto esize_map = sut.hyperedge_size_map();
+
+            for (std::size_t i = 0uz; i < n_elements; i++) {
+                CHECK_EQ(deg_map[i], i + 1uz);
+                CHECK_EQ(esize_map[i], n_elements - i);
+            }
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            REQUIRE(std::ranges::all_of(sut.out_degree_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.in_degree_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.tail_size_map(), is_zero));
+            REQUIRE(std::ranges::all_of(sut.head_size_map(), is_zero));
+
+            for (std::size_t i = 0uz; i < n_elements; i++) {
+                for (std::size_t j = 0uz; j <= i; j++) {
+                    if (i == j)
+                        sut.bind_tail(i, j);
+                    else
+                        sut.bind_head(i, j);
+                }
+            }
+
+            const auto deg_map = sut.degree_map();
+            const auto out_deg_map = sut.out_degree_map();
+            const auto in_deg_map = sut.in_degree_map();
+            const auto esize_map = sut.hyperedge_size_map();
+            const auto tsize_map = sut.tail_size_map();
+            const auto hsize_map = sut.head_size_map();
+
+            for (std::size_t k = 0uz; k < n_elements; k++) {
+                CHECK_EQ(deg_map[k], k + 1uz);
+                CHECK_EQ(out_deg_map[k], 1uz);
+                CHECK_EQ(in_deg_map[k], k);
+
+                CHECK_EQ(esize_map[k], n_elements - k);
+                CHECK_EQ(tsize_map[k], 1uz);
+                CHECK_EQ(hsize_map[k], n_elements - k - 1uz);
+            }
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
