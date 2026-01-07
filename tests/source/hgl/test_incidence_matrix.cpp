@@ -306,6 +306,29 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(sut.are_bound(constants::id2, constants::id1));
 }
 
+TEST_CASE_FIXTURE(
+    test_undirected_vertex_major_incidence_matrix,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+
+    for (std::size_t i = 0uz; i < n_elements; i++)
+        for (std::size_t j = 0uz; j <= i; j++)
+            sut.bind(i, j);
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(esize_map[i], n_elements - i);
+    }
+}
+
 struct test_undirected_hyperedge_major_incidence_matrix : public test_incidence_matrix {
     using sut_type = hgl::impl::incidence_matrix<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
 };
@@ -581,6 +604,29 @@ TEST_CASE_FIXTURE(
     CHECK(sut.are_bound(constants::id1, constants::id1));
     CHECK_FALSE(sut.are_bound(constants::id1, constants::id2));
     CHECK_FALSE(sut.are_bound(constants::id2, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_hyperedge_major_incidence_matrix,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+
+    for (std::size_t i = 0uz; i < n_elements; i++)
+        for (std::size_t j = 0uz; j <= i; j++)
+            sut.bind(i, j);
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(esize_map[i], n_elements - i);
+    }
 }
 
 struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
