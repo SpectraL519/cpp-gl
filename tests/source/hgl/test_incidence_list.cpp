@@ -249,6 +249,29 @@ TEST_CASE_FIXTURE(test_undirected_vertex_major_incidence_list, "add_hyperedges s
     CHECK_EQ(storage(sut).size(), constants::n_vertices);
 }
 
+TEST_CASE_FIXTURE(
+    test_undirected_vertex_major_incidence_list,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+
+    for (std::size_t i = 0uz; i < n_elements; i++)
+        for (std::size_t j = 0uz; j <= i; j++)
+            sut.bind(i, j);
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(esize_map[i], n_elements - i);
+    }
+}
+
 struct test_undirected_hyperedge_major_incidence_list : public test_incidence_list {
     using sut_type = hgl::impl::incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
 };
@@ -471,6 +494,29 @@ TEST_CASE_FIXTURE(
     for (const auto hyperedge_id : constants::hyperedge_ids_view)
         sut.bind(vertex_id, hyperedge_id);
     CHECK_EQ(sut.degree(vertex_id), constants::n_hyperedges);
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_hyperedge_major_incidence_list,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+
+    for (std::size_t i = 0uz; i < n_elements; i++)
+        for (std::size_t j = 0uz; j <= i; j++)
+            sut.bind(i, j);
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(esize_map[i], n_elements - i);
+    }
 }
 
 struct test_bf_directed_incidence_list : public test_incidence_list {
@@ -865,6 +911,88 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
 }
 
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
+
+    SUBCASE("tail bind") {
+        for (std::size_t i = 0uz; i < n_elements; i++)
+            for (std::size_t j = 0uz; j <= i; j++)
+                sut.bind_tail(i, j);
+
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto out_deg_map = sut.out_degree_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto tsize_map = sut.tail_size_map(n_elements);
+        for (std::size_t i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(out_deg_map[i], i + 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(tsize_map[i], n_elements - i);
+        }
+        CHECK(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
+        CHECK(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
+    }
+
+    SUBCASE("head bind") {
+        for (std::size_t i = 0uz; i < n_elements; i++)
+            for (std::size_t j = 0uz; j <= i; j++)
+                sut.bind_head(i, j);
+
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto in_deg_map = sut.in_degree_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto hsize_map = sut.head_size_map(n_elements);
+        for (std::size_t i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(in_deg_map[i], i + 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(hsize_map[i], n_elements - i);
+        }
+        CHECK(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
+        CHECK(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
+    }
+
+    // diagonal = tail, everything else is head
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (std::size_t j = 0uz; j <= i; j++) {
+            if (i == j)
+                sut.bind_tail(i, j);
+            else
+                sut.bind_head(i, j);
+        }
+    }
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto out_deg_map = sut.out_degree_map(n_elements);
+    const auto in_deg_map = sut.in_degree_map(n_elements);
+
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    const auto tsize_map = sut.tail_size_map(n_elements);
+    const auto hsize_map = sut.head_size_map(n_elements);
+
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(out_deg_map[i], 1uz);
+        CHECK_EQ(in_deg_map[i], i);
+
+        CHECK_EQ(esize_map[i], n_elements - i);
+        CHECK_EQ(tsize_map[i], 1uz);
+        CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+    }
+}
+
 struct test_bf_directed_hyperedge_major_incidence_list : public test_bf_directed_incidence_list {
     using sut_type = hgl::impl::incidence_list<hgl::bf_directed_t, hgl::impl::hyperedge_major_t>;
 };
@@ -951,7 +1079,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
     "outgoing_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
     "incoming_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
@@ -972,7 +1100,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "degree should return the number of the vertex's incident hyperedges,"
     "out_degree should return the number of the vertex's outgoing hyperedges (v in T(e)),"
     "in_degree should return the number of the vertex's incoming hyperedges (v in H(e))"
@@ -1059,7 +1187,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "incident_vertices should return a view of the hyperedge's incident vertex ids, "
     "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
     "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
@@ -1072,13 +1200,15 @@ TEST_CASE_FIXTURE(
     const auto [tail_bound_vertices, head_bound_vertices] =
         altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
 
-    CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view));
+    CHECK(
+        std::ranges::is_permutation(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view)
+    );
     CHECK(std::ranges::equal(sut.tail_vertices(hyperedge_id), tail_bound_vertices));
     CHECK(std::ranges::equal(sut.head_vertices(hyperedge_id), head_bound_vertices));
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "hyperedge_size should return the number of the hyperedge's incident vertices, "
     "tail_size should return the number of the hyperedge's tail vertices: |T(e)|, "
     "head_size should return the number of the hyperedge's head vertices: |H(e)|"
@@ -1097,7 +1227,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "bind_tail should insert the hyperedge id to the tail list of an appropriate vertex entry"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1116,7 +1246,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "bind_head should insert the hyperedge id to the head list of an appropriate vertex entry"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1135,7 +1265,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "binding methods should rebind the elements if they are already bound"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1165,7 +1295,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list, "unbind should clear the corresponding bit"
+    test_bf_directed_hyperedge_major_incidence_list, "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     std::vector<hgl::types::id_type> expected_storage;
@@ -1193,7 +1323,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_list,
+    test_bf_directed_hyperedge_major_incidence_list,
     "are_bound, is_tail, is_head should return true only when the corresponding major list entries "
     "contain the given minor ids"
 ) {
@@ -1213,6 +1343,88 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(sut.are_bound(constants::id3, constants::id1));
     CHECK_FALSE(sut.is_tail(constants::id3, constants::id1));
     CHECK_FALSE(sut.is_head(constants::id3, constants::id1));
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_list,
+    "element size map getters should return maps of properly calculated element sizes"
+) {
+    constexpr auto n_elements = 5ull;
+    sut_type sut{n_elements, n_elements};
+
+    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
+    REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
+
+    SUBCASE("tail bind") {
+        for (std::size_t i = 0uz; i < n_elements; i++)
+            for (std::size_t j = 0uz; j <= i; j++)
+                sut.bind_tail(i, j);
+
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto out_deg_map = sut.out_degree_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto tsize_map = sut.tail_size_map(n_elements);
+        for (std::size_t i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(out_deg_map[i], i + 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(tsize_map[i], n_elements - i);
+        }
+        CHECK(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
+        CHECK(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
+    }
+
+    SUBCASE("head bind") {
+        for (std::size_t i = 0uz; i < n_elements; i++)
+            for (std::size_t j = 0uz; j <= i; j++)
+                sut.bind_head(i, j);
+
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto in_deg_map = sut.in_degree_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto hsize_map = sut.head_size_map(n_elements);
+        for (std::size_t i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(in_deg_map[i], i + 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(hsize_map[i], n_elements - i);
+        }
+        CHECK(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
+        CHECK(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
+    }
+
+    // diagonal = tail, everything else is head
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (std::size_t j = 0uz; j <= i; j++) {
+            if (i == j)
+                sut.bind_tail(i, j);
+            else
+                sut.bind_head(i, j);
+        }
+    }
+
+    const auto deg_map = sut.degree_map(n_elements);
+    const auto out_deg_map = sut.out_degree_map(n_elements);
+    const auto in_deg_map = sut.in_degree_map(n_elements);
+
+    const auto esize_map = sut.hyperedge_size_map(n_elements);
+    const auto tsize_map = sut.tail_size_map(n_elements);
+    const auto hsize_map = sut.head_size_map(n_elements);
+
+    for (std::size_t i = 0uz; i < n_elements; i++) {
+        CHECK_EQ(deg_map[i], i + 1uz);
+        CHECK_EQ(out_deg_map[i], 1uz);
+        CHECK_EQ(in_deg_map[i], i);
+
+        CHECK_EQ(esize_map[i], n_elements - i);
+        CHECK_EQ(tsize_map[i], 1uz);
+        CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+    }
 }
 
 TEST_SUITE_END(); // test_incidence_list

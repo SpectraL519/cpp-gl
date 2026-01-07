@@ -4,12 +4,15 @@
 
 #pragma once
 
+#include "gl/types/types.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types/types.hpp"
 
 #include <algorithm>
+#include <concepts>
 #include <cstddef>
+#include <functional>
 #include <ranges>
 #include <vector>
 
@@ -48,8 +51,7 @@ public:
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertices(const types::size_type n) noexcept {
-        if constexpr (std::same_as<layout_tag, impl::vertex_major_t>)
-            this->_major_storage.resize(this->_major_storage.size() + n);
+        this->_add<impl::element_type::vertex>(n);
     }
 
     gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) noexcept {
@@ -66,11 +68,16 @@ public:
         return this->_size<impl::element_type::vertex>(vertex_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map(
+        const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices);
+    }
+
     // --- hyperedge methods ---
 
     gl_attr_force_inline void add_hyperedges(const types::size_type n) noexcept {
-        if constexpr (std::same_as<layout_tag, impl::hyperedge_major_t>)
-            this->_major_storage.resize(this->_major_storage.size() + n);
+        this->_add<impl::element_type::hyperedge>(n);
     }
 
     gl_attr_force_inline void remove_hyperedge(const types::id_type hyperedge_id) noexcept {
@@ -86,6 +93,12 @@ public:
         const types::id_type hyperedge_id
     ) const noexcept {
         return this->_size<impl::element_type::hyperedge>(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(n_hyperedges);
     }
 
     // --- binding methods ---
@@ -132,6 +145,12 @@ private:
     using major_storage_type = std::vector<major_element_type>;
 
     template <impl::element_type Element>
+    void _add(const types::size_type n) noexcept {
+        if constexpr (Element == layout_tag::major_element) // add major
+            this->_major_storage.resize(this->_major_storage.size() + n);
+    }
+
+    template <impl::element_type Element>
     void _remove(const types::id_type id) noexcept {
         if constexpr (Element == layout_tag::major_element) { // remove major
             this->_major_storage.erase(
@@ -173,6 +192,24 @@ private:
                 if (this->_contains(major_el, id))
                     ++size;
             return size;
+        }
+    }
+
+    template <impl::element_type Element>
+    [[nodiscard]] std::vector<types::size_type> _size_map(const types::size_type n_elements
+    ) const noexcept {
+        if constexpr (Element == layout_tag::major_element) { // size major
+            auto size_map = this->_major_storage | std::views::transform(&major_element_type::size)
+                          | std::ranges::to<std::vector<types::size_type>>();
+            size_map.resize(n_elements, 0ull);
+            return size_map;
+        }
+        else { // size minor
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+            for (const auto& major_entry : this->_major_storage)
+                for (const auto& minor_id : major_entry)
+                    ++size_map[static_cast<std::size_t>(minor_id)];
+            return size_map;
         }
     }
 
@@ -226,22 +263,37 @@ public:
         return this->_size<impl::element_type::vertex>(vertex_id);
     }
 
+    [[nodiscard]] std::vector<types::size_type> degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
     ) const noexcept {
-        return this->_get_tail<impl::element_type::vertex>(vertex_id);
+        return this->_get<impl::element_type::vertex>(vertex_id, &major_element_type::tail);
     }
 
     [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const noexcept {
-        return this->_tail_size<impl::element_type::vertex>(vertex_id);
+        return this->_size<impl::element_type::vertex>(vertex_id, &major_element_type::tail);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> out_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices, &major_element_type::tail);
     }
 
     [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
     ) const noexcept {
-        return this->_get_head<impl::element_type::vertex>(vertex_id);
+        return this->_get<impl::element_type::vertex>(vertex_id, &major_element_type::head);
     }
 
     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept {
-        return this->_head_size<impl::element_type::vertex>(vertex_id);
+        return this->_size<impl::element_type::vertex>(vertex_id, &major_element_type::head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> in_degree_map(const types::size_type n_vertices
+    ) const noexcept {
+        return this->_size_map<impl::element_type::vertex>(n_vertices, &major_element_type::head);
     }
 
     // --- hyperedge methods : general ---
@@ -266,22 +318,42 @@ public:
         return this->_size<impl::element_type::hyperedge>(hyperedge_id);
     }
 
+    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(n_hyperedges);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
     ) const noexcept {
-        return this->_get_tail<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_get<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::tail);
     }
 
     [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const noexcept {
-        return this->_tail_size<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_size<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::tail);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> tail_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(
+            n_hyperedges, &major_element_type::tail
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
     ) const noexcept {
-        return this->_get_head<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_get<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::head);
     }
 
     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept {
-        return this->_head_size<impl::element_type::hyperedge>(hyperedge_id);
+        return this->_size<impl::element_type::hyperedge>(hyperedge_id, &major_element_type::head);
+    }
+
+    [[nodiscard]] std::vector<types::size_type> head_size_map(const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_size_map<impl::element_type::hyperedge>(
+            n_hyperedges, &major_element_type::head
+        );
     }
 
     // --- binding methods ---
@@ -350,9 +422,25 @@ private:
     struct major_element_type {
         minor_storage_type tail;
         minor_storage_type head;
+
+        [[nodiscard]] types::size_type size() const noexcept {
+            return tail.size() + head.size();
+        }
     };
 
     using major_storage_type = std::vector<major_element_type>;
+
+    static constexpr auto _view_of = [](const auto& ctr) { // A view over all container elements
+        if constexpr (std::same_as<std::remove_cvref_t<decltype(ctr)>, major_element_type>) {
+            // TODO: use std::views::concat (C++26)
+            // NOTE: This is safe because the range operator | creates an owning view over the array
+            return std::array<std::span<const minor_element_type>, 2>{ctr.tail, ctr.head}
+                 | std::views::join;
+        }
+        else {
+            return std::views::all(ctr);
+        }
+    };
 
     template <impl::element_type Element>
     void _add(const types::size_type n) noexcept {
@@ -388,92 +476,55 @@ private:
         return minor_it;
     }
 
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline auto _get(const types::id_type id) const noexcept {
-        if constexpr (Element == layout_tag::major_element) { // get major
-            const auto& entry = this->_major_storage[id];
-            // TODO: use std::views::concat (C++26)
-            // NOTE: This is safe because the range operator | creates an owning view over the array
-            return std::array<std::span<const minor_element_type>, 2>{entry.tail, entry.head}
-                 | std::views::join;
-        }
-        else { // get minor
+    template <impl::element_type Element, typename Projection = std::identity>
+    [[nodiscard]] gl_attr_force_inline auto _get(
+        const types::id_type id, const Projection subset_proj = {}
+    ) const noexcept {
+        if constexpr (Element == layout_tag::major_element) // get major
+            return _view_of(std::invoke(subset_proj, this->_major_storage[id]));
+        else // get minor
             return std::views::iota(0uz, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
-                       return this->_contains(this->_major_storage[major_id], minor_id);
+                 | std::views::filter([this, subset_proj, minor_id = id](types::id_type major_id) {
+                       return this->_contains(
+                           std::invoke(subset_proj, this->_major_storage[major_id]), minor_id
+                       );
                    });
-        }
     }
 
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline auto _get_tail(const types::id_type id) const noexcept {
-        if constexpr (Element == layout_tag::major_element) { // get major
-            return std::views::all(this->_major_storage[id].tail);
-        }
-        else { // get minor
-            return std::views::iota(0uz, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
-                       return this->_contains(this->_major_storage[major_id].tail, minor_id);
-                   });
-        }
-    }
-
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline auto _get_head(const types::id_type id) const noexcept {
-        if constexpr (Element == layout_tag::major_element) { // get major
-            return std::views::all(this->_major_storage[id].head);
-        }
-        else { // get minor
-            return std::views::iota(0uz, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
-                       return this->_contains(this->_major_storage[major_id].head, minor_id);
-                   });
-        }
-    }
-
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline types::size_type _size(const types::id_type id
+    template <impl::element_type Element, typename Projection = std::identity>
+    [[nodiscard]] gl_attr_force_inline types::size_type _size(
+        const types::id_type id, const Projection subset_proj = {}
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            const auto& entry = this->_major_storage[id];
-            return entry.tail.size() + entry.head.size();
+            return std::invoke(subset_proj, this->_major_storage[id]).size();
         }
         else { // size minor
             types::size_type size = 0uz;
             for (const auto& major_el : this->_major_storage)
-                if (this->_contains(major_el, id))
+                if (this->_contains(std::invoke(subset_proj, major_el), id))
                     ++size;
             return size;
         }
     }
 
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline types::size_type _tail_size(const types::id_type id
+    template <impl::element_type Element, typename Projection = std::identity>
+    [[nodiscard]] std::vector<types::size_type> _size_map(
+        const types::size_type n_elements, const Projection subset_proj = {}
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            return this->_major_storage[id].tail.size();
+            auto size_map =
+                this->_major_storage | std::views::transform(subset_proj)
+                | std::views::transform([](const auto& ctr) { return ctr.size(); })
+                | std::ranges::to<std::vector<types::size_type>>();
+            size_map.resize(n_elements, 0ull);
+            return size_map;
         }
         else { // size minor
-            types::size_type size = 0uz;
-            for (const auto& major_el : this->_major_storage)
-                if (this->_contains(major_el.tail, id))
-                    ++size;
-            return size;
-        }
-    }
-
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline types::size_type _head_size(const types::id_type id
-    ) const noexcept {
-        if constexpr (Element == layout_tag::major_element) { // size major
-            return this->_major_storage[id].head.size();
-        }
-        else { // size minor
-            types::size_type size = 0uz;
-            for (const auto& major_el : this->_major_storage)
-                if (this->_contains(major_el.head, id))
-                    ++size;
-            return size;
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+            for (const auto& major_entry : this->_major_storage)
+                for (const auto& minor_id : _view_of(std::invoke(subset_proj, major_entry)))
+                    ++size_map[static_cast<std::size_t>(minor_id)];
+            return size_map;
         }
     }
 
