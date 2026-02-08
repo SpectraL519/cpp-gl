@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/types/types.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/directional_tags.hpp"
@@ -435,14 +436,22 @@ public:
         return this->is_head(vertex.id(), hyperedge.id());
     }
 
-    [[nodiscard]] auto incident_hyperedges(const types::id_type vertex_id) {
-        this->_verify_vertex_id(vertex_id);
-        return this->_impl.incident_hyperedges(vertex_id)
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id) {
+        return this->incident_hyperedge_ids(vertex_id)
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const vertex_type& vertex) {
         return this->incident_hyperedges(vertex.id());
+    }
+
+    [[nodiscard]] auto incident_hyperedge_ids(const types::id_type vertex_id) {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.incident_hyperedges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedge_ids(const vertex_type& vertex) {
+        return this->incident_hyperedge_ids(vertex.id());
     }
 
     [[nodiscard]] types::size_type degree(const types::id_type vertex_id) const {
@@ -525,13 +534,21 @@ public:
     }
 
     [[nodiscard]] auto incident_vertices(const types::id_type hyperedge_id) {
-        this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.incident_vertices(hyperedge_id)
+        return this->incident_vertex_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
     [[nodiscard]] gl_attr_force_inline auto incident_vertices(const hyperedge_type& hyperedge) {
         return this->incident_vertices(hyperedge.id());
+    }
+
+    [[nodiscard]] auto incident_vertex_ids(const types::id_type hyperedge_id) {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.incident_vertices(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(const hyperedge_type& hyperedge) {
+        return this->incident_vertex_ids(hyperedge.id());
     }
 
     [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const {
@@ -549,11 +566,10 @@ public:
         return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] auto tail_vertices(const types::id_type hyperedge_id)
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.tail_vertices(hyperedge_id)
+        return this->tail_vertex_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
@@ -561,6 +577,19 @@ public:
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_vertices(hyperedge.id());
+    }
+
+    [[nodiscard]] auto tail_vertex_ids(const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.tail_vertices(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto tail_vertex_ids(const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->tail_vertex_ids(hyperedge.id());
     }
 
     [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const
@@ -583,11 +612,10 @@ public:
         return this->_impl.tail_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] auto head_vertices(const types::id_type hyperedge_id)
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.head_vertices(hyperedge_id)
+        return this->head_vertex_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
@@ -595,6 +623,19 @@ public:
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_vertices(hyperedge.id());
+    }
+
+    [[nodiscard]] auto head_vertex_ids(const types::id_type hyperedge_id)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_impl.head_vertices(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto head_vertex_ids(const hyperedge_type& hyperedge)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->head_vertex_ids(hyperedge.id());
     }
 
     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const
