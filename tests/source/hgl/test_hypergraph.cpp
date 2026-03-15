@@ -1,9 +1,9 @@
 #include "hgl/directional_tags.hpp"
+#include "hgl/hypergraph.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
 #include <doctest.h>
-#include <hgl/hypergraph.hpp>
 
 #include <algorithm>
 #include <concepts>
@@ -581,15 +581,12 @@ TEST_CASE_TEMPLATE_DEFINE(
                     CHECK_EQ(sut.degree(vertex_id), expected_hyperedges.size());
 
                     CHECK(std::ranges::equal(
-                        sut.incoming_hyperedges(vertex_id),
-                        expected_in_hyperedges,
-                        std::equal_to{},
-                        get_id
+                        sut.in_hyperedges(vertex_id), expected_in_hyperedges, std::equal_to{}, get_id
                     ));
                     CHECK_EQ(sut.in_degree(vertex_id), expected_in_hyperedges.size());
 
                     CHECK(std::ranges::equal(
-                        sut.outgoing_hyperedges(vertex_id),
+                        sut.out_hyperedges(vertex_id),
                         expected_out_hyperedges,
                         std::equal_to{},
                         get_id
@@ -626,7 +623,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 CHECK_EQ(sut.degree(vertex_id), 2uz);
 
                 CHECK(std::ranges::equal(
-                    sut.incoming_hyperedges(vertex_id),
+                    sut.in_hyperedges(vertex_id),
                     std::vector<hgl::types::id_type>{constants::id2},
                     std::equal_to{},
                     get_id
@@ -634,7 +631,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 CHECK_EQ(sut.in_degree(vertex_id), 1uz);
 
                 CHECK(std::ranges::equal(
-                    sut.outgoing_hyperedges(vertex_id),
+                    sut.out_hyperedges(vertex_id),
                     std::vector<hgl::types::id_type>{constants::id4},
                     std::equal_to{},
                     get_id
@@ -1076,14 +1073,14 @@ TEST_CASE_TEMPLATE_DEFINE(
                 ));
 
                 CHECK(std::ranges::equal(
-                    sut.incoming_hyperedges(vertex_id),
+                    sut.in_hyperedges(vertex_id),
                     expected_in_properties,
                     std::equal_to{},
                     get_property_addr
                 ));
 
                 CHECK(std::ranges::equal(
-                    sut.outgoing_hyperedges(vertex_id),
+                    sut.out_hyperedges(vertex_id),
                     expected_out_properties,
                     std::equal_to{},
                     get_property_addr
@@ -1106,7 +1103,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             ));
 
             CHECK(std::ranges::equal(
-                sut.incoming_hyperedges(vertex_id),
+                sut.in_hyperedges(vertex_id),
                 std::vector<hyperedge_properties_type*>{&sut.get_hyperedge_properties(constants::id2
                 )},
                 std::equal_to{},
@@ -1114,7 +1111,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             ));
 
             CHECK(std::ranges::equal(
-                sut.outgoing_hyperedges(vertex_id),
+                sut.out_hyperedges(vertex_id),
                 std::vector<hyperedge_properties_type*>{&sut.get_hyperedge_properties(constants::id4
                 )},
                 std::equal_to{},
@@ -1218,8 +1215,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::types::name_property,
         hgl::types::name_property> // bf-directed vertex-major incidence matrix
 );
-
-TEST_SUITE_END(); // test_hypergraph
 
 TEST_CASE_TEMPLATE_DEFINE(
     "hypergraph size utility tests", HypergraphTraits, hypergraph_traits_util_template
@@ -1420,5 +1415,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::impl::vertex_major_t,
         hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
 );
+
+TEST_SUITE_END(); // test_hypergraph
 
 } // namespace hgl_testing

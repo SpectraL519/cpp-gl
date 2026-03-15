@@ -653,8 +653,8 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_list,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
-    "outgoing_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
-    "incoming_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
+    "out_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
+    "in_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -667,8 +667,8 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::is_permutation(
         sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
     ));
-    CHECK(std::ranges::equal(sut.outgoing_hyperedges(vertex_id), tail_bound_hyperedges));
-    CHECK(std::ranges::equal(sut.incoming_hyperedges(vertex_id), head_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.out_hyperedges(vertex_id), tail_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.in_hyperedges(vertex_id), head_bound_hyperedges));
 }
 
 TEST_CASE_FIXTURE(
@@ -1081,8 +1081,8 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_list,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
-    "outgoing_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
-    "incoming_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
+    "out_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
+    "in_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -1095,8 +1095,8 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::is_permutation(
         sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
     ));
-    CHECK(std::ranges::equal(sut.outgoing_hyperedges(vertex_id), tail_bound_hyperedges));
-    CHECK(std::ranges::equal(sut.incoming_hyperedges(vertex_id), head_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.out_hyperedges(vertex_id), tail_bound_hyperedges));
+    CHECK(std::ranges::equal(sut.in_hyperedges(vertex_id), head_bound_hyperedges));
 }
 
 TEST_CASE_FIXTURE(
