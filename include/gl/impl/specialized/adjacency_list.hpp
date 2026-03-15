@@ -22,7 +22,7 @@ class adjacency_list;
 namespace specialized {
 
 struct adjacency_list_item {
-    types::id_type id;
+    types::id_type edge_id;
     types::id_type target_id;
 
     [[nodiscard]] bool operator==(const adjacency_list_item&) const = default;
@@ -33,8 +33,7 @@ namespace detail {
 [[nodiscard]] auto strict_find(
     type_traits::c_range_of<adjacency_list_item> auto& edge_list, const auto& edge
 ) {
-    // find the edge by address
-    const auto it = std::ranges::find(edge_list, edge.id(), &adjacency_list_item::id);
+    const auto it = std::ranges::find(edge_list, edge.id(), &adjacency_list_item::edge_id);
     if (it == edge_list.end())
         throw std::invalid_argument(std::format(
             "Got invalid edge [id = {} | vertices = ({}, {})]",
@@ -53,6 +52,11 @@ requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
+
+    // [[nodiscard]] static auto in_edges(const impl_type& self, const types::id_type vertex_id) {
+    //     std::vector<types::id_type> in_edges;
+    //     for (const auto& adjacent_edges : self._list)
+    // }
 
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
@@ -114,7 +118,7 @@ struct directed_adjacency_list {
         impl_type& self, const types::id_type vertex_id
     ) {
         auto removed_edges =
-            self._list[vertex_id] | std::views::transform(&adjacency_list_item::id)
+            self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
             | std::ranges::to<std::vector>();
 
         // remove all edges incident to the vertex
@@ -126,7 +130,7 @@ struct directed_adjacency_list {
             const auto removed_subrng =
                 std::ranges::remove_if(adj_edges, [vertex_id, &removed_edges](const auto& item) {
                     if (item.target_id == vertex_id) {
-                        removed_edges.push_back(item.id);
+                        removed_edges.push_back(item.edge_id);
                         return true;
                     }
                     return false;
@@ -228,7 +232,7 @@ struct undirected_adjacency_list {
 
         // remove the list of edges incident from the vertex entirely
         const auto removed_edges =
-            self._list[vertex_id] | std::views::transform(&adjacency_list_item::id)
+            self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
             | std::ranges::to<std::vector>();
         self._list.erase(std::next(std::begin(self._list), vertex_id));
         return removed_edges;

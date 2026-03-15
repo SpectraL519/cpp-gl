@@ -175,7 +175,7 @@ public:
         const type_traits::c_forward_range_of<types::id_type> auto& vertex_id_range
     ) {
         // sorts the ids in a descending order and removes duplicate ids
-        std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
+        std::set<types::id_type, std::greater<>> vertex_id_set(
             std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
         );
 

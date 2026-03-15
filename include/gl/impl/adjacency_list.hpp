@@ -39,7 +39,7 @@ public:
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
-        this->_list.emplace_back(edge_item_list_type{});
+        this->_list.emplace_back();
     }
 
     inline void add_vertices(const types::size_type n) {
@@ -120,7 +120,7 @@ public:
         });
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
-        return std::make_optional<edge_type>(item_it->id, source_id, target_id);
+        return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(
@@ -137,7 +137,7 @@ public:
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(
-            item_it->id, source_id, target_id, *edge_properties_map[item_it->id]
+            item_it->edge_id, source_id, target_id, *edge_properties_map[item_it->edge_id]
         );
     }
 
@@ -150,7 +150,7 @@ public:
                    return item.target_id == target_id;
                })
              | std::views::transform([source_id](const auto& item) {
-                   return edge_type{item.id, source_id, item.target_id};
+                   return edge_type{item.edge_id, source_id, item.target_id};
                })
              | std::ranges::to<std::vector>();
     }
@@ -167,7 +167,7 @@ public:
                })
              | std::views::transform([source_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.id, source_id, item.target_id, *edge_properties_map[item.id]
+                       item.edge_id, source_id, item.target_id, *edge_properties_map[item.edge_id]
                    };
                })
              | std::ranges::to<std::vector>();
@@ -177,7 +177,7 @@ public:
         specialized_impl::remove_edge(*this, edge);
         for (auto& adj : this->_list)
             for (auto& item : adj)
-                item.id -= static_cast<types::id_type>(item.id > edge.id());
+                item.edge_id -= static_cast<types::id_type>(item.edge_id > edge.id());
     }
 
     std::vector<types::id_type> remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
@@ -194,7 +194,7 @@ public:
     requires(type_traits::c_has_empty_properties<edge_type>)
     {
         return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
-                   return edge_type{item.id, vertex_id, item.target_id};
+                   return edge_type{item.edge_id, vertex_id, item.target_id};
                });
     }
 
@@ -206,7 +206,7 @@ public:
         return this->_list[vertex_id]
              | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.id, vertex_id, item.target_id, *edge_properties_map[item.id]
+                       item.edge_id, vertex_id, item.target_id, *edge_properties_map[item.edge_id]
                    };
                });
     }
@@ -245,12 +245,12 @@ private:
 
         for (auto& adj : this->_list) {
             for (auto& edge_item : adj) {
-                auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.id);
-                if (it != removed_edge_ids.end() && *it == edge_item.id)
-                    edge_item.id = constants::invalid_id; // edge was removed
+                auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
+                if (it != removed_edge_ids.end() && *it == edge_item.edge_id)
+                    edge_item.edge_id = constants::invalid_id; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id
-                    edge_item.id -= std::ranges::distance(removed_edge_ids.begin(), it);
+                    edge_item.edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);
 
                 // align the vertex id
                 edge_item.target_id -= edge_item.target_id > removed_vertex_id;
