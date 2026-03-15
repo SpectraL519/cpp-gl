@@ -5,8 +5,8 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/impl/specialized/adjacency_list.hpp"
 #include "gl/types/types.hpp"
-#include "specialized/adjacency_list.hpp"
 
 #ifdef GL_TESTING
 namespace gl_testing {

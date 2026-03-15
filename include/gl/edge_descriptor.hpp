@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "edge_tags.hpp"
-#include "io/format.hpp"
-#include "vertex_descriptor.hpp"
+#include "gl/constants.hpp"
+#include "gl/edge_tags.hpp"
+#include "gl/io/format.hpp"
+#include "gl/vertex_descriptor.hpp"
 
 namespace gl {
 

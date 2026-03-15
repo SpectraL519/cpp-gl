@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "graph.hpp"
+#include "gl/graph.hpp"
 
 #include <filesystem>
 #include <fstream>

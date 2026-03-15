@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "gl/constants.hpp"
 #include "gl/types/types.hpp"
 
 #include <algorithm>

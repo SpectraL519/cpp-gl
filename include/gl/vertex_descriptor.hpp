@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include "decl/graph_traits.hpp"
-#include "graph_io.hpp"
-#include "types/properties.hpp"
-#include "types/type_traits.hpp"
-#include "types/types.hpp"
+#include "gl/constants.hpp"
+#include "gl/decl/graph_traits.hpp"
+#include "gl/graph_io.hpp"
+#include "gl/types/properties.hpp"
+#include "gl/types/type_traits.hpp"
+#include "gl/types/types.hpp"
 
 #include <compare>
 #include <format>

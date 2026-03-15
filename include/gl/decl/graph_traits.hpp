@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "gl/decl/impl_tags.hpp"
 #include "gl/types/type_traits.hpp"
-#include "impl_tags.hpp"
 
 namespace gl {
 

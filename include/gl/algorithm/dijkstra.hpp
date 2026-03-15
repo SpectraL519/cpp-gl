@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "impl/pfs.hpp"
+#include "gl/algorithm/impl/pfs.hpp"
 
 #include <deque>
 
@@ -72,7 +72,6 @@ template <
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
     using distance_type = types::vertex_distance_type<GraphType>;
 
@@ -110,7 +109,9 @@ template <
             }
 
             return false;
-        }
+        },
+        pre_visit,
+        post_visit
     );
 
     if (negative_edge.has_value()) {

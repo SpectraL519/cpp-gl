@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "topology/binary_tree.hpp"
-#include "topology/bipartite.hpp"
-#include "topology/clique.hpp"
-#include "topology/cycle.hpp"
-#include "topology/path.hpp"
+#include "gl/topology/binary_tree.hpp"
+#include "gl/topology/bipartite.hpp"
+#include "gl/topology/clique.hpp"
+#include "gl/topology/cycle.hpp"
+#include "gl/topology/path.hpp"

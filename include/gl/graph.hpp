@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include "constants.hpp"
-#include "graph_traits.hpp"
-#include "impl/impl_tags.hpp"
-#include "io/stream_options_manipulator.hpp"
-#include "util/ranges.hpp"
+#include "gl/constants.hpp"
+#include "gl/graph_traits.hpp"
+#include "gl/impl/impl_tags.hpp"
+#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/util/ranges.hpp"
 
 #include <set>
 
