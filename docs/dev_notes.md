@@ -18,6 +18,9 @@ cmake --build build # -j<n>
 
 This will build the test executables `gl` (GL module tests) and `hgl` (HGL module tests) in the `<project-root>/build/tests` directory.
 
+> [!TIP]
+> Add the `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag to the `cmake` command to generate the `compile_commands.json` file which is used by some code editors and tools for better code analysis and navigation.
+
 ### Run the tests
 
 ```shell

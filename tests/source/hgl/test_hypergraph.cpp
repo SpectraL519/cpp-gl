@@ -1,9 +1,9 @@
 #include "hgl/directional_tags.hpp"
+#include "hgl/hypergraph.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
 #include <doctest.h>
-#include <hgl/hypergraph.hpp>
 
 #include <algorithm>
 #include <concepts>
@@ -1219,8 +1219,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::types::name_property> // bf-directed vertex-major incidence matrix
 );
 
-TEST_SUITE_END(); // test_hypergraph
-
 TEST_CASE_TEMPLATE_DEFINE(
     "hypergraph size utility tests", HypergraphTraits, hypergraph_traits_util_template
 ) {
@@ -1420,5 +1418,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::impl::vertex_major_t,
         hgl::bf_directed_t> // bf-directed vertex-major incidence matrix
 );
+
+TEST_SUITE_END(); // test_hypergraph
 
 } // namespace hgl_testing

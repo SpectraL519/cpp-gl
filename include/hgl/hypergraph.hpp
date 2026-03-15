@@ -542,12 +542,13 @@ public:
         return this->incident_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto incident_vertex_ids(const types::id_type hyperedge_id) {
+    [[nodiscard]] auto incident_vertex_ids(const types::id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.incident_vertices(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(const hyperedge_type& hyperedge) {
+    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(const hyperedge_type& hyperedge
+    ) const {
         return this->incident_vertex_ids(hyperedge.id());
     }
 
@@ -579,14 +580,14 @@ public:
         return this->tail_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto tail_vertex_ids(const types::id_type hyperedge_id)
+    [[nodiscard]] auto tail_vertex_ids(const types::id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.tail_vertices(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertex_ids(const hyperedge_type& hyperedge)
+    [[nodiscard]] gl_attr_force_inline auto tail_vertex_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_vertex_ids(hyperedge.id());
@@ -625,14 +626,14 @@ public:
         return this->head_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto head_vertex_ids(const types::id_type hyperedge_id)
+    [[nodiscard]] auto head_vertex_ids(const types::id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.head_vertices(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertex_ids(const hyperedge_type& hyperedge)
+    [[nodiscard]] gl_attr_force_inline auto head_vertex_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_vertex_ids(hyperedge.id());

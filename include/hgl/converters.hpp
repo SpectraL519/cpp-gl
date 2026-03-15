@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/graph.hpp"
 #include "gl/types/types.hpp"
 #include "hgl/hypergraph.hpp"
@@ -35,7 +36,7 @@ template <type_traits::c_undirected_graph G>
     std::vector<edge_vertices> edges;
 
     for (const auto eid : h.hyperedge_ids()) {
-        const auto clique_vertices = h.incident_vertex_ids(eid) | std::ranges::to<std::vector>;
+        const auto clique_vertices = h.incident_vertex_ids(eid) | std::ranges::to<std::vector>();
         for (std::size_t i = 0uz; i < clique_vertices.size(); i++) {
             for (std::size_t j = 0uz; j < i; j++) {
                 const auto [u, v] = std::minmax(clique_vertices[i], clique_vertices[j]);
@@ -45,7 +46,8 @@ template <type_traits::c_undirected_graph G>
     }
 
     std::ranges::sort(edges);
-    edges.erase(std::unique(edges.begin(), edges.end()), edges.end());
+    const auto rem = std::ranges::unique(edges);
+    edges.erase(rem.begin(), rem.end());
 
     G g{h.order()};
     for (const auto& edge : edges)
