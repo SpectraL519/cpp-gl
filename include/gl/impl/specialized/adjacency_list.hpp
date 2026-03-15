@@ -67,12 +67,6 @@ struct directed_adjacency_list {
         return in_edges;
     }
 
-    [[nodiscard]] gl_attr_force_inline static auto out_edges(
-        const impl_type& self, const types::id_type vertex_id
-    ) {
-        return std::views::all(self._list[vertex_id]);
-    }
-
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
@@ -190,12 +184,6 @@ struct undirected_adjacency_list {
     using edge_type = typename impl_type::edge_type;
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
-        const impl_type& self, const types::id_type vertex_id
-    ) {
-        return std::views::all(self._list[vertex_id]);
-    }
-
-    [[nodiscard]] gl_attr_force_inline static auto out_edges(
         const impl_type& self, const types::id_type vertex_id
     ) {
         return std::views::all(self._list[vertex_id]);

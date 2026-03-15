@@ -193,9 +193,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const
     requires(type_traits::c_has_empty_properties<edge_type>)
     {
-        return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
-                   return edge_type{item.edge_id, vertex_id, item.vertex_id};
-               });
+        return this->out_edges(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
@@ -203,12 +201,7 @@ public:
     ) const
     requires(type_traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->_list[vertex_id]
-             | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
-                   return edge_type{
-                       item.edge_id, vertex_id, item.vertex_id, *edge_properties_map[item.edge_id]
-                   };
-               });
+        return this->out_edges(vertex_id, edge_properties_map);
     }
 
     [[nodiscard]] gl_attr_force_inline auto in_edges(const types::id_type vertex_id) const
@@ -236,8 +229,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto out_edges(const types::id_type vertex_id) const
     requires(type_traits::c_has_empty_properties<edge_type>)
     {
-        return specialized_impl::out_edges(*this, vertex_id)
-             | std::views::transform([vertex_id](const auto& item) {
+        return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
                    return edge_type{item.edge_id, vertex_id, item.vertex_id};
                });
     }
@@ -247,7 +239,7 @@ public:
     ) const
     requires(type_traits::c_has_non_empty_properties<edge_type>)
     {
-        return specialized_impl::out_edges(*this, vertex_id)
+        return this->_list[vertex_id]
              | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
                    return edge_type{
                        item.edge_id, vertex_id, item.vertex_id, *edge_properties_map[item.edge_id]

@@ -193,6 +193,48 @@ public:
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const types::id_type vertex_id) const
     requires(type_traits::c_has_empty_properties<edge_type>)
     {
+        return this->out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        return this->out_edges(vertex_id, edge_properties_map);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_edges(const types::id_type vertex_id) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
+        return std::views::iota(0uz, this->_matrix.size())
+             | std::views::filter([this, vertex_id](const auto& source_id) {
+                   return this->_matrix[source_id][vertex_id] != constants::invalid_id;
+               })
+             | std::views::transform([this, vertex_id](const auto& source_id) {
+                   const auto edge_id = this->_matrix[source_id][vertex_id];
+                   return edge_type{edge_id, source_id, vertex_id};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_edges(
+        const types::id_type vertex_id, const auto& edge_properties_map
+    ) const
+    requires(type_traits::c_has_non_empty_properties<edge_type>)
+    {
+        return std::views::iota(0uz, this->_matrix.size())
+             | std::views::filter([this, vertex_id](const auto& source_id) {
+                   return this->_matrix[source_id][vertex_id] != constants::invalid_id;
+               })
+             | std::views::transform([this, vertex_id, &edge_properties_map](const auto& source_id) {
+                   const auto edge_id = this->_matrix[source_id][vertex_id];
+                   return edge_type{edge_id, source_id, vertex_id, *edge_properties_map[edge_id]};
+               });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto out_edges(const types::id_type vertex_id) const
+    requires(type_traits::c_has_empty_properties<edge_type>)
+    {
         return this->_matrix[vertex_id] | std::views::enumerate
              | std::views::filter([](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
@@ -204,7 +246,7 @@ public:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
+    [[nodiscard]] gl_attr_force_inline auto out_edges(
         const types::id_type vertex_id, const auto& edge_properties_map
     ) const
     requires(type_traits::c_has_non_empty_properties<edge_type>)

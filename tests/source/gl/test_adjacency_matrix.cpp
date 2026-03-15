@@ -298,6 +298,32 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix, "in_edges should return edges where the vertex is the target"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
+    const auto edge2 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
+
+    const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    REQUIRE_EQ(in_edges.size(), 2uz);
+    CHECK(std::ranges::contains(in_edges, edge1));
+    CHECK(std::ranges::contains(in_edges, edge2));
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_matrix, "out_edges should return edges where the vertex is the source"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge2 = add_edge(constants::vertex_id_1, constants::vertex_id_3);
+
+    const auto out_edges = sut.out_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    REQUIRE_EQ(out_edges.size(), 2uz);
+    CHECK(std::ranges::contains(out_edges, edge1));
+    CHECK(std::ranges::contains(out_edges, edge2));
+}
+
+TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "{in/out}_degree should return the number of edges incident {to/from} the given vertex"
 ) {
@@ -429,8 +455,6 @@ TEST_CASE_FIXTURE(
 struct test_undirected_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::undirected_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>>;
-
-    test_undirected_adjacency_matrix() {}
 
     edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
@@ -637,6 +661,20 @@ TEST_CASE_FIXTURE(
     auto adjacent_edges_second = sut.adjacent_edges(target_id);
     REQUIRE_EQ(gl::util::range_size(adjacent_edges_second), constants::zero_elements);
     CHECK_EQ(std::ranges::find(adjacent_edges_second, edge_to_remove), adjacent_edges_second.end());
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_matrix,
+    "in_edges and out_edges should return the same edges for undirected graphs"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    add_edge(constants::vertex_id_1, constants::vertex_id_3);
+
+    const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+    const auto out_edges = sut.out_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    CHECK(std::ranges::equal(in_edges, sut.adjacent_edges(constants::vertex_id_1)));
+    CHECK(std::ranges::equal(out_edges, sut.adjacent_edges(constants::vertex_id_1)));
 }
 
 TEST_CASE_FIXTURE(
