@@ -23,7 +23,7 @@ struct list_t {
     using implementation_type = incidence_list<DirectionalTag, LayoutTag>;
 };
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 struct matrix_t {
     using layout_tag = LayoutTag;
 

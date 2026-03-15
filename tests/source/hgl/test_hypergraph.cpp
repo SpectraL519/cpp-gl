@@ -1,5 +1,7 @@
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph.hpp"
+#include "hgl/hypergraph_traits.hpp"
+#include "hgl/impl/layout_tags.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
@@ -833,6 +835,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_traits_template,
     hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::undirected_t>, // undirected bidirectional incidence list
+    hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t>, // undirected hyperedge-major incidence list
     hgl::list_hypergraph_traits<
@@ -844,6 +849,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t>, // undirected vertex-major incidence matrix
+    hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::bf_directed_t>, // bf-directed bidirectional incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
@@ -978,6 +986,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     undirected_property_hypergraph_traits_template,
+    hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected bidirectional incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
@@ -1195,6 +1208,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bf_directed_property_hypergraph_traits_template,
     hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // bf-directed bidirectional incidence list
+    hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
         hgl::types::name_property,
@@ -1391,6 +1409,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_traits_util_template,
     hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::undirected_t>, // undirected bidirectional incidence list
+    hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t>, // undirected hyperedge-major incidence list
     hgl::list_hypergraph_traits<
@@ -1402,6 +1423,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t>, // undirected vertex-major incidence matrix
+    hgl::list_hypergraph_traits<
+        hgl::impl::bidirectional_t,
+        hgl::bf_directed_t>, // bf-directed bidirectional incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t>, // bf-directed hyperedge-major incidence list
