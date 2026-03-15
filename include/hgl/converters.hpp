@@ -10,28 +10,12 @@
 #include "hgl/hypergraph.hpp"
 
 #include <algorithm>
+#include <ranges>
 
 namespace hgl {
 
-/*
-0. Common prefix: make_, to_, as_
-
-1. Clique expansion:
-- make_clique_graph
-- make_projection, project, project_as<G>
-
-2. Star expansion / bipartite representation
-- make_bipartite_graph
-- make_star_graph
-- make_incidence_graph
-- make_flow_graph (for BF hypergraphs)
-
-3. Line graph
-- make_line_graph
-*/
-
 template <type_traits::c_undirected_graph G>
-[[nodiscard]] G make_clique_graph(const type_traits::c_undirected_hypergraph auto& h) noexcept {
+[[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) noexcept {
     using edge_vertices = std::pair<types::id_type, types::id_type>;
     std::vector<edge_vertices> edges;
 
@@ -52,6 +36,21 @@ template <type_traits::c_undirected_graph G>
     G g{h.order()};
     for (const auto& edge : edges)
         g.add_edge(edge.first, edge.second);
+    return g;
+}
+
+template <type_traits::c_undirected_graph G>
+[[nodiscard]] G incidence_graph(const type_traits::c_undirected_hypergraph auto& h) noexcept {
+    G g{h.order() + h.size()};
+
+    const auto get_aligned_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+    for (const auto vid : h.vertex_ids()) {
+        const auto targets =
+            h.incident_hyperedge_ids(vid) | std::views::transform(get_aligned_edge_id)
+            | std::ranges::to<std::vector>();
+        g.add_edges_from(vid, targets);
+    }
+
     return g;
 }
 

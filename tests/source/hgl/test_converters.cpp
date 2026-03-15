@@ -35,12 +35,14 @@ using add_hyperedge_property = hgl::hypergraph_traits<
 inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "Undirected hypergraph converters tests", HypergraphTraits, undirected_hypergraph_traits_converters_template
+    "Undirected hypergraph converters tests",
+    HypergraphTraits,
+    undirected_hypergraph_traits_converters_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
     using graph_type = gl::graph<gl::undirected_graph_traits<>>;
 
-    SUBCASE("make_clique_graph should produce a clique for each hyperedge") {
+    SUBCASE("projection should produce a clique for each hyperedge") {
         sut_type sut{4ull, 4ull};
 
         // e0 = {0,1,2}
@@ -60,21 +62,71 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e3 = {0} (should not add any edge)
         sut.bind(0ull, 3ull);
 
-        const auto clique = hgl::make_clique_graph<graph_type>(sut);
+        const auto clique = hgl::projection<graph_type>(sut);
 
         CHECK_EQ(clique.order(), sut.order());
 
         const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
-            {0ull, 1ull}, {0ull, 2ull}, {1ull, 2ull}, {1ull, 3ull},
+            {0ull, 1ull},
+            {0ull, 2ull},
+            {1ull, 2ull},
+            {1ull, 3ull},
             // e1: (1,2) - exists, (1,3), (2,3)
-            {2ull, 3ull}, {0ull, 3ull},
+            {2ull, 3ull},
+            {0ull, 3ull},
             // e3: none
         };
 
         CHECK_EQ(clique.size(), expected_edges.size());
         for (const auto& [u, v] : expected_edges)
             CHECK(clique.has_edge(u, v));
+    }
+
+    SUBCASE("incidence_graph should produce a bipartite graph connecting vertices to hyperedges") {
+        sut_type sut{4ull, 4ull};
+
+        // e0 = {0,1,2}
+        sut.bind(0ull, 0ull);
+        sut.bind(1ull, 0ull);
+        sut.bind(2ull, 0ull);
+
+        // e1 = {1,2,3}
+        sut.bind(1ull, 1ull);
+        sut.bind(2ull, 1ull);
+        sut.bind(3ull, 1ull);
+
+        // e2 = {0,3}
+        sut.bind(0ull, 2ull);
+        sut.bind(3ull, 2ull);
+
+        // e3 = {0}
+        sut.bind(0ull, 3ull);
+
+        const auto incidence = hgl::incidence_graph<graph_type>(sut);
+
+        CHECK_EQ(incidence.order(), sut.order() + sut.size());
+
+        // Expected edges: vertices 0-3, hyperedges 4-7
+        const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
+            // e0 (4): {0,1,2}
+            {0ull, 4ull},
+            {1ull, 4ull},
+            {2ull, 4ull},
+            // e1 (5): {1,2,3}
+            {1ull, 5ull},
+            {2ull, 5ull},
+            {3ull, 5ull},
+            // e2 (6): {0,3}
+            {0ull, 6ull},
+            {3ull, 6ull},
+            // e3 (7): {0}
+            {0ull, 7ull}
+        };
+
+        CHECK_EQ(incidence.size(), expected_edges.size());
+        for (const auto& [u, v] : expected_edges)
+            CHECK(incidence.has_edge(u, v));
     }
 }
 

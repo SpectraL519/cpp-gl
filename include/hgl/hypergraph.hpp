@@ -445,12 +445,13 @@ public:
         return this->incident_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto incident_hyperedge_ids(const types::id_type vertex_id) {
+    [[nodiscard]] auto incident_hyperedge_ids(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.incident_hyperedges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedge_ids(const vertex_type& vertex) {
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedge_ids(const vertex_type& vertex
+    ) const {
         return this->incident_hyperedge_ids(vertex.id());
     }
 
