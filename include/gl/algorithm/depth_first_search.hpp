@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "constants.hpp"
-#include "impl/dfs.hpp"
+#include "gl/algorithm/constants.hpp"
+#include "gl/algorithm/impl/dfs.hpp"
 
 namespace gl::algorithm {
 
@@ -20,9 +20,6 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
-    using edge_type = typename GraphType::edge_type;
-
     std::vector<bool> visited(graph.order(), false);
     std::vector<types::id_type> sources(graph.order());
 
@@ -67,9 +64,6 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> recursive_de
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
-    using edge_type = typename GraphType::edge_type;
-
     std::vector<bool> visited(graph.order(), false);
     std::vector<types::id_type> sources(graph.order());
 

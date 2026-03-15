@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "common.hpp"
+#include "gl/algorithm/impl/common.hpp"
 
 #include <stack>
 

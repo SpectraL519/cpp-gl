@@ -304,7 +304,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: A *random access view* with values of type `edge_type`.
 
 - **`graph.at(vertex) const`**:
-  - *Description*: An alias for `adjacent_edges(vertex)`. Returns a *random access view* over the adjacency storage entry for the given vertex.
+  - *Description*: Returns a *random access view* over the adjacency storage entry for the given vertex.
     - This is equivalent to calling `at(vertex.id())`.
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
@@ -323,6 +323,36 @@ Based on the specified traits, the `graph` class defines the following types:
     - This is equivalent to calling `adjacent_edges(vertex.id())`.
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to find adjacent edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
+
+- **`graph.in_edges(vertex_id) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges where the vertex with the specified ID is the target vertex (incoming edges).
+    - For directed graphs: edges where the vertex is the target.
+    - For undirected graphs: same as `adjacent_edges(vertex_id)`.
+  - *Parameters*:
+    - `vertex_id: types::id_type` – the ID of the vertex for which to find incoming edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
+
+- **`graph.in_edges(vertex) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges where the specified vertex is the target vertex (incoming edges).
+    - This is equivalent to calling `in_edges(vertex.id())`.
+  - *Parameters*:
+    - `vertex: const vertex_type&` – the vertex for which to find incoming edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
+
+- **`graph.out_edges(vertex_id) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges where the vertex with the specified ID is the source vertex (outgoing edges).
+    - For directed graphs: edges where the vertex is the source.
+    - For undirected graphs: same as `adjacent_edges(vertex_id)`.
+  - *Parameters*:
+    - `vertex_id: types::id_type` – the ID of the vertex for which to find outgoing edges.
+  - *Return type*: A *forward view* with values of type `edge_type`.
+
+- **`graph.out_edges(vertex) const`**:
+  - *Description*: Returns a *forward view* over a collection of edges where the specified vertex is the source vertex (outgoing edges).
+    - This is equivalent to calling `out_edges(vertex.id())`.
+  - *Parameters*:
+    - `vertex: const vertex_type&` – the vertex for which to find outgoing edges.
   - *Return type*: A *forward view* with values of type `edge_type`.
 
 <br />

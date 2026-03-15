@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "algorithm/breadth_first_search.hpp"
-#include "algorithm/coloring.hpp"
-#include "algorithm/depth_first_search.hpp"
-#include "algorithm/dijkstra.hpp"
-#include "algorithm/mst.hpp"
-#include "algorithm/topological_sort.hpp"
+#include "gl/algorithm/breadth_first_search.hpp"
+#include "gl/algorithm/coloring.hpp"
+#include "gl/algorithm/depth_first_search.hpp"
+#include "gl/algorithm/dijkstra.hpp"
+#include "gl/algorithm/mst.hpp"
+#include "gl/algorithm/topological_sort.hpp"

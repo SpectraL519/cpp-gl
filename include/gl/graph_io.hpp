@@ -4,10 +4,9 @@
 
 #pragma once
 
-#include "io/stream_options_manipulator.hpp"
+#include "gl/io/stream_options_manipulator.hpp"
 
-namespace gl {
-namespace io {
+namespace gl::io {
 
 enum class graph_option : bit_position_type {
     verbose = 0ul,
@@ -37,6 +36,4 @@ inline const stream_options_manipulator without_properties =
 inline const stream_options_manipulator enable_gsf = set_option(graph_option::gsf);
 inline const stream_options_manipulator disable_gsf = unset_option(graph_option::gsf);
 
-} // namespace io
-
-} // namespace gl
+} // namespace gl::io

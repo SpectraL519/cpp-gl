@@ -4,5 +4,5 @@
 
 #pragma once
 
-#include "io/format.hpp"
-#include "io/stream_options_manipulator.hpp"
+#include "gl/io/format.hpp"
+#include "gl/io/stream_options_manipulator.hpp"

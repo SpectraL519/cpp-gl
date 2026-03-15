@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "impl/bfs.hpp"
+#include "gl/algorithm/impl/bfs.hpp"
 
 namespace gl::algorithm {
 

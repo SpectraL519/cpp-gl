@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "constants.hpp"
-#include "impl/common.hpp"
+#include "gl/algorithm/impl/common.hpp"
+#include "gl/constants.hpp"
 
 #include <numeric>
 #include <queue>

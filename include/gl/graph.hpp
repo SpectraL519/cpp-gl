@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include "constants.hpp"
-#include "graph_traits.hpp"
-#include "impl/impl_tags.hpp"
-#include "io/stream_options_manipulator.hpp"
-#include "util/ranges.hpp"
+#include "gl/constants.hpp"
+#include "gl/graph_traits.hpp"
+#include "gl/impl/impl_tags.hpp"
+#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/util/ranges.hpp"
 
 #include <set>
 
@@ -175,7 +175,7 @@ public:
         const type_traits::c_forward_range_of<types::id_type> auto& vertex_id_range
     ) {
         // sorts the ids in a descending order and removes duplicate ids
-        std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
+        std::set<types::id_type, std::greater<>> vertex_id_set(
             std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
         );
 
@@ -259,6 +259,30 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const vertex_type& vertex) const {
         return this->adjacent_edges(vertex.id());
+    }
+
+    [[nodiscard]] inline auto in_edges(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.in_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.in_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_edges(const vertex_type& vertex) const {
+        return this->in_edges(vertex.id());
+    }
+
+    [[nodiscard]] inline auto out_edges(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.out_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto out_edges(const vertex_type& vertex) const {
+        return this->out_edges(vertex.id());
     }
 
     // --- edge methods ---
