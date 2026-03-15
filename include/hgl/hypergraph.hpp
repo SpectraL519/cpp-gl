@@ -468,18 +468,26 @@ public:
         return this->_impl.degree_map(this->_n_vertices);
     }
 
-    [[nodiscard]] auto outgoing_hyperedges(const types::id_type vertex_id)
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const types::id_type vertex_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->_verify_vertex_id(vertex_id);
-        return this->_impl.outgoing_hyperedges(vertex_id)
+        return this->out_hyperedge_ids(vertex_id)
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const vertex_type& vertex)
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const vertex_type& vertex)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->outgoing_hyperedges(vertex.id());
+        return this->out_hyperedges(vertex.id());
+    }
+
+    [[nodiscard]] auto out_hyperedge_ids(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.out_hyperedges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedge_ids(const vertex_type& vertex) const {
+        return this->out_hyperedge_ids(vertex.id());
     }
 
     [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const
@@ -501,18 +509,26 @@ public:
         return this->_impl.out_degree_map(this->_n_vertices);
     }
 
-    [[nodiscard]] auto incoming_hyperedges(const types::id_type vertex_id)
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const types::id_type vertex_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->_verify_vertex_id(vertex_id);
-        return this->_impl.incoming_hyperedges(vertex_id)
+        return this->in_hyperedge_ids(vertex_id)
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const vertex_type& vertex)
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const vertex_type& vertex)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->incoming_hyperedges(vertex.id());
+        return this->in_hyperedges(vertex.id());
+    }
+
+    [[nodiscard]] auto in_hyperedge_ids(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.in_hyperedges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedge_ids(const vertex_type& vertex) const {
+        return this->in_hyperedge_ids(vertex.id());
     }
 
     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const

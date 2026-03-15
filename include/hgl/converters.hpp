@@ -15,7 +15,7 @@
 namespace hgl {
 
 template <type_traits::c_undirected_graph G>
-[[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) noexcept {
+[[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) {
     using edge_vertices = std::pair<types::id_type, types::id_type>;
     std::vector<edge_vertices> edges;
 
@@ -39,16 +39,49 @@ template <type_traits::c_undirected_graph G>
     return g;
 }
 
-template <type_traits::c_undirected_graph G>
-[[nodiscard]] G incidence_graph(const type_traits::c_undirected_hypergraph auto& h) noexcept {
-    G g{h.order() + h.size()};
+template <type_traits::c_directed_graph G>
+[[nodiscard]] G projection(const type_traits::c_bf_directed_hypergraph auto& h) {
+    G g{h.order()};
 
-    const auto get_aligned_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+    for (const auto eid : h.hyperedge_ids()) {
+        auto sources = h.tail_vertex_ids(eid);
+        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector>();
+        for (const auto vid : sources)
+            g.add_edges_from(vid, targets);
+    }
+
+    return g;
+}
+
+template <type_traits::c_undirected_graph G>
+[[nodiscard]] G incidence_graph(const type_traits::c_undirected_hypergraph auto& h) {
+    G g{h.order() + h.size()};
+    const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+
     for (const auto vid : h.vertex_ids()) {
         const auto targets =
-            h.incident_hyperedge_ids(vid) | std::views::transform(get_aligned_edge_id)
+            h.incident_hyperedge_ids(vid) | std::views::transform(align_edge_id)
             | std::ranges::to<std::vector>();
         g.add_edges_from(vid, targets);
+    }
+
+    return g;
+}
+
+template <type_traits::c_directed_graph G>
+[[nodiscard]] G incidence_graph(const type_traits::c_bf_directed_hypergraph auto& h) {
+    G g{h.order() + h.size()};
+    const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+
+    for (const auto vid : h.vertex_ids()) {
+        const auto targets =
+            h.out_hyperedge_ids(vid) | std::views::transform(align_edge_id)
+            | std::ranges::to<std::vector>();
+        g.add_edges_from(vid, targets);
+    }
+    for (const auto eid : h.hyperedge_ids()) {
+        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector>();
+        g.add_edges_from(align_edge_id(eid), targets);
     }
 
     return g;

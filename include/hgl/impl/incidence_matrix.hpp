@@ -269,7 +269,7 @@ public:
         return this->_count_map<impl::element_type::vertex>(n_vertices, _is_incident);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto outgoing_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_tail);
     }
@@ -283,7 +283,7 @@ public:
         return this->_count_map<impl::element_type::vertex>(n_vertices, _is_tail);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incoming_hyperedges(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const types::id_type vertex_id
     ) const noexcept {
         return this->_query<impl::element_type::vertex>(vertex_id, _is_head);
     }
