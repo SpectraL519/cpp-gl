@@ -261,6 +261,30 @@ public:
         return this->adjacent_edges(vertex.id());
     }
 
+    [[nodiscard]] inline auto in_edges(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.in_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.in_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_edges(const vertex_type& vertex) const {
+        return this->in_edges(vertex.id());
+    }
+
+    [[nodiscard]] inline auto out_edges(const types::id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.out_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto out_edges(const vertex_type& vertex) const {
+        return this->out_edges(vertex.id());
+    }
+
     // --- edge methods ---
 
     const edge_type add_edge(const types::id_type source_id, const types::id_type target_id) {
