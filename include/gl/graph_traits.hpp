@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "decl/graph_traits.hpp"
-#include "decl/impl_tags.hpp"
-#include "edge_descriptor.hpp"
+#include "gl/decl/graph_traits.hpp"
+#include "gl/decl/impl_tags.hpp"
+#include "gl/edge_descriptor.hpp"
 
 namespace gl {
 

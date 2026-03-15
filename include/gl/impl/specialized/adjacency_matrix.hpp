@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include "gl/constants.hpp"
 #include "gl/decl/impl_tags.hpp"
+#include "gl/graph_traits.hpp"
 
 #include <algorithm>
 #include <vector>

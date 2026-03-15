@@ -5,8 +5,8 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "types/properties.hpp"
-#include "types/type_traits.hpp"
+#include "gl/types/properties.hpp"
+#include "gl/types/type_traits.hpp"
 
 namespace gl {
 

@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <vector>
 
 namespace gl_testing {
 
@@ -251,6 +252,32 @@ TEST_CASE_FIXTURE(
     );
     // validate that the adjacent edges list has been properly aligned
     CHECK_EQ(std::ranges::find(adjacent_edges, edge_to_remove), adjacent_edges.end());
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list, "in_edges should return edges where the vertex is the target"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
+    const auto edge2 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
+
+    const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    REQUIRE_EQ(in_edges.size(), 2uz);
+    CHECK(std::ranges::contains(in_edges, edge1));
+    CHECK(std::ranges::contains(in_edges, edge2));
+}
+
+TEST_CASE_FIXTURE(
+    test_directed_adjacency_list, "out_edges should return edges where the vertex is the source"
+) {
+    const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    const auto edge2 = add_edge(constants::vertex_id_1, constants::vertex_id_3);
+
+    const auto out_edges = sut.out_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    REQUIRE_EQ(out_edges.size(), 2uz);
+    CHECK(std::ranges::contains(out_edges, edge1));
+    CHECK(std::ranges::contains(out_edges, edge2));
 }
 
 TEST_CASE_FIXTURE(
@@ -593,6 +620,20 @@ TEST_CASE_FIXTURE(
     const auto adjacent_edges_second = sut.adjacent_edges(target_id);
     REQUIRE_EQ(adjacent_edges_second.size(), constants::zero_elements);
     CHECK_EQ(std::ranges::find(adjacent_edges_second, edge_to_remove), adjacent_edges_second.end());
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_adjacency_list,
+    "in_edges and out_edges should return the same edges for undirected graphs"
+) {
+    add_edge(constants::vertex_id_1, constants::vertex_id_2);
+    add_edge(constants::vertex_id_1, constants::vertex_id_3);
+
+    const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+    const auto out_edges = sut.out_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+
+    CHECK(std::ranges::equal(in_edges, sut.adjacent_edges(constants::vertex_id_1)));
+    CHECK(std::ranges::equal(out_edges, sut.adjacent_edges(constants::vertex_id_1)));
 }
 
 TEST_CASE_FIXTURE(
