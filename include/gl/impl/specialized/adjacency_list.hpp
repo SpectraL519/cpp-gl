@@ -55,15 +55,16 @@ struct directed_adjacency_list {
 
     [[nodiscard]] static auto in_edges(const impl_type& self, const types::id_type vertex_id) {
         std::vector<adjacency_list_item> in_edges;
-        for (types::id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id)
-            in_edges.append_range(
+        for (types::id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
+            auto in_edges_view =
                 self._list[src_id] | std::views::filter([tgt_id = vertex_id](const auto& item) {
                     return item.vertex_id == tgt_id;
                 })
                 | std::views::transform([src_id](const auto& item) {
                       return adjacency_list_item{src_id, item.edge_id};
-                  })
-            );
+                  });
+            in_edges.insert(in_edges.end(), in_edges_view.begin(), in_edges_view.end());
+        }
         return in_edges;
     }
 
