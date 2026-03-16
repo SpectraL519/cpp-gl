@@ -67,12 +67,19 @@ struct hyperedge_major_t {
     }
 };
 
+struct bidirectional_t {};
+
 } // namespace impl
 
 namespace type_traits {
 
 template <typename T>
-concept c_hypergraph_layout_tag = c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
+concept c_hypergraph_layout_tag =
+    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t, impl::bidirectional_t>;
+
+template <typename T>
+concept c_hypergraph_asymmetric_layout_tag =
+    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
 
 } // namespace type_traits
 
