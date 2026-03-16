@@ -55,8 +55,10 @@ public:
     }
 
     template <std::ranges::input_range R>
-    requires std::ranges::input_range<std::ranges::range_reference_t<R>> and
-             std::convertible_to<std::ranges::range_reference_t<std::ranges::range_reference_t<R>>, value_type>
+    requires std::ranges::input_range<std::ranges::range_reference_t<R>>
+         and std::convertible_to<
+                 std::ranges::range_reference_t<std::ranges::range_reference_t<R>>,
+                 value_type>
     explicit segmented_vector(R&& r) {
         if constexpr (std::ranges::sized_range<R>)
             this->reserve_segments(std::ranges::size(r));
@@ -144,9 +146,7 @@ public:
 
     [[nodiscard]] auto segments() noexcept {
         return std::views::iota(size_type{0}, this->size())
-            | std::views::transform([this](size_type i) -> segment_type {
-                return (*this)[i];
-            });
+             | std::views::transform([this](size_type i) -> segment_type { return (*this)[i]; });
     }
 
     [[nodiscard]] size_type segment_size(size_type seg) const {
@@ -166,7 +166,6 @@ public:
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void push_back(R&& r) {
-        this->_offsets.reserve(this->_offsets.size() + 1uz);
         if constexpr (std::ranges::sized_range<R>)
             this->_data.reserve(this->_data.size() + std::ranges::size(r));
 
@@ -210,9 +209,7 @@ public:
         }
         else {
             this->_data.insert(
-                this->_data.begin() + beg,
-                std::ranges::begin(r),
-                std::ranges::end(r)
+                this->_data.begin() + beg, std::ranges::begin(r), std::ranges::end(r)
             );
         }
 
@@ -245,12 +242,15 @@ public:
 
     template <class... Args>
     void emplace_back(size_type seg, Args&&... args) {
-        this->emplace(seg, this->_offsets[seg + 1uz] - this->_offsets[seg], std::forward<Args>(args)...);
+        this->emplace(
+            seg, this->_offsets[seg + 1uz] - this->_offsets[seg], std::forward<Args>(args)...
+        );
     }
 
     void pop_back(size_type seg) {
         const auto len = this->_offsets[seg + 1uz] - this->_offsets[seg];
-        if (len == 0uz) return;
+        if (len == 0uz)
+            return;
         this->erase(seg, len - 1uz);
     }
 
@@ -262,7 +262,9 @@ public:
 
     template <class... Args>
     void emplace(size_type seg, size_type pos, Args&&... args) {
-        this->_data.emplace(this->_data.begin() + this->_offsets[seg] + pos, std::forward<Args>(args)...);
+        this->_data.emplace(
+            this->_data.begin() + this->_offsets[seg] + pos, std::forward<Args>(args)...
+        );
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]++;
     }
@@ -286,7 +288,8 @@ private:
     void _check_segment_range(size_type seg, size_type pos) const {
         if (pos >= this->segment_size(seg)) {
             throw std::out_of_range(std::format(
-                "segmented_vector::_check_segment_range: pos (which is {}) >= segment_size({}) (which is {})",
+                "segmented_vector::_check_segment_range: pos (which is {}) >= segment_size({}) "
+                "(which is {})",
                 pos,
                 seg,
                 this->segment_size(seg)
