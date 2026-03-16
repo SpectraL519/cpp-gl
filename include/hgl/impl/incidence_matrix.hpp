@@ -24,10 +24,10 @@ namespace hgl::impl {
 
 template <
     type_traits::c_hypergraph_directional_tag DirectionalTag,
-    type_traits::c_hypergraph_layout_tag LayoutTag>
+    type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix;
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix<hgl::undirected_t, LayoutTag> final {
 public:
     using directional_tag = hgl::undirected_t;
@@ -220,7 +220,7 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix<hgl::bf_directed_t, LayoutTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
