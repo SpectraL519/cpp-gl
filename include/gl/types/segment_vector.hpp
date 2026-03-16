@@ -1,3 +1,7 @@
+// Copyright (c) 2024-2026 Jakub Musiał
+// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include <concepts>
@@ -10,28 +14,28 @@
 #include <vector>
 
 template <std::semiregular T>
-class segmented_vector {
+class segment_vector {
 public:
     using value_type = T;
     using size_type = std::size_t;
     using reference = value_type&;
     using const_reference = const value_type&;
-    using segment_type = std::span<T>;
-    using const_segment_type = std::span<const T>;
+    using segment_type = std::span<value_type>;
+    using const_segment_type = std::span<const value_type>;
 
     // --- constructors ---
 
-    segmented_vector() = default;
+    segment_vector() = default;
 
-    segmented_vector(const segmented_vector&) = default;
-    segmented_vector& operator=(const segmented_vector&) = default;
+    segment_vector(const segment_vector&) = default;
+    segment_vector& operator=(const segment_vector&) = default;
 
-    segmented_vector(segmented_vector&& other) noexcept
+    segment_vector(segment_vector&& other) noexcept
     : _data(std::move(other._data)), _offsets(std::move(other._offsets)) {
         other._offsets = {0uz};
     }
 
-    segmented_vector& operator=(segmented_vector&& other) noexcept {
+    segment_vector& operator=(segment_vector&& other) noexcept {
         if (this != &other) {
             this->_data = std::move(other._data);
             this->_offsets = std::move(other._offsets);
@@ -40,9 +44,9 @@ public:
         return *this;
     }
 
-    ~segmented_vector() = default;
+    ~segment_vector() = default;
 
-    segmented_vector(std::initializer_list<std::initializer_list<T>> ilist) {
+    segment_vector(std::initializer_list<std::initializer_list<value_type>> ilist) {
         this->reserve_segments(ilist.size());
 
         size_type total_size = 0uz;
@@ -59,7 +63,7 @@ public:
          and std::convertible_to<
                  std::ranges::range_reference_t<std::ranges::range_reference_t<R>>,
                  value_type>
-    explicit segmented_vector(R&& r) {
+    explicit segment_vector(R&& r) {
         if constexpr (std::ranges::sized_range<R>)
             this->reserve_segments(std::ranges::size(r));
 
@@ -69,7 +73,7 @@ public:
 
     // --- comparsion ---
 
-    friend bool operator==(const segmented_vector&, const segmented_vector&) = default;
+    friend bool operator==(const segment_vector&, const segment_vector&) = default;
 
     // --- capacity ---
 
@@ -149,8 +153,19 @@ public:
              | std::views::transform([this](size_type i) -> segment_type { return (*this)[i]; });
     }
 
+    [[nodiscard]] auto segments() const noexcept {
+        return std::views::iota(size_type{0}, this->size())
+             | std::views::transform([this](size_type i) -> const_segment_type {
+                   return (*this)[i];
+               });
+    }
+
     [[nodiscard]] size_type segment_size(size_type seg) const {
         return this->_offsets[seg + 1uz] - this->_offsets[seg];
+    }
+
+    [[nodiscard]] size_type data_size() const noexcept {
+        return this->_data.size();
     }
 
     [[nodiscard]] segment_type flatten() noexcept {
@@ -236,7 +251,7 @@ public:
 
     // --- modifiers (elements) ---
 
-    void push_back(size_type seg, const T& value) {
+    void push_back(size_type seg, const value_type& value) {
         this->insert(seg, this->_offsets[seg + 1uz] - this->_offsets[seg], value);
     }
 
@@ -279,7 +294,7 @@ private:
     void _check_range(size_type n) const {
         if (n >= this->size())
             throw std::out_of_range(std::format(
-                "segmented_vector::_check_range: n (which is {}) >= this->size() (which is {})",
+                "segment_vector::_check_range: n (which is {}) >= this->size() (which is {})",
                 n,
                 this->size()
             ));
@@ -288,7 +303,7 @@ private:
     void _check_segment_range(size_type seg, size_type pos) const {
         if (pos >= this->segment_size(seg)) {
             throw std::out_of_range(std::format(
-                "segmented_vector::_check_segment_range: pos (which is {}) >= segment_size({}) "
+                "segment_vector::_check_segment_range: pos (which is {}) >= segment_size({}) "
                 "(which is {})",
                 pos,
                 seg,
@@ -297,6 +312,6 @@ private:
         }
     }
 
-    std::vector<T> _data;
+    std::vector<value_type> _data;
     std::vector<size_type> _offsets{0uz};
 };
