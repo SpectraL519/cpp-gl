@@ -268,6 +268,17 @@ public:
     /// @brief Destructor cleans up all managed memory.
     ~segment_vector() = default;
 
+    /// @brief Constructs a `segment_vector` with a specified number of segments and initial segment size.
+    /// @param n_segments The number of segments to create
+    /// @param segment_size The initial size of each segment (default is 0)
+    /// @post `size() == n_segments` and each segment is initialized with `segment_size` default-constructed elements
+    /// @exception std::bad_alloc May throw if memory allocation fails
+    segment_vector(size_type n_segments, size_type segment_size = 0uz)
+    : _data(n_segments * segment_size), _offsets(n_segments + 1uz) {
+        for (size_type i = 0uz; i <= n_segments; ++i)
+            this->_offsets[i] = i * segment_size;
+    }
+
     /// @brief Constructs a `segment_vector` from an initializer list of segments.
     /// @param ilist Initializer list of initializer lists, each representing a segment
     /// @post `size() == ilist.size()` and `data_size()` equals the sum of all segment sizes

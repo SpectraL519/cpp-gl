@@ -88,6 +88,32 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    test_segment_vector_constructors, "(n_segments) constructor should initialize segments"
+) {
+    sut_type sut(3uz);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), 0uz);
+    for (std::size_t i = 0uz; i < 3uz; ++i)
+        CHECK_EQ(sut.segment_size(i), 0uz);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_constructors,
+    "(n_segments, segment_size) constructor should initialize segments"
+) {
+    sut_type sut(3uz, 5uz);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), 15uz);
+    for (std::size_t i = 0uz; i < 3uz; ++i) {
+        CHECK_EQ(sut.segment_size(i), 5uz);
+        for (std::size_t j = 0uz; j < 5uz; ++j)
+            CHECK_EQ(sut[i, j], 0);
+    }
+}
+
+TEST_CASE_FIXTURE(
     test_segment_vector_constructors, "initializer list constructor should initialize segments"
 ) {
     sut_type sut{
