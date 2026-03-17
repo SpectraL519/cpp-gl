@@ -151,7 +151,7 @@ struct undirected_flat_adjacency_list {
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return std::views::all(self._list[vertex_id]);
+        return self._list[vertex_id];
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
@@ -190,7 +190,7 @@ struct undirected_flat_adjacency_list {
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
         std::vector<types::size_type> degree_map;
         degree_map.reserve(self._list.size());
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id)
+        for (auto id = constants::initial_id; id < self._list.size(); ++id)
             degree_map.push_back(degree(self, id));
         return degree_map;
     }
@@ -198,30 +198,32 @@ struct undirected_flat_adjacency_list {
     static std::vector<types::id_type> remove_vertex(
         impl_type& self, const types::id_type vertex_id
     ) {
-        // remove all edges incident with the vertex (scan only the selected vertices)
-        for (const auto& item : self._list[vertex_id]) {
-            if (item.vertex_id == vertex_id)
-                continue; // will be removed with the vertex's list
-
-            auto& segment = self._list[item.vertex_id];
-            std::vector<typename impl_type::adjacency_list_type::size_type> remove_positions;
-            remove_positions.reserve(segment.size());
-
-            for (typename impl_type::adjacency_list_type::size_type pos = 0; pos < segment.size();
-                 ++pos) {
-                if (segment[pos].vertex_id == vertex_id)
-                    remove_positions.push_back(pos);
-            }
-
-            for (auto it = remove_positions.rbegin(); it != remove_positions.rend(); ++it)
-                self._list.erase(item.vertex_id, *it);
-        }
-
-        // remove the list of edges incident from the vertex entirely
-        const auto removed_edges =
+        // all removed edges are stored in the vertex's list segment
+        auto removed_edges =
             self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
             | std::ranges::to<std::vector>();
-        self._list.erase(vertex_id);
+
+        // rebuild the graph (faster then shifting the entire data block for each removed edge)
+        typename impl_type::adjacency_list_type new_list;
+        new_list.reserve_segments(self._list.size() - 1uz);
+        const auto estimated_new_size =
+            self._list.data_size() - (self._list[vertex_id].size() * 2uz);
+        new_list.reserve_data(estimated_new_size);
+
+        std::vector<adjacency_list_item> buffer;
+        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
+            if (id == vertex_id)
+                continue;
+
+            buffer.clear();
+            for (const auto& item : self._list[id])
+                if (item.vertex_id != vertex_id)
+                    buffer.push_back(item);
+
+            new_list.push_back(buffer);
+        }
+
+        self._list = std::move(new_list);
         return removed_edges;
     }
 
@@ -247,27 +249,23 @@ struct undirected_flat_adjacency_list {
     }
 
     static void remove_edge(impl_type& self, const edge_type& edge) {
-        auto& segment_first = self._list[edge.source()];
-        auto& segment_second = self._list[edge.target()];
-
         if (edge.is_loop()) {
-            const auto it = detail::strict_find(segment_first, edge);
-            const auto pos = static_cast<typename impl_type::adjacency_list_type::size_type>(
-                std::distance(segment_first.begin(), it)
-            );
+            auto adj_edges = self._list[edge.source()];
+            const auto it = detail::strict_find(adj_edges, edge);
+            const auto pos = static_cast<types::size_type>(std::distance(adj_edges.begin(), it));
             self._list.erase(edge.source(), pos);
         }
         else {
-            const auto it1 = detail::strict_find(segment_first, edge);
-            const auto pos1 = static_cast<typename impl_type::adjacency_list_type::size_type>(
-                std::distance(segment_first.begin(), it1)
-            );
+            auto adj_edges_source = self._list[edge.source()];
+            const auto it1 = detail::strict_find(adj_edges_source, edge);
+            const auto pos1 =
+                static_cast<types::size_type>(std::distance(adj_edges_source.begin(), it1));
             self._list.erase(edge.source(), pos1);
 
-            const auto it2 = detail::strict_find(segment_second, edge);
-            const auto pos2 = static_cast<typename impl_type::adjacency_list_type::size_type>(
-                std::distance(segment_second.begin(), it2)
-            );
+            auto adj_edges_target = self._list[edge.target()];
+            const auto it2 = detail::strict_find(adj_edges_target, edge);
+            const auto pos2 =
+                static_cast<types::size_type>(std::distance(adj_edges_target.begin(), it2));
             self._list.erase(edge.target(), pos2);
         }
     }
