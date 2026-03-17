@@ -295,18 +295,29 @@ struct undirected_adjacency_list {
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 struct list_impl_traits {
     using type = void;
+
+    template <typename ItemType>
+    using storage_type = void;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
+requires type_traits::c_directed_edge<typename AdjacencyList::edge_type>
+     and std::same_as<typename AdjacencyList::implementation_tag, list_t>
 struct list_impl_traits<AdjacencyList> {
     using type = directed_adjacency_list<AdjacencyList>;
+
+    template <typename ItemType>
+    using storage_type = std::vector<std::vector<ItemType>>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
+requires type_traits::c_undirected_edge<typename AdjacencyList::edge_type>
+     and std::same_as<typename AdjacencyList::implementation_tag, list_t>
 struct list_impl_traits<AdjacencyList> {
     using type = undirected_adjacency_list<AdjacencyList>;
+
+    template <typename ItemType>
+    using storage_type = std::vector<std::vector<ItemType>>;
 };
 
 } // namespace specialized
