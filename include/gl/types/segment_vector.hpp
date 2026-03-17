@@ -85,10 +85,12 @@ public:
         return this->size() == 0uz;
     }
 
-    void clear() {
-        this->_data.clear();
-        this->_offsets.clear();
-        this->_offsets.push_back(0uz);
+    [[nodiscard]] size_type segments_capacity() const noexcept {
+        return this->_offsets.capacity() - 1uz;
+    }
+
+    [[nodiscard]] size_type data_capacity() const noexcept {
+        return this->_data.capacity();
     }
 
     void reserve_segments(size_type n) {
@@ -102,6 +104,12 @@ public:
     void shrink_to_fit() {
         this->_data.shrink_to_fit();
         this->_offsets.shrink_to_fit();
+    }
+
+    void clear() {
+        this->_data.clear();
+        this->_offsets.clear();
+        this->_offsets.push_back(0uz);
     }
 
     // --- accessors ---
@@ -168,11 +176,11 @@ public:
         return this->_data.size();
     }
 
-    [[nodiscard]] segment_type flatten() noexcept {
+    [[nodiscard]] segment_type data() noexcept {
         return segment_type(this->_data);
     }
 
-    [[nodiscard]] const_segment_type flatten() const noexcept {
+    [[nodiscard]] const_segment_type data() const noexcept {
         return const_segment_type(this->_data);
     }
 
