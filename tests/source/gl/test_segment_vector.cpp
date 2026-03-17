@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <ranges>
 #include <vector>
 
 namespace gl_testing {
@@ -837,6 +838,249 @@ TEST_CASE_FIXTURE(
     }
 }
 
-// TEST_SUITE_END();
+struct test_segment_vector_iterators {
+    using sut_type = segment_vector<int>;
+
+    sut_type sut{
+        {1, 2, 3},
+        {4, 5},
+        {6}
+    };
+    std::vector<std::vector<int>> segments{
+        {1, 2, 3},
+        {4, 5},
+        {6}
+    };
+};
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "begin() should return iterator to first segment") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, segments.front()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "end() should return iterator past last segment") {
+    auto it_begin = sut.begin();
+    auto it_end = sut.end();
+    CHECK_EQ(it_end - it_begin, segments.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "const begin() should return const iterator to first segment"
+) {
+    const auto& const_sut = sut;
+    auto it = const_sut.begin();
+    CHECK(std::ranges::equal(*it, segments.front()));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "const end() should return const iterator past last segment"
+) {
+    const auto& const_sut = sut;
+    auto it_begin = const_sut.begin();
+    auto it_end = const_sut.end();
+    CHECK_EQ(it_end - it_begin, segments.size());
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "cbegin() should return const iterator") {
+    auto it = sut.cbegin();
+    CHECK(std::ranges::equal(*it, segments.front()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "cend() should return const iterator") {
+    auto it_begin = sut.cbegin();
+    auto it_end = sut.cend();
+    CHECK_EQ(it_end - it_begin, segments.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "non-const iterator should convert to const iterator implicitly"
+) {
+    auto non_const_it = sut.begin();
+    segment_vector<int>::const_iterator const_it = non_const_it;
+    CHECK(std::ranges::equal(*const_it, segments.front()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "dereferencing iterator should return segment") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+
+    ++it;
+    CHECK(std::ranges::equal(*it, segments[1uz]));
+
+    ++it;
+    CHECK(std::ranges::equal(*it, segments[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator[] should access segment at offset") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(it[0uz], segments[0uz]));
+    CHECK(std::ranges::equal(it[1uz], segments[1uz]));
+    CHECK(std::ranges::equal(it[2uz], segments[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-increment should advance iterator") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+
+    auto& ret = ++it;
+    CHECK(std::ranges::equal(*ret, segments[1uz]));
+    CHECK(std::ranges::equal(*it, segments[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-increment should return old iterator") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+
+    auto old_it = it++;
+    CHECK(std::ranges::equal(*old_it, segments[0uz]));
+    CHECK(std::ranges::equal(*it, segments[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-decrement should move iterator backward") {
+    auto it = sut.end();
+    --it;
+    CHECK(std::ranges::equal(*it, segments[2uz]));
+
+    auto& ret = --it;
+    CHECK(std::ranges::equal(*ret, segments[1uz]));
+    CHECK(std::ranges::equal(*it, segments[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-decrement should return old iterator") {
+    auto it = sut.end();
+    --it;
+    CHECK(std::ranges::equal(*it, segments[2uz]));
+
+    auto old_it = it--;
+    CHECK(std::ranges::equal(*old_it, segments[2uz]));
+    CHECK(std::ranges::equal(*it, segments[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator+= should advance iterator") {
+    auto it = sut.begin();
+    it += 2;
+    CHECK(std::ranges::equal(*it, segments[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator-= should move iterator backward") {
+    auto it = sut.end();
+    it -= 1;
+    CHECK(std::ranges::equal(*it, segments[2uz]));
+
+    it -= 2;
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator+ should create new iterator") {
+    auto it = sut.begin();
+    auto new_it = it + 1;
+
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+    CHECK(std::ranges::equal(*new_it, segments[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "reverse operator+ should create new iterator") {
+    auto it = sut.begin();
+    auto new_it = 2 + it;
+
+    CHECK(std::ranges::equal(*it, segments[0uz]));
+    CHECK(std::ranges::equal(*new_it, segments[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator- should create new iterator") {
+    auto it = sut.end();
+    auto new_it = it - 1;
+
+    CHECK(std::ranges::equal(*new_it, segments[2uz]));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "operator- with two iterators should give distance"
+) {
+    auto it1 = sut.begin();
+    auto it2 = sut.end();
+
+    CHECK_EQ(it2 - it1, sut.size());
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator== should compare iterators") {
+    auto it1 = sut.begin();
+    auto it2 = sut.begin();
+    auto it3 = sut.begin() + 1;
+
+    CHECK_EQ(it1, it2);
+    CHECK_NE(it1, it3);
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator<=> should compare iterators") {
+    auto it1 = sut.begin();
+    auto it2 = sut.begin() + 1;
+    auto it3 = sut.begin() + 2;
+
+    CHECK_LT(it1, it2);
+    CHECK_LT(it2, it3);
+    CHECK_LE(it1, it2);
+    CHECK_LE(it1, it1);
+    CHECK_GT(it2, it1);
+    CHECK_GT(it3, it2);
+    CHECK_GE(it2, it1);
+    CHECK_GE(it2, it2);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "range-based for loop should iterate all segments"
+) {
+    std::size_t idx = 0uz;
+    for (auto seg : sut)
+        CHECK(std::ranges::equal(seg, segments[idx++]));
+    CHECK_EQ(idx, 3uz);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "const range-based for loop should iterate all segments"
+) {
+    const auto& const_sut = sut;
+    std::size_t idx = 0uz;
+    for (auto seg : const_sut)
+        CHECK(std::ranges::equal(seg, segments[idx++]));
+    CHECK_EQ(idx, 3uz);
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "rbegin() should return reverse iterator") {
+    auto it = sut.rbegin();
+    CHECK(std::ranges::equal(*it, segments.back()));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "rend() should return reverse iterator past first"
+) {
+    auto it_rbegin = sut.rbegin();
+    auto it_rend = sut.rend();
+    CHECK_EQ(it_rend - it_rbegin, segments.size());
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "crbegin() should return const reverse iterator") {
+    auto it = sut.crbegin();
+    CHECK(std::ranges::equal(*it, segments.back()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_iterators, "crend() should return const reverse iterator") {
+    auto it_rbegin = sut.crbegin();
+    auto it_rend = sut.crend();
+    CHECK_EQ(it_rend - it_rbegin, segments.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_iterators, "reverse range-based for loop should iterate in reverse"
+) {
+    std::size_t idx = 2uz;
+    for (auto it : std::ranges::reverse_view(sut)) {
+        CHECK(std::ranges::equal(it, segments[idx]));
+        if (idx > 0uz)
+            --idx;
+    }
+}
+
+TEST_SUITE_END();
 
 } // namespace gl_testing
