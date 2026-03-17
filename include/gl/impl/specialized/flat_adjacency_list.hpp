@@ -108,7 +108,7 @@ struct directed_flat_adjacency_list {
             if (id == vertex_id)
                 continue;
 
-            auto& segment = self._list[id];
+            auto segment = self._list[id];
             std::vector<types::size_type> remove_positions;
             remove_positions.reserve(segment.size());
 
@@ -147,7 +147,7 @@ struct directed_flat_adjacency_list {
     gl_attr_force_inline static void remove_edge(impl_type& self, const edge_type& edge) {
         auto segment = self._list[edge.source()];
         const auto it = detail::strict_find(segment, edge);
-        const auto pos = static_cast<types::size_type>(std::distance(segment.begin(), it));
+        const auto pos = static_cast<std::size_t>(std::distance(segment.begin(), it));
         self._list.erase(edge.source(), pos);
     }
 };
