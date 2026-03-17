@@ -12,7 +12,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_segment_vector");
 
 struct test_segment_vector_constructors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -88,6 +88,32 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    test_segment_vector_constructors, "(n_segments) constructor should initialize segments"
+) {
+    sut_type sut(3uz);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), 0uz);
+    for (std::size_t i = 0uz; i < 3uz; ++i)
+        CHECK_EQ(sut.segment_size(i), 0uz);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_constructors,
+    "(n_segments, segment_size) constructor should initialize segments"
+) {
+    sut_type sut(3uz, 5uz);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), 15uz);
+    for (std::size_t i = 0uz; i < 3uz; ++i) {
+        CHECK_EQ(sut.segment_size(i), 5uz);
+        for (std::size_t j = 0uz; j < 5uz; ++j)
+            CHECK_EQ(sut[i, j], 0);
+    }
+}
+
+TEST_CASE_FIXTURE(
     test_segment_vector_constructors, "initializer list constructor should initialize segments"
 ) {
     sut_type sut{
@@ -121,7 +147,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_comparison {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -169,7 +195,7 @@ TEST_CASE_FIXTURE(test_segment_vector_comparison, "empty segment_vectors should 
 }
 
 struct test_segment_vector_capacity {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
     sut_type sut;
 };
 
@@ -218,6 +244,122 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "shrink_to_fit should reduce cap
     CHECK_EQ(sut.data_capacity(), 3uz);
 }
 
+TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should shrink container when n < size") {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+    sut.push_back({6, 7, 8});
+
+    sut.resize(2uz);
+
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should grow container when n > size") {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+
+    sut.resize(4uz);
+
+    CHECK_EQ(sut.size(), 4uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+    CHECK(sut[2uz].empty());
+    CHECK(sut[3uz].empty());
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should do nothing when n == size") {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+
+    sut.resize(2uz);
+
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_capacity, "resize(n, range) should shrink container when n < size"
+) {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+    sut.push_back({6, 7, 8});
+
+    std::vector<int> new_seg{9, 10};
+    sut.resize(2uz, new_seg);
+
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_capacity, "resize(n, range) should grow container when n > size"
+) {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+
+    std::vector<int> new_seg{6, 7};
+    sut.resize(4uz, new_seg);
+
+    CHECK_EQ(sut.size(), 4uz);
+    CHECK_EQ(sut.data_size(), 5uz + 2uz * 2uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+    CHECK(std::ranges::equal(sut[2uz], new_seg));
+    CHECK(std::ranges::equal(sut[3uz], new_seg));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_capacity, "resize(n, range) should do nothing when n == size"
+) {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+
+    std::vector<int> new_seg{6, 7};
+    sut.resize(2uz, new_seg);
+
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_capacity, "resize(n, initializer_list) should grow container"
+) {
+    sut.push_back({1, 2, 3});
+
+    sut.resize(3uz, {4, 5});
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), 3uz + 2uz * 2uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_capacity, "resize(n, initializer_list) should shrink container"
+) {
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
+    sut.push_back({6, 7, 8});
+
+    sut.resize(2uz, {9, 10});
+
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
 TEST_CASE_FIXTURE(test_segment_vector_capacity, "clear should remove all segments and data") {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
@@ -229,7 +371,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "clear should remove all segment
 }
 
 struct test_segment_vector_segment_accessors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -394,7 +536,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_element_accessors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     std::vector<int> seg0{1, 2, 3};
     std::vector<int> seg1{4, 5};
@@ -523,7 +665,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_segment_modifiers {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut;
     std::vector<int> seg0{1, 2, 3};
@@ -679,7 +821,7 @@ TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "erase should update of
 }
 
 struct test_segment_vector_element_modifiers {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
     sut_type sut{
         {1, 2, 3},
         {4, 5}
@@ -773,8 +915,97 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut[1uz].front(), 4);
 }
 
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "resize(seg, n) should shrink segment when n < segment_size"
+) {
+    sut.resize(0uz, 2uz);
+
+    CHECK_EQ(sut.segment_size(0uz), 2uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 4uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "resize(seg, n) should grow segment when n > segment_size"
+) {
+    sut.resize(0uz, 5uz);
+
+    CHECK_EQ(sut.segment_size(0uz), 5uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 7uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3, 0, 0}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "resize(seg, n) should do nothing when n == segment_size"
+) {
+    sut.resize(0uz, 3uz);
+
+    CHECK_EQ(sut.segment_size(0uz), 3uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "resize(seg, n, value) should shrink segment when n < segment_size"
+) {
+    sut.resize(0uz, 1uz, 99);
+
+    CHECK_EQ(sut.segment_size(0uz), 1uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "resize(seg, n, value) should grow segment when n > segment_size"
+) {
+    sut.resize(0uz, 5uz, 99);
+
+    CHECK_EQ(sut.segment_size(0uz), 5uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 7uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3, 99, 99}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "resize(seg, n, value) should do nothing when n == segment_size"
+) {
+    sut.resize(0uz, 3uz, 99);
+
+    CHECK_EQ(sut.segment_size(0uz), 3uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "resize on last segment should work correctly"
+) {
+    sut.resize(1uz, 4uz, 88);
+
+    CHECK_EQ(sut.segment_size(0uz), 3uz);
+    CHECK_EQ(sut.segment_size(1uz), 4uz);
+    CHECK_EQ(sut.data_size(), 7uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 88, 88}));
+}
+
 struct test_segment_vector_complex_operations {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -839,7 +1070,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_iterators {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -896,7 +1127,7 @@ TEST_CASE_FIXTURE(
     test_segment_vector_iterators, "non-const iterator should convert to const iterator implicitly"
 ) {
     auto non_const_it = sut.begin();
-    segment_vector<int>::const_iterator const_it = non_const_it;
+    typename sut_type::const_iterator const_it = non_const_it;
     CHECK(std::ranges::equal(*const_it, segments.front()));
 }
 
