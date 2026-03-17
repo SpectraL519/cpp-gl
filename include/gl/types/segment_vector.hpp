@@ -13,6 +13,9 @@
 #include <stdexcept>
 #include <vector>
 
+/**
+* @todo Implement resize, assign and swap methods.
+*/
 template <std::semiregular T>
 class segment_vector {
 public:
@@ -270,35 +273,35 @@ public:
         return (*this)[seg, pos];
     }
 
-    [[nodiscard]] segment_type front() {
+    [[nodiscard]] segment_type front() noexcept {
         return (*this)[0uz];
     }
 
-    [[nodiscard]] const_segment_type front() const {
+    [[nodiscard]] const_segment_type front() const noexcept {
         return (*this)[0uz];
     }
 
-    [[nodiscard]] segment_type back() {
+    [[nodiscard]] segment_type back() noexcept {
         return (*this)[this->size() - 1uz];
     }
 
-    [[nodiscard]] const_segment_type back() const {
+    [[nodiscard]] const_segment_type back() const noexcept {
         return (*this)[this->size() - 1uz];
     }
 
-    [[nodiscard]] reference front(size_type seg) {
+    [[nodiscard]] reference front(size_type seg) noexcept {
         return (*this)[seg, 0uz];
     }
 
-    [[nodiscard]] const_reference front(size_type seg) const {
+    [[nodiscard]] const_reference front(size_type seg) const noexcept {
         return (*this)[seg, 0uz];
     }
 
-    [[nodiscard]] reference back(size_type seg) {
+    [[nodiscard]] reference back(size_type seg) noexcept {
         return (*this)[seg, this->segment_size(seg) - 1uz];
     }
 
-    [[nodiscard]] const_reference back(size_type seg) const {
+    [[nodiscard]] const_reference back(size_type seg) const noexcept {
         return (*this)[seg, this->segment_size(seg) - 1uz];
     }
 
@@ -314,7 +317,7 @@ public:
                });
     }
 
-    [[nodiscard]] size_type segment_size(size_type seg) const {
+    [[nodiscard]] size_type segment_size(size_type seg) const noexcept {
         return this->_offsets[seg + 1uz] - this->_offsets[seg];
     }
 
@@ -385,6 +388,7 @@ public:
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void push_back(R&& r) {
+        this->_ensure_offset_capacity();
         if constexpr (std::ranges::sized_range<R>)
             this->_data.reserve(this->_data.size() + std::ranges::size(r));
 
@@ -418,6 +422,7 @@ public:
         const auto beg = this->_offsets[pos];
         const auto old_size = this->_data.size();
 
+        this->_ensure_offset_capacity();
         if constexpr (std::ranges::sized_range<R>)
             this->_data.reserve(this->_data.size() + std::ranges::size(r));
 
@@ -514,6 +519,12 @@ private:
                 this->segment_size(seg)
             ));
         }
+    }
+
+    void _ensure_offset_capacity() {
+        const auto current_cap = this->_offsets.capacity();
+        if (this->_offsets.size() == current_cap)
+            this->_offsets.reserve(current_cap == 0uz ? 8uz : current_cap * 2uz);
     }
 
     std::vector<value_type> _data;
