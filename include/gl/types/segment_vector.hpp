@@ -13,6 +13,8 @@
 #include <stdexcept>
 #include <vector>
 
+namespace gl::types {
+
 /// @brief A flattened 2D vector (jagged array) providing efficient storage for variable-length segments.
 ///
 /// This container stores all elements in a single contiguous memory block (`_data`) while maintaining
@@ -958,3 +960,5 @@ private:
     std::vector<value_type> _data;
     std::vector<size_type> _offsets{0uz};
 };
+
+} // namespace gl::types

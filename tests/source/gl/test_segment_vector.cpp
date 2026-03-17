@@ -12,7 +12,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_segment_vector");
 
 struct test_segment_vector_constructors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -147,7 +147,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_comparison {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -195,7 +195,7 @@ TEST_CASE_FIXTURE(test_segment_vector_comparison, "empty segment_vectors should 
 }
 
 struct test_segment_vector_capacity {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
     sut_type sut;
 };
 
@@ -255,7 +255,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "clear should remove all segment
 }
 
 struct test_segment_vector_segment_accessors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -420,7 +420,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_element_accessors {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     std::vector<int> seg0{1, 2, 3};
     std::vector<int> seg1{4, 5};
@@ -549,7 +549,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_segment_modifiers {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut;
     std::vector<int> seg0{1, 2, 3};
@@ -705,7 +705,7 @@ TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "erase should update of
 }
 
 struct test_segment_vector_element_modifiers {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
     sut_type sut{
         {1, 2, 3},
         {4, 5}
@@ -800,7 +800,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_complex_operations {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -865,7 +865,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_segment_vector_iterators {
-    using sut_type = segment_vector<int>;
+    using sut_type = gl::types::segment_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -922,7 +922,7 @@ TEST_CASE_FIXTURE(
     test_segment_vector_iterators, "non-const iterator should convert to const iterator implicitly"
 ) {
     auto non_const_it = sut.begin();
-    segment_vector<int>::const_iterator const_it = non_const_it;
+    typename sut_type::const_iterator const_it = non_const_it;
     CHECK(std::ranges::equal(*const_it, segments.front()));
 }
 
