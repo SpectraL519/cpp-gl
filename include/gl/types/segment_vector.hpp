@@ -13,6 +13,8 @@
 #include <stdexcept>
 #include <vector>
 
+namespace gl::types {
+
 /// @brief A flattened 2D vector (jagged array) providing efficient storage for variable-length segments.
 ///
 /// This container stores all elements in a single contiguous memory block (`_data`) while maintaining
@@ -24,7 +26,7 @@
 /// @note Behavior is similar to `std::vector<std::vector<T>>` but with flattened memory layout.
 /// @warning Iterator invalidation follows `std::vector` semantics: modifying the structure or elements
 ///          invalidates all iterators, pointers, and references to the container's elements.
-/// @todo Implement resize, assign, and swap methods.
+/// @todo Implement assign, and swap methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
 template <std::semiregular T>
 class segment_vector {
@@ -268,6 +270,17 @@ public:
     /// @brief Destructor cleans up all managed memory.
     ~segment_vector() = default;
 
+    /// @brief Constructs a `segment_vector` with a specified number of segments and initial segment size.
+    /// @param n_segments The number of segments to create
+    /// @param segment_size The initial size of each segment (default is 0)
+    /// @post `size() == n_segments` and each segment is initialized with `segment_size` default-constructed elements
+    /// @exception std::bad_alloc May throw if memory allocation fails
+    segment_vector(size_type n_segments, size_type segment_size = 0uz)
+    : _data(n_segments * segment_size), _offsets(n_segments + 1uz) {
+        for (size_type i = 0uz; i <= n_segments; i++)
+            this->_offsets[i] = i * segment_size;
+    }
+
     /// @brief Constructs a `segment_vector` from an initializer list of segments.
     /// @param ilist Initializer list of initializer lists, each representing a segment
     /// @post `size() == ilist.size()` and `data_size()` equals the sum of all segment sizes
@@ -366,6 +379,75 @@ public:
     void shrink_to_fit() {
         this->_data.shrink_to_fit();
         this->_offsets.shrink_to_fit();
+    }
+
+    /// @brief Resizes the container to contain `n` segments.
+    ///
+    /// - If the current size is greater than `n`, the container is reduced to its first `n` segments.
+    /// - If the current size is less than `n`, additional empty segments are appended.
+    /// - If the current size is equal to `n`, the container is unchanged.
+    ///
+    /// @param n The new number of segments
+    /// @post `size() == n`
+    /// @warning Invalidates all iterators, pointers, and references to elements if reallocation occurs,
+    ///          or if the container shrinks (invalidating removed segments).
+    /// @note **Time Complexity:** $O(E)$ when shrinking (where $E$ is the total number of elements in the
+    ///       removed segments), or amortized $O(S)$ when growing (where $S$ is the number of new empty segments).
+    void resize(size_type n) {
+        if (n < this->size()) {
+            this->_offsets.resize(n + 1uz);
+            this->_data.resize(this->_offsets.back());
+        }
+        else if (n > this->size()) {
+            this->_offsets.resize(n + 1uz, this->_offsets.back());
+        }
+    }
+
+    /// @brief Resizes the container to contain `n` segments, initializing any new segments with a range.
+    ///
+    /// - If the current size is greater than `n`, the container is reduced to its first `n` segments.
+    /// - If the current size is less than `n`, new segments are appended, each containing the elements in `r`.
+    /// - If the current size is equal to `n`, the container is unchanged.
+    ///
+    /// @tparam R An input range of elements convertible to `value_type`
+    /// @param n The new number of segments
+    /// @param r The range to initialize any newly appended segments with
+    /// @post `size() == n`
+    /// @exception std::bad_alloc If memory allocation fails
+    /// @warning Invalidates all iterators, pointers, and references to elements if reallocation occurs,
+    ///          or if the container shrinks.
+    template <std::ranges::input_range R>
+    requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
+    void resize(size_type n, R&& r) {
+        if (n < this->size()) {
+            this->_offsets.resize(n + 1uz);
+            this->_data.resize(this->_offsets.back());
+        }
+        else if (n > this->size()) {
+            const auto diff = n - this->size();
+            this->reserve_segments(n);
+
+            this->push_back(std::forward<R>(r));
+            if (diff > 1uz) {
+                // prevent reallocation during loop
+                const auto seg_size = this->back().size();
+                this->reserve_data(this->data_size() + seg_size * (diff - 1uz));
+                for (size_type i = 1uz; i < diff; ++i)
+                    this->push_back(this->back());
+            }
+        }
+    }
+
+    /// @brief Resizes the container to contain `n` segments, initializing any new segments with an initializer list.
+    ///
+    /// - If the current size is greater than `n`, the container is reduced to its first `n` segments.
+    /// - If the current size is less than `n`, new segments are appended, each containing the elements in `ilist`.
+    /// - If the current size is equal to `n`, the container is unchanged.
+    ///
+    /// @param n The new number of segments
+    /// @param ilist The initializer list to initialize any newly appended segments with
+    void resize(size_type n, std::initializer_list<value_type> ilist) {
+        this->resize(n, std::span<const value_type>{ilist});
     }
 
     /// @brief Removes all segments and elements, leaving the container empty.
@@ -767,7 +849,7 @@ public:
 
         const auto inserted = this->_data.size() - old_size;
         this->_offsets.insert(this->_offsets.begin() + pos, beg);
-        for (size_type i = pos + 1uz; i < this->_offsets.size(); ++i)
+        for (size_type i = pos + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i] += inserted;
     }
 
@@ -904,6 +986,79 @@ public:
             this->_offsets[i]--;
     }
 
+    /// @brief Resizes a specific segment to contain `n` elements.
+    ///
+    /// - If the segment's current size is greater than `n`, it is reduced to its first `n` elements.
+    /// - If the segment's current size is less than `n`, additional default-inserted elements are appended.
+    /// - If the segment's current size is equal to `n`, the segment is unchanged.
+    ///
+    /// @param seg The segment number to resize
+    /// @param n The new size for the segment
+    /// @pre `seg < size()`; otherwise Undefined Behavior
+    /// @exception std::bad_alloc If memory allocation fails during growth
+    /// @warning If reallocation occurs, all iterators, pointers, and references are invalidated.
+    ///          Otherwise, only those pointing to elements at or after the modification point are invalidated.
+    /// @note **Time Complexity:** Amortized $O(E + S + K)$ where $E$ is the number of elements after the
+    ///       modification point in the underlying vector, $S$ is the number of segments after `seg`,
+    ///       and $K$ is the number of elements added or removed.
+    void resize(size_type seg, size_type n) {
+        const auto curr_count = this->segment_size(seg);
+        if (n < curr_count) {
+            const auto diff = curr_count - n;
+            const auto start = this->_offsets[seg] + n;
+            const auto end = this->_offsets[seg + 1uz];
+
+            this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
+            for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
+                this->_offsets[i] -= diff;
+        }
+        else if (n > curr_count) {
+            const auto diff = n - curr_count;
+            const auto pos = this->_offsets[seg + 1uz];
+
+            this->_data.insert(this->_data.begin() + pos, diff, value_type());
+            for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
+                this->_offsets[i] += diff;
+        }
+    }
+
+    /// @brief Resizes a specific segment to contain `n` elements, initializing new elements with `value`.
+    ///
+    /// - If the segment's current size is greater than `n`, it is reduced to its first `n` elements.
+    /// - If the segment's current size is less than `n`, additional copies of `value` are appended.
+    /// - If the segment's current size is equal to `n`, the segment is unchanged.
+    ///
+    /// @param seg The segment number to resize
+    /// @param n The new size for the segment
+    /// @param value The value to initialize new elements with
+    /// @pre `seg < size()`; otherwise Undefined Behavior
+    /// @exception std::bad_alloc If memory allocation fails during growth
+    /// @warning If reallocation occurs, all iterators, pointers, and references are invalidated.
+    ///          Otherwise, only those pointing to elements at or after the modification point are invalidated.
+    /// @note **Time Complexity:** Amortized $O(E + S + K)$ where $E$ is the number of elements after the
+    ///       modification point in the underlying vector, $S$ is the number of segments after `seg`,
+    ///       and $K$ is the number of elements added or removed.
+    void resize(size_type seg, size_type n, const value_type& value) {
+        const auto curr_count = this->segment_size(seg);
+        if (n < curr_count) {
+            const auto diff = curr_count - n;
+            const auto start = this->_offsets[seg] + n;
+            const auto end = this->_offsets[seg + 1uz];
+
+            this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
+            for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
+                this->_offsets[i] -= diff;
+        }
+        else if (n > curr_count) {
+            const auto diff = n - curr_count;
+            const auto pos = this->_offsets[seg + 1uz];
+
+            this->_data.insert(this->_data.begin() + pos, diff, value);
+            for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
+                this->_offsets[i] += diff;
+        }
+    }
+
 private:
     /// @brief Validates that the segment index is within bounds.
     /// @param n The segment index to check
@@ -947,3 +1102,5 @@ private:
     std::vector<value_type> _data;
     std::vector<size_type> _offsets{0uz};
 };
+
+} // namespace gl::types
