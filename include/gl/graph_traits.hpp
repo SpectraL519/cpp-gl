@@ -37,6 +37,13 @@ template <
     type_traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
     type_traits::c_properties EdgeProperties = types::empty_properties>
+using flat_list_graph_traits =
+    graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>;
+
+template <
+    type_traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
+    type_traits::c_properties VertexProperties = types::empty_properties,
+    type_traits::c_properties EdgeProperties = types::empty_properties>
 using matrix_graph_traits =
     graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>;
 

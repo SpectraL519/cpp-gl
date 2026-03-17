@@ -30,7 +30,7 @@ public:
 
     adjacency_matrix() = default;
 
-    adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
+    explicit adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
         // initialize a full n x n matrix with null elements
         for (auto& row : this->_matrix)
             row.resize(n_vertices, constants::invalid_id);
