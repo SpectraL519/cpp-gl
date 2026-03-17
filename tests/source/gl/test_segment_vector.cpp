@@ -3,6 +3,7 @@
 #include <doctest.h>
 
 #include <algorithm>
+#include <functional>
 #include <vector>
 
 namespace gl_testing {
@@ -608,142 +609,169 @@ TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "erase should update of
     sut.erase(0uz);
 
     CHECK_EQ(sut.size(), 2uz);
-    CHECK_EQ(sut[0uz][0uz], seg1[0uz]);
-    CHECK_EQ(sut[1uz][0uz], seg2[0uz]);
+    CHECK_EQ(sut[0uz].front(), seg1[0uz]);
+    CHECK_EQ(sut[1uz].front(), seg2[0uz]);
 }
 
-// struct test_segment_vector_element_modifiers {
-//     using sut_type = segment_vector<int>;
-//     sut_type sut{{1, 2, 3}, {4, 5}};
-// };
+struct test_segment_vector_element_modifiers {
+    using sut_type = segment_vector<int>;
+    sut_type sut{
+        {1, 2, 3},
+        {4, 5}
+    };
+};
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "push_back element should add element to segment") {
-//     sut.push_back(0, 10);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "push_back element should add element to segment"
+) {
+    sut.push_back(0uz, 10);
 
-//     CHECK_EQ(sut[0][3], 10);
-//     CHECK_EQ(sut.data_size(), 6uz);
-// }
+    CHECK_EQ(sut[0uz].back(), 10);
+    CHECK_EQ(sut.data_size(), 6uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "emplace_back should add element to segment") {
-//     sut.emplace_back(0, 10);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "emplace_back should add element to segment"
+) {
+    sut.emplace_back(0uz, 10);
 
-//     CHECK_EQ(sut[0][3], 10);
-//     CHECK_EQ(sut.data_size(), 6uz);
-// }
+    CHECK_EQ(sut[0uz].back(), 10);
+    CHECK_EQ(sut.data_size(), 6uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "pop_back element should remove last element from segment") {
-//     sut.pop_back(0);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "pop_back element should remove last element from segment"
+) {
+    sut.pop_back(0uz);
 
-//     CHECK_EQ(sut.segment_size(0), 2uz);
-//     CHECK_EQ(sut.data_size(), 4uz);
-// }
+    CHECK_EQ(sut.segment_size(0uz), 2uz);
+    CHECK_EQ(sut.data_size(), 4uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "pop_back on empty segment should do nothing") {
-//     segment_vector<int> empty_sv;
-//     empty_sv.push_back({});
-//     empty_sv.pop_back(0);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "pop_back on empty segment should do nothing"
+) {
+    sut_type empty_sv;
+    empty_sv.push_back({});
+    empty_sv.pop_back(0uz);
 
-//     CHECK_EQ(empty_sv.segment_size(0), 0uz);
-// }
+    CHECK_EQ(empty_sv.segment_size(0uz), 0uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "insert element should add element at position in segment") {
-//     sut.insert(0, 1, 10);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "insert element should add element at position in segment"
+) {
+    sut.insert(0uz, 1uz, 10);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 10, 2, 3}));
+    CHECK_EQ(sut.data_size(), 6uz);
+}
 
-//     CHECK_EQ(sut[0][0], 1);
-//     CHECK_EQ(sut[0][1], 10);
-//     CHECK_EQ(sut[0][2], 2);
-//     CHECK_EQ(sut[0][3], 3);
-//     CHECK_EQ(sut.data_size(), 6uz);
-// }
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "emplace should add element at position in segment"
+) {
+    sut.emplace(0uz, 1uz, 10);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 10, 2, 3}));
+    CHECK_EQ(sut.data_size(), 6uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "emplace should add element at position in segment") {
-//     sut.emplace(0, 1, 10);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers,
+    "erase element should remove element at position in segment"
+) {
+    sut.erase(0uz, 1uz);
 
-//     CHECK_EQ(sut[0][0], 1);
-//     CHECK_EQ(sut[0][1], 10);
-//     CHECK_EQ(sut[0][2], 2);
-//     CHECK_EQ(sut[0][3], 3);
-// }
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+    CHECK_EQ(sut.data_size(), 4uz);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "erase element should remove element at position in segment") {
-//     sut.erase(0, 1);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "insert element should update offsets for other segments"
+) {
+    sut.insert(0uz, 0uz, 0);
 
-//     CHECK_EQ(sut[0][0], 1);
-//     CHECK_EQ(sut[0][1], 3);
-//     CHECK_EQ(sut[0][2], 4);
-//     CHECK_EQ(sut.data_size(), 4uz);
-// }
+    CHECK_EQ(sut.segment_size(0uz), 4uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut[1uz].front(), 4);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "insert element should update offsets for other segments") {
-//     sut.insert(0, 0, 0);
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_modifiers, "erase element should update offsets for other segments"
+) {
+    sut.erase(0uz, 0uz);
 
-//     CHECK_EQ(sut.segment_size(0), 4uz);
-//     CHECK_EQ(sut.segment_size(1), 2uz);
-//     CHECK_EQ(sut[1][0], 4);
-// }
+    CHECK_EQ(sut.segment_size(0uz), 2uz);
+    CHECK_EQ(sut.segment_size(1uz), 2uz);
+    CHECK_EQ(sut[0uz].front(), 2);
+    CHECK_EQ(sut[1uz].front(), 4);
+}
 
-// TEST_CASE_FIXTURE(test_segment_vector_element_modifiers, "erase element should update offsets for other segments") {
-//     sut.erase(0, 0);
+struct test_segment_vector_complex_operations {
+    using sut_type = segment_vector<int>;
+};
 
-//     CHECK_EQ(sut.segment_size(0), 2uz);
-//     CHECK_EQ(sut.segment_size(1), 2uz);
-//     CHECK_EQ(sut[0][0], 2);
-//     CHECK_EQ(sut[1][0], 4);
-// }
+TEST_CASE_FIXTURE(
+    test_segment_vector_complex_operations,
+    "interleaved segment and element operations should work correctly"
+) {
+    sut_type sut;
 
-// struct test_segment_vector_complex_operations {
-//     using sut_type = segment_vector<int>;
-// };
+    sut.push_back({1, 2});
+    sut.insert(0uz, 1uz, 10);
+    sut.push_back(0uz, 20);
+    sut.push_back({3, 4, 5});
 
-// TEST_CASE_FIXTURE(test_segment_vector_complex_operations, "interleaved segment and element operations should work correctly") {
-//     sut_type sut;
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 10, 2, 20}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{3, 4, 5}));
+}
 
-//     sut.push_back({1, 2});
-//     sut.insert(0, 1, 10);
-//     sut.push_back(0, 20);
-//     sut.push_back({3, 4, 5});
+TEST_CASE_FIXTURE(
+    test_segment_vector_complex_operations, "clearing and refilling should work correctly"
+) {
+    sut_type sut;
+    sut.push_back({1, 2, 3});
+    sut.push_back({4, 5});
 
-//     CHECK_EQ(sut.size(), 2uz);
-//     CHECK_EQ(sut[0][0], 1);
-//     CHECK_EQ(sut[0][1], 10);
-//     CHECK_EQ(sut[0][2], 2);
-//     CHECK_EQ(sut[0][3], 20);
-//     CHECK_EQ(sut[1][0], 3);
-//     CHECK_EQ(sut[1][2], 5);
-// }
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.data_size(), 5uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
 
-// TEST_CASE_FIXTURE(test_segment_vector_complex_operations, "clearing and refilling should work correctly") {
-//     sut_type sut;
-//     sut.push_back({1, 2, 3});
-//     sut.push_back({4, 5});
+    sut.clear();
 
-//     sut.clear();
+    CHECK(sut.empty());
 
-//     CHECK(sut.empty());
+    sut.push_back({9, 8, 7});
 
-//     sut.push_back({9, 8, 7});
+    CHECK_EQ(sut.size(), 1uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut.data(), std::vector<int>{9, 8, 7}));
+}
 
-//     CHECK_EQ(sut.size(), 1uz);
-//     CHECK_EQ(sut.data_size(), 3uz);
-//     CHECK_EQ(sut[0][0], 9);
-// }
+TEST_CASE_FIXTURE(
+    test_segment_vector_complex_operations,
+    "large segment_vector operations should maintain integrity"
+) {
+    sut_type sut;
 
-// TEST_CASE_FIXTURE(test_segment_vector_complex_operations, "large segment_vector operations should maintain integrity") {
-//     sut_type sut;
+    for (int i = 0; i < 100; ++i) {
+        std::vector<int> segment;
+        for (int j = 0; j < 10; ++j)
+            segment.push_back(i * 10 + j);
+        sut.push_back(segment);
+    }
 
-//     for (int i = 0; i < 100; ++i) {
-//         std::vector<int> segment;
-//         for (int j = 0; j < 10; ++j) {
-//             segment.push_back(i * 10 + j);
-//         }
-//         sut.push_back(segment);
-//     }
-
-//     CHECK_EQ(sut.size(), 100uz);
-//     CHECK_EQ(sut.data_size(), 1000uz);
-//     CHECK_EQ(sut[0][0], 0);
-//     CHECK_EQ(sut[99][9], 999);
-// }
+    CHECK_EQ(sut.size(), 100uz);
+    CHECK_EQ(sut.data_size(), 1000uz);
+    for (int i = 0; i < 100; ++i) {
+        auto seg = sut[i];
+        for (int j = 0; j < 10; ++j)
+            CHECK_EQ(seg[j], i * 10 + j);
+    }
+}
 
 // TEST_SUITE_END();
 
