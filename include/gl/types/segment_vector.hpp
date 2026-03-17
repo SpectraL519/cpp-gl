@@ -23,6 +23,120 @@ public:
     using segment_type = std::span<value_type>;
     using const_segment_type = std::span<const value_type>;
 
+    // --- iterators ---
+
+    template <bool Const>
+    class segment_iterator {
+        using data_ptr_type = std::conditional_t<Const, const T*, T*>;
+        using offset_ptr_type = const size_type*;
+
+    public:
+        using iterator_concept = std::random_access_iterator_tag;
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = std::conditional_t<Const, const_segment_type, segment_type>;
+        using difference_type = std::ptrdiff_t;
+        using pointer = void;
+        using reference = value_type;
+
+        segment_iterator() = default;
+
+        segment_iterator(data_ptr_type data_ptr, offset_ptr_type offset_ptr) noexcept
+        : _data_ptr(data_ptr), _offset_ptr(offset_ptr) {}
+
+        operator segment_iterator<true>() const noexcept
+        requires(not Const)
+        {
+            return segment_iterator<true>(this->_data_ptr, this->_offset_ptr);
+        }
+
+        [[nodiscard]] reference operator*() const noexcept {
+            const auto beg = *this->_offset_ptr;
+            const auto end = *(this->_offset_ptr + 1uz);
+            return reference(this->_data_ptr + beg, end - beg);
+        }
+
+        [[nodiscard]] reference operator[](difference_type n) const noexcept {
+            return *(*this + n);
+        }
+
+        segment_iterator& operator++() noexcept {
+            ++this->_offset_ptr;
+            return *this;
+        }
+
+        segment_iterator operator++(int) noexcept {
+            auto tmp = *this;
+            ++this->_offset_ptr;
+            return tmp;
+        }
+
+        segment_iterator& operator--() noexcept {
+            --this->_offset_ptr;
+            return *this;
+        }
+
+        segment_iterator operator--(int) noexcept {
+            auto tmp = *this;
+            --this->_offset_ptr;
+            return tmp;
+        }
+
+        segment_iterator& operator+=(difference_type n) noexcept {
+            this->_offset_ptr += n;
+            return *this;
+        }
+
+        segment_iterator& operator-=(difference_type n) noexcept {
+            this->_offset_ptr -= n;
+            return *this;
+        }
+
+        [[nodiscard]] friend segment_iterator operator+(
+            segment_iterator it, difference_type n
+        ) noexcept {
+            return it += n;
+        }
+
+        [[nodiscard]] friend segment_iterator operator+(
+            difference_type n, segment_iterator it
+        ) noexcept {
+            return it += n;
+        }
+
+        [[nodiscard]] friend segment_iterator operator-(
+            segment_iterator it, difference_type n
+        ) noexcept {
+            return it -= n;
+        }
+
+        [[nodiscard]] friend difference_type operator-(
+            const segment_iterator& lhs, const segment_iterator& rhs
+        ) noexcept {
+            return lhs._offset_ptr - rhs._offset_ptr;
+        }
+
+        [[nodiscard]] friend bool operator==(
+            const segment_iterator& lhs, const segment_iterator& rhs
+        ) noexcept {
+            return lhs._offset_ptr == rhs._offset_ptr;
+        }
+
+        [[nodiscard]] friend auto operator<=>(
+            const segment_iterator& lhs, const segment_iterator& rhs
+        ) noexcept {
+            return lhs._offset_ptr <=> rhs._offset_ptr;
+        }
+
+    private:
+        data_ptr_type _data_ptr{nullptr};
+        offset_ptr_type _offset_ptr{nullptr};
+    };
+
+    using iterator = segment_iterator<false>;
+    using const_iterator = segment_iterator<true>;
+    using reverse_iterator = std::reverse_iterator<iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
     // --- constructors ---
 
     segment_vector() = default;
@@ -156,6 +270,38 @@ public:
         return (*this)[seg, pos];
     }
 
+    [[nodiscard]] segment_type front() {
+        return (*this)[0uz];
+    }
+
+    [[nodiscard]] const_segment_type front() const {
+        return (*this)[0uz];
+    }
+
+    [[nodiscard]] segment_type back() {
+        return (*this)[this->size() - 1uz];
+    }
+
+    [[nodiscard]] const_segment_type back() const {
+        return (*this)[this->size() - 1uz];
+    }
+
+    [[nodiscard]] reference front(size_type seg) {
+        return (*this)[seg, 0uz];
+    }
+
+    [[nodiscard]] const_reference front(size_type seg) const {
+        return (*this)[seg, 0uz];
+    }
+
+    [[nodiscard]] reference back(size_type seg) {
+        return (*this)[seg, this->segment_size(seg) - 1uz];
+    }
+
+    [[nodiscard]] const_reference back(size_type seg) const {
+        return (*this)[seg, this->segment_size(seg) - 1uz];
+    }
+
     [[nodiscard]] auto segments() noexcept {
         return std::views::iota(size_type{0}, this->size())
              | std::views::transform([this](size_type i) -> segment_type { return (*this)[i]; });
@@ -182,6 +328,56 @@ public:
 
     [[nodiscard]] const_segment_type data() const noexcept {
         return const_segment_type(this->_data);
+    }
+
+    // --- iterators ---
+
+    [[nodiscard]] iterator begin() noexcept {
+        return iterator(this->_data.data(), this->_offsets.data());
+    }
+
+    [[nodiscard]] iterator end() noexcept {
+        return iterator(this->_data.data(), this->_offsets.data() + this->size());
+    }
+
+    [[nodiscard]] const_iterator begin() const noexcept {
+        return const_iterator(this->_data.data(), this->_offsets.data());
+    }
+
+    [[nodiscard]] const_iterator end() const noexcept {
+        return const_iterator(this->_data.data(), this->_offsets.data() + this->size());
+    }
+
+    [[nodiscard]] const_iterator cbegin() const noexcept {
+        return this->begin();
+    }
+
+    [[nodiscard]] const_iterator cend() const noexcept {
+        return this->end();
+    }
+
+    [[nodiscard]] reverse_iterator rbegin() noexcept {
+        return reverse_iterator(this->end());
+    }
+
+    [[nodiscard]] reverse_iterator rend() noexcept {
+        return reverse_iterator(this->begin());
+    }
+
+    [[nodiscard]] const_reverse_iterator rbegin() const noexcept {
+        return const_reverse_iterator(this->end());
+    }
+
+    [[nodiscard]] const_reverse_iterator rend() const noexcept {
+        return const_reverse_iterator(this->begin());
+    }
+
+    [[nodiscard]] const_reverse_iterator crbegin() const noexcept {
+        return this->rbegin();
+    }
+
+    [[nodiscard]] const_reverse_iterator crend() const noexcept {
+        return this->rend();
     }
 
     // --- modifiers (segments) ---

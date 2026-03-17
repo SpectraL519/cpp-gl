@@ -366,12 +366,40 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(data, flat_data));
 }
 
+TEST_CASE_FIXTURE(test_segment_vector_segment_accessors, "front() should return the first segment") {
+    auto front_seg = sut.front();
+    CHECK(std::ranges::equal(front_seg, data.front()));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_segment_accessors, "const front() should return const first segment"
+) {
+    const auto& const_sut = sut;
+    auto front_seg = const_sut.front();
+    CHECK(std::ranges::equal(front_seg, data.front()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_segment_accessors, "back() should return the last segment") {
+    auto back_seg = sut.back();
+    CHECK(std::ranges::equal(back_seg, data.back()));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_segment_accessors, "const back() should return const last segment"
+) {
+    const auto& const_sut = sut;
+    auto back_seg = const_sut.back();
+    CHECK(std::ranges::equal(back_seg, data.back()));
+}
+
 struct test_segment_vector_element_accessors {
     using sut_type = segment_vector<int>;
+
+    std::vector<int> seg0{1, 2, 3};
+    std::vector<int> seg1{4, 5};
+    std::vector<int> seg2{6};
     sut_type sut{
-        {1, 2, 3},
-        {4, 5},
-        {6}
+        std::vector<std::vector<int>>{seg0, seg1, seg2}
     };
 };
 
@@ -379,12 +407,12 @@ TEST_CASE_FIXTURE(
     test_segment_vector_element_accessors,
     "operator[](seg, pos) should return element at given segment and position"
 ) {
-    CHECK_EQ(sut[0uz, 0uz], 1);
-    CHECK_EQ(sut[0uz, 1uz], 2);
-    CHECK_EQ(sut[0uz, 2uz], 3);
-    CHECK_EQ(sut[1uz, 0uz], 4);
-    CHECK_EQ(sut[1uz, 1uz], 5);
-    CHECK_EQ(sut[2uz, 0uz], 6);
+    CHECK_EQ(sut[0uz, 0uz], seg0[0uz]);
+    CHECK_EQ(sut[0uz, 1uz], seg0[1uz]);
+    CHECK_EQ(sut[0uz, 2uz], seg0[2uz]);
+    CHECK_EQ(sut[1uz, 0uz], seg1[0uz]);
+    CHECK_EQ(sut[1uz, 1uz], seg1[1uz]);
+    CHECK_EQ(sut[2uz, 0uz], seg2[0uz]);
 }
 
 TEST_CASE_FIXTURE(
@@ -392,24 +420,24 @@ TEST_CASE_FIXTURE(
 ) {
     const auto& const_sut = sut;
 
-    CHECK_EQ(const_sut[0uz, 0uz], 1);
-    CHECK_EQ(const_sut[0uz, 1uz], 2);
-    CHECK_EQ(const_sut[0uz, 2uz], 3);
-    CHECK_EQ(const_sut[1uz, 0uz], 4);
-    CHECK_EQ(const_sut[1uz, 1uz], 5);
-    CHECK_EQ(const_sut[2uz, 0uz], 6);
+    CHECK_EQ(const_sut[0uz, 0uz], seg0[0uz]);
+    CHECK_EQ(const_sut[0uz, 1uz], seg0[1uz]);
+    CHECK_EQ(const_sut[0uz, 2uz], seg0[2uz]);
+    CHECK_EQ(const_sut[1uz, 0uz], seg1[0uz]);
+    CHECK_EQ(const_sut[1uz, 1uz], seg1[1uz]);
+    CHECK_EQ(const_sut[2uz, 0uz], seg2[0uz]);
 }
 
 TEST_CASE_FIXTURE(
     test_segment_vector_element_accessors,
     "at(seg, pos) should return element at given segment and position"
 ) {
-    CHECK_EQ(sut.at(0uz, 0uz), 1);
-    CHECK_EQ(sut.at(0uz, 1uz), 2);
-    CHECK_EQ(sut.at(0uz, 2uz), 3);
-    CHECK_EQ(sut.at(1uz, 0uz), 4);
-    CHECK_EQ(sut.at(1uz, 1uz), 5);
-    CHECK_EQ(sut.at(2uz, 0uz), 6);
+    CHECK_EQ(sut.at(0uz, 0uz), seg0[0uz]);
+    CHECK_EQ(sut.at(0uz, 1uz), seg0[1uz]);
+    CHECK_EQ(sut.at(0uz, 2uz), seg0[2uz]);
+    CHECK_EQ(sut.at(1uz, 0uz), seg1[0uz]);
+    CHECK_EQ(sut.at(1uz, 1uz), seg1[1uz]);
+    CHECK_EQ(sut.at(2uz, 0uz), seg2[0uz]);
 }
 
 TEST_CASE_FIXTURE(
@@ -431,12 +459,12 @@ TEST_CASE_FIXTURE(
 ) {
     const auto& const_sut = sut;
 
-    CHECK_EQ(const_sut.at(0uz, 0uz), 1);
-    CHECK_EQ(const_sut.at(0uz, 1uz), 2);
-    CHECK_EQ(const_sut.at(0uz, 2uz), 3);
-    CHECK_EQ(const_sut.at(1uz, 0uz), 4);
-    CHECK_EQ(const_sut.at(1uz, 1uz), 5);
-    CHECK_EQ(const_sut.at(2uz, 0uz), 6);
+    CHECK_EQ(const_sut.at(0uz, 0uz), seg0[0uz]);
+    CHECK_EQ(const_sut.at(0uz, 1uz), seg0[1uz]);
+    CHECK_EQ(const_sut.at(0uz, 2uz), seg0[2uz]);
+    CHECK_EQ(const_sut.at(1uz, 0uz), seg1[0uz]);
+    CHECK_EQ(const_sut.at(1uz, 1uz), seg1[1uz]);
+    CHECK_EQ(const_sut.at(2uz, 0uz), seg2[0uz]);
 }
 
 TEST_CASE_FIXTURE(
@@ -455,6 +483,42 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(0uz, 3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(1uz, 2uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(2uz, 1uz)), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_accessors, "front(seg) should return first element in segment"
+) {
+    CHECK_EQ(sut.front(0uz), seg0.front());
+    CHECK_EQ(sut.front(1uz), seg1.front());
+    CHECK_EQ(sut.front(2uz), seg2.front());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_accessors,
+    "const front(seg) should return const first element in segment"
+) {
+    const auto& const_sut = sut;
+    CHECK_EQ(const_sut.front(0uz), seg0.front());
+    CHECK_EQ(const_sut.front(1uz), seg1.front());
+    CHECK_EQ(const_sut.front(2uz), seg2.front());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_accessors, "back(seg) should return last element in segment"
+) {
+    CHECK_EQ(sut.back(0uz), seg0.back());
+    CHECK_EQ(sut.back(1uz), seg1.back());
+    CHECK_EQ(sut.back(2uz), seg2.back());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_element_accessors,
+    "const back(seg) should return const last element in segment"
+) {
+    const auto& const_sut = sut;
+    CHECK_EQ(const_sut.back(0uz), seg0.back());
+    CHECK_EQ(const_sut.back(1uz), seg1.back());
+    CHECK_EQ(const_sut.back(2uz), seg2.back());
 }
 
 struct test_segment_vector_segment_modifiers {
