@@ -1,3 +1,5 @@
+#include "gl/edge_tags.hpp"
+#include "gl/graph_traits.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 #include "testing/gl/types.hpp"
@@ -859,6 +861,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     graph_traits_template,
     gl::list_graph_traits<gl::directed_t>, // directed adjacency list
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list
+    gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list
     gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix
 );
@@ -910,6 +913,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         gl::undirected_t,
         gl::types::name_property,
         gl::types::name_property>, // undirected adjacency list
+    gl::flat_list_graph_traits<
+        gl::directed_t,
+        gl::types::name_property,
+        gl::types::name_property>, // directed flat adjacency list
     gl::matrix_graph_traits<
         gl::directed_t,
         gl::types::name_property,

@@ -258,17 +258,16 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         CHECK_EQ(std::ranges::find(adjacent_edges, edge_to_remove), adjacent_edges.end());
     }
 
-    // SUBCASE( "in_edges should return edges where the vertex is the target"
-    // ) {
-    //     const auto edge1 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
-    //     const auto edge2 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
+    SUBCASE("in_edges should return edges where the vertex is the target") {
+        const auto edge1 = add_edge(constants::vertex_id_2, constants::vertex_id_1);
+        const auto edge2 = add_edge(constants::vertex_id_3, constants::vertex_id_1);
 
-    //     const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
+        const auto in_edges = sut.in_edges(constants::vertex_id_1) | std::ranges::to<std::vector>();
 
-    //     REQUIRE_EQ(in_edges.size(), 2uz);
-    //     CHECK(std::ranges::contains(in_edges, edge1));
-    //     CHECK(std::ranges::contains(in_edges, edge2));
-    // }
+        REQUIRE_EQ(in_edges.size(), 2uz);
+        CHECK(std::ranges::contains(in_edges, edge1));
+        CHECK(std::ranges::contains(in_edges, edge2));
+    }
 
     SUBCASE("out_edges should return edges where the vertex is the source") {
         const auto edge1 = add_edge(constants::vertex_id_1, constants::vertex_id_2);

@@ -24,10 +24,9 @@ struct directed_flat_adjacency_list {
     using edge_type = typename impl_type::edge_type;
 
     [[nodiscard]] static auto in_edges(const impl_type& self, const types::id_type vertex_id) {
-        // TODO: use single view over entire flat data array
         std::vector<adjacency_list_item> in_edges;
-        for (types::id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
-            const auto in_edges_view =
+        for (auto src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
+            auto in_edges_view =
                 self._list[src_id] | std::views::filter([tgt_id = vertex_id](const auto& item) {
                     return item.vertex_id == tgt_id;
                 })
@@ -42,12 +41,7 @@ struct directed_flat_adjacency_list {
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        // TODO: use single count over entire flat data array
-        types::size_type in_deg = 0uz;
-        for (const auto& segment : self._list.segments())
-            in_deg += std::ranges::count(segment, vertex_id, &adjacency_list_item::vertex_id);
-
-        return in_deg;
+        return std::ranges::count(self._list.data(), vertex_id, &adjacency_list_item::vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
@@ -64,13 +58,8 @@ struct directed_flat_adjacency_list {
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
         std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
-
-        // TODO: use single loop over entire flat data array
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
-            for (const auto& item : self._list[id])
-                ++in_degree_map[item.vertex_id];
-        }
-
+        for (const auto& item : self._list.data())
+            ++in_degree_map[item.vertex_id];
         return in_degree_map;
     }
 
@@ -79,16 +68,16 @@ struct directed_flat_adjacency_list {
     ) {
         std::vector<types::size_type> out_degree;
         out_degree.reserve(self._list.size());
-        for (const auto segment : self._list)
-            out_degree.push_back(segment.size());
+        for (auto id = constants::initial_id; id < self._list.size(); ++id)
+            out_degree.push_back(self._list.segment_size(id));
         return out_degree;
     }
 
     [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
         std::vector<types::size_type> degree_map(self._list.size(), 0uz);
 
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
-            degree_map[id] += self._list[id].size();
+        for (auto id = constants::initial_id; id < self._list.size(); ++id) {
+            degree_map[id] += self._list.segment_size(id);
             for (const auto& item : self._list[id])
                 ++degree_map[item.vertex_id];
         }
@@ -99,32 +88,33 @@ struct directed_flat_adjacency_list {
     static std::vector<types::id_type> remove_vertex(
         impl_type& self, const types::id_type vertex_id
     ) {
-        auto removed_edges =
-            self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
-            | std::ranges::to<std::vector>();
+        std::vector<types::id_type> removed_edges;
 
-        // remove all edges incident to the vertex
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
+        // extract out-edges
+        for (const auto& item : self._list[vertex_id])
+            removed_edges.push_back(item.edge_id);
+
+        // rebuild the graph (faster then shifting the entire data block for each removed edge)
+        typename impl_type::adjacency_list_type new_list;
+        new_list.reserve_segments(self._list.size() - 1uz);
+        new_list.reserve_data(self._list.data_size() - self._list[vertex_id].size());
+
+        std::vector<adjacency_list_item> buffer;
+        for (auto id = constants::initial_id; id < self._list.size(); ++id) {
             if (id == vertex_id)
                 continue;
 
-            auto segment = self._list[id];
-            std::vector<types::size_type> remove_positions;
-            remove_positions.reserve(segment.size());
-
-            for (types::size_type pos = 0uz; pos < segment.size(); pos++) {
-                if (segment[pos].vertex_id == vertex_id) {
-                    removed_edges.push_back(segment[pos].edge_id);
-                    remove_positions.push_back(pos);
-                }
+            buffer.clear();
+            for (const auto& item : self._list[id]) {
+                if (item.vertex_id == vertex_id)
+                    removed_edges.push_back(item.edge_id); // remove in-edge
+                else
+                    buffer.push_back(item);
             }
-
-            for (const auto& pos : std::ranges::reverse_view(remove_positions))
-                self._list.erase(id, pos);
+            new_list.push_back(buffer);
         }
 
-        // remove the list of edges incident from the vertex entirely
-        self._list.erase(vertex_id);
+        self._list = std::move(new_list);
         return removed_edges;
     }
 
