@@ -6,6 +6,7 @@
 
 #include "gl/constants.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
+#include "gl/impl/specialized/flat_adjacency_list.hpp"
 #include "gl/types/segment_vector.hpp"
 #include "gl/types/types.hpp"
 

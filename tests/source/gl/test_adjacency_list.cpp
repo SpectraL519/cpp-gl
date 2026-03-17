@@ -15,7 +15,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_adjacency_list");
 
 struct test_adjacency_list {
-    const auto& get(const auto& sut) const {
+    [[nodiscard]] const auto& get(const auto& sut) const {
         return sut._list;
     }
 
@@ -27,7 +27,7 @@ struct test_adjacency_list {
 };
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
+    "common tests", SutType, common_sut_template
 ) {
     test_adjacency_list fixture;
 
@@ -74,9 +74,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    edge_directional_tag_sut_template,
+    common_sut_template,
     gl::impl::adjacency_list<gl::list_graph_traits<gl::directed_t>>, // directed adj list
-    gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>> // undirected adj list
+    gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>, // undirected adj list
+    gl::impl::adjacency_list<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adj list
+    gl::impl::adjacency_list<gl::flat_list_graph_traits<gl::undirected_t>> // undirected flat adj list
 );
 
 namespace {
@@ -89,8 +91,6 @@ constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
 struct test_directed_adjacency_list : public test_adjacency_list {
     using edge_type = gl::directed_edge<>;
     using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::directed_t>>;
-
-    test_directed_adjacency_list() {}
 
     edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
@@ -412,8 +412,6 @@ TEST_CASE_FIXTURE(
 struct test_undirected_adjacency_list : public test_adjacency_list {
     using edge_type = gl::undirected_edge<>;
     using sut_type = gl::impl::adjacency_list<gl::list_graph_traits<gl::undirected_t>>;
-
-    test_undirected_adjacency_list() {}
 
     edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;

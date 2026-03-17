@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "gl/types/types.hpp"
+
 #include <concepts>
 #include <cstdint>
 #include <format>
@@ -34,7 +36,7 @@ public:
     /// @brief Type of elements stored in segments
     using value_type = T;
     /// @brief Unsigned integral type used for sizes and indices
-    using size_type = std::size_t;
+    using size_type = size_type;
     /// @brief Reference to an element
     using reference = value_type&;
     /// @brief Const reference to an element

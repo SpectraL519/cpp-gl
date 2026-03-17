@@ -8,6 +8,7 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
+#include "gl/types/segment_vector.hpp"
 
 #include <algorithm>
 #include <format>
@@ -23,6 +24,7 @@ struct directed_flat_adjacency_list {
     using edge_type = typename impl_type::edge_type;
 
     [[nodiscard]] static auto in_edges(const impl_type& self, const types::id_type vertex_id) {
+        // TODO: use single view over entire flat data array
         std::vector<adjacency_list_item> in_edges;
         for (types::id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
             const auto in_edges_view =
@@ -40,6 +42,7 @@ struct directed_flat_adjacency_list {
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
+        // TODO: use single count over entire flat data array
         types::size_type in_deg = 0uz;
         for (const auto& segment : self._list.segments())
             in_deg += std::ranges::count(segment, vertex_id, &adjacency_list_item::vertex_id);
@@ -62,6 +65,7 @@ struct directed_flat_adjacency_list {
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
         std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
 
+        // TODO: use single loop over entire flat data array
         for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
             for (const auto& item : self._list[id])
                 ++in_degree_map[item.vertex_id];
@@ -75,7 +79,7 @@ struct directed_flat_adjacency_list {
     ) {
         std::vector<types::size_type> out_degree;
         out_degree.reserve(self._list.size());
-        for (const auto& segment : self._list.segments())
+        for (const auto segment : self._list)
             out_degree.push_back(segment.size());
         return out_degree;
     }
@@ -105,19 +109,18 @@ struct directed_flat_adjacency_list {
                 continue;
 
             auto& segment = self._list[id];
-            std::vector<typename impl_type::adjacency_list_type::size_type> remove_positions;
+            std::vector<types::size_type> remove_positions;
             remove_positions.reserve(segment.size());
 
-            for (typename impl_type::adjacency_list_type::size_type pos = 0; pos < segment.size();
-                 ++pos) {
+            for (types::size_type pos = 0uz; pos < segment.size(); pos++) {
                 if (segment[pos].vertex_id == vertex_id) {
                     removed_edges.push_back(segment[pos].edge_id);
                     remove_positions.push_back(pos);
                 }
             }
 
-            for (auto it = remove_positions.rbegin(); it != remove_positions.rend(); ++it)
-                self._list.erase(id, *it);
+            for (const auto& pos : std::ranges::reverse_view(remove_positions))
+                self._list.erase(id, pos);
         }
 
         // remove the list of edges incident from the vertex entirely
@@ -142,11 +145,9 @@ struct directed_flat_adjacency_list {
     }
 
     gl_attr_force_inline static void remove_edge(impl_type& self, const edge_type& edge) {
-        auto& segment = self._list[edge.source()];
+        auto segment = self._list[edge.source()];
         const auto it = detail::strict_find(segment, edge);
-        const auto pos = static_cast<typename impl_type::adjacency_list_type::size_type>(
-            std::distance(segment.begin(), it)
-        );
+        const auto pos = static_cast<types::size_type>(std::distance(segment.begin(), it));
         self._list.erase(edge.source(), pos);
     }
 };
@@ -286,7 +287,7 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires type_traits::c_directed_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
 struct list_impl_traits<AdjacencyList> {
-    using type = flat_directed_adjacency_list<AdjacencyList>;
+    using type = directed_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
     using storage_type = types::segment_vector<ItemType>;
@@ -296,7 +297,7 @@ template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires type_traits::c_undirected_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
 struct list_impl_traits<AdjacencyList> {
-    using type = flat_undirected_adjacency_list<AdjacencyList>;
+    using type = undirected_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
     using storage_type = types::segment_vector<ItemType>;
