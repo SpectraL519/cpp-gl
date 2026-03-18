@@ -279,7 +279,7 @@ public:
     template <
         type_traits::c_graph_impl_tag TargetImplTag,
         type_traits::c_graph_impl_tag SourceImplTag>
-    friend struct to_impl;
+    friend struct gl::detail::to_impl;
 
 #ifdef GL_TESTING
     friend struct gl_testing::test_adjacency_list;

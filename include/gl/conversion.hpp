@@ -76,7 +76,9 @@ struct to_impl<impl::flat_list_t, impl::list_t> {
 
         target_list.reserve_segments(source_list.size());
         target_list.reserve_data(total_items);
-        target_list = std::move(source_list);
+
+        using target_list_type = std::remove_reference_t<decltype(target_list)>;
+        target_list = target_list_type(std::move(source_list));
     }
 };
 
