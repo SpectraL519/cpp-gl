@@ -17,7 +17,7 @@ struct test_adjacency_matrix;
 
 namespace gl::impl {
 
-template <type_traits::c_matrix_graph_traits GraphTraits>
+template <type_traits::c_adjacency_matrix_graph_traits GraphTraits>
 class adjacency_matrix final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;

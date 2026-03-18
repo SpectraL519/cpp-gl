@@ -53,7 +53,7 @@ The table below demostrates what parameters of the graph can be modified:
 | EdgeDirectionalTag | Specifies whether the graph should store directed or undirected edges | Either `directed_t` or `undirected_t`<br/>**Concept:** `type_traits::c_edge_directional_tag` | `directed_t` |
 | VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
 | EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
-| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | Either `impl::list_t` or `impl::matrix_t`<br/>**Concept:** `type_traits::c_graph_impl_tag` | `impl::list_t` |
+| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | One of: `impl::list_t`, `impl::flat_list_t`, `impl::matrix_t`<br/>**Concept:** `type_traits::c_graph_impl_tag` | `impl::list_t` |
 
 An example on how to define an undirected graph with a *weight* edge properties type and represented as an adjacency matrix:
 
@@ -566,6 +566,8 @@ To write safe and more expressive graph utility of your own, you can use the def
 
 > [!NOTE]
 > All concepts and in the `CPP-GL` library are defined in the `gl::type_trais` namespace and are prefixed with `c_`.
+
+<!-- TODO: align -->
 
 | **Trait** | **Description** |
 | :- | :- |

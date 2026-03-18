@@ -13,7 +13,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_matrix_graph_traits GraphTraits>
+template <type_traits::c_adjacency_matrix_graph_traits GraphTraits>
 class adjacency_matrix;
 
 namespace specialized {

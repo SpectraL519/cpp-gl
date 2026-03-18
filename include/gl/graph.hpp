@@ -753,6 +753,23 @@ concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>
 template <typename G>
 concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
 
+template <typename G>
+concept c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
+
+template <typename G>
+concept c_flat_list_graph =
+    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
+
+template <typename G>
+concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
+
+template <typename G>
+concept c_matrix_graph =
+    c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
+
+template <typename G>
+concept c_adjacency_matrix_graph = c_matrix_graph<G>;
+
 } // namespace type_traits
 
 // --- utility associated with graph's elements' properties ---

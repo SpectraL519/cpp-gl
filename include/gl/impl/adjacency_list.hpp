@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
 #include "gl/impl/specialized/flat_adjacency_list.hpp"
 #include "gl/types/segment_vector.hpp"
@@ -18,7 +19,7 @@ struct test_adjacency_list;
 
 namespace gl::impl {
 
-template <type_traits::c_list_graph_traits GraphTraits>
+template <type_traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list final {
 public:
     using implementation_tag = typename GraphTraits::implementation_tag;
