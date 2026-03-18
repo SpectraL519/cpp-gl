@@ -101,6 +101,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::types::empty_properties,
         gl::types::weight_property<>,
+        gl::impl::flat_list_t>, // undirected flat adjacency list graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
         gl::impl::matrix_t> // undirected adjacency matrix graph
 );
 
@@ -149,6 +153,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_heap_prim_unwieghted_edge_traits_type_template,
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
 );
 
@@ -239,6 +244,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::types::empty_properties,
         gl::types::weight_property<>,
+        gl::impl::flat_list_t>, // undirected flat adjacency list graph
+    gl::undirected_graph_traits<
+        gl::types::empty_properties,
+        gl::types::weight_property<>,
         gl::impl::matrix_t> // undirected adjacency matrix graph
 );
 
@@ -287,6 +296,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     vertex_heap_prim_unwieghted_edge_traits_type_template,
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
     gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
 );
 

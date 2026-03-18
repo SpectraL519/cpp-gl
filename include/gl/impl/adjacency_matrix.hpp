@@ -17,7 +17,7 @@ struct test_adjacency_matrix;
 
 namespace gl::impl {
 
-template <type_traits::c_matrix_graph_traits GraphTraits>
+template <type_traits::c_adjacency_matrix_graph_traits GraphTraits>
 class adjacency_matrix final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
@@ -30,7 +30,7 @@ public:
 
     adjacency_matrix() = default;
 
-    adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
+    explicit adjacency_matrix(const types::size_type n_vertices) : _matrix(n_vertices) {
         // initialize a full n x n matrix with null elements
         for (auto& row : this->_matrix)
             row.resize(n_vertices, constants::invalid_id);
@@ -305,7 +305,8 @@ public:
 #endif
 
 private:
-    using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
+    using specialized_impl =
+        typename specialized::adjacency_matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
     void _remap_element_ids(std::vector<types::id_type>& removed_edge_ids) {
