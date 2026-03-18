@@ -50,9 +50,9 @@ namespace detail {
 template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
 struct to_impl {
     template <typename TargetGraph, typename SourceGraph>
-    requires std::same_as<typename TargetGraph::implementation_tag, TargetImplTag>
-         and std::same_as<typename SourceGraph::implementation_tag, SourceImplTag>
     static void convert(TargetGraph& target, SourceGraph& source) {
+        target._impl.add_vertices(source.order());
+
         for (const auto u : source.vertex_ids()) {
             for (const auto& edge : source.out_edges(u)) {
                 if constexpr (type_traits::c_undirected_graph<SourceGraph>)
@@ -77,7 +77,7 @@ struct to_impl<Tag, Tag> {
 // Conversion: list -> flat list
 template <>
 struct to_impl<impl::flat_list_t, impl::list_t> {
-    template <type_traits::c_flat_list_graph TargetGraph, type_traits::c_list_graph SourceGraph>
+    template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
         auto& target_list = target._impl._list;
         auto& source_list = source._impl._list;
@@ -89,15 +89,15 @@ struct to_impl<impl::flat_list_t, impl::list_t> {
         target_list.reserve_segments(source_list.size());
         target_list.reserve_data(total_items);
 
-        using target_list_type = std::remove_reference_t<decltype(target_list)>;
-        target_list = target_list_type(std::move(source_list));
+        for (auto& adj : source_list)
+            target_list.push_back(std::move(adj));
     }
 };
 
 // Conversion: flat list -> list
 template <>
 struct to_impl<impl::list_t, impl::flat_list_t> {
-    template <type_traits::c_list_graph TargetGraph, type_traits::c_flat_list_graph SourceGraph>
+    template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
         auto& target_list = target._impl._list;
         auto& source_list = source._impl._list;
@@ -123,7 +123,7 @@ template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Grap
     using target_traits = type_traits::swap_impl_tag_t<source_traits, TargetImplTag>;
     using target_graph = graph<target_traits>;
 
-    target_graph target(source.order());
+    target_graph target;
 
     detail::to_impl<TargetImplTag, source_impl_tag>::convert(target, source);
 
