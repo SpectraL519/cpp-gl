@@ -16,7 +16,16 @@ struct test_adjacency_list;
 } // namespace gl_testing
 #endif
 
-namespace gl::impl {
+namespace gl {
+
+namespace detail {
+
+template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 template <type_traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list final {
@@ -267,6 +276,11 @@ public:
         return this->adjacent_edges(vertex_id, edge_properties_map);
     }
 
+    template <
+        type_traits::c_graph_impl_tag TargetImplTag,
+        type_traits::c_graph_impl_tag SourceImplTag>
+    friend struct to_impl;
+
 #ifdef GL_TESTING
     friend struct gl_testing::test_adjacency_list;
 #endif
@@ -301,4 +315,5 @@ private:
     adjacency_list_type _list{};
 };
 
-} // namespace gl::impl
+} // namespace impl
+} // namespace gl
