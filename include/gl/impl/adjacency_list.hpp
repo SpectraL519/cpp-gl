@@ -8,7 +8,6 @@
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
 #include "gl/impl/specialized/flat_adjacency_list.hpp"
-#include "gl/types/segment_vector.hpp"
 #include "gl/types/types.hpp"
 
 #ifdef GL_TESTING
@@ -26,8 +25,8 @@ public:
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
     using item_type = specialized::adjacency_list_item;
-    using adjacency_list_type =
-        typename specialized::list_impl_traits<adjacency_list>::template storage_type<item_type>;
+    using adjacency_list_type = typename specialized::adjacency_list_impl_traits<
+        adjacency_list>::template storage_type<item_type>;
 
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
@@ -273,7 +272,7 @@ public:
 #endif
 
 private:
-    using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
+    using specialized_impl = typename specialized::adjacency_list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
 
     void _remap_element_ids(

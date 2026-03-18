@@ -305,7 +305,8 @@ public:
 #endif
 
 private:
-    using specialized_impl = typename specialized::matrix_impl_traits<adjacency_matrix>::type;
+    using specialized_impl =
+        typename specialized::adjacency_matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
     void _remap_element_ids(std::vector<types::id_type>& removed_edge_ids) {

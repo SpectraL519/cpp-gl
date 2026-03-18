@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "gl/types/types.hpp"
-
 #include <concepts>
 #include <cstdint>
 #include <format>

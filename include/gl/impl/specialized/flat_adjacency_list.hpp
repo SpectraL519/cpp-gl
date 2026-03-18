@@ -274,7 +274,7 @@ struct undirected_flat_adjacency_list {
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires type_traits::c_directed_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
-struct list_impl_traits<AdjacencyList> {
+struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
@@ -284,7 +284,7 @@ struct list_impl_traits<AdjacencyList> {
 template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires type_traits::c_undirected_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
-struct list_impl_traits<AdjacencyList> {
+struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>

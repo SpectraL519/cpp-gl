@@ -283,19 +283,19 @@ struct undirected_adjacency_matrix {
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-struct matrix_impl_traits {
+struct adjacency_matrix_impl_traits {
     using type = void;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
-struct matrix_impl_traits<AdjacencyMatrix> {
+struct adjacency_matrix_impl_traits<AdjacencyMatrix> {
     using type = directed_adjacency_matrix<AdjacencyMatrix>;
 };
 
 template <type_traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(type_traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
-struct matrix_impl_traits<AdjacencyMatrix> {
+struct adjacency_matrix_impl_traits<AdjacencyMatrix> {
     using type = undirected_adjacency_matrix<AdjacencyMatrix>;
 };
 

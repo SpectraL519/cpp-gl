@@ -17,7 +17,6 @@ struct flat_list_t;
 
 struct matrix_t;
 
-
 } // namespace impl
 
 namespace type_traits {
