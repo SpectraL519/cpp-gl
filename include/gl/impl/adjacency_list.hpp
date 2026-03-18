@@ -5,7 +5,9 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
+#include "gl/impl/specialized/flat_adjacency_list.hpp"
 #include "gl/types/types.hpp"
 
 #ifdef GL_TESTING
@@ -16,20 +18,22 @@ struct test_adjacency_list;
 
 namespace gl::impl {
 
-template <type_traits::c_list_graph_traits GraphTraits>
+template <type_traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list final {
 public:
+    using implementation_tag = typename GraphTraits::implementation_tag;
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using edge_item_list_type = std::vector<specialized::adjacency_list_item>;
-    using adjacency_list_type = std::vector<edge_item_list_type>;
+    using item_type = specialized::adjacency_list_item;
+    using adjacency_list_type = typename specialized::adjacency_list_impl_traits<
+        adjacency_list>::template storage_type<item_type>;
 
     adjacency_list(const adjacency_list&) = delete;
     adjacency_list& operator=(const adjacency_list&) = delete;
 
     adjacency_list() = default;
 
-    adjacency_list(const types::size_type n_vertices) : _list(n_vertices) {}
+    explicit adjacency_list(const types::size_type n_vertices) : _list(n_vertices) {}
 
     adjacency_list(adjacency_list&&) = default;
     adjacency_list& operator=(adjacency_list&&) = default;
@@ -39,11 +43,11 @@ public:
     // --- vertex methods ---
 
     gl_attr_force_inline void add_vertex() {
-        this->_list.emplace_back();
+        this->_list.resize(this->_list.size() + 1uz);
     }
 
     inline void add_vertices(const types::size_type n) {
-        this->_list.resize(this->_list.size() + n, edge_item_list_type{});
+        this->_list.resize(this->_list.size() + n);
     }
 
     [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
@@ -98,9 +102,9 @@ public:
     [[nodiscard]] gl_attr_force_inline bool has_edge(
         const types::id_type source_id, const types::id_type target_id
     ) const {
-        return std::ranges::contains(this->_list[source_id], target_id, [](const auto& item) {
-            return item.vertex_id;
-        });
+        return std::ranges::contains(
+            this->_list[source_id], target_id, &specialized::adjacency_list_item::vertex_id
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
@@ -115,9 +119,9 @@ public:
     requires(type_traits::c_has_empty_properties<edge_type>)
     {
         const auto& adjacent_edges = this->_list[source_id];
-        const auto item_it = std::ranges::find(adjacent_edges, target_id, [](const auto& item) {
-            return item.vertex_id;
-        });
+        const auto item_it = std::ranges::find(
+            adjacent_edges, target_id, &specialized::adjacency_list_item::vertex_id
+        );
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);
@@ -175,7 +179,7 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        for (auto& adj : this->_list)
+        for (auto&& adj : this->_list)
             for (auto& item : adj)
                 item.edge_id -= static_cast<types::id_type>(item.edge_id > edge.id());
     }
@@ -268,7 +272,7 @@ public:
 #endif
 
 private:
-    using specialized_impl = typename specialized::list_impl_traits<adjacency_list>::type;
+    using specialized_impl = typename specialized::adjacency_list_impl_traits<adjacency_list>::type;
     friend specialized_impl;
 
     void _remap_element_ids(
@@ -279,7 +283,7 @@ private:
             std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
         );
 
-        for (auto& adj : this->_list) {
+        for (auto&& adj : this->_list) {
             for (auto& edge_item : adj) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
                 if (it != removed_edge_ids.end() && *it == edge_item.edge_id)

@@ -53,7 +53,7 @@ The table below demostrates what parameters of the graph can be modified:
 | EdgeDirectionalTag | Specifies whether the graph should store directed or undirected edges | Either `directed_t` or `undirected_t`<br/>**Concept:** `type_traits::c_edge_directional_tag` | `directed_t` |
 | VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
 | EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
-| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | Either `impl::list_t` or `impl::matrix_t`<br/>**Concept:** `type_traits::c_graph_impl_tag` | `impl::list_t` |
+| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | One of:<br/>&bull; `impl::list_t`<br/>&bull; `impl::flat_list_t`<br/>&bull; `impl::matrix_t`<br/>**Concept:** `type_traits::c_graph_impl_tag` | `impl::list_t` |
 
 An example on how to define an undirected graph with a *weight* edge properties type and represented as an adjacency matrix:
 
@@ -75,9 +75,24 @@ int main() {
 Additionally the library defines template type aliases which make it easier to define the desired graph traits specializations:
 
 - `directed_graph_traits<VertexProperties, EdgeProperties, ImplTag>`
+
+  Equivalent to: `graph_traits<directed_t, VertexProperties, EdgeProperties, ImplTag>`
+
 - `undirected_graph_traits<VertexProperties, EdgeProperties, ImplTag>`
+
+  Equivalent to: `graph_traits<undirected_t, VertexProperties, EdgeProperties, ImplTag>`
+
 - `list_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+
+  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::list_t>`
+
+- `flat_list_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+
+  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>`
+
 - `matrix_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+
+  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>`
 
 Where the default values of all parameters are the same as in the table above.
 
@@ -572,6 +587,11 @@ To write safe and more expressive graph utility of your own, you can use the def
 | `c_graph<G>` | Ensures that the template parameter `G` is a specialization of the `graph` class |
 | `c_directed_graph<G>` | Equivalent to `c_graph<G> and c_directed_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is a *directed* specialization of the `graph` class |
 | `c_undirected_graph<G>` | Equivalent to `c_graph<G> and c_undirected_edge<typename G::edge_type>`<br/>Ensures that the template parameter `G` is an *undirected* specialization of the `graph` class |
+| `c_list_graph<G>` | Equivalent to `c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>`<br/>Ensures that the template parameter `G` is a specialization of the `graph` class with the `impl::list_t` implementation tag (2D adjacency list model) |
+| `c_flat_list_graph<G>` | Equivalent to `c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>`<br/>Ensures that the template parameter `G` is a specialization of the `graph` class with the `impl::flat_list_t` implementation tag (1D flat adjacency list model) |
+| `c_adjacency_list_graph<G>` | Equivalent to `c_list_graph<G> or c_flat_list_graph<G>`<br/>Ensures that the template parameter `G` is a specialization of the `graph` class with an adjacency list implementation tag |
+| `c_matrix_graph<G>` | Equivalent to `c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>`<br/>Ensures that the template parameter `G` is a specialization of the `graph` class with the `impl::matrix_t` implementation tag (adjacency matrix model) |
+| `c_adjacency_matrix_graph<G>` | Equivalent to `c_matrix_graph<G>`<br/>Ensures that the template parameter `G` is a specialization of the `graph` class with an adjacency matrix implementation tag |
 
 > [!TIP]
 > More (not graph class specific) type traits and concepts are defined in the [gl/types/traits/](/include/gl/types/traits/) directory.

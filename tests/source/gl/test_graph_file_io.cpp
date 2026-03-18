@@ -123,7 +123,11 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
 TEST_CASE_TEMPLATE_INSTANTIATE(
     directional_tag_sut_template,
     gl::graph<gl::list_graph_traits<gl::directed_t>>, // directed adj list
-    gl::graph<gl::list_graph_traits<gl::undirected_t>> // undirected adj list
+    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // undirected adj list
+    gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adj list
+    gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adj list
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adj matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj matrix
 );
 
 TEST_SUITE_END(); // test_graph_file_io

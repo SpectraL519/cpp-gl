@@ -96,6 +96,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     directed_traits_type_template,
     gl::list_graph_traits<gl::directed_t>, // adjacency list graph
+    gl::flat_list_graph_traits<gl::directed_t>, // flat adjacency list graph
     gl::matrix_graph_traits<gl::directed_t> // adjacency matrix graph
 );
 
