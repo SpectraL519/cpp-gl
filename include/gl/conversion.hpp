@@ -13,12 +13,11 @@
 
 namespace gl {
 
-namespace detail {
+namespace type_traits {
 
-template <
-    type_traits::c_instantiation_of<graph_traits> Traits,
-    type_traits::c_graph_impl_tag NewImplTag>
-struct rebind_impl_tag;
+template <typename GT, type_traits::c_graph_impl_tag NewImplTag>
+requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
+struct swap_impl_tag;
 
 template <
     type_traits::c_edge_directional_tag Dir,
@@ -26,14 +25,27 @@ template <
     type_traits::c_properties EP,
     type_traits::c_graph_impl_tag OldImplTag,
     type_traits::c_graph_impl_tag NewImplTag>
-struct rebind_impl_tag<graph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
+struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
     using type = graph_traits<Dir, VP, EP, NewImplTag>;
 };
 
 template <
-    type_traits::c_instantiation_of<graph_traits> Traits,
+    type_traits::c_edge_directional_tag Dir,
+    type_traits::c_properties VP,
+    type_traits::c_properties EP,
+    type_traits::c_graph_impl_tag OldImplTag,
     type_traits::c_graph_impl_tag NewImplTag>
-using rebind_impl_tag_t = typename rebind_impl_tag<Traits, NewImplTag>::type;
+struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag>>, NewImplTag> {
+    using type = graph<graph_traits<Dir, VP, EP, NewImplTag>>;
+};
+
+template <typename GT, type_traits::c_graph_impl_tag NewImplTag>
+requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
+using swap_impl_tag_t = typename swap_impl_tag<GT, NewImplTag>::type;
+
+} // namespace type_traits
+
+namespace detail {
 
 template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
 struct to_impl {
@@ -108,7 +120,7 @@ template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Grap
     using source_traits = typename Graph::traits_type;
     using source_impl_tag = typename source_traits::implementation_tag;
 
-    using target_traits = detail::rebind_impl_tag_t<source_traits, TargetImplTag>;
+    using target_traits = type_traits::swap_impl_tag_t<source_traits, TargetImplTag>;
     using target_graph = graph<target_traits>;
 
     target_graph target(source.order());

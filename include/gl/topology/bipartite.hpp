@@ -5,7 +5,9 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/conversion.hpp"
 #include "gl/graph.hpp"
+#include "gl/impl/impl_tags.hpp"
 
 namespace gl::topology {
 
@@ -25,6 +27,14 @@ template <type_traits::c_graph GraphType>
     }
 
     return graph;
+}
+
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType biclique(
+    const types::size_type n_vertices_a, const types::size_type n_vertices_b
+) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(biclique<base_graph_type>(n_vertices_a, n_vertices_b));
 }
 
 } // namespace gl::topology

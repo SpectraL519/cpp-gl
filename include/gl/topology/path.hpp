@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/conversion.hpp"
 #include "gl/graph.hpp"
 
 namespace gl::topology {
@@ -17,6 +18,12 @@ template <type_traits::c_graph GraphType>
         graph.add_edge(source_id, source_id + 1uz);
 
     return graph;
+}
+
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType path(const types::size_type n_vertices) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(path<base_graph_type>(n_vertices));
 }
 
 template <type_traits::c_graph GraphType>
@@ -35,6 +42,12 @@ template <type_traits::c_graph GraphType>
     else {
         return path<GraphType>(n_vertices);
     }
+}
+
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType bidirectional_path(const types::size_type n_vertices) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(bidirectional_path<base_graph_type>(n_vertices));
 }
 
 } // namespace gl::topology

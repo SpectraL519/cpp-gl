@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/conversion.hpp"
 #include "gl/graph.hpp"
 #include "gl/util/pow.hpp"
 
@@ -44,6 +45,12 @@ template <type_traits::c_graph GraphType>
     return graph;
 }
 
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType regular_binary_tree(const types::size_type depth) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
+}
+
 template <type_traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_regular_binary_tree(const types::size_type depth) {
     if constexpr (type_traits::c_directed_graph<GraphType>) {
@@ -73,6 +80,12 @@ template <type_traits::c_graph GraphType>
     else {
         return regular_binary_tree<GraphType>(depth);
     }
+}
+
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType bidirectional_regular_binary_tree(const types::size_type depth) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
 }
 
 } // namespace gl::topology
