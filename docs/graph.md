@@ -158,7 +158,7 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: A *random access view* with values of type `vertex_type`.
 
 - **`graph.vertex_ids() const`**:
-  - *Description*: Returns a range of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
+  - *Description*: Returns a view of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
   - *Returned value*: $(v_{id} : v \in V)$
   - *Return type*: A *random access view* with values of type `types::id_type` : `std::ranges::iota_view`.
 
@@ -373,6 +373,11 @@ Based on the specified traits, the `graph` class defines the following types:
 <br />
 
 ### Edge Operations
+
+- **`graph.edge_ids() const`**:
+  - *Description*: Returns a view of edge IDs, starting from the initial edge ID to the number of edges in the grap.
+  - *Returned value*: $(e_{id} : e \in E)$
+  - *Return type*: A *random access view* with values of type `types::id_type` : `std::ranges::iota_view`.
 
 - **`graph.add_edge(source_id, target_id)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge.

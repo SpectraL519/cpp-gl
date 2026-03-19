@@ -332,6 +332,10 @@ public:
 
     // --- edge methods ---
 
+    [[nodiscard]] gl_attr_force_inline auto edge_ids() const noexcept {
+        return std::views::iota(constants::initial_id, this->_n_edges);
+    }
+
     const edge_type add_edge(const types::id_type source_id, const types::id_type target_id) {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);

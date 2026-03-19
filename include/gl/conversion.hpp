@@ -66,8 +66,8 @@ struct to_impl {
 };
 
 // Conversion: identity
-template <type_traits::c_graph_impl_tag Tag>
-struct to_impl<Tag, Tag> {
+template <type_traits::c_graph_impl_tag ImplTag>
+struct to_impl<ImplTag, ImplTag> {
     template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
         target._impl = std::move(source._impl);
