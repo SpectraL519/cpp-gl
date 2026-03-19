@@ -41,7 +41,9 @@ struct directed_flat_adjacency_list {
     [[nodiscard]] static types::size_type in_degree(
         const impl_type& self, const types::id_type vertex_id
     ) {
-        return std::ranges::count(self._list.data(), vertex_id, &adjacency_list_item::vertex_id);
+        return std::ranges::count(
+            self._list.data_view(), vertex_id, &adjacency_list_item::vertex_id
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
@@ -58,7 +60,7 @@ struct directed_flat_adjacency_list {
 
     [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
         std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
-        for (const auto& item : self._list.data())
+        for (const auto& item : self._list.data_view())
             ++in_degree_map[item.vertex_id];
         return in_degree_map;
     }

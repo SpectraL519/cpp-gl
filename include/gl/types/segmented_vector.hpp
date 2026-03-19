@@ -27,6 +27,7 @@ namespace gl::types {
 /// @warning Iterator invalidation follows `std::vector` semantics: modifying the structure or elements
 ///          invalidates all iterators, pointers, and references to the container's elements.
 /// @todo Implement assign, and swap methods.
+/// @todo Implement iterator-based insert, emplace and erase methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
 template <std::semiregular T>
 class segmented_vector {
@@ -655,14 +656,14 @@ public:
     /// @brief Returns a span over all element data in flattened form.
     /// @return A span of all elements in the underlying `_data` array
     /// @note Allows direct access to the flattened representation of all segments
-    [[nodiscard]] segment_type data() noexcept {
+    [[nodiscard]] segment_type data_view() noexcept {
         return segment_type(this->_data);
     }
 
     /// @brief Returns a const span over all element data in flattened form.
     /// @return A const span of all elements in the underlying `_data` array
     /// @note Allows direct access to the flattened representation of all segments
-    [[nodiscard]] const_segment_type data() const noexcept {
+    [[nodiscard]] const_segment_type data_view() const noexcept {
         return const_segment_type(this->_data);
     }
 

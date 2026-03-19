@@ -3,7 +3,7 @@
 #include "types.hpp"
 
 #include <hgl/constants.hpp>
-#include <hgl/types/types.hpp>
+#include <hgl/types.hpp>
 
 #define IC inline constexpr
 

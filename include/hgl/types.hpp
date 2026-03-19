@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/types/properties.hpp"
+#include "gl/types/segmented_vector.hpp"
 #include "gl/types/types.hpp"
 
 namespace hgl::types {

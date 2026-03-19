@@ -505,18 +505,17 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "data() should return a span of all data"
+    test_segmented_vector_segment_accessors, "data_view() should return a span of all data"
 ) {
-    auto data = sut.data();
-    CHECK(std::ranges::equal(data, flat_data));
+    CHECK(std::ranges::equal(sut.data_view(), flat_data));
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "const data() should return a const span of all data"
+    test_segmented_vector_segment_accessors,
+    "const data_view() should return a const span of all data"
 ) {
     const auto& const_sut = sut;
-    auto data = const_sut.data();
-    CHECK(std::ranges::equal(data, flat_data));
+    CHECK(std::ranges::equal(const_sut.data_view(), flat_data));
 }
 
 TEST_CASE_FIXTURE(
@@ -1061,7 +1060,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(sut.size(), 1uz);
     CHECK_EQ(sut.data_size(), 3uz);
-    CHECK(std::ranges::equal(sut.data(), std::vector<int>{9, 8, 7}));
+    CHECK(std::ranges::equal(sut.data_view(), std::vector<int>{9, 8, 7}));
 }
 
 TEST_CASE_FIXTURE(

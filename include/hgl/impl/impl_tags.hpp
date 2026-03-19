@@ -7,9 +7,10 @@
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/incidence_list.hpp"
 #include "hgl/impl/incidence_matrix.hpp"
+// #include "hgl/impl/flat_incidence_list.hpp"
 #include "hgl/impl/layout_tags.hpp"
-#include "hgl/types/type_traits.hpp"
-#include "hgl/types/types.hpp"
+#include "hgl/type_traits.hpp"
+#include "hgl/types.hpp"
 
 namespace hgl {
 
@@ -22,6 +23,14 @@ struct list_t {
     template <type_traits::c_hypergraph_directional_tag DirectionalTag>
     using implementation_type = incidence_list<DirectionalTag, LayoutTag>;
 };
+
+// template <type_traits::c_hypergraph_layout_tag LayoutTag>
+// struct flat_list_t {
+//     using layout_tag = LayoutTag;
+
+//     template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+//     using implementation_type = flat_incidence_list<DirectionalTag, LayoutTag>;
+// };
 
 template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 struct matrix_t {
