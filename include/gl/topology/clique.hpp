@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
+#include "gl/conversion.hpp"
 #include "gl/graph.hpp"
 
 namespace gl::topology {
@@ -22,6 +23,12 @@ template <type_traits::c_graph GraphType>
     }
 
     return graph;
+}
+
+template <type_traits::c_flat_list_graph GraphType>
+[[nodiscard]] GraphType clique(const types::size_type n_vertices) {
+    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    return to<impl::flat_list_t>(clique<base_graph_type>(n_vertices));
 }
 
 } // namespace gl::topology

@@ -14,8 +14,16 @@ struct test_adjacency_matrix;
 } // namespace gl_testing
 #endif
 
+namespace gl {
 
-namespace gl::impl {
+namespace detail {
+
+template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 template <type_traits::c_adjacency_matrix_graph_traits GraphTraits>
 class adjacency_matrix final {
@@ -300,6 +308,11 @@ public:
                });
     }
 
+    template <
+        type_traits::c_graph_impl_tag TargetImplTag,
+        type_traits::c_graph_impl_tag SourceImplTag>
+    friend struct gl::detail::to_impl;
+
 #ifdef GL_TESTING
     friend struct gl_testing::test_adjacency_matrix;
 #endif
@@ -333,4 +346,5 @@ private:
     matrix_type _matrix{};
 };
 
-} // namespace gl::impl
+} // namespace impl
+} // namespace gl
