@@ -15,6 +15,51 @@
 namespace gl {
 
 template <type_traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
+class graph;
+
+// --- general graph utility ---
+
+namespace type_traits {
+
+template <typename G>
+concept c_graph = c_instantiation_of<G, graph>;
+
+template <typename G>
+concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
+
+template <typename G>
+concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
+
+template <typename G>
+concept c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
+
+template <typename G>
+concept c_flat_list_graph =
+    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
+
+template <typename G>
+concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
+
+template <typename G>
+concept c_matrix_graph =
+    c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
+
+template <typename G>
+concept c_adjacency_matrix_graph = c_matrix_graph<G>;
+
+} // namespace type_traits
+
+template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+auto to(Graph&& source);
+
+namespace detail {
+
+template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
     using traits_type = GraphTraits;
@@ -287,6 +332,10 @@ public:
 
     // --- edge methods ---
 
+    [[nodiscard]] gl_attr_force_inline auto edge_ids() const noexcept {
+        return std::views::iota(constants::initial_id, this->_n_edges);
+    }
+
     const edge_type add_edge(const types::id_type source_id, const types::id_type target_id) {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
@@ -546,6 +595,14 @@ public:
         return is;
     }
 
+    template <
+        type_traits::c_graph_impl_tag TargetImplTag,
+        type_traits::c_graph_impl_tag SourceImplTag>
+    friend struct detail::to_impl;
+
+    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+    friend auto to(Graph&& source);
+
 private:
     [[nodiscard]] static constexpr std::string _directed_type_str() {
         return type_traits::c_directed_edge<edge_type> ? "directed" : "undirected";
@@ -739,38 +796,6 @@ private:
 
     implementation_type _impl{};
 };
-
-// --- general graph utility ---
-
-namespace type_traits {
-
-template <typename G>
-concept c_graph = c_instantiation_of<G, graph>;
-
-template <typename G>
-concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
-
-template <typename G>
-concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
-
-template <typename G>
-concept c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
-
-template <typename G>
-concept c_flat_list_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
-
-template <typename G>
-concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
-
-template <typename G>
-concept c_matrix_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
-
-template <typename G>
-concept c_adjacency_matrix_graph = c_matrix_graph<G>;
-
-} // namespace type_traits
 
 // --- utility associated with graph's elements' properties ---
 

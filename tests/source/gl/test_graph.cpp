@@ -15,6 +15,24 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph");
 
+template <
+    gl::type_traits::c_instantiation_of<gl::graph_traits> TraitsType,
+    gl::type_traits::c_properties VertexProperties>
+using add_vertex_property = gl::graph_traits<
+    typename TraitsType::edge_directional_tag,
+    VertexProperties,
+    typename TraitsType::edge_properties_type,
+    typename TraitsType::implementation_tag>;
+
+template <
+    gl::type_traits::c_instantiation_of<gl::graph_traits> TraitsType,
+    gl::type_traits::c_properties EdgeProperties>
+using add_edge_property = gl::graph_traits<
+    typename TraitsType::edge_directional_tag,
+    typename TraitsType::vertex_properties_type,
+    EdgeProperties,
+    typename TraitsType::implementation_tag>;
+
 template <typename TraitsType>
 struct test_graph {
     using traits_type = TraitsType;
@@ -57,7 +75,7 @@ struct test_graph {
     void validate_full_graph_edges(const GraphType& graph) {
         REQUIRE(std::ranges::all_of(
             graph.vertex_ids(),
-            [this, &graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
+            [&graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
                 const gl::types::id_type vertex_id
             ) { return gl::util::range_size(graph.adjacent_edges(vertex_id)) == expected_n_edges; }
         ));
@@ -71,24 +89,6 @@ struct test_graph {
     const vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
     const vertex_type invalid_vertex{constants::invalid_id}; // remove?
 };
-
-template <
-    gl::type_traits::c_instantiation_of<gl::graph_traits> TraitsType,
-    gl::type_traits::c_properties VertexProperties>
-using add_vertex_property = gl::graph_traits<
-    typename TraitsType::edge_directional_tag,
-    VertexProperties,
-    typename TraitsType::edge_properties_type,
-    typename TraitsType::implementation_tag>;
-
-template <
-    gl::type_traits::c_instantiation_of<gl::graph_traits> TraitsType,
-    gl::type_traits::c_properties EdgeProperties>
-using add_edge_property = gl::graph_traits<
-    typename TraitsType::edge_directional_tag,
-    typename TraitsType::vertex_properties_type,
-    EdgeProperties,
-    typename TraitsType::implementation_tag>;
 
 using vertex_id_list = std::vector<gl::types::id_type>;
 
@@ -222,7 +222,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         ));
     }
 
-    SUBCASE("vertex_ids should return the correct vertex list iterator range") {
+    SUBCASE("vertex_ids should return a correct view") {
         sut_type sut{constants::n_elements};
         CHECK(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
     }
