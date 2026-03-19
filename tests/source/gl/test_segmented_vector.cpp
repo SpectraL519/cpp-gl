@@ -518,6 +518,8 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(const_sut.data_view(), flat_data));
 }
 
+// TODO: add tests for data_storage, data_ptr, offsets_view, offsets_storage, offsets_ptr
+
 TEST_CASE_FIXTURE(
     test_segmented_vector_segment_accessors, "front() should return the first segment"
 ) {

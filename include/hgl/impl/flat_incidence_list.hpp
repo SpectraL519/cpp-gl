@@ -59,21 +59,21 @@ public:
         this->_remove<impl::element_type::vertex>(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
-    ) const noexcept {
-        return this->_incident_with<impl::element_type::vertex>(vertex_id);
-    }
+    // [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    // ) const noexcept {
+    //     return this->_incident_with<impl::element_type::vertex>(vertex_id);
+    // }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
-    ) const noexcept {
-        return this->_size<impl::element_type::vertex>(vertex_id);
-    }
+    // [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    // ) const noexcept {
+    //     return this->_size<impl::element_type::vertex>(vertex_id);
+    // }
 
-    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map(
-        const types::size_type n_vertices
-    ) const noexcept {
-        return this->_size_map<impl::element_type::vertex>(n_vertices);
-    }
+    // [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map(
+    //     const types::size_type n_vertices
+    // ) const noexcept {
+    //     return this->_size_map<impl::element_type::vertex>(n_vertices);
+    // }
 
     // --- hyperedge methods ---
 
@@ -85,36 +85,36 @@ public:
         this->_remove<impl::element_type::hyperedge>(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
-    ) const noexcept {
-        return this->_incident_with<impl::element_type::hyperedge>(hyperedge_id);
-    }
+    // [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    // ) const noexcept {
+    //     return this->_incident_with<impl::element_type::hyperedge>(hyperedge_id);
+    // }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
-        const types::id_type hyperedge_id
-    ) const noexcept {
-        return this->_size<impl::element_type::hyperedge>(hyperedge_id);
-    }
+    // [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
+    //     const types::id_type hyperedge_id
+    // ) const noexcept {
+    //     return this->_size<impl::element_type::hyperedge>(hyperedge_id);
+    // }
 
-    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> hyperedge_size_map(
-        const types::size_type n_hyperedges
-    ) const noexcept {
-        return this->_size_map<impl::element_type::hyperedge>(n_hyperedges);
-    }
+    // [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> hyperedge_size_map(
+    //     const types::size_type n_hyperedges
+    // ) const noexcept {
+    //     return this->_size_map<impl::element_type::hyperedge>(n_hyperedges);
+    // }
 
     // --- binding methods ---
 
-    gl_attr_force_inline void bind(
-        const types::id_type vertex_id, const types::id_type hyperedge_id
-    ) noexcept {}
+    // gl_attr_force_inline void bind(
+    //     const types::id_type vertex_id, const types::id_type hyperedge_id
+    // ) noexcept {}
 
-    gl_attr_force_inline void unbind(
-        const types::id_type vertex_id, const types::id_type hyperedge_id
-    ) noexcept {}
+    // gl_attr_force_inline void unbind(
+    //     const types::id_type vertex_id, const types::id_type hyperedge_id
+    // ) noexcept {}
 
-    [[nodiscard]] gl_attr_force_inline bool are_bound(
-        const types::id_type vertex_id, const types::id_type hyperedge_id
-    ) const noexcept {}
+    // [[nodiscard]] gl_attr_force_inline bool are_bound(
+    //     const types::id_type vertex_id, const types::id_type hyperedge_id
+    // ) const noexcept {}
 
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
@@ -137,60 +137,49 @@ private:
             this->_storage.erase(id);
         }
         else { // remove minor
-            // remove minor (The $O(|E|)$ Flat-Array Compaction)
+            auto& data = this->_storage.data_storage();
+            auto& offsets = this->_storage.offsets_storage();
 
-            // NOTE: You will need to expose these from your segmented_vector,
-            // or move this entire block into a segmented_vector member function.
-            auto flat_data = this->_storage.data(); // The 1D items array
-            auto offsets = this->_storage.segments(); // The 1D offsets array
+            auto write_idx = 0uz;
+            const auto n_segments = this->_storage.size();
 
-            std::size_t write_idx = 0uz;
-            const std::size_t n_segments = this->_storage.size();
+            for (auto seg_idx = 0uz; seg_idx < n_segments; ++seg_idx) {
+                const auto orig_start = offsets[seg_idx];
+                const auto orig_end = offsets[seg_idx + 1uz];
 
-            for (std::size_t seg_idx = 0uz; seg_idx < n_segments; ++seg_idx) {
-                const std::size_t original_start = offsets[seg_idx];
-                const std::size_t original_end = offsets[seg_idx + 1];
-
-                // 1. Update the offset for the current segment to its new compacted position
                 offsets[seg_idx] = write_idx;
 
-                // 2. Process the elements in this segment
-                for (std::size_t i = original_start; i < original_end; ++i) {
-                    auto val = flat_data[i];
+                for (auto i = orig_start; i < orig_end; ++i) {
+                    auto val = data[i];
 
-                    if (val == id) {
-                        continue; // Skip (erase) the element
-                    }
+                    if (val == id)
+                        continue;
+                    if (val > id)
+                        val--;
 
-                    if (val > id) {
-                        val--; // Decrement elements > id to fix the ID space
-                    }
-
-                    // Keep the element and advance the write head
-                    flat_data[write_idx++] = val;
+                    data[write_idx++] = val;
                 }
             }
 
-            // 3. Finalize the structure
-            offsets.back() = write_idx; // Set the final offset (total edges)
-            flat_data.resize(write_idx); // Trim the dead space at the end of the flat array
+            offsets.back() = write_idx;
+            data.resize(write_idx);
         }
     }
 
-    template <impl::element_type Element>
-    [[nodiscard]] gl_attr_force_inline auto _incident_with(const types::id_type id) const noexcept {
-    }
+    // template <impl::element_type Element>
+    // [[nodiscard]] gl_attr_force_inline auto _incident_with(const types::id_type id) const noexcept {
+    // }
 
-    template <impl::element_type Element>
-    [[nodiscard]] types::size_type _size(const types::id_type id) const noexcept {}
+    // template <impl::element_type Element>
+    // [[nodiscard]] types::size_type _size(const types::id_type id) const noexcept {}
 
-    template <impl::element_type Element>
-    [[nodiscard]] std::vector<types::size_type> _size_map(const types::size_type n_elements
-    ) const noexcept {}
+    // template <impl::element_type Element>
+    // [[nodiscard]] std::vector<types::size_type> _size_map(const types::size_type n_elements
+    // ) const noexcept {}
 
-    [[nodiscard]] bool _contains(
-        const minor_storage_type& minor_storage, const types::id_type minor_id
-    ) const noexcept {}
+    // [[nodiscard]] bool _contains(
+    //     const minor_storage_type& minor_storage, const types::id_type minor_id
+    // ) const noexcept {}
 
     storage_type _storage;
 };
