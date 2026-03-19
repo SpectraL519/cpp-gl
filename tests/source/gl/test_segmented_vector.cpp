@@ -1,4 +1,4 @@
-#include <gl/types/segment_vector.hpp>
+#include <gl/types/segmented_vector.hpp>
 
 #include <doctest.h>
 
@@ -9,14 +9,14 @@
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_segment_vector");
+TEST_SUITE_BEGIN("test_segmented_vector");
 
-struct test_segment_vector_constructors {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_constructors {
+    using sut_type = gl::types::segmented_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors, "default constructor should create empty segment_vector"
+    test_segmented_vector_constructors, "default constructor should create empty segmented_vector"
 ) {
     sut_type sut;
     CHECK(sut.empty());
@@ -24,7 +24,9 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.data_size(), 0uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_constructors, "copy constructor should create an equal copy") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_constructors, "copy constructor should create an equal copy"
+) {
     sut_type original;
     original.push_back({1, 2, 3});
     original.push_back({4, 5});
@@ -36,7 +38,9 @@ TEST_CASE_FIXTURE(test_segment_vector_constructors, "copy constructor should cre
     CHECK_EQ(copy.data_size(), 5uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_constructors, "copy assignment should create an equal copy") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_constructors, "copy assignment should create an equal copy"
+) {
     sut_type original;
     original.push_back({1, 2, 3});
     original.push_back({4, 5});
@@ -49,7 +53,7 @@ TEST_CASE_FIXTURE(test_segment_vector_constructors, "copy assignment should crea
     CHECK_EQ(target.data_size(), 5uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_constructors, "move constructor should transfer ownership") {
+TEST_CASE_FIXTURE(test_segmented_vector_constructors, "move constructor should transfer ownership") {
     sut_type source;
     source.push_back({1, 2, 3});
     source.push_back({4, 5});
@@ -61,7 +65,7 @@ TEST_CASE_FIXTURE(test_segment_vector_constructors, "move constructor should tra
     CHECK(source.empty());
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_constructors, "move assignment should transfer ownership") {
+TEST_CASE_FIXTURE(test_segmented_vector_constructors, "move assignment should transfer ownership") {
     sut_type source;
     source.push_back({1, 2, 3});
     source.push_back({4, 5});
@@ -75,7 +79,7 @@ TEST_CASE_FIXTURE(test_segment_vector_constructors, "move assignment should tran
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors, "move assignment should handle self-assignment correctly"
+    test_segmented_vector_constructors, "move assignment should handle self-assignment correctly"
 ) {
     sut_type sut;
     sut.push_back({1, 2, 3});
@@ -88,7 +92,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors, "(n_segments) constructor should initialize segments"
+    test_segmented_vector_constructors, "(n_segments) constructor should initialize segments"
 ) {
     sut_type sut(3uz);
 
@@ -99,7 +103,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors,
+    test_segmented_vector_constructors,
     "(n_segments, segment_size) constructor should initialize segments"
 ) {
     sut_type sut(3uz, 5uz);
@@ -114,7 +118,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors, "initializer list constructor should initialize segments"
+    test_segmented_vector_constructors, "initializer list constructor should initialize segments"
 ) {
     sut_type sut{
         {1, 2, 3},
@@ -130,7 +134,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_constructors, "range constructor should initialize from nested ranges"
+    test_segmented_vector_constructors, "range constructor should initialize from nested ranges"
 ) {
     std::vector<std::vector<int>> data{
         {1, 2, 3},
@@ -146,12 +150,13 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[2uz], data[2uz]));
 }
 
-struct test_segment_vector_comparison {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_comparison {
+    using sut_type = gl::types::segmented_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_comparison, "equality operator should return true for equal segment_vectors"
+    test_segmented_vector_comparison,
+    "equality operator should return true for equal segment_vectors"
 ) {
     sut_type sv1{
         {1, 2},
@@ -166,7 +171,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_comparison,
+    test_segmented_vector_comparison,
     "inequality operator should return true for different segment_vectors"
 ) {
     sut_type sv1{
@@ -187,19 +192,19 @@ TEST_CASE_FIXTURE(
     CHECK_NE(sv1, sv3);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_comparison, "empty segment_vectors should be equal") {
+TEST_CASE_FIXTURE(test_segmented_vector_comparison, "empty segment_vectors should be equal") {
     sut_type sv1;
     sut_type sv2;
 
     CHECK_EQ(sv1, sv2);
 }
 
-struct test_segment_vector_capacity {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_capacity {
+    using sut_type = gl::types::segmented_vector<int>;
     sut_type sut;
 };
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "size should return the number of segments") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "size should return the number of segments") {
     CHECK_EQ(sut.size(), 0uz);
 
     sut.push_back({1, 2, 3});
@@ -213,7 +218,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "size should return the number o
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "empty should return true only when there are no segments"
+    test_segmented_vector_capacity, "empty should return true only when there are no segments"
 ) {
     CHECK(sut.empty());
 
@@ -225,18 +230,18 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "reserve_segments should reserve space for segments"
+    test_segmented_vector_capacity, "reserve_segments should reserve space for segments"
 ) {
     sut.reserve_segments(10uz);
     CHECK_EQ(sut.segments_capacity(), 10uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "reserve_data should reserve space for data") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "reserve_data should reserve space for data") {
     sut.reserve_data(100uz);
     CHECK_EQ(sut.data_capacity(), 100uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "shrink_to_fit should reduce capacity") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "shrink_to_fit should reduce capacity") {
     sut.push_back({1, 2, 3});
     sut.shrink_to_fit();
 
@@ -244,7 +249,9 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "shrink_to_fit should reduce cap
     CHECK_EQ(sut.data_capacity(), 3uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should shrink container when n < size") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_capacity, "resize(n) should shrink container when n < size"
+) {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
     sut.push_back({6, 7, 8});
@@ -257,7 +264,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should shrink contain
     CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should grow container when n > size") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "resize(n) should grow container when n > size") {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
 
@@ -271,7 +278,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should grow container
     CHECK(sut[3uz].empty());
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should do nothing when n == size") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "resize(n) should do nothing when n == size") {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
 
@@ -284,7 +291,7 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "resize(n) should do nothing whe
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "resize(n, range) should shrink container when n < size"
+    test_segmented_vector_capacity, "resize(n, range) should shrink container when n < size"
 ) {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
@@ -300,7 +307,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "resize(n, range) should grow container when n > size"
+    test_segmented_vector_capacity, "resize(n, range) should grow container when n > size"
 ) {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
@@ -317,7 +324,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "resize(n, range) should do nothing when n == size"
+    test_segmented_vector_capacity, "resize(n, range) should do nothing when n == size"
 ) {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
@@ -332,7 +339,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "resize(n, initializer_list) should grow container"
+    test_segmented_vector_capacity, "resize(n, initializer_list) should grow container"
 ) {
     sut.push_back({1, 2, 3});
 
@@ -346,7 +353,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_capacity, "resize(n, initializer_list) should shrink container"
+    test_segmented_vector_capacity, "resize(n, initializer_list) should shrink container"
 ) {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
@@ -360,7 +367,7 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_capacity, "clear should remove all segments and data") {
+TEST_CASE_FIXTURE(test_segmented_vector_capacity, "clear should remove all segments and data") {
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
 
@@ -370,8 +377,8 @@ TEST_CASE_FIXTURE(test_segment_vector_capacity, "clear should remove all segment
     CHECK_EQ(sut.data_size(), 0uz);
 }
 
-struct test_segment_vector_segment_accessors {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_segment_accessors {
+    using sut_type = gl::types::segmented_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -387,7 +394,7 @@ struct test_segment_vector_segment_accessors {
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "operator[] should return segment at given index"
+    test_segmented_vector_segment_accessors, "operator[] should return segment at given index"
 ) {
     auto seg0 = sut[0uz];
     CHECK(std::ranges::equal(seg0, data[0uz]));
@@ -400,7 +407,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors,
+    test_segmented_vector_segment_accessors,
     "const operator[] should return const segment at given index"
 ) {
     const auto& const_sut = sut;
@@ -413,7 +420,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "at() should return segment at given index"
+    test_segmented_vector_segment_accessors, "at() should return segment at given index"
 ) {
     auto seg0 = sut.at(0uz);
     CHECK(std::ranges::equal(seg0, data[0uz]));
@@ -426,14 +433,14 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "at() should throw for out of range index"
+    test_segmented_vector_segment_accessors, "at() should throw for out of range index"
 ) {
     CHECK_THROWS_AS(static_cast<void>(sut.at(3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(sut.at(10uz)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "const at() should return const segment at given index"
+    test_segmented_vector_segment_accessors, "const at() should return const segment at given index"
 ) {
     const auto& const_sut = sut;
 
@@ -448,7 +455,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "const at() should throw for out of range index"
+    test_segmented_vector_segment_accessors, "const at() should throw for out of range index"
 ) {
     const auto& const_sut = sut;
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(3uz)), std::out_of_range);
@@ -456,7 +463,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "segments() should return a view of all segments"
+    test_segmented_vector_segment_accessors, "segments() should return a view of all segments"
 ) {
     auto n_segments = 0uz;
     for (auto seg : sut.segments()) {
@@ -468,7 +475,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors,
+    test_segmented_vector_segment_accessors,
     "const segments() should return a const view of all segments"
 ) {
     const auto& const_sut = sut;
@@ -483,7 +490,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "segment_size() should return the size of a segment"
+    test_segmented_vector_segment_accessors, "segment_size() should return the size of a segment"
 ) {
     CHECK_EQ(sut.segment_size(0uz), 3uz);
     CHECK_EQ(sut.segment_size(1uz), 2uz);
@@ -491,52 +498,57 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "data_size() should return the total number of elements"
+    test_segmented_vector_segment_accessors,
+    "data_size() should return the total number of elements"
 ) {
     CHECK_EQ(sut.data_size(), 6uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_segment_accessors, "data() should return a span of all data") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_segment_accessors, "data() should return a span of all data"
+) {
     auto data = sut.data();
     CHECK(std::ranges::equal(data, flat_data));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "const data() should return a const span of all data"
+    test_segmented_vector_segment_accessors, "const data() should return a const span of all data"
 ) {
     const auto& const_sut = sut;
     auto data = const_sut.data();
     CHECK(std::ranges::equal(data, flat_data));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_segment_accessors, "front() should return the first segment") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_segment_accessors, "front() should return the first segment"
+) {
     auto front_seg = sut.front();
     CHECK(std::ranges::equal(front_seg, data.front()));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "const front() should return const first segment"
+    test_segmented_vector_segment_accessors, "const front() should return const first segment"
 ) {
     const auto& const_sut = sut;
     auto front_seg = const_sut.front();
     CHECK(std::ranges::equal(front_seg, data.front()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_segment_accessors, "back() should return the last segment") {
+TEST_CASE_FIXTURE(test_segmented_vector_segment_accessors, "back() should return the last segment") {
     auto back_seg = sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_accessors, "const back() should return const last segment"
+    test_segmented_vector_segment_accessors, "const back() should return const last segment"
 ) {
     const auto& const_sut = sut;
     auto back_seg = const_sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
 }
 
-struct test_segment_vector_element_accessors {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_element_accessors {
+    using sut_type = gl::types::segmented_vector<int>;
 
     std::vector<int> seg0{1, 2, 3};
     std::vector<int> seg1{4, 5};
@@ -547,7 +559,7 @@ struct test_segment_vector_element_accessors {
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors,
+    test_segmented_vector_element_accessors,
     "operator[](seg, pos) should return element at given segment and position"
 ) {
     CHECK_EQ(sut[0uz, 0uz], seg0[0uz]);
@@ -559,7 +571,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "const operator[](seg, pos) should return const element"
+    test_segmented_vector_element_accessors,
+    "const operator[](seg, pos) should return const element"
 ) {
     const auto& const_sut = sut;
 
@@ -572,7 +585,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors,
+    test_segmented_vector_element_accessors,
     "at(seg, pos) should return element at given segment and position"
 ) {
     CHECK_EQ(sut.at(0uz, 0uz), seg0[0uz]);
@@ -584,13 +597,13 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "at(seg, pos) should throw for invalid segment"
+    test_segmented_vector_element_accessors, "at(seg, pos) should throw for invalid segment"
 ) {
     CHECK_THROWS_AS(static_cast<void>(sut.at(3uz, 0uz)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "at(seg, pos) should throw for invalid position"
+    test_segmented_vector_element_accessors, "at(seg, pos) should throw for invalid position"
 ) {
     CHECK_THROWS_AS(static_cast<void>(sut.at(0uz, 3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(sut.at(1uz, 2uz)), std::out_of_range);
@@ -598,7 +611,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "const at(seg, pos) should return const element"
+    test_segmented_vector_element_accessors, "const at(seg, pos) should return const element"
 ) {
     const auto& const_sut = sut;
 
@@ -611,7 +624,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "const at(seg, pos) should throw for invalid segment"
+    test_segmented_vector_element_accessors, "const at(seg, pos) should throw for invalid segment"
 ) {
     const auto& const_sut = sut;
 
@@ -619,7 +632,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "const at(seg, pos) should throw for invalid position"
+    test_segmented_vector_element_accessors, "const at(seg, pos) should throw for invalid position"
 ) {
     const auto& const_sut = sut;
 
@@ -629,7 +642,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "front(seg) should return first element in segment"
+    test_segmented_vector_element_accessors, "front(seg) should return first element in segment"
 ) {
     CHECK_EQ(sut.front(0uz), seg0.front());
     CHECK_EQ(sut.front(1uz), seg1.front());
@@ -637,7 +650,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors,
+    test_segmented_vector_element_accessors,
     "const front(seg) should return const first element in segment"
 ) {
     const auto& const_sut = sut;
@@ -647,7 +660,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors, "back(seg) should return last element in segment"
+    test_segmented_vector_element_accessors, "back(seg) should return last element in segment"
 ) {
     CHECK_EQ(sut.back(0uz), seg0.back());
     CHECK_EQ(sut.back(1uz), seg1.back());
@@ -655,7 +668,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_accessors,
+    test_segmented_vector_element_accessors,
     "const back(seg) should return const last element in segment"
 ) {
     const auto& const_sut = sut;
@@ -664,8 +677,8 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(const_sut.back(2uz), seg2.back());
 }
 
-struct test_segment_vector_segment_modifiers {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_segment_modifiers {
+    using sut_type = gl::types::segmented_vector<int>;
 
     sut_type sut;
     std::vector<int> seg0{1, 2, 3};
@@ -674,7 +687,7 @@ struct test_segment_vector_segment_modifiers {
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "push_back with span should add new segment"
+    test_segmented_vector_segment_modifiers, "push_back with span should add new segment"
 ) {
     sut.push_back(std::span<const int>{seg0});
 
@@ -684,7 +697,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "push_back with vector should add new segment"
+    test_segmented_vector_segment_modifiers, "push_back with vector should add new segment"
 ) {
     sut.push_back(seg0);
 
@@ -693,7 +706,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "push_back with initializer list should add new segment"
+    test_segmented_vector_segment_modifiers,
+    "push_back with initializer list should add new segment"
 ) {
     sut.push_back({1, 2, 3});
 
@@ -702,7 +716,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "multiple push_back calls should add multiple segments"
+    test_segmented_vector_segment_modifiers, "multiple push_back calls should add multiple segments"
 ) {
     sut.push_back(seg0);
     sut.push_back(seg1);
@@ -715,7 +729,7 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[2uz], seg2));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "pop_back should remove last segment") {
+TEST_CASE_FIXTURE(test_segmented_vector_segment_modifiers, "pop_back should remove last segment") {
     sut.push_back(seg0);
     sut.push_back(seg1);
 
@@ -727,14 +741,14 @@ TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "pop_back should remove
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "pop_back on empty container should do nothing"
+    test_segmented_vector_segment_modifiers, "pop_back on empty container should do nothing"
 ) {
     sut.pop_back();
     CHECK(sut.empty());
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "pop_back should remove all segments sequentially"
+    test_segmented_vector_segment_modifiers, "pop_back should remove all segments sequentially"
 ) {
     sut.push_back(seg0);
     sut.push_back(seg1);
@@ -762,7 +776,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "insert should add segment at given position"
+    test_segmented_vector_segment_modifiers, "insert should add segment at given position"
 ) {
     sut.push_back(seg0);
     sut.push_back(seg2);
@@ -782,7 +796,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_segment_modifiers, "erase should remove segment at given position"
+    test_segmented_vector_segment_modifiers, "erase should remove segment at given position"
 ) {
     sut.push_back(seg0);
     sut.push_back(seg1);
@@ -802,7 +816,7 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[1uz], seg2));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "erase should update offsets correctly") {
+TEST_CASE_FIXTURE(test_segmented_vector_segment_modifiers, "erase should update offsets correctly") {
     sut.push_back(seg0);
     sut.push_back(seg1);
     sut.push_back(seg2);
@@ -820,8 +834,8 @@ TEST_CASE_FIXTURE(test_segment_vector_segment_modifiers, "erase should update of
     CHECK_EQ(sut[1uz].front(), seg2[0uz]);
 }
 
-struct test_segment_vector_element_modifiers {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_element_modifiers {
+    using sut_type = gl::types::segmented_vector<int>;
     sut_type sut{
         {1, 2, 3},
         {4, 5}
@@ -829,7 +843,7 @@ struct test_segment_vector_element_modifiers {
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "push_back element should add element to segment"
+    test_segmented_vector_element_modifiers, "push_back element should add element to segment"
 ) {
     sut.push_back(0uz, 10);
 
@@ -838,7 +852,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "emplace_back should add element to segment"
+    test_segmented_vector_element_modifiers, "emplace_back should add element to segment"
 ) {
     sut.emplace_back(0uz, 10);
 
@@ -847,7 +861,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "pop_back element should remove last element from segment"
 ) {
     sut.pop_back(0uz);
@@ -857,7 +871,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "pop_back on empty segment should do nothing"
+    test_segmented_vector_element_modifiers, "pop_back on empty segment should do nothing"
 ) {
     sut_type empty_sv;
     empty_sv.push_back({});
@@ -867,7 +881,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "insert element should add element at position in segment"
 ) {
     sut.insert(0uz, 1uz, 10);
@@ -876,7 +890,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "emplace should add element at position in segment"
+    test_segmented_vector_element_modifiers, "emplace should add element at position in segment"
 ) {
     sut.emplace(0uz, 1uz, 10);
     CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 10, 2, 3}));
@@ -884,7 +898,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "erase element should remove element at position in segment"
 ) {
     sut.erase(0uz, 1uz);
@@ -895,7 +909,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "insert element should update offsets for other segments"
+    test_segmented_vector_element_modifiers,
+    "insert element should update offsets for other segments"
 ) {
     sut.insert(0uz, 0uz, 0);
 
@@ -905,7 +920,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "erase element should update offsets for other segments"
+    test_segmented_vector_element_modifiers,
+    "erase element should update offsets for other segments"
 ) {
     sut.erase(0uz, 0uz);
 
@@ -916,7 +932,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "resize(seg, n) should shrink segment when n < segment_size"
 ) {
     sut.resize(0uz, 2uz);
@@ -929,7 +945,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "resize(seg, n) should grow segment when n > segment_size"
 ) {
     sut.resize(0uz, 5uz);
@@ -942,7 +958,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "resize(seg, n) should do nothing when n == segment_size"
+    test_segmented_vector_element_modifiers,
+    "resize(seg, n) should do nothing when n == segment_size"
 ) {
     sut.resize(0uz, 3uz);
 
@@ -954,7 +971,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "resize(seg, n, value) should shrink segment when n < segment_size"
 ) {
     sut.resize(0uz, 1uz, 99);
@@ -967,7 +984,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "resize(seg, n, value) should grow segment when n > segment_size"
 ) {
     sut.resize(0uz, 5uz, 99);
@@ -980,7 +997,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers,
+    test_segmented_vector_element_modifiers,
     "resize(seg, n, value) should do nothing when n == segment_size"
 ) {
     sut.resize(0uz, 3uz, 99);
@@ -993,7 +1010,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_element_modifiers, "resize on last segment should work correctly"
+    test_segmented_vector_element_modifiers, "resize on last segment should work correctly"
 ) {
     sut.resize(1uz, 4uz, 88);
 
@@ -1004,12 +1021,12 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 88, 88}));
 }
 
-struct test_segment_vector_complex_operations {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_complex_operations {
+    using sut_type = gl::types::segmented_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_complex_operations,
+    test_segmented_vector_complex_operations,
     "interleaved segment and element operations should work correctly"
 ) {
     sut_type sut;
@@ -1025,7 +1042,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_complex_operations, "clearing and refilling should work correctly"
+    test_segmented_vector_complex_operations, "clearing and refilling should work correctly"
 ) {
     sut_type sut;
     sut.push_back({1, 2, 3});
@@ -1048,8 +1065,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_complex_operations,
-    "large segment_vector operations should maintain integrity"
+    test_segmented_vector_complex_operations,
+    "large segmented_vector operations should maintain integrity"
 ) {
     sut_type sut;
 
@@ -1069,8 +1086,8 @@ TEST_CASE_FIXTURE(
     }
 }
 
-struct test_segment_vector_iterators {
-    using sut_type = gl::types::segment_vector<int>;
+struct test_segmented_vector_iterators {
+    using sut_type = gl::types::segmented_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -1084,19 +1101,23 @@ struct test_segment_vector_iterators {
     };
 };
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "begin() should return iterator to first segment") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_iterators, "begin() should return iterator to first segment"
+) {
     auto it = sut.begin();
     CHECK(std::ranges::equal(*it, segments.front()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "end() should return iterator past last segment") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_iterators, "end() should return iterator past last segment"
+) {
     auto it_begin = sut.begin();
     auto it_end = sut.end();
     CHECK_EQ(it_end - it_begin, segments.size());
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "const begin() should return const iterator to first segment"
+    test_segmented_vector_iterators, "const begin() should return const iterator to first segment"
 ) {
     const auto& const_sut = sut;
     auto it = const_sut.begin();
@@ -1104,7 +1125,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "const end() should return const iterator past last segment"
+    test_segmented_vector_iterators, "const end() should return const iterator past last segment"
 ) {
     const auto& const_sut = sut;
     auto it_begin = const_sut.begin();
@@ -1112,26 +1133,27 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(it_end - it_begin, segments.size());
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "cbegin() should return const iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "cbegin() should return const iterator") {
     auto it = sut.cbegin();
     CHECK(std::ranges::equal(*it, segments.front()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "cend() should return const iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "cend() should return const iterator") {
     auto it_begin = sut.cbegin();
     auto it_end = sut.cend();
     CHECK_EQ(it_end - it_begin, segments.size());
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "non-const iterator should convert to const iterator implicitly"
+    test_segmented_vector_iterators,
+    "non-const iterator should convert to const iterator implicitly"
 ) {
     auto non_const_it = sut.begin();
     typename sut_type::const_iterator const_it = non_const_it;
     CHECK(std::ranges::equal(*const_it, segments.front()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "dereferencing iterator should return segment") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "dereferencing iterator should return segment") {
     auto it = sut.begin();
     CHECK(std::ranges::equal(*it, segments[0uz]));
 
@@ -1142,14 +1164,14 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "dereferencing iterator should 
     CHECK(std::ranges::equal(*it, segments[2uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator[] should access segment at offset") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator[] should access segment at offset") {
     auto it = sut.begin();
     CHECK(std::ranges::equal(it[0uz], segments[0uz]));
     CHECK(std::ranges::equal(it[1uz], segments[1uz]));
     CHECK(std::ranges::equal(it[2uz], segments[2uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-increment should advance iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "pre-increment should advance iterator") {
     auto it = sut.begin();
     CHECK(std::ranges::equal(*it, segments[0uz]));
 
@@ -1158,7 +1180,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-increment should advance i
     CHECK(std::ranges::equal(*it, segments[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-increment should return old iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "post-increment should return old iterator") {
     auto it = sut.begin();
     CHECK(std::ranges::equal(*it, segments[0uz]));
 
@@ -1167,7 +1189,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-increment should return o
     CHECK(std::ranges::equal(*it, segments[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-decrement should move iterator backward") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "pre-decrement should move iterator backward") {
     auto it = sut.end();
     --it;
     CHECK(std::ranges::equal(*it, segments[2uz]));
@@ -1177,7 +1199,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "pre-decrement should move iter
     CHECK(std::ranges::equal(*it, segments[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-decrement should return old iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "post-decrement should return old iterator") {
     auto it = sut.end();
     --it;
     CHECK(std::ranges::equal(*it, segments[2uz]));
@@ -1187,13 +1209,13 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "post-decrement should return o
     CHECK(std::ranges::equal(*it, segments[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator+= should advance iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator+= should advance iterator") {
     auto it = sut.begin();
     it += 2;
     CHECK(std::ranges::equal(*it, segments[2uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator-= should move iterator backward") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator-= should move iterator backward") {
     auto it = sut.end();
     it -= 1;
     CHECK(std::ranges::equal(*it, segments[2uz]));
@@ -1202,7 +1224,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator-= should move iterato
     CHECK(std::ranges::equal(*it, segments[0uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator+ should create new iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator+ should create new iterator") {
     auto it = sut.begin();
     auto new_it = it + 1;
 
@@ -1210,7 +1232,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator+ should create new it
     CHECK(std::ranges::equal(*new_it, segments[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "reverse operator+ should create new iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "reverse operator+ should create new iterator") {
     auto it = sut.begin();
     auto new_it = 2 + it;
 
@@ -1218,7 +1240,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "reverse operator+ should creat
     CHECK(std::ranges::equal(*new_it, segments[2uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator- should create new iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator- should create new iterator") {
     auto it = sut.end();
     auto new_it = it - 1;
 
@@ -1226,7 +1248,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator- should create new it
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "operator- with two iterators should give distance"
+    test_segmented_vector_iterators, "operator- with two iterators should give distance"
 ) {
     auto it1 = sut.begin();
     auto it2 = sut.end();
@@ -1234,7 +1256,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(it2 - it1, sut.size());
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator== should compare iterators") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator== should compare iterators") {
     auto it1 = sut.begin();
     auto it2 = sut.begin();
     auto it3 = sut.begin() + 1;
@@ -1243,7 +1265,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator== should compare iter
     CHECK_NE(it1, it3);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator<=> should compare iterators") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "operator<=> should compare iterators") {
     auto it1 = sut.begin();
     auto it2 = sut.begin() + 1;
     auto it3 = sut.begin() + 2;
@@ -1259,7 +1281,7 @@ TEST_CASE_FIXTURE(test_segment_vector_iterators, "operator<=> should compare ite
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "range-based for loop should iterate all segments"
+    test_segmented_vector_iterators, "range-based for loop should iterate all segments"
 ) {
     std::size_t idx = 0uz;
     for (auto seg : sut)
@@ -1268,7 +1290,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "const range-based for loop should iterate all segments"
+    test_segmented_vector_iterators, "const range-based for loop should iterate all segments"
 ) {
     const auto& const_sut = sut;
     std::size_t idx = 0uz;
@@ -1277,32 +1299,34 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(idx, 3uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "rbegin() should return reverse iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "rbegin() should return reverse iterator") {
     auto it = sut.rbegin();
     CHECK(std::ranges::equal(*it, segments.back()));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "rend() should return reverse iterator past first"
+    test_segmented_vector_iterators, "rend() should return reverse iterator past first"
 ) {
     auto it_rbegin = sut.rbegin();
     auto it_rend = sut.rend();
     CHECK_EQ(it_rend - it_rbegin, segments.size());
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "crbegin() should return const reverse iterator") {
+TEST_CASE_FIXTURE(
+    test_segmented_vector_iterators, "crbegin() should return const reverse iterator"
+) {
     auto it = sut.crbegin();
     CHECK(std::ranges::equal(*it, segments.back()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_iterators, "crend() should return const reverse iterator") {
+TEST_CASE_FIXTURE(test_segmented_vector_iterators, "crend() should return const reverse iterator") {
     auto it_rbegin = sut.crbegin();
     auto it_rend = sut.crend();
     CHECK_EQ(it_rend - it_rbegin, segments.size());
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_iterators, "reverse range-based for loop should iterate in reverse"
+    test_segmented_vector_iterators, "reverse range-based for loop should iterate in reverse"
 ) {
     std::size_t idx = 2uz;
     for (auto it : std::ranges::reverse_view(sut)) {
