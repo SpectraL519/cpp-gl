@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 #include <ranges>
+#include <utility>
 #include <vector>
 
 namespace gl_testing {
@@ -377,7 +378,7 @@ TEST_CASE_FIXTURE(test_segmented_vector_capacity, "clear should remove all segme
     CHECK_EQ(sut.data_size(), 0uz);
 }
 
-struct test_segmented_vector_segment_accessors {
+struct test_segment_vector_accessors {
     using sut_type = gl::types::segmented_vector<int>;
 
     sut_type sut{
@@ -385,30 +386,38 @@ struct test_segmented_vector_segment_accessors {
         {4, 5},
         {6}
     };
+
     std::vector<std::vector<int>> data{
         {1, 2, 3},
         {4, 5},
         {6}
     };
     std::vector<int> flat_data{1, 2, 3, 4, 5, 6};
+    std::vector<std::size_t> offsets{0uz, 3uz, 5uz, 6uz};
+
+    int dummy_value = 111;
+    std::size_t dummy_offset = 999uz;
 };
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "operator[] should return segment at given index"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "operator[] should return segment at given index") {
     auto seg0 = sut[0uz];
     CHECK(std::ranges::equal(seg0, data[0uz]));
+    seg0.front() = dummy_value;
+    CHECK_EQ(sut[0uz].front(), dummy_value);
 
     auto seg1 = sut[1uz];
     CHECK(std::ranges::equal(seg1, data[1uz]));
+    seg1.front() = dummy_value;
+    CHECK_EQ(sut[1uz].front(), dummy_value);
 
     auto seg2 = sut[2uz];
     CHECK(std::ranges::equal(seg2, data[2uz]));
+    seg2.front() = dummy_value;
+    CHECK_EQ(sut[2uz].front(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors,
-    "const operator[] should return const segment at given index"
+    test_segment_vector_accessors, "const operator[] should return const segment at given index"
 ) {
     const auto& const_sut = sut;
 
@@ -419,28 +428,30 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(seg1, data[1uz]));
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "at() should return segment at given index"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "at() should return segment at given index") {
     auto seg0 = sut.at(0uz);
     CHECK(std::ranges::equal(seg0, data[0uz]));
+    seg0.front() = dummy_value;
+    CHECK_EQ(sut.at(0uz).front(), dummy_value);
 
     auto seg1 = sut.at(1uz);
     CHECK(std::ranges::equal(seg1, data[1uz]));
+    seg1.front() = dummy_value;
+    CHECK_EQ(sut.at(1uz).front(), dummy_value);
 
     auto seg2 = sut.at(2uz);
     CHECK(std::ranges::equal(seg2, data[2uz]));
+    seg2.front() = dummy_value;
+    CHECK_EQ(sut.at(2uz).front(), dummy_value);
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "at() should throw for out of range index"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "at() should throw for out of range index") {
     CHECK_THROWS_AS(static_cast<void>(sut.at(3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(sut.at(10uz)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "const at() should return const segment at given index"
+    test_segment_vector_accessors, "const at() should return const segment at given index"
 ) {
     const auto& const_sut = sut;
 
@@ -454,20 +465,20 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(seg2, data[2uz]));
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "const at() should throw for out of range index"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "const at() should throw for out of range index") {
     const auto& const_sut = sut;
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(10uz)), std::out_of_range);
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "segments() should return a view of all segments"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "segments() should return a view of all segments") {
     auto n_segments = 0uz;
     for (auto seg : sut.segments()) {
         CHECK(std::ranges::equal(seg, data[n_segments]));
+        const auto orig_val = std::exchange(seg.front(), dummy_value);
+        CHECK_EQ(sut[n_segments].front(), dummy_value);
+        seg.front() = orig_val; // revert change
+
         n_segments++;
     }
 
@@ -475,8 +486,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors,
-    "const segments() should return a const view of all segments"
+    test_segment_vector_accessors, "const segments() should return a const view of all segments"
 ) {
     const auto& const_sut = sut;
 
@@ -490,7 +500,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors,
+    test_segment_vector_accessors,
     "empty(i) should return true for empty segments and false for non-empty segments"
 ) {
     CHECK_FALSE(sut.empty(0uz));
@@ -502,7 +512,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "segment_size(i) should return the size of a segment"
+    test_segment_vector_accessors, "segment_size(i) should return the size of a segment"
 ) {
     CHECK_EQ(sut.segment_size(0uz), 3uz);
     CHECK_EQ(sut.segment_size(1uz), 2uz);
@@ -510,51 +520,160 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors,
-    "data_size() should return the total number of elements"
+    test_segment_vector_accessors, "data_size() should return the total number of elements"
 ) {
     CHECK_EQ(sut.data_size(), 6uz);
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "data_view() should return a span of all data"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "data_view() should return a span of all data") {
     CHECK(std::ranges::equal(sut.data_view(), flat_data));
+    sut.data_view().front() = dummy_value;
+    CHECK_EQ(sut.data_view().front(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors,
-    "const data_view() should return a const span of all data"
+    test_segment_vector_accessors, "const data_view() should return a const span of all data"
 ) {
     const auto& const_sut = sut;
     CHECK(std::ranges::equal(const_sut.data_view(), flat_data));
 }
 
-// TODO: add tests for data_storage, data_ptr, offsets_view, offsets_storage, offsets_ptr
-
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "front() should return the first segment"
+    test_segment_vector_accessors,
+    "data_storage() should return a mutable reference to the internal vector"
 ) {
-    auto front_seg = sut.front();
-    CHECK(std::ranges::equal(front_seg, data.front()));
+    auto& storage_ref = sut.data_storage();
+    CHECK(std::ranges::equal(storage_ref, flat_data));
+    CHECK_EQ(storage_ref.data(), sut.data_view().data());
+
+    // check mutability
+    storage_ref.front() = dummy_value;
+    CHECK_EQ(sut.data_view().front(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "const front() should return const first segment"
+    test_segment_vector_accessors,
+    "const data_storage() should return a const reference to the internal vector"
 ) {
+    const auto& const_sut = sut;
+    const auto& storage_ref = const_sut.data_storage();
+
+    CHECK(std::ranges::equal(storage_ref, flat_data));
+    CHECK_EQ(storage_ref.data(), const_sut.data_view().data());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "data_ptr() should return a mutable raw pointer to the first element"
+) {
+    auto* ptr = sut.data_ptr();
+
+    CHECK_EQ(ptr, sut.data_view().data());
+    CHECK(std::equal(ptr, ptr + sut.data_size(), flat_data.begin()));
+
+    // check mutability
+    *ptr = dummy_value;
+    CHECK_EQ(sut.data_view().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "const data_ptr() should return a const raw pointer to the first element"
+) {
+    const auto& const_sut = sut;
+    const auto* ptr = const_sut.data_ptr();
+
+    CHECK_EQ(ptr, const_sut.data_view().data());
+    CHECK(std::equal(ptr, ptr + const_sut.data_size(), flat_data.begin()));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors, "offsets_view() should return a span of all offsets"
+) {
+    CHECK(std::ranges::equal(sut.offsets_view(), offsets));
+    sut.offsets_view().front() = dummy_offset;
+    CHECK_EQ(sut.offsets_view().front(), dummy_offset);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors, "const offsets_view() should return a const span of all offsets"
+) {
+    const auto& const_sut = sut;
+    CHECK(std::ranges::equal(const_sut.offsets_view(), offsets));
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "offsets_storage() should return a mutable reference to the internal vector"
+) {
+    auto& storage_ref = sut.offsets_storage();
+    CHECK(std::ranges::equal(storage_ref, offsets));
+    CHECK_EQ(storage_ref.data(), sut.offsets_view().data());
+
+    // check mutability
+    storage_ref.front() = dummy_offset;
+    CHECK_EQ(sut.offsets_view().front(), dummy_offset);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "const offsets_storage() should return a const reference to the internal vector"
+) {
+    const auto& const_sut = sut;
+    const auto& storage_ref = const_sut.offsets_storage();
+
+    CHECK(std::ranges::equal(storage_ref, offsets));
+    CHECK_EQ(storage_ref.data(), const_sut.offsets_view().data());
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "offsets_ptr() should return a mutable raw pointer to the first element"
+) {
+    auto* ptr = sut.offsets_ptr();
+
+    CHECK_EQ(ptr, sut.offsets_view().data());
+    CHECK(std::equal(ptr, ptr + sut.offsets_view().size(), offsets.begin()));
+
+    // check mutability
+    *ptr = dummy_offset;
+    CHECK_EQ(sut.offsets_view().front(), dummy_offset);
+}
+
+TEST_CASE_FIXTURE(
+    test_segment_vector_accessors,
+    "const offsets_ptr() should return a const raw pointer to the first element"
+) {
+    const auto& const_sut = sut;
+    const auto* ptr = const_sut.offsets_ptr();
+
+    CHECK_EQ(ptr, const_sut.offsets_view().data());
+    CHECK(std::equal(ptr, ptr + const_sut.offsets_view().size(), offsets.begin()));
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "front() should return the first segment") {
+    auto front_seg = sut.front();
+    CHECK(std::ranges::equal(front_seg, data.front()));
+
+    front_seg.front() = dummy_value;
+    CHECK_EQ(sut.front().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "const front() should return const first segment") {
     const auto& const_sut = sut;
     auto front_seg = const_sut.front();
     CHECK(std::ranges::equal(front_seg, data.front()));
 }
 
-TEST_CASE_FIXTURE(test_segmented_vector_segment_accessors, "back() should return the last segment") {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "back() should return the last segment") {
     auto back_seg = sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
+
+    back_seg.front() = dummy_value;
+    CHECK_EQ(sut.back().front(), dummy_value);
 }
 
-TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "const back() should return const last segment"
-) {
+TEST_CASE_FIXTURE(test_segment_vector_accessors, "const back() should return const last segment") {
     const auto& const_sut = sut;
     auto back_seg = const_sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
@@ -569,6 +688,8 @@ struct test_segmented_vector_element_accessors {
     sut_type sut{
         std::vector<std::vector<int>>{seg0, seg1, seg2}
     };
+
+    int dummy_value = 111;
 };
 
 TEST_CASE_FIXTURE(
@@ -576,11 +697,29 @@ TEST_CASE_FIXTURE(
     "operator[](seg, pos) should return element at given segment and position"
 ) {
     CHECK_EQ(sut[0uz, 0uz], seg0[0uz]);
+    sut[0uz, 0uz] = dummy_value;
+    CHECK_EQ(sut[0uz, 0uz], dummy_value);
+
     CHECK_EQ(sut[0uz, 1uz], seg0[1uz]);
+    sut[0uz, 1uz] = dummy_value;
+    CHECK_EQ(sut[0uz, 1uz], dummy_value);
+
+
     CHECK_EQ(sut[0uz, 2uz], seg0[2uz]);
+    sut[0uz, 2uz] = dummy_value;
+    CHECK_EQ(sut[0uz, 2uz], dummy_value);
+
     CHECK_EQ(sut[1uz, 0uz], seg1[0uz]);
+    sut[1uz, 0uz] = dummy_value;
+    CHECK_EQ(sut[1uz, 0uz], dummy_value);
+
     CHECK_EQ(sut[1uz, 1uz], seg1[1uz]);
+    sut[1uz, 1uz] = dummy_value;
+    CHECK_EQ(sut[1uz, 1uz], dummy_value);
+
     CHECK_EQ(sut[2uz, 0uz], seg2[0uz]);
+    sut[2uz, 0uz] = dummy_value;
+    CHECK_EQ(sut[2uz, 0uz], dummy_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -602,11 +741,28 @@ TEST_CASE_FIXTURE(
     "at(seg, pos) should return element at given segment and position"
 ) {
     CHECK_EQ(sut.at(0uz, 0uz), seg0[0uz]);
+    sut.at(0uz, 0uz) = dummy_value;
+    CHECK_EQ(sut.at(0uz, 0uz), dummy_value);
+
     CHECK_EQ(sut.at(0uz, 1uz), seg0[1uz]);
+    sut.at(0uz, 1uz) = dummy_value;
+    CHECK_EQ(sut.at(0uz, 1uz), dummy_value);
+
     CHECK_EQ(sut.at(0uz, 2uz), seg0[2uz]);
+    sut.at(0uz, 2uz) = dummy_value;
+    CHECK_EQ(sut.at(0uz, 2uz), dummy_value);
+
     CHECK_EQ(sut.at(1uz, 0uz), seg1[0uz]);
+    sut.at(1uz, 0uz) = dummy_value;
+    CHECK_EQ(sut.at(1uz, 0uz), dummy_value);
+
     CHECK_EQ(sut.at(1uz, 1uz), seg1[1uz]);
+    sut.at(1uz, 1uz) = dummy_value;
+    CHECK_EQ(sut.at(1uz, 1uz), dummy_value);
+
     CHECK_EQ(sut.at(2uz, 0uz), seg2[0uz]);
+    sut.at(2uz, 0uz) = dummy_value;
+    CHECK_EQ(sut.at(2uz, 0uz), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -658,8 +814,16 @@ TEST_CASE_FIXTURE(
     test_segmented_vector_element_accessors, "front(seg) should return first element in segment"
 ) {
     CHECK_EQ(sut.front(0uz), seg0.front());
+    sut.front(0uz) = dummy_value;
+    CHECK_EQ(sut[0uz].front(), dummy_value);
+
     CHECK_EQ(sut.front(1uz), seg1.front());
+    sut.front(1uz) = dummy_value;
+    CHECK_EQ(sut[1uz].front(), dummy_value);
+
     CHECK_EQ(sut.front(2uz), seg2.front());
+    sut.front(2uz) = dummy_value;
+    CHECK_EQ(sut[2uz].front(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -676,8 +840,16 @@ TEST_CASE_FIXTURE(
     test_segmented_vector_element_accessors, "back(seg) should return last element in segment"
 ) {
     CHECK_EQ(sut.back(0uz), seg0.back());
+    sut.back(0uz) = dummy_value;
+    CHECK_EQ(sut[0uz].back(), dummy_value);
+
     CHECK_EQ(sut.back(1uz), seg1.back());
+    sut.back(1uz) = dummy_value;
+    CHECK_EQ(sut[1uz].back(), dummy_value);
+
     CHECK_EQ(sut.back(2uz), seg2.back());
+    sut.back(2uz) = dummy_value;
+    CHECK_EQ(sut[2uz].back(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
