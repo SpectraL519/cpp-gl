@@ -525,39 +525,114 @@ private:
 
     template <impl::element_type Element>
     [[nodiscard]] gl_attr_force_inline auto _get(const types::id_type id) const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // get major
+            return std::array<storage_const_segment_type, 2>{
+                       this->_tail_storage[id], this->_head_storage[id]
+                   }
+                 | std::views::join;
+        }
+        else { // get minor
+            return std::views::iota(0uz, this->_tail_storage.size())
+                 | std::views::filter([this, minor_id = id](types::id_type major_id) {
+                       return detail::contains(this->_tail_storage[major_id], minor_id)
+                           or detail::contains(this->_head_storage[major_id], minor_id);
+                   });
+        }
     }
 
     template <impl::element_type Element>
     [[nodiscard]] gl_attr_force_inline auto _get(const types::id_type id, const auto&& storage_proj)
         const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // get major
+            return std::invoke(storage_proj, this)[id];
+        }
+        else { // get minor
+            return std::views::iota(0uz, this->_tail_storage.size())
+                 | std::views::filter([this, storage_proj, minor_id = id](types::id_type major_id) {
+                       return detail::contains(std::invoke(storage_proj, this)[major_id], minor_id);
+                   });
+        }
     }
 
     template <impl::element_type Element>
     [[nodiscard]] gl_attr_force_inline types::size_type _size(const types::id_type id
     ) const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // size major
+            return this->_tail_storage[id].size() + this->_head_storage[id].size();
+        }
+        else { // size minor
+            types::size_type size = 0uz;
+            for (const auto [ts, hs] : std::views::zip(this->_tail_storage, this->_head_storage)) {
+                if (detail::contains(ts, id))
+                    ++size;
+                if (detail::contains(hs, id))
+                    ++size;
+            }
+            return size;
+        }
     }
 
     template <impl::element_type Element>
     [[nodiscard]] gl_attr_force_inline types::size_type _size(
         const types::id_type id, const auto&& storage_proj
     ) const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // size major
+            return std::invoke(storage_proj, this)[id].size();
+        }
+        else { // size minor
+            types::size_type size = 0uz;
+            for (const auto segment : std::invoke(storage_proj, this))
+                if (detail::contains(segment, id))
+                    ++size;
+            return size;
+        }
     }
 
     template <impl::element_type Element>
     [[nodiscard]] std::vector<types::size_type> _size_map(const types::size_type n_elements
     ) const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // size major
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+
+            const std::size_t n_segments = this->_tail_storage.size();
+            const auto tail_offsets = this->_tail_storage.offsets_view();
+            const auto head_offsets = this->_head_storage.offsets_view();
+
+            for (std::size_t i = 0uz; i < n_segments; ++i)
+                size_map[i] = (tail_offsets[i + 1uz] - tail_offsets[i])
+                            + (head_offsets[i + 1uz] - head_offsets[i]);
+            return size_map;
+        }
+        else { // size minor
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+            for (const auto minor_id : this->_tail_storage.data_view())
+                ++size_map[static_cast<std::size_t>(minor_id)];
+            for (const auto minor_id : this->_head_storage.data_view())
+                ++size_map[static_cast<std::size_t>(minor_id)];
+            return size_map;
+        }
     }
 
     template <impl::element_type Element>
     [[nodiscard]] std::vector<types::size_type> _size_map(
         const types::size_type n_elements, const auto&& storage_proj
     ) const noexcept {
-        // TODO
+        if constexpr (Element == layout_tag::major_element) { // size major
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+
+            const std::size_t n_segments = std::invoke(storage_proj, this).size();
+            const auto offsets = std::invoke(storage_proj, this).offsets_view();
+
+            for (std::size_t i = 0uz; i < n_segments; ++i)
+                size_map[i] = offsets[i + 1uz] - offsets[i];
+            return size_map;
+        }
+        else { // size minor
+            std::vector<types::size_type> size_map(n_elements, 0ull);
+            for (const auto minor_id : std::invoke(storage_proj, this).data_view())
+                ++size_map[static_cast<std::size_t>(minor_id)];
+            return size_map;
+        }
     }
 
     storage_type _tail_storage;
