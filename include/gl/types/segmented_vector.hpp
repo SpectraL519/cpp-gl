@@ -27,6 +27,7 @@ namespace gl::types {
 /// @warning Iterator invalidation follows `std::vector` semantics: modifying the structure or elements
 ///          invalidates all iterators, pointers, and references to the container's elements.
 /// @todo Implement assign, and swap methods.
+/// @todo Implement iterator-based insert, emplace and erase methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
 template <std::semiregular T>
 class segmented_vector {
@@ -637,6 +638,15 @@ public:
                });
     }
 
+    /// @brief Checks if a specific segment is empty without bounds checking.
+    /// @param seg The segment number
+    /// @return `true` if the segment is empty, `false` otherwise
+    /// @pre `seg < size()`; otherwise Undefined Behavior
+    /// @warning No bounds checking. Results in Undefined Behavior if segment index is out of bounds.
+    [[nodiscard]] bool empty(size_type seg) const noexcept {
+        return this->_offsets[seg] == this->_offsets[seg + 1uz];
+    }
+
     /// @brief Returns the number of elements in a specific segment without bounds checking.
     /// @param seg The segment number
     /// @return The count of elements in the segment
@@ -653,17 +663,82 @@ public:
     }
 
     /// @brief Returns a span over all element data in flattened form.
-    /// @return A span of all elements in the underlying `_data` array
-    /// @note Allows direct access to the flattened representation of all segments
-    [[nodiscard]] segment_type data() noexcept {
+    /// @return A span of all elements in the underlying `_data` array.
+    /// @note Allows direct access to the flattened representation of all segments.
+    [[nodiscard]] segment_type data_view() noexcept {
         return segment_type(this->_data);
     }
 
     /// @brief Returns a const span over all element data in flattened form.
-    /// @return A const span of all elements in the underlying `_data` array
-    /// @note Allows direct access to the flattened representation of all segments
-    [[nodiscard]] const_segment_type data() const noexcept {
+    /// @return A const span of all elements in the underlying `_data` array.
+    /// @note Allows direct access to the flattened representation of all segments.
+    [[nodiscard]] const_segment_type data_view() const noexcept {
         return const_segment_type(this->_data);
+    }
+
+    /// @brief Returns a reference to the underlying flat data container.
+    /// @return A mutable reference to the underlying `_data` array.
+    /// @warning Modifying this vector directly can corrupt the segmented structure. If possible, use `data_view()` instead. This method is intended for advanced memory reallocation and compaction.
+    [[nodiscard]] std::vector<value_type>& data_storage() noexcept {
+        return this->_data;
+    }
+
+    /// @brief Returns a const reference to the underlying flat data container.
+    /// @return A const reference to the underlying `_data` array.
+    [[nodiscard]] const std::vector<value_type>& data_storage() const noexcept {
+        return this->_data;
+    }
+
+    /// @brief Returns a raw pointer to the underlying flat data array.
+    /// @return A raw pointer to the first element in the `_data` array.
+    /// @warning No bounds checking is performed. Structural modifications (like resizing) cannot be done via this pointer; use `data_storage()` instead.
+    [[nodiscard]] value_type* data_ptr() noexcept {
+        return this->_data.data();
+    }
+
+    /// @brief Returns a const raw pointer to the underlying flat data array.
+    /// @return A const raw pointer to the first element in the `_data` array.
+    [[nodiscard]] const value_type* data_ptr() const noexcept {
+        return this->_data.data();
+    }
+
+    /// @brief Returns a span over the segment offset array.
+    /// @return A span representing the boundaries of all segments.
+    /// @warning Modifying the offset values directly will corrupt the container's structural routing. Use with extreme caution.
+    [[nodiscard]] std::span<size_type> offsets_view() noexcept {
+        return std::span<size_type>(this->_offsets);
+    }
+
+    /// @brief Returns a const span over the segment offset array.
+    /// @return A const span representing the boundaries of all segments.
+    [[nodiscard]] std::span<const size_type> offsets_view() const noexcept {
+        return std::span<const size_type>(this->_offsets);
+    }
+
+    /// @brief Returns a reference to the underlying segment offset container.
+    /// @return A mutable reference to the `_offsets` vector.
+    /// @warning Modifying this vector directly (resizing or altering values) may corrupt the container's integrity. Use with extreme caution.
+    [[nodiscard]] std::vector<size_type>& offsets_storage() noexcept {
+        return this->_offsets;
+    }
+
+    /// @brief Returns a const reference to the underlying segment offset container.
+    /// @return A const reference to the `_offsets` vector.
+    [[nodiscard]] const std::vector<size_type>& offsets_storage() const noexcept {
+        return this->_offsets;
+    }
+
+    /// @brief Returns a raw pointer to the underlying segment offset array.
+    /// @return A raw pointer to the first element in the `_offsets` array.
+    /// @warning Modifying the offsets data through this function may corrupt the container's integrity. Use with extreme caution.
+    [[nodiscard]] size_type* offsets_ptr() noexcept {
+        return this->_offsets.data();
+    }
+
+    /// @brief Returns a const raw pointer to the underlying segment offset array.
+    /// @return A const raw pointer to the first element in the `_offsets` array.
+    [[nodiscard]] const size_type* offsets_ptr() const noexcept {
+        return this->_offsets.data();
     }
 
     // --- iterators ---

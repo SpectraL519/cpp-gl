@@ -6,7 +6,7 @@
 
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
-#include "hgl/types/types.hpp"
+#include "hgl/types.hpp"
 
 #include <algorithm>
 #include <cstddef>
