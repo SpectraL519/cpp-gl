@@ -68,9 +68,21 @@ concept c_list_hypergraph_traits =
     and c_hypergraph_list_impl<typename TraitsType::implementation_tag>;
 
 template <typename TraitsType>
+concept c_flat_list_hypergraph_traits =
+    c_instantiation_of<TraitsType, hypergraph_traits>
+    and c_hypergraph_flat_list_impl<typename TraitsType::implementation_tag>;
+
+template <typename TraitsType>
+concept c_incidence_list_hypergraph_traits =
+    c_list_hypergraph_traits<TraitsType> or c_flat_list_hypergraph_traits<TraitsType>;
+
+template <typename TraitsType>
 concept c_matrix_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_matrix_impl<typename TraitsType::implementation_tag>;
+
+template <typename TypeTraits>
+concept c_incidence_matrix_hypergraph_traits = c_matrix_hypergraph_traits<TypeTraits>;
 
 template <typename TraitsType>
 concept c_undirected_hypergraph_traits =

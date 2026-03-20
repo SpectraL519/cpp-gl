@@ -9,6 +9,7 @@
 #include "hgl/constants.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
+#include "hgl/impl/impl_tags.hpp"
 #include "hgl/util.hpp"
 
 #include <algorithm>
@@ -756,16 +757,36 @@ private:
 
 namespace type_traits {
 
-template <typename G>
-concept c_hypergraph = c_instantiation_of<G, hypergraph>;
+template <typename H>
+concept c_hypergraph = c_instantiation_of<H, hypergraph>;
 
-template <typename G>
+template <typename H>
 concept c_undirected_hypergraph =
-    c_hypergraph<G> and std::same_as<typename G::directional_tag, undirected_t>;
+    c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
 
-template <typename G>
+template <typename H>
 concept c_bf_directed_hypergraph =
-    c_hypergraph<G> and std::same_as<typename G::directional_tag, bf_directed_t>;
+    c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
+
+template <typename H>
+concept c_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_flat_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_incidence_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_incidence_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
 
 } // namespace type_traits
 
