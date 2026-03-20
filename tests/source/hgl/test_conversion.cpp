@@ -1,4 +1,4 @@
-#include "hgl/converters.hpp"
+#include "hgl/conversion.hpp"
 #include "hgl/hypergraph.hpp"
 #include "hgl/impl/layout_tags.hpp"
 
