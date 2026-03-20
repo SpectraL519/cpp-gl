@@ -36,6 +36,17 @@ using list_hypergraph_traits =
     hypergraph_traits<DirectionalTag, VertexProperties, HyperedgeProperties, impl::list_t<LayoutTag>>;
 
 template <
+    type_traits::c_hypergraph_layout_tag LayoutTag = impl::hyperedge_major_t,
+    type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    type_traits::c_properties VertexProperties = types::empty_properties,
+    type_traits::c_properties HyperedgeProperties = types::empty_properties>
+using flat_list_hypergraph_traits = hypergraph_traits<
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    impl::flat_list_t<LayoutTag>>;
+
+template <
     type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag = impl::hyperedge_major_t,
     type_traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     type_traits::c_properties VertexProperties = types::empty_properties,
