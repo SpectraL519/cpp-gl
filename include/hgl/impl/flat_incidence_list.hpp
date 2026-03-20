@@ -639,243 +639,243 @@ private:
     storage_type _head_storage;
 };
 
-// template <type_traits::c_hypergraph_directional_tag DirectionalTag>
-// class flat_incidence_list<DirectionalTag, bidirectional_t> final {
-// public:
-//     using directional_tag = DirectionalTag;
-//     using layout_tag = bidirectional_t;
+template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+class flat_incidence_list<DirectionalTag, bidirectional_t> final {
+public:
+    using directional_tag = DirectionalTag;
+    using layout_tag = bidirectional_t;
 
-//     flat_incidence_list(const flat_incidence_list&) = delete;
-//     flat_incidence_list& operator=(const flat_incidence_list&) = delete;
+    flat_incidence_list(const flat_incidence_list&) = delete;
+    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
 
-//     flat_incidence_list() = default;
+    flat_incidence_list() = default;
 
-//     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
-//     : _v_list{n_vertices, n_hyperedges}, _e_list{n_vertices, n_hyperedges} {}
+    flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
+    : _v_list{n_vertices, n_hyperedges}, _e_list{n_vertices, n_hyperedges} {}
 
-//     flat_incidence_list(flat_incidence_list&&) = default;
-//     flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(flat_incidence_list&&) = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) = default;
 
-//     ~flat_incidence_list() = default;
+    ~flat_incidence_list() = default;
 
-//     // --- vertex methods : general ---
+    // --- vertex methods : general ---
 
-//     gl_attr_force_inline void add_vertices(const types::size_type n) noexcept {
-//         this->_v_list.add_vertices(n);
-//         this->_e_list.add_vertices(n);
-//     }
+    gl_attr_force_inline void add_vertices(const types::size_type n) noexcept {
+        this->_v_list.add_vertices(n);
+        this->_e_list.add_vertices(n);
+    }
 
-//     gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) noexcept {
-//         this->_v_list.remove_vertex(vertex_id);
-//         this->_e_list.remove_vertex(vertex_id);
-//     }
+    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) noexcept {
+        this->_v_list.remove_vertex(vertex_id);
+        this->_e_list.remove_vertex(vertex_id);
+    }
 
-//     // --- vertex methods : incidence queries ---
+    // --- vertex methods : incidence queries ---
 
-//     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
-//     ) const noexcept {
-//         return this->_v_list.incident_hyperedges(vertex_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id
+    ) const noexcept {
+        return this->_v_list.incident_hyperedges(vertex_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
-//     ) const noexcept {
-//         return this->_v_list.degree(vertex_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline types::size_type degree(const types::id_type vertex_id
+    ) const noexcept {
+        return this->_v_list.degree(vertex_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map(
-//         const types::size_type n_vertices
-//     ) const noexcept {
-//         return this->_v_list.degree_map(n_vertices);
-//     }
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> degree_map(
+        const types::size_type n_vertices
+    ) const noexcept {
+        return this->_v_list.degree_map(n_vertices);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const types::id_type vertex_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.out_hyperedges(vertex_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const types::id_type vertex_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.out_hyperedges(vertex_id);
+    }
 
-//     [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.out_degree(vertex_id);
-//     }
+    [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.out_degree(vertex_id);
+    }
 
-//     [[nodiscard]] std::vector<types::size_type> out_degree_map(const types::size_type n_vertices
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.out_degree_map(n_vertices);
-//     }
+    [[nodiscard]] std::vector<types::size_type> out_degree_map(const types::size_type n_vertices
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.out_degree_map(n_vertices);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const types::id_type vertex_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.in_hyperedges(vertex_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const types::id_type vertex_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.in_hyperedges(vertex_id);
+    }
 
-//     [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.in_degree(vertex_id);
-//     }
+    [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.in_degree(vertex_id);
+    }
 
-//     [[nodiscard]] std::vector<types::size_type> in_degree_map(const types::size_type n_vertices
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_v_list.in_degree_map(n_vertices);
-//     }
+    [[nodiscard]] std::vector<types::size_type> in_degree_map(const types::size_type n_vertices
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_v_list.in_degree_map(n_vertices);
+    }
 
-//     // --- hyperedge methods : general ---
+    // --- hyperedge methods : general ---
 
-//     gl_attr_force_inline void add_hyperedges(const types::size_type n) noexcept {
-//         this->_v_list.add_hyperedges(n);
-//         this->_e_list.add_hyperedges(n);
-//     }
+    gl_attr_force_inline void add_hyperedges(const types::size_type n) noexcept {
+        this->_v_list.add_hyperedges(n);
+        this->_e_list.add_hyperedges(n);
+    }
 
-//     gl_attr_force_inline void remove_hyperedge(const types::id_type hyperedge_id) noexcept {
-//         this->_v_list.remove_hyperedge(hyperedge_id);
-//         this->_e_list.remove_hyperedge(hyperedge_id);
-//     }
+    gl_attr_force_inline void remove_hyperedge(const types::id_type hyperedge_id) noexcept {
+        this->_v_list.remove_hyperedge(hyperedge_id);
+        this->_e_list.remove_hyperedge(hyperedge_id);
+    }
 
-//     // --- hyperedge methods : incidence queries ---
+    // --- hyperedge methods : incidence queries ---
 
-//     [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
-//     ) const noexcept {
-//         return this->_e_list.incident_vertices(hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const types::id_type hyperedge_id
+    ) const noexcept {
+        return this->_e_list.incident_vertices(hyperedge_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
-//         const types::id_type hyperedge_id
-//     ) const noexcept {
-//         return this->_e_list.hyperedge_size(hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
+        const types::id_type hyperedge_id
+    ) const noexcept {
+        return this->_e_list.hyperedge_size(hyperedge_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> hyperedge_size_map(
-//         const types::size_type n_hyperedges
-//     ) const noexcept {
-//         return this->_e_list.hyperedge_size_map(n_hyperedges);
-//     }
+    [[nodiscard]] gl_attr_force_inline std::vector<types::size_type> hyperedge_size_map(
+        const types::size_type n_hyperedges
+    ) const noexcept {
+        return this->_e_list.hyperedge_size_map(n_hyperedges);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.tail_vertices(hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.tail_vertices(hyperedge_id);
+    }
 
-//     [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.tail_size(hyperedge_id);
-//     }
+    [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.tail_size(hyperedge_id);
+    }
 
-//     [[nodiscard]] std::vector<types::size_type> tail_size_map(const types::size_type n_hyperedges
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.tail_size_map(n_hyperedges);
-//     }
+    [[nodiscard]] std::vector<types::size_type> tail_size_map(const types::size_type n_hyperedges
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.tail_size_map(n_hyperedges);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.head_vertices(hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.head_vertices(hyperedge_id);
+    }
 
-//     [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.head_size(hyperedge_id);
-//     }
+    [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.head_size(hyperedge_id);
+    }
 
-//     [[nodiscard]] std::vector<types::size_type> head_size_map(const types::size_type n_hyperedges
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         return this->_e_list.head_size_map(n_hyperedges);
-//     }
+    [[nodiscard]] std::vector<types::size_type> head_size_map(const types::size_type n_hyperedges
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        return this->_e_list.head_size_map(n_hyperedges);
+    }
 
-//     // --- binding methods ---
+    // --- binding methods ---
 
-//     gl_attr_force_inline void bind(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) noexcept
-//     requires std::same_as<DirectionalTag, hgl::undirected_t>
-//     {
-//         this->_v_list.bind(vertex_id, hyperedge_id);
-//         this->_e_list.bind(vertex_id, hyperedge_id);
-//     }
+    gl_attr_force_inline void bind(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) noexcept
+    requires std::same_as<DirectionalTag, hgl::undirected_t>
+    {
+        this->_v_list.bind(vertex_id, hyperedge_id);
+        this->_e_list.bind(vertex_id, hyperedge_id);
+    }
 
-//     gl_attr_force_inline void unbind(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) noexcept {
-//         this->_v_list.unbind(vertex_id, hyperedge_id);
-//         this->_e_list.unbind(vertex_id, hyperedge_id);
-//     }
+    gl_attr_force_inline void unbind(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) noexcept {
+        this->_v_list.unbind(vertex_id, hyperedge_id);
+        this->_e_list.unbind(vertex_id, hyperedge_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline bool are_bound(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) const noexcept {
-//         if (this->degree(vertex_id) <= this->hyperedge_size(hyperedge_id))
-//             return this->_v_list.are_bound(vertex_id, hyperedge_id);
-//         else
-//             return this->_e_list.are_bound(vertex_id, hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline bool are_bound(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) const noexcept {
+        if (this->degree(vertex_id) <= this->hyperedge_size(hyperedge_id))
+            return this->_v_list.are_bound(vertex_id, hyperedge_id);
+        else
+            return this->_e_list.are_bound(vertex_id, hyperedge_id);
+    }
 
-//     gl_attr_force_inline void bind_tail(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         this->_v_list.bind_tail(vertex_id, hyperedge_id);
-//         this->_e_list.bind_tail(vertex_id, hyperedge_id);
-//     }
+    gl_attr_force_inline void bind_tail(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        this->_v_list.bind_tail(vertex_id, hyperedge_id);
+        this->_e_list.bind_tail(vertex_id, hyperedge_id);
+    }
 
-//     gl_attr_force_inline void bind_head(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         this->_v_list.bind_head(vertex_id, hyperedge_id);
-//         this->_e_list.bind_head(vertex_id, hyperedge_id);
-//     }
+    gl_attr_force_inline void bind_head(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        this->_v_list.bind_head(vertex_id, hyperedge_id);
+        this->_e_list.bind_head(vertex_id, hyperedge_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline bool is_tail(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         if (this->out_degree(vertex_id) <= this->tail_size(hyperedge_id))
-//             return this->_v_list.is_tail(vertex_id, hyperedge_id);
-//         else
-//             return this->_e_list.is_tail(vertex_id, hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline bool is_tail(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        if (this->out_degree(vertex_id) <= this->tail_size(hyperedge_id))
+            return this->_v_list.is_tail(vertex_id, hyperedge_id);
+        else
+            return this->_e_list.is_tail(vertex_id, hyperedge_id);
+    }
 
-//     [[nodiscard]] gl_attr_force_inline bool is_head(
-//         const types::id_type vertex_id, const types::id_type hyperedge_id
-//     ) const noexcept
-//     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
-//     {
-//         if (this->in_degree(vertex_id) <= this->head_size(hyperedge_id))
-//             return this->_v_list.is_head(vertex_id, hyperedge_id);
-//         else
-//             return this->_e_list.is_head(vertex_id, hyperedge_id);
-//     }
+    [[nodiscard]] gl_attr_force_inline bool is_head(
+        const types::id_type vertex_id, const types::id_type hyperedge_id
+    ) const noexcept
+    requires std::same_as<DirectionalTag, hgl::bf_directed_t>
+    {
+        if (this->in_degree(vertex_id) <= this->head_size(hyperedge_id))
+            return this->_v_list.is_head(vertex_id, hyperedge_id);
+        else
+            return this->_e_list.is_head(vertex_id, hyperedge_id);
+    }
 
-// #ifdef HGL_TESTING
-//     friend struct hgl_testing::test_flat_incidence_list;
-// #endif
+#ifdef HGL_TESTING
+    friend struct hgl_testing::test_flat_incidence_list;
+#endif
 
-// private:
-//     using vertex_major_list = flat_incidence_list<DirectionalTag, vertex_major_t>;
-//     using hyperedge_major_list = flat_incidence_list<DirectionalTag, hyperedge_major_t>;
+private:
+    using vertex_major_list = flat_incidence_list<DirectionalTag, vertex_major_t>;
+    using hyperedge_major_list = flat_incidence_list<DirectionalTag, hyperedge_major_t>;
 
-//     vertex_major_list _v_list;
-//     hyperedge_major_list _e_list;
-// };
+    vertex_major_list _v_list;
+    hyperedge_major_list _e_list;
+};
 
 } // namespace hgl::impl
