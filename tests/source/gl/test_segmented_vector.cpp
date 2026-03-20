@@ -99,7 +99,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.size(), 3uz);
     CHECK_EQ(sut.data_size(), 0uz);
     for (std::size_t i = 0uz; i < 3uz; ++i)
-        CHECK_EQ(sut.segment_size(i), 0uz);
+        CHECK(sut.empty(i));
 }
 
 TEST_CASE_FIXTURE(
@@ -490,7 +490,19 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segmented_vector_segment_accessors, "segment_size() should return the size of a segment"
+    test_segmented_vector_segment_accessors,
+    "empty(i) should return true for empty segments and false for non-empty segments"
+) {
+    CHECK_FALSE(sut.empty(0uz));
+    CHECK_FALSE(sut.empty(1uz));
+    CHECK_FALSE(sut.empty(2uz));
+
+    sut.push_back({});
+    CHECK(sut.empty(3uz));
+}
+
+TEST_CASE_FIXTURE(
+    test_segmented_vector_segment_accessors, "segment_size(i) should return the size of a segment"
 ) {
     CHECK_EQ(sut.segment_size(0uz), 3uz);
     CHECK_EQ(sut.segment_size(1uz), 2uz);

@@ -638,6 +638,15 @@ public:
                });
     }
 
+    /// @brief Checks if a specific segment is empty without bounds checking.
+    /// @param seg The segment number
+    /// @return `true` if the segment is empty, `false` otherwise
+    /// @pre `seg < size()`; otherwise Undefined Behavior
+    /// @warning No bounds checking. Results in Undefined Behavior if segment index is out of bounds.
+    [[nodiscard]] bool empty(size_type seg) const noexcept {
+        return this->_offsets[seg] == this->_offsets[seg + 1uz];
+    }
+
     /// @brief Returns the number of elements in a specific segment without bounds checking.
     /// @param seg The segment number
     /// @return The count of elements in the segment
