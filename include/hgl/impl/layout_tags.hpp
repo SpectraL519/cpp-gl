@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "hgl/types/type_traits.hpp"
-#include "hgl/types/types.hpp"
+#include "hgl/type_traits.hpp"
+#include "hgl/types.hpp"
 
 #include <concepts>
 
