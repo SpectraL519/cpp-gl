@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
@@ -20,7 +21,18 @@ struct test_incidence_matrix;
 } // namespace hgl_testing
 #endif
 
-namespace hgl::impl {
+namespace hgl {
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 template <
     type_traits::c_hypergraph_directional_tag DirectionalTag,
@@ -121,6 +133,11 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return this->_matrix[major_id][minor_id];
     }
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_incidence_matrix;
@@ -397,6 +414,11 @@ public:
         return this->_matrix[major_id][minor_id] == incidence_type::forward;
     }
 
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_incidence_matrix;
 #endif
@@ -524,4 +546,5 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-} // namespace hgl::impl
+} // namespace impl
+} // namespace hgl

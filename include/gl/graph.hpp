@@ -595,13 +595,13 @@ public:
         return is;
     }
 
+    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+    friend auto to(Graph&& source);
+
     template <
         type_traits::c_graph_impl_tag TargetImplTag,
         type_traits::c_graph_impl_tag SourceImplTag>
     friend struct detail::to_impl;
-
-    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
-    friend auto to(Graph&& source);
 
 private:
     [[nodiscard]] static constexpr std::string _directed_type_str() {

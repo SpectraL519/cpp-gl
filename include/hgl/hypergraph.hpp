@@ -21,6 +21,58 @@
 namespace hgl {
 
 template <type_traits::c_instantiation_of<hypergraph_traits> HypergraphTraits = hypergraph_traits<>>
+class hypergraph;
+
+// --- general hypergraph utility ---
+
+namespace type_traits {
+
+template <typename H>
+concept c_hypergraph = c_instantiation_of<H, hypergraph>;
+
+template <typename H>
+concept c_undirected_hypergraph =
+    c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
+
+template <typename H>
+concept c_bf_directed_hypergraph =
+    c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
+
+template <typename H>
+concept c_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_flat_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_incidence_list_hypergraph =
+    c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
+
+template <typename H>
+concept c_incidence_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
+
+} // namespace type_traits
+
+template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
+auto to(Hypergraph&& source);
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+template <type_traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
 class hypergraph final {
 public:
     using traits_type = HypergraphTraits;
@@ -677,6 +729,14 @@ public:
         return this->_impl.head_size_map(this->_n_hyperedges);
     }
 
+    template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
+    friend auto to(Hypergraph&& source);
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct detail::to_impl;
+
 private:
     // --- vertex methods ---
 
@@ -752,43 +812,6 @@ private:
     [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
     [[no_unique_address]] hyperedge_properties_map_type _hyperedge_properties{};
 };
-
-// --- general hypergraph utility ---
-
-namespace type_traits {
-
-template <typename H>
-concept c_hypergraph = c_instantiation_of<H, hypergraph>;
-
-template <typename H>
-concept c_undirected_hypergraph =
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
-
-template <typename H>
-concept c_bf_directed_hypergraph =
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
-
-template <typename H>
-concept c_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
-
-template <typename H>
-concept c_flat_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
-
-template <typename H>
-concept c_incidence_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
-
-template <typename H>
-concept c_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
-
-template <typename H>
-concept c_incidence_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
-
-} // namespace type_traits
 
 // --- degree bounds ---
 

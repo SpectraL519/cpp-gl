@@ -6,6 +6,7 @@
 
 #include "gl/types/segmented_vector.hpp"
 #include "gl/types/types.hpp"
+#include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
@@ -23,7 +24,18 @@ struct test_flat_incidence_list;
 } // namespace hgl_testing
 #endif
 
-namespace hgl::impl {
+namespace hgl {
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 namespace detail {
 
@@ -186,6 +198,11 @@ public:
             layout_tag::minor(vertex_id, hyperedge_id)
         );
     }
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
@@ -463,6 +480,11 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return detail::contains(this->_head_storage[major_id], minor_id);
     }
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
@@ -866,6 +888,11 @@ public:
             return this->_e_list.is_head(vertex_id, hyperedge_id);
     }
 
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
 #endif
@@ -878,4 +905,5 @@ private:
     hyperedge_major_list _e_list;
 };
 
-} // namespace hgl::impl
+} // namespace impl
+} // namespace hgl
