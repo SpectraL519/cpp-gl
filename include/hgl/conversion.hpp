@@ -11,8 +11,116 @@
 
 #include <algorithm>
 #include <ranges>
+#include <utility>
 
 namespace hgl {
+
+namespace type_traits {
+
+template <typename HT, type_traits::c_hypergraph_impl_tag NewImplTag>
+requires c_hypergraph<HT> or c_instantiation_of<HT, hypergraph_traits>
+struct swap_impl_tag;
+
+template <
+    type_traits::c_hypergraph_directional_tag Dir,
+    type_traits::c_properties VP,
+    type_traits::c_properties EP,
+    type_traits::c_hypergraph_impl_tag OldImplTag,
+    type_traits::c_hypergraph_impl_tag NewImplTag>
+struct swap_impl_tag<hypergraph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
+    using type = hypergraph_traits<Dir, VP, EP, NewImplTag>;
+};
+
+template <
+    type_traits::c_hypergraph_directional_tag Dir,
+    type_traits::c_properties VP,
+    type_traits::c_properties EP,
+    type_traits::c_hypergraph_impl_tag OldImplTag,
+    type_traits::c_hypergraph_impl_tag NewImplTag>
+struct swap_impl_tag<hypergraph<hypergraph_traits<Dir, VP, EP, OldImplTag>>, NewImplTag> {
+    using type = hypergraph<hypergraph_traits<Dir, VP, EP, NewImplTag>>;
+};
+
+template <typename HT, type_traits::c_hypergraph_impl_tag NewImplTag>
+requires c_hypergraph<HT> or c_instantiation_of<HT, hypergraph_traits>
+using swap_impl_tag_t = typename swap_impl_tag<HT, NewImplTag>::type;
+
+} // namespace type_traits
+
+// --- Hypergraph Representation Model Conversion ---
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        // TODO: generic impl
+    }
+};
+
+// Conversion: identity
+template <type_traits::c_graph_impl_tag ImplTag>
+struct to_impl<ImplTag, ImplTag> {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        target._impl = std::move(source._impl);
+    }
+};
+
+// Conversion: list -> flat list
+template <
+    type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag,
+    type_traits::c_instantiation_of<impl::list_t> ListTag>
+struct to_impl<FlatListTag, ListTag> {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        // TODO
+    }
+};
+
+// Conversion: flat list -> list
+template <
+    type_traits::c_instantiation_of<impl::list_t> ListTag,
+    type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag>
+struct to_impl<ListTag, FlatListTag> {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        // TODO
+    }
+};
+
+} // namespace detail
+
+/// @brief Converts a hypergraph from one implementation model to another.
+/// @tparam TargetImplTag The desired implementation tag (e.g., gl::impl::flat_list_t)
+/// @tparam Hypergraph The automatically deduced type of the source hypergraph
+/// @param source The hypergraph to convert. After the operation it will be left in a valid, empty state.
+/// @return A new hypergraph containing the moved data, structured according to TargetImplTag.
+template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Hypergraph>
+[[nodiscard]] auto to(Hypergraph&& source) {
+    using source_traits = typename Hypergraph::traits_type;
+    using source_impl_tag = typename source_traits::implementation_tag;
+
+    using target_traits = type_traits::swap_impl_tag_t<source_traits, TargetImplTag>;
+    using target_hypergraph = hypergraph<target_traits>;
+
+    target_hypergraph target;
+
+    detail::to_impl<TargetImplTag, source_impl_tag>::convert(target, source);
+
+    target._n_vertices = std::exchange(source._n_vertices, 0uz);
+    target._n_hyperedges = std::exchange(source._n_hyperedges, 0uz);
+    target._vertex_properties = std::move(source._vertex_properties);
+    target._hyperedge_properties = std::move(source._hyperedge_properties);
+    source._impl = typename Hypergraph::implementation_type();
+
+    return target;
+}
+
+// --- Hypergraph to Hypergraph Conversion ---
 
 template <type_traits::c_undirected_graph G>
 [[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) {

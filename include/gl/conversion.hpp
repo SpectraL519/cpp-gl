@@ -110,7 +110,7 @@ struct to_impl<impl::list_t, impl::flat_list_t> {
 
 } // namespace detail
 
-/// @brief Converts a graph from one implementation layout to another.
+/// @brief Converts a graph from one implementation model to another.
 /// @tparam TargetImplTag The desired implementation tag (e.g., gl::impl::flat_list_t)
 /// @tparam Graph The automatically deduced type of the source graph
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
