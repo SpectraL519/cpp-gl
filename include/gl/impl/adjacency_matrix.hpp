@@ -30,8 +30,8 @@ class adjacency_matrix final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using edge_id_list_type = std::vector<types::id_type>;
-    using matrix_type = std::vector<edge_id_list_type>;
+    using row_type = std::vector<types::id_type>;
+    using matrix_type = std::vector<row_type>;
 
     adjacency_matrix() = default;
 

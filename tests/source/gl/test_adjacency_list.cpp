@@ -15,7 +15,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_adjacency_list");
 
 struct test_adjacency_list {
-    [[nodiscard]] const auto& get(const auto& sut) const {
+    [[nodiscard]] auto& get(auto& sut) const {
         return sut._list;
     }
 
@@ -68,6 +68,34 @@ TEST_CASE_TEMPLATE_DEFINE("common adjacency list tests", SutType, common_adj_lis
         CHECK(std::ranges::all_of(fixture.get(sut), [](const auto& adjacent_items) {
             return adjacent_items.empty();
         }));
+    }
+
+    SUBCASE("equality operator should correctly comparge matrices") {
+        SutType sut1(constants::n_elements);
+        sut1.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_2);
+        sut1.add_edge(fixture.next_edge_id++, constants::vertex_id_2, constants::vertex_id_3);
+
+        SUBCASE("identical lists are equal") {
+            const SutType sut2 = sut1;
+            CHECK_EQ(sut1, sut2);
+        }
+
+        SUBCASE("lists with different sizes are not equal") {
+            const SutType sut2{constants::n_elements + 1uz};
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("lists with different connections are not equal") {
+            SutType sut2 = sut1;
+            sut2.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_3);
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("lists with different connection ids are not equal") {
+            SutType sut2 = sut1;
+            fixture.get(sut2)[constants::vertex_id_1].front().edge_id = fixture.next_edge_id++;
+            CHECK_NE(sut1, sut2);
+        }
     }
 }
 

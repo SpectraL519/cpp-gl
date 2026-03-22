@@ -41,8 +41,8 @@ public:
 
     explicit adjacency_list(const types::size_type n_vertices) : _list(n_vertices) {}
 
-    adjacency_list(const adjacency_list&) = delete;
-    adjacency_list& operator=(const adjacency_list&) = delete;
+    adjacency_list(const adjacency_list&) = default;
+    adjacency_list& operator=(const adjacency_list&) = default;
 
     adjacency_list(adjacency_list&&) noexcept = default;
     adjacency_list& operator=(adjacency_list&&) noexcept = default;
