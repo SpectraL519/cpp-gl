@@ -1,5 +1,6 @@
 #include "hgl/conversion.hpp"
 #include "hgl/hypergraph.hpp"
+#include "hgl/hypergraph_traits.hpp"
 #include "hgl/impl/layout_tags.hpp"
 
 #include <doctest.h>
@@ -125,183 +126,145 @@ TEST_CASE_TEMPLATE_DEFINE(
     "Hypergraph Representation Model Conversion Tests", HypergraphParams, hypergraph_params_template
 ) {
     using DT = std::tuple_element_t<0, HypergraphParams>;
-    using LT = std::tuple_element_t<1, HypergraphParams>;
-    using VP = std::tuple_element_t<2, HypergraphParams>;
-    using EP = std::tuple_element_t<3, HypergraphParams>;
+    using VP = std::tuple_element_t<1, HypergraphParams>;
+    using EP = std::tuple_element_t<2, HypergraphParams>;
 
-    using list_hypergraph = hgl::hypergraph<hgl::list_hypergraph_traits<LT, DT, VP, EP>>;
-    using flat_list_hypergraph = hgl::hypergraph<hgl::flat_list_hypergraph_traits<LT, DT, VP, EP>>;
-    using matrix_hypergraph = hgl::hypergraph<hgl::matrix_hypergraph_traits<LT, DT, VP, EP>>;
+    using vmajor_list_tag = hgl::impl::list_t<hgl::impl::vertex_major_t>;
+    using emajor_list_tag = hgl::impl::list_t<hgl::impl::hyperedge_major_t>;
+    using bidir_list_tag = hgl::impl::list_t<hgl::impl::bidirectional_t>;
 
-    using target_list_tag = typename list_hypergraph::implementation_tag;
-    using target_flat_list_tag = typename flat_list_hypergraph::implementation_tag;
-    using target_matrix_tag = typename matrix_hypergraph::implementation_tag;
+    using vmajor_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, vmajor_list_tag>>;
+    using emajor_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, emajor_list_tag>>;
+    using bidir_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, bidir_list_tag>>;
+
+    using vmajor_flat_list_tag = hgl::impl::flat_list_t<hgl::impl::vertex_major_t>;
+    using emajor_flat_list_tag = hgl::impl::flat_list_t<hgl::impl::hyperedge_major_t>;
+    using bidir_flat_list_tag = hgl::impl::flat_list_t<hgl::impl::bidirectional_t>;
+
+    using vmajor_flat_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, vmajor_flat_list_tag>>;
+    using emajor_flat_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, emajor_flat_list_tag>>;
+    using bidir_flat_list_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, bidir_flat_list_tag>>;
+
+    using vmajor_matrix_tag = hgl::impl::matrix_t<hgl::impl::vertex_major_t>;
+    using emajor_matrix_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
+
+    using vmajor_matrix_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, vmajor_matrix_tag>>;
+    using emajor_matrix_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, emajor_matrix_tag>>;
 
     test_hypergraph_conversion fixture;
 
-    SUBCASE("source hypergraph model: list") {
-        auto source_hypergraph = fixture.create_test_hypergraph<list_hypergraph>();
+    auto test_conversion_for =
+        [&fixture]<typename Source>(std::type_identity<Source>, const char* source_name) {
+            SUBCASE(source_name) {
+                SUBCASE("to vertex-major list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<vmajor_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to hyperedge-major list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<emajor_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to bidirectional list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<bidir_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to vertex-major flat-list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<vmajor_flat_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to hyperedge-major flat-list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<emajor_flat_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to bidirectional flat-list") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<bidir_flat_list_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to vertex-major matrix") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<vmajor_matrix_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to hyperedge-major matrix") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<emajor_matrix_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+            }
+        };
 
-        SUBCASE("identity conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
+    test_conversion_for(std::type_identity<vmajor_list_hypergraph>{}, "source: vertex-major list");
+    test_conversion_for(
+        std::type_identity<emajor_list_hypergraph>{}, "source: hyperedge-major list"
+    );
+    test_conversion_for(std::type_identity<bidir_list_hypergraph>{}, "source: bidirectional list");
 
-        SUBCASE("flat-list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
+    test_conversion_for(
+        std::type_identity<vmajor_flat_list_hypergraph>{}, "source: vertex-major flat-list"
+    );
+    test_conversion_for(
+        std::type_identity<emajor_flat_list_hypergraph>{}, "source: hyperedge-major flat-list"
+    );
+    test_conversion_for(
+        std::type_identity<bidir_flat_list_hypergraph>{}, "source: bidirectional flat-list"
+    );
 
-        SUBCASE("matrix conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-    }
-
-    SUBCASE("source hypergraph model: flat list") {
-        auto source_hypergraph = fixture.create_test_hypergraph<flat_list_hypergraph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("matrix conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-    }
-
-    SUBCASE("source hypergraph model: matrix") {
-        auto source_hypergraph = fixture.create_test_hypergraph<matrix_hypergraph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("flat-list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-    }
+    test_conversion_for(
+        std::type_identity<vmajor_matrix_hypergraph>{}, "source: vertex-major matrix"
+    );
+    test_conversion_for(
+        std::type_identity<emajor_matrix_hypergraph>{}, "source: hyperedge-major matrix"
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_params_template,
-    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, hyperedge-major, no properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, hyperedge-major, no properties
-    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, vertex-major, no properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, vertex-major, no properties
-    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, hyperedge-major, vertex properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, hyperedge-major, vertex properties
-    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, vertex-major, vertex properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, vertex-major, vertex properties
-    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, hyperedge-major, hyperedge properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, hyperedge-major, hyperedge properties
-    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, vertex-major, hyperedge properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, vertex-major, hyperedge properties
-    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::name_property>, // undirected, hyperedge-major, all properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::name_property>, // bf-directed, hyperedge-major, all properties
-    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::name_property>, // undirected, vertex-major, all properties
-    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::name_property> // bf-directed, vertex-major, all properties
-);
-
-TEST_CASE_TEMPLATE_DEFINE(
-    "Hypergraph Representation Model Conversion Tests (Bidirectional)",
-    HypergraphParams,
-    bidirectional_hypergraph_params_template
-) {
-    using DT = std::tuple_element_t<0, HypergraphParams>;
-    using VP = std::tuple_element_t<1, HypergraphParams>;
-    using EP = std::tuple_element_t<2, HypergraphParams>;
-
-    using list_hypergraph = hgl::hypergraph<hgl::list_hypergraph_traits<hgl::impl::bidirectional_t, DT, VP, EP>>;
-    using flat_list_hypergraph = hgl::hypergraph<hgl::flat_list_hypergraph_traits<hgl::impl::bidirectional_t, DT, VP, EP>>;
-
-    using target_list_tag = typename list_hypergraph::implementation_tag;
-    using target_flat_list_tag = typename flat_list_hypergraph::implementation_tag;
-
-    // Matrix does not support bidirectional_t natively, but we CAN test converting
-    // a bidirectional source into an asymmetric matrix target!
-    using target_matrix_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
-
-    test_hypergraph_conversion fixture;
-
-    SUBCASE("source hypergraph model: bidirectional list") {
-        auto source_hypergraph = fixture.create_test_hypergraph<list_hypergraph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("flat-list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("matrix conversion (asymmetric)") {
-            const auto converted_hypergraph =
-                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-    }
-
-    SUBCASE("source hypergraph model: bidirectional flat list") {
-        auto source_hypergraph = fixture.create_test_hypergraph<flat_list_hypergraph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("list conversion") {
-            const auto converted_hypergraph =
-                hgl::to<target_list_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-
-        SUBCASE("matrix conversion (asymmetric)") {
-            const auto converted_hypergraph =
-                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
-            fixture.validate_hypergraph(converted_hypergraph);
-        }
-    }
-}
-
-TEST_CASE_TEMPLATE_INSTANTIATE(
-    bidirectional_hypergraph_params_template,
-    std::tuple<hgl::undirected_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, no properties
-    std::tuple<hgl::bf_directed_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, no properties
-    std::tuple<hgl::undirected_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, vertex properties
-    std::tuple<hgl::bf_directed_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, vertex properties
-    std::tuple<hgl::undirected_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, hyperedge properties
-    std::tuple<hgl::bf_directed_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, hyperedge properties
-    std::tuple<hgl::undirected_t, hgl::types::name_property, hgl::types::name_property>, // undirected, all properties
-    std::tuple<hgl::bf_directed_t, hgl::types::name_property, hgl::types::name_property> // bf-directed, all properties
+    std::tuple<
+        hgl::undirected_t,
+        hgl::types::empty_properties,
+        hgl::types::empty_properties>, // undirected, no properties
+    std::tuple<
+        hgl::bf_directed_t,
+        hgl::types::empty_properties,
+        hgl::types::empty_properties>, // bf-directed, no properties
+    std::tuple<
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::empty_properties>, // undirected, vertex properties
+    std::tuple<
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::empty_properties>, // bf-directed, vertex properties
+    std::tuple<
+        hgl::undirected_t,
+        hgl::types::empty_properties,
+        hgl::types::name_property>, // undirected, hyperedge properties
+    std::tuple<
+        hgl::bf_directed_t,
+        hgl::types::empty_properties,
+        hgl::types::name_property>, // bf-directed, hyperedge properties
+    std::tuple<
+        hgl::undirected_t,
+        hgl::types::name_property,
+        hgl::types::name_property>, // undirected, all properties
+    std::tuple<
+        hgl::bf_directed_t,
+        hgl::types::name_property,
+        hgl::types::name_property> // bf-directed, all properties
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
