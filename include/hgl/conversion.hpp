@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/conversion.hpp"
 #include "gl/graph.hpp"
 #include "gl/types/types.hpp"
 #include "hgl/directional_tags.hpp"
@@ -229,7 +230,7 @@ template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hyper
 
 // --- Hypergraph to Hypergraph Conversion ---
 
-template <type_traits::c_undirected_graph G>
+template <gl::type_traits::c_undirected_graph G>
 [[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) {
     using edge_vertices = std::pair<types::id_type, types::id_type>;
     std::vector<edge_vertices> edges;
@@ -254,7 +255,14 @@ template <type_traits::c_undirected_graph G>
     return g;
 }
 
-template <type_traits::c_directed_graph G>
+template <gl::type_traits::c_undirected_graph G>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+[[nodiscard]] G projection(const type_traits::c_undirected_hypergraph auto& h) {
+    using list_graph = gl::type_traits::swap_impl_tag_t<G, gl::impl::list_t>;
+    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+}
+
+template <gl::type_traits::c_directed_graph G>
 [[nodiscard]] G projection(const type_traits::c_bf_directed_hypergraph auto& h) {
     using edge_vertices = std::pair<types::id_type, types::id_type>;
     std::vector<edge_vertices> edges;
@@ -278,7 +286,14 @@ template <type_traits::c_directed_graph G>
     return g;
 }
 
-template <type_traits::c_undirected_graph G>
+template <gl::type_traits::c_directed_graph G>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+[[nodiscard]] G projection(const type_traits::c_bf_directed_hypergraph auto& h) {
+    using list_graph = gl::type_traits::swap_impl_tag_t<G, gl::impl::list_t>;
+    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+}
+
+template <gl::type_traits::c_undirected_graph G>
 [[nodiscard]] G incidence_graph(const type_traits::c_undirected_hypergraph auto& h) {
     G g{h.order() + h.size()};
     const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
@@ -293,7 +308,14 @@ template <type_traits::c_undirected_graph G>
     return g;
 }
 
-template <type_traits::c_directed_graph G>
+template <gl::type_traits::c_undirected_graph G>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+[[nodiscard]] G incidence_graph(const type_traits::c_undirected_hypergraph auto& h) {
+    using list_graph = gl::type_traits::swap_impl_tag_t<G, gl::impl::list_t>;
+    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
+}
+
+template <gl::type_traits::c_directed_graph G>
 [[nodiscard]] G incidence_graph(const type_traits::c_bf_directed_hypergraph auto& h) {
     G g{h.order() + h.size()};
     const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
@@ -310,6 +332,13 @@ template <type_traits::c_directed_graph G>
     }
 
     return g;
+}
+
+template <gl::type_traits::c_directed_graph G>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+[[nodiscard]] G incidence_graph(const type_traits::c_bf_directed_hypergraph auto& h) {
+    using list_graph = gl::type_traits::swap_impl_tag_t<G, gl::impl::list_t>;
+    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
 }
 
 } // namespace hgl

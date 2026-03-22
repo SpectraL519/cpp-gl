@@ -1,3 +1,5 @@
+#include "gl/edge_tags.hpp"
+#include "gl/graph_traits.hpp"
 #include "hgl/conversion.hpp"
 #include "hgl/hypergraph.hpp"
 #include "hgl/hypergraph_traits.hpp"
@@ -273,7 +275,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     undirected_hypergraph_traits_to_graph_conversion_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
-    using graph_type = gl::graph<gl::undirected_graph_traits<>>;
+
+    using list_graph = gl::graph<gl::list_graph_traits<gl::undirected_t>>;
+    using flat_list_graph = gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>;
+    using matrix_graph = gl::graph<gl::matrix_graph_traits<gl::undirected_t>>;
 
     SUBCASE("projection should produce a clique for each hyperedge") {
         sut_type sut{4ull, 4ull};
@@ -295,10 +300,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e3 = {0} (should not add any edge)
         sut.bind(0ull, 3ull);
 
-        const auto clique = hgl::projection<graph_type>(sut);
-
-        CHECK_EQ(clique.order(), sut.order());
-
         const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
             {0ull, 1ull},
@@ -311,9 +312,20 @@ TEST_CASE_TEMPLATE_DEFINE(
             // e3: none
         };
 
-        CHECK_EQ(clique.size(), expected_edges.size());
-        for (const auto& [u, v] : expected_edges)
-            CHECK(clique.has_edge(u, v));
+        auto test_conversion_for =
+            [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
+                SUBCASE(target_name) {
+                    const auto clique = hgl::projection<TargetGraph>(sut);
+                    CHECK_EQ(clique.order(), sut.order());
+                    CHECK_EQ(clique.size(), expected_edges.size());
+                    for (const auto& [u, v] : expected_edges)
+                        CHECK(clique.has_edge(u, v));
+                }
+            };
+
+        test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
+        test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat-list");
+        test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
     }
 
     SUBCASE("incidence_graph should produce a bipartite graph connecting vertices to hyperedges") {
@@ -336,10 +348,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e3 = {0}
         sut.bind(0ull, 3ull);
 
-        const auto incidence = hgl::incidence_graph<graph_type>(sut);
-
-        CHECK_EQ(incidence.order(), sut.order() + sut.size());
-
         // Expected edges: vertices 0-3, hyperedges 4-7
         const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0 (4): {0,1,2}
@@ -357,9 +365,20 @@ TEST_CASE_TEMPLATE_DEFINE(
             {0ull, 7ull}
         };
 
-        CHECK_EQ(incidence.size(), expected_edges.size());
-        for (const auto& [u, v] : expected_edges)
-            CHECK(incidence.has_edge(u, v));
+        auto test_conversion_for =
+            [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
+                SUBCASE(target_name) {
+                    const auto incidence = hgl::incidence_graph<TargetGraph>(sut);
+                    CHECK_EQ(incidence.order(), sut.order() + sut.size());
+                    CHECK_EQ(incidence.size(), expected_edges.size());
+                    for (const auto& [u, v] : expected_edges)
+                        CHECK(incidence.has_edge(u, v));
+                }
+            };
+
+        test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
+        test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
+        test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
     }
 }
 
@@ -397,7 +416,20 @@ TEST_CASE_TEMPLATE_DEFINE(
     bf_directed_hypergraph_traits_to_graph_conversion_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
-    using graph_type = gl::graph<gl::directed_graph_traits<>>;
+
+    // Define the three target graph models
+    using list_graph = gl::graph<gl::directed_graph_traits<
+        gl::types::empty_properties,
+        gl::types::empty_properties,
+        gl::impl::list_t>>;
+    using flat_list_graph = gl::graph<gl::directed_graph_traits<
+        gl::types::empty_properties,
+        gl::types::empty_properties,
+        gl::impl::flat_list_t>>;
+    using matrix_graph = gl::graph<gl::directed_graph_traits<
+        gl::types::empty_properties,
+        gl::types::empty_properties,
+        gl::impl::matrix_t>>;
 
     SUBCASE("projection should produce directed edges from tails to heads for each hyperedge") {
         sut_type sut{4ull, 2ull};
@@ -413,11 +445,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(0ull, 1ull);
         sut.bind_head(1ull, 1ull);
 
-        const auto proj = hgl::projection<graph_type>(sut);
-
-        CHECK_EQ(proj.order(), sut.order());
-
-        // Expected directed edges
         const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
             {0ull, 2ull},
@@ -429,9 +456,20 @@ TEST_CASE_TEMPLATE_DEFINE(
             {2ull, 1ull}
         };
 
-        CHECK_EQ(proj.size(), expected_edges.size());
-        for (const auto& [u, v] : expected_edges)
-            CHECK(proj.has_edge(u, v));
+        auto test_conversion_for =
+            [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
+                SUBCASE(target_name) {
+                    const auto proj = hgl::projection<TargetGraph>(sut);
+                    CHECK_EQ(proj.order(), sut.order());
+                    CHECK_EQ(proj.size(), expected_edges.size());
+                    for (const auto& [u, v] : expected_edges)
+                        CHECK(proj.has_edge(u, v));
+                }
+            };
+
+        test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
+        test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
+        test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
     }
 
     SUBCASE("incidence_graph should produce a directed bipartite graph connecting tails to "
@@ -449,10 +487,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(0ull, 1ull);
         sut.bind_head(1ull, 1ull);
 
-        const auto incidence = hgl::incidence_graph<graph_type>(sut);
-
-        CHECK_EQ(incidence.order(), sut.order() + sut.size());
-
         // Expected directed edges: vertices 0-3, hyperedges 4-5
         const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
@@ -466,9 +500,21 @@ TEST_CASE_TEMPLATE_DEFINE(
             {5ull, 1ull}
         };
 
-        CHECK_EQ(incidence.size(), expected_edges.size());
-        for (const auto& [u, v] : expected_edges)
-            CHECK(incidence.has_edge(u, v));
+        // Generic runner for the target models
+        auto test_conversion_for =
+            [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
+                SUBCASE(target_name) {
+                    const auto incidence = hgl::incidence_graph<TargetGraph>(sut);
+                    CHECK_EQ(incidence.order(), sut.order() + sut.size());
+                    CHECK_EQ(incidence.size(), expected_edges.size());
+                    for (const auto& [u, v] : expected_edges)
+                        CHECK(incidence.has_edge(u, v));
+                }
+            };
+
+        test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
+        test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
+        test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
     }
 }
 
