@@ -15,28 +15,8 @@ namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_converters");
 
-template <
-    hgl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    hgl::type_traits::c_properties VertexProperties>
-using add_vertex_property = hgl::hypergraph_traits<
-    typename HypergraphTraits::directional_tag,
-    VertexProperties,
-    typename HypergraphTraits::hyperedge_properties_type,
-    typename HypergraphTraits::implementation_tag>;
-
-template <
-    hgl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    hgl::type_traits::c_properties HyperedgeProperties>
-using add_hyperedge_property = hgl::hypergraph_traits<
-    typename HypergraphTraits::directional_tag,
-    typename HypergraphTraits::vertex_properties_type,
-    HyperedgeProperties,
-    typename HypergraphTraits::implementation_tag>;
-
-inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
-
 struct test_hypergraph_conversion {
-    using property_type = gl::types::name_property;
+    using property_type = hgl::types::name_property;
 
     template <hgl::type_traits::c_undirected_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
@@ -226,9 +206,103 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(hypergraph_params_template, std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, gl::types::name_property, gl::types::name_property>, std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, gl::types::name_property, gl::types::name_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    hypergraph_params_template,
+    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, hyperedge-major, no properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, hyperedge-major, no properties
+    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, vertex-major, no properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, vertex-major, no properties
+    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, hyperedge-major, vertex properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, hyperedge-major, vertex properties
+    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, vertex-major, vertex properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, vertex-major, vertex properties
+    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, hyperedge-major, hyperedge properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, hyperedge-major, hyperedge properties
+    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, vertex-major, hyperedge properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, vertex-major, hyperedge properties
+    std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::name_property>, // undirected, hyperedge-major, all properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, hgl::types::name_property, hgl::types::name_property>, // bf-directed, hyperedge-major, all properties
+    std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::name_property>, // undirected, vertex-major, all properties
+    std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, hgl::types::name_property, hgl::types::name_property> // bf-directed, vertex-major, all properties
+);
 
-// TODO: bidirectional layout
+TEST_CASE_TEMPLATE_DEFINE(
+    "Hypergraph Representation Model Conversion Tests (Bidirectional)",
+    HypergraphParams,
+    bidirectional_hypergraph_params_template
+) {
+    using DT = std::tuple_element_t<0, HypergraphParams>;
+    using VP = std::tuple_element_t<1, HypergraphParams>;
+    using EP = std::tuple_element_t<2, HypergraphParams>;
+
+    using list_hypergraph = hgl::hypergraph<hgl::list_hypergraph_traits<hgl::impl::bidirectional_t, DT, VP, EP>>;
+    using flat_list_hypergraph = hgl::hypergraph<hgl::flat_list_hypergraph_traits<hgl::impl::bidirectional_t, DT, VP, EP>>;
+
+    using target_list_tag = typename list_hypergraph::implementation_tag;
+    using target_flat_list_tag = typename flat_list_hypergraph::implementation_tag;
+
+    // Matrix does not support bidirectional_t natively, but we CAN test converting
+    // a bidirectional source into an asymmetric matrix target!
+    using target_matrix_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
+
+    test_hypergraph_conversion fixture;
+
+    SUBCASE("source hypergraph model: bidirectional list") {
+        auto source_hypergraph = fixture.create_test_hypergraph<list_hypergraph>();
+
+        SUBCASE("identity conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("flat-list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("matrix conversion (asymmetric)") {
+            const auto converted_hypergraph =
+                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+    }
+
+    SUBCASE("source hypergraph model: bidirectional flat list") {
+        auto source_hypergraph = fixture.create_test_hypergraph<flat_list_hypergraph>();
+
+        SUBCASE("identity conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("matrix conversion (asymmetric)") {
+            const auto converted_hypergraph =
+                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+    }
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    bidirectional_hypergraph_params_template,
+    std::tuple<hgl::undirected_t, hgl::types::empty_properties, hgl::types::empty_properties>, // undirected, no properties
+    std::tuple<hgl::bf_directed_t, hgl::types::empty_properties, hgl::types::empty_properties>, // bf-directed, no properties
+    std::tuple<hgl::undirected_t, hgl::types::name_property, hgl::types::empty_properties>, // undirected, vertex properties
+    std::tuple<hgl::bf_directed_t, hgl::types::name_property, hgl::types::empty_properties>, // bf-directed, vertex properties
+    std::tuple<hgl::undirected_t, hgl::types::empty_properties, hgl::types::name_property>, // undirected, hyperedge properties
+    std::tuple<hgl::bf_directed_t, hgl::types::empty_properties, hgl::types::name_property>, // bf-directed, hyperedge properties
+    std::tuple<hgl::undirected_t, hgl::types::name_property, hgl::types::name_property>, // undirected, all properties
+    std::tuple<hgl::bf_directed_t, hgl::types::name_property, hgl::types::name_property> // bf-directed, all properties
+);
 
 TEST_CASE_TEMPLATE_DEFINE(
     "Undirected Hypergraph to Graph Conversion Tests",
@@ -262,7 +336,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK_EQ(clique.order(), sut.order());
 
-        const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
             {0ull, 1ull},
             {0ull, 2ull},
@@ -304,7 +378,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(incidence.order(), sut.order() + sut.size());
 
         // Expected edges: vertices 0-3, hyperedges 4-7
-        const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0 (4): {0,1,2}
             {0ull, 4ull},
             {1ull, 4ull},
@@ -381,7 +455,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(proj.order(), sut.order());
 
         // Expected directed edges
-        const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
             {0ull, 2ull},
             {0ull, 3ull},
@@ -417,7 +491,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(incidence.order(), sut.order() + sut.size());
 
         // Expected directed edges: vertices 0-3, hyperedges 4-5
-        const std::vector<std::pair<gl::types::id_type, gl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
             {0ull, 4ull},
             {1ull, 4ull},

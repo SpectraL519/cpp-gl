@@ -13,7 +13,7 @@
 namespace rng = std::ranges;
 namespace vw = std::views;
 
-namespace hgl_testing {
+namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_conversion");
 
@@ -151,8 +151,17 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(graph_params_template, std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<gl::directed_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<gl::undirected_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<gl::directed_t, gl::types::name_property, gl::types::name_property>, std::tuple<gl::undirected_t, gl::types::name_property, gl::types::name_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(graph_params_template,
+    std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::empty_properties>, // directed graph, no properties
+    std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::empty_properties>, // undirected graph, no properties
+    std::tuple<gl::directed_t, gl::types::name_property, gl::types::empty_properties>, // directed graph, vertex properties
+    std::tuple<gl::undirected_t, gl::types::name_property, gl::types::empty_properties>, // undirected graph, vertex properties
+    std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::name_property>, // directed graph, edge properties
+    std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::name_property>, // undirected graph, edge properties
+    std::tuple<gl::directed_t, gl::types::name_property, gl::types::name_property>, // directed graph, all properties
+    std::tuple<gl::undirected_t, gl::types::name_property, gl::types::name_property> // undirected graph, all properties
+);
 
 TEST_SUITE_END(); // test_conversion
 
-} // namespace hgl_testing
+} // namespace gl_testing
