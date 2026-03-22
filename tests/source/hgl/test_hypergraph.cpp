@@ -895,12 +895,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_NE(sut1, sut2);
         }
 
-        SUBCASE("hypergraph with different vertex properties are not equal") {
+        SUBCASE("hypergraphs with different vertex properties are not equal") {
             sut2.get_vertex_properties(0uz) = "dummy";
             CHECK_NE(sut1, sut2);
         }
 
-        SUBCASE("hypergraph with different hyperedge properties are not equal") {
+        SUBCASE("hypergraphs with different hyperedge properties are not equal") {
             sut2.get_hyperedge_properties(0uz) = "dummy";
             CHECK_NE(sut1, sut2);
         }

@@ -63,8 +63,8 @@ public:
     edge_descriptor(const edge_descriptor&) = default;
     edge_descriptor& operator=(const edge_descriptor&) = default;
 
-    edge_descriptor(edge_descriptor&&) = default;
-    edge_descriptor& operator=(edge_descriptor&&) = default;
+    edge_descriptor(edge_descriptor&&) noexcept = default;
+    edge_descriptor& operator=(edge_descriptor&&) noexcept = default;
 
     ~edge_descriptor() = default;
 

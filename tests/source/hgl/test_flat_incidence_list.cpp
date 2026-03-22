@@ -300,18 +300,18 @@ TEST_CASE_FIXTURE(
     sut1.bind(constants::id1, constants::id1);
     sut1.bind(constants::id2, constants::id1);
 
-    SUBCASE("identical lists are equal") {
+    SUBCASE("identical flat-lists are equal") {
         const sut_type sut2 = sut1;
         CHECK_EQ(sut1, sut2);
     }
 
-    SUBCASE("lists with different bindings are not equal") {
+    SUBCASE("flat-lists with different bindings are not equal") {
         sut_type sut2 = sut1;
         sut2.bind(constants::id3, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with different dimensions are not equal") {
+    SUBCASE("flat-lists with different dimensions are not equal") {
         sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
         sut2.bind(constants::id1, constants::id1);
         sut2.bind(constants::id2, constants::id1);
@@ -578,18 +578,18 @@ TEST_CASE_FIXTURE(
     sut1.bind(constants::id1, constants::id1);
     sut1.bind(constants::id2, constants::id1);
 
-    SUBCASE("identical lists are equal") {
+    SUBCASE("identical flat-lists are equal") {
         const sut_type sut2 = sut1;
         CHECK_EQ(sut1, sut2);
     }
 
-    SUBCASE("lists with different bindings are not equal") {
+    SUBCASE("flat-lists with different bindings are not equal") {
         sut_type sut2 = sut1;
         sut2.bind(constants::id3, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with different dimensions are not equal") {
+    SUBCASE("flat-lists with different dimensions are not equal") {
         sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
         sut2.bind(constants::id1, constants::id1);
         sut2.bind(constants::id2, constants::id1);
@@ -1092,25 +1092,25 @@ TEST_CASE_FIXTURE(
     sut1.bind_tail(constants::id1, constants::id1);
     sut1.bind_head(constants::id2, constants::id1);
 
-    SUBCASE("identical lists are equal") {
+    SUBCASE("identical flat-lists are equal") {
         const sut_type sut2 = sut1;
         CHECK_EQ(sut1, sut2);
     }
 
-    SUBCASE("lists with different bindings are not equal") {
+    SUBCASE("flat-lists with different bindings are not equal") {
         sut_type sut2 = sut1;
         sut2.bind_tail(constants::id3, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with swapped tail/head bindings are not equal") {
+    SUBCASE("flat-lists with swapped tail/head bindings are not equal") {
         sut_type sut2{constants::n_vertices, constants::n_hyperedges};
         sut2.bind_head(constants::id1, constants::id1);
         sut2.bind_tail(constants::id2, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with different dimensions are not equal") {
+    SUBCASE("flat-lists with different dimensions are not equal") {
         sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
         sut2.bind_tail(constants::id1, constants::id1);
         sut2.bind_head(constants::id2, constants::id1);
@@ -1575,25 +1575,25 @@ TEST_CASE_FIXTURE(
     sut1.bind_tail(constants::id1, constants::id1);
     sut1.bind_head(constants::id2, constants::id1);
 
-    SUBCASE("identical lists are equal") {
+    SUBCASE("identical flat-lists are equal") {
         const sut_type sut2 = sut1;
         CHECK_EQ(sut1, sut2);
     }
 
-    SUBCASE("lists with different bindings are not equal") {
+    SUBCASE("flat-lists with different bindings are not equal") {
         sut_type sut2 = sut1;
         sut2.bind_tail(constants::id3, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with swapped tail/head bindings are not equal") {
+    SUBCASE("flat-lists with swapped tail/head bindings are not equal") {
         sut_type sut2{constants::n_vertices, constants::n_hyperedges};
         sut2.bind_head(constants::id1, constants::id1);
         sut2.bind_tail(constants::id2, constants::id1);
         CHECK_NE(sut1, sut2);
     }
 
-    SUBCASE("lists with different dimensions are not equal") {
+    SUBCASE("flat-lists with different dimensions are not equal") {
         sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
         sut2.bind_tail(constants::id1, constants::id1);
         sut2.bind_head(constants::id2, constants::id1);

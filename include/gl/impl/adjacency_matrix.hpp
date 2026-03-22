@@ -30,11 +30,8 @@ class adjacency_matrix final {
 public:
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using edge_id_list_type = std::vector<types::id_type>;
-    using matrix_type = std::vector<edge_id_list_type>;
-
-    adjacency_matrix(const adjacency_matrix&) = delete;
-    adjacency_matrix& operator=(const adjacency_matrix&) = delete;
+    using row_type = std::vector<types::id_type>;
+    using matrix_type = std::vector<row_type>;
 
     adjacency_matrix() = default;
 
@@ -44,8 +41,11 @@ public:
             row.resize(n_vertices, constants::invalid_id);
     }
 
-    adjacency_matrix(adjacency_matrix&&) = default;
-    adjacency_matrix& operator=(adjacency_matrix&&) = default;
+    adjacency_matrix(const adjacency_matrix&) = default;
+    adjacency_matrix& operator=(const adjacency_matrix&) = default;
+
+    adjacency_matrix(adjacency_matrix&&) noexcept = default;
+    adjacency_matrix& operator=(adjacency_matrix&&) noexcept = default;
 
     ~adjacency_matrix() = default;
 
@@ -307,6 +307,13 @@ public:
                               };
                });
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const adjacency_matrix&, const adjacency_matrix&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_graph_impl_tag TargetImplTag,
