@@ -12,8 +12,21 @@ TEST_SUITE_BEGIN("test_incidence_list");
 
 struct test_incidence_list {
     template <typename IncidenceList>
+    requires std::same_as<typename IncidenceList::directional_tag, hgl::undirected_t>
     typename IncidenceList::major_storage_type& storage(IncidenceList& sut) const noexcept {
         return sut._major_storage;
+    }
+
+    template <typename IncidenceList>
+    requires std::same_as<typename IncidenceList::directional_tag, hgl::bf_directed_t>
+    typename IncidenceList::major_storage_type& tail_storage(IncidenceList& sut) const noexcept {
+        return sut._tail_storage;
+    }
+
+    template <typename IncidenceList>
+    requires std::same_as<typename IncidenceList::directional_tag, hgl::bf_directed_t>
+    typename IncidenceList::major_storage_type& head_storage(IncidenceList& sut) const noexcept {
+        return sut._head_storage;
     }
 };
 
@@ -272,6 +285,33 @@ TEST_CASE_FIXTURE(
     }
 }
 
+TEST_CASE_FIXTURE(
+    test_undirected_vertex_major_incidence_list,
+    "equality operator should correctly compare undirected incidence lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind(constants::id1, constants::id1);
+    sut1.bind(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
+        sut2.bind(constants::id1, constants::id1);
+        sut2.bind(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+}
+
 struct test_undirected_hyperedge_major_incidence_list : public test_incidence_list {
     using sut_type = hgl::impl::incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
 };
@@ -519,6 +559,33 @@ TEST_CASE_FIXTURE(
     }
 }
 
+TEST_CASE_FIXTURE(
+    test_undirected_hyperedge_major_incidence_list,
+    "equality operator should correctly compare undirected incidence lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind(constants::id1, constants::id1);
+    sut1.bind(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
+        sut2.bind(constants::id1, constants::id1);
+        sut2.bind(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+}
+
 struct test_bf_directed_incidence_list : public test_incidence_list {
     auto altbind_to_vertex(
         auto& sut, const hgl::types::id_type vertex_id, const hgl::types::size_type n_hyperedges
@@ -559,9 +626,7 @@ struct test_bf_directed_incidence_list : public test_incidence_list {
     }
 };
 
-constexpr auto is_empty_entry = [](const auto& entry) {
-    return entry.tail.size() == 0uz and entry.head.size() == 0uz;
-};
+constexpr auto is_empty_pred = [](const auto& rng) { return rng.empty(); };
 
 struct test_bf_directed_vertex_major_incidence_list : public test_bf_directed_incidence_list {
     using sut_type = hgl::impl::incidence_list<hgl::bf_directed_t, hgl::impl::vertex_major_t>;
@@ -571,7 +636,8 @@ TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_list, "should initialize an empty list by default"
 ) {
     sut_type sut{};
-    CHECK(storage(sut).empty());
+    CHECK(tail_storage(sut).empty());
+    CHECK(head_storage(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
@@ -579,20 +645,26 @@ TEST_CASE_FIXTURE(
     "initialization with size parameters should properly initialize the list"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
-    CHECK_EQ(storage(sut).size(), constants::n_vertices);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK_EQ(tail_storage(sut).size(), constants::n_vertices);
+    CHECK_EQ(head_storage(sut).size(), constants::n_vertices);
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_list, "add_vertices should properly extend the list"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    const auto initial_size = storage(sut).size();
+    const auto initial_size = tail_storage(sut).size();
+    REQUIRE_EQ(initial_size, head_storage(sut).size());
 
     sut.add_vertices(2uz);
 
-    CHECK_EQ(storage(sut).size(), initial_size + 2uz);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK_EQ(tail_storage(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+
+    CHECK_EQ(head_storage(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
@@ -645,7 +717,8 @@ TEST_CASE_FIXTURE(
     CAPTURE(expected_vertices);
 
     sut.remove_vertex(rem_vid);
-    CHECK_EQ(storage(sut).size(), n_vertices - 1uz);
+    CHECK_EQ(tail_storage(sut).size(), n_vertices - 1uz);
+    CHECK_EQ(head_storage(sut).size(), n_vertices - 1uz);
     CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_hyperedge_size);
     CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), expected_vertices));
 }
@@ -692,11 +765,14 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(test_bf_directed_vertex_major_incidence_list, "add_hyperedges should do nothing") {
     sut_type sut{constants::n_vertices, 0uz};
-    REQUIRE_EQ(storage(sut).size(), constants::n_vertices);
-    REQUIRE(std::ranges::all_of(storage(sut), is_empty_entry));
+    REQUIRE_EQ(tail_storage(sut).size(), constants::n_vertices);
+    REQUIRE(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    REQUIRE_EQ(head_storage(sut).size(), constants::n_vertices);
+    REQUIRE(std::ranges::all_of(head_storage(sut), is_empty_pred));
 
     sut.add_hyperedges(constants::n_hyperedges);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
@@ -800,9 +876,9 @@ TEST_CASE_FIXTURE(
 
     sut.bind_tail(constants::id1, constants::id1);
 
-    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 1uz);
-    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 0uz);
-    CHECK_EQ(storage(sut)[constants::id1].tail.front(), constants::id1);
+    REQUIRE_EQ(tail_storage(sut)[constants::id1].size(), 1uz);
+    REQUIRE_EQ(head_storage(sut)[constants::id1].size(), 0uz);
+    CHECK_EQ(tail_storage(sut)[constants::id1].front(), constants::id1);
 
     const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.tail_size(constants::id1), 1uz);
@@ -819,9 +895,9 @@ TEST_CASE_FIXTURE(
 
     sut.bind_head(constants::id1, constants::id1);
 
-    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 1uz);
-    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 0uz);
-    CHECK_EQ(storage(sut)[constants::id1].head.front(), constants::id1);
+    REQUIRE_EQ(head_storage(sut)[constants::id1].size(), 1uz);
+    REQUIRE_EQ(tail_storage(sut)[constants::id1].size(), 0uz);
+    CHECK_EQ(head_storage(sut)[constants::id1].front(), constants::id1);
 
     const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.head_size(constants::id1), 1uz);
@@ -868,11 +944,11 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);
-        expected_storage = storage(sut)[constants::id1].tail;
+        expected_storage = tail_storage(sut)[constants::id1];
     }
     SUBCASE("head bound") {
         sut.bind_head(constants::id1, constants::id1);
-        expected_storage = storage(sut)[constants::id1].head;
+        expected_storage = head_storage(sut)[constants::id1];
     }
     CAPTURE(sut);
     CAPTURE(expected_storage);
@@ -993,6 +1069,40 @@ TEST_CASE_FIXTURE(
     }
 }
 
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_incidence_list,
+    "equality operator should correctly compare directed incidence lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind_tail(constants::id1, constants::id1);
+    sut1.bind_head(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind_tail(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with swapped tail/head bindings are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges};
+        sut2.bind_head(constants::id1, constants::id1);
+        sut2.bind_tail(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
+        sut2.bind_tail(constants::id1, constants::id1);
+        sut2.bind_head(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+}
+
 struct test_bf_directed_hyperedge_major_incidence_list : public test_bf_directed_incidence_list {
     using sut_type = hgl::impl::incidence_list<hgl::bf_directed_t, hgl::impl::hyperedge_major_t>;
 };
@@ -1001,7 +1111,8 @@ TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_list, "should initialize an empty list by default"
 ) {
     sut_type sut{};
-    CHECK(storage(sut).empty());
+    CHECK(tail_storage(sut).empty());
+    CHECK(head_storage(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
@@ -1009,19 +1120,24 @@ TEST_CASE_FIXTURE(
     "initialization with size parameters should properly initialize the matrix"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
-    CHECK_EQ(storage(sut).size(), constants::n_hyperedges);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK_EQ(tail_storage(sut).size(), constants::n_hyperedges);
+    CHECK_EQ(head_storage(sut).size(), constants::n_hyperedges);
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_list, "add_vertices should do nothing"
 ) {
     sut_type sut{0uz, constants::n_hyperedges};
-    REQUIRE_EQ(storage(sut).size(), constants::n_hyperedges);
-    REQUIRE(std::ranges::all_of(storage(sut), is_empty_entry));
+    REQUIRE_EQ(tail_storage(sut).size(), constants::n_hyperedges);
+    REQUIRE_EQ(head_storage(sut).size(), constants::n_hyperedges);
+    REQUIRE(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    REQUIRE(std::ranges::all_of(head_storage(sut), is_empty_pred));
 
     sut.add_vertices(constants::n_vertices);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
@@ -1123,12 +1239,16 @@ TEST_CASE_FIXTURE(
     "add_hyperedges should properly extend the list"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    const auto initial_size = storage(sut).size();
+    const auto initial_size = tail_storage(sut).size();
+    REQUIRE_EQ(initial_size, head_storage(sut).size());
 
     sut.add_hyperedges(2uz);
 
-    CHECK_EQ(storage(sut).size(), initial_size + 2uz);
-    CHECK(std::ranges::all_of(storage(sut), is_empty_entry));
+    CHECK_EQ(tail_storage(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(tail_storage(sut), is_empty_pred));
+
+    CHECK_EQ(head_storage(sut).size(), initial_size + 2uz);
+    CHECK(std::ranges::all_of(head_storage(sut), is_empty_pred));
 }
 
 TEST_CASE_FIXTURE(
@@ -1181,7 +1301,8 @@ TEST_CASE_FIXTURE(
     CAPTURE(expected_hyperedges);
 
     sut.remove_hyperedge(rem_eid);
-    CHECK_EQ(storage(sut).size(), n_hyperedges - 1uz);
+    CHECK_EQ(tail_storage(sut).size(), n_hyperedges - 1uz);
+    CHECK_EQ(head_storage(sut).size(), n_hyperedges - 1uz);
     CHECK_EQ(sut.degree(vertex_id), expected_vertex_degree);
     CHECK(std::ranges::equal(sut.incident_hyperedges(vertex_id), expected_hyperedges));
 }
@@ -1235,9 +1356,9 @@ TEST_CASE_FIXTURE(
 
     sut.bind_tail(constants::id1, constants::id1);
 
-    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 1uz);
-    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 0uz);
-    CHECK_EQ(storage(sut)[constants::id1].tail.front(), constants::id1);
+    REQUIRE_EQ(tail_storage(sut)[constants::id1].size(), 1uz);
+    REQUIRE_EQ(head_storage(sut)[constants::id1].size(), 0uz);
+    CHECK_EQ(tail_storage(sut)[constants::id1].front(), constants::id1);
 
     const auto hyperedges = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.tail_size(constants::id1), 1uz);
@@ -1254,9 +1375,9 @@ TEST_CASE_FIXTURE(
 
     sut.bind_head(constants::id1, constants::id1);
 
-    REQUIRE_EQ(storage(sut)[constants::id1].head.size(), 1uz);
-    REQUIRE_EQ(storage(sut)[constants::id1].tail.size(), 0uz);
-    CHECK_EQ(storage(sut)[constants::id1].head.front(), constants::id1);
+    REQUIRE_EQ(head_storage(sut)[constants::id1].size(), 1uz);
+    REQUIRE_EQ(tail_storage(sut)[constants::id1].size(), 0uz);
+    CHECK_EQ(head_storage(sut)[constants::id1].front(), constants::id1);
 
     const auto hyperedges = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.head_size(constants::id1), 1uz);
@@ -1302,11 +1423,11 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);
-        expected_storage = storage(sut)[constants::id1].tail;
+        expected_storage = tail_storage(sut)[constants::id1];
     }
     SUBCASE("head bound") {
         sut.bind_head(constants::id1, constants::id1);
-        expected_storage = storage(sut)[constants::id1].head;
+        expected_storage = head_storage(sut)[constants::id1];
     }
     CAPTURE(sut);
     CAPTURE(expected_storage);
@@ -1424,6 +1545,40 @@ TEST_CASE_FIXTURE(
         CHECK_EQ(esize_map[i], n_elements - i);
         CHECK_EQ(tsize_map[i], 1uz);
         CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_incidence_list,
+    "equality operator should correctly compare directed incidence lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind_tail(constants::id1, constants::id1);
+    sut1.bind_head(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind_tail(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with swapped tail/head bindings are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges};
+        sut2.bind_head(constants::id1, constants::id1);
+        sut2.bind_tail(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
+        sut2.bind_tail(constants::id1, constants::id1);
+        sut2.bind_head(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
     }
 }
 

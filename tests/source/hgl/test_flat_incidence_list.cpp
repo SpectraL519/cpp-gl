@@ -292,6 +292,33 @@ TEST_CASE_FIXTURE(
     }
 }
 
+TEST_CASE_FIXTURE(
+    test_undirected_vertex_major_flat_incidence_list,
+    "equality operator should correctly compare undirected incidence flat-lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind(constants::id1, constants::id1);
+    sut1.bind(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
+        sut2.bind(constants::id1, constants::id1);
+        sut2.bind(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+}
+
 struct test_undirected_hyperedge_major_flat_incidence_list : public test_flat_incidence_list {
     using sut_type =
         hgl::impl::flat_incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
@@ -540,6 +567,33 @@ TEST_CASE_FIXTURE(
     for (std::size_t i = 0uz; i < n_elements; i++) {
         CHECK_EQ(deg_map[i], i + 1uz);
         CHECK_EQ(esize_map[i], n_elements - i);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_undirected_hyperedge_major_flat_incidence_list,
+    "equality operator should correctly compare undirected incidence flat-lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind(constants::id1, constants::id1);
+    sut1.bind(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
+        sut2.bind(constants::id1, constants::id1);
+        sut2.bind(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
     }
 }
 
@@ -1030,6 +1084,40 @@ TEST_CASE_FIXTURE(
     }
 }
 
+TEST_CASE_FIXTURE(
+    test_bf_directed_vertex_major_flat_incidence_list,
+    "equality operator should correctly compare directed incidence flat-lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind_tail(constants::id1, constants::id1);
+    sut1.bind_head(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind_tail(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with swapped tail/head bindings are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges};
+        sut2.bind_head(constants::id1, constants::id1);
+        sut2.bind_tail(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices + 1uz, constants::n_hyperedges};
+        sut2.bind_tail(constants::id1, constants::id1);
+        sut2.bind_head(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+}
+
 struct test_bf_directed_hyperedge_major_flat_incidence_list
 : public test_bf_directed_flat_incidence_list {
     using sut_type =
@@ -1476,6 +1564,40 @@ TEST_CASE_FIXTURE(
         CHECK_EQ(esize_map[i], n_elements - i);
         CHECK_EQ(tsize_map[i], 1uz);
         CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_bf_directed_hyperedge_major_flat_incidence_list,
+    "equality operator should correctly compare directed incidence flat-lists"
+) {
+    sut_type sut1{constants::n_vertices, constants::n_hyperedges};
+    sut1.bind_tail(constants::id1, constants::id1);
+    sut1.bind_head(constants::id2, constants::id1);
+
+    SUBCASE("identical lists are equal") {
+        const sut_type sut2 = sut1;
+        CHECK_EQ(sut1, sut2);
+    }
+
+    SUBCASE("lists with different bindings are not equal") {
+        sut_type sut2 = sut1;
+        sut2.bind_tail(constants::id3, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with swapped tail/head bindings are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges};
+        sut2.bind_head(constants::id1, constants::id1);
+        sut2.bind_tail(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
+    }
+
+    SUBCASE("lists with different dimensions are not equal") {
+        sut_type sut2{constants::n_vertices, constants::n_hyperedges + 1uz};
+        sut2.bind_tail(constants::id1, constants::id1);
+        sut2.bind_head(constants::id2, constants::id1);
+        CHECK_NE(sut1, sut2);
     }
 }
 

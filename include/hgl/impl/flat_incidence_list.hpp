@@ -6,6 +6,7 @@
 
 #include "gl/types/segmented_vector.hpp"
 #include "gl/types/types.hpp"
+#include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
@@ -23,7 +24,18 @@ struct test_flat_incidence_list;
 } // namespace hgl_testing
 #endif
 
-namespace hgl::impl {
+namespace hgl {
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 namespace detail {
 
@@ -89,16 +101,16 @@ public:
     using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _storage{layout_tag::major(n_vertices, n_hyperedges)} {}
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
+
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -187,6 +199,18 @@ public:
         );
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
 #endif
@@ -268,17 +292,17 @@ public:
     using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _tail_storage{layout_tag::major(n_vertices, n_hyperedges)},
       _head_storage{layout_tag::major(n_vertices, n_hyperedges)} {}
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
+
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -464,6 +488,18 @@ public:
         return detail::contains(this->_head_storage[major_id], minor_id);
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
 #endif
@@ -645,16 +681,16 @@ public:
     using directional_tag = DirectionalTag;
     using layout_tag = bidirectional_t;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _v_list{n_vertices, n_hyperedges}, _e_list{n_vertices, n_hyperedges} {}
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
+
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -866,6 +902,18 @@ public:
             return this->_e_list.is_head(vertex_id, hyperedge_id);
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_flat_incidence_list;
 #endif
@@ -878,4 +926,5 @@ private:
     hyperedge_major_list _e_list;
 };
 
-} // namespace hgl::impl
+} // namespace impl
+} // namespace hgl

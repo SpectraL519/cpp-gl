@@ -1,6 +1,7 @@
 #include "gl/conversion.hpp"
 #include "gl/edge_tags.hpp"
 #include "gl/graph.hpp"
+#include "gl/impl/impl_tags.hpp"
 #include "testing/gl/types.hpp"
 
 #include <doctest.h>
@@ -8,12 +9,13 @@
 #include <algorithm>
 #include <concepts>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 namespace rng = std::ranges;
 namespace vw = std::views;
 
-namespace hgl_testing {
+namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_conversion");
 
@@ -93,66 +95,68 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     test_conversion fixture;
 
-    SUBCASE("source graph model: list") {
-        auto source_graph = fixture.create_test_graph<list_graph>();
+    auto test_conversion_for =
+        [&fixture]<typename Source>(std::type_identity<Source>, const char* source_name) {
+            SUBCASE(source_name) {
+                SUBCASE("to list") {
+                    auto src = fixture.create_test_graph<Source>();
+                    auto dst = gl::to<gl::impl::list_t>(std::move(src));
+                    fixture.validate_graph(dst);
+                }
+                SUBCASE("to flat-list") {
+                    auto src = fixture.create_test_graph<Source>();
+                    auto dst = gl::to<gl::impl::flat_list_t>(std::move(src));
+                    fixture.validate_graph(dst);
+                }
+                SUBCASE("to matrix") {
+                    auto src = fixture.create_test_graph<Source>();
+                    auto dst = gl::to<gl::impl::matrix_t>(std::move(src));
+                    fixture.validate_graph(dst);
+                }
+            }
+        };
 
-        SUBCASE("identity conversion") {
-            const auto converted_graph = gl::to<gl::impl::list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("flat-list conversion") {
-            const auto converted_graph = gl::to<gl::impl::flat_list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("matrix conversion") {
-            const auto converted_graph = gl::to<gl::impl::matrix_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-    }
-
-    SUBCASE("source graph model: flat list") {
-        auto source_graph = fixture.create_test_graph<flat_list_graph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_graph = gl::to<gl::impl::flat_list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("list conversion") {
-            const auto converted_graph = gl::to<gl::impl::list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("matrix conversion") {
-            const auto converted_graph = gl::to<gl::impl::matrix_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-    }
-
-    SUBCASE("source graph model: matrix") {
-        auto source_graph = fixture.create_test_graph<matrix_graph>();
-
-        SUBCASE("identity conversion") {
-            const auto converted_graph = gl::to<gl::impl::matrix_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("list conversion") {
-            const auto converted_graph = gl::to<gl::impl::list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-
-        SUBCASE("flat-list conversion") {
-            const auto converted_graph = gl::to<gl::impl::flat_list_t>(std::move(source_graph));
-            fixture.validate_graph(converted_graph);
-        }
-    }
+    test_conversion_for(std::type_identity<list_graph>{}, "source: list");
+    test_conversion_for(std::type_identity<flat_list_graph>{}, "source: flat-list");
+    test_conversion_for(std::type_identity<matrix_graph>{}, "source: matrix");
 }
 
-TEST_CASE_TEMPLATE_INSTANTIATE(graph_params_template, std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<gl::directed_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<gl::undirected_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<gl::directed_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<gl::undirected_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<gl::directed_t, gl::types::name_property, gl::types::name_property>, std::tuple<gl::undirected_t, gl::types::name_property, gl::types::name_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    graph_params_template,
+    std::tuple<
+        gl::directed_t,
+        gl::types::empty_properties,
+        gl::types::empty_properties>, // directed graph, no properties
+    std::tuple<
+        gl::undirected_t,
+        gl::types::empty_properties,
+        gl::types::empty_properties>, // undirected graph, no properties
+    std::tuple<
+        gl::directed_t,
+        gl::types::name_property,
+        gl::types::empty_properties>, // directed graph, vertex properties
+    std::tuple<
+        gl::undirected_t,
+        gl::types::name_property,
+        gl::types::empty_properties>, // undirected graph, vertex properties
+    std::tuple<
+        gl::directed_t,
+        gl::types::empty_properties,
+        gl::types::name_property>, // directed graph, edge properties
+    std::tuple<
+        gl::undirected_t,
+        gl::types::empty_properties,
+        gl::types::name_property>, // undirected graph, edge properties
+    std::tuple<
+        gl::directed_t,
+        gl::types::name_property,
+        gl::types::name_property>, // directed graph, all properties
+    std::tuple<
+        gl::undirected_t,
+        gl::types::name_property,
+        gl::types::name_property> // undirected graph, all properties
+);
 
 TEST_SUITE_END(); // test_conversion
 
-} // namespace hgl_testing
+} // namespace gl_testing

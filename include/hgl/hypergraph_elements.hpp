@@ -56,8 +56,8 @@ public:
     hyperedge_descriptor(const hyperedge_descriptor&) = default;
     hyperedge_descriptor& operator=(const hyperedge_descriptor&) = default;
 
-    hyperedge_descriptor(hyperedge_descriptor&&) = default;
-    hyperedge_descriptor& operator=(hyperedge_descriptor&&) = default;
+    hyperedge_descriptor(hyperedge_descriptor&&) noexcept = default;
+    hyperedge_descriptor& operator=(hyperedge_descriptor&&) noexcept = default;
 
     ~hyperedge_descriptor() = default;
 

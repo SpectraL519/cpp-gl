@@ -1,3 +1,4 @@
+#include "gl/types/properties.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph.hpp"
 #include "hgl/hypergraph_traits.hpp"
@@ -9,6 +10,7 @@
 
 #include <algorithm>
 #include <concepts>
+#include <type_traits>
 
 namespace rng = std::ranges;
 namespace vw = std::views;
@@ -33,6 +35,15 @@ using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     typename HypergraphTraits::vertex_properties_type,
     HyperedgeProperties,
+    typename HypergraphTraits::implementation_tag>;
+
+template <
+    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    gl::type_traits::c_properties Properties>
+using add_properties = hgl::hypergraph_traits<
+    typename HypergraphTraits::directional_tag,
+    Properties,
+    Properties,
     typename HypergraphTraits::implementation_tag>;
 
 inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
@@ -829,6 +840,76 @@ TEST_CASE_TEMPLATE_DEFINE(
                 CHECK_EQ(hsize_map[k], n_elements - k - 1uz);
             }
         }
+    }
+
+    // --- comparison and cloning ---
+
+    const auto set_properties = [](auto& sut) {
+        for (auto vertex : sut.vertices())
+            vertex.properties() = std::format("vertex_{}", vertex.id());
+
+        for (auto hyperedge : sut.hyperedges())
+            hyperedge.properties() = std::format("hyperedge_{}", hyperedge.id());
+    };
+
+    using p_hypergraph_traits = add_properties<HypergraphTraits, hgl::types::name_property>;
+    using p_sut_type = hgl::hypergraph<p_hypergraph_traits>;
+
+    const auto create_test_p_hypergraph = [&set_properties]() {
+        p_sut_type sut(2uz, 2uz);
+        if constexpr (hgl::type_traits::c_undirected_hypergraph<p_sut_type>) {
+            sut.bind(0uz, 0uz);
+            sut.bind(1uz, 1uz);
+        }
+        else {
+            sut.bind_tail(0uz, 0uz);
+            sut.bind_head(1uz, 1uz);
+        }
+        set_properties(sut);
+        return sut;
+    };
+
+    SUBCASE("equality operator should properly compare hypergraphs") {
+        auto sut1 = create_test_p_hypergraph();
+        auto sut2 = create_test_p_hypergraph();
+
+        SUBCASE("identical hypergraphs are equal") {
+            CHECK_EQ(sut1, sut2);
+        }
+
+        SUBCASE("hypergraphs with different orders are not equal") {
+            sut2.add_vertex();
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("hypergraphs with different sizes are not equal") {
+            sut2.add_hyperedge();
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("hypergraphs with different bindings are not equal") {
+            if constexpr (hgl::type_traits::c_undirected_hypergraph<p_sut_type>)
+                sut2.bind(0uz, 1uz);
+            else
+                sut2.bind_tail(0uz, 1uz);
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("hypergraph with different vertex properties are not equal") {
+            sut2.get_vertex_properties(0uz) = "dummy";
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("hypergraph with different hyperedge properties are not equal") {
+            sut2.get_hyperedge_properties(0uz) = "dummy";
+            CHECK_NE(sut1, sut2);
+        }
+    }
+
+    SUBCASE("clone should return an exact copy of the source hypergraph") {
+        const auto sut1 = create_test_p_hypergraph();
+        const auto sut2 = hgl::clone(sut1);
+        CHECK_EQ(sut1, sut2);
     }
 }
 

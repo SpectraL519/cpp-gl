@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/flat_incidence_list.hpp"
 #include "hgl/impl/incidence_list.hpp"
@@ -12,9 +13,7 @@
 #include "hgl/type_traits.hpp"
 #include "hgl/types.hpp"
 
-namespace hgl {
-
-namespace impl {
+namespace hgl::impl {
 
 template <type_traits::c_hypergraph_layout_tag LayoutTag>
 struct list_t {
@@ -40,30 +39,4 @@ struct matrix_t {
     using implementation_type = incidence_matrix<DirectionalTag, LayoutTag>;
 };
 
-} // namespace impl
-
-namespace type_traits {
-
-template <typename T>
-concept c_hypergraph_list_impl = c_instantiation_of<T, impl::list_t>;
-
-template <typename T>
-concept c_hypergraph_flat_list_impl = c_instantiation_of<T, impl::flat_list_t>;
-
-template <typename T>
-concept c_hypergraph_incidence_list_impl =
-    c_hypergraph_list_impl<T> or c_hypergraph_flat_list_impl<T>;
-
-template <typename T>
-concept c_hypergraph_matrix_impl = c_instantiation_of<T, impl::matrix_t>;
-
-template <typename T>
-concept c_hypergraph_incidence_matrix_impl = c_hypergraph_matrix_impl<T>;
-
-template <typename T>
-concept c_hypergraph_impl_tag =
-    c_hypergraph_incidence_list_impl<T> or c_hypergraph_incidence_matrix_impl<T>;
-
-} // namespace type_traits
-
-} // namespace hgl
+} // namespace hgl::impl
