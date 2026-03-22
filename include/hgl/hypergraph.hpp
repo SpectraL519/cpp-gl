@@ -37,7 +37,6 @@ concept c_undirected_hypergraph =
 template <typename H>
 concept c_bf_directed_hypergraph =
     c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
-
 template <typename H>
 concept c_list_hypergraph =
     c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
@@ -98,7 +97,9 @@ public:
     hypergraph(const hypergraph&) = delete;
     hypergraph& operator=(const hypergraph&) = delete;
 
-    hypergraph(const types::size_type n_vertices = 0uz, const types::size_type n_hyperedges = 0uz)
+    explicit hypergraph(
+        const types::size_type n_vertices = 0uz, const types::size_type n_hyperedges = 0uz
+    )
     : _n_vertices(n_vertices), _n_hyperedges(n_hyperedges), _impl(n_vertices, n_hyperedges) {
         if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(n_vertices);
@@ -113,6 +114,11 @@ public:
                 );
         }
     }
+
+    hypergraph(hypergraph&&) = default;
+    hypergraph& operator=(hypergraph&&) = default;
+
+    ~hypergraph() = default;
 
     // --- general methods ---
 

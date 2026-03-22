@@ -57,12 +57,27 @@ template <
 struct to_impl {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-        // TODO: generic impl
+        target._impl.add_vertices(source.order());
+        target._impl.add_hyperedges(source.size());
+
+        if constexpr (type_traits::c_undirected_hypergraph<TargetHypergraph>) {
+            for (const auto eid : source.hyperedge_ids())
+                for (const auto vid : source.incident_vertex_ids(eid))
+                    target._impl.bind(vid, eid);
+        }
+        else {
+            for (const auto eid : source.hyperedge_ids()) {
+                for (const auto vid : source.tail_vertex_ids(eid))
+                    target._impl.bind_tail(vid, eid);
+                for (const auto vid : source.head_vertex_ids(eid))
+                    target._impl.bind_head(vid, eid);
+            }
+        }
     }
 };
 
 // Conversion: identity
-template <type_traits::c_graph_impl_tag ImplTag>
+template <type_traits::c_hypergraph_impl_tag ImplTag>
 struct to_impl<ImplTag, ImplTag> {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
@@ -70,27 +85,27 @@ struct to_impl<ImplTag, ImplTag> {
     }
 };
 
-// Conversion: list -> flat list
-template <
-    type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag,
-    type_traits::c_instantiation_of<impl::list_t> ListTag>
-struct to_impl<FlatListTag, ListTag> {
-    template <typename TargetHypergraph, typename SourceHypergraph>
-    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-        // TODO
-    }
-};
+// // Conversion: list -> flat list
+// template <
+//     type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag,
+//     type_traits::c_instantiation_of<impl::list_t> ListTag>
+// struct to_impl<FlatListTag, ListTag> {
+//     template <typename TargetHypergraph, typename SourceHypergraph>
+//     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+//         // TODO
+//     }
+// };
 
-// Conversion: flat list -> list
-template <
-    type_traits::c_instantiation_of<impl::list_t> ListTag,
-    type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag>
-struct to_impl<ListTag, FlatListTag> {
-    template <typename TargetHypergraph, typename SourceHypergraph>
-    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-        // TODO
-    }
-};
+// // Conversion: flat list -> list
+// template <
+//     type_traits::c_instantiation_of<impl::list_t> ListTag,
+//     type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag>
+// struct to_impl<ListTag, FlatListTag> {
+//     template <typename TargetHypergraph, typename SourceHypergraph>
+//     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+//         // TODO
+//     }
+// };
 
 } // namespace detail
 
@@ -99,7 +114,7 @@ struct to_impl<ListTag, FlatListTag> {
 /// @tparam Hypergraph The automatically deduced type of the source hypergraph
 /// @param source The hypergraph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new hypergraph containing the moved data, structured according to TargetImplTag.
-template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Hypergraph>
+template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
 [[nodiscard]] auto to(Hypergraph&& source) {
     using source_traits = typename Hypergraph::traits_type;
     using source_impl_tag = typename source_traits::implementation_tag;

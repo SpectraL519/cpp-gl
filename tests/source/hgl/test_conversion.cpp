@@ -16,8 +16,8 @@ namespace hgl_testing {
 TEST_SUITE_BEGIN("test_converters");
 
 template <
-    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::type_traits::c_properties VertexProperties>
+    hgl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    hgl::type_traits::c_properties VertexProperties>
 using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     VertexProperties,
@@ -25,8 +25,8 @@ using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::implementation_tag>;
 
 template <
-    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::type_traits::c_properties HyperedgeProperties>
+    hgl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    hgl::type_traits::c_properties HyperedgeProperties>
 using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     typename HypergraphTraits::vertex_properties_type,
@@ -35,10 +35,205 @@ using add_hyperedge_property = hgl::hypergraph_traits<
 
 inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
 
+struct test_hypergraph_conversion {
+    using property_type = gl::types::name_property;
+
+    template <hgl::type_traits::c_undirected_hypergraph HypergraphType>
+    [[nodiscard]] HypergraphType create_test_hypergraph() {
+        HypergraphType h(4uz, 3uz);
+
+        h.bind(0uz, 0uz);
+        h.bind(1uz, 0uz);
+        h.bind(2uz, 0uz);
+        h.bind(1uz, 1uz);
+        h.bind(2uz, 1uz);
+        h.bind(3uz, 1uz);
+        h.bind(0uz, 2uz);
+        h.bind(3uz, 2uz);
+
+        this->set_properties(h);
+        return h;
+    }
+
+    template <hgl::type_traits::c_bf_directed_hypergraph HypergraphType>
+    [[nodiscard]] HypergraphType create_test_hypergraph() {
+        HypergraphType h(4uz, 2uz);
+
+        h.bind_tail(0uz, 0uz);
+        h.bind_tail(1uz, 0uz);
+        h.bind_head(2uz, 0uz);
+        h.bind_head(3uz, 0uz);
+
+        h.bind_tail(2uz, 1uz);
+        h.bind_head(0uz, 1uz);
+        h.bind_head(1uz, 1uz);
+
+        this->set_properties(h);
+        return h;
+    }
+
+    void set_properties(hgl::type_traits::c_hypergraph auto& h) {
+        if constexpr (std::same_as<
+                          typename std::decay_t<decltype(h)>::vertex_properties_type,
+                          property_type>)
+            for (const auto& vid : h.vertex_ids())
+                h.get_vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
+
+        if constexpr (std::same_as<
+                          typename std::decay_t<decltype(h)>::hyperedge_properties_type,
+                          property_type>)
+            for (const auto& eid : h.hyperedge_ids())
+                h.get_hyperedge_properties(eid) = property_type("hyperedge_" + std::to_string(eid));
+    }
+
+    void validate_hypergraph(const hgl::type_traits::c_undirected_hypergraph auto& h) {
+        REQUIRE_EQ(h.order(), 4uz);
+        REQUIRE_EQ(h.size(), 3uz);
+        CHECK(h.are_incident(0uz, 0uz));
+        CHECK(h.are_incident(1uz, 0uz));
+        CHECK(h.are_incident(2uz, 0uz));
+        CHECK(h.are_incident(1uz, 1uz));
+        CHECK(h.are_incident(2uz, 1uz));
+        CHECK(h.are_incident(3uz, 1uz));
+        CHECK(h.are_incident(0uz, 2uz));
+        CHECK(h.are_incident(3uz, 2uz));
+
+        CHECK_FALSE(h.are_incident(3uz, 0uz));
+        CHECK_FALSE(h.are_incident(0uz, 1uz));
+        CHECK_FALSE(h.are_incident(1uz, 2uz));
+
+        this->validate_properties(h);
+    }
+
+    void validate_hypergraph(const hgl::type_traits::c_bf_directed_hypergraph auto& h) {
+        REQUIRE_EQ(h.order(), 4uz);
+        REQUIRE_EQ(h.size(), 2uz);
+
+        CHECK(h.is_tail(0uz, 0uz));
+        CHECK(h.is_tail(1uz, 0uz));
+        CHECK(h.is_head(2uz, 0uz));
+        CHECK(h.is_head(3uz, 0uz));
+
+        CHECK(h.is_tail(2uz, 1uz));
+        CHECK(h.is_head(0uz, 1uz));
+        CHECK(h.is_head(1uz, 1uz));
+
+        CHECK_FALSE(h.is_head(0uz, 0uz));
+        CHECK_FALSE(h.is_tail(3uz, 0uz));
+        CHECK_FALSE(h.is_tail(0uz, 1uz));
+        CHECK_FALSE(h.is_head(2uz, 1uz));
+
+        this->validate_properties(h);
+    }
+
+    void validate_properties(const hgl::type_traits::c_hypergraph auto& h) {
+        if constexpr (std::same_as<
+                          typename std::decay_t<decltype(h)>::vertex_properties_type,
+                          property_type>)
+            for (const auto& vid : h.vertex_ids())
+                CHECK_EQ(h.get_vertex_properties(vid), "vertex_" + std::to_string(vid));
+
+        if constexpr (std::same_as<
+                          typename std::decay_t<decltype(h)>::hyperedge_properties_type,
+                          property_type>)
+            for (const auto& eid : h.hyperedge_ids())
+                CHECK_EQ(h.get_hyperedge_properties(eid), "hyperedge_" + std::to_string(eid));
+    }
+};
+
 TEST_CASE_TEMPLATE_DEFINE(
-    "Undirected hypergraph converters tests",
+    "Hypergraph Representation Model Conversion Tests", HypergraphParams, hypergraph_params_template
+) {
+    using DT = std::tuple_element_t<0, HypergraphParams>;
+    using LT = std::tuple_element_t<1, HypergraphParams>;
+    using VP = std::tuple_element_t<2, HypergraphParams>;
+    using EP = std::tuple_element_t<3, HypergraphParams>;
+
+    using list_hypergraph = hgl::hypergraph<hgl::list_hypergraph_traits<LT, DT, VP, EP>>;
+    using flat_list_hypergraph = hgl::hypergraph<hgl::flat_list_hypergraph_traits<LT, DT, VP, EP>>;
+    using matrix_hypergraph = hgl::hypergraph<hgl::matrix_hypergraph_traits<LT, DT, VP, EP>>;
+
+    using target_list_tag = typename list_hypergraph::implementation_tag;
+    using target_flat_list_tag = typename flat_list_hypergraph::implementation_tag;
+    using target_matrix_tag = typename matrix_hypergraph::implementation_tag;
+
+    test_hypergraph_conversion fixture;
+
+    SUBCASE("source hypergraph model: list") {
+        auto source_hypergraph = fixture.create_test_hypergraph<list_hypergraph>();
+
+        SUBCASE("identity conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("flat-list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("matrix conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+    }
+
+    SUBCASE("source hypergraph model: flat list") {
+        auto source_hypergraph = fixture.create_test_hypergraph<flat_list_hypergraph>();
+
+        SUBCASE("identity conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("matrix conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+    }
+
+    SUBCASE("source hypergraph model: matrix") {
+        auto source_hypergraph = fixture.create_test_hypergraph<matrix_hypergraph>();
+
+        SUBCASE("identity conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_matrix_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+
+        SUBCASE("flat-list conversion") {
+            const auto converted_hypergraph =
+                hgl::to<target_flat_list_tag>(std::move(source_hypergraph));
+            fixture.validate_hypergraph(converted_hypergraph);
+        }
+    }
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(hypergraph_params_template, std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<hgl::bf_directed_t, hgl::impl::hyperedge_major_t, gl::types::empty_properties, gl::types::empty_properties>, std::tuple<hgl::undirected_t, hgl::impl::vertex_major_t, gl::types::name_property, gl::types::empty_properties>, std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, gl::types::empty_properties, gl::types::name_property>, std::tuple<hgl::undirected_t, hgl::impl::hyperedge_major_t, gl::types::name_property, gl::types::name_property>, std::tuple<hgl::bf_directed_t, hgl::impl::vertex_major_t, gl::types::name_property, gl::types::name_property>);
+
+// TODO: bidirectional layout
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "Undirected Hypergraph to Graph Conversion Tests",
     HypergraphTraits,
-    undirected_hypergraph_traits_converters_template
+    undirected_hypergraph_traits_to_graph_conversion_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
     using graph_type = gl::graph<gl::undirected_graph_traits<>>;
@@ -132,7 +327,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    undirected_hypergraph_traits_converters_template,
+    undirected_hypergraph_traits_to_graph_conversion_template,
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::undirected_t>, // undirected bidirectional incidence list
@@ -160,9 +355,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "BF-directed hypergraph converters tests",
+    "BF-directed Hypergraph to Graph Converters Tests",
     HypergraphTraits,
-    bf_directed_hypergraph_traits_converters_template
+    bf_directed_hypergraph_traits_to_graph_conversion_template
 ) {
     using sut_type = hgl::hypergraph<HypergraphTraits>;
     using graph_type = gl::graph<gl::directed_graph_traits<>>;
@@ -241,7 +436,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    bf_directed_hypergraph_traits_converters_template,
+    bf_directed_hypergraph_traits_to_graph_conversion_template,
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::bf_directed_t>, // bidirectional incidence list
