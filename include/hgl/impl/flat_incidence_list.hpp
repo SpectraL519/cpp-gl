@@ -101,13 +101,13 @@ public:
     using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _storage{layout_tag::major(n_vertices, n_hyperedges)} {}
+
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
     flat_incidence_list(flat_incidence_list&&) = default;
     flat_incidence_list& operator=(flat_incidence_list&&) = default;
@@ -285,14 +285,14 @@ public:
     using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _tail_storage{layout_tag::major(n_vertices, n_hyperedges)},
       _head_storage{layout_tag::major(n_vertices, n_hyperedges)} {}
+
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
     flat_incidence_list(flat_incidence_list&&) = default;
     flat_incidence_list& operator=(flat_incidence_list&&) = default;
@@ -667,13 +667,13 @@ public:
     using directional_tag = DirectionalTag;
     using layout_tag = bidirectional_t;
 
-    flat_incidence_list(const flat_incidence_list&) = delete;
-    flat_incidence_list& operator=(const flat_incidence_list&) = delete;
-
     flat_incidence_list() = default;
 
     flat_incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _v_list{n_vertices, n_hyperedges}, _e_list{n_vertices, n_hyperedges} {}
+
+    flat_incidence_list(const flat_incidence_list&) = default;
+    flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
     flat_incidence_list(flat_incidence_list&&) = default;
     flat_incidence_list& operator=(flat_incidence_list&&) = default;

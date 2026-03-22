@@ -47,13 +47,13 @@ public:
     using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
-    incidence_list(const incidence_list&) = delete;
-    incidence_list& operator=(const incidence_list&) = delete;
-
     incidence_list() = default;
 
     incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _major_storage{layout_tag::major(n_vertices, n_hyperedges)} {}
+
+    incidence_list(const incidence_list&) = default;
+    incidence_list& operator=(const incidence_list&) = default;
 
     incidence_list(incidence_list&&) = default;
     incidence_list& operator=(incidence_list&&) = default;
@@ -246,14 +246,14 @@ public:
     using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
-    incidence_list(const incidence_list&) = delete;
-    incidence_list& operator=(const incidence_list&) = delete;
-
     incidence_list() = default;
 
     incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _tail_storage{layout_tag::major(n_vertices, n_hyperedges)},
       _head_storage{layout_tag::major(n_vertices, n_hyperedges)} {}
+
+    incidence_list(const incidence_list&) = default;
+    incidence_list& operator=(const incidence_list&) = default;
 
     incidence_list(incidence_list&&) = default;
     incidence_list& operator=(incidence_list&&) = default;
@@ -618,13 +618,13 @@ public:
     using directional_tag = DirectionalTag;
     using layout_tag = bidirectional_t;
 
-    incidence_list(const incidence_list&) = delete;
-    incidence_list& operator=(const incidence_list&) = delete;
-
     incidence_list() = default;
 
     incidence_list(const types::size_type n_vertices, const types::size_type n_hyperedges)
     : _v_list{n_vertices, n_hyperedges}, _e_list{n_vertices, n_hyperedges} {}
+
+    incidence_list(const incidence_list&) = default;
+    incidence_list& operator=(const incidence_list&) = default;
 
     incidence_list(incidence_list&&) = default;
     incidence_list& operator=(incidence_list&&) = default;

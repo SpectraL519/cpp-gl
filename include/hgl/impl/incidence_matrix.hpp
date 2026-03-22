@@ -45,9 +45,6 @@ public:
     using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
-    incidence_matrix(const incidence_matrix&) = delete;
-    incidence_matrix& operator=(const incidence_matrix&) = delete;
-
     incidence_matrix() = default;
 
     incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
@@ -55,6 +52,9 @@ public:
       _matrix(
           layout_tag::major(n_vertices, n_hyperedges), matrix_row_type(_matrix_row_size, false)
       ) {}
+
+    incidence_matrix(const incidence_matrix&) = default;
+    incidence_matrix& operator=(const incidence_matrix&) = default;
 
     incidence_matrix(incidence_matrix&&) = default;
     incidence_matrix& operator=(incidence_matrix&&) = default;
@@ -243,9 +243,6 @@ public:
     using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
-    incidence_matrix(const incidence_matrix&) = delete;
-    incidence_matrix& operator=(const incidence_matrix&) = delete;
-
     incidence_matrix() = default;
 
     incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
@@ -254,6 +251,9 @@ public:
           layout_tag::major(n_vertices, n_hyperedges),
           matrix_row_type(_matrix_row_size, incidence_type::none)
       ) {}
+
+    incidence_matrix(const incidence_matrix&) = default;
+    incidence_matrix& operator=(const incidence_matrix&) = default;
 
     incidence_matrix(incidence_matrix&&) = default;
     incidence_matrix& operator=(incidence_matrix&&) = default;
