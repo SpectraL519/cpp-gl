@@ -56,8 +56,8 @@ public:
     incidence_matrix(const incidence_matrix&) = default;
     incidence_matrix& operator=(const incidence_matrix&) = default;
 
-    incidence_matrix(incidence_matrix&&) = default;
-    incidence_matrix& operator=(incidence_matrix&&) = default;
+    incidence_matrix(incidence_matrix&&) noexcept = default;
+    incidence_matrix& operator=(incidence_matrix&&) noexcept = default;
 
     ~incidence_matrix() = default;
 
@@ -133,6 +133,13 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return this->_matrix[major_id][minor_id];
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const incidence_matrix&, const incidence_matrix&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_hypergraph_impl_tag TargetImplTag,
@@ -255,8 +262,8 @@ public:
     incidence_matrix(const incidence_matrix&) = default;
     incidence_matrix& operator=(const incidence_matrix&) = default;
 
-    incidence_matrix(incidence_matrix&&) = default;
-    incidence_matrix& operator=(incidence_matrix&&) = default;
+    incidence_matrix(incidence_matrix&&) noexcept = default;
+    incidence_matrix& operator=(incidence_matrix&&) noexcept = default;
 
     ~incidence_matrix() = default;
 
@@ -413,6 +420,13 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return this->_matrix[major_id][minor_id] == incidence_type::forward;
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const incidence_matrix&, const incidence_matrix&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_hypergraph_impl_tag TargetImplTag,

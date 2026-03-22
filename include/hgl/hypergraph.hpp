@@ -59,8 +59,11 @@ concept c_incidence_matrix_hypergraph =
 
 } // namespace type_traits
 
+template <type_traits::c_hypergraph Hypergraph>
+[[nodiscard]] Hypergraph clone(const Hypergraph& source);
+
 template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
-auto to(Hypergraph&& source);
+[[nodiscard]] auto to(Hypergraph&& source);
 
 namespace detail {
 
@@ -94,7 +97,6 @@ public:
         types::empty_properties_map,
         std::vector<std::unique_ptr<hyperedge_properties_type>>>;
 
-    hypergraph(const hypergraph&) = delete;
     hypergraph& operator=(const hypergraph&) = delete;
 
     explicit hypergraph(
@@ -115,8 +117,8 @@ public:
         }
     }
 
-    hypergraph(hypergraph&&) = default;
-    hypergraph& operator=(hypergraph&&) = default;
+    hypergraph(hypergraph&&) noexcept = default;
+    hypergraph& operator=(hypergraph&&) noexcept = default;
 
     ~hypergraph() = default;
 
@@ -735,6 +737,38 @@ public:
         return this->_impl.head_size_map(this->_n_hyperedges);
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const hypergraph& lhs, const hypergraph& rhs) noexcept {
+        if (lhs._n_vertices != rhs._n_vertices or lhs._n_hyperedges != rhs._n_hyperedges)
+            return false;
+
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+            const auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
+                return *ptr_a == *ptr_b;
+            };
+            if (not std::ranges::equal(lhs._vertex_properties, rhs._vertex_properties, val_eq))
+                return false;
+        }
+
+        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+            const auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
+                return *ptr_a == *ptr_b;
+            };
+            if (not std::ranges::equal(
+                    lhs._hyperedge_properties, rhs._hyperedge_properties, val_eq
+                ))
+                return false;
+        }
+
+        return lhs._impl == rhs._impl;
+    }
+
+    // --- friend declarations ---
+
+    template <type_traits::c_hypergraph Hypergraph>
+    friend Hypergraph clone(const Hypergraph& source);
+
     template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
     friend auto to(Hypergraph&& source);
 
@@ -744,6 +778,27 @@ public:
     friend struct detail::to_impl;
 
 private:
+    hypergraph(const hypergraph& other)
+    : _n_vertices{other._n_vertices}, _n_hyperedges{other._n_hyperedges}, _impl{other._impl} {
+        // Deep copy vertex properties
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+            this->_vertex_properties.reserve(other._vertex_properties.size());
+            for (const auto& property : other._vertex_properties)
+                this->_vertex_properties.push_back(
+                    std::make_unique<vertex_properties_type>(*property)
+                );
+        }
+
+        // Deep copy hyperedge properties
+        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+            this->_hyperedge_properties.reserve(other._hyperedge_properties.size());
+            for (const auto& property : other._hyperedge_properties)
+                this->_hyperedge_properties.push_back(
+                    std::make_unique<hyperedge_properties_type>(*property)
+                );
+        }
+    }
+
     // --- vertex methods ---
 
     gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
@@ -818,6 +873,13 @@ private:
     [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
     [[no_unique_address]] hyperedge_properties_map_type _hyperedge_properties{};
 };
+
+// --- general hypergraph utility ---
+
+template <type_traits::c_hypergraph Hypergraph>
+[[nodiscard]] Hypergraph clone(const Hypergraph& source) {
+    return Hypergraph(source);
+}
 
 // --- degree bounds ---
 

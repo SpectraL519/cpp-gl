@@ -109,8 +109,8 @@ public:
     flat_incidence_list(const flat_incidence_list&) = default;
     flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -198,6 +198,13 @@ public:
             layout_tag::minor(vertex_id, hyperedge_id)
         );
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_hypergraph_impl_tag TargetImplTag,
@@ -294,8 +301,8 @@ public:
     flat_incidence_list(const flat_incidence_list&) = default;
     flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -480,6 +487,13 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return detail::contains(this->_head_storage[major_id], minor_id);
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_hypergraph_impl_tag TargetImplTag,
@@ -675,8 +689,8 @@ public:
     flat_incidence_list(const flat_incidence_list&) = default;
     flat_incidence_list& operator=(const flat_incidence_list&) = default;
 
-    flat_incidence_list(flat_incidence_list&&) = default;
-    flat_incidence_list& operator=(flat_incidence_list&&) = default;
+    flat_incidence_list(flat_incidence_list&&) noexcept = default;
+    flat_incidence_list& operator=(flat_incidence_list&&) noexcept = default;
 
     ~flat_incidence_list() = default;
 
@@ -887,6 +901,13 @@ public:
         else
             return this->_e_list.is_head(vertex_id, hyperedge_id);
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const flat_incidence_list&, const flat_incidence_list&) =
+        default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_hypergraph_impl_tag TargetImplTag,
