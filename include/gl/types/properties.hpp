@@ -40,10 +40,10 @@ public:
     name_property(const std::string_view name) : _name(name) {}
 
     name_property(const name_property&) = default;
-    name_property(name_property&&) = default;
+    name_property(name_property&&) noexcept = default;
 
     name_property& operator=(const name_property&) = default;
-    name_property& operator=(name_property&&) = default;
+    name_property& operator=(name_property&&) noexcept = default;
 
 #ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~name_property() = default;
@@ -103,10 +103,10 @@ public:
     dynamic_properties() = default;
 
     dynamic_properties(const dynamic_properties&) = default;
-    dynamic_properties(dynamic_properties&&) = default;
+    dynamic_properties(dynamic_properties&&) noexcept = default;
 
     dynamic_properties& operator=(const dynamic_properties&) = default;
-    dynamic_properties& operator=(dynamic_properties&&) = default;
+    dynamic_properties& operator=(dynamic_properties&&) noexcept = default;
 
 #ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~dynamic_properties() = default;
@@ -171,10 +171,10 @@ public:
     binary_color(value value) : _value(_restrict(value)) {}
 
     binary_color(const binary_color&) = default;
-    binary_color(binary_color&&) = default;
+    binary_color(binary_color&&) noexcept = default;
 
     binary_color& operator=(const binary_color&) = default;
-    binary_color& operator=(binary_color&&) = default;
+    binary_color& operator=(binary_color&&) noexcept = default;
 
 #ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~binary_color() = default;

@@ -740,26 +740,22 @@ public:
     // --- comparison ---
 
     [[nodiscard]] friend bool operator==(const hypergraph& lhs, const hypergraph& rhs) noexcept {
+        constexpr auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
+            return *ptr_a == *ptr_b;
+        };
+
         if (lhs._n_vertices != rhs._n_vertices or lhs._n_hyperedges != rhs._n_hyperedges)
             return false;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
-            const auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
-                return *ptr_a == *ptr_b;
-            };
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
             if (not std::ranges::equal(lhs._vertex_properties, rhs._vertex_properties, val_eq))
                 return false;
-        }
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
-            const auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
-                return *ptr_a == *ptr_b;
-            };
+        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
             if (not std::ranges::equal(
                     lhs._hyperedge_properties, rhs._hyperedge_properties, val_eq
                 ))
                 return false;
-        }
 
         return lhs._impl == rhs._impl;
     }

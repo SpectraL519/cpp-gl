@@ -10,6 +10,7 @@
 #include <doctest.h>
 
 #include <algorithm>
+#include <ranges>
 
 namespace gl_testing {
 
@@ -31,6 +32,15 @@ using add_edge_property = gl::graph_traits<
     typename TraitsType::edge_directional_tag,
     typename TraitsType::vertex_properties_type,
     EdgeProperties,
+    typename TraitsType::implementation_tag>;
+
+template <
+    gl::type_traits::c_instantiation_of<gl::graph_traits> TraitsType,
+    gl::type_traits::c_properties Properties>
+using add_properties = gl::graph_traits<
+    typename TraitsType::edge_directional_tag,
+    Properties,
+    Properties,
     typename TraitsType::implementation_tag>;
 
 template <typename TraitsType>
@@ -854,6 +864,62 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         CHECK_NOTHROW([&sut, &vertex]() {
             CHECK_EQ(gl::util::range_size(sut.adjacent_edges(vertex)), constants::zero_elements);
         }());
+    }
+
+    // --- comparison and cloning ---
+
+    const auto set_properties = [](auto& sut) {
+        for (auto vertex : sut.vertices())
+            vertex.properties() = std::format("vertex_{}", vertex.id());
+
+        for (auto&& [id, edge_property] : std::views::enumerate(sut.edge_properties_map()))
+            edge_property = std::format("edge_{}", id);
+    };
+
+    using p_graph_traits = add_properties<TraitsType, gl::types::name_property>;
+    using p_sut_type = gl::graph<p_graph_traits>;
+
+    const auto create_test_p_hypergraph = [&set_properties]() {
+        p_sut_type sut(constants::n_elements);
+        sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
+        sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
+        set_properties(sut);
+        return sut;
+    };
+
+    SUBCASE("equality operator should properly compare graphs") {
+        auto sut1 = create_test_p_hypergraph();
+        auto sut2 = create_test_p_hypergraph();
+
+        SUBCASE("identical graphs are equal") {
+            CHECK_EQ(sut1, sut2);
+        }
+
+        SUBCASE("graphs with different orders are not equal") {
+            sut2.add_vertex();
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("graphs with different connections are not equal") {
+            sut2.add_edge(constants::vertex_id_1, constants::vertex_id_3);
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("graphs with different vertex properties are not equal") {
+            sut2.get_vertex_properties(0uz) = "dummy";
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("hypergraph with different hyperedge properties are not equal") {
+            sut2.get_edge_properties(0uz) = "dummy";
+            CHECK_NE(sut1, sut2);
+        }
+    }
+
+    SUBCASE("clone should return an exact copy of the source graph") {
+        const auto sut1 = create_test_p_hypergraph();
+        const auto sut2 = gl::clone(sut1);
+        CHECK_EQ(sut1, sut2);
     }
 }
 

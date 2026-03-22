@@ -54,8 +54,8 @@ public:
     vertex_descriptor(const vertex_descriptor&) = default;
     vertex_descriptor& operator=(const vertex_descriptor&) = default;
 
-    vertex_descriptor(vertex_descriptor&&) = default;
-    vertex_descriptor& operator=(vertex_descriptor&&) = default;
+    vertex_descriptor(vertex_descriptor&&) noexcept = default;
+    vertex_descriptor& operator=(vertex_descriptor&&) noexcept = default;
 
     ~vertex_descriptor() = default;
 

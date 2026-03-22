@@ -15,7 +15,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_adjacency_matrix");
 
 struct test_adjacency_matrix {
-    const auto& get(const auto& sut) const {
+    [[nodiscard]] auto& get(auto& sut) const {
         return sut._matrix;
     }
 
@@ -110,6 +110,35 @@ TEST_CASE_TEMPLATE_DEFINE(
             );
         });
     }
+
+    SUBCASE("equality operator should correctly comparge matrices") {
+        SutType sut1(constants::n_elements);
+        sut1.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_2);
+        sut1.add_edge(fixture.next_edge_id++, constants::vertex_id_2, constants::vertex_id_3);
+
+        SUBCASE("identical matrices are equal") {
+            const SutType sut2 = sut1;
+            CHECK_EQ(sut1, sut2);
+        }
+
+        SUBCASE("matrices with different dimmensions are not equal") {
+            const SutType sut2{constants::n_elements + 1uz};
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("matrices with different connections are not equal") {
+            SutType sut2 = sut1;
+            sut2.add_edge(fixture.next_edge_id++, constants::vertex_id_1, constants::vertex_id_3);
+            CHECK_NE(sut1, sut2);
+        }
+
+        SUBCASE("matrices with different connection ids are not equal") {
+            SutType sut2 = sut1;
+            fixture.get(sut2)[constants::vertex_id_1][constants::vertex_id_2] =
+                fixture.next_edge_id++;
+            CHECK_NE(sut1, sut2);
+        }
+    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -128,8 +157,6 @@ constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
 struct test_directed_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::directed_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>;
-
-    test_directed_adjacency_matrix() {}
 
     edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
