@@ -7,6 +7,7 @@
 #include "gl/attributes/force_inline.hpp"
 #include "gl/graph.hpp"
 #include "gl/types/types.hpp"
+#include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph.hpp"
 
 #include <algorithm>
@@ -85,27 +86,118 @@ struct to_impl<ImplTag, ImplTag> {
     }
 };
 
-// // Conversion: list -> flat list
-// template <
-//     type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag,
-//     type_traits::c_instantiation_of<impl::list_t> ListTag>
-// struct to_impl<FlatListTag, ListTag> {
-//     template <typename TargetHypergraph, typename SourceHypergraph>
-//     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-//         // TODO
-//     }
-// };
+// Conversion: list -> flat list (same layout)
+template <type_traits::c_hypergraph_layout_tag LayoutTag>
+struct to_impl<impl::flat_list_t<LayoutTag>, impl::list_t<LayoutTag>> {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        using dir_tag = typename std::decay_t<decltype(target)>::directional_tag;
 
-// // Conversion: flat list -> list
-// template <
-//     type_traits::c_instantiation_of<impl::list_t> ListTag,
-//     type_traits::c_instantiation_of<impl::flat_list_t> FlatListTag>
-// struct to_impl<ListTag, FlatListTag> {
-//     template <typename TargetHypergraph, typename SourceHypergraph>
-//     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-//         // TODO
-//     }
-// };
+        auto& target_impl = target._impl;
+        auto& source_impl = source._impl;
+
+        if constexpr (std::same_as<LayoutTag, impl::bidirectional_t>) {
+            convert_asym<dir_tag>(target_impl._v_list, source_impl._v_list);
+            convert_asym<dir_tag>(target_impl._e_list, source_impl._e_list);
+        }
+        else {
+            convert_asym<dir_tag>(target_impl, source_impl);
+        }
+    }
+
+    template <std::same_as<undirected_t> DirTag>
+    static void convert_asym(auto& target_impl, auto& source_impl) {
+        auto& target_list = target_impl._storage;
+        auto& source_list = source_impl._major_storage;
+
+        std::size_t total_items = 0uz;
+        for (const auto& adj : source_list)
+            total_items += adj.size();
+
+        target_list.reserve_segments(source_list.size());
+        target_list.reserve_data(total_items);
+
+        for (auto& adj : source_list)
+            target_list.push_back(std::move(adj));
+    }
+
+    template <std::same_as<bf_directed_t> DirTag>
+    static void convert_asym(auto& target_impl, auto& source_impl) {
+        // convert tail
+        auto& target_tail = target_impl._tail_storage;
+        auto& source_tail = source_impl._tail_storage;
+        std::size_t total_tail_size = 0uz;
+        for (const auto& adj : source_tail)
+            total_tail_size += adj.size();
+
+        target_tail.reserve_segments(source_tail.size());
+        target_tail.reserve_data(total_tail_size);
+        for (auto& adj : source_tail)
+            target_tail.push_back(std::move(adj));
+
+        // convert head
+        auto& target_head = target_impl._head_storage;
+        auto& source_head = source_impl._head_storage;
+
+        std::size_t total_head_size = 0uz;
+        for (const auto& adj : source_head)
+            total_head_size += adj.size();
+
+        target_head.reserve_segments(source_head.size());
+        target_head.reserve_data(total_head_size);
+        for (auto& adj : source_head)
+            target_head.push_back(std::move(adj));
+    }
+};
+
+// Conversion: flat list -> list (same layout)
+template <type_traits::c_hypergraph_layout_tag LayoutTag>
+struct to_impl<impl::list_t<LayoutTag>, impl::flat_list_t<LayoutTag>> {
+    template <typename TargetHypergraph, typename SourceHypergraph>
+    static void convert(TargetHypergraph& target, SourceHypergraph& source) {
+        using dir_tag = typename std::decay_t<decltype(target)>::directional_tag;
+
+        auto& target_impl = target._impl;
+        auto& source_impl = source._impl;
+
+        if constexpr (std::same_as<LayoutTag, impl::bidirectional_t>) {
+            convert_asym<dir_tag>(target_impl._v_list, source_impl._v_list);
+            convert_asym<dir_tag>(target_impl._e_list, source_impl._e_list);
+        }
+        else {
+            convert_asym<dir_tag>(target_impl, source_impl);
+        }
+    }
+
+    template <std::same_as<undirected_t> DirTag>
+    static void convert_asym(auto& target_impl, auto& source_impl) {
+        auto& target_list = target_impl._major_storage;
+        auto& source_list = source_impl._storage;
+
+        target_list.reserve(source_list.size());
+        for (auto adj : source_list)
+            target_list.emplace_back(adj.begin(), adj.end());
+    }
+
+    template <std::same_as<bf_directed_t> DirTag>
+    static void convert_asym(auto& target_impl, auto& source_impl) {
+        // conver tail
+        auto& target_tail = target_impl._tail_storage;
+        auto& source_tail = source_impl._tail_storage;
+
+        target_tail.reserve(source_tail.size());
+        for (auto adj : source_tail)
+            target_tail.emplace_back(adj.begin(), adj.end());
+
+        // convert head
+        auto& target_head = target_impl._head_storage;
+        auto& source_head = source_impl._head_storage;
+
+        target_head.reserve(source_head.size());
+        for (auto adj : source_head)
+            target_head.emplace_back(adj.begin(), adj.end());
+    }
+};
 
 } // namespace detail
 
