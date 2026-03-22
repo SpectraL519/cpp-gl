@@ -50,7 +50,7 @@ concept c_adjacency_matrix_graph = c_matrix_graph<G>;
 } // namespace type_traits
 
 template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
-auto to(Graph&& source);
+[[nodiscard]] auto to(Graph&& source);
 
 namespace detail {
 
@@ -595,13 +595,13 @@ public:
         return is;
     }
 
+    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+    friend auto to(Graph&& source);
+
     template <
         type_traits::c_graph_impl_tag TargetImplTag,
         type_traits::c_graph_impl_tag SourceImplTag>
     friend struct detail::to_impl;
-
-    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
-    friend auto to(Graph&& source);
 
 private:
     [[nodiscard]] static constexpr std::string _directed_type_str() {

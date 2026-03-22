@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
@@ -20,7 +21,18 @@ struct test_incidence_matrix;
 } // namespace hgl_testing
 #endif
 
-namespace hgl::impl {
+namespace hgl {
+
+namespace detail {
+
+template <
+    type_traits::c_hypergraph_impl_tag TargetImplTag,
+    type_traits::c_hypergraph_impl_tag SourceImplTag>
+struct to_impl;
+
+} // namespace detail
+
+namespace impl {
 
 template <
     type_traits::c_hypergraph_directional_tag DirectionalTag,
@@ -33,9 +45,6 @@ public:
     using directional_tag = hgl::undirected_t;
     using layout_tag = LayoutTag;
 
-    incidence_matrix(const incidence_matrix&) = delete;
-    incidence_matrix& operator=(const incidence_matrix&) = delete;
-
     incidence_matrix() = default;
 
     incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
@@ -44,8 +53,11 @@ public:
           layout_tag::major(n_vertices, n_hyperedges), matrix_row_type(_matrix_row_size, false)
       ) {}
 
-    incidence_matrix(incidence_matrix&&) = default;
-    incidence_matrix& operator=(incidence_matrix&&) = default;
+    incidence_matrix(const incidence_matrix&) = default;
+    incidence_matrix& operator=(const incidence_matrix&) = default;
+
+    incidence_matrix(incidence_matrix&&) noexcept = default;
+    incidence_matrix& operator=(incidence_matrix&&) noexcept = default;
 
     ~incidence_matrix() = default;
 
@@ -121,6 +133,18 @@ public:
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         return this->_matrix[major_id][minor_id];
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const incidence_matrix&, const incidence_matrix&) =
+        default;
+
+    // --- friend declarations ---
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_incidence_matrix;
@@ -226,9 +250,6 @@ public:
     using directional_tag = hgl::bf_directed_t;
     using layout_tag = LayoutTag;
 
-    incidence_matrix(const incidence_matrix&) = delete;
-    incidence_matrix& operator=(const incidence_matrix&) = delete;
-
     incidence_matrix() = default;
 
     incidence_matrix(const types::size_type n_vertices, const types::size_type n_hyperedges)
@@ -238,8 +259,11 @@ public:
           matrix_row_type(_matrix_row_size, incidence_type::none)
       ) {}
 
-    incidence_matrix(incidence_matrix&&) = default;
-    incidence_matrix& operator=(incidence_matrix&&) = default;
+    incidence_matrix(const incidence_matrix&) = default;
+    incidence_matrix& operator=(const incidence_matrix&) = default;
+
+    incidence_matrix(incidence_matrix&&) noexcept = default;
+    incidence_matrix& operator=(incidence_matrix&&) noexcept = default;
 
     ~incidence_matrix() = default;
 
@@ -397,6 +421,18 @@ public:
         return this->_matrix[major_id][minor_id] == incidence_type::forward;
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const incidence_matrix&, const incidence_matrix&) =
+        default;
+
+    // --- friend declarations ---
+
+    template <
+        type_traits::c_hypergraph_impl_tag TargetImplTag,
+        type_traits::c_hypergraph_impl_tag SourceImplTag>
+    friend struct hgl::detail::to_impl;
+
 #ifdef HGL_TESTING
     friend struct hgl_testing::test_incidence_matrix;
 #endif
@@ -524,4 +560,5 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-} // namespace hgl::impl
+} // namespace impl
+} // namespace hgl
