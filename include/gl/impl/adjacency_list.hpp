@@ -37,15 +37,15 @@ public:
     using adjacency_list_type = typename specialized::adjacency_list_impl_traits<
         adjacency_list>::template storage_type<item_type>;
 
-    adjacency_list(const adjacency_list&) = delete;
-    adjacency_list& operator=(const adjacency_list&) = delete;
-
     adjacency_list() = default;
 
     explicit adjacency_list(const types::size_type n_vertices) : _list(n_vertices) {}
 
-    adjacency_list(adjacency_list&&) = default;
-    adjacency_list& operator=(adjacency_list&&) = default;
+    adjacency_list(const adjacency_list&) = delete;
+    adjacency_list& operator=(const adjacency_list&) = delete;
+
+    adjacency_list(adjacency_list&&) noexcept = default;
+    adjacency_list& operator=(adjacency_list&&) noexcept = default;
 
     ~adjacency_list() = default;
 
@@ -275,6 +275,12 @@ public:
     {
         return this->adjacent_edges(vertex_id, edge_properties_map);
     }
+
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const adjacency_list&, const adjacency_list&) = default;
+
+    // --- friend declarations ---
 
     template <
         type_traits::c_graph_impl_tag TargetImplTag,

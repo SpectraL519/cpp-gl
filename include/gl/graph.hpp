@@ -49,6 +49,9 @@ concept c_adjacency_matrix_graph = c_matrix_graph<G>;
 
 } // namespace type_traits
 
+template <type_traits::c_graph Graph>
+[[nodiscard]] Graph clone(const Graph& source);
+
 template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source);
 
@@ -84,7 +87,6 @@ public:
         types::empty_properties_map,
         std::vector<std::unique_ptr<edge_properties_type>>>;
 
-    graph(const graph&) = delete;
     graph& operator=(const graph&) = delete;
 
     graph() = default;
@@ -97,8 +99,8 @@ public:
         }
     }
 
-    graph(graph&&) = default;
-    graph& operator=(graph&&) = default;
+    graph(graph&&) noexcept = default;
+    graph& operator=(graph&&) noexcept = default;
 
     ~graph() = default;
 
@@ -574,6 +576,27 @@ public:
         return *this->_edge_properties[id];
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool operator==(const graph& lhs, const graph& rhs) noexcept {
+        constexpr auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
+            return *ptr_a == *ptr_b;
+        };
+
+        if (lhs._n_vertices != rhs._n_vertices or lhs._n_edges != rhs._n_edges)
+            return false;
+
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+            if (not std::ranges::equal(lhs._vertex_properties, rhs._vertex_properties, val_eq))
+                return false;
+
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            if (not std::ranges::equal(lhs._edge_properties, rhs._edge_properties, val_eq))
+                return false;
+
+        return lhs._impl == rhs._impl;
+    }
+
     // --- stream operators ---
 
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
@@ -595,6 +618,11 @@ public:
         return is;
     }
 
+    // --- friend declarations ---
+
+    template <type_traits::c_graph Graph>
+    friend Graph clone(const Graph& source);
+
     template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
     friend auto to(Graph&& source);
 
@@ -604,6 +632,25 @@ public:
     friend struct detail::to_impl;
 
 private:
+    graph(const graph& other)
+    : _n_vertices{other._n_vertices}, _n_edges{other._n_edges}, _impl{other._impl} {
+        // Deep copy vertex properties
+        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+            this->_vertex_properties.reserve(other._vertex_properties.size());
+            for (const auto& property : other._vertex_properties)
+                this->_vertex_properties.push_back(
+                    std::make_unique<vertex_properties_type>(*property)
+                );
+        }
+
+        // Deep copy edge properties
+        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+            this->_edge_properties.reserve(other._edge_properties.size());
+            for (const auto& property : other._edge_properties)
+                this->_edge_properties.push_back(std::make_unique<edge_properties_type>(*property));
+        }
+    }
+
     [[nodiscard]] static constexpr std::string _directed_type_str() {
         return type_traits::c_directed_edge<edge_type> ? "directed" : "undirected";
     }
@@ -797,7 +844,12 @@ private:
     implementation_type _impl{};
 };
 
-// --- utility associated with graph's elements' properties ---
+// --- general graph utility ---
+
+template <type_traits::c_graph Graph>
+[[nodiscard]] Graph clone(const Graph& source) {
+    return Graph(source);
+}
 
 namespace types {
 
