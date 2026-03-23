@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
 #include "gl/types/segmented_vector.hpp"
-#include "gl/types/types.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
@@ -28,9 +28,7 @@ namespace hgl {
 
 namespace detail {
 
-template <
-    type_traits::c_hypergraph_impl_tag TargetImplTag,
-    type_traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
@@ -91,11 +89,11 @@ inline void remove_minor(common_storage_type& storage, const gl::types::id_type 
 } // namespace detail
 
 template <
-    type_traits::c_hypergraph_directional_tag DirectionalTag,
-    type_traits::c_hypergraph_layout_tag LayoutTag>
+    traits::c_hypergraph_directional_tag DirectionalTag,
+    traits::c_hypergraph_layout_tag LayoutTag>
 class flat_incidence_list;
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class flat_incidence_list<hgl::undirected_t, LayoutTag> final {
 public:
     using directional_tag = hgl::undirected_t;
@@ -207,8 +205,8 @@ public:
     // --- friend declarations ---
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -286,7 +284,7 @@ private:
     storage_type _storage;
 };
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class flat_incidence_list<hgl::bf_directed_t, LayoutTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
@@ -496,8 +494,8 @@ public:
     // --- friend declarations ---
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -675,7 +673,7 @@ private:
     storage_type _head_storage;
 };
 
-template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+template <traits::c_hypergraph_directional_tag DirectionalTag>
 class flat_incidence_list<DirectionalTag, bidirectional_t> final {
 public:
     using directional_tag = DirectionalTag;
@@ -910,8 +908,8 @@ public:
     // --- friend declarations ---
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING

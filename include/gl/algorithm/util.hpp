@@ -4,27 +4,32 @@
 
 #pragma once
 
-#include "gl/algorithm/types.hpp"
+#include "gl/algorithm/core.hpp"
+#include "gl/constants.hpp"
+#include "gl/traits.hpp"
+#include "gl/types/core.hpp"
 
-namespace gl::algorithm::impl {
+namespace gl::algorithm {
 
-// --- common functions ---
-
-template <
-    result_discriminator ResultDiscriminator,
-    typename ReturnType,
-    type_traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline alg_return_type_non_void<ResultDiscriminator, ReturnType>
-init_return_value(const GraphType& graph) {
-    using return_type = alg_return_type_non_void<ResultDiscriminator, ReturnType>;
+template <result_discriminator ResultDiscriminator>
+[[nodiscard]] gl_attr_force_inline non_void_return_type<ResultDiscriminator, predecessors_map>
+init_predecessors_map(const traits::c_graph auto& graph) {
+    using return_type = non_void_return_type<ResultDiscriminator, predecessors_map>;
     if constexpr (ResultDiscriminator == algorithm::ret)
-        return return_type(graph.order());
+        return return_type(graph.order(), constants::invalid_id);
     else
         return return_type();
 }
 
+[[nodiscard]] gl_attr_force_inline bool is_reachable(
+    const traits::c_random_access_range_of<types::id_type> auto& pred_map,
+    const types::id_type vertex_id
+) noexcept {
+    return pred_map[vertex_id] != constants::invalid_id;
+}
+
 template <
-    type_traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
+    traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
         std::vector<algorithm::vertex_info>>
 [[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {
     return InitRangeType{algorithm::vertex_info{root_vertex_id}};
@@ -37,23 +42,25 @@ template <
 template <result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited,
-    alg_return_type_non_void<ResultDiscriminator, predecessors_descriptor>& pd
+    non_void_return_type<ResultDiscriminator, predecessors_map>& pred_map
 ) {
     return [&](const types::id_type vertex_id, const types::id_type pred_id) {
         visited[vertex_id] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
-            pd[vertex_id].emplace(pred_id);
+            pred_map[vertex_id] = pred_id;
         return true;
     };
 }
 
-template <type_traits::c_graph GraphType, bool AsResult = false>
+template <traits::c_graph GraphType, bool AsResult = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
-    return [&](const types::id_type vertex_id, const typename GraphType::edge_type& in_edge
-           ) -> return_type { return not visited[vertex_id]; };
+    return [&](const types::id_type vertex_id,
+               [[maybe_unused]] const typename GraphType::edge_type& in_edge) -> return_type {
+        return not visited[vertex_id];
+    };
 }
 
-} // namespace gl::algorithm::impl
+} // namespace gl::algorithm

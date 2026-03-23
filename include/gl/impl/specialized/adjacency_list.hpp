@@ -16,7 +16,7 @@
 
 namespace gl::impl {
 
-template <type_traits::c_adjacency_list_graph_traits GraphTraits>
+template <traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list;
 
 namespace specialized {
@@ -31,7 +31,7 @@ struct adjacency_list_item {
 namespace detail {
 
 [[nodiscard]] auto strict_find(
-    type_traits::c_range_of<adjacency_list_item> auto& edge_list, const auto& edge
+    traits::c_range_of<adjacency_list_item> auto& edge_list, const auto& edge
 ) {
     const auto it = std::ranges::find(edge_list, edge.id(), &adjacency_list_item::edge_id);
     if (it == edge_list.end())
@@ -47,8 +47,8 @@ namespace detail {
 
 } // namespace detail
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires(traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -161,9 +161,9 @@ struct directed_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
+        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -178,8 +178,8 @@ struct directed_adjacency_list {
     }
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires(traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct undirected_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -264,9 +264,9 @@ struct undirected_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
+        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -292,7 +292,7 @@ struct undirected_adjacency_list {
     }
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
 struct adjacency_list_impl_traits {
     using type = void;
 
@@ -300,8 +300,8 @@ struct adjacency_list_impl_traits {
     using storage_type = void;
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires type_traits::c_directed_edge<typename AdjacencyList::edge_type>
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires traits::c_directed_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_adjacency_list<AdjacencyList>;
@@ -310,8 +310,8 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using storage_type = std::vector<std::vector<ItemType>>;
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires type_traits::c_undirected_edge<typename AdjacencyList::edge_type>
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires traits::c_undirected_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_adjacency_list<AdjacencyList>;

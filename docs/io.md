@@ -10,11 +10,18 @@ Users can save graphs to a file in multiple formats, while the library supports 
 
 ## Table of content
 
-- [Basic usage of stream I/O operations](#basic-usage-of-stream-io-operations)
-- [I/O options](#io-options)
-- [File I/O operations](#file-io-operations)
-- [GSF (Grahp Specification Format)](#gsf-graph-specification-format)
-- [Related pages](#related-pages)
+- [I/O operations](#io-operations)
+  - [Table of content](#table-of-content)
+  - [Basic usage of stream I/O operations](#basic-usage-of-stream-io-operations)
+  - [I/O options](#io-options)
+    - [Example: option setters](#example-option-setters)
+  - [File I/O Operations](#file-io-operations)
+    - [Writing graphs to a file](#writing-graphs-to-a-file)
+    - [Loading graphs from a file](#loading-graphs-from-a-file)
+    - [Example: file I/O](#example-file-io)
+  - [GSF (Graph Specification Format)](#gsf-graph-specification-format)
+    - [The format structure](#the-format-structure)
+  - [Related pages](#related-pages)
 
 <br />
 <br />
@@ -154,7 +161,7 @@ The library provides functionality to read and write graphs to and from files. T
 You can save a graph to a file using the `io::save(graph, path, options)` function:
 
 - **Template parameters**:
-  - `GraphType: type_traits::c_graph` – The type of the graph to save.
+  - `GraphType: traits::c_graph` – The type of the graph to save.
   - `Mode: io::detail::c_io_save_mode = io::write` - File open mode.
 
 > [!NOTE]
@@ -181,7 +188,7 @@ You can load a graph from a file using the `io::load(path)` function:
 
 - **Description**: Loads a graph from the specified file path.
 - **Template parameters**:
-  - `GraphType: type_traits::c_graph` – The type of the graph to be loaded.
+  - `GraphType: traits::c_graph` – The type of the graph to be loaded.
 
 > [!NOTE]
 >

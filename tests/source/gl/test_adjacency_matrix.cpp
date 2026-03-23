@@ -29,7 +29,7 @@ struct test_adjacency_matrix {
 inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "directional_tag-independent tests", SutType, edge_directional_tag_sut_template
+    "directional_tag-independent tests", SutType, directional_tag_sut_template
 ) {
     test_adjacency_matrix fixture;
 
@@ -142,7 +142,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    edge_directional_tag_sut_template,
+    directional_tag_sut_template,
     gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>, // directed adj list
     gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj list
 );

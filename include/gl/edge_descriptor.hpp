@@ -5,22 +5,22 @@
 #pragma once
 
 #include "gl/constants.hpp"
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/io/format.hpp"
 #include "gl/vertex_descriptor.hpp"
 
 namespace gl {
 
 template <
-    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
-    type_traits::c_properties Properties = types::empty_properties>
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties Properties = types::empty_properties>
 class edge_descriptor final {
 public:
     using type = edge_descriptor<DirectionalTag, Properties>;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
-        type_traits::c_empty_properties<properties_type>,
+        traits::c_empty_properties<properties_type>,
         types::empty_properties,
         properties_type&>;
 
@@ -33,7 +33,7 @@ public:
     explicit edge_descriptor(
         const types::id_type id, const types::id_type source, const types::id_type target
     )
-    requires(type_traits::c_empty_properties<properties_type>)
+    requires(traits::c_empty_properties<properties_type>)
     : _id(id), _vertices(source, target) {}
 
     explicit edge_descriptor(
@@ -42,17 +42,17 @@ public:
         const types::id_type target,
         properties_type& properties
     )
-    requires(type_traits::c_non_empty_properties<properties_type>)
+    requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(source, target), _properties(properties) {}
 
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
-    requires(type_traits::c_empty_properties<properties_type>)
+    requires(traits::c_empty_properties<properties_type>)
     {
         return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
-    requires(type_traits::c_non_empty_properties<properties_type>)
+    requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
         return edge_descriptor(
@@ -69,13 +69,13 @@ public:
     ~edge_descriptor() = default;
 
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(type_traits::c_directed_edge<type>)
+    requires(traits::c_directed_edge<type>)
     {
         return this->_id == other._id and (this->_vertices == other._vertices);
     }
 
     [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(type_traits::c_undirected_edge<type>)
+    requires(traits::c_undirected_edge<type>)
     {
         return this->_id == other._id
            and (this->_vertices == other._vertices
@@ -87,11 +87,11 @@ public:
     }
 
     [[nodiscard]] constexpr bool is_directed() const noexcept {
-        return type_traits::c_directed_edge<type>;
+        return traits::c_directed_edge<type>;
     }
 
     [[nodiscard]] constexpr bool is_undirected() const noexcept {
-        return type_traits::c_undirected_edge<type>;
+        return traits::c_undirected_edge<type>;
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
@@ -172,7 +172,7 @@ public:
 
 private:
     void _write(std::ostream& os) const {
-        if constexpr (not type_traits::c_writable<properties_type>) {
+        if constexpr (not traits::c_writable<properties_type>) {
             this->_write_no_properties(os);
             return;
         }
@@ -204,20 +204,20 @@ private:
     types::id_type _id;
     types::homogeneous_pair<types::id_type> _vertices;
     [[no_unique_address]] std::conditional_t<
-        type_traits::c_empty_properties<properties_type>,
+        traits::c_empty_properties<properties_type>,
         types::empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
 
 template <
-    type_traits::c_edge_directional_tag DirectionalTag = directed_t,
-    type_traits::c_properties Properties = types::empty_properties>
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties Properties = types::empty_properties>
 using edge = edge_descriptor<DirectionalTag, Properties>;
 
-template <type_traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = types::empty_properties>
 using directed_edge = edge_descriptor<directed_t, Properties>;
 
-template <type_traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = types::empty_properties>
 using undirected_edge = edge_descriptor<undirected_t, Properties>;
 
 } // namespace gl

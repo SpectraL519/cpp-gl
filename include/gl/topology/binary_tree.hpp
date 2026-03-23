@@ -21,7 +21,7 @@ constexpr types::size_type min_non_trivial_bin_tree_depth = 2uz;
 
 } // namespace detail
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] GraphType regular_binary_tree(const types::size_type depth) {
     if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
@@ -45,15 +45,15 @@ template <type_traits::c_graph GraphType>
     return graph;
 }
 
-template <type_traits::c_flat_list_graph GraphType>
+template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType regular_binary_tree(const types::size_type depth) {
-    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
 }
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_regular_binary_tree(const types::size_type depth) {
-    if constexpr (type_traits::c_directed_graph<GraphType>) {
+    if constexpr (traits::c_directed_graph<GraphType>) {
         if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};
 
@@ -82,9 +82,9 @@ template <type_traits::c_graph GraphType>
     }
 }
 
-template <type_traits::c_flat_list_graph GraphType>
+template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType bidirectional_regular_binary_tree(const types::size_type depth) {
-    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
 }
 

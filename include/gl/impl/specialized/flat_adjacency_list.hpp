@@ -17,8 +17,8 @@
 
 namespace gl::impl::specialized {
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_directed_edge<typename AdjacencyList::edge_type>)
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires(traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_flat_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -128,9 +128,9 @@ struct directed_flat_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
+        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
             self._list.push_back(source_id, {target_id, edge_id});
@@ -144,8 +144,8 @@ struct directed_flat_adjacency_list {
     }
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(type_traits::c_undirected_edge<typename AdjacencyList::edge_type>)
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires(traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct undirected_flat_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
@@ -239,9 +239,9 @@ struct undirected_flat_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const type_traits::c_forward_range_of<types::id_type> auto& edge_ids,
+        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
         const types::id_type source_id,
-        const type_traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<types::id_type> auto& target_ids
     ) {
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids)) {
             self._list.push_back(source_id, {target_id, edge_id});
@@ -273,8 +273,8 @@ struct undirected_flat_adjacency_list {
     }
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires type_traits::c_directed_edge<typename AdjacencyList::edge_type>
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires traits::c_directed_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_flat_adjacency_list<AdjacencyList>;
@@ -283,8 +283,8 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using storage_type = types::segmented_vector<ItemType>;
 };
 
-template <type_traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires type_traits::c_undirected_edge<typename AdjacencyList::edge_type>
+template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
+requires traits::c_undirected_edge<typename AdjacencyList::edge_type>
      and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_flat_adjacency_list<AdjacencyList>;

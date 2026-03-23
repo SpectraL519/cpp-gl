@@ -10,7 +10,7 @@
 
 namespace gl::topology {
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] GraphType cycle(const types::size_type n_vertices) {
     GraphType graph{n_vertices};
 
@@ -20,15 +20,15 @@ template <type_traits::c_graph GraphType>
     return graph;
 }
 
-template <type_traits::c_flat_list_graph GraphType>
+template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType cycle(const types::size_type n_vertices) {
-    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(cycle<base_graph_type>(n_vertices));
 }
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] GraphType bidirectional_cycle(const types::size_type n_vertices) {
-    if constexpr (type_traits::c_directed_graph<GraphType>) {
+    if constexpr (traits::c_directed_graph<GraphType>) {
         GraphType graph{n_vertices};
 
         for (types::id_type source_id = constants::initial_id; source_id < n_vertices;
@@ -45,9 +45,9 @@ template <type_traits::c_graph GraphType>
     }
 }
 
-template <type_traits::c_flat_list_graph GraphType>
+template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType bidirectional_cycle(const types::size_type n_vertices) {
-    using base_graph_type = type_traits::swap_impl_tag_t<GraphType, impl::list_t>;
+    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(bidirectional_cycle<base_graph_type>(n_vertices));
 }
 

@@ -1,7 +1,7 @@
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
-#include <gl/algorithm/types.hpp>
+#include <gl/algorithm/core.hpp>
 #include <gl/topologies.hpp>
 
 #include <doctest.h>

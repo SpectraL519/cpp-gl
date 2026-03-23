@@ -6,7 +6,7 @@
 
 namespace gl_testing::io_common {
 
-template <gl::type_traits::c_graph GraphType>
+template <gl::traits::c_graph GraphType>
 void verify_graph_structure(const GraphType& actual, const GraphType& expected) {
     REQUIRE_EQ(actual.order(), expected.order());
     REQUIRE_EQ(actual.size(), expected.size());
@@ -19,7 +19,7 @@ void verify_graph_structure(const GraphType& actual, const GraphType& expected) 
     }));
 }
 
-template <gl::type_traits::c_graph GraphType>
+template <gl::traits::c_graph GraphType>
 void verify_vertex_properties(const GraphType& actual, const GraphType& expected) {
     const auto properties_proj = [](const auto& item) { return item.properties(); };
 
@@ -32,7 +32,7 @@ void verify_vertex_properties(const GraphType& actual, const GraphType& expected
     ));
 }
 
-template <gl::type_traits::c_graph GraphType>
+template <gl::traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.adjacent_edges(v_actual), [&](const auto& edge) {

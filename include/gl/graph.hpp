@@ -14,12 +14,12 @@
 
 namespace gl {
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
+template <traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>
 class graph;
 
 // --- general graph utility ---
 
-namespace type_traits {
+namespace traits {
 
 template <typename G>
 concept c_graph = c_instantiation_of<G, graph>;
@@ -47,25 +47,26 @@ concept c_matrix_graph =
 template <typename G>
 concept c_adjacency_matrix_graph = c_matrix_graph<G>;
 
-} // namespace type_traits
+} // namespace traits
 
-template <type_traits::c_graph Graph>
+template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
 
-template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source);
 
 namespace detail {
 
-template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
+template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
 
-template <type_traits::c_instantiation_of<graph_traits> GraphTraits>
+template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
     using traits_type = GraphTraits;
+    using directional_tag = typename traits_type::directional_tag;
     using implementation_tag = typename traits_type::implementation_tag;
 
     using implementation_type = typename implementation_tag::template type<traits_type>;
@@ -74,16 +75,15 @@ public:
     using vertex_type = typename traits_type::vertex_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     using vertex_properties_map_type = std::conditional_t<
-        type_traits::c_empty_properties<vertex_properties_type>,
+        traits::c_empty_properties<vertex_properties_type>,
         types::empty_properties_map,
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
     using edge_type = typename traits_type::edge_type;
-    using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
     using edge_properties_map_type = std::conditional_t<
-        type_traits::c_empty_properties<edge_properties_type>,
+        traits::c_empty_properties<edge_properties_type>,
         types::empty_properties_map,
         std::vector<std::unique_ptr<edge_properties_type>>>;
 
@@ -92,7 +92,7 @@ public:
     graph() = default;
 
     explicit graph(const types::size_type n_vertices) : _n_vertices(n_vertices), _impl(n_vertices) {
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(n_vertices);
             for (const auto _ : this->vertex_ids())
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
@@ -117,14 +117,14 @@ public:
     // --- vertex methods ---
 
     [[nodiscard]] gl_attr_force_inline auto vertices() const
-    requires(type_traits::c_empty_properties<vertex_properties_type>)
+    requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return this->vertex_ids()
              | std::views::transform([](const types::id_type id) { return vertex_descriptor{id}; });
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertices() const
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return this->_vertex_properties | std::views::enumerate
              | std::views::transform([](const auto& x) {
@@ -139,7 +139,7 @@ public:
 
     [[nodiscard]] vertex_type get_vertex(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
         else
             return vertex_descriptor{vertex_id};
@@ -157,7 +157,7 @@ public:
         this->_impl.add_vertex();
         const auto new_vertex_id = this->_n_vertices++;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{
                 new_vertex_id,
                 *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
@@ -167,7 +167,7 @@ public:
     }
 
     const vertex_type add_vertex_with(vertex_properties_type properties)
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertex();
         return vertex_descriptor{
@@ -182,7 +182,7 @@ public:
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
             for (types::size_type i = old_size; i < this->_n_vertices; ++i)
@@ -191,17 +191,17 @@ public:
     }
 
     void add_vertices_with(
-        const type_traits::c_sized_range_of<vertex_properties_type> auto& properties_range
+        const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        const auto n = std::ranges::size(properties_range);
+        const auto n = std::ranges::size(properties_rng);
 
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
-            for (auto& properties : properties_range) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
+            for (auto& properties : properties_rng) {
                 this->_vertex_properties.emplace_back(
                     std::make_unique<vertex_properties_type>(properties)
                 );
@@ -218,12 +218,11 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(
-        const type_traits::c_forward_range_of<types::id_type> auto& vertex_id_range
+    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_rng
     ) {
         // sorts the ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<>> vertex_id_set(
-            std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
+            std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
 
         // TODO: optimize
@@ -231,11 +230,11 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const type_traits::c_sized_range_of<vertex_type> auto& vertex_range) {
+    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
         // TODO: optimize
         // sort the ids in a descending order and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
-            std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
+            std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
         );
         for (const auto& vertex : vertex_set)
             this->_remove_vertex_impl(vertex.id());
@@ -286,7 +285,7 @@ public:
 
     [[nodiscard]] inline auto at(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.at(vertex_id, this->_edge_properties);
         else
             return this->_impl.at(vertex_id);
@@ -298,7 +297,7 @@ public:
 
     [[nodiscard]] inline auto adjacent_edges(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.adjacent_edges(vertex_id, this->_edge_properties);
         else
             return this->_impl.adjacent_edges(vertex_id);
@@ -310,7 +309,7 @@ public:
 
     [[nodiscard]] inline auto in_edges(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.in_edges(vertex_id, this->_edge_properties);
         else
             return this->_impl.in_edges(vertex_id);
@@ -322,7 +321,7 @@ public:
 
     [[nodiscard]] inline auto out_edges(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.out_edges(vertex_id, this->_edge_properties);
         else
             return this->_impl.out_edges(vertex_id);
@@ -345,7 +344,7 @@ public:
         const auto new_edge_id = this->_n_edges++;
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
             const auto& p =
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
             return edge_type{new_edge_id, source_id, target_id, *p};
@@ -360,7 +359,7 @@ public:
         const types::id_type target_id,
         const edge_properties_type& properties
     )
-    requires(type_traits::c_non_empty_properties<edge_properties_type>)
+    requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
@@ -384,7 +383,7 @@ public:
     gl_attr_force_inline const edge_type add_edge_with(
         const vertex_type& source, const vertex_type& target, const edge_properties_type& properties
     )
-    requires(type_traits::c_non_empty_properties<edge_properties_type>)
+    requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         return this->add_edge_with(source.id(), target.id(), properties);
     }
@@ -393,41 +392,40 @@ public:
 
     void add_edges_from(
         const types::id_type source_id,
-        const type_traits::c_sized_range_of<types::id_type> auto& target_id_range
+        const traits::c_sized_range_of<types::id_type> auto& target_id_rng
     ) {
         this->_verify_vertex_id(source_id);
 
-        for (const auto target_id : target_id_range) {
+        for (const auto target_id : target_id_rng) {
             this->_verify_vertex_id(target_id);
-            if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            if constexpr (traits::c_non_empty_properties<edge_properties_type>)
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
         }
 
         const auto prev_n_edges = this->_n_edges;
-        this->_n_edges += std::ranges::size(target_id_range);
+        this->_n_edges += std::ranges::size(target_id_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_range
+            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_rng
         );
     }
 
     gl_attr_force_inline void add_edges_from(
-        const vertex_type& source,
-        const type_traits::c_sized_range_of<vertex_type> auto& target_range
+        const vertex_type& source, const traits::c_sized_range_of<vertex_type> auto& target_rng
     ) {
         this->_verify_vertex_id(source.id());
 
-        for (const auto& target : target_range) {
+        for (const auto& target : target_rng) {
             this->_verify_vertex_id(target.id());
-            if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+            if constexpr (traits::c_non_empty_properties<edge_properties_type>)
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
         }
 
         const auto prev_n_edges = this->_n_edges;
-        this->_n_edges += std::ranges::size(target_range);
+        this->_n_edges += std::ranges::size(target_rng);
         this->_impl.add_edges_from(
             std::views::iota(prev_n_edges, this->_n_edges),
             source.id(),
-            target_range | std::views::transform(&vertex_type::id)
+            target_rng | std::views::transform(&vertex_type::id)
         );
     }
 
@@ -455,7 +453,7 @@ public:
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.get_edge(source_id, target_id, this->_edge_properties);
         else
             return this->_impl.get_edge(source_id, target_id);
@@ -473,7 +471,7 @@ public:
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.get_edges(source_id, target_id, this->_edge_properties);
         else
             return this->_impl.get_edges(source_id, target_id);
@@ -487,17 +485,17 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         this->_verify_edge(edge);
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             this->_edge_properties.erase(this->_edge_properties.begin() + edge.id());
         this->_impl.remove_edge(edge);
         this->_n_edges--;
     }
 
-    inline void remove_edges(const type_traits::c_range_of<edge_type> auto& edges) {
+    inline void remove_edges(const traits::c_range_of<edge_type> auto& edges) {
         const auto removed_edge_ids = this->_impl.remove_edges(edges);
         this->_n_edges -= removed_edge_ids.size();
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
             // IDs are sorted and do not contain duplicates
             for (const auto edge_id : std::views::reverse(removed_edge_ids))
                 this->_edge_properties.erase(this->_edge_properties.begin() + edge_id);
@@ -514,7 +512,7 @@ public:
 
         this->_verify_vertex_id(target_id);
 
-        if constexpr (type_traits::c_directed_edge<edge_type>)
+        if constexpr (traits::c_directed_edge<edge_type>)
             return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
         else
             return this->has_edge(source_id, target_id);
@@ -547,7 +545,7 @@ public:
     // --- property methods ---
 
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return util::deref_view(this->_vertex_properties);
     }
@@ -555,20 +553,20 @@ public:
     [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
         const types::id_type id
     ) const
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_verify_vertex_id(id);
         return *this->_vertex_properties[id];
     }
 
     [[nodiscard]] gl_attr_force_inline auto edge_properties_map() const noexcept
-    requires(type_traits::c_non_empty_properties<edge_properties_type>)
+    requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         return util::deref_view(this->_edge_properties);
     }
 
     [[nodiscard]] edge_properties_type& get_edge_properties(const types::id_type id) const
-    requires(type_traits::c_non_empty_properties<edge_properties_type>)
+    requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         if (id >= this->_n_edges)
             throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
@@ -586,11 +584,11 @@ public:
         if (lhs._n_vertices != rhs._n_vertices or lhs._n_edges != rhs._n_edges)
             return false;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             if (not std::ranges::equal(lhs._vertex_properties, rhs._vertex_properties, val_eq))
                 return false;
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             if (not std::ranges::equal(lhs._edge_properties, rhs._edge_properties, val_eq))
                 return false;
 
@@ -620,22 +618,20 @@ public:
 
     // --- friend declarations ---
 
-    template <type_traits::c_graph Graph>
+    template <traits::c_graph Graph>
     friend Graph clone(const Graph& source);
 
-    template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+    template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
     friend auto to(Graph&& source);
 
-    template <
-        type_traits::c_graph_impl_tag TargetImplTag,
-        type_traits::c_graph_impl_tag SourceImplTag>
+    template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
     friend struct detail::to_impl;
 
 private:
     graph(const graph& other)
     : _n_vertices{other._n_vertices}, _n_edges{other._n_edges}, _impl{other._impl} {
         // Deep copy vertex properties
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(other._vertex_properties.size());
             for (const auto& property : other._vertex_properties)
                 this->_vertex_properties.push_back(
@@ -644,7 +640,7 @@ private:
         }
 
         // Deep copy edge properties
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
             this->_edge_properties.reserve(other._edge_properties.size());
             for (const auto& property : other._edge_properties)
                 this->_edge_properties.push_back(std::make_unique<edge_properties_type>(*property));
@@ -652,7 +648,7 @@ private:
     }
 
     [[nodiscard]] static constexpr std::string _directed_type_str() {
-        return type_traits::c_directed_edge<edge_type> ? "directed" : "undirected";
+        return traits::c_directed_edge<edge_type> ? "directed" : "undirected";
     }
 
     // --- graph element verification methods ---
@@ -680,10 +676,10 @@ private:
         this->_n_vertices--;
         this->_n_edges -= removed_edge_ids.size();
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
 
-        if constexpr (type_traits::c_non_empty_properties<edge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
             // IDs are sorted and do not contain duplicates
             for (const auto& edge_id : std::views::reverse(removed_edge_ids))
                 this->_edge_properties.erase(this->_edge_properties.begin() + edge_id);
@@ -727,19 +723,19 @@ private:
         // print graph size
         os << std::format(
             "{} {} {} {} {}\n",
-            static_cast<int>(type_traits::c_directed_edge<edge_type>),
+            static_cast<int>(traits::c_directed_edge<edge_type>),
             this->order(),
             this->size(),
             static_cast<int>(with_vertex_properties),
             static_cast<int>(with_edge_properties)
         );
 
-        if constexpr (type_traits::c_writable<typename vertex_type::properties_type>)
+        if constexpr (traits::c_writable<typename vertex_type::properties_type>)
             if (with_vertex_properties)
                 for (const auto& vertex : this->vertices())
                     os << vertex.properties() << '\n';
 
-        if constexpr (type_traits::c_writable<typename edge_type::properties_type>) {
+        if constexpr (traits::c_writable<typename edge_type::properties_type>) {
             if (with_edge_properties) {
                 const auto print_incident_edges = [this, &os](const types::id_type vertex_id) {
                     for (const auto& edge : this->adjacent_edges(vertex_id)) {
@@ -773,7 +769,7 @@ private:
         bool directed;
         is >> directed;
 
-        if (directed != type_traits::c_directed_edge<edge_type>)
+        if (directed != traits::c_directed_edge<edge_type>)
             throw std::ios_base::failure(std::format(
                 "Invalid graph specification: directional tag does not match - should be {}",
                 _directed_type_str()
@@ -787,7 +783,7 @@ private:
         is >> with_vertex_properties >> with_edge_properties;
 
         if (with_vertex_properties) {
-            if constexpr (not type_traits::c_readable<vertex_properties_type>) {
+            if constexpr (not traits::c_readable<vertex_properties_type>) {
                 throw std::ios_base::failure(
                     "Invalid graph specification: vertex_properties=true "
                     "when vertex_properties_type is not readable"
@@ -807,7 +803,7 @@ private:
         }
 
         if (with_edge_properties) {
-            if constexpr (not type_traits::c_readable<edge_properties_type>) {
+            if constexpr (not traits::c_readable<edge_properties_type>) {
                 throw std::ios_base::failure(
                     "Invalid graph specification: edge_properties=true "
                     "when edge_properties_type is not readable"
@@ -846,7 +842,7 @@ private:
 
 // --- general graph utility ---
 
-template <type_traits::c_graph Graph>
+template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source) {
     return Graph(source);
 }
@@ -855,27 +851,27 @@ namespace types {
 
 using default_vertex_distance_type = std::int64_t;
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 struct vertex_distance {
     using type = default_vertex_distance_type;
 };
 
-template <type_traits::c_graph GraphType>
-requires(type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+template <traits::c_graph GraphType>
+requires(traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
 struct vertex_distance<GraphType> {
     using type = typename GraphType::edge_properties_type::weight_type;
 };
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 using vertex_distance_type = typename vertex_distance<GraphType>::type;
 
 } // namespace types
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline types::vertex_distance_type<GraphType> get_weight(
     const typename GraphType::edge_type& edge
 ) {
-    if constexpr (type_traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+    if constexpr (traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
         return edge.properties().weight;
     else
         return static_cast<types::default_vertex_distance_type>(1ll);
