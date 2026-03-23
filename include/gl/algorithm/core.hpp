@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include "gl/constants.hpp"
 #include "gl/graph.hpp"
+#include "gl/types/core.hpp"
 
 #include <functional>
-#include <optional>
 
 namespace gl::algorithm {
 
@@ -16,7 +17,7 @@ using enum result_discriminator;
 
 struct empty_callback {};
 
-inline constexpr std::nullopt_t no_root_vertex = std::nullopt;
+inline constexpr types::id_type no_root_vertex = constants::invalid_id;
 
 using predecessors_map = std::vector<types::id_type>;
 

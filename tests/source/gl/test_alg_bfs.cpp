@@ -108,18 +108,18 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    std::optional<gl::types::id_type> root_vertex_id;
+    gl::types::id_type root_vertex_id = constants::invalid_id;
     std::deque<gl::types::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id.emplace(constants::vertex_id_1);
+        root_vertex_id = constants::vertex_id_1;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id.emplace(constants::vertex_id_3);
+        root_vertex_id = constants::vertex_id_3;
 
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
             if (id != constants::vertex_id_3)
