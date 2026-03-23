@@ -12,21 +12,12 @@
 
 namespace gl::algorithm {
 
+// --- types ---
+
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
-struct empty_callback {};
-
-inline constexpr types::id_type no_root_vertex = constants::invalid_id;
-
 using predecessors_map = std::vector<types::id_type>;
-
-[[nodiscard]] gl_attr_force_inline bool is_reachable(
-    const traits::c_random_access_range_of<types::id_type> auto& pred_map,
-    const types::id_type vertex_id
-) noexcept {
-    return pred_map[vertex_id] != constants::invalid_id;
-}
 
 struct vertex_info {
     vertex_info(types::id_type id) : id(id), pred_id(id) {}
@@ -63,11 +54,17 @@ struct predicate_result {
     eval value;
 };
 
+struct empty_callback {};
+
 template <result_discriminator ResultDiscriminator, typename ReturnType>
 using return_type = std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, void>;
 
 template <result_discriminator ResultDiscriminator, typename ReturnType>
 using non_void_return_type =
     std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, std::monostate>;
+
+// --- constants ---
+
+inline constexpr types::id_type no_root_vertex = constants::invalid_id;
 
 } // namespace gl::algorithm

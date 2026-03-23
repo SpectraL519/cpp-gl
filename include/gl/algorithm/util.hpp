@@ -21,6 +21,13 @@ init_predecessors_map(const traits::c_graph auto& graph) {
         return return_type();
 }
 
+[[nodiscard]] gl_attr_force_inline bool is_reachable(
+    const traits::c_random_access_range_of<types::id_type> auto& pred_map,
+    const types::id_type vertex_id
+) noexcept {
+    return pred_map[vertex_id] != constants::invalid_id;
+}
+
 template <
     traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
         std::vector<algorithm::vertex_info>>
