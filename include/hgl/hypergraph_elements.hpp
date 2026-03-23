@@ -6,7 +6,7 @@
 
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
-#include "hgl/type_traits.hpp"
+#include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
 namespace hgl {

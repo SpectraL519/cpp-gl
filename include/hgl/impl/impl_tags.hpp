@@ -10,7 +10,7 @@
 #include "hgl/impl/incidence_list.hpp"
 #include "hgl/impl/incidence_matrix.hpp"
 #include "hgl/impl/layout_tags.hpp"
-#include "hgl/type_traits.hpp"
+#include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
 namespace hgl::impl {
