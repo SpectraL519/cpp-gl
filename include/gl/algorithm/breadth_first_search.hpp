@@ -5,8 +5,9 @@
 #pragma once
 
 #include "gl/algorithm/constants.hpp"
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/impl/bfs.hpp"
-#include "gl/algorithm/types.hpp"
+#include "gl/algorithm/traits.hpp"
 
 namespace gl::algorithm {
 

@@ -10,6 +10,7 @@
 
 namespace gl::algorithm {
 
+// TODO: move to core, nullopt_t -> id_type = invalid_id
 inline constexpr std::nullopt_t no_root_vertex = std::nullopt;
 
 } // namespace gl::algorithm

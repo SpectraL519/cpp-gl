@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/algorithm/impl/common.hpp"
+#include "gl/algorithm/traits.hpp"
 
 #include <queue>
 

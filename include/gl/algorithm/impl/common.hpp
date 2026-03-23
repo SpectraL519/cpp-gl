@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/algorithm/types.hpp"
+#include "gl/algorithm/core.hpp"
 
 namespace gl::algorithm::impl {
 
