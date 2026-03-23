@@ -177,11 +177,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto pd = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
+    const auto pred_map = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
+    REQUIRE_EQ(pred_map.size(), graph.order());
+    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -370,12 +371,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto pd =
+    const auto pred_map =
         gl::algorithm::recursive_depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
+    REQUIRE_EQ(pred_map.size(), graph.order());
+    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

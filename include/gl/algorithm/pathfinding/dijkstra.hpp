@@ -4,52 +4,21 @@
 
 #pragma once
 
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/pfs.hpp"
+#include "gl/constants.hpp"
 
 #include <deque>
 
 namespace gl::algorithm {
 
 template <traits::c_arithmetic VertexDistanceType>
-struct paths_descriptor : public predecessors_descriptor {
-    using predecessor_type = typename predecessors_descriptor::predecessor_type;
-    using distance_type = VertexDistanceType;
-
+struct paths_descriptor {
     paths_descriptor(const types::size_type n_vertices)
-    : predecessors_descriptor(n_vertices), distances(n_vertices) {
-        distances.shrink_to_fit();
-    }
+    : predecessors(n_vertices, constants::invalid_id), distances(n_vertices) {}
 
-    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&> operator[](
-        const types::size_type i
-    ) const {
-        return std::make_pair<const predecessor_type&, const distance_type&>(
-            this->predecessors[i], this->distances[i]
-        );
-    }
-
-    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& operator[](const types::size_type i
-    ) {
-        return std::make_pair<predecessor_type&, distance_type&>(
-            this->predecessors[i], this->distances[i]
-        );
-    }
-
-    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&>& at(
-        const types::size_type i
-    ) const {
-        return std::make_pair<const predecessor_type&, const distance_type&>(
-            this->predecessors.at(i), this->distances.at(i)
-        );
-    }
-
-    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& at(const types::size_type i) {
-        return std::make_pair<predecessor_type&, distance_type&>(
-            this->predecessors.at(i), this->distances.at(i)
-        );
-    }
-
-    std::vector<distance_type> distances;
+    predecessors_map predecessors;
+    std::vector<VertexDistanceType> distances;
 };
 
 template <traits::c_graph GraphType>
@@ -77,7 +46,7 @@ template <
 
     auto paths = make_paths_descriptor<GraphType>(graph);
 
-    paths.predecessors.at(source_id).emplace(source_id);
+    paths.predecessors[source_id] = source_id;
     paths.distances[source_id] = distance_type{};
 
     std::optional<edge_type> negative_edge;
@@ -101,10 +70,10 @@ template <
             }
 
             const auto new_distance = paths.distances[pred_id] + edge_weight;
-            if (not paths.predecessors[vertex_id].has_value()
+            if (paths.predecessors[vertex_id] == constants::invalid_id
                 or new_distance < paths.distances[vertex_id]) {
                 paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id].emplace(pred_id);
+                paths.predecessors[vertex_id] = pred_id;
                 return true;
             }
 

@@ -7,6 +7,7 @@
 #include "gl/graph.hpp"
 
 #include <functional>
+#include <optional>
 
 namespace gl::algorithm {
 
@@ -14,6 +15,17 @@ enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
 struct empty_callback {};
+
+inline constexpr std::nullopt_t no_root_vertex = std::nullopt;
+
+using predecessors_map = std::vector<types::id_type>;
+
+[[nodiscard]] gl_attr_force_inline bool is_reachable(
+    const traits::c_random_access_range_of<types::id_type> auto& pred_map,
+    const types::id_type vertex_id
+) noexcept {
+    return pred_map[vertex_id] != constants::invalid_id;
+}
 
 struct vertex_info {
     vertex_info(types::id_type id) : id(id), pred_id(id) {}
@@ -48,38 +60,6 @@ struct predicate_result {
     }
 
     eval value;
-};
-
-struct predecessors_descriptor {
-    using predecessor_type = std::optional<types::id_type>;
-
-    predecessors_descriptor(const types::size_type n_vertices) : predecessors(n_vertices) {
-        predecessors.shrink_to_fit();
-    }
-
-    virtual ~predecessors_descriptor() = default;
-
-    [[nodiscard]] gl_attr_force_inline bool is_reachable(const types::id_type vertex_id) const {
-        return this->at(vertex_id).has_value();
-    }
-
-    [[nodiscard]] const predecessor_type& operator[](const types::size_type i) const {
-        return this->predecessors[i];
-    }
-
-    [[nodiscard]] predecessor_type& operator[](const types::size_type i) {
-        return this->predecessors[i];
-    }
-
-    [[nodiscard]] const predecessor_type& at(const types::size_type i) const {
-        return this->predecessors.at(i);
-    }
-
-    [[nodiscard]] predecessor_type& at(const types::size_type i) {
-        return this->predecessors.at(i);
-    }
-
-    std::vector<predecessor_type> predecessors;
 };
 
 template <result_discriminator ResultDiscriminator, typename ReturnType>

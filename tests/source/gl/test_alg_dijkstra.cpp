@@ -110,16 +110,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto paths = gl::algorithm::dijkstra_shortest_paths(sut, source_id);
 
         REQUIRE(std::ranges::all_of(sut.vertex_ids(), [&paths](const auto vertex_id) {
-            return paths.is_reachable(vertex_id);
+            return gl::algorithm::is_reachable(paths.predecessors, vertex_id);
         }));
 
-        CHECK(std::ranges::equal(
-            paths.predecessors,
-            expected_predecessors,
-            std::ranges::equal_to{},
-            [](const auto& id_opt) { return id_opt.value(); }
-        ));
-
+        CHECK(std::ranges::equal(paths.predecessors, expected_predecessors));
         CHECK(std::ranges::equal(paths.distances, expected_distances));
     }
 }
@@ -210,16 +204,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto paths = gl::algorithm::dijkstra_shortest_paths(sut, source_id);
 
         REQUIRE(std::ranges::all_of(sut.vertex_ids(), [&paths](const auto vertex_id) {
-            return paths.is_reachable(vertex_id);
+            return gl::algorithm::is_reachable(paths.predecessors, vertex_id);
         }));
 
-        CHECK(std::ranges::equal(
-            paths.predecessors,
-            expected_predecessors,
-            std::ranges::equal_to{},
-            [](const auto& id_opt) { return id_opt.value(); }
-        ));
-
+        CHECK(std::ranges::equal(paths.predecessors, expected_predecessors));
         CHECK(std::ranges::equal(paths.distances, expected_distances));
     }
 }

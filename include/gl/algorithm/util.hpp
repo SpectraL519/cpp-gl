@@ -5,17 +5,18 @@
 #pragma once
 
 #include "gl/algorithm/core.hpp"
+#include "gl/constants.hpp"
+#include "gl/traits.hpp"
+#include "gl/types/core.hpp"
 
 namespace gl::algorithm {
 
-// --- common functions ---
-
-template <result_discriminator ResultDiscriminator, typename ReturnType, traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline non_void_return_type<ResultDiscriminator, ReturnType>
-init_return_value(const GraphType& graph) {
-    using return_type = non_void_return_type<ResultDiscriminator, ReturnType>;
+template <result_discriminator ResultDiscriminator>
+[[nodiscard]] gl_attr_force_inline non_void_return_type<ResultDiscriminator, predecessors_map>
+init_predecessors_map(const traits::c_graph auto& graph) {
+    using return_type = non_void_return_type<ResultDiscriminator, predecessors_map>;
     if constexpr (ResultDiscriminator == algorithm::ret)
-        return return_type(graph.order());
+        return return_type(graph.order(), constants::invalid_id);
     else
         return return_type();
 }
@@ -34,12 +35,12 @@ template <
 template <result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited,
-    non_void_return_type<ResultDiscriminator, predecessors_descriptor>& pd
+    non_void_return_type<ResultDiscriminator, predecessors_map>& pred_map
 ) {
     return [&](const types::id_type vertex_id, const types::id_type pred_id) {
         visited[vertex_id] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
-            pd[vertex_id].emplace(pred_id);
+            pred_map[vertex_id] = pred_id;
         return true;
     };
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "constants.hpp"
+#include "gl/algorithm/core.hpp"
 #include "types.hpp"
 
 #include <gl/algorithm.hpp>
@@ -27,23 +28,23 @@ requires(gl::traits::c_readable<T>)
         );
     }
 
-    for (gl::types::size_type i = 0; i < n; ++i)
+    for (auto i = 0uz; i < n; ++i)
         file >> list[i];
 
     return list;
 }
 
 [[nodiscard]] inline auto has_correct_bin_predecessor(
-    const gl::algorithm::predecessors_descriptor& pd
+    const gl::algorithm::predecessors_map& pred_map
 ) {
-    return [&pd](const gl::types::id_type vertex_id) {
-        if (not pd.is_reachable(vertex_id))
+    return [pred_map](const gl::types::id_type vertex_id) {
+        if (not gl::algorithm::is_reachable(pred_map, vertex_id))
             return false;
 
         if (vertex_id == constants::first_element_idx)
-            return pd[vertex_id] == vertex_id;
+            return pred_map[vertex_id] == vertex_id;
 
-        return pd[vertex_id] == ((vertex_id - constants::one) / constants::two);
+        return pred_map[vertex_id] == ((vertex_id - 1uz) / 2uz);
     };
 }
 
