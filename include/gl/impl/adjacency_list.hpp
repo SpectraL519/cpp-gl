@@ -304,7 +304,7 @@ private:
         for (auto&& adj : this->_list) {
             for (auto& edge_item : adj) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
-                if (it != removed_edge_ids.end() && *it == edge_item.edge_id)
+                if (it != removed_edge_ids.end() and *it == edge_item.edge_id)
                     edge_item.edge_id = constants::invalid_id; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id

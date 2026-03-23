@@ -134,7 +134,7 @@ requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>
             const auto edge_weight = get_weight<GraphType>(edge);
             const auto incident_vertex_id = edge.incident_vertex(vertex_id);
 
-            if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
+            if (not in_mst[incident_vertex_id] and edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;
                 min_cost_edges[incident_vertex_id].emplace(edge);
             }
