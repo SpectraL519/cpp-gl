@@ -27,25 +27,33 @@ return_type<ResultDiscriminator, predecessors_map> breadth_first_search(
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
+    // clang-format off
+
     if (root_vertex_id != constants::invalid_id) {
-        bfs(graph,
+        bfs(
+            graph,
             init_range(root_vertex_id),
             default_visit_vertex_predicate(visited),
             default_visit_callback<ResultDiscriminator>(visited, pred_map),
             default_enqueue_vertex_predicate<GraphType, true>(visited),
             pre_visit,
-            post_visit);
+            post_visit
+        );
     }
     else {
         for (const auto root_id : graph.vertex_ids())
-            bfs(graph,
+            bfs(
+                graph,
                 init_range(root_id),
                 default_visit_vertex_predicate(visited),
                 default_visit_callback<ResultDiscriminator>(visited, pred_map),
                 default_enqueue_vertex_predicate<GraphType, true>(visited),
                 pre_visit,
-                post_visit);
+                post_visit
+            );
     }
+
+    // clang-format on
 
     if constexpr (ResultDiscriminator == algorithm::ret)
         return pred_map;

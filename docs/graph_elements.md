@@ -119,7 +119,7 @@ By default, the `edge_descriptor` class does not carry any properties and assume
 
 - **`DirectionalTag`**: A tag type indicating whether the edge is directed or undirected.
   - *Default value*: `directed_t`
-  - *Constraints*: must satisfy the **`traits::c_edge_directional_tag`** concept (either `directed_t` or `undirected_t`)
+  - *Constraints*: must satisfy the **`traits::c_graph_directional_tag`** concept (either `directed_t` or `undirected_t`)
 - **`Properties`**: A type that defines the properties associated with each edge.
   - *Default value*: `types::empty_properties`
   - *Constraints*: must satisfy the **`traits::c_properties`** concept
@@ -244,7 +244,7 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
 
   ```cpp
   template <
-      traits::c_edge_directional_tag DirectionalTag = directed_t,
+      traits::c_graph_directional_tag DirectionalTag = directed_t,
       traits::c_properties Properties = types::empty_properties>
   using edge = edge_descriptor<DirectionalTag, Properties>;
   ```

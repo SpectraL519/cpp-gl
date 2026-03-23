@@ -66,6 +66,7 @@ template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
     using traits_type = GraphTraits;
+    using directional_tag = typename traits_type::directional_tag;
     using implementation_tag = typename traits_type::implementation_tag;
 
     using implementation_type = typename implementation_tag::template type<traits_type>;
@@ -79,7 +80,6 @@ public:
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
     using edge_type = typename traits_type::edge_type;
-    using edge_directional_tag = typename traits_type::edge_directional_tag;
     using edge_properties_type = typename traits_type::edge_properties_type;
 
     using edge_properties_map_type = std::conditional_t<
@@ -191,17 +191,17 @@ public:
     }
 
     void add_vertices_with(
-        const traits::c_sized_range_of<vertex_properties_type> auto& properties_range
+        const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        const auto n = std::ranges::size(properties_range);
+        const auto n = std::ranges::size(properties_rng);
 
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
-            for (auto& properties : properties_range) {
+            for (auto& properties : properties_rng) {
                 this->_vertex_properties.emplace_back(
                     std::make_unique<vertex_properties_type>(properties)
                 );
@@ -218,11 +218,11 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_range
+    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_rng
     ) {
         // sorts the ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<>> vertex_id_set(
-            std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
+            std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
 
         // TODO: optimize
@@ -230,11 +230,11 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_range) {
+    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
         // TODO: optimize
         // sort the ids in a descending order and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
-            std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
+            std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
         );
         for (const auto& vertex : vertex_set)
             this->_remove_vertex_impl(vertex.id());
@@ -392,40 +392,40 @@ public:
 
     void add_edges_from(
         const types::id_type source_id,
-        const traits::c_sized_range_of<types::id_type> auto& target_id_range
+        const traits::c_sized_range_of<types::id_type> auto& target_id_rng
     ) {
         this->_verify_vertex_id(source_id);
 
-        for (const auto target_id : target_id_range) {
+        for (const auto target_id : target_id_rng) {
             this->_verify_vertex_id(target_id);
             if constexpr (traits::c_non_empty_properties<edge_properties_type>)
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
         }
 
         const auto prev_n_edges = this->_n_edges;
-        this->_n_edges += std::ranges::size(target_id_range);
+        this->_n_edges += std::ranges::size(target_id_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_range
+            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_rng
         );
     }
 
     gl_attr_force_inline void add_edges_from(
-        const vertex_type& source, const traits::c_sized_range_of<vertex_type> auto& target_range
+        const vertex_type& source, const traits::c_sized_range_of<vertex_type> auto& target_rng
     ) {
         this->_verify_vertex_id(source.id());
 
-        for (const auto& target : target_range) {
+        for (const auto& target : target_rng) {
             this->_verify_vertex_id(target.id());
             if constexpr (traits::c_non_empty_properties<edge_properties_type>)
                 this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
         }
 
         const auto prev_n_edges = this->_n_edges;
-        this->_n_edges += std::ranges::size(target_range);
+        this->_n_edges += std::ranges::size(target_rng);
         this->_impl.add_edges_from(
             std::views::iota(prev_n_edges, this->_n_edges),
             source.id(),
-            target_range | std::views::transform(&vertex_type::id)
+            target_rng | std::views::transform(&vertex_type::id)
         );
     }
 

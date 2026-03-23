@@ -20,8 +20,8 @@ namespace hgl_testing {
 TEST_SUITE_BEGIN("test_hypergraph");
 
 template <
-    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::traits::c_properties VertexProperties>
+    hgl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    hgl::traits::c_properties VertexProperties>
 using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     VertexProperties,
@@ -29,8 +29,8 @@ using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::implementation_tag>;
 
 template <
-    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::traits::c_properties HyperedgeProperties>
+    hgl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    hgl::traits::c_properties HyperedgeProperties>
 using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     typename HypergraphTraits::vertex_properties_type,
@@ -38,15 +38,15 @@ using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::implementation_tag>;
 
 template <
-    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::traits::c_properties Properties>
+    hgl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    hgl::traits::c_properties Properties>
 using add_properties = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     Properties,
     Properties,
     typename HypergraphTraits::implementation_tag>;
 
-inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
+inline constexpr auto get_id = [](auto&& element) -> hgl::types::id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "hypergraph structure tests", HypergraphTraits, hypergraph_traits_template
@@ -105,7 +105,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("add_vertex should return a vertex_descriptor with an incremented id") {
         sut_type sut;
 
-        for (gl::types::id_type v_id = 0uz; v_id < constants::n_vertices; v_id++) {
+        for (hgl::types::id_type v_id = 0uz; v_id < constants::n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
             CHECK_EQ(sut.order(), v_id + 1uz);
@@ -249,7 +249,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("add_hyperedge should return a hyperedge_descriptor with an incremented id") {
         sut_type sut;
 
-        for (gl::types::id_type e_id = 0uz; e_id < constants::n_hyperedges; e_id++) {
+        for (hgl::types::id_type e_id = 0uz; e_id < constants::n_hyperedges; e_id++) {
             const auto hyperedge = sut.add_hyperedge();
             CHECK_EQ(hyperedge.id(), e_id);
             CHECK_EQ(sut.size(), e_id + 1uz);

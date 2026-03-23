@@ -10,7 +10,7 @@
 namespace gl {
 
 template <
-    traits::c_edge_directional_tag EdgeDirectionalTag,
+    traits::c_graph_directional_tag DirectionalTag,
     traits::c_properties VertexProperties,
     traits::c_properties EdgeProperties,
     traits::c_graph_impl_tag ImplTag>

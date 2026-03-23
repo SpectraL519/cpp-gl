@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/traits.hpp"
 
 namespace gl {

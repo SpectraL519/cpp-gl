@@ -6,9 +6,11 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 
 ## Table of content
 
-- [The defined generators](#the-defined-generators)
-- [Example](#example)
-- [Related pages](#related-pages)
+- [Graph topology generators](#graph-topology-generators)
+  - [Table of content](#table-of-content)
+  - [The defined generators](#the-defined-generators)
+  - [Example](#example)
+  - [Related pages](#related-pages)
 
 <br />
 <br />

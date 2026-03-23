@@ -67,7 +67,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "properties accessing tests", EdgeType, properties_edge_directional_tag_template
+    "properties accessing tests", EdgeType, properties_directional_tag_template
 ) {
     test_edge_descriptor fixture;
     types::used_property used{true};
@@ -104,11 +104,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 // TODO: fix .clang-format to split such lines
-TEST_CASE_TEMPLATE_INSTANTIATE(properties_edge_directional_tag_template, gl::directed_edge<types::used_property>, gl::undirected_edge<types::used_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(properties_directional_tag_template, gl::directed_edge<types::used_property>, gl::undirected_edge<types::used_property>);
 
-TEST_CASE_TEMPLATE_DEFINE(
-    "directional_tag-independent tests", EdgeType, edge_directional_tag_template
-) {
+TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directional_tag_template) {
     test_edge_descriptor fixture{};
     EdgeType sut{fixture.id1, fixture.v1, fixture.v2};
 
@@ -176,7 +174,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 // TODO: fix .clang-format to split such lines
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    edge_directional_tag_template,
+    directional_tag_template,
     gl::directed_edge<>, // default directed edge
     gl::undirected_edge<> // default undirected edge
 );

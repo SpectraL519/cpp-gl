@@ -11,41 +11,42 @@
 namespace gl {
 
 template <
-    traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = types::empty_properties,
     traits::c_properties EdgeProperties = types::empty_properties,
     traits::c_graph_impl_tag ImplTag = impl::list_t>
 struct graph_traits {
+    using directional_tag = DirectionalTag;
+
     using vertex_type = vertex_descriptor<VertexProperties>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
-    using edge_type = edge_descriptor<EdgeDirectionalTag, EdgeProperties>;
-    using edge_directional_tag = typename edge_type::directional_tag;
+    using edge_type = edge_descriptor<DirectionalTag, EdgeProperties>;
     using edge_properties_type = typename edge_type::properties_type;
 
     using implementation_tag = ImplTag;
 };
 
 template <
-    traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = types::empty_properties,
     traits::c_properties EdgeProperties = types::empty_properties>
 using list_graph_traits =
-    graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::list_t>;
+    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::list_t>;
 
 template <
-    traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = types::empty_properties,
     traits::c_properties EdgeProperties = types::empty_properties>
 using flat_list_graph_traits =
-    graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>;
+    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>;
 
 template <
-    traits::c_edge_directional_tag EdgeDirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = types::empty_properties,
     traits::c_properties EdgeProperties = types::empty_properties>
 using matrix_graph_traits =
-    graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>;
+    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>;
 
 template <
     traits::c_properties VertexProperties = types::empty_properties,
@@ -87,12 +88,12 @@ concept c_adjacency_matrix_graph_traits = c_matrix_graph_traits<TraitsType>;
 template <typename TraitsType>
 concept c_directed_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
-    and std::same_as<typename TraitsType::edge_directional_tag, directed_t>;
+    and std::same_as<typename TraitsType::directional_tag, directed_t>;
 
 template <typename TraitsType>
 concept c_undirected_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
-    and std::same_as<typename TraitsType::edge_directional_tag, undirected_t>;
+    and std::same_as<typename TraitsType::directional_tag, undirected_t>;
 
 } // namespace traits
 

@@ -1,4 +1,4 @@
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
@@ -20,7 +20,7 @@ template <
     gl::traits::c_instantiation_of<gl::graph_traits> TraitsType,
     gl::traits::c_properties VertexProperties>
 using add_vertex_property = gl::graph_traits<
-    typename TraitsType::edge_directional_tag,
+    typename TraitsType::directional_tag,
     VertexProperties,
     typename TraitsType::edge_properties_type,
     typename TraitsType::implementation_tag>;
@@ -29,7 +29,7 @@ template <
     gl::traits::c_instantiation_of<gl::graph_traits> TraitsType,
     gl::traits::c_properties EdgeProperties>
 using add_edge_property = gl::graph_traits<
-    typename TraitsType::edge_directional_tag,
+    typename TraitsType::directional_tag,
     typename TraitsType::vertex_properties_type,
     EdgeProperties,
     typename TraitsType::implementation_tag>;
@@ -38,7 +38,7 @@ template <
     gl::traits::c_instantiation_of<gl::graph_traits> TraitsType,
     gl::traits::c_properties Properties>
 using add_properties = gl::graph_traits<
-    typename TraitsType::edge_directional_tag,
+    typename TraitsType::directional_tag,
     Properties,
     Properties,
     typename TraitsType::implementation_tag>;

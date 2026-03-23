@@ -1,5 +1,5 @@
 #include "gl/conversion.hpp"
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/graph.hpp"
 #include "gl/impl/impl_tags.hpp"
 #include "testing/gl/types.hpp"

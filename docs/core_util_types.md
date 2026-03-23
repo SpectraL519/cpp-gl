@@ -18,7 +18,7 @@ This section describes a set of fundamental types provided by the library. While
 
 The library relies heavily on concepts and type traits evaluated at compile-time to make the code more robust and readable and to reduce some of the overhead associated with abstraction.
 
-The common concepts and type traits used in the library are defined in the `gl::traits` namespace and most of them are declared in the [gl/types/traits/concepts.hpp](/include/gl/types/traits/concepts.hpp) header file.
+The common concepts and type traits used in the library are defined in the `gl::traits` namespace and most of them are declared in the [gl/traits.hpp](/include/gl/traits.hpp) header file.
 
 <br />
 <br />
@@ -210,13 +210,48 @@ This section describes the type traits that are associated with the property typ
 > [!NOTE]
 > All type traits listed in this subsection are defined in the `gl::traits` namespace
 
-- `is_default_properties_type_v<Properties>`
-  - *Description*: A constant expression that evaluates to `true` if the specified `Properties` type is the same as `gl::types::empty_properties`, indicating that it is a default properties type.
+- `c_properties<T>`
+  - *Description*: A concept that checks if a given type `T` is a valid properties type, which means that it is semiregular, move constructible, and assignable from a const reference to itself.
 
   ```cpp
-  template <c_properties Properties>
-  constexpr inline bool is_default_properties_type_v =
-      std::is_same_v<Properties, gl::types::empty_properties>;
+  template <typename T>
+  concept c_properties =
+      std::semiregular<T> and std::move_constructible<T> and std::assignable_from<T&, const T&>;
+  ```
+
+- `c_empty_properties<T>`
+  - *Description*: A concept that checks if a given type `T` is an empty properties type - `types::empty_properties = std::monostate`.
+
+  ```cpp
+  template <typename T>
+  concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
+  ```
+
+- `c_non_empty_properties<T>`
+  - *Description*: A concept that checks if a given type `T` is a non-empty properties type.
+
+  ```cpp
+  template <typename T>
+  concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
+  ```
+
+- `c_has_empty_properties<T>`
+  - *Description*: A concept that checks if a given type `T` has an `empty_properties` type alias.
+
+  ```cpp
+  template <typename T>
+  concept c_has_empty_properties =
+      requires { typename T::properties_type; } and c_empty_properties<typename T::properties_type>;
+  ```
+
+- `c_has_non_empty_properties<T>`
+  - *Description*: A concept that checks if a given type `T` has a `non_empty_properties` type alias.
+
+  ```cpp
+  template <typename T>
+  concept c_has_non_empty_properties = requires {
+      typename T::properties_type;
+  } and not c_empty_properties<typename T::properties_type>;
   ```
 
 - `c_binary_color_properties_type<Properties>`

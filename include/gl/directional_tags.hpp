@@ -17,11 +17,11 @@ struct undirected_t;
 namespace traits {
 
 template <typename T>
-concept c_edge_directional_tag = c_one_of<T, directed_t, undirected_t>;
+concept c_graph_directional_tag = c_one_of<T, directed_t, undirected_t>;
 
 } // namespace traits
 
-template <traits::c_edge_directional_tag DirectionalTag, traits::c_properties Properties>
+template <traits::c_graph_directional_tag DirectionalTag, traits::c_properties Properties>
 class edge_descriptor;
 
 namespace traits {

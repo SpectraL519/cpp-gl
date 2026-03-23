@@ -20,7 +20,7 @@ requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 struct swap_impl_tag;
 
 template <
-    traits::c_edge_directional_tag Dir,
+    traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
     traits::c_graph_impl_tag OldImplTag,
@@ -30,7 +30,7 @@ struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
 };
 
 template <
-    traits::c_edge_directional_tag Dir,
+    traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
     traits::c_graph_impl_tag OldImplTag,

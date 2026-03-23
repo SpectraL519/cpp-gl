@@ -13,10 +13,6 @@
 
 namespace gl::traits {
 
-template <typename T>
-concept c_properties =
-    std::semiregular<T> and std::move_constructible<T> and std::assignable_from<T&, const T&>;
-
 template <typename, template <typename...> typename>
 struct is_instantiation_of : std::false_type {};
 

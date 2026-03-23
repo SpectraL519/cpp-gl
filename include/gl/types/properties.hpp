@@ -250,6 +250,10 @@ using bin_color_value = typename types::binary_color::value;
 namespace traits {
 
 template <typename T>
+concept c_properties =
+    std::semiregular<T> and std::move_constructible<T> and std::assignable_from<T&, const T&>;
+
+template <typename T>
 concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
 
 template <typename T>

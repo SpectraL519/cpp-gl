@@ -65,8 +65,7 @@ template <
     return coloring_opt;
 }
 
-template <traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline bool is_bipartite(const GraphType& graph) {
+[[nodiscard]] gl_attr_force_inline bool is_bipartite(const traits::c_graph auto& graph) {
     return bipartite_coloring(graph).has_value();
 }
 

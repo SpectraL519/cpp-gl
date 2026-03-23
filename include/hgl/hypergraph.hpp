@@ -194,17 +194,17 @@ public:
     }
 
     void add_vertices_with(
-        const traits::c_sized_range_of<vertex_properties_type> auto& properties_range
+        const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        const auto n = std::ranges::size(properties_range);
+        const auto n = std::ranges::size(properties_rng);
 
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
-            for (auto& properties : properties_range) {
+            for (auto& properties : properties_rng) {
                 this->_vertex_properties.emplace_back(
                     std::make_unique<vertex_properties_type>(properties)
                 );
@@ -220,11 +220,11 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_range
+    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_rng
     ) {
         // sorts ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
-            std::ranges::begin(vertex_id_range), std::ranges::end(vertex_id_range)
+            std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
 
         // TODO: optimize
@@ -232,10 +232,10 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_range) {
+    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
         // sort vertices in a descending order (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
-            std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
+            std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
         );
 
         // TODO: optimize
@@ -325,17 +325,17 @@ public:
     }
 
     void add_hyperedges_with(
-        const traits::c_sized_range_of<hyperedge_properties_type> auto& properties_range
+        const traits::c_sized_range_of<hyperedge_properties_type> auto& properties_rng
     )
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
-        const auto n = std::ranges::size(properties_range);
+        const auto n = std::ranges::size(properties_rng);
 
         this->_impl.add_hyperedges(n);
         this->_n_hyperedges += n;
 
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
-            for (auto& properties : properties_range) {
+            for (auto& properties : properties_rng) {
                 this->_hyperedge_properties.emplace_back(
                     std::make_unique<hyperedge_properties_type>(properties)
                 );
@@ -352,11 +352,11 @@ public:
     }
 
     void remove_hyperedges_from(
-        const traits::c_forward_range_of<types::id_type> auto& hyperedge_id_range
+        const traits::c_forward_range_of<types::id_type> auto& hyperedge_id_rng
     ) {
         // sorts ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> hyperedge_id_set(
-            std::ranges::begin(hyperedge_id_range), std::ranges::end(hyperedge_id_range)
+            std::ranges::begin(hyperedge_id_rng), std::ranges::end(hyperedge_id_rng)
         );
 
         // TODO: optimize
@@ -364,11 +364,11 @@ public:
             this->_remove_hyperedge_impl(hyperedge_id);
     }
 
-    void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_range
+    void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_rng
     ) {
         // sort hyperedges in a descending order (by id) and removes duplicate ids
         std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
-            std::ranges::begin(hyperedge_range), std::ranges::end(hyperedge_range)
+            std::ranges::begin(hyperedge_rng), std::ranges::end(hyperedge_rng)
         );
 
         // TODO: optimize

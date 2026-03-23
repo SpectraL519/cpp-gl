@@ -16,9 +16,9 @@ The `CPP-GL` library provides a set of customizable graph algorithms, which are 
     - [Depth-first search](#depth-first-search)
     - [Breadth-first search](#breadth-first-search)
     - [Graph coloring](#graph-coloring)
-    - [Dijkstra shortest paths](#dijkstra-shortest-paths)
     - [Topological sorting](#topological-sorting)
-    - [MST finding](#mst-finding)
+    - [Dijkstra shortest paths](#dijkstra-shortest-paths)
+    - [Spanning tree](#spanning-tree)
   - [Writing custom algorithms](#writing-custom-algorithms)
     - [Depth-first search templates](#depth-first-search-templates)
     - [Breadth-first search template](#breadth-first-search-template)
@@ -34,7 +34,7 @@ This section covers the specific types and type traits used for the algorithm im
 
 ### Constants
 
-- `no_root_vertex = constants::invalid_id` - A constant representing the absence of a root vertex in graph traversal algorithms. When this value is used as the `root_vertex_id` parameter in traversal algorithms, it indicates that the search should be performed on all vertices of the graph rather than starting from a specific root vertex.
+- `no_root_vertex: types::id_type = constants::invalid_id` - A constant representing the absence of a root vertex in graph traversal algorithms. When this value is used as the `root_vertex_id` parameter in traversal algorithms, it indicates that the search should be performed on all vertices of the graph rather than starting from a specific root vertex.
 
 ### Types
 
@@ -289,6 +289,26 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*: `bool`
   - *Defined in*: [gl/algorithm/topology/coloring.hpp](/include/gl/algorithm/topology/coloring.hpp)
 
+### Topological sorting
+
+- `topological_sort(graph, pre_visit, post_visit)`
+  - *Description*: Returns the [topological ordering](https://en.wikipedia.org/wiki/Topological_sorting) of the graph's vertices.
+
+  - *Template parameters*:
+    - `GraphType: traits::c_directed_graph` - The type of the graph on which the sorting is performed (must be directed).
+    - `PreVisitCallback: traits::c_optional_id_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called before visiting a vertex.
+    - `PostVisitCallback: traits::c_optional_id_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called after visiting a vertex.
+
+  - *Parameters*:
+    - `graph: const GraphType&` - The graph to perform the coloring on.
+    - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
+    - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
+
+  - *Return type*:
+    - `std::optional<std::vector<types::id_type>>` - The [topological ordering](https://en.wikipedia.org/wiki/Topological_sorting) of the graph's vertices: `std::nullopt` if the given graph is *not acyclic* or a list of vertex IDs representing the proper ordering of the vertices.
+
+  - *Defined in*: [gl/algorithm/topology/topological_sort.hpp](/include/gl/algorithm/topology/topological_sort.hpp)
+
 ### Dijkstra shortest paths
 
 - `dijkstra_shortest_paths(graph, source_id, pre_visit, post_visit)`
@@ -342,27 +362,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*: `std::deque<types::id_type>`
   - *Throws:* `std::invalid_argument` if the vertex with the given ID is unreachable.
 
-### Topological sorting
-
-- `topological_sort(graph, pre_visit, post_visit)`
-  - *Description*: Returns the [topological ordering](https://en.wikipedia.org/wiki/Topological_sorting) of the graph's vertices.
-
-  - *Template parameters*:
-    - `GraphType: traits::c_directed_graph` - The type of the graph on which the sorting is performed (must be directed).
-    - `PreVisitCallback: traits::c_optional_id_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called before visiting a vertex.
-    - `PostVisitCallback: traits::c_optional_id_callback<GraphType, void>` (default = `algorithm::empty_callback`) - The type of the callback function called after visiting a vertex.
-
-  - *Parameters*:
-    - `graph: const GraphType&` - The graph to perform the coloring on.
-    - `pre_visit: const PreVisitCallback&` (default = `{}`) - The callback function to be called before visiting a vertex.
-    - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
-
-  - *Return type*:
-    - `std::optional<std::vector<types::id_type>>` - The [topological ordering](https://en.wikipedia.org/wiki/Topological_sorting) of the graph's vertices: `std::nullopt` if the given graph is *not acyclic* or a list of vertex IDs representing the proper ordering of the vertices.
-
-  - *Defined in*: [gl/algorithm/topology/topological_sort.hpp](/include/gl/algorithm/topology/topological_sort.hpp)
-
-### MST finding
+### Spanning tree
 
 - `edge_heap_prim_mst(graph)`
   - *Description*:

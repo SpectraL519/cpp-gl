@@ -5,14 +5,14 @@
 #pragma once
 
 #include "gl/constants.hpp"
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/io/format.hpp"
 #include "gl/vertex_descriptor.hpp"
 
 namespace gl {
 
 template <
-    traits::c_edge_directional_tag DirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties Properties = types::empty_properties>
 class edge_descriptor final {
 public:
@@ -210,7 +210,7 @@ private:
 };
 
 template <
-    traits::c_edge_directional_tag DirectionalTag = directed_t,
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties Properties = types::empty_properties>
 using edge = edge_descriptor<DirectionalTag, Properties>;
 

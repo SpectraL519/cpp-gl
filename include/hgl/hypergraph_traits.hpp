@@ -98,12 +98,12 @@ concept c_incidence_matrix_hypergraph_traits = c_matrix_hypergraph_traits<TypeTr
 template <typename TraitsType>
 concept c_undirected_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::hyperedge_directional_tag, undirected_t>;
+    and std::same_as<typename TraitsType::hyperdirectional_tag, undirected_t>;
 
 template <typename TraitsType>
 concept c_bf_directed_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
-    and std::same_as<typename TraitsType::hyperedge_directional_tag, bf_directed_t>;
+    and std::same_as<typename TraitsType::hyperdirectional_tag, bf_directed_t>;
 
 } // namespace traits
 
