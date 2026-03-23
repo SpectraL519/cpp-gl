@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/common.hpp"
+#include "gl/algorithm/templates/common.hpp"
 #include "gl/algorithm/traits.hpp"
 
 #include <queue>
 
-namespace gl::algorithm::impl {
+namespace gl::algorithm {
 
 template <
     traits::c_graph GraphType,
@@ -75,4 +75,4 @@ bool pfs(
     return true;
 }
 
-} // namespace gl::algorithm::impl
+} // namespace gl::algorithm

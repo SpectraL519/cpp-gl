@@ -4,9 +4,11 @@
 
 #pragma once
 
+// TODO: rename file to util.hpp, move to gl/algorithm, add ::util namespace
+
 #include "gl/algorithm/core.hpp"
 
-namespace gl::algorithm::impl {
+namespace gl::algorithm {
 
 // --- common functions ---
 
@@ -53,4 +55,4 @@ template <traits::c_graph GraphType, bool AsResult = false>
            ) -> return_type { return not visited[vertex_id]; };
 }
 
-} // namespace gl::algorithm::impl
+} // namespace gl::algorithm

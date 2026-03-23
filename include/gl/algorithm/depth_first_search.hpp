@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/algorithm/constants.hpp"
-#include "gl/algorithm/impl/dfs.hpp"
+#include "gl/algorithm/templates/dfs.hpp"
 
 namespace gl::algorithm {
 
@@ -23,30 +23,26 @@ return_type<ResultDiscriminator, predecessors_descriptor> depth_first_search(
     std::vector<bool> visited(graph.order(), false);
     std::vector<types::id_type> sources(graph.order());
 
-    auto pd = impl::init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
+    auto pd = init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
 
     if (root_vertex_id_opt) {
-        impl::dfs(
-            graph,
+        dfs(graph,
             root_vertex_id_opt.value(),
-            impl::default_visit_vertex_predicate(visited),
-            impl::default_visit_callback<ResultDiscriminator>(visited, pd),
-            impl::default_enqueue_vertex_predicate<GraphType>(visited),
+            default_visit_vertex_predicate(visited),
+            default_visit_callback<ResultDiscriminator>(visited, pd),
+            default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
-            post_visit
-        );
+            post_visit);
     }
     else {
         for (const auto root_vertex_id : graph.vertex_ids())
-            impl::dfs(
-                graph,
+            dfs(graph,
                 root_vertex_id,
-                impl::default_visit_vertex_predicate(visited),
-                impl::default_visit_callback<ResultDiscriminator>(visited, pd),
-                impl::default_enqueue_vertex_predicate<GraphType>(visited),
+                default_visit_vertex_predicate(visited),
+                default_visit_callback<ResultDiscriminator>(visited, pd),
+                default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
-                post_visit
-            );
+                post_visit);
     }
 
     if constexpr (ResultDiscriminator == algorithm::ret)
@@ -67,30 +63,30 @@ return_type<ResultDiscriminator, predecessors_descriptor> recursive_depth_first_
     std::vector<bool> visited(graph.order(), false);
     std::vector<types::id_type> sources(graph.order());
 
-    auto pd = impl::init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
+    auto pd = init_return_value<ResultDiscriminator, predecessors_descriptor>(graph);
 
     if (root_vertex_id_opt) {
         const auto root_id = root_vertex_id_opt.value();
-        impl::r_dfs(
+        r_dfs(
             graph,
             root_id,
             root_id, // pred_id
-            impl::default_visit_vertex_predicate(visited),
-            impl::default_visit_callback<ResultDiscriminator>(visited, pd),
-            impl::default_enqueue_vertex_predicate<GraphType>(visited),
+            default_visit_vertex_predicate(visited),
+            default_visit_callback<ResultDiscriminator>(visited, pd),
+            default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
         );
     }
     else {
         for (const auto& root_id : graph.vertex_ids())
-            impl::r_dfs(
+            r_dfs(
                 graph,
                 root_id,
                 root_id, // pred_id
-                impl::default_visit_vertex_predicate(visited),
-                impl::default_visit_callback<ResultDiscriminator>(visited, pd),
-                impl::default_enqueue_vertex_predicate<GraphType>(visited),
+                default_visit_vertex_predicate(visited),
+                default_visit_callback<ResultDiscriminator>(visited, pd),
+                default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
             );

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/bfs.hpp"
+#include "gl/algorithm/templates/bfs.hpp"
 
 namespace gl::algorithm {
 
@@ -35,7 +35,7 @@ template <
     auto& topological_order = topological_order_opt.value();
     topological_order.reserve(graph.order());
 
-    impl::bfs(
+    bfs(
         graph,
         source_vertex_list,
         algorithm::empty_callback{}, // visit predicate

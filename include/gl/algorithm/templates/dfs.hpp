@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/common.hpp"
+#include "gl/algorithm/templates/common.hpp"
 #include "gl/algorithm/traits.hpp"
 
 #include <stack>
 
-namespace gl::algorithm::impl {
+namespace gl::algorithm {
 
 template <
     traits::c_graph GraphType,
@@ -108,4 +108,4 @@ void r_dfs(
         post_visit(vertex_id);
 }
 
-} // namespace gl::algorithm::impl
+} // namespace gl::algorithm

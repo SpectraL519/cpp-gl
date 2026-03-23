@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/bfs.hpp"
+#include "gl/algorithm/templates/bfs.hpp"
 
 namespace gl::algorithm {
 
@@ -33,9 +33,9 @@ template <
         // color the root vertex
         coloring[root_id] = bin_color_value::black;
 
-        const bool is_bipartite = impl::bfs(
+        const bool is_bipartite = bfs(
             graph,
-            impl::init_range(root_id),
+            init_range(root_id),
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
             [&coloring](const types::id_type vertex_id, const edge_type& in_edge)

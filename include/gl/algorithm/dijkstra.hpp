@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/pfs.hpp"
+#include "gl/algorithm/templates/pfs.hpp"
 
 #include <deque>
 
@@ -82,12 +82,12 @@ template <
 
     std::optional<edge_type> negative_edge;
 
-    impl::pfs(
+    pfs(
         graph,
         [&paths](const algorithm::vertex_info& lhs, const algorithm::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
-        impl::init_range(source_id),
+        init_range(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
         [&paths, &negative_edge](const types::id_type vertex_id, const edge_type& in_edge)

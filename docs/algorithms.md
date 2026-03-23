@@ -1,7 +1,6 @@
 # Algorithms
 
-The `CPP-GL` library provides a set of customizable graph algorithms, which are defined in the [gl/algorithm.hpp](/include/gl/algorithm.hpp) header file or in the specific header files in the [gl/algorithm/](/include/gl/algorithm/) directory.
-
+The `CPP-GL` library provides a set of customizable graph algorithms, which are accessible through the [gl/algorithm.hpp](/include/gl/algorithm.hpp) header file or in the specific header files in the [gl/algorithm/](/include/gl/algorithm/) directory, and are defined in the `gl::algorithm` namespace.
 <br />
 
 ## Table of content
@@ -32,9 +31,6 @@ The `CPP-GL` library provides a set of customizable graph algorithms, which are 
 This section covers the specific types and type traits used for the algorithm implementation. These are designed to make the available algorithms highly customizable and easy to work with.
 
 ### Types
-
-> [!NOTE]
-> All types listed below are defined in the `gl::algorithm` namespace
 
 - `result_discriminator` - An enumeration type used to discriminate whether the algorithm should return a result value or not.
   - **Members:**
@@ -109,7 +105,7 @@ This section covers the specific types and type traits used for the algorithm im
 ### Concepts
 
 > [!NOTE]
-> All concepts listed below are defined in the `gl::traits` namespace
+> All concepts listed below are defined in the `gl::traits` namespace.
 
 - `c_empty_callback`
   - *Description*: Checks if a callback type is `algorithm::empty_callback`. Used to determine when no callback is needed for an algorithm.
@@ -163,9 +159,6 @@ This section covers the specific types and type traits used for the algorithm im
 <br />
 
 ## The defined algorithms
-
-> [!NOTE]
-> All topology generator functions are defined in the `gl::algorithm` namespace.
 
 ### Depth-first search
 
@@ -387,12 +380,12 @@ This section covers the specific types and type traits used for the algorithm im
 
 To write custom graph algorithms you can use the types and concepts described in the [Algorithm-specific types and concepts](#algorithm-specific-types-and-concepts) as well as the general graph utility described in the [graph class documentation page](/docs/graph.md#additional-utility).
 
-Additionaly you can use the depth-first/breadth-first search algorithm templates which are defined in the `gl::algorithm::impl` namespace:
+Moreover, you can use one of the provided search algorithm templates (DFS, BFS or priority-first search) described below to implement a graph traversal within your algorithm. These templates are designed to be highly customizable through the use of predicates and callbacks, allowing you to easily adapt them to the specific requirements of your algorithm.
 
 ### Depth-first search templates
 
 > [!NOTE]
-> The DFS algorithm templates are defined in the [gl/algorithm/impl/dfs.hpp](/include/gl/algorithm/impl/dfs.hpp) file.
+> The DFS algorithm templates are defined in the [gl/algorithm/templates/dfs.hpp](/include/gl/algorithm/templates/dfs.hpp) file.
 
 - `dfs(graph, root_id, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: An iterative DFS algoithm template.
@@ -442,7 +435,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 ### Breadth-first search template
 
 > [!NOTE]
-> The BFS algorithm template is defined in the [gl/algorithm/impl/bfs.hpp](/include/gl/algorithm/impl/bfs.hpp) file.
+> The BFS algorithm template is defined in the [gl/algorithm/templates/bfs.hpp](/include/gl/algorithm/templates/bfs.hpp) file.
 
 - `bfs(graph, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: A breadth-first search algorithm template.
@@ -472,7 +465,7 @@ Additionaly you can use the depth-first/breadth-first search algorithm templates
 ### Priority-first search template
 
 > [!NOTE]
-> The PFS algorithm template is defined in the [gl/algorithm/impl/pfs.hpp](/include/gl/algorithm/impl/pfs.hpp) file.
+> The PFS algorithm template is defined in the [gl/algorithm/templates/pfs.hpp](/include/gl/algorithm/templates/pfs.hpp) file.
 
 - `pfs(graph, pq_compare, initial_queue_content, visit_vertex_pred, visit, enque_vertex_pred, pre_visit, post_visit)`
   - *Desciption*: A priority-first search algorithm template - modification of the BFS algorithm with a heap-based priority queue instead of a standard *FIFO* structure (queue).
