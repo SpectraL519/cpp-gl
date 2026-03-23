@@ -154,7 +154,7 @@ The library provides functionality to read and write graphs to and from files. T
 You can save a graph to a file using the `io::save(graph, path, options)` function:
 
 - **Template parameters**:
-  - `GraphType: type_traits::c_graph` – The type of the graph to save.
+  - `GraphType: traits::c_graph` – The type of the graph to save.
   - `Mode: io::detail::c_io_save_mode = io::write` - File open mode.
 
 > [!NOTE]
@@ -181,7 +181,7 @@ You can load a graph from a file using the `io::load(path)` function:
 
 - **Description**: Loads a graph from the specified file path.
 - **Template parameters**:
-  - `GraphType: type_traits::c_graph` – The type of the graph to be loaded.
+  - `GraphType: traits::c_graph` – The type of the graph to be loaded.
 
 > [!NOTE]
 >

@@ -20,8 +20,8 @@ namespace hgl_testing {
 TEST_SUITE_BEGIN("test_hypergraph");
 
 template <
-    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::type_traits::c_properties VertexProperties>
+    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    gl::traits::c_properties VertexProperties>
 using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     VertexProperties,
@@ -29,8 +29,8 @@ using add_vertex_property = hgl::hypergraph_traits<
     typename HypergraphTraits::implementation_tag>;
 
 template <
-    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::type_traits::c_properties HyperedgeProperties>
+    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    gl::traits::c_properties HyperedgeProperties>
 using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     typename HypergraphTraits::vertex_properties_type,
@@ -38,8 +38,8 @@ using add_hyperedge_property = hgl::hypergraph_traits<
     typename HypergraphTraits::implementation_tag>;
 
 template <
-    gl::type_traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
-    gl::type_traits::c_properties Properties>
+    gl::traits::c_instantiation_of<hgl::hypergraph_traits> HypergraphTraits,
+    gl::traits::c_properties Properties>
 using add_properties = hgl::hypergraph_traits<
     typename HypergraphTraits::directional_tag,
     Properties,
@@ -857,7 +857,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const auto create_test_p_hypergraph = [&set_properties]() {
         p_sut_type sut(2uz, 2uz);
-        if constexpr (hgl::type_traits::c_undirected_hypergraph<p_sut_type>) {
+        if constexpr (hgl::traits::c_undirected_hypergraph<p_sut_type>) {
             sut.bind(0uz, 0uz);
             sut.bind(1uz, 1uz);
         }
@@ -888,7 +888,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("hypergraphs with different bindings are not equal") {
-            if constexpr (hgl::type_traits::c_undirected_hypergraph<p_sut_type>)
+            if constexpr (hgl::traits::c_undirected_hypergraph<p_sut_type>)
                 sut2.bind(0uz, 1uz);
             else
                 sut2.bind_tail(0uz, 1uz);

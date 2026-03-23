@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
 #include <any>
 #include <iomanip>
@@ -223,20 +223,20 @@ struct binary_color_property {
 
 // --- edge properties ---
 
-template <type_traits::c_arithmetic WeightType = double>
+template <traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
     weight_type weight = static_cast<weight_type>(1ll);
 
     friend std::ostream& operator<<(std::ostream& os, const weight_property& property)
-    requires(type_traits::c_writable<weight_type>)
+    requires(traits::c_writable<weight_type>)
     {
         os << property.weight;
         return os;
     }
 
     friend std::istream& operator>>(std::istream& is, weight_property& property)
-    requires(type_traits::c_readable<weight_type>)
+    requires(traits::c_readable<weight_type>)
     {
         is >> property.weight;
         return is;
@@ -247,7 +247,7 @@ struct weight_property {
 
 using bin_color_value = typename types::binary_color::value;
 
-namespace type_traits {
+namespace traits {
 
 template <typename T>
 concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
@@ -279,6 +279,6 @@ concept c_weight_properties_type = c_properties<Properties> and requires(Propert
     requires c_arithmetic<typename Properties::weight_type>;
 };
 
-} // namespace type_traits
+} // namespace traits
 
 } // namespace gl

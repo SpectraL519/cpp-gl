@@ -25,9 +25,7 @@ namespace hgl {
 
 namespace detail {
 
-template <
-    type_traits::c_hypergraph_impl_tag TargetImplTag,
-    type_traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
@@ -35,11 +33,11 @@ struct to_impl;
 namespace impl {
 
 template <
-    type_traits::c_hypergraph_directional_tag DirectionalTag,
-    type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+    traits::c_hypergraph_directional_tag DirectionalTag,
+    traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix;
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix<hgl::undirected_t, LayoutTag> final {
 public:
     using directional_tag = hgl::undirected_t;
@@ -142,8 +140,8 @@ public:
     // --- friend declarations ---
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -244,7 +242,7 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 class incidence_matrix<hgl::bf_directed_t, LayoutTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
@@ -429,8 +427,8 @@ public:
     // --- friend declarations ---
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING

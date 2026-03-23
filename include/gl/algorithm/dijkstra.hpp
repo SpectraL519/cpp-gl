@@ -10,7 +10,7 @@
 
 namespace gl::algorithm {
 
-template <type_traits::c_arithmetic VertexDistanceType>
+template <traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor : public predecessors_descriptor {
     using predecessor_type = typename predecessors_descriptor::predecessor_type;
     using distance_type = VertexDistanceType;
@@ -52,10 +52,10 @@ struct paths_descriptor : public predecessors_descriptor {
     std::vector<distance_type> distances;
 };
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
     const GraphType& graph
 ) {
@@ -63,9 +63,9 @@ template <type_traits::c_graph GraphType>
 }
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -127,7 +127,7 @@ template <
     return paths;
 }
 
-template <type_traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
+template <traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
 [[nodiscard]] std::deque<types::id_type> reconstruct_path(
     const IdRange& predecessor_map, const types::id_type vertex_id
 ) {

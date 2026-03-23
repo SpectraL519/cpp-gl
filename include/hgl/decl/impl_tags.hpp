@@ -10,18 +10,18 @@ namespace hgl {
 
 namespace impl {
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_layout_tag LayoutTag>
 struct list_t;
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_layout_tag LayoutTag>
 struct flat_list_t;
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 struct matrix_t;
 
 } // namespace impl
 
-namespace type_traits {
+namespace traits {
 
 template <typename T>
 concept c_hypergraph_list_impl = c_instantiation_of<T, impl::list_t>;
@@ -43,6 +43,6 @@ template <typename T>
 concept c_hypergraph_impl_tag =
     c_hypergraph_incidence_list_impl<T> or c_hypergraph_incidence_matrix_impl<T>;
 
-} // namespace type_traits
+} // namespace traits
 
 } // namespace hgl

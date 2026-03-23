@@ -11,13 +11,12 @@
 namespace gl::algorithm::impl {
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
-    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<bool> VisitVertexPredicate,
+    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void dfs(
     const GraphType& graph,
     const types::id_type root_id,
@@ -29,7 +28,7 @@ void dfs(
 ) {
     using vertex_stack_type = std::stack<algorithm::vertex_info>;
 
-    if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+    if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
         if (not visit_vertex_pred(root_id))
             return;
 
@@ -42,11 +41,11 @@ void dfs(
         const auto vinfo = vertex_stack.top();
         vertex_stack.pop();
 
-        if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+        if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
             if (not visit_vertex_pred(vinfo.id))
                 continue;
 
-        if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
+        if constexpr (not traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vinfo.id);
 
         visit(vinfo.id, vinfo.pred_id);
@@ -57,19 +56,18 @@ void dfs(
                 vertex_stack.emplace(incident_vertex_id, vinfo.id);
         }
 
-        if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
+        if constexpr (not traits::c_empty_callback<PostVisitCallback>)
             post_visit(vinfo.id);
     }
 }
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
-    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<bool> VisitVertexPredicate,
+    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void r_dfs(
     const GraphType& graph,
     const types::id_type vertex_id,
@@ -80,11 +78,11 @@ void r_dfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+    if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
         if (not visit_vertex_pred(vertex_id))
             return;
 
-    if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
+    if constexpr (not traits::c_empty_callback<PreVisitCallback>)
         pre_visit(vertex_id);
 
     visit(vertex_id, pred_id);
@@ -105,7 +103,7 @@ void r_dfs(
             );
     }
 
-    if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
+    if constexpr (not traits::c_empty_callback<PostVisitCallback>)
         post_visit(vertex_id);
 }
 

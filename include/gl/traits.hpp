@@ -4,20 +4,14 @@
 
 #pragma once
 
-// Copyright (c) 2024-2026 Jakub Musiał
-// This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
-// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
-
-#pragma once
-
-#include "gl/types/types.hpp"
+#include "gl/types/core.hpp"
 
 #include <concepts>
 #include <memory>
 #include <ranges>
 #include <type_traits>
 
-namespace gl::type_traits {
+namespace gl::traits {
 
 template <typename T>
 concept c_properties =
@@ -121,4 +115,4 @@ concept c_readable = requires(T value, std::istream& is) { is >> value; };
 template <typename T>
 concept c_writable = requires(T value, std::ostream& os) { os << value; };
 
-} // namespace gl::type_traits
+} // namespace gl::traits

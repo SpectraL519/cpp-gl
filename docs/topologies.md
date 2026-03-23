@@ -21,7 +21,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `clique(n_vertices)`
   - *Description*: Generates a [complete graph](https://en.wikipedia.org/wiki/Complete_graph) of the specified type
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
     - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
@@ -30,7 +30,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `biclique(n_vertices_a, n_vertices_b)`
   - *Description*: Generates a [complete bipartite graph](https://en.wikipedia.org/wiki/Complete_bipartite_graph) of the specified type where the vertex sets are of sizes `n_vertices_a` and `n_vertices_b` respectively
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
     - `n_vertices_a: types::size_type` - the number of vertices of the first vertex set of the graph
     - `n_vertices_b: types::size_type` - the number of vertices of the second vertex set of the graph
@@ -40,7 +40,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `path(n_vertices)`
   - *Description*: Generates a [path graph](https://en.wikipedia.org/wiki/Path_graph) of the specified type
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
     - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
@@ -49,7 +49,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `bidirectional_path(n_vertices)`
   - *Description*: Generates a bidirectional [path graph](https://en.wikipedia.org/wiki/Path_graph) of the specified type:
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* path graph, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `path(n_vertices)`
   - *Parameters*:
@@ -60,7 +60,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `cycle(n_vertices)`
   - *Description*: Generates a [cycle graph](https://en.wikipedia.org/wiki/Cycle_graph) of the specified type
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
     - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
@@ -69,7 +69,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `bidirectional_cycle(n_vertices)`
   - *Description*: Generates a bidirectional [cycle graph](https://en.wikipedia.org/wiki/Cycle_graph) of the specified type:
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* cycle graph, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `cycle(n_vertices)`
   - *Parameters*:
@@ -80,7 +80,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `regular_binary_tree(depth)`
   - *Description*: Generates a [regular binary tree](#regular_dary_tree) of the specified type
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
     - `depth: types::size_type` - the leaf depth of the generated binary tree graph
   - *Return type*: `GraphType`
@@ -89,7 +89,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
 - `bidirectional_regular_binary_tree(depth)`
   - *Description*: Generates a bidirectional [regular binary tree](#regular_dary_tree) of the specified type:
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph` - the type of the generated graph
+    - `GraphType: traits::c_graph` - the type of the generated graph
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* regular binary tree, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `regular_binary_tree(n_vertices)`
   - *Parameters*:
@@ -112,7 +112,7 @@ The program below demostrates the graphs returned by the topology generator func
 #include <gl/graph.hpp>
 #include <gl/topologies.hpp>
 
-template <gl::type_traits::c_graph GraphType>
+template <gl::traits::c_graph GraphType>
 void print_graph(const GraphType& graph, const std::string& name) {
     std::cout << "> " << name << ":\n" << graph << std::endl;
 }

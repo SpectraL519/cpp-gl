@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "gl/types/types.hpp"
+#include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
@@ -20,12 +20,12 @@
 
 namespace hgl {
 
-template <type_traits::c_instantiation_of<hypergraph_traits> HypergraphTraits = hypergraph_traits<>>
+template <traits::c_instantiation_of<hypergraph_traits> HypergraphTraits = hypergraph_traits<>>
 class hypergraph;
 
 // --- general hypergraph utility ---
 
-namespace type_traits {
+namespace traits {
 
 template <typename H>
 concept c_hypergraph = c_instantiation_of<H, hypergraph>;
@@ -57,24 +57,22 @@ template <typename H>
 concept c_incidence_matrix_hypergraph =
     c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
 
-} // namespace type_traits
+} // namespace traits
 
-template <type_traits::c_hypergraph Hypergraph>
+template <traits::c_hypergraph Hypergraph>
 [[nodiscard]] Hypergraph clone(const Hypergraph& source);
 
-template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
+template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hypergraph>
 [[nodiscard]] auto to(Hypergraph&& source);
 
 namespace detail {
 
-template <
-    type_traits::c_hypergraph_impl_tag TargetImplTag,
-    type_traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
 
-template <type_traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
+template <traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
 class hypergraph final {
 public:
     using traits_type = HypergraphTraits;
@@ -86,14 +84,14 @@ public:
     using vertex_type = typename traits_type::vertex_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     using vertex_properties_map_type = std::conditional_t<
-        type_traits::c_empty_properties<vertex_properties_type>,
+        traits::c_empty_properties<vertex_properties_type>,
         types::empty_properties_map,
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
     using hyperedge_type = typename traits_type::hyperedge_type;
     using hyperedge_properties_type = typename traits_type::hyperedge_properties_type;
     using hyperedge_properties_map_type = std::conditional_t<
-        type_traits::c_empty_properties<hyperedge_properties_type>,
+        traits::c_empty_properties<hyperedge_properties_type>,
         types::empty_properties_map,
         std::vector<std::unique_ptr<hyperedge_properties_type>>>;
 
@@ -103,13 +101,13 @@ public:
         const types::size_type n_vertices = 0uz, const types::size_type n_hyperedges = 0uz
     )
     : _n_vertices(n_vertices), _n_hyperedges(n_hyperedges), _impl(n_vertices, n_hyperedges) {
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(n_vertices);
             for (const auto _ : this->vertex_ids())
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
         }
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             this->_hyperedge_properties.reserve(n_hyperedges);
             for (const auto _ : this->hyperedge_ids())
                 this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
@@ -144,7 +142,7 @@ public:
 
     [[nodiscard]] vertex_type get_vertex(const types::id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
         else
             return vertex_type{vertex_id};
@@ -162,7 +160,7 @@ public:
         this->_impl.add_vertices(1uz);
         const auto new_vertex_id = this->_n_vertices++;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{
                 new_vertex_id,
                 *this->_vertex_properties.emplace_back(std::make_unique<vertex_properties_type>())
@@ -172,7 +170,7 @@ public:
     }
 
     vertex_type add_vertex_with(vertex_properties_type properties)
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertices(1uz);
         return vertex_type{
@@ -187,7 +185,7 @@ public:
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
             for (types::size_type i = old_size; i < this->_n_vertices; ++i)
@@ -196,16 +194,16 @@ public:
     }
 
     void add_vertices_with(
-        const type_traits::c_sized_range_of<vertex_properties_type> auto& properties_range
+        const traits::c_sized_range_of<vertex_properties_type> auto& properties_range
     )
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         const auto n = std::ranges::size(properties_range);
 
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             for (auto& properties : properties_range) {
                 this->_vertex_properties.emplace_back(
                     std::make_unique<vertex_properties_type>(properties)
@@ -222,8 +220,7 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(
-        const type_traits::c_forward_range_of<types::id_type> auto& vertex_id_range
+    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_range
     ) {
         // sorts ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
@@ -235,7 +232,7 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const type_traits::c_sized_range_of<vertex_type> auto& vertex_range) {
+    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_range) {
         // sort vertices in a descending order (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_range), std::ranges::end(vertex_range)
@@ -247,7 +244,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return util::deref_view(this->_vertex_properties);
     }
@@ -255,7 +252,7 @@ public:
     [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
         const types::id_type vertex_id
     ) const
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_verify_vertex_id(vertex_id);
         return *this->_vertex_properties[vertex_id];
@@ -273,7 +270,7 @@ public:
 
     [[nodiscard]] hyperedge_type get_hyperedge(const types::id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
         else
             return hyperedge_type{hyperedge_id};
@@ -291,7 +288,7 @@ public:
         this->_impl.add_hyperedges(1uz);
         const auto new_hyperedge_id = this->_n_hyperedges++;
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{
                 new_hyperedge_id,
                 *this->_hyperedge_properties.emplace_back(
@@ -303,7 +300,7 @@ public:
     }
 
     hyperedge_type add_hyperedge_with(hyperedge_properties_type properties)
-    requires(type_traits::c_non_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         this->_impl.add_hyperedges(1uz);
         return hyperedge_type{
@@ -318,7 +315,7 @@ public:
         this->_impl.add_hyperedges(n);
         this->_n_hyperedges += n;
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             const auto old_size = this->_hyperedge_properties.size();
             this->_hyperedge_properties.reserve(this->_n_hyperedges);
             for (types::size_type i = old_size; i < this->_n_hyperedges; ++i)
@@ -328,16 +325,16 @@ public:
     }
 
     void add_hyperedges_with(
-        const type_traits::c_sized_range_of<hyperedge_properties_type> auto& properties_range
+        const traits::c_sized_range_of<hyperedge_properties_type> auto& properties_range
     )
-    requires(type_traits::c_non_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         const auto n = std::ranges::size(properties_range);
 
         this->_impl.add_hyperedges(n);
         this->_n_hyperedges += n;
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             for (auto& properties : properties_range) {
                 this->_hyperedge_properties.emplace_back(
                     std::make_unique<hyperedge_properties_type>(properties)
@@ -355,7 +352,7 @@ public:
     }
 
     void remove_hyperedges_from(
-        const type_traits::c_forward_range_of<types::id_type> auto& hyperedge_id_range
+        const traits::c_forward_range_of<types::id_type> auto& hyperedge_id_range
     ) {
         // sorts ids in a descending order and removes duplicate ids
         std::set<types::id_type, std::greater<types::id_type>> hyperedge_id_set(
@@ -367,8 +364,7 @@ public:
             this->_remove_hyperedge_impl(hyperedge_id);
     }
 
-    void remove_hyperedges_from(
-        const type_traits::c_sized_range_of<hyperedge_type> auto& hyperedge_range
+    void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_range
     ) {
         // sort hyperedges in a descending order (by id) and removes duplicate ids
         std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
@@ -381,7 +377,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedge_properties_map() const noexcept
-    requires(type_traits::c_non_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return util::deref_view(this->_hyperedge_properties);
     }
@@ -389,7 +385,7 @@ public:
     [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& get_hyperedge_properties(
         const types::id_type id
     ) const
-    requires(type_traits::c_non_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         this->_verify_hyperedge_id(id);
         return *this->_hyperedge_properties[id];
@@ -747,11 +743,11 @@ public:
         if (lhs._n_vertices != rhs._n_vertices or lhs._n_hyperedges != rhs._n_hyperedges)
             return false;
 
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             if (not std::ranges::equal(lhs._vertex_properties, rhs._vertex_properties, val_eq))
                 return false;
 
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             if (not std::ranges::equal(
                     lhs._hyperedge_properties, rhs._hyperedge_properties, val_eq
                 ))
@@ -762,22 +758,22 @@ public:
 
     // --- friend declarations ---
 
-    template <type_traits::c_hypergraph Hypergraph>
+    template <traits::c_hypergraph Hypergraph>
     friend Hypergraph clone(const Hypergraph& source);
 
-    template <type_traits::c_hypergraph_impl_tag TargetImplTag, type_traits::c_hypergraph Hypergraph>
+    template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hypergraph>
     friend auto to(Hypergraph&& source);
 
     template <
-        type_traits::c_hypergraph_impl_tag TargetImplTag,
-        type_traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_impl_tag TargetImplTag,
+        traits::c_hypergraph_impl_tag SourceImplTag>
     friend struct detail::to_impl;
 
 private:
     hypergraph(const hypergraph& other)
     : _n_vertices{other._n_vertices}, _n_hyperedges{other._n_hyperedges}, _impl{other._impl} {
         // Deep copy vertex properties
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(other._vertex_properties.size());
             for (const auto& property : other._vertex_properties)
                 this->_vertex_properties.push_back(
@@ -786,7 +782,7 @@ private:
         }
 
         // Deep copy hyperedge properties
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>) {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             this->_hyperedge_properties.reserve(other._hyperedge_properties.size());
             for (const auto& property : other._hyperedge_properties)
                 this->_hyperedge_properties.push_back(
@@ -808,7 +804,7 @@ private:
 
         this->_impl.remove_vertex(vertex_id);
         this->_n_vertices--;
-        if constexpr (type_traits::c_non_empty_properties<vertex_properties_type>)
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
     }
 
@@ -825,20 +821,20 @@ private:
 
         this->_impl.remove_hyperedge(hyperedge_id);
         this->_n_hyperedges--;
-        if constexpr (type_traits::c_non_empty_properties<hyperedge_properties_type>)
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             this->_hyperedge_properties.erase(this->_hyperedge_properties.begin() + hyperedge_id);
     }
 
     // --- transformations ---
 
     gl_attr_force_inline auto _create_vertex_descriptor() noexcept
-    requires(type_traits::c_empty_properties<vertex_properties_type>)
+    requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return [](const types::id_type id) { return vertex_type{id}; };
     }
 
     gl_attr_force_inline auto _create_vertex_descriptor() noexcept
-    requires(type_traits::c_non_empty_properties<vertex_properties_type>)
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = this->_vertex_properties](const types::id_type id) {
             return vertex_type{id, *pmap[id]};
@@ -846,13 +842,13 @@ private:
     }
 
     gl_attr_force_inline auto _create_hyperedge_descriptor() noexcept
-    requires(type_traits::c_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_empty_properties<hyperedge_properties_type>)
     {
         return [](const types::id_type id) { return hyperedge_type{id}; };
     }
 
     gl_attr_force_inline auto _create_hyperedge_descriptor() noexcept
-    requires(type_traits::c_non_empty_properties<hyperedge_properties_type>)
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return [&pmap = this->_hyperedge_properties](const types::id_type id) {
             return hyperedge_type{id, *pmap[id]};
@@ -872,48 +868,44 @@ private:
 
 // --- general hypergraph utility ---
 
-template <type_traits::c_hypergraph Hypergraph>
+template <traits::c_hypergraph Hypergraph>
 [[nodiscard]] Hypergraph clone(const Hypergraph& source) {
     return Hypergraph(source);
 }
 
 // --- degree bounds ---
 
-[[nodiscard]] types::size_type max_degree(const type_traits::c_hypergraph auto& hypergraph
-) noexcept {
+[[nodiscard]] types::size_type max_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto degrees = hypergraph.degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
-[[nodiscard]] types::size_type min_degree(const type_traits::c_hypergraph auto& hypergraph
-) noexcept {
+[[nodiscard]] types::size_type min_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto degrees = hypergraph.degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
 }
 
 [[nodiscard]] types::size_type max_out_degree(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+    const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
 [[nodiscard]] types::size_type min_out_degree(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+    const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
 }
 
-[[nodiscard]] types::size_type max_in_degree(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type max_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
-[[nodiscard]] types::size_type min_in_degree(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type min_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
@@ -921,39 +913,35 @@ template <type_traits::c_hypergraph Hypergraph>
 
 // --- hyperedge size bounds ---
 
-[[nodiscard]] types::size_type rank(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] types::size_type rank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type corank(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] types::size_type corank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
 }
 
-[[nodiscard]] types::size_type max_tail_size(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type max_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type min_tail_size(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type min_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
 }
 
-[[nodiscard]] types::size_type max_head_size(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type max_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type min_head_size(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] types::size_type min_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
@@ -962,67 +950,66 @@ template <type_traits::c_hypergraph Hypergraph>
 // --- regularity ---
 
 [[nodiscard]] bool is_regular(
-    const type_traits::c_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.degree_map(), k);
 }
 
-[[nodiscard]] bool is_regular(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] bool is_regular(const traits::c_hypergraph auto& hypergraph) noexcept {
     return util::is_constant(hypergraph.degree_map());
 }
 
 [[nodiscard]] bool is_out_regular(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.out_degree_map(), k);
 }
 
-[[nodiscard]] bool is_out_regular(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] bool is_out_regular(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.out_degree_map());
 }
 
 [[nodiscard]] bool is_in_regular(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.in_degree_map(), k);
 }
 
-[[nodiscard]] bool is_in_regular(const type_traits::c_bf_directed_hypergraph auto& hypergraph
-) noexcept {
+[[nodiscard]] bool is_in_regular(const traits::c_bf_directed_hypergraph auto& hypergraph) noexcept {
     return util::is_constant(hypergraph.in_degree_map());
 }
 
 // --- uniformity ---
 
 [[nodiscard]] bool is_uniform(
-    const type_traits::c_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.hyperedge_size_map(), k);
 }
 
-[[nodiscard]] bool is_uniform(const type_traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] bool is_uniform(const traits::c_hypergraph auto& hypergraph) noexcept {
     return util::is_constant(hypergraph.hyperedge_size_map());
 }
 
 [[nodiscard]] bool is_tail_uniform(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.tail_size_map(), k);
 }
 
-[[nodiscard]] bool is_tail_uniform(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] bool is_tail_uniform(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.tail_size_map());
 }
 
 [[nodiscard]] bool is_head_uniform(
-    const type_traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
 ) noexcept {
     return util::all_equal(hypergraph.head_size_map(), k);
 }
 
-[[nodiscard]] bool is_head_uniform(const type_traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] bool is_head_uniform(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.head_size_map());
 }

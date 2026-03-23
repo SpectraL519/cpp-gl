@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
-namespace hgl::type_traits {
+namespace hgl::traits {
 
-using namespace gl::type_traits;
+using namespace gl::traits;
 
-} // namespace hgl::type_traits
+} // namespace hgl::traits

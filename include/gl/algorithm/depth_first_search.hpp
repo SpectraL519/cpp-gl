@@ -11,9 +11,9 @@ namespace gl::algorithm {
 
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
@@ -55,9 +55,9 @@ impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> depth_first_
 
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> recursive_depth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,

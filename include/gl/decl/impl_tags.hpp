@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/edge_tags.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
 namespace gl {
 
@@ -19,11 +19,11 @@ struct matrix_t;
 
 } // namespace impl
 
-namespace type_traits {
+namespace traits {
 
 template <typename T>
 concept c_graph_impl_tag = c_one_of<T, impl::list_t, impl::flat_list_t, impl::matrix_t>;
 
-} // namespace type_traits
+} // namespace traits
 
 } // namespace gl

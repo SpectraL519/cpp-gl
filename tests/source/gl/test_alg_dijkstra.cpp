@@ -23,8 +23,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using weight_type = typename sut_type::edge_properties_type::weight_type;
     using distance_type = weight_type;
 
-    static_assert(gl::type_traits::c_weight_properties_type<
-                  typename sut_type::edge_properties_type>);
+    static_assert(gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should throw if there is an edge with a negative weight") {
         const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
@@ -83,7 +82,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const std::string file_name_prefix =
-                gl::type_traits::c_directed_graph<sut_type>
+                gl::traits::c_directed_graph<sut_type>
                     ? "dijkstra_directed_"
                     : "dijkstra_undirected_";
 
@@ -161,8 +160,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = gl::graph<TraitsType>;
     using distance_type = gl::types::default_vertex_distance_type;
 
-    static_assert(not gl::type_traits::c_weight_properties_type<
-                  typename sut_type::edge_properties_type>);
+    static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;

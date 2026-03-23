@@ -14,7 +14,7 @@ namespace gl_testing::alg_common {
 inline const fs::path data_path(TEST_DATA_PATH);
 
 template <typename T>
-requires(gl::type_traits::c_readable<T>)
+requires(gl::traits::c_readable<T>)
 [[nodiscard]] std::vector<T> load_list(const gl::types::size_type n, const fs::path& file_path) {
     std::vector<T> list(n);
 
@@ -47,7 +47,7 @@ requires(gl::type_traits::c_readable<T>)
     };
 }
 
-template <gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
+template <gl::traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
 requires(std::same_as<typename VertexType::properties_type, types::visited_property>)
 struct vertex_visited_projection {
     [[nodiscard]] bool operator()(const VertexType& vertex) const {

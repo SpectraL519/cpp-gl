@@ -5,8 +5,8 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
+#include "gl/traits.hpp"
 #include "gl/types/properties.hpp"
-#include "gl/types/type_traits.hpp"
 
 namespace gl {
 
@@ -14,17 +14,17 @@ struct directed_t;
 
 struct undirected_t;
 
-namespace type_traits {
+namespace traits {
 
 template <typename T>
 concept c_edge_directional_tag = c_one_of<T, directed_t, undirected_t>;
 
-} // namespace type_traits
+} // namespace traits
 
-template <type_traits::c_edge_directional_tag DirectionalTag, type_traits::c_properties Properties>
+template <traits::c_edge_directional_tag DirectionalTag, traits::c_properties Properties>
 class edge_descriptor;
 
-namespace type_traits {
+namespace traits {
 
 template <typename E>
 concept c_directed_edge =
@@ -36,21 +36,21 @@ concept c_undirected_edge =
     c_instantiation_of<E, edge_descriptor>
     and std::same_as<typename E::directional_tag, undirected_t>;
 
-} // namespace type_traits
+} // namespace traits
 
 struct directed_t {
     using type = std::type_identity_t<directed_t>;
 
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::c_directed_edge<EdgeType>)
+    template <traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(traits::c_directed_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
         const EdgeType& edge, const types::id_type vertex_id
     ) {
         return vertex_id == edge._vertices.first;
     }
 
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::c_directed_edge<EdgeType>)
+    template <traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(traits::c_directed_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_to(
         const EdgeType& edge, const types::id_type vertex_id
     ) {
@@ -61,16 +61,16 @@ struct directed_t {
 struct undirected_t {
     using type = std::type_identity_t<undirected_t>;
 
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::c_undirected_edge<EdgeType>)
+    template <traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(traits::c_undirected_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
         const EdgeType& edge, const types::id_type vertex_id
     ) {
         return edge.is_incident_with(vertex_id);
     }
 
-    template <type_traits::c_instantiation_of<edge_descriptor> EdgeType>
-    requires(type_traits::c_undirected_edge<EdgeType>)
+    template <traits::c_instantiation_of<edge_descriptor> EdgeType>
+    requires(traits::c_undirected_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_to(
         const EdgeType& edge, const types::id_type vertex_id
     ) {

@@ -12,7 +12,7 @@
 
 namespace gl::algorithm {
 
-template <type_traits::c_undirected_graph GraphType>
+template <traits::c_undirected_graph GraphType>
 struct mst_descriptor {
     using graph_type = GraphType;
     using edge_type = typename graph_type::edge_type;
@@ -26,7 +26,7 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(0);
 };
 
-template <type_traits::c_undirected_graph GraphType>
+template <traits::c_undirected_graph GraphType>
 [[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
     const GraphType& graph, const std::optional<types::id_type> root_id_opt
 ) {
@@ -86,8 +86,8 @@ template <type_traits::c_undirected_graph GraphType>
     return mst;
 }
 
-template <type_traits::c_undirected_graph GraphType>
-requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
+template <traits::c_undirected_graph GraphType>
+requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
     const GraphType& graph, const std::optional<types::id_type> root_id_opt
 ) {

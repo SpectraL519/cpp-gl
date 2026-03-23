@@ -16,7 +16,7 @@ struct test_name_property {
     using sut_type = gl::types::name_property;
     using value_type = typename sut_type::value_type;
 
-    static_assert(gl::type_traits::c_properties<sut_type>);
+    static_assert(gl::traits::c_properties<sut_type>);
 
     const value_type value = "element name";
     sut_type sut{value};
@@ -67,7 +67,7 @@ struct test_dynamic_properties {
     using sut_type = gl::types::dynamic_properties;
     using key_type = typename sut_type::key_type;
 
-    static_assert(gl::type_traits::c_properties<sut_type>);
+    static_assert(gl::traits::c_properties<sut_type>);
 
     struct compound_value {
         int x;
@@ -212,8 +212,8 @@ TEST_CASE_FIXTURE(
 }
 
 // assertions for not tested property types
-static_assert(gl::type_traits::c_properties<gl::types::binary_color_property>);
-static_assert(gl::type_traits::c_properties<gl::types::weight_property<>>);
+static_assert(gl::traits::c_properties<gl::types::binary_color_property>);
+static_assert(gl::traits::c_properties<gl::types::weight_property<>>);
 
 TEST_SUITE_END(); // test_properties
 

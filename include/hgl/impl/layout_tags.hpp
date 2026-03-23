@@ -71,7 +71,7 @@ struct bidirectional_t {};
 
 } // namespace impl
 
-namespace type_traits {
+namespace traits {
 
 template <typename T>
 concept c_hypergraph_layout_tag =
@@ -81,6 +81,6 @@ template <typename T>
 concept c_hypergraph_asymmetric_layout_tag =
     c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
 
-} // namespace type_traits
+} // namespace traits
 
 } // namespace hgl

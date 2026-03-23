@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "types/types.hpp"
+#include "gl/types/core.hpp"
 
 #include <limits>
 

@@ -11,15 +11,14 @@
 namespace gl::algorithm::impl {
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
+    traits::c_graph GraphType,
+    traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
         std::vector<algorithm::vertex_info>,
-    type_traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    type_traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
-    type_traits::c_id_callback<predicate_result, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_optional_id_callback<bool> VisitVertexPredicate,
+    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 bool bfs(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
@@ -44,14 +43,14 @@ bool bfs(
         const algorithm::vertex_info vinfo = vertex_queue.front();
         vertex_queue.pop();
 
-        if constexpr (not type_traits::c_empty_callback<VisitVertexPredicate>)
+        if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
             if (not visit_vertex_pred(vinfo.id))
                 continue;
 
-        if constexpr (not type_traits::c_empty_callback<PreVisitCallback>)
+        if constexpr (not traits::c_empty_callback<PreVisitCallback>)
             pre_visit(vinfo.id);
 
-        if constexpr (not type_traits::c_empty_callback<VisitCallback>)
+        if constexpr (not traits::c_empty_callback<VisitCallback>)
             if (not visit(vinfo.id, vinfo.pred_id))
                 return false;
 
@@ -66,7 +65,7 @@ bool bfs(
                 vertex_queue.emplace(incident_vertex_id, vinfo.id);
         }
 
-        if constexpr (not type_traits::c_empty_callback<PostVisitCallback>)
+        if constexpr (not traits::c_empty_callback<PostVisitCallback>)
             post_visit(vinfo.id);
     }
 

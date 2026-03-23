@@ -5,15 +5,15 @@
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
 namespace gl {
 
 template <
-    type_traits::c_edge_directional_tag EdgeDirectionalTag,
-    type_traits::c_properties VertexProperties,
-    type_traits::c_properties EdgeProperties,
-    type_traits::c_graph_impl_tag ImplTag>
+    traits::c_edge_directional_tag EdgeDirectionalTag,
+    traits::c_properties VertexProperties,
+    traits::c_properties EdgeProperties,
+    traits::c_graph_impl_tag ImplTag>
 struct graph_traits;
 
 } // namespace gl

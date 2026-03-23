@@ -24,7 +24,7 @@ constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return elemen
 struct test_conversion {
     using property_type = gl::types::name_property;
 
-    template <gl::type_traits::c_graph GraphType>
+    template <gl::traits::c_graph GraphType>
     [[nodiscard]] GraphType create_test_graph() {
         GraphType graph{this->test_order};
         for (const auto& [source, target] : this->test_edges)
@@ -35,7 +35,7 @@ struct test_conversion {
         return graph;
     }
 
-    void set_properties(gl::type_traits::c_graph auto& graph) {
+    void set_properties(gl::traits::c_graph auto& graph) {
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)
@@ -49,7 +49,7 @@ struct test_conversion {
                 graph.get_edge_properties(eid) = property_type("edge_" + std::to_string(eid));
     }
 
-    void validate_graph(const gl::type_traits::c_graph auto& graph) {
+    void validate_graph(const gl::traits::c_graph auto& graph) {
         REQUIRE_EQ(graph.order(), this->test_order);
         REQUIRE_EQ(graph.size(), this->test_edges.size());
         for (const auto& [source, target] : this->test_edges)
@@ -58,7 +58,7 @@ struct test_conversion {
         this->validate_properties(graph);
     }
 
-    void validate_properties(const gl::type_traits::c_graph auto& graph) {
+    void validate_properties(const gl::traits::c_graph auto& graph) {
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)

@@ -11,9 +11,9 @@ namespace gl::algorithm {
 using bicoloring_type = std::vector<types::binary_color>;
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
@@ -66,15 +66,13 @@ template <
     return coloring_opt;
 }
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline bool is_bipartite(const GraphType& graph) {
     return bipartite_coloring(graph).has_value();
 }
 
-template <
-    type_traits::c_graph GraphType,
-    type_traits::c_sized_range_of<types::binary_color> ColorRange>
-requires(type_traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
+template <traits::c_graph GraphType, traits::c_sized_range_of<types::binary_color> ColorRange>
+requires(traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
     using color_type = typename GraphType::vertex_properties_type::color_type;
 

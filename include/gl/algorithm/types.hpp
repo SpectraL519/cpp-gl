@@ -85,7 +85,7 @@ struct predecessors_descriptor {
 
 } // namespace algorithm
 
-namespace type_traits {
+namespace traits {
 
 template <typename F>
 concept c_empty_callback = std::same_as<F, algorithm::empty_callback>;
@@ -109,7 +109,7 @@ concept c_optional_edge_callback =
     c_graph<GraphType>
     and c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>;
 
-} // namespace type_traits
+} // namespace traits
 
 namespace algorithm::impl {
 

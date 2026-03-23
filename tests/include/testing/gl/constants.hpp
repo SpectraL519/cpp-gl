@@ -3,7 +3,7 @@
 #include "types.hpp"
 
 #include <gl/constants.hpp>
-#include <gl/types/types.hpp>
+#include <gl/types/core.hpp>
 
 #include <ranges>
 
