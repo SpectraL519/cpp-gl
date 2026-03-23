@@ -4,8 +4,6 @@
 
 #pragma once
 
-// TODO: rename file to util.hpp, move to gl/algorithm, add ::util namespace
-
 #include "gl/algorithm/core.hpp"
 
 namespace gl::algorithm {

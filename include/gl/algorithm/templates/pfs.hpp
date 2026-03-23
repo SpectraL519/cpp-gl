@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "gl/algorithm/templates/common.hpp"
 #include "gl/algorithm/traits.hpp"
+#include "gl/algorithm/util.hpp"
 
 #include <queue>
 
