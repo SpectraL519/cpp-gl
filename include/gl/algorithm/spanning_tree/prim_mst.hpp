@@ -31,10 +31,7 @@ template <traits::c_undirected_graph GraphType>
     const GraphType& graph, const std::optional<types::id_type> root_id_opt
 ) {
     // type definitions
-
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
 
     struct edge_comparator {
         [[nodiscard]] gl_attr_force_inline bool operator()(

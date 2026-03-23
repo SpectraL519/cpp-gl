@@ -17,7 +17,6 @@ template <
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
     // prepare the vertex in degree map
@@ -40,7 +39,7 @@ template <
         source_vertex_list,
         algorithm::empty_callback{}, // visit predicate
         [&topological_order](
-            const types::id_type vertex_id, const types::id_type source_id
+            const types::id_type vertex_id, [[maybe_unused]] const types::id_type source_id
         ) { // visit callback
             topological_order.push_back(vertex_id);
             return true;

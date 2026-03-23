@@ -49,8 +49,10 @@ template <traits::c_graph GraphType, bool AsResult = false>
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
-    return [&](const types::id_type vertex_id, const typename GraphType::edge_type& in_edge
-           ) -> return_type { return not visited[vertex_id]; };
+    return [&](const types::id_type vertex_id,
+               [[maybe_unused]] const typename GraphType::edge_type& in_edge) -> return_type {
+        return not visited[vertex_id];
+    };
 }
 
 } // namespace gl::algorithm

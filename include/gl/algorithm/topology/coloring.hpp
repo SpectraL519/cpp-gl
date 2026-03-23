@@ -19,7 +19,6 @@ template <
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
     std::optional<bicoloring_type> coloring_opt;
@@ -74,8 +73,6 @@ template <traits::c_graph GraphType>
 template <traits::c_graph GraphType, traits::c_sized_range_of<types::binary_color> ColorRange>
 requires(traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
-    using color_type = typename GraphType::vertex_properties_type::color_type;
-
     if (std::ranges::size(color_range) != graph.order())
         return false;
 
