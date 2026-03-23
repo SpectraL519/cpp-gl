@@ -17,14 +17,13 @@ template <
     traits::c_graph_impl_tag ImplTag = impl::list_t>
 struct graph_traits {
     using directional_tag = DirectionalTag;
+    using implementation_tag = ImplTag;
 
     using vertex_type = vertex_descriptor<VertexProperties>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
     using edge_type = edge_descriptor<DirectionalTag, EdgeProperties>;
     using edge_properties_type = typename edge_type::properties_type;
-
-    using implementation_tag = ImplTag;
 };
 
 template <
