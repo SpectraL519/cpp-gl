@@ -8,9 +8,7 @@
 
 #include <functional>
 
-namespace gl {
-
-namespace algorithm {
+namespace gl::algorithm {
 
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
@@ -23,6 +21,7 @@ struct vertex_info {
     vertex_info(types::id_type id, types::id_type pred_id) : id(id), pred_id(pred_id) {}
 
     // if id == pred_id then vertex_id is the id of the starting vertex
+    // TODO: add has_pred/is_root method?
     types::id_type id;
     types::id_type pred_id;
 };
@@ -83,18 +82,11 @@ struct predecessors_descriptor {
     std::vector<predecessor_type> predecessors;
 };
 
-} // namespace algorithm
-
-// TODO: move to algorithm
-namespace algorithm::impl {
+template <result_discriminator ResultDiscriminator, typename ReturnType>
+using return_type = std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, void>;
 
 template <result_discriminator ResultDiscriminator, typename ReturnType>
-using alg_return_type = std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, void>;
-
-template <result_discriminator ResultDiscriminator, typename ReturnType>
-using alg_return_type_non_void =
+using non_void_return_type =
     std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, std::monostate>;
 
-} // namespace algorithm::impl
-
-} // namespace gl
+} // namespace gl::algorithm

@@ -6,18 +6,23 @@ The `CPP-GL` library provides a set of customizable graph algorithms, which are 
 
 ## Table of content
 
-- [Algorithm-specific types and concepts](#algorithm-specific-types-and-concepts)
-  - [Types](#types)
-  - [Concepts](#concepts)
-- [The defined algorithms](#the-defined-algorithms)
-  - [Depth-first search](#depth-first-search)
-  - [Breadth-first search](#breadth-first-search)
-  - [Graph coloring](#graph-coloring)
-  - [Dijkstra shortest paths](#dijkstra-shortest-paths)
-  - [Topological sorting](#topological-sorting)
-  - [MST finding](#mst-finding)
-- [Writing custom algorithms](#writing-custom-algorithms)
-- [Related pages](#related-pages)
+- [Algorithms](#algorithms)
+  - [Table of content](#table-of-content)
+  - [Algorithm-specific types and concepts](#algorithm-specific-types-and-concepts)
+    - [Types](#types)
+    - [Concepts](#concepts)
+  - [The defined algorithms](#the-defined-algorithms)
+    - [Depth-first search](#depth-first-search)
+    - [Breadth-first search](#breadth-first-search)
+    - [Graph coloring](#graph-coloring)
+    - [Dijkstra shortest paths](#dijkstra-shortest-paths)
+    - [Topological sorting](#topological-sorting)
+    - [MST finding](#mst-finding)
+  - [Writing custom algorithms](#writing-custom-algorithms)
+    - [Depth-first search templates](#depth-first-search-templates)
+    - [Breadth-first search template](#breadth-first-search-template)
+    - [Priority-first search template](#priority-first-search-template)
+  - [Related pages](#related-pages)
 
 <br />
 <br />
@@ -180,7 +185,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `impl::alg_return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
+    - `return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
   - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/depth_first_search.hpp)
 
@@ -209,7 +214,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `post_visit: const PostVisitCallback&` (default = `{}`) - The callback function to be called after visiting a vertex.
 
   - *Return type*:
-    - `impl::alg_return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
+    - `return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
   - *Defined in*: [gl/algorithm/breadth_first_search.hpp](/include/gl/algorithm/breadth_first_search.hpp)
 

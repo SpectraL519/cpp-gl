@@ -11,9 +11,9 @@ namespace gl::algorithm::impl {
 // --- common functions ---
 
 template <result_discriminator ResultDiscriminator, typename ReturnType, traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline alg_return_type_non_void<ResultDiscriminator, ReturnType>
+[[nodiscard]] gl_attr_force_inline non_void_return_type<ResultDiscriminator, ReturnType>
 init_return_value(const GraphType& graph) {
-    using return_type = alg_return_type_non_void<ResultDiscriminator, ReturnType>;
+    using return_type = non_void_return_type<ResultDiscriminator, ReturnType>;
     if constexpr (ResultDiscriminator == algorithm::ret)
         return return_type(graph.order());
     else
@@ -34,7 +34,7 @@ template <
 template <result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited,
-    alg_return_type_non_void<ResultDiscriminator, predecessors_descriptor>& pd
+    non_void_return_type<ResultDiscriminator, predecessors_descriptor>& pd
 ) {
     return [&](const types::id_type vertex_id, const types::id_type pred_id) {
         visited[vertex_id] = true;

@@ -16,7 +16,7 @@ template <
     traits::c_graph GraphType,
     traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
-impl::alg_return_type<ResultDiscriminator, predecessors_descriptor> breadth_first_search(
+return_type<ResultDiscriminator, predecessors_descriptor> breadth_first_search(
     const GraphType& graph,
     const std::optional<types::id_type>& root_vertex_id_opt = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
