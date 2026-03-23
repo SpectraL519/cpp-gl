@@ -180,14 +180,14 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
-  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/depth_first_search.hpp)
+  - *Defined in*: [gl/algorithm/traversal/depth_first_search.hpp](/include/gl/algorithm/traversal/depth_first_search.hpp)
 
 - `recursive_depth_first_search(graph, root_vertex_id_opt, pre_visit, post_visit)`
   - *Description*: Performs a recursive depth-first search (DFS) on the specified graph and conditionally returns a `predecessors_descriptor` instance.
 
     **NOTE:** This algoithm has the same template parameters, parameters and return type as the iterative version (`depth_first_search`)
 
-  - *Defined in*: [gl/algorithm/depth_first_search.hpp](/include/gl/algorithm/depth_first_search.hpp)
+  - *Defined in*: [gl/algorithm/traversal/depth_first_search.hpp](/include/gl/algorithm/traversal/depth_first_search.hpp)
 
 ### Breadth-first search
 
@@ -209,7 +209,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `return_type<ResultDiscriminator, predecessors_descriptor>` - If `ResultDiscriminator` is `algorithm::noret` - nothing will be returned (`void`). Otherwise the algorithm will return an instance of `predecessors_descriptor`.
 
-  - *Defined in*: [gl/algorithm/breadth_first_search.hpp](/include/gl/algorithm/breadth_first_search.hpp)
+  - *Defined in*: [gl/algorithm/traversal/breadth_first_search.hpp](/include/gl/algorithm/traversal/breadth_first_search.hpp)
 
 ### Graph coloring
 
@@ -232,7 +232,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `std::optional<bicoloring_type>` - The binary coloring of the graph: `std::nullopt` if the given graph is *not bipartite* or a list of `types::binary_color` values where the color at index $i$ corresponds to the vertex $v$ such that $v_{id} = i$
 
-  - *Defined in*: [gl/algorithm/coloring.hpp](/include/gl/algorithm/coloring.hpp)
+  - *Defined in*: [gl/algorithm/topology/coloring.hpp](/include/gl/algorithm/topology/coloring.hpp)
 
 - `is_bipartite(graph)`
   - *Description*: Checks whether a graph is bipartite by performin a BFS-based binary coloring on it.
@@ -242,7 +242,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `graph: const GraphType&` - the graph to check.
   - *Return type*: `bool`
   - *Equivalent to*: `bipartite_coloring(graph).has_value()`
-  - *Defined in*: [gl/algorithm/coloring.hpp](/include/gl/algorithm/coloring.hpp)
+  - *Defined in*: [gl/algorithm/topology/coloring.hpp](/include/gl/algorithm/topology/coloring.hpp)
 
 - `apply_coloring(graph, color_range)`
   - *Description*: Applies the given coloring to the graph by setting the color poperty of $v$ to `color_range(v.id())`. If the coloring cannot be applied to the given graph due to a size mismatch, `false` is returned. Otherwise `true` will be returned.
@@ -255,7 +255,7 @@ This section covers the specific types and type traits used for the algorithm im
     - `graph: GraphType&` - the graph to apply the coloring to.
     - `color_range: const ColorRange&` - the range of binary color values to apply to the graph
   - *Return type*: `bool`
-  - *Defined in*: [gl/algorithm/coloring.hpp](/include/gl/algorithm/coloring.hpp)
+  - *Defined in*: [gl/algorithm/topology/coloring.hpp](/include/gl/algorithm/topology/coloring.hpp)
 
 ### Dijkstra shortest paths
 
@@ -278,7 +278,7 @@ This section covers the specific types and type traits used for the algorithm im
 
   - *Throws*: `std::invalid_argument` if an edge with a negative weight is found during the graph search.
 
-  - *Defined in*: [gl/algorithm/dijkstra.hpp](/include/gl/algorithm/dijkstra.hpp)
+  - *Defined in*: [gl/algorithm/pathfinding/dijkstra.hpp](/include/gl/algorithm/pathfinding/dijkstra.hpp)
 
 > [!NOTE]
 > The `algorithm::paths_descriptor` structure is defined as follows:
@@ -328,7 +328,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `std::optional<std::vector<types::id_type>>` - The [topological ordering](https://en.wikipedia.org/wiki/Topological_sorting) of the graph's vertices: `std::nullopt` if the given graph is *not acyclic* or a list of vertex IDs representing the proper ordering of the vertices.
 
-  - *Defined in*: [gl/algorithm/topological_sort.hpp](/include/gl/algorithm/topological_sort.hpp)
+  - *Defined in*: [gl/algorithm/topology/topological_sort.hpp](/include/gl/algorithm/topology/topological_sort.hpp)
 
 ### MST finding
 
@@ -347,7 +347,7 @@ This section covers the specific types and type traits used for the algorithm im
   - *Return type*:
     - `algorithm::mst_descriptor<GraphType>` - An [MST](https://en.wikipedia.org/wiki/Minimum_spanning_tree) desciptor object (detailed information can be found in the note below).
 
-  - *Defined in*: [gl/algorithm/mst.hpp](/include/gl/algorithm/mst.hpp)
+  - *Defined in*: [gl/algorithm/spanning_tree/prim_mst.hpp](/include/gl/algorithm/spanning_tree/prim_mst.hpp)
 
 - `vertex_heap_prim_mst(graph)`
   - *Description*:
