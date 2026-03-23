@@ -28,7 +28,7 @@ By default, the `vertex_descriptor` class does not carry any properties. However
 
 - **`Properties`**: A type that defines the properties associated with each vertex.
   - *Default value*:  `types::empty_properties`
-  - *Constraints*: must satisfy the **`type_traits::c_properties`** concept
+  - *Constraints*: must satisfy the **`traits::c_properties`** concept
 
 ### Member Types
 
@@ -103,7 +103,7 @@ The destructor is *defaulted*, allowing proper cleanup of the `vertex_descriptor
 - **`vertex`**: A convenient alias for `vertex_descriptor` with customizable properties.
 
   ```cpp
-  template <type_traits::c_properties Properties = types::empty_properties>
+  template <traits::c_properties Properties = types::empty_properties>
   using vertex = vertex_descriptor<Properties>;
   ```
 
@@ -119,10 +119,10 @@ By default, the `edge_descriptor` class does not carry any properties and assume
 
 - **`DirectionalTag`**: A tag type indicating whether the edge is directed or undirected.
   - *Default value*: `directed_t`
-  - *Constraints*: must satisfy the **`type_traits::c_edge_directional_tag`** concept (either `directed_t` or `undirected_t`)
+  - *Constraints*: must satisfy the **`traits::c_graph_directional_tag`** concept (either `directed_t` or `undirected_t`)
 - **`Properties`**: A type that defines the properties associated with each edge.
   - *Default value*: `types::empty_properties`
-  - *Constraints*: must satisfy the **`type_traits::c_properties`** concept
+  - *Constraints*: must satisfy the **`traits::c_properties`** concept
 
 ### Member types
 
@@ -244,26 +244,26 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
 
   ```cpp
   template <
-      type_traits::c_edge_directional_tag DirectionalTag = directed_t,
-      type_traits::c_properties Properties = types::empty_properties>
+      traits::c_graph_directional_tag DirectionalTag = directed_t,
+      traits::c_properties Properties = types::empty_properties>
   using edge = edge_descriptor<DirectionalTag, Properties>;
   ```
 
 - `directed_edge`: An alias for `edge_descriptor` specifically for directed edges.
 
   ```cpp
-  template <type_traits::c_properties Properties = types::empty_properties>
+  template <traits::c_properties Properties = types::empty_properties>
   using directed_edge = edge_descriptor<directed_t, Properties>;
   ```
 
 - `undirected_edge`: An alias for `edge_descriptor` specifically for undirected edges.
 
   ```cpp
-  template <type_traits::c_properties Properties = types::empty_properties>
+  template <traits::c_properties Properties = types::empty_properties>
   using undirected_edge = edge_descriptor<undirected_t, Properties>;
   ```
-  
-- `type_traits::c_directed_edge`: A type constraint that accepts only directed edges.
+
+- `traits::c_directed_edge`: A type constraint that accepts only directed edges.
 
   ```cpp
   template <typename E>
@@ -271,8 +271,8 @@ The destructor is *defaulted*, allowing proper cleanup of the `edge_descriptor` 
       c_instantiation_of<E, edge_descriptor>
       and std::same_as<typename E::directional_tag, gl::directed_t>;
   ```
-  
-- `type_traits::c_undirected_edge`: A type constraint that accepts only undirected edges.
+
+- `traits::c_undirected_edge`: A type constraint that accepts only undirected edges.
 
   ```cpp
   template <typename E>

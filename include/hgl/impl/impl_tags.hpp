@@ -10,32 +10,32 @@
 #include "hgl/impl/incidence_list.hpp"
 #include "hgl/impl/incidence_matrix.hpp"
 #include "hgl/impl/layout_tags.hpp"
-#include "hgl/type_traits.hpp"
+#include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
 namespace hgl::impl {
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_layout_tag LayoutTag>
 struct list_t {
     using layout_tag = LayoutTag;
 
-    template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+    template <traits::c_hypergraph_directional_tag DirectionalTag>
     using implementation_type = incidence_list<DirectionalTag, LayoutTag>;
 };
 
-template <type_traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_layout_tag LayoutTag>
 struct flat_list_t {
     using layout_tag = LayoutTag;
 
-    template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+    template <traits::c_hypergraph_directional_tag DirectionalTag>
     using implementation_type = flat_incidence_list<DirectionalTag, LayoutTag>;
 };
 
-template <type_traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
 struct matrix_t {
     using layout_tag = LayoutTag;
 
-    template <type_traits::c_hypergraph_directional_tag DirectionalTag>
+    template <traits::c_hypergraph_directional_tag DirectionalTag>
     using implementation_type = incidence_matrix<DirectionalTag, LayoutTag>;
 };
 

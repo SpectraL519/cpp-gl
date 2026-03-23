@@ -1,6 +1,7 @@
 #pragma once
 
 #include "constants.hpp"
+#include "gl/algorithm/core.hpp"
 #include "types.hpp"
 
 #include <gl/algorithm.hpp>
@@ -14,7 +15,7 @@ namespace gl_testing::alg_common {
 inline const fs::path data_path(TEST_DATA_PATH);
 
 template <typename T>
-requires(gl::type_traits::c_readable<T>)
+requires(gl::traits::c_readable<T>)
 [[nodiscard]] std::vector<T> load_list(const gl::types::size_type n, const fs::path& file_path) {
     std::vector<T> list(n);
 
@@ -27,27 +28,27 @@ requires(gl::type_traits::c_readable<T>)
         );
     }
 
-    for (gl::types::size_type i = 0; i < n; ++i)
+    for (auto i = 0uz; i < n; ++i)
         file >> list[i];
 
     return list;
 }
 
 [[nodiscard]] inline auto has_correct_bin_predecessor(
-    const gl::algorithm::predecessors_descriptor& pd
+    const gl::algorithm::predecessors_map& pred_map
 ) {
-    return [&pd](const gl::types::id_type vertex_id) {
-        if (not pd.is_reachable(vertex_id))
+    return [pred_map](const gl::types::id_type vertex_id) {
+        if (not gl::algorithm::is_reachable(pred_map, vertex_id))
             return false;
 
         if (vertex_id == constants::first_element_idx)
-            return pd[vertex_id] == vertex_id;
+            return pred_map[vertex_id] == vertex_id;
 
-        return pd[vertex_id] == ((vertex_id - constants::one) / constants::two);
+        return pred_map[vertex_id] == ((vertex_id - 1uz) / 2uz);
     };
 }
 
-template <gl::type_traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
+template <gl::traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
 requires(std::same_as<typename VertexType::properties_type, types::visited_property>)
 struct vertex_visited_projection {
     [[nodiscard]] bool operator()(const VertexType& vertex) const {

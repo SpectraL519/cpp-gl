@@ -4,58 +4,27 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/pfs.hpp"
+#include "gl/algorithm/core.hpp"
+#include "gl/algorithm/templates/pfs.hpp"
+#include "gl/constants.hpp"
 
 #include <deque>
 
 namespace gl::algorithm {
 
-template <type_traits::c_arithmetic VertexDistanceType>
-struct paths_descriptor : public predecessors_descriptor {
-    using predecessor_type = typename predecessors_descriptor::predecessor_type;
-    using distance_type = VertexDistanceType;
-
+template <traits::c_arithmetic VertexDistanceType>
+struct paths_descriptor {
     paths_descriptor(const types::size_type n_vertices)
-    : predecessors_descriptor(n_vertices), distances(n_vertices) {
-        distances.shrink_to_fit();
-    }
+    : predecessors(n_vertices, constants::invalid_id), distances(n_vertices) {}
 
-    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&> operator[](
-        const types::size_type i
-    ) const {
-        return std::make_pair<const predecessor_type&, const distance_type&>(
-            this->predecessors[i], this->distances[i]
-        );
-    }
-
-    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& operator[](const types::size_type i
-    ) {
-        return std::make_pair<predecessor_type&, distance_type&>(
-            this->predecessors[i], this->distances[i]
-        );
-    }
-
-    [[nodiscard]] std::pair<const predecessor_type&, const distance_type&>& at(
-        const types::size_type i
-    ) const {
-        return std::make_pair<const predecessor_type&, const distance_type&>(
-            this->predecessors.at(i), this->distances.at(i)
-        );
-    }
-
-    [[nodiscard]] std::pair<predecessor_type&, distance_type&>& at(const types::size_type i) {
-        return std::make_pair<predecessor_type&, distance_type&>(
-            this->predecessors.at(i), this->distances.at(i)
-        );
-    }
-
-    std::vector<distance_type> distances;
+    predecessors_map predecessors;
+    std::vector<VertexDistanceType> distances;
 };
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
     const GraphType& graph
 ) {
@@ -63,9 +32,9 @@ template <type_traits::c_graph GraphType>
 }
 
 template <
-    type_traits::c_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     const types::id_type source_id,
@@ -77,17 +46,17 @@ template <
 
     auto paths = make_paths_descriptor<GraphType>(graph);
 
-    paths.predecessors.at(source_id).emplace(source_id);
+    paths.predecessors[source_id] = source_id;
     paths.distances[source_id] = distance_type{};
 
     std::optional<edge_type> negative_edge;
 
-    impl::pfs(
+    pfs(
         graph,
         [&paths](const algorithm::vertex_info& lhs, const algorithm::vertex_info& rhs) {
             return paths.distances[lhs.id] > paths.distances[rhs.id];
         },
-        impl::init_range(source_id),
+        init_range(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
         [&paths, &negative_edge](const types::id_type vertex_id, const edge_type& in_edge)
@@ -101,10 +70,10 @@ template <
             }
 
             const auto new_distance = paths.distances[pred_id] + edge_weight;
-            if (not paths.predecessors[vertex_id].has_value()
+            if (paths.predecessors[vertex_id] == constants::invalid_id
                 or new_distance < paths.distances[vertex_id]) {
                 paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id].emplace(pred_id);
+                paths.predecessors[vertex_id] = pred_id;
                 return true;
             }
 
@@ -127,7 +96,7 @@ template <
     return paths;
 }
 
-template <type_traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
+template <traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
 [[nodiscard]] std::deque<types::id_type> reconstruct_path(
     const IdRange& predecessor_map, const types::id_type vertex_id
 ) {

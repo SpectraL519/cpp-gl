@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
 namespace gl::io {
 
@@ -32,7 +32,7 @@ template <typename T>
 
 // clang-format on
 
-template <type_traits::c_strong_smart_ptr PtrType>
+template <traits::c_strong_smart_ptr PtrType>
 [[nodiscard]] gl_attr_force_inline void* format(const PtrType& ptr) {
     return formatter(ptr.get());
 }

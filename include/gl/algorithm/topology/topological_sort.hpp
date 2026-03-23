@@ -4,20 +4,19 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/bfs.hpp"
+#include "gl/algorithm/templates/bfs.hpp"
 
 namespace gl::algorithm {
 
 template <
-    type_traits::c_directed_graph GraphType,
-    type_traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    type_traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_directed_graph GraphType,
+    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
+    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] std::optional<std::vector<types::id_type>> topological_sort(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
 
     // prepare the vertex in degree map
@@ -35,12 +34,12 @@ template <
     auto& topological_order = topological_order_opt.value();
     topological_order.reserve(graph.order());
 
-    impl::bfs(
+    bfs(
         graph,
         source_vertex_list,
         algorithm::empty_callback{}, // visit predicate
         [&topological_order](
-            const types::id_type vertex_id, const types::id_type source_id
+            const types::id_type vertex_id, [[maybe_unused]] const types::id_type source_id
         ) { // visit callback
             topological_order.push_back(vertex_id);
             return true;

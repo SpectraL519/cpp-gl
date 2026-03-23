@@ -1,4 +1,4 @@
-#include "gl/edge_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "hgl/conversion.hpp"
 #include "hgl/hypergraph.hpp"
@@ -21,7 +21,7 @@ TEST_SUITE_BEGIN("test_converters");
 struct test_hypergraph_conversion {
     using property_type = hgl::types::name_property;
 
-    template <hgl::type_traits::c_undirected_hypergraph HypergraphType>
+    template <hgl::traits::c_undirected_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
         HypergraphType h(4uz, 3uz);
 
@@ -38,7 +38,7 @@ struct test_hypergraph_conversion {
         return h;
     }
 
-    template <hgl::type_traits::c_bf_directed_hypergraph HypergraphType>
+    template <hgl::traits::c_bf_directed_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
         HypergraphType h(4uz, 2uz);
 
@@ -55,7 +55,7 @@ struct test_hypergraph_conversion {
         return h;
     }
 
-    void set_properties(hgl::type_traits::c_hypergraph auto& h) {
+    void set_properties(hgl::traits::c_hypergraph auto& h) {
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(h)>::vertex_properties_type,
                           property_type>)
@@ -69,7 +69,7 @@ struct test_hypergraph_conversion {
                 h.get_hyperedge_properties(eid) = property_type("hyperedge_" + std::to_string(eid));
     }
 
-    void validate_hypergraph(const hgl::type_traits::c_undirected_hypergraph auto& h) {
+    void validate_hypergraph(const hgl::traits::c_undirected_hypergraph auto& h) {
         REQUIRE_EQ(h.order(), 4uz);
         REQUIRE_EQ(h.size(), 3uz);
         CHECK(h.are_incident(0uz, 0uz));
@@ -88,7 +88,7 @@ struct test_hypergraph_conversion {
         this->validate_properties(h);
     }
 
-    void validate_hypergraph(const hgl::type_traits::c_bf_directed_hypergraph auto& h) {
+    void validate_hypergraph(const hgl::traits::c_bf_directed_hypergraph auto& h) {
         REQUIRE_EQ(h.order(), 4uz);
         REQUIRE_EQ(h.size(), 2uz);
 
@@ -109,7 +109,7 @@ struct test_hypergraph_conversion {
         this->validate_properties(h);
     }
 
-    void validate_properties(const hgl::type_traits::c_hypergraph auto& h) {
+    void validate_properties(const hgl::traits::c_hypergraph auto& h) {
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(h)>::vertex_properties_type,
                           property_type>)

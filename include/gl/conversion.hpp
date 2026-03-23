@@ -7,47 +7,47 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph.hpp"
 #include "gl/impl/impl_tags.hpp"
-#include "gl/types/type_traits.hpp"
+#include "gl/traits.hpp"
 
 #include <utility>
 
 namespace gl {
 
-namespace type_traits {
+namespace traits {
 
-template <typename GT, type_traits::c_graph_impl_tag NewImplTag>
+template <typename GT, traits::c_graph_impl_tag NewImplTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 struct swap_impl_tag;
 
 template <
-    type_traits::c_edge_directional_tag Dir,
-    type_traits::c_properties VP,
-    type_traits::c_properties EP,
-    type_traits::c_graph_impl_tag OldImplTag,
-    type_traits::c_graph_impl_tag NewImplTag>
+    traits::c_graph_directional_tag Dir,
+    traits::c_properties VP,
+    traits::c_properties EP,
+    traits::c_graph_impl_tag OldImplTag,
+    traits::c_graph_impl_tag NewImplTag>
 struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
     using type = graph_traits<Dir, VP, EP, NewImplTag>;
 };
 
 template <
-    type_traits::c_edge_directional_tag Dir,
-    type_traits::c_properties VP,
-    type_traits::c_properties EP,
-    type_traits::c_graph_impl_tag OldImplTag,
-    type_traits::c_graph_impl_tag NewImplTag>
+    traits::c_graph_directional_tag Dir,
+    traits::c_properties VP,
+    traits::c_properties EP,
+    traits::c_graph_impl_tag OldImplTag,
+    traits::c_graph_impl_tag NewImplTag>
 struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag>>, NewImplTag> {
     using type = graph<graph_traits<Dir, VP, EP, NewImplTag>>;
 };
 
-template <typename GT, type_traits::c_graph_impl_tag NewImplTag>
+template <typename GT, traits::c_graph_impl_tag NewImplTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 using swap_impl_tag_t = typename swap_impl_tag<GT, NewImplTag>::type;
 
-} // namespace type_traits
+} // namespace traits
 
 namespace detail {
 
-template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph_impl_tag SourceImplTag>
+template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
 struct to_impl {
     template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
@@ -55,7 +55,7 @@ struct to_impl {
 
         for (const auto u : source.vertex_ids()) {
             for (const auto& edge : source.out_edges(u)) {
-                if constexpr (type_traits::c_undirected_graph<SourceGraph>)
+                if constexpr (traits::c_undirected_graph<SourceGraph>)
                     if (edge.source() > edge.target())
                         continue; // prevent double insertion
 
@@ -66,7 +66,7 @@ struct to_impl {
 };
 
 // Conversion: identity
-template <type_traits::c_graph_impl_tag ImplTag>
+template <traits::c_graph_impl_tag ImplTag>
 struct to_impl<ImplTag, ImplTag> {
     template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
@@ -115,12 +115,12 @@ struct to_impl<impl::list_t, impl::flat_list_t> {
 /// @tparam Graph The automatically deduced type of the source graph
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new graph containing the moved data, structured according to TargetImplTag.
-template <type_traits::c_graph_impl_tag TargetImplTag, type_traits::c_graph Graph>
+template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source) {
     using source_traits = typename Graph::traits_type;
     using source_impl_tag = typename source_traits::implementation_tag;
 
-    using target_traits = type_traits::swap_impl_tag_t<source_traits, TargetImplTag>;
+    using target_traits = traits::swap_impl_tag_t<source_traits, TargetImplTag>;
     using target_graph = graph<target_traits>;
 
     target_graph target;

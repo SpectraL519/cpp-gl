@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/algorithm/impl/common.hpp"
+#include "gl/algorithm/util.hpp"
 #include "gl/constants.hpp"
 
 #include <numeric>
@@ -12,7 +12,7 @@
 
 namespace gl::algorithm {
 
-template <type_traits::c_undirected_graph GraphType>
+template <traits::c_undirected_graph GraphType>
 struct mst_descriptor {
     using graph_type = GraphType;
     using edge_type = typename graph_type::edge_type;
@@ -26,15 +26,12 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(0);
 };
 
-template <type_traits::c_undirected_graph GraphType>
+template <traits::c_undirected_graph GraphType>
 [[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
     const GraphType& graph, const std::optional<types::id_type> root_id_opt
 ) {
     // type definitions
-
-    using vertex_type = typename GraphType::vertex_type;
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
 
     struct edge_comparator {
         [[nodiscard]] gl_attr_force_inline bool operator()(
@@ -86,8 +83,8 @@ template <type_traits::c_undirected_graph GraphType>
     return mst;
 }
 
-template <type_traits::c_undirected_graph GraphType>
-requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
+template <traits::c_undirected_graph GraphType>
+requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
     const GraphType& graph, const std::optional<types::id_type> root_id_opt
 ) {
@@ -137,7 +134,7 @@ requires type_traits::c_has_numeric_limits_max<types::vertex_distance_type<Graph
             const auto edge_weight = get_weight<GraphType>(edge);
             const auto incident_vertex_id = edge.incident_vertex(vertex_id);
 
-            if (not in_mst[incident_vertex_id] && edge_weight < min_cost[incident_vertex_id]) {
+            if (not in_mst[incident_vertex_id] and edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;
                 min_cost_edges[incident_vertex_id].emplace(edge);
             }

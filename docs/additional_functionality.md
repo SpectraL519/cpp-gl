@@ -1,7 +1,10 @@
 # Additional functionality
 
-- [Force inlining](#force-inlining)
-- [Ranges utility](#ranges-utility)
+- [Additional functionality](#additional-functionality)
+  - [Force inlining](#force-inlining)
+  - [Ranges utility](#ranges-utility)
+    - [View adapters](#view-adapters)
+    - [Functions](#functions)
 
 <br />
 

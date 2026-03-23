@@ -7,22 +7,22 @@
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
 #include "gl/graph_io.hpp"
+#include "gl/traits.hpp"
+#include "gl/types/core.hpp"
 #include "gl/types/properties.hpp"
-#include "gl/types/type_traits.hpp"
-#include "gl/types/types.hpp"
 
 #include <compare>
 #include <format>
 
 namespace gl {
 
-template <type_traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = types::empty_properties>
 class vertex_descriptor final {
 public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
-        type_traits::c_empty_properties<properties_type>,
+        traits::c_empty_properties<properties_type>,
         types::empty_properties,
         properties_type&>;
 
@@ -31,21 +31,21 @@ public:
     }
 
     explicit vertex_descriptor(const types::id_type id)
-    requires(type_traits::c_empty_properties<properties_type>)
+    requires(traits::c_empty_properties<properties_type>)
     : _id(id) {}
 
     explicit vertex_descriptor(const types::id_type id, properties_type& properties)
-    requires(type_traits::c_non_empty_properties<properties_type>)
+    requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
-    requires(type_traits::c_empty_properties<properties_type>)
+    requires(traits::c_empty_properties<properties_type>)
     {
         return vertex_descriptor(constants::invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
-    requires(type_traits::c_non_empty_properties<properties_type>)
+    requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
         return vertex_descriptor(constants::invalid_id, invalid_properties);
@@ -96,7 +96,7 @@ public:
 
 private:
     void _write(std::ostream& os) const {
-        if constexpr (not type_traits::c_writable<properties_type>) {
+        if constexpr (not traits::c_writable<properties_type>) {
             this->_write_no_properties(os);
             return;
         }
@@ -126,12 +126,12 @@ private:
 
     types::id_type _id;
     [[no_unique_address]] std::conditional_t<
-        type_traits::c_empty_properties<properties_type>,
+        traits::c_empty_properties<properties_type>,
         types::empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
 
-template <type_traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = types::empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
 } // namespace gl

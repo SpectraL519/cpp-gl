@@ -18,7 +18,7 @@ struct append {};
 namespace detail {
 
 template <typename T>
-concept c_io_save_mode = type_traits::c_one_of<T, write, append>;
+concept c_io_save_mode = traits::c_one_of<T, write, append>;
 
 template <c_io_save_mode Mode>
 requires(std::same_as<Mode, write>)
@@ -87,7 +87,7 @@ requires(std::same_as<Mode, append>)
 
 } // namespace detail
 
-template <type_traits::c_graph GraphType, detail::c_io_save_mode Mode = write>
+template <traits::c_graph GraphType, detail::c_io_save_mode Mode = write>
 void save(
     const GraphType& graph,
     const std::filesystem::path& path = "graph.gsf",
@@ -102,7 +102,7 @@ void save(
     file << graph;
 }
 
-template <type_traits::c_graph GraphType>
+template <traits::c_graph GraphType>
 [[nodiscard]] GraphType load(const std::filesystem::path& path = "graph.gsf") {
     std::ifstream file = detail::open_infile(path);
 

@@ -116,18 +116,18 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    std::optional<gl::types::id_type> root_vertex_id;
+    gl::types::id_type root_vertex_id;
     std::deque<gl::types::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id.emplace(constants::vertex_id_1);
+        root_vertex_id = constants::vertex_id_1;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id.emplace(constants::vertex_id_3);
+        root_vertex_id = constants::vertex_id_3;
 
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
             if (id != constants::vertex_id_3)
@@ -177,11 +177,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto pd = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
+    const auto pred_map = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
+    REQUIRE_EQ(pred_map.size(), graph.order());
+    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -304,18 +305,18 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    std::optional<gl::types::id_type> root_vertex_id;
+    gl::types::id_type root_vertex_id = constants::invalid_id;
     std::vector<gl::types::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id.emplace(constants::vertex_id_1);
+        root_vertex_id = constants::vertex_id_1;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id.emplace(constants::vertex_id_3);
+        root_vertex_id = constants::vertex_id_3;
 
         expected_previsit_order.push_back(constants::vertex_id_3);
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
@@ -370,12 +371,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
-    const auto pd =
+    const auto pred_map =
         gl::algorithm::recursive_depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pd.predecessors.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pd)));
+    REQUIRE_EQ(pred_map.size(), graph.order());
+    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
+    );
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

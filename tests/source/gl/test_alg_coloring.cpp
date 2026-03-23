@@ -75,7 +75,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         SUBCASE("custom graph") {
             fs::path gsf_file_path =
                 alg_common::data_path
-                / (gl::type_traits::c_directed_graph<sut_type>
+                / (gl::traits::c_directed_graph<sut_type>
                        ? "bicoloring_directed_bipartite_graph.gsf"
                        : "bicoloring_undirected_bipartite_graph.gsf");
 
@@ -143,7 +143,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         SUBCASE("custom graph") {
             fs::path gsf_file_path =
                 alg_common::data_path
-                / (gl::type_traits::c_directed_graph<sut_type>
+                / (gl::traits::c_directed_graph<sut_type>
                        ? "bicoloring_directed_not_bipartite_graph.gsf"
                        : "bicoloring_undirected_not_bipartite_graph.gsf");
 

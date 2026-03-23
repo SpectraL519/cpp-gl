@@ -50,10 +50,10 @@ The table below demostrates what parameters of the graph can be modified:
 
 | **Trait** | **Purpose** | **Constraints** | **Default value** |
 | :- | :- | :- | :- |
-| EdgeDirectionalTag | Specifies whether the graph should store directed or undirected edges | Either `directed_t` or `undirected_t`<br/>**Concept:** `type_traits::c_edge_directional_tag` | `directed_t` |
-| VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
-| EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `type_traits::c_properties` | `types::empty_properties` |
-| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | One of:<br/>&bull; `impl::list_t`<br/>&bull; `impl::flat_list_t`<br/>&bull; `impl::matrix_t`<br/>**Concept:** `type_traits::c_graph_impl_tag` | `impl::list_t` |
+| DirectionalTag | Specifies whether the graph should store directed or undirected edges | Either `directed_t` or `undirected_t`<br/>**Concept:** `traits::c_graph_directional_tag` | `directed_t` |
+| VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `types::empty_properties` |
+| EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `types::empty_properties` |
+| ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | One of:<br/>&bull; `impl::list_t`<br/>&bull; `impl::flat_list_t`<br/>&bull; `impl::matrix_t`<br/>**Concept:** `traits::c_graph_impl_tag` | `impl::list_t` |
 
 An example on how to define an undirected graph with a *weight* edge properties type and represented as an adjacency matrix:
 
@@ -61,7 +61,7 @@ An example on how to define an undirected graph with a *weight* edge properties 
 #include <gl/graph.hpp>
 
 using traits = gl::graph_traits<
-    gl::undirected_t,                // EdgeDirectionalTag
+    gl::undirected_t,                // DirectionalTag
     gl::types::empty_properties,     // VertexProperties
     gl::types::weight_property<int>, // EdgeProperties
     gl::impl::matrix_t>;             // ImplTag
@@ -82,17 +82,17 @@ Additionally the library defines template type aliases which make it easier to d
 
   Equivalent to: `graph_traits<undirected_t, VertexProperties, EdgeProperties, ImplTag>`
 
-- `list_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+- `list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties>`
 
-  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::list_t>`
+  Equivalent to: `graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::list_t>`
 
-- `flat_list_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+- `flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties>`
 
-  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>`
+  Equivalent to: `graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>`
 
-- `matrix_graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties>`
+- `matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties>`
 
-  Equivalent to: `graph_traits<EdgeDirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>`
+  Equivalent to: `graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>`
 
 Where the default values of all parameters are the same as in the table above.
 
@@ -101,13 +101,13 @@ Based on the specified traits, the `graph` class defines the following types:
 | **Type** | **Description** |
 | :- | :- |
 | `traits_type` | The `graph_traits` specialization used as the graph's template parameter |
+| `directional_tag` | The `DirectionalTag` parameter of the `graph_traits` structure |
 | `implementation_tag` | The `ImplTag` parameter of the `graph_traits` structure |
 | `implementation_type` | The underlying data structure used to store the graph's edges and the adjacency information |
 | `vertex_type` | The type of the vertex element (an instantiation of `vertex_descriptor`) |
 | `vertex_properties_type` | The type of the properties element associated with each vertex |
 | `vertex_properties_map_type` | The type of the properties map element associated with each vertex |
 | `edge_type` | The type of the edge element (an instantiation of `edge_descriptor`) |
-| `edge_directional_tag` | The `EdgeDirectionalTag` parameter of the `graph_traits` structure |
 | `edge_properties_type` | The type of the properties element associated with each edge |
 | `edge_properties_map_type` | The type of the properties map element associated with each edge |
 
@@ -200,10 +200,10 @@ Based on the specified traits, the `graph` class defines the following types:
     - `n: types::size_type` – The number of vertices to add.
   - *Return type*: `void`
 
-- **`graph.add_vertices_with(properties_range)`**:
+- **`graph.add_vertices_with(properties_rng)`**:
   - *Description*: Adds multiple vertices to the graph, each with the corresponding properties from the given range. The number of vertices added is determined by the size of `properties_range`.
   - *Parameters*:
-    - `properties_range: const type_traits::c_sized_range_of<vertex_properties_type> auto&` – A range of properties to assign to each of the new vertices.
+    - `properties_rng: const traits::c_sized_range_of<vertex_properties_type> auto&` – A range of properties to assign to each of the new vertices.
   - *Return type*: `void`
   - *Requires*: non-default `vertex_properties_type`
 
@@ -225,18 +225,18 @@ Based on the specified traits, the `graph` class defines the following types:
     - `vertex: const vertex_type&` – A reference to the vertex to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_vertices_from(vertex_id_range)`**:
+- **`graph.remove_vertices_from(vertex_id_rng)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Template parameters*:
-    - `IdRange: type_traits::c_forward_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
+    - `IdRange: traits::c_forward_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Parameters*:
-    - `vertex_id_range: const IdRange&` – A range of vertex IDs to be removed.
+    - `vertex_id_rng: const IdRange&` – A range of vertex IDs to be removed.
   - *Return type*: `void`
 
-- **`graph.remove_vertices_from(vertex_range)`**:
+- **`graph.remove_vertices_from(vertex_rng)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Parameters*:
-    - `vertex_range: const type_traits::c_forward_range_of<types::id_type> auto&` – A range of vertex references to be removed.
+    - `vertex_rng: const traits::c_forward_range_of<types::id_type> auto&` – A range of vertex references to be removed.
   - *Return type*: `void`
 
 - **`graph.in_degree(vertex) const`**:
@@ -411,19 +411,19 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Return type*: `const edge_type`
   - *Requires*: non-default `edge_properties_type`
 
-- **`graph.add_edges_from(source_id, target_id_range)`**:
+- **`graph.add_edges_from(source_id, target_id_rng)`**:
   - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of target vertices (also specified by IDs).
   - *Parameters*:
     - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id_range: const type_traits::c_sized_range_of<types::id_type> auto&` – a range of target vertex IDs to connect to the source vertex.
+    - `target_id_rng: const traits::c_sized_range_of<types::id_type> auto&` – a range of target vertex IDs to connect to the source vertex.
   - *Return type*: `void`
   - *NOTE:* For an adjacency matrix representation passing a range with duplicate IDs will result in an error.
 
-- **`graph.add_edges_from(source, target_range)`**:
+- **`graph.add_edges_from(source, target_rng)`**:
   - *Description*: Adds multiple edges from a specified source vertex to a range of target vertices (specified by references).
   - *Parameters*:
     - `source: const vertex_type&` – the source vertex.
-    - `target_range: const type_traits::c_sized_range_of<vertex_type> auto&` – a range of target vertex references to connect to the source vertex.
+    - `target_rng: const traits::c_sized_range_of<vertex_type> auto&` – a range of target vertex references to connect to the source vertex.
   - *Return type*: `void`
   - *NOTE:* For an adjacency matrix representation passing a range with duplicate vertices will result in an error.
 
@@ -499,7 +499,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_edges(edges)`**:
   - *Description*: Removes multiple edges from the graph, as specified by the provided range of edge references.
   - *Parameters*:
-    - `edges: const type_traits::c_range_of<edge_type> auto&` – a range of edges to remove from the graph.
+    - `edges: const traits::c_range_of<edge_type> auto&` – a range of edges to remove from the graph.
   - *Return type*: `void`
 
 <br />
@@ -612,7 +612,7 @@ To write safe and more expressive graph utility of your own, you can use the def
 - `vertex_distance`
   - *Description*: A type trait which determines the type to be used for vertex distances based on the `c_weight_properties_type` concept:
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph`
+    - `GraphType: traits::c_graph`
     - If the graph's `edge_properties_type` includes a `weight_type` definition, that type is used
     - Otherwise, the default distance type is used.
   - *Members*:
@@ -624,11 +624,11 @@ To write safe and more expressive graph utility of your own, you can use the def
 - `get_weight(edge)`
   - *Description*: Returns the weight of the given edge based on the `edge_properties_type` of the graph.
   - *Template parameters*:
-    - `GraphType: type_traits::c_graph`
+    - `GraphType: traits::c_graph`
   - *Parameters*:
     - `edge: const typename GraphType::edge_type&` - the edge to get weight from
   - *Returned value*:
-    - `edge.properties.weight` if the `edge_properties_type` satisfies the `type_traits::c_weight_properties_type` concept
+    - `edge.properties.weight` if the `edge_properties_type` satisfies the `traits::c_weight_properties_type` concept
     - `static_cast<types::default_vertex_distance_type>(1ll)` otherwise
   - *Return type*: `types::vertex_distance_type<GraphType>`
 

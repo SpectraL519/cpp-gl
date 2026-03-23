@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/types/types.hpp"
+#include "gl/types/core.hpp"
 
 #include <algorithm>
 #include <tuple>
