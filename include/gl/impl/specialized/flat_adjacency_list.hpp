@@ -268,7 +268,7 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
-    using storage_type = types::flat_jagged_vector<ItemType>;
+    using storage_type = flat_jagged_vector<ItemType>;
 };
 
 template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
@@ -278,7 +278,7 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
-    using storage_type = types::flat_jagged_vector<ItemType>;
+    using storage_type = flat_jagged_vector<ItemType>;
 };
 
 } // namespace gl::impl::specialized
