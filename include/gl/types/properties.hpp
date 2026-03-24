@@ -16,8 +16,6 @@ namespace gl {
 
 namespace types {
 
-// --- common properties ---
-
 using empty_properties = std::monostate;
 using empty_properties_map = std::monostate;
 
@@ -51,11 +49,7 @@ struct name_property {
     }
 };
 
-class dynamic_properties
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
+class dynamic_properties final {
 public:
     using key_type = std::string;
     using value_type = std::any;
@@ -69,11 +63,7 @@ public:
     dynamic_properties& operator=(const dynamic_properties&) = default;
     dynamic_properties& operator=(dynamic_properties&&) noexcept = default;
 
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~dynamic_properties() = default;
-#else
-    virtual ~dynamic_properties() = default;
-#endif
 
     [[nodiscard]] gl_attr_force_inline bool is_present(const key_type& key) const {
         return this->_property_map.contains(key);
@@ -115,11 +105,7 @@ private:
 
 // --- vertex properties ---
 
-class binary_color
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
+class binary_color final {
 public:
     enum class value : std::uint16_t {
         black = static_cast<std::uint16_t>(0),
@@ -181,8 +167,6 @@ struct binary_color_property {
     using color_type = binary_color;
     color_type color;
 };
-
-// --- edge properties ---
 
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {

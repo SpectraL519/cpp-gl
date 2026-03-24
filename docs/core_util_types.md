@@ -192,17 +192,6 @@ The table below contains the basic type aliases defined in the library.
     - Reads the weight property from an input stream.
     - *Constraints*: `weight_type` must be readable (`traits::c_readable<weight_type>`).
 
-### Deriving from the property types
-
-> [!IMPORTANT]
-> The `name_property`, `dynamic_properties` and `binary_color` classes are marked `final` by default. To be able to use them as base classes you have to add:
->
-> ```cpp
-> #define GL_CONFIG_PROPERTY_TYPES_NOT_FINAL
-> ```
->
-> in your program or add a `-DGL_CONFIG_PROPERTY_TYPES_NOT_FINAL` flag when compiling.
-
 ### Associated type traits
 
 This section describes the type traits that are associated with the property types defined in the library. These traits help ensure that properties meet specific requirements and can be used correctly within the library.
