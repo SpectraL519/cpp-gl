@@ -12,12 +12,6 @@
 #include <unordered_map>
 #include <variant>
 
-#ifdef GL_CONFIG_PROPERTY_TYPES_NOT_FINAL
-#define _GL_PROPERTY_TYPES_NOT_FINAL
-#else
-#undef _GL_PROPERTY_TYPES_NOT_FINAL
-#endif
-
 namespace gl {
 
 namespace types {
@@ -27,67 +21,34 @@ namespace types {
 using empty_properties = std::monostate;
 using empty_properties_map = std::monostate;
 
-class name_property
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
-public:
-    using value_type = std::string;
-
-    name_property() = default;
-
-    name_property(const std::string_view name) : _name(name) {}
-
-    name_property(const name_property&) = default;
-    name_property(name_property&&) noexcept = default;
-
-    name_property& operator=(const name_property&) = default;
-    name_property& operator=(name_property&&) noexcept = default;
-
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    ~name_property() = default;
-#else
-    virtual ~name_property() = default;
-#endif
+struct name_property {
+    std::string name;
 
     name_property& operator=(const std::string_view name) {
-        this->_name = name;
+        this->name = name;
         return *this;
     }
-
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    [[nodiscard]] gl_attr_force_inline const std::string& name() const {
-        return this->_name;
-    }
-
-    // clang-format on
 
     [[nodiscard]] bool operator==(const name_property&) const = default;
     [[nodiscard]] auto operator<=>(const name_property&) const = default;
 
     [[nodiscard]] bool operator==(const std::string_view name) const {
-        return this->_name == name;
+        return this->name == name;
     }
 
     [[nodiscard]] auto operator<=>(const std::string_view name) const {
-        return this->_name <=> name;
+        return this->name <=> name;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const name_property& property) {
-        os << std::quoted(property._name);
+        os << std::quoted(property.name);
         return os;
     }
 
     friend std::istream& operator>>(std::istream& is, name_property& property) {
-        is >> std::quoted(property._name);
+        is >> std::quoted(property.name);
         return is;
     }
-
-private:
-    std::string _name;
 };
 
 class dynamic_properties

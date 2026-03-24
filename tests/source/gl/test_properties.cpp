@@ -14,21 +14,14 @@ TEST_SUITE_BEGIN("test_properties");
 
 struct test_name_property {
     using sut_type = gl::types::name_property;
-    using value_type = typename sut_type::value_type;
 
     static_assert(gl::traits::c_properties<sut_type>);
 
-    const value_type value = "element name";
+    std::string value = "element name";
     sut_type sut{value};
 
     std::stringstream ss;
 };
-
-TEST_CASE_FIXTURE(
-    test_name_property, "name() should return the name the porperty was initialized with"
-) {
-    CHECK_EQ(sut.name(), value);
-}
 
 TEST_CASE_FIXTURE(
     test_name_property, "operator<< should insert a quoted string to the output stream"
@@ -50,7 +43,7 @@ TEST_CASE_FIXTURE(
     ss << input_name;
 
     ss >> sut;
-    CHECK_EQ(sut.name(), first_word);
+    CHECK_EQ(sut, first_word);
 }
 
 TEST_CASE_FIXTURE(
@@ -60,7 +53,7 @@ TEST_CASE_FIXTURE(
     ss << std::quoted(input_name);
 
     ss >> sut;
-    CHECK_EQ(sut.name(), input_name);
+    CHECK_EQ(sut, input_name);
 }
 
 struct test_dynamic_properties {
