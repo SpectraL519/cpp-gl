@@ -8,7 +8,7 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
-#include "gl/types/segmented_vector.hpp"
+#include "gl/types/flat_jagged_vector.hpp"
 
 #include <algorithm>
 #include <format>
@@ -280,7 +280,7 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
-    using storage_type = types::segmented_vector<ItemType>;
+    using storage_type = types::flat_jagged_vector<ItemType>;
 };
 
 template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
@@ -290,7 +290,7 @@ struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_flat_adjacency_list<AdjacencyList>;
 
     template <typename ItemType>
-    using storage_type = types::segmented_vector<ItemType>;
+    using storage_type = types::flat_jagged_vector<ItemType>;
 };
 
 } // namespace gl::impl::specialized

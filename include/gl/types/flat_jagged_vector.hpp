@@ -30,7 +30,7 @@ namespace gl::types {
 /// @todo Implement iterator-based insert, emplace and erase methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
 template <std::semiregular T>
-class segmented_vector {
+class flat_jagged_vector {
 public:
     /// @brief Type of elements stored in segments
     using value_type = T;
@@ -47,7 +47,7 @@ public:
 
     // --- iterators ---
 
-    /// @brief Random access iterator over segments of the `segmented_vector`.
+    /// @brief Random access iterator over segments of the `flat_jagged_vector`.
     ///
     /// This iterator dereferences to a `segment_type` (span of elements in a single segment),
     /// allowing efficient iteration and random access to individual segments. The iterator maintains
@@ -55,7 +55,7 @@ public:
     ///
     /// @tparam Const If `true`, produces const iterators; if `false`, produces mutable iterators.
     /// @note Provides random access semantics: `O(1)` for all operations except construction.
-    /// @warning Invalidated when the `segmented_vector` is modified (structure changes or element insertions/deletions).
+    /// @warning Invalidated when the `flat_jagged_vector` is modified (structure changes or element insertions/deletions).
     template <bool Const>
     class segment_iterator {
         using data_ptr_type = std::conditional_t<Const, const T*, T*>;
@@ -230,36 +230,36 @@ public:
 
     // --- constructors ---
 
-    /// @brief Default constructor creates an empty `segmented_vector`.
+    /// @brief Default constructor creates an empty `flat_jagged_vector`.
     /// @post `empty() == true`, `size() == 0`, `data_size() == 0`
-    segmented_vector() = default;
+    flat_jagged_vector() = default;
 
-    /// @brief Copy constructor creates a deep copy of another `segmented_vector`.
-    /// @param other The `segmented_vector` to copy
+    /// @brief Copy constructor creates a deep copy of another `flat_jagged_vector`.
+    /// @param other The `flat_jagged_vector` to copy
     /// @post `*this == other`
-    segmented_vector(const segmented_vector&) = default;
-    /// @brief Copy assignment creates a deep copy of another `segmented_vector`.
-    /// @param other The source `segmented_vector`
+    flat_jagged_vector(const flat_jagged_vector&) = default;
+    /// @brief Copy assignment creates a deep copy of another `flat_jagged_vector`.
+    /// @param other The source `flat_jagged_vector`
     /// @return Reference to `*this`
     /// @post `*this == other`
-    segmented_vector& operator=(const segmented_vector&) = default;
+    flat_jagged_vector& operator=(const flat_jagged_vector&) = default;
 
-    /// @brief Move constructor transfers ownership of data from another `segmented_vector`.
-    /// @param other The source `segmented_vector` (left in a valid but unspecified state)
+    /// @brief Move constructor transfers ownership of data from another `flat_jagged_vector`.
+    /// @param other The source `flat_jagged_vector` (left in a valid but unspecified state)
     /// @post `other.empty() == true`; all data is transferred to `*this`
     /// @warning Invalidates all iterators, pointers, and references to `other`'s elements
-    segmented_vector(segmented_vector&& other) noexcept
+    flat_jagged_vector(flat_jagged_vector&& other) noexcept
     : _data(std::move(other._data)), _offsets(std::move(other._offsets)) {
         other._offsets = {0uz};
     }
 
-    /// @brief Move assignment transfers ownership of data from another `segmented_vector`.
-    /// @param other The source `segmented_vector`
+    /// @brief Move assignment transfers ownership of data from another `flat_jagged_vector`.
+    /// @param other The source `flat_jagged_vector`
     /// @return Reference to `*this`
     /// @post `other.empty() == true`; all data from `other` is transferred to `*this`
     /// @warning Invalidates all iterators, pointers, and references to this container's elements.
     ///          This function safely handles self-assignment.
-    segmented_vector& operator=(segmented_vector&& other) noexcept {
+    flat_jagged_vector& operator=(flat_jagged_vector&& other) noexcept {
         if (this != &other) {
             this->_data = std::move(other._data);
             this->_offsets = std::move(other._offsets);
@@ -269,25 +269,25 @@ public:
     }
 
     /// @brief Destructor cleans up all managed memory.
-    ~segmented_vector() = default;
+    ~flat_jagged_vector() = default;
 
-    /// @brief Constructs a `segmented_vector` with a specified number of segments and initial segment size.
+    /// @brief Constructs a `flat_jagged_vector` with a specified number of segments and initial segment size.
     /// @param n_segments The number of segments to create
     /// @param segment_size The initial size of each segment (default is 0)
     /// @post `size() == n_segments` and each segment is initialized with `segment_size` default-constructed elements
     /// @exception std::bad_alloc May throw if memory allocation fails
-    segmented_vector(size_type n_segments, size_type segment_size = 0uz)
+    flat_jagged_vector(size_type n_segments, size_type segment_size = 0uz)
     : _data(n_segments * segment_size), _offsets(n_segments + 1uz) {
         for (size_type i = 0uz; i <= n_segments; i++)
             this->_offsets[i] = i * segment_size;
     }
 
-    /// @brief Constructs a `segmented_vector` from an initializer list of segments.
+    /// @brief Constructs a `flat_jagged_vector` from an initializer list of segments.
     /// @param ilist Initializer list of initializer lists, each representing a segment
     /// @post `size() == ilist.size()` and `data_size()` equals the sum of all segment sizes
     /// @exception std::bad_alloc May throw if memory allocation fails
     /// @warning Invalidates all iterators, pointers, and references after construction
-    segmented_vector(std::initializer_list<std::initializer_list<value_type>> ilist) {
+    flat_jagged_vector(std::initializer_list<std::initializer_list<value_type>> ilist) {
         this->reserve_segments(ilist.size());
 
         size_type total_size = 0uz;
@@ -299,7 +299,7 @@ public:
             this->push_back(sub);
     }
 
-    /// @brief Constructs a `segmented_vector` from a range of ranges.
+    /// @brief Constructs a `flat_jagged_vector` from a range of ranges.
     ///
     /// This constructor accepts any input range of input ranges convertible to `value_type`,
     /// enabling flexible initialization from various container types.
@@ -314,7 +314,7 @@ public:
          and std::convertible_to<
                  std::ranges::range_reference_t<std::ranges::range_reference_t<R>>,
                  value_type>
-    explicit segmented_vector(R&& r) {
+    explicit flat_jagged_vector(R&& r) {
         if constexpr (std::ranges::sized_range<R>)
             this->reserve_segments(std::ranges::size(r));
 
@@ -324,11 +324,11 @@ public:
 
     // --- comparsion ---
 
-    /// @brief Tests equality of two `segmented_vector` instances.
+    /// @brief Tests equality of two `flat_jagged_vector` instances.
     /// @param lhs Left operand
     /// @param rhs Right operand
     /// @return `true` if both vectors have the same structure and elements
-    friend bool operator==(const segmented_vector&, const segmented_vector&) = default;
+    friend bool operator==(const flat_jagged_vector&, const flat_jagged_vector&) = default;
 
     // --- capacity ---
 
@@ -678,7 +678,7 @@ public:
 
     /// @brief Returns a reference to the underlying flat data container.
     /// @return A mutable reference to the underlying `_data` array.
-    /// @warning Modifying this vector directly can corrupt the segmented structure. If possible, use `data_view()` instead. This method is intended for advanced memory reallocation and compaction.
+    /// @warning Modifying this vector directly can corrupt the structure. If possible, use `data_view()` instead. This method is intended for advanced memory reallocation and compaction.
     [[nodiscard]] std::vector<value_type>& data_storage() noexcept {
         return this->_data;
     }
@@ -1142,7 +1142,7 @@ private:
     void _check_range(size_type n) const {
         if (n >= this->size())
             throw std::out_of_range(std::format(
-                "segmented_vector::_check_range: n (which is {}) >= this->size() (which is {})",
+                "flat_jagged_vector::_check_range: n (which is {}) >= this->size() (which is {})",
                 n,
                 this->size()
             ));
@@ -1156,7 +1156,7 @@ private:
     void _check_segment_range(size_type seg, size_type pos) const {
         if (pos >= this->segment_size(seg)) {
             throw std::out_of_range(std::format(
-                "segmented_vector::_check_segment_range: pos (which is {}) >= segment_size({}) "
+                "flat_jagged_vector::_check_segment_range: pos (which is {}) >= segment_size({}) "
                 "(which is {})",
                 pos,
                 seg,

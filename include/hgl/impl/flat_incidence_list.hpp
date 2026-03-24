@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/types/core.hpp"
-#include "gl/types/segmented_vector.hpp"
+#include "gl/types/flat_jagged_vector.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
@@ -37,7 +37,7 @@ namespace impl {
 
 namespace detail {
 
-using common_storage_type = gl::types::segmented_vector<gl::types::id_type>;
+using common_storage_type = gl::types::flat_jagged_vector<gl::types::id_type>;
 
 [[nodiscard]] inline bool contains(
     const common_storage_type::const_segment_type& segment, const gl::types::id_type minor_id
@@ -215,7 +215,7 @@ public:
 
 private:
     using element_type = types::id_type;
-    using storage_type = types::segmented_vector<element_type>;
+    using storage_type = types::flat_jagged_vector<element_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -504,7 +504,7 @@ public:
 
 private:
     using element_type = types::id_type;
-    using storage_type = types::segmented_vector<element_type>;
+    using storage_type = types::flat_jagged_vector<element_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
