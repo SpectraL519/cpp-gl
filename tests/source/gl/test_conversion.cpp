@@ -22,7 +22,7 @@ TEST_SUITE_BEGIN("test_conversion");
 constexpr auto get_id = [](auto&& element) -> gl::id_type { return element.id(); };
 
 struct test_conversion {
-    using property_type = gl::types::name_property;
+    using property_type = gl::name_property;
 
     template <gl::traits::c_graph GraphType>
     [[nodiscard]] GraphType create_test_graph() {
@@ -125,36 +125,36 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     graph_params_template,
     std::tuple<
         gl::directed_t,
-        gl::types::empty_properties,
-        gl::types::empty_properties>, // directed graph, no properties
+        gl::empty_properties,
+        gl::empty_properties>, // directed graph, no properties
     std::tuple<
         gl::undirected_t,
-        gl::types::empty_properties,
-        gl::types::empty_properties>, // undirected graph, no properties
+        gl::empty_properties,
+        gl::empty_properties>, // undirected graph, no properties
     std::tuple<
         gl::directed_t,
-        gl::types::name_property,
-        gl::types::empty_properties>, // directed graph, vertex properties
+        gl::name_property,
+        gl::empty_properties>, // directed graph, vertex properties
     std::tuple<
         gl::undirected_t,
-        gl::types::name_property,
-        gl::types::empty_properties>, // undirected graph, vertex properties
+        gl::name_property,
+        gl::empty_properties>, // undirected graph, vertex properties
     std::tuple<
         gl::directed_t,
-        gl::types::empty_properties,
-        gl::types::name_property>, // directed graph, edge properties
+        gl::empty_properties,
+        gl::name_property>, // directed graph, edge properties
     std::tuple<
         gl::undirected_t,
-        gl::types::empty_properties,
-        gl::types::name_property>, // undirected graph, edge properties
+        gl::empty_properties,
+        gl::name_property>, // undirected graph, edge properties
     std::tuple<
         gl::directed_t,
-        gl::types::name_property,
-        gl::types::name_property>, // directed graph, all properties
+        gl::name_property,
+        gl::name_property>, // directed graph, all properties
     std::tuple<
         gl::undirected_t,
-        gl::types::name_property,
-        gl::types::name_property> // undirected graph, all properties
+        gl::name_property,
+        gl::name_property> // undirected graph, all properties
 );
 
 TEST_SUITE_END(); // test_conversion

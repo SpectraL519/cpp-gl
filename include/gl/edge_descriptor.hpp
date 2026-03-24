@@ -13,7 +13,7 @@ namespace gl {
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties Properties = types::empty_properties>
+    traits::c_properties Properties = empty_properties>
 class edge_descriptor final {
 public:
     using type = edge_descriptor<DirectionalTag, Properties>;
@@ -21,7 +21,7 @@ public:
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         properties_type&>;
 
     friend directional_tag;
@@ -199,19 +199,19 @@ private:
     homogeneous_pair<id_type> _vertices;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties Properties = types::empty_properties>
+    traits::c_properties Properties = empty_properties>
 using edge = edge_descriptor<DirectionalTag, Properties>;
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 using directed_edge = edge_descriptor<directed_t, Properties>;
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 using undirected_edge = edge_descriptor<undirected_t, Properties>;
 
 } // namespace gl

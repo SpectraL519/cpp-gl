@@ -12,8 +12,8 @@ namespace gl {
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_impl_tag ImplTag = impl::list_t>
 struct graph_traits {
     using directional_tag = DirectionalTag;
@@ -28,34 +28,34 @@ struct graph_traits {
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties>
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties>
 using list_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::list_t>;
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties>
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties>
 using flat_list_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t>;
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties>
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties>
 using matrix_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t>;
 
 template <
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_impl_tag ImplTag = impl::list_t>
 using directed_graph_traits = graph_traits<directed_t, VertexProperties, EdgeProperties, ImplTag>;
 
 template <
-    traits::c_properties VertexProperties = types::empty_properties,
-    traits::c_properties EdgeProperties = types::empty_properties,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_impl_tag ImplTag = impl::list_t>
 using undirected_graph_traits =
     graph_traits<undirected_t, VertexProperties, EdgeProperties, ImplTag>;

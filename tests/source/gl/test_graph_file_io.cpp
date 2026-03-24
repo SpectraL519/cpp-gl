@@ -36,8 +36,7 @@ TEST_SUITE_BEGIN("test_graph_file_io");
 // Tests covering only the io functionality with the graph specification format enabled
 
 struct test_graph_file_io {
-    using traits_type =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_graph_file_io() {

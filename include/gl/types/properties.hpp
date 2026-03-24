@@ -14,8 +14,6 @@
 
 namespace gl {
 
-namespace types {
-
 using empty_properties = std::monostate;
 using empty_properties_map = std::monostate;
 
@@ -123,11 +121,7 @@ public:
     binary_color& operator=(const binary_color&) = default;
     binary_color& operator=(binary_color&&) noexcept = default;
 
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~binary_color() = default;
-#else
-    virtual ~binary_color() = default;
-#endif
 
     binary_color& operator=(value value) {
         this->_value = this->_restrict(value);
@@ -188,9 +182,7 @@ struct weight_property {
     }
 };
 
-} // namespace types
-
-using bin_color_value = typename types::binary_color::value;
+using bin_color_value = typename binary_color::value;
 
 namespace traits {
 
@@ -199,7 +191,7 @@ concept c_properties =
     std::semiregular<T> and std::move_constructible<T> and std::assignable_from<T&, const T&>;
 
 template <typename T>
-concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
+concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
 
 template <typename T>
 concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
@@ -217,8 +209,8 @@ template <typename Properties>
 concept c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {
     typename Properties::color_type;
     { p.color } -> std::same_as<typename Properties::color_type&>;
-    { p.color == types::binary_color{} } -> std::convertible_to<bool>;
-    requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+    { p.color == binary_color{} } -> std::convertible_to<bool>;
+    requires std::constructible_from<typename Properties::color_type, binary_color>;
 };
 
 template <typename Properties>

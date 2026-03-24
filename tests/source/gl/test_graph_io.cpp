@@ -16,8 +16,7 @@ TEST_SUITE_BEGIN("test_graph_io");
 // Tests covering only the io functionality with the graph specification format enabled
 
 struct test_directed_graph_io {
-    using traits_type =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_directed_graph_io() {
@@ -60,7 +59,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::directed_t, std::monostate, gl::types::name_property>;
+        gl::graph_traits<gl::directed_t, std::monostate, gl::name_property>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -73,7 +72,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, std::monostate>;
+        gl::graph_traits<gl::directed_t, gl::name_property, std::monostate>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -126,8 +125,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_graph_io {
-    using traits_type =
-        gl::graph_traits<gl::undirected_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::undirected_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_undirected_graph_io() {
@@ -171,7 +169,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::undirected_t, std::monostate, gl::types::name_property>;
+        gl::graph_traits<gl::undirected_t, std::monostate, gl::name_property>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -184,7 +182,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::undirected_t, gl::types::name_property, std::monostate>;
+        gl::graph_traits<gl::undirected_t, gl::name_property, std::monostate>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);

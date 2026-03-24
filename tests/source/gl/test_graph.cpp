@@ -873,7 +873,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             edge_property = std::format("edge_{}", id);
     };
 
-    using p_graph_traits = add_properties<TraitsType, gl::types::name_property>;
+    using p_graph_traits = add_properties<TraitsType, gl::name_property>;
     using p_sut_type = gl::graph<p_graph_traits>;
 
     const auto create_test_p_hypergraph = [&set_properties]() {
@@ -971,28 +971,28 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     property_graph_traits_template,
     gl::list_graph_traits<
         gl::directed_t,
-        gl::types::name_property,
-        gl::types::name_property>, // directed adjacency list
+        gl::name_property,
+        gl::name_property>, // directed adjacency list
     gl::list_graph_traits<
         gl::undirected_t,
-        gl::types::name_property,
-        gl::types::name_property>, // undirected adjacency list
+        gl::name_property,
+        gl::name_property>, // undirected adjacency list
     gl::flat_list_graph_traits<
         gl::directed_t,
-        gl::types::name_property,
-        gl::types::name_property>, // directed flat adjacency list
+        gl::name_property,
+        gl::name_property>, // directed flat adjacency list
     gl::flat_list_graph_traits<
         gl::undirected_t,
-        gl::types::name_property,
-        gl::types::name_property>, // undirected flat adjacency list
+        gl::name_property,
+        gl::name_property>, // undirected flat adjacency list
     gl::matrix_graph_traits<
         gl::directed_t,
-        gl::types::name_property,
-        gl::types::name_property>, // directed adjacency matrix
+        gl::name_property,
+        gl::name_property>, // directed adjacency matrix
     gl::matrix_graph_traits<
         gl::undirected_t,
-        gl::types::name_property,
-        gl::types::name_property> // undirected adjacency matrix
+        gl::name_property,
+        gl::name_property> // undirected adjacency matrix
 );
 
 TEST_SUITE_END(); // test_graph

@@ -16,14 +16,14 @@
 
 namespace gl {
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 class vertex_descriptor final {
 public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         properties_type&>;
 
     vertex_descriptor() {
@@ -127,11 +127,11 @@ private:
     id_type _id;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 using vertex = vertex_descriptor<Properties>;
 
 } // namespace gl

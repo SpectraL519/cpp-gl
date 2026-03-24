@@ -76,7 +76,7 @@ public:
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     using vertex_properties_map_type = std::conditional_t<
         traits::c_empty_properties<vertex_properties_type>,
-        types::empty_properties_map,
+        empty_properties_map,
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
     using edge_type = typename traits_type::edge_type;
@@ -84,7 +84,7 @@ public:
 
     using edge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<edge_properties_type>,
-        types::empty_properties_map,
+        empty_properties_map,
         std::vector<std::unique_ptr<edge_properties_type>>>;
 
     graph& operator=(const graph&) = delete;
