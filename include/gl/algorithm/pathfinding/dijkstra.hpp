@@ -22,7 +22,7 @@ struct paths_descriptor {
 };
 
 template <traits::c_graph GraphType>
-using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
+using paths_descriptor_type = paths_descriptor<vertex_distance_type<GraphType>>;
 
 template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
@@ -42,7 +42,7 @@ template <
     const PostVisitCallback& post_visit = {}
 ) {
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
+    using distance_type = vertex_distance_type<GraphType>;
 
     auto paths = make_paths_descriptor<GraphType>(graph);
 

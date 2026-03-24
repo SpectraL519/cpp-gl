@@ -113,7 +113,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     edge_heap_prim_unwieghted_edge_traits_type_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using distance_type = gl::types::default_vertex_distance_type;
+    using distance_type = gl::default_vertex_distance_type;
     using weight_type = distance_type;
     using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
 
@@ -254,7 +254,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     vertex_heap_prim_unwieghted_edge_traits_type_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using distance_type = gl::types::default_vertex_distance_type;
+    using distance_type = gl::default_vertex_distance_type;
     using weight_type = distance_type;
     using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
 

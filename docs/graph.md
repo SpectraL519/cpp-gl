@@ -51,8 +51,8 @@ The table below demostrates what parameters of the graph can be modified:
 | **Trait** | **Purpose** | **Constraints** | **Default value** |
 | :- | :- | :- | :- |
 | DirectionalTag | Specifies whether the graph should store directed or undirected edges | Either `directed_t` or `undirected_t`<br/>**Concept:** `traits::c_graph_directional_tag` | `directed_t` |
-| VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `types::empty_properties` |
-| EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `types::empty_properties` |
+| VertexProperties | The properties type associated with each vertex in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `empty_properties` |
+| EdgeProperties | The properties type associated with each edge in the graph | Must be default, copy and move constructible and define copy and move assignment operators<br/>**Concept:** `traits::c_properties` | `empty_properties` |
 | ImplTag  | Specifies the underlying graph representation structure (adjacency list or matrix) | One of:<br/>&bull; `impl::list_t`<br/>&bull; `impl::flat_list_t`<br/>&bull; `impl::matrix_t`<br/>**Concept:** `traits::c_graph_impl_tag` | `impl::list_t` |
 
 An example on how to define an undirected graph with a *weight* edge properties type and represented as an adjacency matrix:
@@ -62,8 +62,8 @@ An example on how to define an undirected graph with a *weight* edge properties 
 
 using traits = gl::graph_traits<
     gl::undirected_t,                // DirectionalTag
-    gl::types::empty_properties,     // VertexProperties
-    gl::types::weight_property<int>, // EdgeProperties
+    gl::empty_properties,     // VertexProperties
+    gl::weight_property<int>, // EdgeProperties
     gl::impl::matrix_t>;             // ImplTag
 
 int main() {
@@ -141,12 +141,12 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.order() const noexcept`**:
   - *Description*: Returns the total number of vertices in the graph.
   - *Returned value*: $|V|$ where $V$ is the vertex set of the graph
-  - *Return type*: `types::size_type`
+  - *Return type*: `size_type`
 
 - **`graph.size() const noexcept`**:
   - *Description*: Returns the number of edges in the graph.
   - *Returned value*: $|E|$ where $E$ is the edge set of the graph
-  - *Return type*: `types::size_type`
+  - *Return type*: `size_type`
 
 <br />
 
@@ -160,20 +160,20 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.vertex_ids() const`**:
   - *Description*: Returns a view of vertex IDs, starting from the initial vertex ID to the number of vertices in the grap.
   - *Returned value*: $(v_{id} : v \in V)$
-  - *Return type*: A *random access view* with values of type `types::id_type` : `std::ranges::iota_view`.
+  - *Return type*: A *random access view* with values of type `id_type` : `std::ranges::iota_view`.
 
 - **`graph.get_vertex(vertex_id) const`**:
   - *Description*: Retrieves the vertex object associated with the given vertex ID.
   - *Returned value*: $v \in V : v_{id} = \text{vertex-id}$
   - *Parameters*:
-    - `vertex_id: const types::id_type`
+    - `vertex_id: const id_type`
   - *Return type*: `vertex_type`
 
 - **`graph.has_vertex(vertex_id) const`**:
   - *Description*: Checks if a vertex exists for the given vertex ID.
   - *Returned value*: $\exists!(v \in V : v_{id} = \text{vertex-id})$
   - *Parameters*:
-    - `vertex_id: const types::id_type`
+    - `vertex_id: const id_type`
   - *Return type*: `bool`
 
 - **`graph.has_vertex(vertex) const`**:
@@ -197,7 +197,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.add_vertices(n)`**:
   - *Description*: Adds `n` new vertices to the graph, each with default properties.
   - *Parameters*:
-    - `n: types::size_type` – The number of vertices to add.
+    - `n: size_type` – The number of vertices to add.
   - *Return type*: `void`
 
 - **`graph.add_vertices_with(properties_rng)`**:
@@ -216,7 +216,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertex(vertex_id)`**:
   - *Description*: Removes the vertex with the given ID from the graph.
   - *Parameters*:
-    - `vertex_id: types::size_type` – The ID of the vertex to be removed.
+    - `vertex_id: size_type` – The ID of the vertex to be removed.
   - *Return type*: `void`
 
 - **`graph.remove_vertex(vertex)`**:
@@ -228,7 +228,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertices_from(vertex_id_rng)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex IDs. The IDs are sorted in descending order and duplicate IDs are removed before deletion.
   - *Template parameters*:
-    - `IdRange: traits::c_forward_range_of<types::id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
+    - `IdRange: traits::c_forward_range_of<id_type>` – A range of vertex IDs, which must satisfy the size and type constraints.
   - *Parameters*:
     - `vertex_id_rng: const IdRange&` – A range of vertex IDs to be removed.
   - *Return type*: `void`
@@ -236,7 +236,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.remove_vertices_from(vertex_rng)`**:
   - *Description*: Removes multiple vertices from the graph based on a range of vertex references. The references are sorted in descending order and duplicates are removed before deletion.
   - *Parameters*:
-    - `vertex_rng: const traits::c_forward_range_of<types::id_type> auto&` – A range of vertex references to be removed.
+    - `vertex_rng: const traits::c_forward_range_of<id_type> auto&` – A range of vertex references to be removed.
   - *Return type*: `void`
 
 - **`graph.in_degree(vertex) const`**:
@@ -246,7 +246,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For unidirected graphs: $deg(vertex)$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the in-degree.
-  - *Return type*: `types::size_type`
+  - *Return type*: `size_type`
 
 - **`graph.in_degree(vertex_id) const`**:
   - *Description*: Returns the in-degree (number of incoming edges) of the vertex with the specified ID.
@@ -254,12 +254,12 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: $|\{(u, v) \in E : \text{vertex-id} = v_{id}\}|$
     - For unidirected graphs: $deg(\text{vertex-id})$
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the in-degree.
-  - *Return type*: `types::size_type`
+    - `vertex_id: id_type` – the ID of the vertex for which to calculate the in-degree.
+  - *Return type*: `size_type`
 
 - **`graph.in_degree_map() const`**:
   - *Description*: Returns a vector containing the in-degrees of the corresponding vertices (in-degree at index `i` corresponds to the vertex with an ID equal `i`).
-  - *Return type*: `std::vector<types::size_type>`
+  - *Return type*: `std::vector<size_type>`
 
 - **`graph.out_degree(vertex) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the specified vertex.
@@ -268,7 +268,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For unidirected graphs: $deg(vertex)$
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the out-degree.
-  - *Return type*: `types::size_type`
+  - *Return type*: `size_type`
 
 - **`graph.out_degree(vertex_id) const`**:
   - *Description*: Returns the out-degree (number of outgoing edges) of the vertex with the specified ID.
@@ -276,12 +276,12 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: $|\{(u, v) \in E : \text{vertex-id} = u_{id}\}|$
     - For unidirected graphs: $deg(\text{vertex-id})$
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the out-degree.
-  - *Return type*: `types::size_type`
+    - `vertex_id: id_type` – the ID of the vertex for which to calculate the out-degree.
+  - *Return type*: `size_type`
 
 - **`graph.out_degree_map() const`**:
   - *Description*: Returns a vector containing the out-degrees of the corresponding vertices (out-degree at index `i` corresponds to the vertex with an ID equal `i`).
-  - *Return type*: `std::vector<types::size_type>`
+  - *Return type*: `std::vector<size_type>`
 
 - **`graph.degree(vertex) const`**:
   - *Description*: Returns the degree (number of incoming and outgoing edges) of the specified vertex.
@@ -293,7 +293,7 @@ Based on the specified traits, the `graph` class defines the following types:
 
   - *Parameters*:
     - `vertex: const vertex_type&` – the vertex for which to calculate the degree.
-  - *Return type*: `types::size_type`
+  - *Return type*: `size_type`
 
 - **`graph.degree(vertex_id) const`**:
   - *Description*: Returns the degree (number of incoming and outgoing edges) of the vertex with the specified ID.
@@ -303,19 +303,19 @@ Based on the specified traits, the `graph` class defines the following types:
 
       $2 \times |\{(u, v) \in E : u = v \land (\text{vertex-id} \in \{u_{id}, v_{id}\})\}| + |\{(u, v) \in E : u \ne v \land (\text{vertex-id} \in \{u_{id}, v_{id}\})\}|$
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to calculate the degree.
-  - *Return type*: `types::size_type`
+    - `vertex_id: id_type` – the ID of the vertex for which to calculate the degree.
+  - *Return type*: `size_type`
 
 - **`graph.degree_map() const`**:
   - *Description*: Returns a vector containing the degrees of the corresponding vertices (degree at index `i` corresponds to the vertex with an ID equal `i`).
-  - *Return type*: `std::vector<types::size_type>`
+  - *Return type*: `std::vector<size_type>`
 
 - **`graph.at(vertex_id) const`**:
   - *Description*: Returns a *random access view* over the adjacency storage entry for the given vertex ID.
     - For an adjacency list representation, it returns a view over a list of edges adjacent to the vertex.
     - For an adjacency matrix representation, it returns a view over a row of size $|V|$ corresponding to the vertex. **NOTE:** If the $i$-th entry of the row contains an *invalid edge descriptor*, it means there is no edge between the vertex with ID `vertex_id` and the vertex with ID `i`.
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
+    - `vertex_id: id_type` – the ID of the vertex for which to find adjacent edges.
   - *Return type*: A *random access view* with values of type `edge_type`.
 
 - **`graph.at(vertex) const`**:
@@ -330,7 +330,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For an adjacency list representation, it returns a view over a list of edges adjacent to the vertex.
     - For an adjacency matrix representation, it returns a *filtered view* over a row of size $|V|$ corresponding to the vertex, containing only the valid edges (i.e., edges that exist between the vertex with ID `vertex_id` and other vertices).
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to find adjacent edges.
+    - `vertex_id: id_type` – the ID of the vertex for which to find adjacent edges.
   - *Return type*: A *forward view* with values of type `edge_type`.
 
 - **`graph.adjacent_edges(vertex) const`**:
@@ -345,7 +345,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: edges where the vertex is the target.
     - For undirected graphs: same as `adjacent_edges(vertex_id)`.
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to find incoming edges.
+    - `vertex_id: id_type` – the ID of the vertex for which to find incoming edges.
   - *Return type*: A *forward view* with values of type `edge_type`.
 
 - **`graph.in_edges(vertex) const`**:
@@ -360,7 +360,7 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: edges where the vertex is the source.
     - For undirected graphs: same as `adjacent_edges(vertex_id)`.
   - *Parameters*:
-    - `vertex_id: types::id_type` – the ID of the vertex for which to find outgoing edges.
+    - `vertex_id: id_type` – the ID of the vertex for which to find outgoing edges.
   - *Return type*: A *forward view* with values of type `edge_type`.
 
 - **`graph.out_edges(vertex) const`**:
@@ -377,20 +377,20 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.edge_ids() const`**:
   - *Description*: Returns a view of edge IDs, starting from the initial edge ID to the number of edges in the grap.
   - *Returned value*: $(e_{id} : e \in E)$
-  - *Return type*: A *random access view* with values of type `types::id_type` : `std::ranges::iota_view`.
+  - *Return type*: A *random access view* with values of type `id_type` : `std::ranges::iota_view`.
 
 - **`graph.add_edge(source_id, target_id)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge.
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
   - *Return type*: `edge_type`
 
 - **`graph.add_edge_with(source_id, target_id, properties)`**:
   - *Description*: Adds a new edge between the vertices with the specified IDs and returns a reference to the newly added edge. This overload is available when the edge properties type is not the default.
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
     - `properties: const edge_properties_type&` – properties to assign to the new edge.
   - *Return type*: `const edge_type`
   - *Requires*: non-default `edge_properties_type`
@@ -414,8 +414,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.add_edges_from(source_id, target_id_rng)`**:
   - *Description*: Adds multiple edges from a source vertex (specified by ID) to a range of target vertices (also specified by IDs).
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id_rng: const traits::c_sized_range_of<types::id_type> auto&` – a range of target vertex IDs to connect to the source vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id_rng: const traits::c_sized_range_of<id_type> auto&` – a range of target vertex IDs to connect to the source vertex.
   - *Return type*: `void`
   - *NOTE:* For an adjacency matrix representation passing a range with duplicate IDs will result in an error.
 
@@ -439,8 +439,8 @@ Based on the specified traits, the `graph` class defines the following types:
     - For directed graphs: $\exists((u, v) \in E : \text{source-id} = u_{id} \land \text{target-id} = v_{id})$
     - For unidirected graphs: $\exists((u, v) \in E : (\text{source-id}, \text{target-id}) \in \{(u_{id}, v_{id}), (v_{id}, u_{id})\})$
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
   - *Return type*: `bool`
 
 - **`graph.has_edge(source, target) const`**:
@@ -462,8 +462,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.get_edge(source_id, target_id) const`**:
   - *Description*: Returns an optional edge between the vertices with the specified IDs. If no edge exists, `std::nullopt` is returned (**NOTE:** for the `adjacency_list` implementation the source matchin edge is returned).
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
   - *Return type*: `std::optional<edge_type>`
 
 - **`graph.get_edge(source, target) const`**:
@@ -476,8 +476,8 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.get_edges(source_id, target_id) const`**:
   - *Description*: Returns a vector of edges between the vertices with the specified IDs. If no edges exist, returns an empty vector.
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
   - *Return type*: `std::vector<edge_type>`
 
 - **`graph.get_edges(source, target) const`**:
@@ -510,8 +510,8 @@ Based on the specified traits, the `graph` class defines the following types:
   - *Description*: Returns true if the vertices with the specified IDs are incident to each other or the IDs are the same.
   - *Returned value*: $\exists(e_1, e_2 \in E : \text{source-id} \in ids(e_1) \land \text{target-id} \in ids(e_2) \land vertices(e_1) \cap vertices(e_2) \ne \emptyset)$
   - *Parameters*:
-    - `source_id: types::id_type` – the ID of the source vertex.
-    - `target_id: types::id_type` – the ID of the target vertex.
+    - `source_id: id_type` – the ID of the source vertex.
+    - `target_id: id_type` – the ID of the target vertex.
   - *Return type*: `bool`
 
 - **`graph.are_incident(source, target) const`**:
@@ -558,7 +558,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.get_vertex_properties(vertex_id) const`**:
   - *Description*: Returns a reference to the properties of the vertex with the specified ID.
   - *Parameters*:
-    - `vertex_id: const types::id_type` – the ID of the vertex whose properties are to be retrieved.
+    - `vertex_id: const id_type` – the ID of the vertex whose properties are to be retrieved.
   - *Return type*: `vertex_properties_type&`
   - *Requires*: non-default `vertex_properties_type`
 
@@ -570,7 +570,7 @@ Based on the specified traits, the `graph` class defines the following types:
 - **`graph.get_edge_properties(edge_id) const`**:
   - *Description*: Returns a reference to the properties of the edge with the specified ID.
   - *Parameters*:
-    - `edge_id: const types::id_type` – the ID of the edge whose properties are to be retrieved.
+    - `edge_id: const id_type` – the ID of the edge whose properties are to be retrieved.
   - *Return type*: `edge_properties_type&`
   - *Requires*: non-default `edge_properties_type`
 
@@ -606,7 +606,7 @@ To write safe and more expressive graph utility of your own, you can use the def
 #### Types
 
 > [!NOTE]
-> All of the utility types listed below are defined in the `gl::types` namespace
+> All of the utility types listed below are defined in the [gl/graph.hpp](/include/gl/graph.hpp) header file.
 
 - `default_vertex_distance_type = std::int64_t` : Defines the default type for distance between vertices. This is used in the absence of a weight type definition in the `edge_properties_type` of a graph.
 - `vertex_distance`
@@ -629,8 +629,8 @@ To write safe and more expressive graph utility of your own, you can use the def
     - `edge: const typename GraphType::edge_type&` - the edge to get weight from
   - *Returned value*:
     - `edge.properties.weight` if the `edge_properties_type` satisfies the `traits::c_weight_properties_type` concept
-    - `static_cast<types::default_vertex_distance_type>(1ll)` otherwise
-  - *Return type*: `types::vertex_distance_type<GraphType>`
+    - `static_cast<default_vertex_distance_type>(1ll)` otherwise
+  - *Return type*: `vertex_distance_type<GraphType>`
 
 <br />
 <br />

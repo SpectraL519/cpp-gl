@@ -16,7 +16,7 @@ template <traits::c_undirected_graph GraphType>
 struct mst_descriptor {
     using graph_type = GraphType;
     using edge_type = typename graph_type::edge_type;
-    using weight_type = types::vertex_distance_type<graph_type>;
+    using weight_type = vertex_distance_type<graph_type>;
 
     mst_descriptor(const size_type n_vertices) {
         edges.reserve(n_vertices - 1uz);
@@ -84,13 +84,13 @@ template <traits::c_undirected_graph GraphType>
 }
 
 template <traits::c_undirected_graph GraphType>
-requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
+requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
     const GraphType& graph, const std::optional<id_type> root_id_opt
 ) {
     // type definitions
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
+    using distance_type = vertex_distance_type<GraphType>;
 
     // Prepare the necessary utility
     const auto n_vertices = graph.order();

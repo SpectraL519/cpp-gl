@@ -34,7 +34,7 @@ The table below contains the basic type aliases defined in the library.
 | `homogeneous_pair<T>` | `std::pair<T, T>` |
 
 > [!NOTE]
-> All types in the table above are defined in the `gl::types` namespace and in the [gl/types/core.hpp](/include/gl/types/core.hpp) header file.
+> All types in the table above are defined in the [gl/types/core.hpp](/include/gl/types/core.hpp) header file.
 
 <br />
 <br />
@@ -42,41 +42,32 @@ The table below contains the basic type aliases defined in the library.
 ## Graph element property types
 
 > [!NOTE]
-> All types listed in this section are defined in the `gl::types` namespace and in the [gl/types/properties.hpp](/include/gl/types/properties.hpp) header file.
+> All types listed in this section are defined in the [gl/types/properties.hpp](/include/gl/types/properties.hpp) header file.
 
 ### Basic property types
 
 - `empty_properties` - An alias for `std::monostate` representing the default properties type which holds no data.
 
-### `class name_property`
+### `struct name_property`
 
 - *Description*:
-  The `name_property` class is a simple wrapper around a `std::string`, designed to store and manage an element's name.
+  The `name_property` struct is a simple wrapper around a `std::string`, designed to store and manage an element's name.
 
 - *Type definitions*:
   - `value_type` - An alias for `std::string`, representing the type of the name stored in the property.
 
-- *Constructors*:
-  - `name_property()` - Default constructor (*default*).
-  - `name_property(std::string_view name)` - Initializes the name property with the provided `name`.
-  - `name_property(const name_property&)` - Copy constructor (*default*).
-  - `name_property(name_property&&)` - Move constructor (*default*).
-
 - *Assignment operators*:
-  - `operator=(const name_property&) -> name_property&` - Copy assignment operator (*default*).
-  - `operator=(name_property&&) -> name_property&` - Move assignment operator (*default*).
-
-- *Destructor*:
-  - `~name_property()` - (*default*).
+  - `operator=(std::string_view name) -> name_property&` - Assigns a new name to the property, allowing for efficient assignment from string literals and `std::string_view`.
 
 - *Member functions*:
-  - `name() const -> const std::string&` - Returns the stored name as a constant reference.
   - `operator==(const name_property&) const -> bool` - Equality operator (*default*).
   - `operator<=>(const name_property&) const -> auto` - Three-way comparison operator (*default*).
+  - `operator==(std::string_view name) const -> bool` - Compares the property name with a string view for equality.
+  - `operator<=>(std::string_view name) const -> auto` - Compares the property name with a string view for ordering.
 
 - *Friend functions*:
-  - `operator<<(std::ostream&, const name_property&) -> std::ostream&` - Outputs the `name_property`'s name to an output stream, enclosed in quotes.
-  - `operator>>(std::istream&, name_property&) -> std::istream&` - Inputs a `name_property`'s name from an input stream, expecting a quoted string.
+  - `operator<<(std::ostream&, const name_property&) -> std::ostream&` - Outputs the `name_property`'s name to an output stream, **enclosed in quotes**.
+  - `operator>>(std::istream&, name_property&) -> std::istream&` - Inputs a `name_property`'s name from an input stream, **expecting a quoted string**.
 
 ### `class dynamic_properties`
 
@@ -156,7 +147,7 @@ The table below contains the basic type aliases defined in the library.
   - `operator==(const binary_color&) const -> bool` - Equality operator (*default*).
 
 - *Associated type definitions*:
-  - `gl::bin_color_value = typename types::binary_color::value`
+  - `gl::bin_color_value = typename binary_color::value`
 
 ### `struct binary_color_property`
 
@@ -209,11 +200,11 @@ This section describes the type traits that are associated with the property typ
   ```
 
 - `c_empty_properties<T>`
-  - *Description*: A concept that checks if a given type `T` is an empty properties type - `types::empty_properties = std::monostate`.
+  - *Description*: A concept that checks if a given type `T` is an empty properties type - `empty_properties = std::monostate`.
 
   ```cpp
   template <typename T>
-  concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
+  concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
   ```
 
 - `c_non_empty_properties<T>`
@@ -251,8 +242,8 @@ This section describes the type traits that are associated with the property typ
   concept c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {
       typename Properties::color_type;
       { p.color } -> std::same_as<typename Properties::color_type&>;
-      { p.color == types::binary_color{} } -> std::convertible_to<bool>;
-      requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+      { p.color == binary_color{} } -> std::convertible_to<bool>;
+      requires std::constructible_from<typename Properties::color_type, binary_color>;
   };
   ```
 

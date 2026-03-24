@@ -149,7 +149,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     unwieghted_edge_traits_type_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using distance_type = gl::types::default_vertex_distance_type;
+    using distance_type = gl::default_vertex_distance_type;
 
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 

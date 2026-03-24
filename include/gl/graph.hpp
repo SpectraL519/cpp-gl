@@ -838,8 +838,6 @@ template <traits::c_graph Graph>
     return Graph(source);
 }
 
-namespace types {
-
 using default_vertex_distance_type = std::int64_t;
 
 template <traits::c_graph GraphType>
@@ -856,16 +854,14 @@ struct vertex_distance<GraphType> {
 template <traits::c_graph GraphType>
 using vertex_distance_type = typename vertex_distance<GraphType>::type;
 
-} // namespace types
-
 template <traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline types::vertex_distance_type<GraphType> get_weight(
+[[nodiscard]] gl_attr_force_inline vertex_distance_type<GraphType> get_weight(
     const typename GraphType::edge_type& edge
 ) {
     if constexpr (traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
         return edge.properties().weight;
     else
-        return static_cast<types::default_vertex_distance_type>(1ll);
+        return static_cast<default_vertex_distance_type>(1ll);
 }
 
 } // namespace gl

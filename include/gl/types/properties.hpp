@@ -18,9 +18,11 @@ using empty_properties = std::monostate;
 using empty_properties_map = std::monostate;
 
 struct name_property {
-    std::string name;
+    using value_type = std::string;
 
-    name_property& operator=(const std::string_view name) {
+    value_type name;
+
+    name_property& operator=(std::string_view name) {
         this->name = name;
         return *this;
     }
