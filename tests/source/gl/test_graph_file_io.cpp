@@ -56,7 +56,7 @@ struct test_graph_file_io {
         fs::remove(path);
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
 
     fs::path path{"test_directed_graph_file_io.gsf"};

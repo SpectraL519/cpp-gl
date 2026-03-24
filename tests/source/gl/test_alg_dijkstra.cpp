@@ -39,8 +39,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::types::id_type source_id;
-        std::vector<gl::types::id_type> expected_predecessors;
+        gl::id_type source_id;
+        std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
         const auto source_distance = static_cast<distance_type>(constants::zero);
@@ -49,13 +49,11 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
             source_id = constants::first_element_idx;
 
-            expected_predecessors =
-                std::vector<gl::types::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
-            for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
-                 id++) {
+            for (gl::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++) {
                 sut.get_edge(constants::vertex_id_1, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
@@ -73,9 +71,8 @@ TEST_CASE_TEMPLATE_DEFINE(
                 expected_predecessors.push_back(parent_id);
 
                 const auto vertex_depth =
-                    constants::zero
-                        ? constants::zero
-                        : static_cast<gl::types::size_type>(std::log2(id + constants::one));
+                    constants::zero ? constants::zero
+                                    : static_cast<gl::size_type>(std::log2(id + constants::one));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -94,7 +91,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path predecessors_file_path =
                 alg_common::data_path / (file_name_prefix + "predecessors.txt");
             expected_predecessors =
-                alg_common::load_list<gl::types::id_type>(sut.order(), predecessors_file_path);
+                alg_common::load_list<gl::id_type>(sut.order(), predecessors_file_path);
 
             const fs::path distances_file_path =
                 alg_common::data_path / (file_name_prefix + "distances.txt");
@@ -158,8 +155,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::types::id_type source_id;
-        std::vector<gl::types::id_type> expected_predecessors;
+        gl::id_type source_id;
+        std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
         const auto source_distance = static_cast<distance_type>(constants::zero);
@@ -168,12 +165,10 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
             source_id = constants::first_element_idx;
 
-            expected_predecessors =
-                std::vector<gl::types::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
-            for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
-                 id++)
+            for (gl::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++)
                 expected_distances.push_back(constants::one);
         }
 
@@ -189,9 +184,8 @@ TEST_CASE_TEMPLATE_DEFINE(
                 expected_predecessors.push_back(parent_id);
 
                 const auto vertex_depth =
-                    constants::zero
-                        ? constants::zero
-                        : static_cast<gl::types::size_type>(std::log2(id + constants::one));
+                    constants::zero ? constants::zero
+                                    : static_cast<gl::size_type>(std::log2(id + constants::one));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -223,8 +217,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
-    const std::vector<std::optional<gl::types::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
-    gl::types::id_type vertex_id = predecessor_map.size() - constants::one;
+    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
+    gl::id_type vertex_id = predecessor_map.size() - constants::one;
 
     CHECK_THROWS_AS(
         func::discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
@@ -233,10 +227,10 @@ TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
 }
 
 TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {
-    const std::vector<std::optional<gl::types::id_type>> predecessor_map = {0, 3, 1, 0};
+    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, 0};
 
-    gl::types::id_type vertex_id;
-    std::deque<gl::types::id_type> expected_path;
+    gl::id_type vertex_id;
+    std::deque<gl::id_type> expected_path;
 
     SUBCASE("starting vertex = 0") {
         vertex_id = 0;

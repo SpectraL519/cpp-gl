@@ -14,13 +14,13 @@ namespace gl::algorithm {
 template <
     traits::c_graph GraphType,
     traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_optional_id_callback<bool, id_type> VisitCallback,
     traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
     traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void dfs(
     const GraphType& graph,
-    const types::id_type root_id,
+    const id_type root_id,
     const VisitVertexPredicate& visit_vertex_pred,
     const VisitCallback& visit,
     const EnqueueVertexPred& enqueue_vertex_pred,
@@ -65,14 +65,14 @@ void dfs(
 template <
     traits::c_graph GraphType,
     traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_optional_id_callback<bool, id_type> VisitCallback,
     traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
     traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 void r_dfs(
     const GraphType& graph,
-    const types::id_type vertex_id,
-    const types::id_type pred_id,
+    const id_type vertex_id,
+    const id_type pred_id,
     const VisitVertexPredicate& visit_vertex_pred,
     const VisitCallback& visit,
     const EnqueueVertexPred& enqueue_vertex_pred,

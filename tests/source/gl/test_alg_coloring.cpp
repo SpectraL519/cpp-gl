@@ -32,18 +32,18 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
             expected_coloring =
                 std::vector<gl::types::binary_color>(n_vertices_a, gl::bin_color_value::black);
-            for (gl::types::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
+            for (gl::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
                 expected_coloring.emplace_back(gl::bin_color_value::white);
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
 
-            gl::types::size_type n_vertices = constants::one_element;
+            gl::size_type n_vertices = constants::one_element;
             gl::types::binary_color c{gl::bin_color_value::black};
 
-            for (gl::types::size_type d = constants::zero; d < constants::depth; d++) {
-                for (gl::types::size_type i = constants::zero; i < n_vertices; i++)
+            for (gl::size_type d = constants::zero; d < constants::depth; d++) {
+                for (gl::size_type i = constants::zero; i < n_vertices; i++)
                     expected_coloring.push_back(c);
 
                 n_vertices *= constants::two;
@@ -55,7 +55,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
             gl::types::binary_color c{gl::bin_color_value::black};
-            for (gl::types::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
+            for (gl::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }
@@ -66,7 +66,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             sut = gl::topology::cycle<sut_type>(n_vertices);
 
             gl::types::binary_color c{gl::bin_color_value::black};
-            for (gl::types::size_type i = constants::zero; i < n_vertices; i++) {
+            for (gl::size_type i = constants::zero; i < n_vertices; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }

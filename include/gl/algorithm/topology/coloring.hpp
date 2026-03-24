@@ -37,7 +37,7 @@ template <
             init_range(root_id),
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
-            [&coloring](const types::id_type vertex_id, const edge_type& in_edge)
+            [&coloring](const id_type vertex_id, const edge_type& in_edge)
                 -> predicate_result { // enqueue predicate
                 if (in_edge.is_loop())
                     return false;

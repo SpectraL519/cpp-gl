@@ -19,11 +19,11 @@ struct test_adjacency_list {
         return sut._list;
     }
 
-    gl::types::size_type size(const auto& sut) const {
+    gl::size_type size(const auto& sut) const {
         return sut._list.size();
     }
 
-    gl::types::size_type next_edge_id = 0uz;
+    gl::size_type next_edge_id = 0uz;
 };
 
 TEST_CASE_TEMPLATE_DEFINE("common adjacency list tests", SutType, common_adj_list_template) {
@@ -45,10 +45,9 @@ TEST_CASE_TEMPLATE_DEFINE("common adjacency list tests", SutType, common_adj_lis
 
     SUBCASE("add_vertex should properly extend the current adjacency list") {
         SutType sut{};
-        constexpr gl::types::size_type target_n_vertices = constants::n_elements;
+        constexpr gl::size_type target_n_vertices = constants::n_elements;
 
-        for (gl::types::size_type n_vertices = constants::one_element;
-             n_vertices <= target_n_vertices;
+        for (gl::size_type n_vertices = constants::one_element; n_vertices <= target_n_vertices;
              n_vertices++) {
             sut.add_vertex();
             CHECK_EQ(fixture.size(sut), n_vertices);
@@ -109,7 +108,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 
 namespace {
 
-constexpr gl::types::size_type n_incident_edges_for_fully_connected_vertex =
+constexpr gl::size_type n_incident_edges_for_fully_connected_vertex =
     constants::n_elements - constants::one_element;
 
 } // namespace
@@ -119,13 +118,13 @@ struct test_directed_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
     using edge_type = typename sut_type::edge_type;
 
-    edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
+    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -160,12 +159,11 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     auto& sut = fixture.sut;
 
     const auto size = [&fixture](const auto& sut) { return fixture.size(sut); };
-    const auto add_edge =
-        [&fixture](const gl::types::id_type source_id, const gl::types::id_type target_id) {
-            return fixture.add_edge(source_id, target_id);
-        };
+    const auto add_edge = [&fixture](const gl::id_type source_id, const gl::id_type target_id) {
+        return fixture.add_edge(source_id, target_id);
+    };
     const auto fully_connect_vertex =
-        [&fixture](const gl::types::id_type source_id, const bool no_loops = true) {
+        [&fixture](const gl::id_type source_id, const bool no_loops = true) {
             fixture.fully_connect_vertex(source_id, no_loops);
         };
     const auto init_complete_graph = [&fixture](const bool no_loops = true) {
@@ -308,7 +306,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     ) {
         init_complete_graph();
 
-        std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
+        std::function<gl::size_type(const gl::id_type)> deg_proj;
 
         SUBCASE("in_degree") {
             deg_proj = [&sut](const auto vertex_id) { return sut.in_degree(vertex_id); };
@@ -359,7 +357,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements;
 
-        std::vector<gl::types::id_type> degree_map;
+        std::vector<gl::id_type> degree_map;
 
         SUBCASE("in_degree") {
             degree_map = sut.in_degree_map();
@@ -381,7 +379,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements * constants::two;
 
-        std::vector<gl::types::id_type> degree_map = sut.degree_map();
+        std::vector<gl::id_type> degree_map = sut.degree_map();
 
         REQUIRE_EQ(degree_map.size(), constants::n_elements);
         CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
@@ -399,7 +397,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         const auto removed_vertex_id = constants::vertex_id_1;
         const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
-        constexpr gl::types::size_type n_removed_edges = 4uz;
+        constexpr gl::size_type n_removed_edges = 4uz;
         REQUIRE_EQ(removed_edge_ids.size(), n_removed_edges);
         for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
             CHECK(std::ranges::contains(removed_edge_ids, edge_id));
@@ -432,13 +430,13 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
     using edge_type = typename sut_type::edge_type;
 
-    edge_type add_edge(const gl::types::id_type source_id, const gl::types::id_type target_id) {
+    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::types::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -467,7 +465,7 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
 
     sut_type sut{constants::n_elements};
 
-    const gl::types::size_type n_unique_edges_in_full_graph =
+    const gl::size_type n_unique_edges_in_full_graph =
         (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
 };
 
@@ -480,12 +478,11 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
     auto& sut = fixture.sut;
 
     const auto size = [&fixture](const auto& sut) { return fixture.size(sut); };
-    const auto add_edge =
-        [&fixture](const gl::types::id_type source_id, const gl::types::id_type target_id) {
-            return fixture.add_edge(source_id, target_id);
-        };
+    const auto add_edge = [&fixture](const gl::id_type source_id, const gl::id_type target_id) {
+        return fixture.add_edge(source_id, target_id);
+    };
     const auto fully_connect_vertex =
-        [&fixture](const gl::types::id_type source_id, const bool no_loops = true) {
+        [&fixture](const gl::id_type source_id, const bool no_loops = true) {
             fixture.fully_connect_vertex(source_id, no_loops);
         };
     const auto init_complete_graph = [&fixture](const bool no_loops = true) {
@@ -654,7 +651,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
             "vertex") {
         init_complete_graph();
 
-        std::function<gl::types::size_type(const gl::types::id_type)> deg_proj;
+        std::function<gl::size_type(const gl::id_type)> deg_proj;
 
         SUBCASE("degree") {
             deg_proj = [&sut](const auto vertex_id) { return sut.degree(vertex_id); };
@@ -690,7 +687,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements + 1;
 
-        std::vector<gl::types::id_type> degree_map;
+        std::vector<gl::id_type> degree_map;
 
         SUBCASE("in_degree") {
             degree_map = sut.in_degree_map();
@@ -721,7 +718,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         const auto removed_vertex_id = constants::first_element_idx;
         const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
-        constexpr gl::types::size_type n_removed_edges = 4uz;
+        constexpr gl::size_type n_removed_edges = 4uz;
         REQUIRE_EQ(removed_edge_ids.size(), n_removed_edges);
         for (const auto edge_id : {edge1.id(), edge2.id(), edge3.id(), edge4.id()})
             CHECK(std::ranges::contains(removed_edge_ids, edge_id));

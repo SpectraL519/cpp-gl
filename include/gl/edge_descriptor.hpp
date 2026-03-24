@@ -30,17 +30,12 @@ public:
         *this = edge_descriptor::invalid();
     }
 
-    explicit edge_descriptor(
-        const types::id_type id, const types::id_type source, const types::id_type target
-    )
+    explicit edge_descriptor(const id_type id, const id_type source, const id_type target)
     requires(traits::c_empty_properties<properties_type>)
     : _id(id), _vertices(source, target) {}
 
     explicit edge_descriptor(
-        const types::id_type id,
-        const types::id_type source,
-        const types::id_type target,
-        properties_type& properties
+        const id_type id, const id_type source, const id_type target, properties_type& properties
     )
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(source, target), _properties(properties) {}
@@ -99,16 +94,16 @@ public:
            and this->_vertices.second != constants::invalid_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
+    [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
         return this->_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices(
+    [[nodiscard]] gl_attr_force_inline homogeneous_pair<id_type> incident_vertices(
     ) const noexcept {
         return this->_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::homogeneous_pair<types::id_type> incident_vertices_r(
+    [[nodiscard]] gl_attr_force_inline homogeneous_pair<id_type> incident_vertices_r(
     ) const noexcept {
         return std::make_pair(this->_vertices.second, this->_vertices.first);
     }
@@ -116,18 +111,18 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    [[nodiscard]] gl_attr_force_inline const types::id_type source() const noexcept {
+    [[nodiscard]] gl_attr_force_inline const id_type source() const noexcept {
         return this->_vertices.first;
     }
 
-    [[nodiscard]] gl_attr_force_inline const types::id_type target() const noexcept {
+    [[nodiscard]] gl_attr_force_inline const id_type target() const noexcept {
         return this->_vertices.second;
     }
 
     // clang-format on
 
     // returns the `other` vertex or throws error if the given vertex is not incident with the edge
-    [[nodiscard]] const types::id_type incident_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] const id_type incident_vertex(const id_type vertex_id) const {
         if (vertex_id == this->_vertices.first)
             return this->_vertices.second;
 
@@ -137,20 +132,19 @@ public:
         throw std::invalid_argument(std::format("Got invalid vertex id: {}", vertex_id));
     }
 
-    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline bool is_incident_with(const id_type vertex_id
     ) const noexcept {
         return vertex_id == this->_vertices.first or vertex_id == this->_vertices.second;
     }
 
     // true if the given vertex is the `source` of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline bool is_incident_from(const id_type vertex_id
     ) const noexcept {
         return directional_tag::is_incident_from(*this, vertex_id);
     }
 
     // true if the given vertex is the `target` vertex of the edge
-    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const types::id_type vertex_id
-    ) const noexcept {
+    [[nodiscard]] gl_attr_force_inline bool is_incident_to(const id_type vertex_id) const noexcept {
         return directional_tag::is_incident_to(*this, vertex_id);
     }
 
@@ -201,8 +195,8 @@ private:
             os << "[" << this->_vertices.first << ", " << this->_vertices.second << "]";
     }
 
-    types::id_type _id;
-    types::homogeneous_pair<types::id_type> _vertices;
+    id_type _id;
+    homogeneous_pair<id_type> _vertices;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,
         types::empty_properties,

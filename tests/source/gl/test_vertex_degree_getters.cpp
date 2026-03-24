@@ -11,7 +11,7 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_vertex_degree_getters");
 
-inline constexpr auto get_id = [](auto&& element) -> gl::types::id_type { return element.id(); };
+inline constexpr auto get_id = [](auto&& element) -> gl::id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for directed graphs", TraitsType, directed_graph_traits_template
@@ -22,12 +22,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto n_vertices = constants::n_elements_top;
 
     sut_type sut;
-    std::deque<gl::types::size_type> expected_in_deg_list, expected_out_deg_list;
+    std::deque<gl::size_type> expected_in_deg_list, expected_out_deg_list;
 
     SUBCASE("clique") {
         sut = gl::topology::clique<sut_type>(n_vertices);
-        expected_in_deg_list =
-            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
         expected_out_deg_list = expected_in_deg_list;
     }
 
@@ -35,8 +34,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut = gl::topology::clique<sut_type>(n_vertices);
         sut.add_edge(constants::first_element_idx, constants::first_element_idx);
 
-        expected_in_deg_list =
-            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
         expected_in_deg_list.front()++;
 
         expected_out_deg_list = expected_in_deg_list;
@@ -44,7 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("cycle") {
         sut = gl::topology::cycle<sut_type>(n_vertices);
-        expected_in_deg_list = std::deque<gl::types::size_type>(n_vertices, constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, constants::one);
         expected_out_deg_list = expected_in_deg_list;
     }
 
@@ -52,11 +50,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut = gl::topology::path<sut_type>(n_vertices);
 
         expected_in_deg_list =
-            std::deque<gl::types::size_type>(n_vertices - constants::one, constants::one);
+            std::deque<gl::size_type>(n_vertices - constants::one, constants::one);
         expected_in_deg_list.push_front(constants::zero);
 
         expected_out_deg_list =
-            std::deque<gl::types::size_type>(n_vertices - constants::one, constants::one);
+            std::deque<gl::size_type>(n_vertices - constants::one, constants::one);
         expected_out_deg_list.push_back(constants::zero);
     }
 
@@ -64,15 +62,15 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(expected_in_deg_list);
     CAPTURE(expected_out_deg_list);
 
-    std::deque<gl::types::size_type> expected_deg_list(n_vertices);
+    std::deque<gl::size_type> expected_deg_list(n_vertices);
     std::ranges::transform(
         expected_in_deg_list,
         expected_out_deg_list,
         expected_deg_list.begin(),
-        std::plus<gl::types::size_type>{}
+        std::plus<gl::size_type>{}
     );
 
-    gl::types::size_type i = constants::zero;
+    gl::size_type i = constants::zero;
     CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
         const bool result =
             sut.in_degree(vertex) == expected_in_deg_list[i]
@@ -85,7 +83,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = constants::zero;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const gl::types::id_type vertex_id) {
+        [&](const gl::id_type vertex_id) {
             const bool result =
                 sut.in_degree(vertex_id) == expected_in_deg_list[i]
                 and sut.out_degree(vertex_id) == expected_out_deg_list[i]
@@ -113,33 +111,30 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto n_vertices = constants::n_elements_top;
 
     sut_type sut;
-    std::deque<gl::types::size_type> expected_deg_list;
+    std::deque<gl::size_type> expected_deg_list;
 
     SUBCASE("clique") {
         sut = gl::topology::clique<sut_type>(n_vertices);
-        expected_deg_list =
-            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
     }
 
     SUBCASE("clique with an additional loop") {
         sut = gl::topology::clique<sut_type>(n_vertices);
         sut.add_edge(constants::first_element_idx, constants::first_element_idx);
 
-        expected_deg_list =
-            std::deque<gl::types::size_type>(n_vertices, n_vertices - constants::one);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
         expected_deg_list.front() += constants::two; // loops counted twice
     }
 
     SUBCASE("cycle") {
         sut = gl::topology::cycle<sut_type>(n_vertices);
-        expected_deg_list = std::deque<gl::types::size_type>(n_vertices, constants::two);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, constants::two);
     }
 
     SUBCASE("path") {
         sut = gl::topology::path<sut_type>(n_vertices);
 
-        expected_deg_list =
-            std::deque<gl::types::size_type>(n_vertices - constants::two, constants::two);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices - constants::two, constants::two);
         expected_deg_list.push_front(constants::one);
         expected_deg_list.push_back(constants::one);
     }
@@ -147,7 +142,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(sut);
     CAPTURE(expected_deg_list);
 
-    gl::types::size_type i = constants::zero;
+    gl::size_type i = constants::zero;
     CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
         const auto expected_deg = expected_deg_list[i];
         const bool result =
@@ -160,7 +155,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = constants::zero;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const gl::types::id_type vertex_id) {
+        [&](const gl::id_type vertex_id) {
             const auto expected_deg = expected_deg_list[i];
             const bool result =
                 sut.in_degree(vertex_id) == expected_deg

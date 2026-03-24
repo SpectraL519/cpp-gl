@@ -34,7 +34,7 @@ struct test_directed_graph_io {
         }
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 
@@ -145,7 +145,7 @@ struct test_undirected_graph_io {
         }
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 

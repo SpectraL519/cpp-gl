@@ -11,9 +11,7 @@ TEST_SUITE_BEGIN("test_graph_topology_builders");
 namespace {
 
 template <gl::traits::c_graph GraphType>
-[[nodiscard]] gl::types::size_type n_unique_edges_for_bidir_topology(
-    const gl::types::size_type n_connections
-) {
+[[nodiscard]] gl::size_type n_unique_edges_for_bidir_topology(const gl::size_type n_connections) {
     if constexpr (gl::traits::c_directed_graph<GraphType>)
         return n_connections;
     else
@@ -23,8 +21,8 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 void verify_graph_size(
     const GraphType& graph,
-    const gl::types::size_type expected_n_vertices,
-    const gl::types::size_type expected_n_connections
+    const gl::size_type expected_n_vertices,
+    const gl::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
     REQUIRE_EQ(graph.size(), expected_n_connections);
@@ -33,8 +31,8 @@ void verify_graph_size(
 template <gl::traits::c_graph GraphType>
 void verify_bidir_graph_size(
     const GraphType& graph,
-    const gl::types::size_type expected_n_vertices,
-    const gl::types::size_type expected_n_connections
+    const gl::size_type expected_n_vertices,
+    const gl::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
     REQUIRE_EQ(graph.size(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
@@ -146,9 +144,9 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const gl::types::id_type source_id) {
+    return [&graph](const gl::id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
-        const gl::types::id_type parent_id =
+        const gl::id_type parent_id =
             source_id == constants::zero
                 ? constants::zero
                 : (source_id - constants::one) / constants::two;

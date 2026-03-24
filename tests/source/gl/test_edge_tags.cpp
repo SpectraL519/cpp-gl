@@ -10,9 +10,9 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_edge_tags");
 
 struct test_edge_tags {
-    static constexpr gl::types::id_type id = constants::first_element_idx;
-    static constexpr gl::types::id_type v1 = constants::vertex_id_1;
-    static constexpr gl::types::id_type v2 = constants::vertex_id_2;
+    static constexpr gl::id_type id = constants::first_element_idx;
+    static constexpr gl::id_type v1 = constants::vertex_id_1;
+    static constexpr gl::id_type v2 = constants::vertex_id_2;
 };
 
 struct test_directed_edge_tag : test_edge_tags {
