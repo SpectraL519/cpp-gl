@@ -1,6 +1,0 @@
-TODO - GL:
-3. Align property type docs
-6. Change the id_type and size_type to std::size_t (ull -> uz)
-
-TODO - HGL:
-1. Remove the types namespace
