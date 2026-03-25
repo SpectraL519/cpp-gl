@@ -163,8 +163,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
-            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++)
-                expected_distances.push_back(constants::one);
+            for (auto id = constants::v2_id; id < constants::n_elements_alg; id++)
+                expected_distances.push_back(1uz);
         }
 
         SUBCASE("regular binary tree") {
@@ -208,7 +208,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
     const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
-    gl::id_type vertex_id = predecessor_map.size() - constants::one;
+    gl::id_type vertex_id = predecessor_map.size() - 1uz;
 
     CHECK_THROWS_AS(
         discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),

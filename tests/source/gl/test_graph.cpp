@@ -314,7 +314,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr auto expected_n_vertices = n_vertices - constants::two;
         REQUIRE_EQ(sut.order(), expected_n_vertices);
 
-        constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
+        constexpr auto expected_n_adjacent_edges = expected_n_vertices - 1uz;
         CHECK(std::ranges::all_of(
             sut.vertices(),
             [&sut, expected_n_adjacent_edges](const auto& vertex) {
@@ -339,7 +339,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         constexpr auto expected_n_vertices = n_vertices - constants::two;
         REQUIRE_EQ(sut.order(), expected_n_vertices);
 
-        constexpr auto expected_n_adjacent_edges = expected_n_vertices - constants::one;
+        constexpr auto expected_n_adjacent_edges = expected_n_vertices - 1uz;
         CHECK(std::ranges::all_of(
             sut.vertices(),
             [&sut, expected_n_adjacent_edges](const auto& vertex) {

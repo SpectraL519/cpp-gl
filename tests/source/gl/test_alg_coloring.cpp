@@ -124,9 +124,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         }
 
         SUBCASE("odd cycle graph") {
-            sut = gl::topology::cycle<sut_type>(
-                constants::two * constants::n_elements_alg + constants::one
-            );
+            sut = gl::topology::cycle<sut_type>(constants::two * constants::n_elements_alg + 1uz);
         }
 
         SUBCASE("regular binary tree with an additional edge between siblings") {

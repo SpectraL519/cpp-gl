@@ -142,8 +142,7 @@ struct test_directed_adjacency_list : public test_adjacency_list {
             }));
         else
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adjacent_items) {
-                return adjacent_items.size()
-                    == n_incident_edges_for_fully_connected_vertex + constants::one;
+                return adjacent_items.size() == n_incident_edges_for_fully_connected_vertex + 1uz;
             }));
     }
 
@@ -321,9 +320,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
         add_edge(constants::v1_id, constants::v1_id);
 
-        CHECK_EQ(
-            deg_proj(constants::v1_id), n_incident_edges_for_fully_connected_vertex + constants::one
-        );
+        CHECK_EQ(deg_proj(constants::v1_id), n_incident_edges_for_fully_connected_vertex + 1uz);
     }
 
     SUBCASE("degree should return the number of edges incident with the given vertex") {
@@ -342,7 +339,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
         CHECK_EQ(
             deg_proj(constants::v1_id),
-            constants::two * (n_incident_edges_for_fully_connected_vertex + constants::one)
+            constants::two * (n_incident_edges_for_fully_connected_vertex + 1uz)
         );
     }
 
@@ -441,7 +438,7 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
 
     void init_complete_graph(const bool no_loops = true) {
         for (const auto source_id : constants::vertex_id_view) {
-            const auto bound = no_loops ? source_id : source_id + constants::one;
+            const auto bound = no_loops ? source_id : source_id + 1uz;
             for (const auto target_id : std::views::iota(constants::v1_id, bound))
                 add_edge(source_id, target_id);
         }
@@ -452,8 +449,7 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
             }));
         else
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adjacent_items) {
-                return adjacent_items.size()
-                    == n_incident_edges_for_fully_connected_vertex + constants::one;
+                return adjacent_items.size() == n_incident_edges_for_fully_connected_vertex + 1uz;
             }));
     }
 

@@ -35,8 +35,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id + constants::one; id < constants::n_elements_alg;
-             id++)
+        for (auto id = 1uz; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_front(id);
         expected_previsit_order.push_front(gl::constants::initial_id);
     }

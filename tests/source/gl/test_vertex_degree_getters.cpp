@@ -26,7 +26,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique") {
         sut = gl::topology::clique<sut_type>(n_vertices);
-        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
         expected_out_deg_list = expected_in_deg_list;
     }
 
@@ -34,7 +34,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut = gl::topology::clique<sut_type>(n_vertices);
         sut.add_edge(constants::first_elem_idx, constants::first_elem_idx);
 
-        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
         expected_in_deg_list.front()++;
 
         expected_out_deg_list = expected_in_deg_list;
@@ -42,7 +42,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("cycle") {
         sut = gl::topology::cycle<sut_type>(n_vertices);
-        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, constants::one);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, 1uz);
         expected_out_deg_list = expected_in_deg_list;
     }
 

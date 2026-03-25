@@ -152,7 +152,7 @@ template <gl::traits::c_graph GraphType>
             // no need to check second as second = first + 1
             auto adjacent_edges = graph.adjacent_edges(source_id);
 
-            return gl::util::range_size(adjacent_edges) == constants::one
+            return gl::util::range_size(adjacent_edges) == 1uz
                and (*std::ranges::begin(adjacent_edges)).incident_vertex(source_id) == parent_id;
         }
 
@@ -318,7 +318,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
-        const auto expected_n_connections = expected_n_vertices - constants::one;
+        const auto expected_n_connections = expected_n_vertices - 1uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
@@ -332,7 +332,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
-        const auto expected_n_connections = (expected_n_vertices - constants::one) * constants::two;
+        const auto expected_n_connections = (expected_n_vertices - 1uz) * constants::two;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
@@ -418,7 +418,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(bin_tree);
 
         const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
-        const auto expected_n_connections = expected_n_vertices - constants::one;
+        const auto expected_n_connections = expected_n_vertices - 1uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
