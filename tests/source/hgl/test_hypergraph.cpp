@@ -46,7 +46,7 @@ using add_properties = hgl::hypergraph_traits<
     Properties,
     typename HypergraphTraits::implementation_tag>;
 
-inline constexpr auto get_id = [](auto&& element) -> hgl::types::id_type { return element.id(); };
+inline constexpr auto get_id = [](auto&& element) -> hgl::id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "hypergraph structure tests", HypergraphTraits, hypergraph_traits_template
@@ -105,7 +105,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("add_vertex should return a vertex_descriptor with an incremented id") {
         sut_type sut;
 
-        for (hgl::types::id_type v_id = 0uz; v_id < constants::n_vertices; v_id++) {
+        for (hgl::id_type v_id = 0uz; v_id < constants::n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
             CHECK_EQ(sut.order(), v_id + 1uz);
@@ -222,7 +222,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{n_vertices};
         sut.remove_vertices_from(
-            std::vector<hgl::types::id_type>{constants::id1, constants::id3, constants::id1}
+            std::vector<hgl::id_type>{constants::id1, constants::id3, constants::id1}
         );
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
@@ -247,7 +247,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("add_hyperedge should return a hyperedge_descriptor with an incremented id") {
         sut_type sut;
 
-        for (hgl::types::id_type e_id = 0uz; e_id < constants::n_hyperedges; e_id++) {
+        for (hgl::id_type e_id = 0uz; e_id < constants::n_hyperedges; e_id++) {
             const auto hyperedge = sut.add_hyperedge();
             CHECK_EQ(hyperedge.id(), e_id);
             CHECK_EQ(sut.size(), e_id + 1uz);
@@ -366,7 +366,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{0uz, n_hyperedges};
         sut.remove_hyperedges_from(
-            std::vector<hgl::types::id_type>{constants::id1, constants::id3, constants::id1}
+            std::vector<hgl::id_type>{constants::id1, constants::id3, constants::id1}
         );
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
@@ -552,7 +552,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("sequential hyperedges") {
             if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
-                std::vector<hgl::types::id_type> expected_hyperedges{};
+                std::vector<hgl::id_type> expected_hyperedges{};
                 for (const auto eid : sut.hyperedge_ids()) {
                     sut.bind(vertex_id, eid);
                     expected_hyperedges.push_back(eid);
@@ -568,8 +568,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
 
             if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
-                std::vector<hgl::types::id_type> expected_hyperedges;
-                std::vector<hgl::types::id_type> expected_in_hyperedges, expected_out_hyperedges;
+                std::vector<hgl::id_type> expected_hyperedges;
+                std::vector<hgl::id_type> expected_in_hyperedges, expected_out_hyperedges;
                 for (const auto eid : sut.hyperedge_ids()) {
                     if (eid % 2 == 0) {
                         sut.bind_head(vertex_id, eid);
@@ -612,7 +612,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.incident_hyperedges(vertex_id),
-                    std::vector<hgl::types::id_type>{constants::id2, constants::id4},
+                    std::vector<hgl::id_type>{constants::id2, constants::id4},
                     std::equal_to{},
                     get_id
                 ));
@@ -625,7 +625,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::is_permutation(
                     sut.incident_hyperedges(vertex_id),
-                    std::vector<hgl::types::id_type>{constants::id2, constants::id4},
+                    std::vector<hgl::id_type>{constants::id2, constants::id4},
                     std::equal_to{},
                     get_id
                 ));
@@ -633,7 +633,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.in_hyperedges(vertex_id),
-                    std::vector<hgl::types::id_type>{constants::id2},
+                    std::vector<hgl::id_type>{constants::id2},
                     std::equal_to{},
                     get_id
                 ));
@@ -641,7 +641,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.out_hyperedges(vertex_id),
-                    std::vector<hgl::types::id_type>{constants::id4},
+                    std::vector<hgl::id_type>{constants::id4},
                     std::equal_to{},
                     get_id
                 ));
@@ -681,7 +681,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("sequential vertices") {
             if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
-                std::vector<hgl::types::id_type> expected_vertices{};
+                std::vector<hgl::id_type> expected_vertices{};
                 for (const auto vid : sut.vertex_ids()) {
                     sut.bind(vid, hyperedge_id);
                     expected_vertices.push_back(vid);
@@ -697,8 +697,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             }
 
             if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
-                std::vector<hgl::types::id_type> expected_vertices;
-                std::vector<hgl::types::id_type> expected_head_vertices, expected_tail_vertices;
+                std::vector<hgl::id_type> expected_vertices;
+                std::vector<hgl::id_type> expected_head_vertices, expected_tail_vertices;
                 for (const auto vid : sut.vertex_ids()) {
                     if (vid % 2 == 0) {
                         sut.bind_head(vid, hyperedge_id);
@@ -744,7 +744,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.incident_vertices(hyperedge_id),
-                    std::vector<hgl::types::id_type>{constants::id1, constants::id3},
+                    std::vector<hgl::id_type>{constants::id1, constants::id3},
                     std::equal_to{},
                     get_id
                 ));
@@ -757,7 +757,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::is_permutation(
                     sut.incident_vertices(hyperedge_id),
-                    std::vector<hgl::types::id_type>{constants::id1, constants::id3},
+                    std::vector<hgl::id_type>{constants::id1, constants::id3},
                     std::equal_to{},
                     get_id
                 ));
@@ -765,7 +765,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.head_vertices(hyperedge_id),
-                    std::vector<hgl::types::id_type>{constants::id1},
+                    std::vector<hgl::id_type>{constants::id1},
                     std::equal_to{},
                     get_id
                 ));
@@ -773,7 +773,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
                 CHECK(std::ranges::equal(
                     sut.tail_vertices(hyperedge_id),
-                    std::vector<hgl::types::id_type>{constants::id3},
+                    std::vector<hgl::id_type>{constants::id3},
                     std::equal_to{},
                     get_id
                 ));
@@ -848,7 +848,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             hyperedge.properties() = std::format("hyperedge_{}", hyperedge.id());
     };
 
-    using p_hypergraph_traits = add_properties<HypergraphTraits, hgl::types::name_property>;
+    using p_hypergraph_traits = add_properties<HypergraphTraits, hgl::name_property>;
     using p_sut_type = hgl::hypergraph<p_hypergraph_traits>;
 
     const auto create_test_p_hypergraph = [&set_properties]() {
@@ -1084,43 +1084,43 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected bidirectional incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected bidirectional incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected hyperedge-major incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected hyperedge-major incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected vertex-major incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected vertex-major incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected bidirectional flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected bidirectional flat incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected hyperedge-major flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected hyperedge-major flat incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected vertex-major flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // undirected vertex-major flat incidence list
     hgl::matrix_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected hyperedge-major incidence matrix
+        hgl::name_property,
+        hgl::name_property>, // undirected hyperedge-major incidence matrix
     hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property> // undirected vertex-major incidence matrix
+        hgl::name_property,
+        hgl::name_property> // undirected vertex-major incidence matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -1320,43 +1320,43 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed bidirectional incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed bidirectional incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge-major incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed hyperedge-major incidence list
     hgl::list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed vertex-major incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed vertex-major incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed bidirectional flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed bidirectional flat incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge-major flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed hyperedge-major flat incidence list
     hgl::flat_list_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed vertex-major flat incidence list
+        hgl::name_property,
+        hgl::name_property>, // bf-directed vertex-major flat incidence list
     hgl::matrix_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // bf-directed hyperedge-major incidence matrix
+        hgl::name_property,
+        hgl::name_property>, // bf-directed hyperedge-major incidence matrix
     hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property> // bf-directed vertex-major incidence matrix
+        hgl::name_property,
+        hgl::name_property> // bf-directed vertex-major incidence matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(

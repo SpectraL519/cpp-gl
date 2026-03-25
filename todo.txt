@@ -1,6 +1,5 @@
 TODO - GL:
 3. Align property type docs
-4. Remove the gl_attr_force_inline attribute and macro
 6. Change the id_type and size_type to std::size_t (ull -> uz)
 
 TODO - HGL:

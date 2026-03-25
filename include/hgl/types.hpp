@@ -8,7 +8,7 @@
 #include "gl/types/flat_jagged_vector.hpp"
 #include "gl/types/properties.hpp"
 
-namespace hgl::types {
+namespace hgl {
 
 // --- core types ---
 
@@ -31,4 +31,4 @@ using gl::empty_properties_map;
 using gl::name_property;
 using gl::weight_property;
 
-} // namespace hgl::types
+} // namespace hgl

@@ -19,7 +19,7 @@ namespace hgl_testing {
 TEST_SUITE_BEGIN("test_converters");
 
 struct test_hypergraph_conversion {
-    using property_type = hgl::types::name_property;
+    using property_type = hgl::name_property;
 
     template <hgl::traits::c_undirected_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
@@ -237,36 +237,36 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_params_template,
     std::tuple<
         hgl::undirected_t,
-        hgl::types::empty_properties,
-        hgl::types::empty_properties>, // undirected, no properties
+        hgl::empty_properties,
+        hgl::empty_properties>, // undirected, no properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::empty_properties,
-        hgl::types::empty_properties>, // bf-directed, no properties
+        hgl::empty_properties,
+        hgl::empty_properties>, // bf-directed, no properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::empty_properties>, // undirected, vertex properties
+        hgl::name_property,
+        hgl::empty_properties>, // undirected, vertex properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::empty_properties>, // bf-directed, vertex properties
+        hgl::name_property,
+        hgl::empty_properties>, // bf-directed, vertex properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::empty_properties,
-        hgl::types::name_property>, // undirected, hyperedge properties
+        hgl::empty_properties,
+        hgl::name_property>, // undirected, hyperedge properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::empty_properties,
-        hgl::types::name_property>, // bf-directed, hyperedge properties
+        hgl::empty_properties,
+        hgl::name_property>, // bf-directed, hyperedge properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected, all properties
+        hgl::name_property,
+        hgl::name_property>, // undirected, all properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property> // bf-directed, all properties
+        hgl::name_property,
+        hgl::name_property> // bf-directed, all properties
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -300,7 +300,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e3 = {0} (should not add any edge)
         sut.bind(0ull, 3ull);
 
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
             {0ull, 1ull},
             {0ull, 2ull},
@@ -349,7 +349,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind(0ull, 3ull);
 
         // Expected edges: vertices 0-3, hyperedges 4-7
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0 (4): {0,1,2}
             {0ull, 4ull},
             {1ull, 4ull},
@@ -439,7 +439,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(0ull, 1ull);
         sut.bind_head(1ull, 1ull);
 
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
             {0ull, 2ull},
             {0ull, 3ull},
@@ -482,7 +482,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(1ull, 1ull);
 
         // Expected directed edges: vertices 0-3, hyperedges 4-5
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
             {0ull, 4ull},
             {1ull, 4ull},

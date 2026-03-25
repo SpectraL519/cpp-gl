@@ -9,15 +9,15 @@
 
 namespace hgl_testing::constants {
 
-IC hgl::types::size_type n_vertices = 3uz;
-IC hgl::types::size_type n_hyperedges = 4uz;
+IC hgl::size_type n_vertices = 3uz;
+IC hgl::size_type n_hyperedges = 4uz;
 
-IC hgl::types::id_type id1 = hgl::constants::initial_id;
-IC hgl::types::id_type id2 = id1 + 1uz;
-IC hgl::types::id_type id3 = id2 + 1uz;
-IC hgl::types::id_type id4 = id3 + 1uz;
-IC hgl::types::id_type out_of_rng_vid = n_vertices;
-IC hgl::types::id_type out_of_rng_eid = n_hyperedges;
+IC hgl::id_type id1 = hgl::constants::initial_id;
+IC hgl::id_type id2 = id1 + 1uz;
+IC hgl::id_type id3 = id2 + 1uz;
+IC hgl::id_type id4 = id3 + 1uz;
+IC hgl::id_type out_of_rng_vid = n_vertices;
+IC hgl::id_type out_of_rng_eid = n_hyperedges;
 
 IC auto vertex_ids_view = std::views::iota(hgl::constants::initial_id, n_vertices);
 IC auto hyperedge_ids_view = std::views::iota(hgl::constants::initial_id, n_hyperedges);
