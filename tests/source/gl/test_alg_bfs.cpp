@@ -22,12 +22,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<gl::id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
-        graph = gl::topology::clique<graph_type>(constants::zero_elements);
+        graph = gl::topology::clique<graph_type>(0uz);
         expected_previsit_order = {};
     }
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(1uz);
         expected_previsit_order = {0};
     }
 
@@ -111,7 +111,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::deque<gl::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(1uz);
         root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
     }
@@ -167,7 +167,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
+    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::depth);
     const auto pred_map =
         gl::algorithm::breadth_first_search<gl::algorithm::ret, graph_type>(graph);
 

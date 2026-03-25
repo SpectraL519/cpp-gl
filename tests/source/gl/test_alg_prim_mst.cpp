@@ -37,7 +37,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_elem_idx;
 
-            const weight_type edge_weight = constants::three;
+            const weight_type edge_weight = 3;
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;
@@ -177,7 +177,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
             source_id = constants::first_elem_idx;
 
-            const weight_type edge_weight = constants::three;
+            const weight_type edge_weight = 3;
             for (const auto vertex_id : sut.vertex_ids()) {
                 for (const auto& edge : sut.adjacent_edges(vertex_id)) {
                     edge.properties().weight = edge_weight;

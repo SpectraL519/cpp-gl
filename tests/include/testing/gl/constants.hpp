@@ -11,11 +11,8 @@
 
 namespace gl_testing::constants {
 
-IC gl::size_type three = 3ull;
-
+// n_elements for simple tests
 IC gl::size_type n_elements = 3ull;
-IC gl::size_type zero_elements = 0uz;
-IC gl::size_type one_element = 1uz;
 
 // n_elements for graph topology tests
 IC gl::size_type n_elements_top = 10ull;
@@ -29,8 +26,8 @@ IC gl::size_type last_element_idx = n_elements - 1uz;
 IC gl::size_type out_of_range_element_idx = n_elements;
 
 IC gl::id_type v1_id = first_elem_idx;
-IC gl::id_type v2_id = v1_id + one_element;
-IC gl::id_type v3_id = v2_id + one_element;
+IC gl::id_type v2_id = v1_id + 1uz;
+IC gl::id_type v3_id = v2_id + 1uz;
 IC gl::id_type invalid_id = gl::constants::invalid_id;
 
 IC auto vertex_id_view = std::views::iota(0ull, n_elements);

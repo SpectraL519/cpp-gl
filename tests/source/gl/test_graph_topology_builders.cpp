@@ -79,8 +79,7 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.order());
+        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -92,9 +91,8 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.order() - constants::one_element) % graph.order()
-        );
+        const auto prev_vertex =
+            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex) == graph.has_edge(source, vertex);
@@ -106,12 +104,10 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.order());
+        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
 
-        const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.order() - constants::one_element) % graph.order()
-        );
+        const auto prev_vertex =
+            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
@@ -184,7 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
 
         const auto expected_n_connections =
-            constants::n_elements_top * (constants::n_elements_top - constants::one_element);
+            constants::n_elements_top * (constants::n_elements_top - 1uz);
         verify_bidir_graph_size(clique, constants::n_elements_top, expected_n_connections);
 
         CHECK(std::ranges::all_of(clique.vertices(), predicate::is_vertex_fully_connected(clique)));
@@ -281,7 +277,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -294,14 +290,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
 
         verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
-            std::ranges::next(vertices.begin(), constants::one_element),
+            std::ranges::next(vertices.begin(), 1uz),
             std::ranges::next(vertices.begin(), n_source_vertices),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
@@ -385,13 +381,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CAPTURE(path);
 
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
-            std::ranges::next(vertices.begin(), constants::one_element),
+            std::ranges::next(vertices.begin(), 1uz),
             std::ranges::next(vertices.begin(), n_source_vertices),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));

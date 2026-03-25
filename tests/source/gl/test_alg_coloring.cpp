@@ -39,7 +39,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
 
-            gl::size_type n_vertices = constants::one_element;
+            gl::size_type n_vertices = 1uz;
             gl::binary_color c{gl::bin_color_value::black};
 
             for (auto d = 0uz; d < constants::depth; d++) {
