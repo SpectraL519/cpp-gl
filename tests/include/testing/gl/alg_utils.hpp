@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem;
 
-namespace gl_testing::alg_common {
+namespace gl_testing {
 
 inline const fs::path data_path(TEST_DATA_PATH);
 
@@ -56,4 +56,4 @@ struct vertex_visited_projection {
     }
 };
 
-} // namespace gl_testing::alg_common
+} // namespace gl_testing

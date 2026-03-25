@@ -78,20 +78,17 @@ TEST_CASE_TEMPLATE_DEFINE(
                     ? "dijkstra_directed_"
                     : "dijkstra_undirected_";
 
-            const fs::path gsf_file_path = alg_common::data_path / (file_name_prefix + "graph.gsf");
+            const fs::path gsf_file_path = data_path / (file_name_prefix + "graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
             source_id = gl::constants::initial_id;
 
             const fs::path predecessors_file_path =
-                alg_common::data_path / (file_name_prefix + "predecessors.txt");
-            expected_predecessors =
-                alg_common::load_list<gl::id_type>(sut.order(), predecessors_file_path);
+                data_path / (file_name_prefix + "predecessors.txt");
+            expected_predecessors = load_list<gl::id_type>(sut.order(), predecessors_file_path);
 
-            const fs::path distances_file_path =
-                alg_common::data_path / (file_name_prefix + "distances.txt");
-            expected_distances =
-                alg_common::load_list<distance_type>(sut.order(), distances_file_path);
+            const fs::path distances_file_path = data_path / (file_name_prefix + "distances.txt");
+            expected_distances = load_list<distance_type>(sut.order(), distances_file_path);
         }
 
         CAPTURE(sut);

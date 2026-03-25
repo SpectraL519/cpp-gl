@@ -82,7 +82,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
     CHECK(std::ranges::all_of(
-        graph.vertices(), std::identity{}, alg_common::vertex_visited_projection<vertex_type>{}
+        graph.vertices(), std::identity{}, vertex_visited_projection<vertex_type>{}
     ));
 }
 
@@ -179,8 +179,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pred_map.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
-    );
+    CHECK(std::ranges::all_of(graph.vertex_ids(), has_correct_bin_predecessor(pred_map)));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -270,7 +269,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
     CHECK(std::ranges::all_of(
-        graph.vertices(), std::identity{}, alg_common::vertex_visited_projection<vertex_type>{}
+        graph.vertices(), std::identity{}, vertex_visited_projection<vertex_type>{}
     ));
 }
 
@@ -373,8 +372,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pred_map.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
-    );
+    CHECK(std::ranges::all_of(graph.vertex_ids(), has_correct_bin_predecessor(pred_map)));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

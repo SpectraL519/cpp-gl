@@ -50,13 +50,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_acyclic_graph.gsf";
             sut = gl::io::load<sut_type>(gsf_file_path);
 
             const fs::path order_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order =
-                alg_common::load_list<gl::id_type>(sut.order(), order_file_path);
+                data_path / "topological_sort_directed_acyclic_order.txt";
+            expected_topological_order = load_list<gl::id_type>(sut.order(), order_file_path);
         }
 
         CAPTURE(sut);
@@ -81,7 +80,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_not_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_not_acyclic_graph.gsf";
             sut = gl::io::load<sut_type>(gsf_file_path);
         }
 

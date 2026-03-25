@@ -49,20 +49,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("custom graph") {
-            const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
+            const fs::path gsf_file_path = data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
             source_id = constants::first_elem_idx;
 
-            const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
+            const fs::path edges_file_path = data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
-            const auto vertex_id_list =
-                alg_common::load_list<gl::id_type>(n_vertex_ids, edges_file_path);
+            const auto vertex_id_list = load_list<gl::id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
-            const fs::path weight_file_path = alg_common::data_path / "mst_weight.txt";
-            expected_weight = alg_common::load_list<weight_type>(1uz, weight_file_path).front();
+            const fs::path weight_file_path = data_path / "mst_weight.txt";
+            expected_weight = load_list<weight_type>(1uz, weight_file_path).front();
         }
 
         CAPTURE(sut);
@@ -189,20 +188,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("custom graph") {
-            const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
+            const fs::path gsf_file_path = data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
             source_id = constants::first_elem_idx;
 
-            const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
+            const fs::path edges_file_path = data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
-            const auto vertex_id_list =
-                alg_common::load_list<gl::id_type>(n_vertex_ids, edges_file_path);
+            const auto vertex_id_list = load_list<gl::id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
-            const fs::path weight_file_path = alg_common::data_path / "mst_weight.txt";
-            expected_weight = alg_common::load_list<weight_type>(1uz, weight_file_path).front();
+            const fs::path weight_file_path = data_path / "mst_weight.txt";
+            expected_weight = load_list<weight_type>(1uz, weight_file_path).front();
         }
 
         CAPTURE(sut);
