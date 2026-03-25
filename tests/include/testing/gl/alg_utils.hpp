@@ -41,7 +41,7 @@ requires(gl::traits::c_readable<T>)
         if (not gl::algorithm::is_reachable(pred_map, vertex_id))
             return false;
 
-        if (vertex_id == constants::first_elem_idx)
+        if (vertex_id == 0uz)
             return pred_map[vertex_id] == vertex_id;
 
         return pred_map[vertex_id] == ((vertex_id - 1uz) / 2uz);

@@ -32,7 +32,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique with an additional loop") {
         sut = gl::topology::clique<sut_type>(n_vertices);
-        sut.add_edge(constants::first_elem_idx, constants::first_elem_idx);
+        sut.add_edge(0uz, 0uz);
 
         expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
         expected_in_deg_list.front()++;
@@ -118,7 +118,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique with an additional loop") {
         sut = gl::topology::clique<sut_type>(n_vertices);
-        sut.add_edge(constants::first_elem_idx, constants::first_elem_idx);
+        sut.add_edge(0uz, 0uz);
 
         expected_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
         expected_deg_list.front() += 2uz; // loops counted twice

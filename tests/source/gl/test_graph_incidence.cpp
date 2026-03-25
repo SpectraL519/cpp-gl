@@ -17,15 +17,15 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     const auto vd_1 = sut.get_vertex(constants::v1_id);
     const auto vd_2 = sut.get_vertex(constants::v2_id);
     const auto vd_3 = sut.get_vertex(constants::v3_id);
-    vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
+    vertex_type out_of_range_vertex{constants::out_of_rng_idx};
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
-            discard_result(sut.are_incident(constants::out_of_range_element_idx, constants::v2_id)),
+            discard_result(sut.are_incident(constants::out_of_rng_idx, constants::v2_id)),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            discard_result(sut.are_incident(constants::v1_id, constants::out_of_range_element_idx)),
+            discard_result(sut.are_incident(constants::v1_id, constants::out_of_rng_idx)),
             std::out_of_range
         );
     }

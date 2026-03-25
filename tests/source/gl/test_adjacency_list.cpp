@@ -176,7 +176,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         CHECK_EQ(adjacent_edges_1.size(), 1uz);
         CHECK_EQ(sut.adjacent_edges(constants::v2_id).size(), 0uz);
 
-        const auto& new_edge_extracted = adjacent_edges_1[constants::first_elem_idx];
+        const auto& new_edge_extracted = adjacent_edges_1[0uz];
         CHECK_EQ(new_edge_extracted, new_edge);
     }
 
@@ -234,7 +234,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     SUBCASE("get_edges(id, id) should return a valid edge view if the given vertices are connected"
     ) {
         std::vector<edge_type> expected_edges;
-        for (auto _ = constants::first_elem_idx; _ < constants::n_elements; _++)
+        for (auto _ = 0uz; _ < constants::n_elements; _++)
             expected_edges.push_back(add_edge(constants::v1_id, constants::v2_id));
 
         CHECK(std::ranges::equal(
@@ -260,7 +260,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         auto adjacent_edges = sut.adjacent_edges(constants::v1_id);
         REQUIRE_EQ(adjacent_edges.size(), n_incident_edges_for_fully_connected_vertex);
 
-        const auto& edge_to_remove = adjacent_edges[constants::first_elem_idx];
+        const auto& edge_to_remove = adjacent_edges[0uz];
         sut.remove_edge(edge_to_remove);
 
         adjacent_edges = sut.adjacent_edges(constants::v1_id);
@@ -482,10 +482,10 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         REQUIRE_EQ(adjacent_edges_1.size(), 1uz);
         REQUIRE_EQ(adjacent_edges_2.size(), 1uz);
 
-        const auto& new_edge_extracted_1 = adjacent_edges_1[constants::first_elem_idx];
+        const auto& new_edge_extracted_1 = adjacent_edges_1[0uz];
         CHECK_EQ(new_edge_extracted_1, new_edge);
 
-        const auto& new_edge_extracted_2 = adjacent_edges_2[constants::first_elem_idx];
+        const auto& new_edge_extracted_2 = adjacent_edges_2[0uz];
         CHECK_EQ(new_edge_extracted_2, new_edge);
     }
 
@@ -497,7 +497,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         const auto adjacent_edges = sut.adjacent_edges(constants::v1_id);
         REQUIRE_EQ(adjacent_edges.size(), 1uz);
 
-        const auto& new_edge_extracted_1 = adjacent_edges[constants::first_elem_idx];
+        const auto& new_edge_extracted_1 = adjacent_edges[0uz];
         CHECK_EQ(new_edge_extracted_1, new_edge);
     }
 
@@ -558,7 +558,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
     SUBCASE("get_edges(id, id) should return a valid edge view if the given vertices are connected"
     ) {
         std::vector<edge_type> expected_edges;
-        for (auto _ = constants::first_elem_idx; _ < constants::n_elements; _++)
+        for (auto _ = 0uz; _ < constants::n_elements; _++)
             expected_edges.push_back(add_edge(constants::v1_id, constants::v2_id));
 
         CHECK(std::ranges::equal(
@@ -588,7 +588,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         auto adjacent_edges_first = sut.adjacent_edges(constants::v1_id);
         REQUIRE_EQ(adjacent_edges_first.size(), n_incident_edges_for_fully_connected_vertex);
 
-        const auto& edge_to_remove = adjacent_edges_first[constants::first_elem_idx];
+        const auto& edge_to_remove = adjacent_edges_first[0uz];
 
         const auto target_id = edge_to_remove.target();
         REQUIRE_EQ(sut.adjacent_edges(target_id).size(), 1uz);
@@ -596,7 +596,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         sut.remove_edge(edge_to_remove);
 
         // validate that the first adjacent edges list has been properly aligned
-        adjacent_edges_first = sut.adjacent_edges(constants::first_elem_idx);
+        adjacent_edges_first = sut.adjacent_edges(0uz);
         REQUIRE_EQ(adjacent_edges_first.size(), n_incident_edges_for_fully_connected_vertex - 1uz);
         CHECK_EQ(
             std::ranges::find(adjacent_edges_first, edge_to_remove), adjacent_edges_first.end()
@@ -689,7 +689,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
         const auto edge5 = add_edge(constants::v2_id, constants::v3_id);
 
-        const auto removed_vertex_id = constants::first_elem_idx;
+        const auto removed_vertex_id = 0uz;
         const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
         constexpr gl::size_type n_removed_edges = 4uz;

@@ -22,12 +22,11 @@ IC gl::size_type n_elements_alg = 10ull;
 IC gl::size_type depth = 5ull;
 
 IC gl::size_type first_elem_idx = 0uz;
-IC gl::size_type last_element_idx = n_elements - 1uz;
-IC gl::size_type out_of_range_element_idx = n_elements;
+IC gl::size_type out_of_rng_idx = n_elements;
 
-IC gl::id_type v1_id = first_elem_idx;
-IC gl::id_type v2_id = v1_id + 1uz;
-IC gl::id_type v3_id = v2_id + 1uz;
+IC gl::id_type v1_id = 0uz;
+IC gl::id_type v2_id = 1uz;
+IC gl::id_type v3_id = 2uz;
 IC gl::id_type invalid_id = gl::constants::invalid_id;
 
 IC auto vertex_id_view = std::views::iota(0ull, n_elements);

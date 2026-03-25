@@ -47,7 +47,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_elem_idx;
+            source_id = 0uz;
 
             expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
@@ -61,7 +61,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_elem_idx;
+            source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
                 const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
@@ -155,7 +155,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_elem_idx;
+            source_id = 0uz;
 
             expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
@@ -166,7 +166,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_elem_idx;
+            source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
                 const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;

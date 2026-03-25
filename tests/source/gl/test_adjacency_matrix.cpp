@@ -748,7 +748,7 @@ TEST_CASE_FIXTURE(
     const auto edge2 = add_edge(constants::v1_id, constants::v3_id);
     const auto edge3 = add_edge(constants::v2_id, constants::v3_id);
 
-    const auto removed_vertex_id = constants::first_elem_idx;
+    const auto removed_vertex_id = 0uz;
     const auto removed_edge_ids = sut.remove_vertex(removed_vertex_id);
 
     constexpr gl::size_type n_removed_edges = 2uz;

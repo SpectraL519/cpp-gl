@@ -32,7 +32,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
             expected_coloring =
                 std::vector<gl::binary_color>(n_vertices_a, gl::bin_color_value::black);
-            for (gl::size_type i = constants::first_elem_idx; i < n_vertices_b; i++)
+            for (gl::size_type i = 0uz; i < n_vertices_b; i++)
                 expected_coloring.emplace_back(gl::bin_color_value::white);
         }
 
