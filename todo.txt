@@ -1,5 +1,5 @@
 TODO - GL:
-2. Remove gl_testing::* namespaces
+2. Remove gl_testing::* namespaces (other then constants)
 3. Align property type docs
 4. Remove the gl_attr_force_inline attribute and macro
 5. Remove dummy testing constants

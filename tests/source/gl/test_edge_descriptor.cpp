@@ -79,27 +79,27 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("accessing properties should throw for invalid edges") {
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(constants::invalid_id, fixture.v1, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(fixture.id1, constants::invalid_id, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(fixture.id1, fixture.v1, constants::invalid_id, used).properties()
             ),
             std::logic_error
         );
 
-        CHECK_THROWS_AS(func::discard_result(EdgeType::invalid().properties()), std::logic_error);
+        CHECK_THROWS_AS(discard_result(EdgeType::invalid().properties()), std::logic_error);
     }
 }
 
@@ -145,9 +145,7 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
     }
 
     SUBCASE("incident_vertex should throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(
-            func::discard_result(sut.incident_vertex(fixture.v3)), std::invalid_argument
-        );
+        CHECK_THROWS_AS(discard_result(sut.incident_vertex(fixture.v3)), std::invalid_argument);
     }
 
     SUBCASE("incident_vertex should return the vertex incident with the input vertex") {

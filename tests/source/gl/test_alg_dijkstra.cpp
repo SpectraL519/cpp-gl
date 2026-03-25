@@ -31,8 +31,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
-            func::discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::vertex_id_1)
-            ),
+            discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::vertex_id_1)),
             std::invalid_argument
         );
     }
@@ -221,7 +220,7 @@ TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
     gl::id_type vertex_id = predecessor_map.size() - constants::one;
 
     CHECK_THROWS_AS(
-        func::discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
+        discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
         std::invalid_argument
     );
 }

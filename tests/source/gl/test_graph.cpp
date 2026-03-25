@@ -264,9 +264,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }
         ));
 
-        CHECK_THROWS_AS(
-            func::discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range);
     }
 
     SUBCASE("remove_vertex(id) should throw if the given id is invalid") {
@@ -299,9 +297,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }
         ));
 
-        CHECK_THROWS_AS(
-            func::discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard_result(sut.get_vertex(n_vertices_after_remove)), std::out_of_range);
     }
 
     SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
@@ -689,10 +685,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         const auto vd_2 = sut.get_vertex(constants::vertex_id_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(fixture.out_of_range_vertex, vd_2)), std::out_of_range
+            discard_result(sut.has_edge(fixture.out_of_range_vertex, vd_2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.has_edge(vd_1, fixture.out_of_range_vertex)), std::out_of_range
+            discard_result(sut.has_edge(vd_1, fixture.out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -717,13 +713,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         const vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
         CHECK_THROWS_AS(
-            func::discard_result(sut.get_edge(valid_vertex, out_of_range_vertex)), std::out_of_range
+            discard_result(sut.get_edge(valid_vertex, out_of_range_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.get_edge(out_of_range_vertex, valid_vertex)), std::out_of_range
+            discard_result(sut.get_edge(out_of_range_vertex, valid_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.get_edge(out_of_range_vertex, out_of_range_vertex)),
+            discard_result(sut.get_edge(out_of_range_vertex, out_of_range_vertex)),
             std::out_of_range
         );
     }
@@ -762,13 +758,13 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut_type sut{constants::n_elements};
 
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 sut.get_edges(constants::out_of_range_element_idx, constants::vertex_id_2)
             ),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 sut.get_edges(constants::vertex_id_1, constants::out_of_range_element_idx)
             ),
             std::out_of_range
@@ -818,19 +814,17 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         const auto vd_2 = sut.get_vertex(constants::vertex_id_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.get_edges(fixture.out_of_range_vertex, vd_2)),
-            std::out_of_range
+            discard_result(sut.get_edges(fixture.out_of_range_vertex, vd_2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.get_edges(vd_1, fixture.out_of_range_vertex)),
-            std::out_of_range
+            discard_result(sut.get_edges(vd_1, fixture.out_of_range_vertex)), std::out_of_range
         );
     }
 
     SUBCASE("adjacent_edges(id) should throw if the vertex_id is invalid") {
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(
-            func::discard_result(sut.adjacent_edges(constants::out_of_range_element_idx)),
+            discard_result(sut.adjacent_edges(constants::out_of_range_element_idx)),
             std::out_of_range
         );
     }
@@ -850,7 +844,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut_type sut{constants::n_elements};
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.adjacent_edges(fixture.out_of_range_vertex)), std::out_of_range
+            discard_result(sut.adjacent_edges(fixture.out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -949,7 +943,7 @@ TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_
     }
 
     CHECK_THROWS_AS(
-        func::discard_result(sut.get_vertex_properties(constants::out_of_range_element_idx)),
+        discard_result(sut.get_vertex_properties(constants::out_of_range_element_idx)),
         std::out_of_range
     );
 
@@ -962,7 +956,7 @@ TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_
     }
 
     CHECK_THROWS_AS(
-        func::discard_result(sut.get_edge_properties(constants::out_of_range_element_idx)),
+        discard_result(sut.get_edge_properties(constants::out_of_range_element_idx)),
         std::out_of_range
     );
 }

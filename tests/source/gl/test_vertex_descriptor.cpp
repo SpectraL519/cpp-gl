@@ -50,10 +50,9 @@ TEST_CASE("accessing properties should throw for an invalid vertex") {
     using sut_type = gl::vertex_descriptor<visited_property>;
     visited_property property{constants::visited};
 
-    CHECK_THROWS_AS(func::discard_result(sut_type::invalid().properties()), std::logic_error);
+    CHECK_THROWS_AS(discard_result(sut_type::invalid().properties()), std::logic_error);
     CHECK_THROWS_AS(
-        func::discard_result(sut_type{constants::invalid_id, property}.properties()),
-        std::logic_error
+        discard_result(sut_type{constants::invalid_id, property}.properties()), std::logic_error
     );
 }
 

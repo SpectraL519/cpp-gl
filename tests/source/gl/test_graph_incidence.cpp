@@ -21,13 +21,13 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 sut.are_incident(constants::out_of_range_element_idx, constants::vertex_id_2)
             ),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 sut.are_incident(constants::vertex_id_1, constants::out_of_range_element_idx)
             ),
             std::out_of_range
@@ -55,14 +55,14 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     SUBCASE("are_incident(vertex, vertex) should throw if at least one of the vertices is invalid"
     ) {
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(out_of_range_vertex, out_of_range_vertex)),
+            discard_result(sut.are_incident(out_of_range_vertex, out_of_range_vertex)),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(out_of_range_vertex, vd_2)), std::out_of_range
+            discard_result(sut.are_incident(out_of_range_vertex, vd_2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, out_of_range_vertex)), std::out_of_range
+            discard_result(sut.are_incident(vd_1, out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -87,17 +87,17 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const auto edge = sut.add_edge(vd_1, vd_2);
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
+            discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
+            discard_result(sut.are_incident(out_of_range_vertex, edge)), std::out_of_range
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
+            discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
+            discard_result(sut.are_incident(edge, out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -105,17 +105,17 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
+            discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
+            discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
+            discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
+            discard_result(sut.are_incident(invalid_edge, vd_2)), std::invalid_argument
         );
     }
 
@@ -135,10 +135,10 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
         const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
+            discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            func::discard_result(sut.are_incident(invalid_edge, edge)), std::invalid_argument
+            discard_result(sut.are_incident(invalid_edge, edge)), std::invalid_argument
         );
     }
 
