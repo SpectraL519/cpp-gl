@@ -49,7 +49,7 @@ requires(gl::traits::c_readable<T>)
 }
 
 template <gl::traits::c_instantiation_of<gl::vertex_descriptor> VertexType>
-requires(std::same_as<typename VertexType::properties_type, types::visited_property>)
+requires(std::same_as<typename VertexType::properties_type, visited_property>)
 struct vertex_visited_projection {
     [[nodiscard]] bool operator()(const VertexType& vertex) const {
         return vertex.properties().visited;

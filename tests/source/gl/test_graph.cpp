@@ -159,7 +159,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     }
 
     SUBCASE("add_vertex_with should initialize a new vertex with the input properties structure") {
-        using properties_traits_type = add_vertex_property<traits_type, types::visited_property>;
+        using properties_traits_type = add_vertex_property<traits_type, visited_property>;
         gl::graph<properties_traits_type> sut;
 
         const auto vertex = sut.add_vertex_with(constants::visited);
@@ -179,10 +179,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("add_vertices_with should properly extend the current adjacency list with the given "
             "properties") {
-        using properties_traits_type = add_vertex_property<traits_type, types::visited_property>;
+        using properties_traits_type = add_vertex_property<traits_type, visited_property>;
         gl::graph<properties_traits_type> sut;
 
-        const std::vector<types::visited_property> properties_list{
+        const std::vector<visited_property> properties_list{
             constants::visited, constants::not_visited, constants::visited
         };
         const auto expected_n_vertices = properties_list.size();
@@ -546,7 +546,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     }
 
     SUBCASE("edge method tests for non-default properties type") {
-        using properties_traits_type = add_edge_property<traits_type, types::used_property>;
+        using properties_traits_type = add_edge_property<traits_type, used_property>;
         using property_edge_type = typename properties_traits_type::edge_type;
         gl::graph<properties_traits_type> sut{constants::n_elements};
 

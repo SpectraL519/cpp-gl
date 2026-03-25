@@ -81,23 +81,22 @@ TEST_CASE_TEMPLATE_DEFINE(
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     bfs_no_return_graph_template,
-    gl::graph<
-        gl::list_graph_traits<gl::directed_t, types::visited_property>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::directed_t, visited_property>>, // directed adjacency list
     gl::graph<gl::list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected adjacency list
+        visited_property>>, // undirected adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed flat adjacency list
+        visited_property>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected flat adjacency list
+        visited_property>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed adjacency matrix
+        visited_property>>, // directed adjacency matrix
     gl::graph<gl::matrix_graph_traits<
         gl::undirected_t,
-        types::visited_property>> // undirected adjacency matrix
+        visited_property>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(

@@ -1,8 +1,8 @@
 TODO - GL:
-1. Remove the types namespace
 2. Remove gl_testing::* namespaces
 3. Align property type docs
 4. Remove the gl_attr_force_inline attribute and macro
+5. Remove dummy testing constants
 
 TODO - HGL:
 1. Remove the types namespace

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include "testing/gl/types.hpp"
 
 #include <gl/constants.hpp>
 #include <gl/types/core.hpp>
@@ -38,10 +38,10 @@ IC gl::id_type invalid_id = gl::constants::invalid_id;
 
 IC auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
 
-IC types::visited_property visited{true};
-IC types::visited_property not_visited{false};
+IC visited_property visited{true};
+IC visited_property not_visited{false};
 
-IC types::used_property used{true};
-IC types::used_property not_used{false};
+IC used_property used{true};
+IC used_property not_used{false};
 
 } // namespace gl_testing::constants

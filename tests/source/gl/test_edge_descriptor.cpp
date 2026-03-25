@@ -70,7 +70,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     "properties accessing tests", EdgeType, properties_directional_tag_template
 ) {
     test_edge_descriptor fixture;
-    types::used_property used{true};
+    used_property used{true};
 
     SUBCASE("properties should be properly initialized for valid edges") {
         const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
@@ -104,7 +104,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 // TODO: fix .clang-format to split such lines
-TEST_CASE_TEMPLATE_INSTANTIATE(properties_directional_tag_template, gl::directed_edge<types::used_property>, gl::undirected_edge<types::used_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(properties_directional_tag_template, gl::directed_edge<used_property>, gl::undirected_edge<used_property>);
 
 TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directional_tag_template) {
     test_edge_descriptor fixture{};
