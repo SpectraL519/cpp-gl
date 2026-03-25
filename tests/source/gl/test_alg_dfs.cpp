@@ -56,7 +56,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 2 connected to B (4 visited) [s: 3 1 3]
         finally: 0 -> 4 -> 2 -> 1 -> 3
         */
-        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(constants::three, 2uz);
         expected_previsit_order = {0, 4, 2, 3, 1};
     }
 
@@ -239,7 +239,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 4 connected to A (2)
         finally: 0 -> 3 -> 1 -> 4 -> 2
         */
-        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(constants::three, 2uz);
         expected_previsit_order = {0, 3, 1, 4, 2};
     }
 

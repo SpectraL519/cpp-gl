@@ -49,7 +49,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         B = {3, 4}
         root = 0 -> connected to B -> connected to A (root already visited)
         */
-        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(3uz, 2uz);
         expected_previsit_order = {0, 3, 4, 1, 2};
     }
 

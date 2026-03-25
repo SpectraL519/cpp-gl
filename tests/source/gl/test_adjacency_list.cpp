@@ -329,17 +329,14 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
         CHECK(std::ranges::all_of(
             constants::vertex_id_view,
-            [](const auto deg) {
-                return deg == constants::two * n_incident_edges_for_fully_connected_vertex;
-            },
+            [](const auto deg) { return deg == 2uz * n_incident_edges_for_fully_connected_vertex; },
             deg_proj
         ));
 
         add_edge(constants::v1_id, constants::v1_id);
 
         CHECK_EQ(
-            deg_proj(constants::v1_id),
-            constants::two * (n_incident_edges_for_fully_connected_vertex + 1uz)
+            deg_proj(constants::v1_id), 2uz * (n_incident_edges_for_fully_connected_vertex + 1uz)
         );
     }
 
@@ -368,7 +365,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
             "corresponding "
             "vertices") {
         init_complete_graph(false);
-        const auto expected_deg = constants::n_elements * constants::two;
+        const auto expected_deg = constants::n_elements * 2uz;
 
         std::vector<gl::id_type> degree_map = sut.degree_map();
 
@@ -662,7 +659,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
         CHECK_EQ(
             deg_proj(constants::v1_id),
-            n_incident_edges_for_fully_connected_vertex + constants::two // loops counted twice
+            n_incident_edges_for_fully_connected_vertex + 2uz // loops counted twice
         );
     }
 

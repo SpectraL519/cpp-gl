@@ -311,7 +311,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             vertex_id_list{constants::v1_id, constants::v3_id, constants::v1_id}
         );
 
-        constexpr auto expected_n_vertices = n_vertices - constants::two;
+        constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.order(), expected_n_vertices);
 
         constexpr auto expected_n_adjacent_edges = expected_n_vertices - 1uz;
@@ -336,7 +336,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
         sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
 
-        constexpr auto expected_n_vertices = n_vertices - constants::two;
+        constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.order(), expected_n_vertices);
 
         constexpr auto expected_n_adjacent_edges = expected_n_vertices - 1uz;

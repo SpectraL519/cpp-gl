@@ -11,7 +11,6 @@
 
 namespace gl_testing::constants {
 
-IC gl::size_type two = 2ull;
 IC gl::size_type three = 3ull;
 
 IC gl::size_type n_elements = 3ull;

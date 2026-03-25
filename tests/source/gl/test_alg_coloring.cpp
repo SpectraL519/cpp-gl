@@ -46,7 +46,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 for (auto i = 0uz; i < n_vertices; i++)
                     expected_coloring.push_back(c);
 
-                n_vertices *= constants::two;
+                n_vertices *= 2uz;
                 c = c.next();
             }
         }
@@ -62,7 +62,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         }
 
         SUBCASE("even cycle graph") {
-            const auto n_vertices = constants::two * constants::n_elements_alg;
+            const auto n_vertices = 2uz * constants::n_elements_alg;
             sut = gl::topology::cycle<sut_type>(n_vertices);
 
             gl::binary_color c{gl::bin_color_value::black};
@@ -124,7 +124,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         }
 
         SUBCASE("odd cycle graph") {
-            sut = gl::topology::cycle<sut_type>(constants::two * constants::n_elements_alg + 1uz);
+            sut = gl::topology::cycle<sut_type>(2uz * constants::n_elements_alg + 1uz);
         }
 
         SUBCASE("regular binary tree with an additional edge between siblings") {

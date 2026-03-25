@@ -15,7 +15,7 @@ template <gl::traits::c_graph GraphType>
     if constexpr (gl::traits::c_directed_graph<GraphType>)
         return n_connections;
     else
-        return n_connections / constants::two;
+        return n_connections / 2uz;
 }
 
 template <gl::traits::c_graph GraphType>
@@ -197,8 +197,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
         // `2x` is required to account for adding edges both ways
-        const auto expected_n_connections =
-            constants::two * constants::n_elements_top * constants::n_elements;
+        const auto expected_n_connections = 2uz * constants::n_elements_top * constants::n_elements;
         verify_bidir_graph_size(biclique, expected_n_vertices, expected_n_connections);
 
         const auto vertices = biclique.vertices();
@@ -273,9 +272,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("bidirectional_cycle(n_vertices) should build a two-way cycle graph of size n_vertices"
     ) {
         const auto cycle = gl::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
-        verify_graph_size(
-            cycle, constants::n_elements_top, constants::two * constants::n_elements_top
-        );
+        verify_graph_size(cycle, constants::n_elements_top, 2uz * constants::n_elements_top);
 
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_id_adjacent(cycle)
@@ -299,7 +296,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - constants::one_element;
 
-        verify_graph_size(path, constants::n_elements_top, constants::two * n_source_vertices);
+        verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
         const auto vertices = path.vertices();
 
@@ -332,7 +329,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
         const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
-        const auto expected_n_connections = (expected_n_vertices - 1uz) * constants::two;
+        const auto expected_n_connections = (expected_n_vertices - 1uz) * 2uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
