@@ -86,7 +86,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -96,8 +96,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -107,8 +107,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -119,9 +119,9 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 struct test_undirected_graph_io {
@@ -196,7 +196,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -206,8 +206,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -217,8 +217,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -229,9 +229,9 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_SUITE_END(); // test_graph_io

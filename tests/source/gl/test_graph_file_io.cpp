@@ -88,7 +88,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path);
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with vertex properties"
@@ -96,16 +96,16 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_vertex_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_vertex_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_vertex_properties(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with edge properties") {
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_edge_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_edge_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_edge_properties(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with vertex and edge "
@@ -113,9 +113,9 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_vertex_properties(sut_in, fixture.sut_out);
-        io_common::verify_edge_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_vertex_properties(sut_in, fixture.sut_out);
+        verify_edge_properties(sut_in, fixture.sut_out);
     }
 }
 
