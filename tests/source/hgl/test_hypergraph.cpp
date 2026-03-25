@@ -116,8 +116,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("add_vertex_with should initialize a new vertex with the input properties structure") {
-        using properties_traits_type =
-            add_vertex_property<HypergraphTraits, types::boolean_property>;
+        using properties_traits_type = add_vertex_property<HypergraphTraits, boolean_property>;
         hgl::hypergraph<properties_traits_type> sut;
 
         const auto vertex = sut.add_vertex_with(constants::p_true);
@@ -138,11 +137,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("add_vertices_with should add new vertices to the hypergraph with the given properties"
     ) {
-        using properties_traits_type =
-            add_vertex_property<HypergraphTraits, types::boolean_property>;
+        using properties_traits_type = add_vertex_property<HypergraphTraits, boolean_property>;
         hgl::hypergraph<properties_traits_type> sut;
 
-        const std::vector<types::boolean_property> properties_list{
+        const std::vector<boolean_property> properties_list{
             constants::p_true, constants::p_false, constants::p_true
         };
         const auto expected_n_vertices = properties_list.size();
@@ -260,8 +258,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("add_hyperedge_with should initialize a new hyperedge with the input properties "
             "structure") {
-        using properties_traits_type =
-            add_hyperedge_property<HypergraphTraits, types::boolean_property>;
+        using properties_traits_type = add_hyperedge_property<HypergraphTraits, boolean_property>;
         hgl::hypergraph<properties_traits_type> sut;
 
         const auto hyperedge = sut.add_hyperedge_with(constants::p_true);
@@ -281,11 +278,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("add_hyperedges_with should add new hyperedges to the hypergraph with the given "
             "properties") {
-        using properties_traits_type =
-            add_hyperedge_property<HypergraphTraits, types::boolean_property>;
+        using properties_traits_type = add_hyperedge_property<HypergraphTraits, boolean_property>;
         hgl::hypergraph<properties_traits_type> sut;
 
-        const std::vector<types::boolean_property> properties_list{
+        const std::vector<boolean_property> properties_list{
             constants::p_true, constants::p_false, constants::p_true, constants::p_false
         };
         const auto expected_n_hyperedges = properties_list.size();

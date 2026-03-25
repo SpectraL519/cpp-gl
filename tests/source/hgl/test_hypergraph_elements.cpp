@@ -44,15 +44,15 @@ TEST_CASE_FIXTURE(test_hyperedge_descriptor, "hyperedge descriptors should be in
 }
 
 TEST_CASE_FIXTURE(test_hyperedge_descriptor, "properties should be properly initialized") {
-    types::boolean_property property{constants::p_true};
+    boolean_property property{constants::p_true};
 
-    const hgl::hyperedge<types::boolean_property> sut{id1, property};
+    const hgl::hyperedge<boolean_property> sut{id1, property};
     CHECK_EQ(&sut.properties(), &property);
 }
 
 TEST_CASE("accessing properties should throw for an invalid hyperedge") {
-    using sut_type = hgl::hyperedge<types::boolean_property>;
-    types::boolean_property property{constants::p_true};
+    using sut_type = hgl::hyperedge<boolean_property>;
+    boolean_property property{constants::p_true};
 
     CHECK_THROWS_AS(static_cast<void>(sut_type::invalid().properties()), std::logic_error);
     CHECK_THROWS_AS(

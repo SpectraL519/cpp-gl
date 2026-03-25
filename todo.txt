@@ -5,4 +5,3 @@ TODO - GL:
 
 TODO - HGL:
 1. Remove the types namespace
-2. Remove hgl_testing::* namespaces

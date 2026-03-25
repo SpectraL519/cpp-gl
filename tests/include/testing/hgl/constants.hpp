@@ -22,7 +22,7 @@ IC hgl::types::id_type out_of_rng_eid = n_hyperedges;
 IC auto vertex_ids_view = std::views::iota(hgl::constants::initial_id, n_vertices);
 IC auto hyperedge_ids_view = std::views::iota(hgl::constants::initial_id, n_hyperedges);
 
-IC types::boolean_property p_true{true};
-IC types::boolean_property p_false{false};
+IC boolean_property p_true{true};
+IC boolean_property p_false{false};
 
 } // namespace hgl_testing::constants
