@@ -214,11 +214,11 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             auto size_map = this->_major_storage | std::views::transform(&major_element_type::size)
                           | std::ranges::to<std::vector<size_type>>();
-            size_map.resize(n_elements, 0ull);
+            size_map.resize(n_elements, 0uz);
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& major_entry : this->_major_storage)
                 for (const auto& minor_id : major_entry)
                     ++size_map[static_cast<std::size_t>(minor_id)];
@@ -545,14 +545,14 @@ private:
     template <impl::element_type Element>
     [[nodiscard]] std::vector<size_type> _size_map(const size_type n_elements) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             const std::size_t n_segments = this->_tail_storage.size();
             for (std::size_t i = 0uz; i < n_segments; ++i)
                 size_map[i] = this->_tail_storage[i].size() + this->_head_storage[i].size();
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& minor_storage : this->_tail_storage)
                 for (const auto minor_id : minor_storage)
                     ++size_map[static_cast<std::size_t>(minor_id)];
@@ -568,7 +568,7 @@ private:
         const size_type n_elements, const Projection storage_proj
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             const auto& storage = std::invoke(storage_proj, this);
             const std::size_t n_segments = storage.size();
             for (std::size_t i = 0uz; i < n_segments; ++i)
@@ -576,7 +576,7 @@ private:
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& minor_storage : std::invoke(storage_proj, this))
                 for (const auto minor_id : minor_storage)
                     ++size_map[static_cast<std::size_t>(minor_id)];

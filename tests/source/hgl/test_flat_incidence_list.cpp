@@ -276,7 +276,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
@@ -554,7 +554,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
@@ -1009,7 +1009,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
@@ -1492,7 +1492,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));

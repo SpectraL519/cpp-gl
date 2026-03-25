@@ -250,7 +250,7 @@ private:
     template <impl::element_type Element>
     [[nodiscard]] std::vector<size_type> _size_map(const size_type n_elements) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
 
             const std::size_t n_segments = this->_storage.size();
             const auto offsets = this->_storage.offsets_view();
@@ -260,7 +260,7 @@ private:
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto minor_id : this->_storage.data_view())
                 ++size_map[static_cast<std::size_t>(minor_id)];
             return size_map;
@@ -599,7 +599,7 @@ private:
     template <impl::element_type Element>
     [[nodiscard]] std::vector<size_type> _size_map(const size_type n_elements) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
 
             const std::size_t n_segments = this->_tail_storage.size();
             const auto tail_offsets = this->_tail_storage.offsets_view();
@@ -611,7 +611,7 @@ private:
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto minor_id : this->_tail_storage.data_view())
                 ++size_map[static_cast<std::size_t>(minor_id)];
             for (const auto minor_id : this->_head_storage.data_view())
@@ -625,7 +625,7 @@ private:
         const size_type n_elements, const auto&& storage_proj
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
 
             const std::size_t n_segments = std::invoke(storage_proj, this).size();
             const auto offsets = std::invoke(storage_proj, this).offsets_view();
@@ -635,7 +635,7 @@ private:
             return size_map;
         }
         else { // size minor
-            std::vector<size_type> size_map(n_elements, 0ull);
+            std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto minor_id : std::invoke(storage_proj, this).data_view())
                 ++size_map[static_cast<std::size_t>(minor_id)];
             return size_map;
