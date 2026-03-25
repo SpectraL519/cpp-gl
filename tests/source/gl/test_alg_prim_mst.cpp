@@ -35,7 +35,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             const weight_type edge_weight = constants::three;
             for (const auto vertex_id : sut.vertex_ids()) {
@@ -52,7 +52,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - constants::one) * constants::two;
@@ -120,7 +120,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-    const gl::id_type source_id = constants::first_element_idx;
+    const gl::id_type source_id = constants::first_elem_idx;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
@@ -176,7 +176,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             const weight_type edge_weight = constants::three;
             for (const auto vertex_id : sut.vertex_ids()) {
@@ -193,7 +193,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = alg_common::data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             const fs::path edges_file_path = alg_common::data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - constants::one) * constants::two;
@@ -261,7 +261,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-    const gl::id_type source_id = constants::first_element_idx;
+    const gl::id_type source_id = constants::first_elem_idx;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())

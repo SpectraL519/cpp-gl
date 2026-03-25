@@ -1,3 +1,4 @@
+#include "gl/constants.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
@@ -27,11 +28,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should throw if there is an edge with a negative weight") {
         const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-        sut.get_edge(constants::vertex_id_1, constants::vertex_id_2)->properties().weight =
+        sut.get_edge(constants::v1_id, constants::v2_id)->properties().weight =
             -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
-            discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::vertex_id_1)),
+            discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::v1_id)),
             std::invalid_argument
         );
     }
@@ -42,36 +43,31 @@ TEST_CASE_TEMPLATE_DEFINE(
         std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
-        const auto source_distance = static_cast<distance_type>(constants::zero);
+        const distance_type source_distance = 0;
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
-            for (gl::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++) {
-                sut.get_edge(constants::vertex_id_1, id)->properties().weight = edge_weight;
+            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++) {
+                sut.get_edge(constants::v1_id, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id =
-                    id == constants::zero
-                        ? constants::zero
-                        : (id - constants::one) / constants::two;
+                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth =
-                    constants::zero ? constants::zero
-                                    : static_cast<gl::size_type>(std::log2(id + constants::one));
+                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -85,7 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = alg_common::data_path / (file_name_prefix + "graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = constants::first_element_idx;
+            source_id = gl::constants::initial_id;
 
             const fs::path predecessors_file_path =
                 alg_common::data_path / (file_name_prefix + "predecessors.txt");
@@ -158,33 +154,28 @@ TEST_CASE_TEMPLATE_DEFINE(
         std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
-        const auto source_distance = static_cast<distance_type>(constants::zero);
+        const distance_type source_distance = 0;
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
-            for (gl::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++)
+            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++)
                 expected_distances.push_back(constants::one);
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = constants::first_elem_idx;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id =
-                    id == constants::zero
-                        ? constants::zero
-                        : (id - constants::one) / constants::two;
+                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth =
-                    constants::zero ? constants::zero
-                                    : static_cast<gl::size_type>(std::log2(id + constants::one));
+                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
                 expected_distances.push_back(vertex_depth);
             }
         }

@@ -32,7 +32,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
             expected_coloring =
                 std::vector<gl::binary_color>(n_vertices_a, gl::bin_color_value::black);
-            for (gl::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
+            for (gl::size_type i = constants::first_elem_idx; i < n_vertices_b; i++)
                 expected_coloring.emplace_back(gl::bin_color_value::white);
         }
 
@@ -42,8 +42,8 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             gl::size_type n_vertices = constants::one_element;
             gl::binary_color c{gl::bin_color_value::black};
 
-            for (gl::size_type d = constants::zero; d < constants::depth; d++) {
-                for (gl::size_type i = constants::zero; i < n_vertices; i++)
+            for (auto d = 0uz; d < constants::depth; d++) {
+                for (auto i = 0uz; i < n_vertices; i++)
                     expected_coloring.push_back(c);
 
                 n_vertices *= constants::two;
@@ -55,7 +55,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
             gl::binary_color c{gl::bin_color_value::black};
-            for (gl::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
+            for (auto i = 0uz; i < constants::n_elements_alg; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }
@@ -66,7 +66,7 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
             sut = gl::topology::cycle<sut_type>(n_vertices);
 
             gl::binary_color c{gl::bin_color_value::black};
-            for (gl::size_type i = constants::zero; i < n_vertices; i++) {
+            for (auto i = 0uz; i < n_vertices; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }
@@ -131,13 +131,13 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
         SUBCASE("regular binary tree with an additional edge between siblings") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
+            sut.add_edge(constants::v2_id, constants::v3_id);
         }
 
         SUBCASE("biclique with an additional edge between vertices from the same set") {
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
             sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
-            sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
+            sut.add_edge(constants::v1_id, constants::v2_id);
         }
 
         SUBCASE("custom graph") {

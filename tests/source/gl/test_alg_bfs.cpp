@@ -112,19 +112,19 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id = constants::vertex_id_1;
+        root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id = constants::vertex_id_3;
+        root_vertex_id = constants::v3_id;
 
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
-            if (id != constants::vertex_id_3)
+            if (id != constants::v3_id)
                 expected_previsit_order.push_back(id);
         }
-        expected_previsit_order.push_front(constants::vertex_id_3);
+        expected_previsit_order.push_front(constants::v3_id);
     }
 
     CAPTURE(graph);

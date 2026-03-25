@@ -33,11 +33,11 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
             const auto& additional_vertex = sut.add_vertex();
-            sut.add_edge(additional_vertex.id(), constants::vertex_id_2);
+            sut.add_edge(additional_vertex.id(), constants::v2_id);
 
-            expected_topological_order.push_back(constants::vertex_id_1);
+            expected_topological_order.push_back(constants::v1_id);
             expected_topological_order.push_back(additional_vertex.id());
-            for (gl::id_type id = constants::vertex_id_2; id < constants::n_elements_alg; id++)
+            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++)
                 expected_topological_order.push_back(id);
         }
 

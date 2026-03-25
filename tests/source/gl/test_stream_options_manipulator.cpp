@@ -19,7 +19,7 @@ struct test_stream_options_manipulator {
     std::stringstream ss1;
     std::stringstream ss2;
 
-    static constexpr gl::io::bit_position_type bit_position_1 = constants::first_element_idx;
+    static constexpr gl::io::bit_position_type bit_position_1 = constants::first_elem_idx;
     static constexpr gl::io::bit_position_type bit_position_2 = bit_position_1 + constants::one;
     static constexpr gl::io::iword_type options_bitmask =
         (gl::io::iword_bit << bit_position_1) | (gl::io::iword_bit << bit_position_2);

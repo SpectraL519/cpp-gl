@@ -14,22 +14,18 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SutType sut{constants::n_elements};
 
-    const auto vd_1 = sut.get_vertex(constants::vertex_id_1);
-    const auto vd_2 = sut.get_vertex(constants::vertex_id_2);
-    const auto vd_3 = sut.get_vertex(constants::vertex_id_3);
+    const auto vd_1 = sut.get_vertex(constants::v1_id);
+    const auto vd_2 = sut.get_vertex(constants::v2_id);
+    const auto vd_3 = sut.get_vertex(constants::v3_id);
     vertex_type out_of_range_vertex{constants::out_of_range_element_idx};
 
     SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
         CHECK_THROWS_AS(
-            discard_result(
-                sut.are_incident(constants::out_of_range_element_idx, constants::vertex_id_2)
-            ),
+            discard_result(sut.are_incident(constants::out_of_range_element_idx, constants::v2_id)),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            discard_result(
-                sut.are_incident(constants::vertex_id_1, constants::out_of_range_element_idx)
-            ),
+            discard_result(sut.are_incident(constants::v1_id, constants::out_of_range_element_idx)),
             std::out_of_range
         );
     }
@@ -45,11 +41,11 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
             "the given vertices") {
         sut.add_edge(vd_1, vd_2);
 
-        CHECK(sut.are_incident(constants::vertex_id_1, constants::vertex_id_2));
-        CHECK(sut.are_incident(constants::vertex_id_2, constants::vertex_id_1));
+        CHECK(sut.are_incident(constants::v1_id, constants::v2_id));
+        CHECK(sut.are_incident(constants::v2_id, constants::v1_id));
 
-        CHECK_FALSE(sut.are_incident(constants::vertex_id_1, constants::vertex_id_3));
-        CHECK_FALSE(sut.are_incident(constants::vertex_id_2, constants::vertex_id_3));
+        CHECK_FALSE(sut.are_incident(constants::v1_id, constants::v3_id));
+        CHECK_FALSE(sut.are_incident(constants::v2_id, constants::v3_id));
     }
 
     SUBCASE("are_incident(vertex, vertex) should throw if at least one of the vertices is invalid"

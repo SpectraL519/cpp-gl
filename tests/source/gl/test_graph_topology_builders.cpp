@@ -128,7 +128,7 @@ template <gl::traits::c_graph GraphType>
 
         if (target_ids.first >= graph.order())
             // no need to check second as second = first + 1
-            return gl::util::range_size(graph.adjacent_edges(source)) == constants::zero;
+            return gl::util::range_size(graph.adjacent_edges(source)) == 0uz;
 
         const auto target_1 = graph.get_vertex(target_ids.first);
         const auto target_2 = graph.get_vertex(target_ids.second);
@@ -146,10 +146,7 @@ template <gl::traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const gl::id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
-        const gl::id_type parent_id =
-            source_id == constants::zero
-                ? constants::zero
-                : (source_id - constants::one) / constants::two;
+        const gl::id_type parent_id = source_id == 0uz ? 0uz : (source_id - 1uz) / 2uz;
 
         if (target_ids.first >= graph.order()) {
             // no need to check second as second = first + 1
@@ -166,7 +163,7 @@ template <gl::traits::c_graph GraphType>
             if (vertex_id == target_1 or vertex_id == target_2)
                 return graph.has_edge(source_id, vertex_id);
 
-            if (vertex_id == parent_id and source_id != constants::zero)
+            if (vertex_id == parent_id and source_id != 0uz)
                 return graph.has_edge(source_id, vertex_id);
 
             return not graph.has_edge(source_id, vertex_id);
@@ -234,17 +231,15 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
         SUBCASE("depth = 0 : empty graph") {
-            const auto complete_bin_tree =
-                gl::topology::regular_binary_tree<graph_type>(constants::zero);
-            REQUIRE_EQ(complete_bin_tree.order(), constants::zero_elements);
-            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
+            const auto complete_bin_tree = gl::topology::regular_binary_tree<graph_type>(0uz);
+            REQUIRE_EQ(complete_bin_tree.order(), 0uz);
+            REQUIRE_EQ(complete_bin_tree.size(), 0uz);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
-            const auto complete_bin_tree =
-                gl::topology::regular_binary_tree<graph_type>(constants::one);
-            REQUIRE_EQ(complete_bin_tree.order(), constants::one_element);
-            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
+            const auto complete_bin_tree = gl::topology::regular_binary_tree<graph_type>(1uz);
+            REQUIRE_EQ(complete_bin_tree.order(), 1uz);
+            REQUIRE_EQ(complete_bin_tree.size(), 0uz);
         }
     }
 }
@@ -322,8 +317,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             "given depth") {
         const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(constants::depth);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
@@ -337,8 +331,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto bin_tree =
             gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
         const auto expected_n_connections = (expected_n_vertices - constants::one) * constants::two;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
@@ -424,8 +417,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CAPTURE(bin_tree);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
         const auto expected_n_connections = expected_n_vertices - constants::one;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
