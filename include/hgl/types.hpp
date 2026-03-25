@@ -10,6 +10,25 @@
 
 namespace hgl::types {
 
-using namespace gl::types;
+// --- core types ---
+
+using gl::id_type;
+using gl::size_type;
+
+// --- generic data structures ---
+
+using gl::flat_jagged_vector;
+using gl::homogeneous_pair;
+
+// --- property types ---
+
+using gl::bin_color_value;
+using gl::binary_color;
+using gl::binary_color_property;
+using gl::dynamic_properties;
+using gl::empty_properties;
+using gl::empty_properties_map;
+using gl::name_property;
+using gl::weight_property;
 
 } // namespace hgl::types

@@ -164,6 +164,8 @@ struct binary_color_property {
     color_type color;
 };
 
+using bin_color_value = typename binary_color::value;
+
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
@@ -183,8 +185,6 @@ struct weight_property {
         return is;
     }
 };
-
-using bin_color_value = typename binary_color::value;
 
 namespace traits {
 

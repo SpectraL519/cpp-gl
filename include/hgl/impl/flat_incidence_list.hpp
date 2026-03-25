@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "gl/types/core.hpp"
-#include "gl/types/flat_jagged_vector.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
@@ -37,30 +35,27 @@ namespace impl {
 
 namespace detail {
 
-using common_storage_type = gl::types::flat_jagged_vector<gl::types::id_type>;
+using common_storage_type = types::flat_jagged_vector<types::id_type>;
 
 [[nodiscard]] inline bool contains(
-    const common_storage_type::const_segment_type& segment, const gl::types::id_type minor_id
+    const common_storage_type::const_segment_type& segment, const types::id_type minor_id
 ) noexcept {
     const auto minor_it = std::ranges::lower_bound(segment, minor_id);
     return minor_it != segment.end() and *minor_it == minor_id;
 }
 
 inline void unique_insert(
-    common_storage_type& storage,
-    const gl::types::id_type major_id,
-    const gl::types::id_type minor_id
+    common_storage_type& storage, const types::id_type major_id, const types::id_type minor_id
 ) noexcept {
     const auto segment = storage[major_id];
     const auto insert_it = std::ranges::lower_bound(segment, minor_id);
     if (insert_it == segment.end() or *insert_it != minor_id) {
-        const auto pos =
-            static_cast<gl::types::size_type>(std::distance(segment.begin(), insert_it));
+        const auto pos = static_cast<types::size_type>(std::distance(segment.begin(), insert_it));
         storage.insert(major_id, pos, minor_id);
     }
 }
 
-inline void remove_minor(common_storage_type& storage, const gl::types::id_type id) noexcept {
+inline void remove_minor(common_storage_type& storage, const types::id_type id) noexcept {
     auto& data = storage.data_storage();
     auto& offsets = storage.offsets_storage();
 
