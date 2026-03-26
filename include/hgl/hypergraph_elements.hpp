@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/traits.hpp"
@@ -14,7 +15,7 @@ namespace hgl {
 // hypergraph vertex descriptor
 
 template <traits::c_properties Properties = empty_properties>
-using vertex_descriptor = gl::vertex_descriptor<Properties>;
+using vertex_descriptor = gl::vertex_descriptor<Properties, id_type>;
 
 // hyperedge descriptor
 
@@ -43,14 +44,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return hyperedge_descriptor(constants::invalid_id);
+        return hyperedge_descriptor(constants::invalid_id<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return hyperedge_descriptor(constants::invalid_id, invalid_properties);
+        return hyperedge_descriptor(constants::invalid_id<id_type>, invalid_properties);
     }
 
     hyperedge_descriptor(const hyperedge_descriptor&) = default;
@@ -76,7 +77,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id;
+        return this->_id != constants::invalid_id<id_type>;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {

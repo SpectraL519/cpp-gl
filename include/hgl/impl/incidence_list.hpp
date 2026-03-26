@@ -189,8 +189,8 @@ private:
             return std::views::all(this->_major_storage[id]);
         }
         else { // incident with minor
-            return std::views::iota(constants::initial_id, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](id_type major_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](const size_type major_id) {
                        return this->_contains(this->_major_storage[major_id], minor_id);
                    });
         }
@@ -489,8 +489,8 @@ private:
                  | std::views::join;
         }
         else { // get minor
-            return std::views::iota(constants::initial_id, this->_tail_storage.size())
-                 | std::views::filter([this, minor_id = id](id_type major_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_tail_storage.size())
+                 | std::views::filter([this, minor_id = id](const size_type major_id) {
                        return this->_contains(this->_tail_storage[major_id], minor_id)
                            or this->_contains(this->_head_storage[major_id], minor_id);
                    });
@@ -504,8 +504,8 @@ private:
             return std::views::all(std::invoke(storage_proj, this)[id]);
         }
         else { // get minor
-            return std::views::iota(constants::initial_id, this->_tail_storage.size())
-                 | std::views::filter([this, storage_proj, minor_id = id](id_type major_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_tail_storage.size())
+                 | std::views::filter([this, storage_proj, minor_id = id](const size_type major_id) {
                        return this->_contains(std::invoke(storage_proj, this)[major_id], minor_id);
                    });
         }
@@ -547,8 +547,8 @@ private:
     [[nodiscard]] std::vector<size_type> _size_map(const size_type n_elements) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
-            const std::size_t n_segments = this->_tail_storage.size();
-            for (std::size_t i = 0uz; i < n_segments; ++i)
+            const auto n_segments = this->_tail_storage.size();
+            for (auto i = 0uz; i < n_segments; ++i)
                 size_map[i] = this->_tail_storage[i].size() + this->_head_storage[i].size();
             return size_map;
         }
@@ -571,8 +571,8 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
             const auto& storage = std::invoke(storage_proj, this);
-            const std::size_t n_segments = storage.size();
-            for (std::size_t i = 0uz; i < n_segments; ++i)
+            const auto n_segments = storage.size();
+            for (auto i = 0uz; i < n_segments; ++i)
                 size_map[i] = storage[i].size();
             return size_map;
         }

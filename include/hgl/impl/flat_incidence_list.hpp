@@ -202,7 +202,8 @@ public:
 #endif
 
 private:
-    using storage_type = flat_jagged_vector<id_type>;
+    using element_type = id_type;
+    using storage_type = flat_jagged_vector<element_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -226,7 +227,7 @@ private:
             return this->_storage[id];
         }
         else { // incident with minor
-            return std::views::iota(constants::initial_id, this->_storage.size())
+            return std::views::iota(constants::initial_id<id_type>, this->_storage.size())
                  | std::views::filter([this, minor_id = id](const id_type major_id) {
                        return detail::contains(this->_storage[major_id], minor_id);
                    });
@@ -252,10 +253,10 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
 
-            const std::size_t n_segments = this->_storage.size();
+            const size_type n_segments = this->_storage.size();
             const auto offsets = this->_storage.offsets_view();
 
-            for (std::size_t i = 0uz; i < n_segments; ++i)
+            for (auto i = 0uz; i < n_segments; ++i)
                 size_map[i] = offsets[i + 1uz] - offsets[i];
             return size_map;
         }
@@ -480,7 +481,8 @@ public:
 #endif
 
 private:
-    using storage_type = flat_jagged_vector<id_type>;
+    using element_type = id_type;
+    using storage_type = flat_jagged_vector<element_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -541,7 +543,7 @@ private:
                  | std::views::join;
         }
         else { // get minor
-            return std::views::iota(constants::initial_id, this->_tail_storage.size())
+            return std::views::iota(constants::initial_id<id_type>, this->_tail_storage.size())
                  | std::views::filter([this, minor_id = id](id_type major_id) {
                        return detail::contains(this->_tail_storage[major_id], minor_id)
                            or detail::contains(this->_head_storage[major_id], minor_id);
@@ -556,7 +558,7 @@ private:
             return std::invoke(storage_proj, this)[id];
         }
         else { // get minor
-            return std::views::iota(constants::initial_id, this->_tail_storage.size())
+            return std::views::iota(constants::initial_id<id_type>, this->_tail_storage.size())
                  | std::views::filter([this, storage_proj, minor_id = id](id_type major_id) {
                        return detail::contains(std::invoke(storage_proj, this)[major_id], minor_id);
                    });
@@ -600,11 +602,11 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
 
-            const std::size_t n_segments = this->_tail_storage.size();
+            const auto n_segments = this->_tail_storage.size();
             const auto tail_offsets = this->_tail_storage.offsets_view();
             const auto head_offsets = this->_head_storage.offsets_view();
 
-            for (std::size_t i = 0uz; i < n_segments; ++i)
+            for (auto i = 0uz; i < n_segments; ++i)
                 size_map[i] = (tail_offsets[i + 1uz] - tail_offsets[i])
                             + (head_offsets[i + 1uz] - head_offsets[i]);
             return size_map;
@@ -626,10 +628,10 @@ private:
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
 
-            const std::size_t n_segments = std::invoke(storage_proj, this).size();
+            const auto n_segments = std::invoke(storage_proj, this).size();
             const auto offsets = std::invoke(storage_proj, this).offsets_view();
 
-            for (std::size_t i = 0uz; i < n_segments; ++i)
+            for (auto i = 0uz; i < n_segments; ++i)
                 size_map[i] = offsets[i + 1uz] - offsets[i];
             return size_map;
         }

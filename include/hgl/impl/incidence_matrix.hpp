@@ -178,14 +178,14 @@ private:
     template <impl::element_type Element>
     gl_attr_force_inline auto _incident_with(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // incident with major
-            return std::views::iota(constants::initial_id, this->_matrix_row_size)
-                 | std::views::filter([&row = this->_matrix[id]](const id_type minor_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_matrix_row_size)
+                 | std::views::filter([&row = this->_matrix[id]](const size_type minor_id) {
                        return row[minor_id];
                    });
         }
         else { // incident with minor
-            return std::views::iota(constants::initial_id, this->_matrix.size())
-                 | std::views::filter([this, minor_id = id](const id_type major_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_matrix.size())
+                 | std::views::filter([this, minor_id = id](const size_type major_id) {
                        return this->_matrix[major_id][minor_id];
                    });
         }
@@ -476,14 +476,14 @@ private:
         const id_type id, std::predicate<incidence_type> auto&& pred
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // query major
-            return std::views::iota(constants::initial_id, this->_matrix_row_size)
-                 | std::views::filter([&row = this->_matrix[id], pred](const id_type minor_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_matrix_row_size)
+                 | std::views::filter([&row = this->_matrix[id], pred](const size_type minor_id) {
                        return pred(row[minor_id]);
                    });
         }
         else { // query minor
-            return std::views::iota(constants::initial_id, this->_matrix.size())
-                 | std::views::filter([this, minor_id = id, pred](const id_type major_id) {
+            return std::views::iota(constants::initial_id<size_type>, this->_matrix.size())
+                 | std::views::filter([this, minor_id = id, pred](const size_type major_id) {
                        return pred(this->_matrix[major_id][minor_id]);
                    });
         }
