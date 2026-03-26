@@ -35,7 +35,9 @@ template <
 }
 
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](const id_type vertex_id) -> bool { return not visited[vertex_id]; };
+    return [&](const id_type vertex_id) -> bool {
+        return not visited[static_cast<size_type>(vertex_id)];
+    };
 }
 
 template <result_discriminator ResultDiscriminator>
@@ -44,9 +46,9 @@ template <result_discriminator ResultDiscriminator>
     non_void_return_type<ResultDiscriminator, predecessors_map>& pred_map
 ) {
     return [&](const id_type vertex_id, const id_type pred_id) {
-        visited[vertex_id] = true;
+        visited[static_cast<size_type>(vertex_id)] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
-            pred_map[vertex_id] = pred_id;
+            pred_map[static_cast<size_type>(vertex_id)] = pred_id;
         return true;
     };
 }
@@ -58,7 +60,7 @@ template <traits::c_graph GraphType, bool AsResult = false>
 
     return
         [&](const id_type vertex_id, [[maybe_unused]] const typename GraphType::edge_type& in_edge
-        ) -> return_type { return not visited[vertex_id]; };
+        ) -> return_type { return not visited[static_cast<size_type>(vertex_id)]; };
 }
 
 } // namespace gl::algorithm

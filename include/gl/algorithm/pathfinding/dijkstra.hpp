@@ -7,6 +7,7 @@
 #include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/pfs.hpp"
 #include "gl/constants.hpp"
+#include "gl/types/core.hpp"
 
 #include <deque>
 
@@ -69,11 +70,14 @@ template <
                 return predicate_result::unknown;
             }
 
-            const auto new_distance = paths.distances[pred_id] + edge_weight;
-            if (paths.predecessors[vertex_id] == constants::invalid_id
-                or new_distance < paths.distances[vertex_id]) {
-                paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id] = pred_id;
+            const auto new_distance =
+                paths.distances[static_cast<size_type>(pred_id)] + edge_weight;
+            auto& v_pred = paths.predecessors[static_cast<size_type>(vertex_id)];
+            auto& v_dist = paths.distances[static_cast<size_type>(vertex_id)];
+
+            if (v_pred == constants::invalid_id or new_distance < v_dist) {
+                v_dist = new_distance;
+                v_pred = pred_id;
                 return true;
             }
 

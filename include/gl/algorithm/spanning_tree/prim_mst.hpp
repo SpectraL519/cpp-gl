@@ -56,22 +56,23 @@ template <traits::c_undirected_graph GraphType>
         edge_queue.emplace(edge);
 
     // mark the root vertex as visited
-    visited[root_id] = true;
+    visited[static_cast<size_type>(root_id)] = true;
     size_type n_vertices_in_mst = 1uz;
 
     // find the mst
     while (n_vertices_in_mst < n_vertices) {
         const auto min_edge = edge_queue.top();
+        const auto min_edge_tgt = static_cast<size_type>(min_edge.target());
         edge_queue.pop();
 
-        if (visited[min_edge.target()])
+        if (visited[min_edge_tgt])
             continue;
 
         // add the minimum weight edge to the mst
         mst.edges.emplace_back(min_edge);
         mst.weight += get_weight<GraphType>(min_edge);
 
-        visited[min_edge.target()] = true;
+        visited[min_edge_tgt] = true;
         ++n_vertices_in_mst;
 
         // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
@@ -132,7 +133,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
         // Update adjacent vertices
         for (const auto& edge : graph.adjacent_edges(vertex_id)) {
             const auto edge_weight = get_weight<GraphType>(edge);
-            const auto incident_vertex_id = edge.incident_vertex(vertex_id);
+            const auto incident_vertex_id = static_cast<size_type>(edge.incident_vertex(vertex_id));
 
             if (not in_mst[incident_vertex_id] and edge_weight < min_cost[incident_vertex_id]) {
                 min_cost[incident_vertex_id] = edge_weight;

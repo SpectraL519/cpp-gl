@@ -26,11 +26,10 @@ template <
     std::vector<algorithm::vertex_info> source_vertex_list;
     source_vertex_list.reserve(graph.order());
     for (const auto id : graph.vertex_ids())
-        if (in_degree_map[id] == 0uz)
+        if (in_degree_map[static_cast<size_type>(id)] == 0uz)
             source_vertex_list.emplace_back(id);
 
-    std::optional<std::vector<id_type>> topological_order_opt = std::vector<id_type>{};
-    auto& topological_order = topological_order_opt.value();
+    std::vector<id_type> topological_order{};
     topological_order.reserve(graph.order());
 
     bfs(
@@ -47,7 +46,7 @@ template <
             -> predicate_result { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
-            return --in_degree_map[vertex_id] == 0uz;
+            return --in_degree_map[static_cast<size_type>(vertex_id)] == 0uz;
         },
         pre_visit,
         post_visit
@@ -56,7 +55,7 @@ template <
     if (topological_order.size() != graph.order())
         return std::nullopt;
 
-    return topological_order_opt;
+    return topological_order;
 }
 
 } // namespace gl::algorithm

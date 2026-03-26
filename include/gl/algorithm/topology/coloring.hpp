@@ -21,10 +21,7 @@ template <
 ) {
     using edge_type = typename GraphType::edge_type;
 
-    std::optional<bicoloring_type> coloring_opt;
-    coloring_opt.emplace(graph.order(), bin_color_value::unset);
-    auto& coloring = coloring_opt.value();
-
+    bicoloring_type coloring(graph.order(), binary_color::value::unset);
     for (const auto root_id : graph.vertex_ids()) {
         if (coloring[root_id].is_set())
             continue;
@@ -40,15 +37,18 @@ template <
             [&coloring](const id_type vertex_id, const edge_type& in_edge)
                 -> predicate_result { // enqueue predicate
                 if (in_edge.is_loop())
-                    return false;
+                    return predicate_result::unknown; // graph is not bipartite
 
                 const auto pred_id = in_edge.incident_vertex(vertex_id);
 
-                if (coloring[vertex_id] == coloring[pred_id])
+                auto& v_color = coloring[static_cast<size_type>(vertex_id)];
+                auto p_color = coloring[static_cast<size_type>(pred_id)];
+
+                if (v_color == p_color)
                     return predicate_result::unknown; // graph is not bipartite
 
-                if (not coloring[vertex_id].is_set()) {
-                    coloring[vertex_id] = coloring[pred_id].next();
+                if (not v_color.is_set()) {
+                    v_color = p_color.next();
                     return true;
                 }
 
@@ -62,7 +62,7 @@ template <
             return std::nullopt;
     }
 
-    return coloring_opt;
+    return coloring;
 }
 
 [[nodiscard]] gl_attr_force_inline bool is_bipartite(const traits::c_graph auto& graph) {
