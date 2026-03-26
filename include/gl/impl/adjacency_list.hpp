@@ -106,19 +106,21 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
-        return std::ranges::contains(this->_list[source_id], target_id, &item_type::vertex_id);
+        return std::ranges::contains(
+            this->_list[to_idx(source_id)], target_id, &item_type::vertex_id
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         return std::ranges::contains(
-            this->_list[edge.source()], item_type{edge.target(), edge.id()}
+            this->_list[to_idx(edge.source())], item_type{edge.target(), edge.id()}
         );
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto& adjacent_edges = this->_list[source_id];
+        const auto& adjacent_edges = this->_list[to_idx(source_id)];
         const auto item_it = std::ranges::find(adjacent_edges, target_id, &item_type::vertex_id);
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
@@ -130,14 +132,14 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto& adjacent_edges = this->_list[source_id];
+        const auto& adjacent_edges = this->_list[to_idx(source_id)];
         const auto item_it = std::ranges::find(adjacent_edges, target_id, [](const auto& item) {
             return item.vertex_id;
         });
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(
-            item_it->edge_id, source_id, target_id, *edge_properties_map[item_it->edge_id]
+            item_it->edge_id, source_id, target_id, *edge_properties_map[to_idx(item_it->edge_id)]
         );
     }
 
@@ -217,7 +219,10 @@ public:
         return specialized_impl::in_edges(*this, vertex_id)
              | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.edge_id, item.vertex_id, vertex_id, *edge_properties_map[item.edge_id]
+                       item.edge_id,
+                       item.vertex_id,
+                       vertex_id,
+                       *edge_properties_map[to_idx(item.edge_id)]
                    };
                });
     }
@@ -225,7 +230,8 @@ public:
     [[nodiscard]] gl_attr_force_inline auto out_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->_list[vertex_id] | std::views::transform([vertex_id](const auto& item) {
+        return this->_list[to_idx(vertex_id)]
+             | std::views::transform([vertex_id](const auto& item) {
                    return edge_type{item.edge_id, vertex_id, item.vertex_id};
                });
     }
@@ -235,10 +241,13 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->_list[vertex_id]
+        return this->_list[to_idx(vertex_id)]
              | std::views::transform([vertex_id, &edge_properties_map](const auto& item) {
                    return edge_type{
-                       item.edge_id, vertex_id, item.vertex_id, *edge_properties_map[item.edge_id]
+                       item.edge_id,
+                       vertex_id,
+                       item.vertex_id,
+                       *edge_properties_map[to_idx(item.edge_id)]
                    };
                });
     }

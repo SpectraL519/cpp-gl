@@ -115,17 +115,18 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
-        return this->_matrix[source_id][target_id] != constants::invalid_id<id_type>;
+        return this->_matrix[to_idx(source_id)][to_idx(target_id)]
+            != constants::invalid_id<id_type>;
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        return this->_matrix[edge.source()][edge.target()] == edge.id();
+        return this->_matrix[to_idx(edge.source())][to_idx(edge.target())] == edge.id();
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[source_id][target_id];
+        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
         if (edge_id == constants::invalid_id<id_type>)
             return std::nullopt;
         return std::make_optional<edge_type>(edge_id, source_id, target_id);
@@ -136,18 +137,18 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[source_id][target_id];
+        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
         if (edge_id == constants::invalid_id<id_type>)
             return std::nullopt;
         return std::make_optional<edge_type>(
-            edge_id, source_id, target_id, *edge_properties_map[edge_id]
+            edge_id, source_id, target_id, *edge_properties_map[to_idx(edge_id)]
         );
     }
 
     [[nodiscard]] std::vector<edge_type> get_edges(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[source_id][target_id];
+        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
         if (edge_id == constants::invalid_id<id_type>)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
@@ -160,11 +161,11 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[source_id][target_id];
+        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
         if (edge_id == constants::invalid_id<id_type>)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
-            edge_type{edge_id, source_id, target_id, *edge_properties_map[edge_id]}
+            edge_type{edge_id, source_id, target_id, *edge_properties_map[to_idx(edge_id)]}
         };
     }
 
@@ -205,10 +206,13 @@ public:
     {
         return std::views::iota(constants::initial_id<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
-                   return this->_matrix[source_id][vertex_id] != constants::invalid_id<id_type>;
+                   return this->_matrix[to_idx(source_id)][to_idx(vertex_id)]
+                       != constants::invalid_id<id_type>;
                })
              | std::views::transform([this, vertex_id](const auto source_id) {
-                   return edge_type{this->_matrix[source_id][vertex_id], source_id, vertex_id};
+                   return edge_type{
+                       this->_matrix[to_idx(source_id)][to_idx(vertex_id)], source_id, vertex_id
+                   };
                });
     }
 
@@ -219,18 +223,21 @@ public:
     {
         return std::views::iota(constants::initial_id<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
-                   return this->_matrix[source_id][vertex_id] != constants::invalid_id<id_type>;
+                   return this->_matrix[to_idx(source_id)][to_idx(vertex_id)]
+                       != constants::invalid_id<id_type>;
                })
              | std::views::transform([this, vertex_id, &edge_properties_map](const auto source_id) {
-                   const auto edge_id = this->_matrix[source_id][vertex_id];
-                   return edge_type{edge_id, source_id, vertex_id, *edge_properties_map[edge_id]};
+                   const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(vertex_id)];
+                   return edge_type{
+                       edge_id, source_id, vertex_id, *edge_properties_map[to_idx(edge_id)]
+                   };
                });
     }
 
     [[nodiscard]] gl_attr_force_inline auto out_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->_matrix[vertex_id] | std::views::enumerate
+        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
                    return edge_id != constants::invalid_id<id_type>;
@@ -246,7 +253,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->_matrix[vertex_id] | std::views::enumerate
+        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
                    return edge_id != constants::invalid_id<id_type>;
@@ -257,7 +264,7 @@ public:
                        edge_id,
                        vertex_id,
                        static_cast<id_type>(target_id),
-                       *edge_properties_map[edge_id]
+                       *edge_properties_map[to_idx(edge_id)]
                    };
                });
     }
@@ -267,7 +274,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->_matrix[vertex_id] | std::views::enumerate
+        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::transform([vertex_id](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
                    return edge_id == constants::invalid_id<id_type>
@@ -280,7 +287,7 @@ public:
         const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->_matrix[vertex_id] | std::views::enumerate
+        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
                    return edge_id == constants::invalid_id<id_type>
@@ -289,7 +296,7 @@ public:
                                   edge_id,
                                   vertex_id,
                                   static_cast<id_type>(target_id),
-                                  *edge_properties_map[edge_id]
+                                  *edge_properties_map[to_idx(edge_id)]
                               };
                });
     }
@@ -329,7 +336,8 @@ private:
                     edge_id = constants::invalid_id<id_type>; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id
-                    edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);
+                    edge_id -=
+                        static_cast<id_type>(std::ranges::distance(removed_edge_ids.begin(), it));
             }
         }
     }

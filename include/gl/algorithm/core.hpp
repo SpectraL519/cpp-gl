@@ -34,7 +34,7 @@ struct vertex_info {
 };
 
 struct decision {
-    enum class eval : std::int8_t { accept, reject, abort };
+    enum class eval : std::uint8_t { accept, reject, abort };
     using enum eval;
 
     constexpr decision(const eval value) : value(value) {}

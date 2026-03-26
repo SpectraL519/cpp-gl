@@ -63,7 +63,7 @@ template <traits::c_graph GraphType, bool AsResult = false>
     using return_type = std::conditional_t<AsResult, decision, bool>;
     return [&](typename GraphType::id_type vertex_id,
                [[maybe_unused]] const typename GraphType::edge_type& in_edge) -> return_type {
-        return not visited[static_cast<size_type>(vertex_id)];
+        return not visited[to_idx(vertex_id)];
     };
 }
 

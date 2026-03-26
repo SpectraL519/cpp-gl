@@ -78,10 +78,9 @@ template <
                 return decision::abort;
             }
 
-            const auto new_distance =
-                paths.distances[static_cast<size_type>(pred_id)] + edge_weight;
-            auto& v_pred = paths.predecessors[static_cast<size_type>(vertex_id)];
-            auto& v_dist = paths.distances[static_cast<size_type>(vertex_id)];
+            const auto new_distance = paths.distances[to_idx(pred_id)] + edge_weight;
+            auto& v_pred = paths.predecessors[to_idx(vertex_id)];
+            auto& v_dist = paths.distances[to_idx(vertex_id)];
 
             if (v_pred == constants::invalid_id<id_type> or new_distance < v_dist) {
                 v_dist = new_distance;

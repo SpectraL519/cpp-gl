@@ -21,7 +21,6 @@ concept c_id_type = std::unsigned_integral<T>;
 
 } // namespace traits
 
-// TODO: use for all indexing
 [[nodiscard]] constexpr size_type to_idx(const traits::c_id_type auto id) noexcept {
     return static_cast<size_type>(id);
 }
