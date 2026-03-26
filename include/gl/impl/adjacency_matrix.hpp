@@ -203,7 +203,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return std::views::iota(constants::initial_id_v<id_type>, this->_matrix.size())
+        return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[to_idx(source_id)][to_idx(vertex_id)] != invalid_id;
                })
@@ -219,7 +219,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return std::views::iota(constants::initial_id_v<id_type>, this->_matrix.size())
+        return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[to_idx(source_id)][to_idx(vertex_id)] != invalid_id;
                })

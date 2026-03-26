@@ -16,9 +16,8 @@ template <traits::c_graph GraphType>
 
     GraphType graph{n_vertices};
 
-    for (auto source_id = constants::initial_id_v<id_type>; source_id < n_vertices; ++source_id) {
-        for (auto target_id = constants::initial_id_v<id_type>; target_id < source_id;
-             ++target_id) {
+    for (id_type source_id = initial_id; source_id < n_vertices; ++source_id) {
+        for (id_type target_id = initial_id; target_id < source_id; ++target_id) {
             graph.add_edge(source_id, target_id);
             if constexpr (traits::c_directed_graph<GraphType>)
                 graph.add_edge(target_id, source_id);

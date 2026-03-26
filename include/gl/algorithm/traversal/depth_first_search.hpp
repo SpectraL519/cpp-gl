@@ -19,7 +19,7 @@ template <
         algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search(
     const GraphType& graph,
-    const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
+    const typename GraphType::id_type root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -69,7 +69,7 @@ template <
         algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_first_search(
     const GraphType& graph,
-    const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
+    const typename GraphType::id_type root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {

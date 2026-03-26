@@ -70,7 +70,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
         graph,
-        gl::algorithm::no_root_vertex<id_type>,
+        gl::algorithm::no_root,
         [&](const id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
@@ -258,7 +258,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
         graph,
-        gl::algorithm::no_root_vertex<id_type>,
+        gl::algorithm::no_root,
         [&](const id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },

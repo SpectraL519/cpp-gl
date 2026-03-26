@@ -94,7 +94,7 @@ struct directed_adjacency_matrix {
     }
 
     [[nodiscard]] static std::vector<size_type> out_degree_map(const impl_type& self) {
-        return std::views::iota(constants::initial_id_v<id_type>, self._matrix.size())
+        return std::views::iota(initial_id_v<id_type>, self._matrix.size())
              | std::views::transform([&](id_type id) { return out_degree(self, id); })
              | std::ranges::to<std::vector>();
     }

@@ -60,7 +60,7 @@ struct directed_adjacency_list {
 
     [[nodiscard]] static auto in_edges(const impl_type& self, id_type vertex_id) {
         std::vector<item_type> in_edges;
-        for (auto src_id = constants::initial_id_v<id_type>; src_id < self._list.size(); ++src_id) {
+        for (id_type src_id = initial_id; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
                 self._list[to_idx(src_id)]
                 | std::views::filter([tgt_id = vertex_id](const auto& item) {
@@ -227,7 +227,7 @@ struct undirected_adjacency_list {
     [[nodiscard]] static std::vector<size_type> degree_map(const impl_type& self) {
         std::vector<size_type> degree_map;
         degree_map.reserve(self._list.size());
-        for (auto id = constants::initial_id_v<id_type>; id < self._list.size(); ++id)
+        for (id_type id = initial_id; id < self._list.size(); ++id)
             degree_map.push_back(degree(self, id));
         return degree_map;
     }

@@ -69,6 +69,15 @@ using non_void_return_type =
 // --- constants ---
 
 template <traits::c_id_type IdType>
-inline constexpr IdType no_root_vertex = invalid_id;
+inline constexpr IdType no_root_v = invalid_id_v<IdType>;
+
+struct no_root_t {
+    template <traits::c_id_type IdType>
+    [[nodiscard]] constexpr operator IdType() const noexcept {
+        return no_root_v<IdType>;
+    }
+};
+
+inline constexpr no_root_t no_root{};
 
 } // namespace gl::algorithm

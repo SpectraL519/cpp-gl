@@ -9,17 +9,14 @@
 #include <limits>
 
 namespace gl {
-namespace constants {
 
 template <traits::c_id_type IdType>
 inline constexpr IdType initial_id_v{0};
 
-} // namespace constants
-
 struct initial_id_t {
     template <traits::c_id_type IdType>
     [[nodiscard]] constexpr operator IdType() const noexcept {
-        return constants::initial_id_v<IdType>;
+        return initial_id_v<IdType>;
     }
 };
 

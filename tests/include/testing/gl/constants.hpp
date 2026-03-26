@@ -28,8 +28,7 @@ IC gl::default_id_type v1_id = 0u;
 IC gl::default_id_type v2_id = 1u;
 IC gl::default_id_type v3_id = 2u;
 
-IC auto vertex_id_view =
-    std::views::iota(gl::constants::initial_id_v<gl::default_id_type>, n_elements);
+IC auto vertex_id_view = std::views::iota(gl::initial_id_v<gl::default_id_type>, n_elements);
 
 IC visited_property visited{true};
 IC visited_property not_visited{false};

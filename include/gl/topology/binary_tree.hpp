@@ -9,6 +9,8 @@
 #include "gl/graph.hpp"
 #include "gl/util/pow.hpp"
 
+#include <sys/types.h>
+
 #include <initializer_list>
 
 namespace gl::topology {
@@ -43,8 +45,7 @@ template <traits::c_graph GraphType>
 
     const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-    for (auto source_id = constants::initial_id_v<id_type>; source_id < n_source_vertices;
-         ++source_id) {
+    for (id_type source_id = initial_id; source_id < n_source_vertices; ++source_id) {
         const auto target_ids = detail::get_binary_target_ids(source_id);
         graph.add_edges_from(
             source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}
@@ -77,8 +78,7 @@ template <traits::c_graph GraphType>
 
         const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-        for (auto source_id = constants::initial_id_v<id_type>; source_id < n_source_vertices;
-             ++source_id) {
+        for (id_type source_id = initial_id; source_id < n_source_vertices; ++source_id) {
             const auto target_ids = detail::get_binary_target_ids(source_id);
             graph.add_edges_from(
                 source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}
