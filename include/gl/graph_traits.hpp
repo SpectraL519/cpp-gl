@@ -25,7 +25,7 @@ struct graph_traits {
     using vertex_type = vertex_descriptor<VertexProperties, id_type>;
     using vertex_properties_type = typename vertex_type::properties_type;
 
-    using edge_type = edge_descriptor<DirectionalTag, EdgeProperties>;
+    using edge_type = edge_descriptor<DirectionalTag, EdgeProperties, id_type>;
     using edge_properties_type = typename edge_type::properties_type;
 };
 

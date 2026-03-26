@@ -18,7 +18,7 @@ template <
     traits::c_id_type IdType = default_id_type>
 class edge_descriptor final {
 public:
-    using type = edge_descriptor<DirectionalTag, Properties>;
+    using type = edge_descriptor<DirectionalTag, Properties, IdType>;
     using id_type = IdType;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;

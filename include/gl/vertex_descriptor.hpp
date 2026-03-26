@@ -21,7 +21,7 @@ template <
     traits::c_id_type IdType = default_id_type>
 class vertex_descriptor final {
 public:
-    using type = std::type_identity_t<vertex_descriptor<Properties>>;
+    using type = std::type_identity_t<vertex_descriptor<Properties, IdType>>;
     using id_type = IdType;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
