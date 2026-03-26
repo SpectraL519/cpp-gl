@@ -34,13 +34,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id<id_type>; id < constants::n_elements_alg; id++)
+        for (auto id = gl::constants::initial_id_v<id_type>; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
     SUBCASE("path graph") {
         graph = gl::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id<id_type>; id < constants::n_elements_alg; id++)
+        for (auto id = gl::constants::initial_id_v<id_type>; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
@@ -109,7 +109,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using id_type = typename graph_type::id_type;
 
     graph_type graph;
-    gl::default_id_type root_vertex_id = constants::invalid_id;
+    gl::default_id_type root_vertex_id = constants::invalid_id_v;
     std::deque<gl::default_id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
@@ -122,7 +122,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
         root_vertex_id = constants::v3_id;
 
-        for (auto id = gl::constants::initial_id<id_type>; id < constants::n_elements_alg; id++) {
+        for (auto id = gl::constants::initial_id_v<id_type>; id < constants::n_elements_alg; id++) {
             if (id != constants::v3_id)
                 expected_previsit_order.push_back(id);
         }

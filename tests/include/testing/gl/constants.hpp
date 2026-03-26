@@ -27,10 +27,10 @@ IC gl::size_type out_of_rng_idx = n_elements;
 IC gl::default_id_type v1_id = 0u;
 IC gl::default_id_type v2_id = 1u;
 IC gl::default_id_type v3_id = 2u;
-IC gl::default_id_type invalid_id = gl::constants::invalid_id<gl::default_id_type>;
+IC gl::default_id_type invalid_id_v = gl::constants::invalid_id_v<gl::default_id_type>;
 
 IC auto vertex_id_view =
-    std::views::iota(gl::constants::initial_id<gl::default_id_type>, n_elements);
+    std::views::iota(gl::constants::initial_id_v<gl::default_id_type>, n_elements);
 
 IC visited_property visited{true};
 IC visited_property not_visited{false};

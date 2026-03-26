@@ -27,7 +27,7 @@ struct test_adjacency_matrix {
     gl::default_id_type next_edge_id = 0u;
 };
 
-inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
+inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id_v; };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, directional_tag_sut_template
@@ -253,7 +253,7 @@ TEST_CASE_FIXTURE(
     const auto valid_edge = add_edge(constants::v1_id, constants::v2_id);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{constants::invalid_id, constants::v1_id, constants::v2_id};
+    const edge_type invalid_edge{constants::invalid_id_v, constants::v1_id, constants::v2_id};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
@@ -593,7 +593,7 @@ TEST_CASE_FIXTURE(
     const auto valid_edge = add_edge(constants::v1_id, constants::v2_id);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{constants::invalid_id, constants::v1_id, constants::v2_id};
+    const edge_type invalid_edge{constants::invalid_id_v, constants::v1_id, constants::v2_id};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph

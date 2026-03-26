@@ -44,14 +44,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return vertex_descriptor(constants::invalid_id<id_type>);
+        return vertex_descriptor(constants::invalid_id_v<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return vertex_descriptor(constants::invalid_id<id_type>, invalid_properties);
+        return vertex_descriptor(constants::invalid_id_v<id_type>, invalid_properties);
     }
 
     vertex_descriptor(const vertex_descriptor&) = default;
@@ -78,7 +78,7 @@ public:
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id<id_type>;
+        return this->_id != constants::invalid_id_v<id_type>;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {

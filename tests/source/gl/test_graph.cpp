@@ -97,7 +97,7 @@ struct test_graph {
     }
 
     const vertex_type out_of_range_vertex{constants::out_of_rng_idx};
-    const vertex_type invalid_vertex{constants::invalid_id}; // remove?
+    const vertex_type invalid_vertex{constants::invalid_id_v}; // remove?
 };
 
 using vertex_id_list = std::vector<gl::default_id_type>;

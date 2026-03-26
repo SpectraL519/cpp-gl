@@ -17,7 +17,7 @@ template <result_discriminator ResultDiscriminator, traits::c_graph GraphType>
     init_predecessors_map(const GraphType& graph) {
     using return_type = non_void_return_type<ResultDiscriminator, predecessors_map<GraphType>>;
     if constexpr (ResultDiscriminator == algorithm::ret)
-        return return_type(graph.order(), constants::invalid_id<typename GraphType::id_type>);
+        return return_type(graph.order(), constants::invalid_id_v<typename GraphType::id_type>);
     else
         return return_type();
 }
@@ -26,7 +26,7 @@ template <traits::c_id_type IdType>
 [[nodiscard]] gl_attr_force_inline bool is_reachable(
     const traits::c_random_access_range_of<IdType> auto& pred_map, IdType vertex_id
 ) noexcept {
-    return pred_map[to_idx(vertex_id)] != constants::invalid_id<IdType>;
+    return pred_map[to_idx(vertex_id)] != constants::invalid_id_v<IdType>;
 }
 
 template <

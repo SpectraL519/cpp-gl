@@ -80,21 +80,21 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("accessing properties should throw for invalid edges") {
         CHECK_THROWS_AS(
             discard_result(
-                EdgeType(constants::invalid_id, fixture.v1, fixture.v2, used).properties()
+                EdgeType(constants::invalid_id_v, fixture.v1, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
             discard_result(
-                EdgeType(fixture.id1, constants::invalid_id, fixture.v2, used).properties()
+                EdgeType(fixture.id1, constants::invalid_id_v, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
             discard_result(
-                EdgeType(fixture.id1, fixture.v1, constants::invalid_id, used).properties()
+                EdgeType(fixture.id1, fixture.v1, constants::invalid_id_v, used).properties()
             ),
             std::logic_error
         );
@@ -112,10 +112,12 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
 
     SUBCASE("an edge should be valid if it has a valid ID and vertices") {
         CHECK(sut.is_valid());
-        CHECK_FALSE(EdgeType{constants::invalid_id, constants::invalid_id, constants::invalid_id});
-        CHECK_FALSE(EdgeType{constants::invalid_id, fixture.v1, fixture.v2});
-        CHECK_FALSE(EdgeType{fixture.id1, constants::invalid_id, fixture.v2});
-        CHECK_FALSE(EdgeType{fixture.id1, fixture.v1, constants::invalid_id});
+        CHECK_FALSE(
+            EdgeType{constants::invalid_id_v, constants::invalid_id_v, constants::invalid_id_v}
+        );
+        CHECK_FALSE(EdgeType{constants::invalid_id_v, fixture.v1, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, constants::invalid_id_v, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, fixture.v1, constants::invalid_id_v});
     }
 
     SUBCASE("id() should return the ID of the edge") {
@@ -158,8 +160,8 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
         CHECK(sut.is_incident_with(fixture.v1));
         CHECK(sut.is_incident_with(fixture.v2));
 
-        CHECK_FALSE(sut.is_incident_with(constants::invalid_id));
-        CHECK_FALSE(sut.is_incident_with(constants::invalid_id));
+        CHECK_FALSE(sut.is_incident_with(constants::invalid_id_v));
+        CHECK_FALSE(sut.is_incident_with(constants::invalid_id_v));
     }
 
     SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {

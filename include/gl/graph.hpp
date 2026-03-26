@@ -137,7 +137,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_vertices);
+        return std::views::iota(constants::initial_id_v<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
@@ -332,7 +332,7 @@ public:
     // --- edge methods ---
 
     [[nodiscard]] gl_attr_force_inline auto edge_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_edges);
+        return std::views::iota(constants::initial_id_v<id_type>, this->_n_edges);
     }
 
     const edge_type add_edge(const id_type source_id, const id_type target_id) {

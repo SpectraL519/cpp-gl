@@ -30,7 +30,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search
 
     // clang-format off
 
-    if (root_vertex_id != constants::invalid_id<typename GraphType::id_type>) {
+    if (root_vertex_id != constants::invalid_id_v<typename GraphType::id_type>) {
         dfs(
             graph,
             root_vertex_id,
@@ -78,7 +78,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_fi
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
-    if (root_vertex_id != constants::invalid_id<typename GraphType::id_type>) {
+    if (root_vertex_id != constants::invalid_id_v<typename GraphType::id_type>) {
         r_dfs(
             graph,
             root_vertex_id,

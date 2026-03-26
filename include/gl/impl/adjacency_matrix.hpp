@@ -41,7 +41,7 @@ public:
     explicit adjacency_matrix(size_type n_vertices) : _matrix(n_vertices) {
         // initialize a full n x n matrix with null elements
         for (auto& row : this->_matrix)
-            row.resize(n_vertices, constants::invalid_id<id_type>);
+            row.resize(n_vertices, constants::invalid_id_v<id_type>);
     }
 
     adjacency_matrix(const adjacency_matrix&) = default;
@@ -56,18 +56,18 @@ public:
 
     void add_vertex() {
         for (auto& row : this->_matrix)
-            row.push_back(constants::invalid_id<id_type>);
-        this->_matrix.emplace_back(this->_matrix.size() + 1uz, constants::invalid_id<id_type>);
+            row.push_back(constants::invalid_id_v<id_type>);
+        this->_matrix.emplace_back(this->_matrix.size() + 1uz, constants::invalid_id_v<id_type>);
     }
 
     void add_vertices(size_type n) {
         const auto new_n_vertices = this->_matrix.size() + n;
 
         for (auto& row : this->_matrix)
-            row.resize(new_n_vertices, constants::invalid_id<id_type>);
+            row.resize(new_n_vertices, constants::invalid_id_v<id_type>);
 
         for (auto _ = 0uz; _ < n; ++_)
-            this->_matrix.emplace_back(new_n_vertices, constants::invalid_id<id_type>);
+            this->_matrix.emplace_back(new_n_vertices, constants::invalid_id_v<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline size_type in_degree(id_type vertex_id) const {
@@ -116,7 +116,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
         return this->_matrix[to_idx(source_id)][to_idx(target_id)]
-            != constants::invalid_id<id_type>;
+            != constants::invalid_id_v<id_type>;
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
@@ -127,7 +127,7 @@ public:
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
-        if (edge_id == constants::invalid_id<id_type>)
+        if (edge_id == constants::invalid_id_v<id_type>)
             return std::nullopt;
         return std::make_optional<edge_type>(edge_id, source_id, target_id);
     }
@@ -138,7 +138,7 @@ public:
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
         const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
-        if (edge_id == constants::invalid_id<id_type>)
+        if (edge_id == constants::invalid_id_v<id_type>)
             return std::nullopt;
         return std::make_optional<edge_type>(
             edge_id, source_id, target_id, *edge_properties_map[to_idx(edge_id)]
@@ -149,7 +149,7 @@ public:
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
-        if (edge_id == constants::invalid_id<id_type>)
+        if (edge_id == constants::invalid_id_v<id_type>)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
             edge_type{edge_id, source_id, target_id}
@@ -162,7 +162,7 @@ public:
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
         const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
-        if (edge_id == constants::invalid_id<id_type>)
+        if (edge_id == constants::invalid_id_v<id_type>)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
             edge_type{edge_id, source_id, target_id, *edge_properties_map[to_idx(edge_id)]}
@@ -173,7 +173,7 @@ public:
         specialized_impl::remove_edge(*this, edge);
         for (auto& row : this->_matrix)
             for (auto& edge_id : row)
-                if (edge_id != constants::invalid_id<id_type> and edge_id > edge.id())
+                if (edge_id != constants::invalid_id_v<id_type> and edge_id > edge.id())
                     edge_id--;
     }
 
@@ -204,10 +204,10 @@ public:
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return std::views::iota(constants::initial_id<id_type>, this->_matrix.size())
+        return std::views::iota(constants::initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[to_idx(source_id)][to_idx(vertex_id)]
-                       != constants::invalid_id<id_type>;
+                       != constants::invalid_id_v<id_type>;
                })
              | std::views::transform([this, vertex_id](const auto source_id) {
                    return edge_type{
@@ -221,10 +221,10 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return std::views::iota(constants::initial_id<id_type>, this->_matrix.size())
+        return std::views::iota(constants::initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[to_idx(source_id)][to_idx(vertex_id)]
-                       != constants::invalid_id<id_type>;
+                       != constants::invalid_id_v<id_type>;
                })
              | std::views::transform([this, vertex_id, &edge_properties_map](const auto source_id) {
                    const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(vertex_id)];
@@ -240,7 +240,7 @@ public:
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
-                   return edge_id != constants::invalid_id<id_type>;
+                   return edge_id != constants::invalid_id_v<id_type>;
                })
              | std::views::transform([vertex_id](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
@@ -256,7 +256,7 @@ public:
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
-                   return edge_id != constants::invalid_id<id_type>;
+                   return edge_id != constants::invalid_id_v<id_type>;
                })
              | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
@@ -277,7 +277,7 @@ public:
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::transform([vertex_id](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
-                   return edge_id == constants::invalid_id<id_type>
+                   return edge_id == constants::invalid_id_v<id_type>
                             ? edge_type::invalid()
                             : edge_type{edge_id, vertex_id, static_cast<id_type>(target_id)};
                });
@@ -290,7 +290,7 @@ public:
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
                    const auto& [target_id, edge_id] = edge_info;
-                   return edge_id == constants::invalid_id<id_type>
+                   return edge_id == constants::invalid_id_v<id_type>
                             ? edge_type::invalid()
                             : edge_type{
                                   edge_id,
@@ -328,12 +328,12 @@ private:
 
         for (auto& row : this->_matrix) {
             for (auto& edge_id : row) {
-                if (edge_id == constants::invalid_id<id_type>)
+                if (edge_id == constants::invalid_id_v<id_type>)
                     continue;
 
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_id);
                 if (it != removed_edge_ids.end() and *it == edge_id)
-                    edge_id = constants::invalid_id<id_type>; // edge was removed
+                    edge_id = constants::invalid_id_v<id_type>; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id
                     edge_id -=

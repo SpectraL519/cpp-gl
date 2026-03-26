@@ -207,7 +207,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
-    const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, constants::invalid_id};
+    const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, constants::invalid_id_v};
     gl::default_id_type vertex_id = predecessor_map.size() - 1uz;
 
     CHECK_THROWS_AS(

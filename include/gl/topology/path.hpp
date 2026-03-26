@@ -16,7 +16,8 @@ template <traits::c_graph GraphType>
 
     GraphType graph{n_vertices};
 
-    for (auto source_id = constants::initial_id<id_type>; source_id < n_vertices - 1uz; ++source_id)
+    for (auto source_id = constants::initial_id_v<id_type>; source_id < n_vertices - 1uz;
+         ++source_id)
         graph.add_edge(source_id, source_id + static_cast<id_type>(1));
 
     return graph;
@@ -35,7 +36,7 @@ template <traits::c_graph GraphType>
 
         GraphType graph{n_vertices};
 
-        for (auto source_id = constants::initial_id<id_type>; source_id < n_vertices - 1uz;
+        for (auto source_id = constants::initial_id_v<id_type>; source_id < n_vertices - 1uz;
              ++source_id) {
             const auto target_id = source_id + static_cast<id_type>(1);
             graph.add_edge(source_id, target_id);

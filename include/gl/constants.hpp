@@ -12,10 +12,10 @@ namespace gl {
 namespace constants {
 
 template <traits::c_id_type IdType>
-inline constexpr IdType initial_id{0};
+inline constexpr IdType initial_id_v{0};
 
 template <traits::c_id_type IdType>
-inline constexpr IdType invalid_id{std::numeric_limits<IdType>::max()};
+inline constexpr IdType invalid_id_v{std::numeric_limits<IdType>::max()};
 
 } // namespace constants
 } // namespace gl
