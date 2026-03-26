@@ -12,89 +12,44 @@
 #include <unordered_map>
 #include <variant>
 
-#ifdef GL_CONFIG_PROPERTY_TYPES_NOT_FINAL
-#define _GL_PROPERTY_TYPES_NOT_FINAL
-#else
-#undef _GL_PROPERTY_TYPES_NOT_FINAL
-#endif
-
 namespace gl {
-
-namespace types {
-
-// --- common properties ---
 
 using empty_properties = std::monostate;
 using empty_properties_map = std::monostate;
 
-class name_property
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
-public:
+struct name_property {
     using value_type = std::string;
 
-    name_property() = default;
+    value_type name;
 
-    name_property(const std::string_view name) : _name(name) {}
-
-    name_property(const name_property&) = default;
-    name_property(name_property&&) noexcept = default;
-
-    name_property& operator=(const name_property&) = default;
-    name_property& operator=(name_property&&) noexcept = default;
-
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    ~name_property() = default;
-#else
-    virtual ~name_property() = default;
-#endif
-
-    name_property& operator=(const std::string_view name) {
-        this->_name = name;
+    name_property& operator=(std::string_view name) {
+        this->name = name;
         return *this;
     }
-
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
-    [[nodiscard]] gl_attr_force_inline const std::string& name() const {
-        return this->_name;
-    }
-
-    // clang-format on
 
     [[nodiscard]] bool operator==(const name_property&) const = default;
     [[nodiscard]] auto operator<=>(const name_property&) const = default;
 
     [[nodiscard]] bool operator==(const std::string_view name) const {
-        return this->_name == name;
+        return this->name == name;
     }
 
     [[nodiscard]] auto operator<=>(const std::string_view name) const {
-        return this->_name <=> name;
+        return this->name <=> name;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const name_property& property) {
-        os << std::quoted(property._name);
+        os << std::quoted(property.name);
         return os;
     }
 
     friend std::istream& operator>>(std::istream& is, name_property& property) {
-        is >> std::quoted(property._name);
+        is >> std::quoted(property.name);
         return is;
     }
-
-private:
-    std::string _name;
 };
 
-class dynamic_properties
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
+class dynamic_properties final {
 public:
     using key_type = std::string;
     using value_type = std::any;
@@ -108,11 +63,7 @@ public:
     dynamic_properties& operator=(const dynamic_properties&) = default;
     dynamic_properties& operator=(dynamic_properties&&) noexcept = default;
 
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~dynamic_properties() = default;
-#else
-    virtual ~dynamic_properties() = default;
-#endif
 
     [[nodiscard]] gl_attr_force_inline bool is_present(const key_type& key) const {
         return this->_property_map.contains(key);
@@ -154,11 +105,7 @@ private:
 
 // --- vertex properties ---
 
-class binary_color
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
-    final
-#endif
-{
+class binary_color final {
 public:
     enum class value : std::uint16_t {
         black = static_cast<std::uint16_t>(0),
@@ -176,11 +123,7 @@ public:
     binary_color& operator=(const binary_color&) = default;
     binary_color& operator=(binary_color&&) noexcept = default;
 
-#ifndef _GL_PROPERTY_TYPES_NOT_FINAL
     ~binary_color() = default;
-#else
-    virtual ~binary_color() = default;
-#endif
 
     binary_color& operator=(value value) {
         this->_value = this->_restrict(value);
@@ -221,7 +164,7 @@ struct binary_color_property {
     color_type color;
 };
 
-// --- edge properties ---
+using bin_color_value = typename binary_color::value;
 
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {
@@ -243,10 +186,6 @@ struct weight_property {
     }
 };
 
-} // namespace types
-
-using bin_color_value = typename types::binary_color::value;
-
 namespace traits {
 
 template <typename T>
@@ -254,7 +193,7 @@ concept c_properties =
     std::semiregular<T> and std::move_constructible<T> and std::assignable_from<T&, const T&>;
 
 template <typename T>
-concept c_empty_properties = c_properties<T> and std::same_as<T, gl::types::empty_properties>;
+concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
 
 template <typename T>
 concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
@@ -272,8 +211,8 @@ template <typename Properties>
 concept c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {
     typename Properties::color_type;
     { p.color } -> std::same_as<typename Properties::color_type&>;
-    { p.color == types::binary_color{} } -> std::convertible_to<bool>;
-    requires std::constructible_from<typename Properties::color_type, types::binary_color>;
+    { p.color == binary_color{} } -> std::convertible_to<bool>;
+    requires std::constructible_from<typename Properties::color_type, binary_color>;
 };
 
 template <typename Properties>

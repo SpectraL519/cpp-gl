@@ -22,8 +22,8 @@ class adjacency_list;
 namespace specialized {
 
 struct adjacency_list_item {
-    types::id_type vertex_id;
-    types::id_type edge_id;
+    id_type vertex_id;
+    id_type edge_id;
 
     [[nodiscard]] bool operator==(const adjacency_list_item&) const = default;
 };
@@ -53,9 +53,9 @@ struct directed_adjacency_list {
     using impl_type = AdjacencyList;
     using edge_type = typename impl_type::edge_type;
 
-    [[nodiscard]] static auto in_edges(const impl_type& self, const types::id_type vertex_id) {
+    [[nodiscard]] static auto in_edges(const impl_type& self, const id_type vertex_id) {
         std::vector<adjacency_list_item> in_edges;
-        for (types::id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
+        for (id_type src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
                 self._list[src_id] | std::views::filter([tgt_id = vertex_id](const auto& item) {
                     return item.vertex_id == tgt_id;
@@ -68,10 +68,8 @@ struct directed_adjacency_list {
         return in_edges;
     }
 
-    [[nodiscard]] static types::size_type in_degree(
-        const impl_type& self, const types::id_type vertex_id
-    ) {
-        types::size_type in_deg = 0uz;
+    [[nodiscard]] static size_type in_degree(const impl_type& self, const id_type vertex_id) {
+        size_type in_deg = 0uz;
         for (const auto& adjacent_edges : self._list)
             in_deg +=
                 std::ranges::count(adjacent_edges, vertex_id, &adjacency_list_item::vertex_id);
@@ -79,22 +77,22 @@ struct directed_adjacency_list {
         return in_deg;
     }
 
-    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
-        const impl_type& self, const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline static size_type out_degree(
+        const impl_type& self, const id_type vertex_id
     ) {
         return self._list[vertex_id].size();
     }
 
-    [[nodiscard]] gl_attr_force_inline static types::size_type degree(
-        const impl_type& self, const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline static size_type degree(
+        const impl_type& self, const id_type vertex_id
     ) {
         return in_degree(self, vertex_id) + out_degree(self, vertex_id);
     }
 
-    [[nodiscard]] static std::vector<types::size_type> in_degree_map(const impl_type& self) {
-        std::vector<types::size_type> in_degree_map(self._list.size(), 0uz);
+    [[nodiscard]] static std::vector<size_type> in_degree_map(const impl_type& self) {
+        std::vector<size_type> in_degree_map(self._list.size(), 0uz);
 
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
+        for (id_type id = constants::initial_id; id < self._list.size(); ++id) {
             std::ranges::for_each(self._list[id], [&in_degree_map](const auto& item) {
                 ++in_degree_map[item.vertex_id];
             });
@@ -103,18 +101,18 @@ struct directed_adjacency_list {
         return in_degree_map;
     }
 
-    [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> out_degree_map(
+    [[nodiscard]] gl_attr_force_inline static std::vector<size_type> out_degree_map(
         const impl_type& self
     ) {
         return self._list
              | std::views::transform([](const auto& adj_edges) { return adj_edges.size(); })
-             | std::ranges::to<std::vector<types::size_type>>();
+             | std::ranges::to<std::vector<size_type>>();
     }
 
-    [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::size_type> degree_map(self._list.size(), 0uz);
+    [[nodiscard]] static std::vector<size_type> degree_map(const impl_type& self) {
+        std::vector<size_type> degree_map(self._list.size(), 0uz);
 
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
+        for (id_type id = constants::initial_id; id < self._list.size(); ++id) {
             degree_map[id] += self._list[id].size();
             std::ranges::for_each(self._list[id], [&degree_map](const auto& item) {
                 ++degree_map[item.vertex_id];
@@ -124,15 +122,13 @@ struct directed_adjacency_list {
         return degree_map;
     }
 
-    static std::vector<types::id_type> remove_vertex(
-        impl_type& self, const types::id_type vertex_id
-    ) {
+    static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
         auto removed_edges =
             self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
             | std::ranges::to<std::vector>();
 
         // remove all edges incident to the vertex
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id) {
+        for (id_type id = constants::initial_id; id < self._list.size(); ++id) {
             auto& adj_edges = self._list[id];
             if (id == vertex_id or adj_edges.empty())
                 continue;
@@ -154,16 +150,16 @@ struct directed_adjacency_list {
     }
 
     gl_attr_force_inline static void add_edge(
-        impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
+        impl_type& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
         self._list[source_id].emplace_back(target_id, edge_id);
     }
 
     static void add_edges_from(
         impl_type& self,
-        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
-        const types::id_type source_id,
-        const traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<id_type> auto& edge_ids,
+        const id_type source_id,
+        const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());
@@ -185,55 +181,51 @@ struct undirected_adjacency_list {
     using edge_type = typename impl_type::edge_type;
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
-        const impl_type& self, const types::id_type vertex_id
+        const impl_type& self, const id_type vertex_id
     ) {
         return std::views::all(self._list[vertex_id]);
     }
 
-    [[nodiscard]] gl_attr_force_inline static types::size_type in_degree(
-        const impl_type& self, const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline static size_type in_degree(
+        const impl_type& self, const id_type vertex_id
     ) {
         return degree(self, vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline static types::size_type out_degree(
-        const impl_type& self, const types::id_type vertex_id
+    [[nodiscard]] gl_attr_force_inline static size_type out_degree(
+        const impl_type& self, const id_type vertex_id
     ) {
         return degree(self, vertex_id);
     }
 
-    [[nodiscard]] static types::size_type degree(
-        const impl_type& self, const types::id_type vertex_id
-    ) {
-        types::size_type degree = 0uz;
+    [[nodiscard]] static size_type degree(const impl_type& self, const id_type vertex_id) {
+        size_type degree = 0uz;
         for (const auto& item : self._list[vertex_id])
-            degree += 1uz + static_cast<types::size_type>(item.vertex_id == vertex_id);
+            degree += 1uz + static_cast<size_type>(item.vertex_id == vertex_id);
         return degree;
     }
 
-    [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> in_degree_map(
+    [[nodiscard]] gl_attr_force_inline static std::vector<size_type> in_degree_map(
         const impl_type& self
     ) {
         return degree_map(self);
     }
 
-    [[nodiscard]] gl_attr_force_inline static std::vector<types::size_type> out_degree_map(
+    [[nodiscard]] gl_attr_force_inline static std::vector<size_type> out_degree_map(
         const impl_type& self
     ) {
         return degree_map(self);
     }
 
-    [[nodiscard]] static std::vector<types::size_type> degree_map(const impl_type& self) {
-        std::vector<types::size_type> degree_map;
+    [[nodiscard]] static std::vector<size_type> degree_map(const impl_type& self) {
+        std::vector<size_type> degree_map;
         degree_map.reserve(self._list.size());
-        for (types::id_type id = constants::initial_id; id < self._list.size(); ++id)
+        for (id_type id = constants::initial_id; id < self._list.size(); ++id)
             degree_map.push_back(degree(self, id));
         return degree_map;
     }
 
-    static std::vector<types::id_type> remove_vertex(
-        impl_type& self, const types::id_type vertex_id
-    ) {
+    static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
         // remove all edges incident with the vertex (scan only the selected vertices)
         for (const auto& item : self._list[vertex_id]) {
             if (item.vertex_id == vertex_id)
@@ -254,9 +246,7 @@ struct undirected_adjacency_list {
         return removed_edges;
     }
 
-    static void add_edge(
-        impl_type& self, types::id_type edge_id, types::id_type source_id, types::id_type target_id
-    ) {
+    static void add_edge(impl_type& self, id_type edge_id, id_type source_id, id_type target_id) {
         self._list[source_id].emplace_back(target_id, edge_id);
         if (target_id != source_id)
             self._list[target_id].emplace_back(source_id, edge_id);
@@ -264,9 +254,9 @@ struct undirected_adjacency_list {
 
     static void add_edges_from(
         impl_type& self,
-        const traits::c_forward_range_of<types::id_type> auto& edge_ids,
-        const types::id_type source_id,
-        const traits::c_forward_range_of<types::id_type> auto& target_ids
+        const traits::c_forward_range_of<id_type> auto& edge_ids,
+        const id_type source_id,
+        const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         auto& adjacent_edges_source = self._list[source_id];
         adjacent_edges_source.reserve(adjacent_edges_source.size() + target_ids.size());

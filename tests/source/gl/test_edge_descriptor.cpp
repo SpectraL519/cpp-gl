@@ -13,12 +13,12 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = gl::vertex_descriptor<>;
 
-    static constexpr gl::types::id_type id1 = constants::first_element_idx;
-    static constexpr gl::types::id_type id2 = id1 + constants::one;
+    static constexpr gl::id_type id1 = 0uz;
+    static constexpr gl::id_type id2 = id1 + 1uz;
 
-    static constexpr gl::types::id_type v1 = constants::vertex_id_1;
-    static constexpr gl::types::id_type v2 = constants::vertex_id_2;
-    static constexpr gl::types::id_type v3 = constants::vertex_id_3;
+    static constexpr gl::id_type v1 = constants::v1_id;
+    static constexpr gl::id_type v2 = constants::v2_id;
+    static constexpr gl::id_type v3 = constants::v3_id;
 };
 
 TEST_CASE_FIXTURE(
@@ -70,7 +70,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     "properties accessing tests", EdgeType, properties_directional_tag_template
 ) {
     test_edge_descriptor fixture;
-    types::used_property used{true};
+    used_property used{true};
 
     SUBCASE("properties should be properly initialized for valid edges") {
         const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
@@ -79,32 +79,32 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("accessing properties should throw for invalid edges") {
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(constants::invalid_id, fixture.v1, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(fixture.id1, constants::invalid_id, fixture.v2, used).properties()
             ),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            func::discard_result(
+            discard_result(
                 EdgeType(fixture.id1, fixture.v1, constants::invalid_id, used).properties()
             ),
             std::logic_error
         );
 
-        CHECK_THROWS_AS(func::discard_result(EdgeType::invalid().properties()), std::logic_error);
+        CHECK_THROWS_AS(discard_result(EdgeType::invalid().properties()), std::logic_error);
     }
 }
 
 // TODO: fix .clang-format to split such lines
-TEST_CASE_TEMPLATE_INSTANTIATE(properties_directional_tag_template, gl::directed_edge<types::used_property>, gl::undirected_edge<types::used_property>);
+TEST_CASE_TEMPLATE_INSTANTIATE(properties_directional_tag_template, gl::directed_edge<used_property>, gl::undirected_edge<used_property>);
 
 TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directional_tag_template) {
     test_edge_descriptor fixture{};
@@ -145,9 +145,7 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
     }
 
     SUBCASE("incident_vertex should throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(
-            func::discard_result(sut.incident_vertex(fixture.v3)), std::invalid_argument
-        );
+        CHECK_THROWS_AS(discard_result(sut.incident_vertex(fixture.v3)), std::invalid_argument);
     }
 
     SUBCASE("incident_vertex should return the vertex incident with the input vertex") {

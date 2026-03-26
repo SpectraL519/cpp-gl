@@ -7,7 +7,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_util");
 
 TEST_CASE("upow should return the `base ^ exponent` operation result") {
-    gl::types::size_type base, exponent, expected_result;
+    gl::size_type base, exponent, expected_result;
 
     // clang-format off
 
@@ -28,7 +28,7 @@ TEST_CASE("upow should return the `base ^ exponent` operation result") {
 }
 
 TEST_CASE("upow_sum function test") {
-    gl::types::size_type base, i_begin, i_end, expected_result;
+    gl::size_type base, i_begin, i_end, expected_result;
 
     // clang-format off
 

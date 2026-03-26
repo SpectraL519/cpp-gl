@@ -13,30 +13,30 @@ namespace hgl {
 
 // hypergraph vertex descriptor
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 using vertex_descriptor = gl::vertex_descriptor<Properties>;
 
 // hyperedge descriptor
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 class hyperedge_descriptor final {
 public:
     using type = hyperedge_descriptor<Properties>;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         properties_type&>;
 
     hyperedge_descriptor() {
         *this = hyperedge_descriptor::invalid();
     }
 
-    explicit hyperedge_descriptor(const types::id_type id)
+    explicit hyperedge_descriptor(const id_type id)
     requires(traits::c_empty_properties<properties_type>)
     : _id(id) {}
 
-    explicit hyperedge_descriptor(const types::id_type id, properties_type& properties)
+    explicit hyperedge_descriptor(const id_type id, properties_type& properties)
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
@@ -79,7 +79,7 @@ public:
         return this->_id != constants::invalid_id;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::id_type id() const noexcept {
+    [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
         return this->_id;
     }
 
@@ -91,14 +91,14 @@ public:
     }
 
 private:
-    types::id_type _id;
+    id_type _id;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,
-        types::empty_properties,
+        empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
 
-template <traits::c_properties Properties = types::empty_properties>
+template <traits::c_properties Properties = empty_properties>
 using hyperedge = hyperedge_descriptor<Properties>;
 
 } // namespace hgl

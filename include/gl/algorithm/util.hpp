@@ -22,8 +22,7 @@ init_predecessors_map(const traits::c_graph auto& graph) {
 }
 
 [[nodiscard]] gl_attr_force_inline bool is_reachable(
-    const traits::c_random_access_range_of<types::id_type> auto& pred_map,
-    const types::id_type vertex_id
+    const traits::c_random_access_range_of<id_type> auto& pred_map, const id_type vertex_id
 ) noexcept {
     return pred_map[vertex_id] != constants::invalid_id;
 }
@@ -31,12 +30,12 @@ init_predecessors_map(const traits::c_graph auto& graph) {
 template <
     traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
         std::vector<algorithm::vertex_info>>
-[[nodiscard]] gl_attr_force_inline InitRangeType init_range(types::id_type root_vertex_id) {
+[[nodiscard]] gl_attr_force_inline InitRangeType init_range(id_type root_vertex_id) {
     return InitRangeType{algorithm::vertex_info{root_vertex_id}};
 }
 
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](const types::id_type vertex_id) -> bool { return not visited[vertex_id]; };
+    return [&](const id_type vertex_id) -> bool { return not visited[vertex_id]; };
 }
 
 template <result_discriminator ResultDiscriminator>
@@ -44,7 +43,7 @@ template <result_discriminator ResultDiscriminator>
     std::vector<bool>& visited,
     non_void_return_type<ResultDiscriminator, predecessors_map>& pred_map
 ) {
-    return [&](const types::id_type vertex_id, const types::id_type pred_id) {
+    return [&](const id_type vertex_id, const id_type pred_id) {
         visited[vertex_id] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
             pred_map[vertex_id] = pred_id;
@@ -57,10 +56,9 @@ template <traits::c_graph GraphType, bool AsResult = false>
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
 
-    return [&](const types::id_type vertex_id,
-               [[maybe_unused]] const typename GraphType::edge_type& in_edge) -> return_type {
-        return not visited[vertex_id];
-    };
+    return
+        [&](const id_type vertex_id, [[maybe_unused]] const typename GraphType::edge_type& in_edge
+        ) -> return_type { return not visited[vertex_id]; };
 }
 
 } // namespace gl::algorithm
