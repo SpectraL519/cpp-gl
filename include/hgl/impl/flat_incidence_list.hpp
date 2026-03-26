@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
@@ -225,7 +226,7 @@ private:
             return this->_storage[id];
         }
         else { // incident with minor
-            return std::views::iota(0uz, this->_storage.size())
+            return std::views::iota(constants::initial_id, this->_storage.size())
                  | std::views::filter([this, minor_id = id](const id_type major_id) {
                        return detail::contains(this->_storage[major_id], minor_id);
                    });
@@ -540,7 +541,7 @@ private:
                  | std::views::join;
         }
         else { // get minor
-            return std::views::iota(0uz, this->_tail_storage.size())
+            return std::views::iota(constants::initial_id, this->_tail_storage.size())
                  | std::views::filter([this, minor_id = id](id_type major_id) {
                        return detail::contains(this->_tail_storage[major_id], minor_id)
                            or detail::contains(this->_head_storage[major_id], minor_id);
@@ -555,7 +556,7 @@ private:
             return std::invoke(storage_proj, this)[id];
         }
         else { // get minor
-            return std::views::iota(0uz, this->_tail_storage.size())
+            return std::views::iota(constants::initial_id, this->_tail_storage.size())
                  | std::views::filter([this, storage_proj, minor_id = id](id_type major_id) {
                        return detail::contains(std::invoke(storage_proj, this)[major_id], minor_id);
                    });

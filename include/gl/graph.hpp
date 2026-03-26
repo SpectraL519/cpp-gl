@@ -155,7 +155,7 @@ public:
 
     const vertex_type add_vertex() {
         this->_impl.add_vertex();
-        const auto new_vertex_id = this->_n_vertices++;
+        const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{
@@ -171,7 +171,7 @@ public:
     {
         this->_impl.add_vertex();
         return vertex_descriptor{
-            this->_n_vertices++,
+            static_cast<id_type>(this->_n_vertices++),
             *this->_vertex_properties.emplace_back(
                 std::make_unique<vertex_properties_type>(std::move(properties))
             )
@@ -185,7 +185,7 @@ public:
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
-            for (auto i = old_size; i < this->_n_vertices; ++i)
+            for (auto _ = old_size; _ < this->_n_vertices; ++_)
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
         }
     }
@@ -336,7 +336,7 @@ public:
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        const auto new_edge_id = this->_n_edges++;
+        const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
@@ -357,7 +357,7 @@ public:
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        const auto new_edge_id = this->_n_edges++;
+        const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         auto& p =
@@ -397,7 +397,9 @@ public:
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_id_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_rng
+            std::views::iota(static_cast<id_type>(prev_n_edges), this->_n_edges),
+            source_id,
+            target_id_rng
         );
     }
 
@@ -415,7 +417,7 @@ public:
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges),
+            std::views::iota(static_cast<id_type>(prev_n_edges), this->_n_edges),
             source.id(),
             target_rng | std::views::transform(&vertex_type::id)
         );

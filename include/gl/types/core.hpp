@@ -11,7 +11,7 @@
 namespace gl {
 
 using size_type = std::size_t;
-using id_type = size_type;
+using id_type = std::uint32_t;
 
 template <typename T>
 using homogeneous_pair = std::pair<T, T>;

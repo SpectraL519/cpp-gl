@@ -15,8 +15,8 @@ namespace gl::topology {
 
 namespace detail {
 
-[[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(const size_type source_id) {
-    return std::make_pair(2uz * source_id + 1uz, 2uz * source_id + 2uz);
+[[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(const id_type source_id) {
+    return std::make_pair(2u * source_id + 1u, 2u * source_id + 2u);
 }
 
 constexpr size_type min_non_trivial_bin_tree_depth = 2uz;
@@ -37,7 +37,7 @@ template <traits::c_graph GraphType>
 
     const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-    for (auto source_id = 0uz; source_id < n_source_vertices; ++source_id) {
+    for (auto source_id = 0u; source_id < n_source_vertices; ++source_id) {
         const auto target_ids = detail::get_binary_target_ids(source_id);
         graph.add_edges_from(
             source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}
@@ -68,7 +68,7 @@ template <traits::c_graph GraphType>
 
         const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-        for (auto source_id = 0uz; source_id < n_source_vertices; ++source_id) {
+        for (auto source_id = 0u; source_id < n_source_vertices; ++source_id) {
             const auto target_ids = detail::get_binary_target_ids(source_id);
             graph.add_edges_from(
                 source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}

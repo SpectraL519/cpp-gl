@@ -205,13 +205,12 @@ public:
     [[nodiscard]] gl_attr_force_inline auto in_edges(const id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return std::views::iota(0uz, this->_matrix.size())
-             | std::views::filter([this, vertex_id](const auto& source_id) {
+        return std::views::iota(constants::initial_id, this->_matrix.size())
+             | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[source_id][vertex_id] != constants::invalid_id;
                })
-             | std::views::transform([this, vertex_id](const auto& source_id) {
-                   const auto edge_id = this->_matrix[source_id][vertex_id];
-                   return edge_type{edge_id, source_id, vertex_id};
+             | std::views::transform([this, vertex_id](const auto source_id) {
+                   return edge_type{this->_matrix[source_id][vertex_id], source_id, vertex_id};
                });
     }
 
@@ -220,11 +219,11 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return std::views::iota(0uz, this->_matrix.size())
-             | std::views::filter([this, vertex_id](const auto& source_id) {
+        return std::views::iota(constants::initial_id, this->_matrix.size())
+             | std::views::filter([this, vertex_id](const auto source_id) {
                    return this->_matrix[source_id][vertex_id] != constants::invalid_id;
                })
-             | std::views::transform([this, vertex_id, &edge_properties_map](const auto& source_id) {
+             | std::views::transform([this, vertex_id, &edge_properties_map](const auto source_id) {
                    const auto edge_id = this->_matrix[source_id][vertex_id];
                    return edge_type{edge_id, source_id, vertex_id, *edge_properties_map[edge_id]};
                });

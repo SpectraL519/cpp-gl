@@ -23,7 +23,7 @@ struct test_adjacency_matrix {
         return sut._matrix.size();
     }
 
-    gl::size_type next_edge_id = 0uz;
+    gl::id_type next_edge_id = 0u;
 };
 
 inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
@@ -91,7 +91,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         SutType sut{constants::n_elements};
         const auto target_ids = {constants::v1_id, constants::v2_id, constants::v3_id};
 
-        sut.add_edges_from(std::views::iota(0uz, target_ids.size()), constants::v1_id, target_ids);
+        sut.add_edges_from(
+            std::views::iota(constants::v1_id, target_ids.size()), constants::v1_id, target_ids
+        );
 
         REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto target_id) {
             return sut.has_edge(constants::v1_id, target_id);
@@ -206,7 +208,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "at should return a view equivalent to the matrix row of the given vertex"
 ) {
-    for (const auto vertex_id : std::views::iota(0uz, constants::n_elements)) {
+    for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements)) {
         const auto edge = add_edge(vertex_id, (vertex_id + 1) % constants::n_elements);
         auto row_view = sut.at(vertex_id);
 
@@ -389,7 +391,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements;
 
-    std::vector<gl::id_type> degree_map;
+    std::vector<gl::size_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();
@@ -413,7 +415,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements * 2uz;
 
-    std::vector<gl::id_type> degree_map = sut.degree_map();
+    std::vector<gl::size_type> degree_map = sut.degree_map();
 
     REQUIRE_EQ(degree_map.size(), constants::n_elements);
     CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
@@ -720,7 +722,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements + 1;
 
-    std::vector<gl::id_type> degree_map;
+    std::vector<gl::size_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();

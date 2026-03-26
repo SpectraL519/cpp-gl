@@ -23,7 +23,7 @@ struct test_adjacency_list {
         return sut._list.size();
     }
 
-    gl::size_type next_edge_id = 0uz;
+    gl::id_type next_edge_id = 0u;
 };
 
 TEST_CASE_TEMPLATE_DEFINE("common adjacency list tests", SutType, common_adj_list_template) {
@@ -182,7 +182,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
     SUBCASE("at should return the adjacent edges of a vertex") {
         init_complete_graph();
-        for (const auto vertex_id : std::views::iota(0uz, constants::n_elements))
+        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
             CHECK(std::ranges::equal(sut.at(vertex_id), sut.adjacent_edges(vertex_id)));
     }
 
@@ -340,7 +340,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements;
 
-        std::vector<gl::id_type> degree_map;
+        std::vector<gl::size_type> degree_map;
 
         SUBCASE("in_degree") {
             degree_map = sut.in_degree_map();
@@ -362,7 +362,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements * 2uz;
 
-        std::vector<gl::id_type> degree_map = sut.degree_map();
+        std::vector<gl::size_type> degree_map = sut.degree_map();
 
         REQUIRE_EQ(degree_map.size(), constants::n_elements);
         CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
@@ -430,7 +430,7 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
 
     void init_complete_graph(const bool no_loops = true) {
         for (const auto source_id : constants::vertex_id_view) {
-            const auto bound = no_loops ? source_id : source_id + 1uz;
+            const auto bound = no_loops ? source_id : source_id + 1u;
             for (const auto target_id : std::views::iota(constants::v1_id, bound))
                 add_edge(source_id, target_id);
         }
@@ -448,7 +448,7 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
     sut_type sut{constants::n_elements};
 
     const gl::size_type n_unique_edges_in_full_graph =
-        (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2;
+        (n_incident_edges_for_fully_connected_vertex * constants::n_elements) / 2uz;
 };
 
 TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected_adj_list_template) {
@@ -503,7 +503,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
     SUBCASE("at should return the adjacent edges of a vertex") {
         init_complete_graph();
-        for (const auto vertex_id : std::views::iota(0uz, constants::n_elements))
+        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
             CHECK(std::ranges::equal(sut.at(vertex_id), sut.adjacent_edges(vertex_id)));
     }
 
@@ -661,7 +661,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements + 1;
 
-        std::vector<gl::id_type> degree_map;
+        std::vector<gl::size_type> degree_map;
 
         SUBCASE("in_degree") {
             degree_map = sut.in_degree_map();
