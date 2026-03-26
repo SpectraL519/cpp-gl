@@ -12,8 +12,6 @@
 
 #include <set>
 
-// TODO: template id_type<G> alias
-
 namespace gl {
 
 template <traits::c_instantiation_of<graph_traits> GraphTraits = graph_traits<>>

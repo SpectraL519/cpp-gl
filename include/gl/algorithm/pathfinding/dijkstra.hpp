@@ -108,7 +108,6 @@ template <
     return paths;
 }
 
-// TODO: use std::vector
 template <traits::c_id_type IdType, traits::c_random_access_range_of<IdType> IdRange>
 [[nodiscard]] std::deque<IdType> reconstruct_path(
     const IdRange& predecessor_map, const IdType vertex_id

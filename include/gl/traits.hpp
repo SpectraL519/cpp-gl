@@ -4,7 +4,6 @@
 
 #pragma once
 
-// TODO: remove
 #include "gl/types/core.hpp"
 
 #include <concepts>
