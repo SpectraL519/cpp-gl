@@ -12,11 +12,13 @@
 namespace gl::topology {
 
 template <traits::c_graph GraphType>
-[[nodiscard]] GraphType biclique(const size_type n_vertices_a, const size_type n_vertices_b) {
+[[nodiscard]] GraphType biclique(size_type n_vertices_a, size_type n_vertices_b) {
+    using id_type = typename GraphType::id_type;
+
     const auto n_vertices = n_vertices_a + n_vertices_b;
     GraphType graph{n_vertices};
 
-    for (auto source_id = constants::initial_id; source_id < n_vertices_a; ++source_id) {
+    for (id_type source_id = initial_id; source_id < n_vertices_a; ++source_id) {
         for (auto target_id = n_vertices_a; target_id < n_vertices; ++target_id) {
             graph.add_edge(source_id, target_id);
             if constexpr (traits::c_directed_graph<GraphType>)
@@ -28,7 +30,7 @@ template <traits::c_graph GraphType>
 }
 
 template <traits::c_flat_list_graph GraphType>
-[[nodiscard]] GraphType biclique(const size_type n_vertices_a, const size_type n_vertices_b) {
+[[nodiscard]] GraphType biclique(size_type n_vertices_a, size_type n_vertices_b) {
     using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(biclique<base_graph_type>(n_vertices_a, n_vertices_b));
 }

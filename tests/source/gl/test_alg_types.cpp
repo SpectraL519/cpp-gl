@@ -6,24 +6,24 @@
 
 #include <doctest.h>
 
-using gl::algorithm::predicate_result;
+using gl::algorithm::decision;
 
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_alg_types");
 
-TEST_CASE("predicate_result(bool) should properly initialize the value") {
-    predicate_result result(true);
-    CHECK_EQ(result, predicate_result::ok);
+TEST_CASE("decision(bool) should properly initialize the value") {
+    decision result(true);
+    CHECK_EQ(result, decision::accept);
 
-    predicate_result result2(false);
-    CHECK_EQ(result2, predicate_result::not_ok);
+    decision result2(false);
+    CHECK_EQ(result2, decision::reject);
 }
 
-TEST_CASE("predicate_result bool conversion should return true only for ok eval") {
-    CHECK(predicate_result{predicate_result::ok});
-    CHECK_FALSE(predicate_result{predicate_result::not_ok});
-    CHECK_FALSE(predicate_result{predicate_result::unknown});
+TEST_CASE("decision bool conversion should return true only for ok eval") {
+    CHECK(decision{decision::accept});
+    CHECK_FALSE(decision{decision::reject});
+    CHECK_FALSE(decision{decision::abort});
 }
 
 TEST_SUITE_END(); // test_alg_types

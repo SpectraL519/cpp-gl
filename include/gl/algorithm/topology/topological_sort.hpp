@@ -4,33 +4,36 @@
 
 #pragma once
 
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/bfs.hpp"
 
 namespace gl::algorithm {
 
 template <
     traits::c_directed_graph GraphType,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
-[[nodiscard]] std::optional<std::vector<id_type>> topological_sort(
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
+[[nodiscard]] std::optional<std::vector<typename GraphType::id_type>> topological_sort(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
+    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
 
     // prepare the vertex in degree map
     std::vector<size_type> in_degree_map = graph.in_degree_map();
 
     // prepare the initial queue content (source vertices)
-    std::vector<algorithm::vertex_info> source_vertex_list;
+    std::vector<algorithm::vertex_info<GraphType>> source_vertex_list;
     source_vertex_list.reserve(graph.order());
     for (const auto id : graph.vertex_ids())
-        if (in_degree_map[id] == 0uz)
+        if (in_degree_map[to_idx(id)] == 0uz)
             source_vertex_list.emplace_back(id);
 
-    std::optional<std::vector<id_type>> topological_order_opt = std::vector<id_type>{};
-    auto& topological_order = topological_order_opt.value();
+    std::vector<id_type> topological_order{};
     topological_order.reserve(graph.order());
 
     bfs(
@@ -44,10 +47,10 @@ template <
             return true;
         },
         [&in_degree_map](const id_type vertex_id, const edge_type& in_edge)
-            -> predicate_result { // enqueue predicate
+            -> decision { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
-            return --in_degree_map[vertex_id] == 0uz;
+            return --in_degree_map[to_idx(vertex_id)] == 0uz;
         },
         pre_visit,
         post_visit
@@ -56,7 +59,7 @@ template <
     if (topological_order.size() != graph.order())
         return std::nullopt;
 
-    return topological_order_opt;
+    return topological_order;
 }
 
 } // namespace gl::algorithm

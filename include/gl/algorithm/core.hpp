@@ -17,9 +17,13 @@ namespace gl::algorithm {
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
-using predecessors_map = std::vector<id_type>;
+template <traits::c_graph GraphType>
+using predecessors_map = std::vector<typename GraphType::id_type>;
 
+template <traits::c_graph GraphType>
 struct vertex_info {
+    using id_type = typename GraphType::id_type;
+
     vertex_info(id_type id) : id(id), pred_id(id) {}
 
     vertex_info(id_type id, id_type pred_id) : id(id), pred_id(pred_id) {}
@@ -29,21 +33,21 @@ struct vertex_info {
     id_type pred_id;
 };
 
-struct predicate_result {
-    enum class eval : std::uint8_t { ok, not_ok, unknown };
+struct decision {
+    enum class eval : std::uint8_t { accept, reject, abort };
     using enum eval;
 
-    constexpr predicate_result(const eval value) : value(value) {}
+    constexpr decision(const eval value) : value(value) {}
 
-    constexpr predicate_result(const bool value) : value(value ? eval::ok : eval::not_ok) {}
+    constexpr decision(const bool value) : value(value ? eval::accept : eval::reject) {}
 
-    constexpr predicate_result& operator=(const bool value) {
-        this->value = value ? eval::ok : eval::not_ok;
+    constexpr decision& operator=(const bool value) {
+        this->value = value ? eval::accept : eval::reject;
         return *this;
     }
 
     [[nodiscard]] constexpr operator bool() const {
-        return this->value == eval::ok;
+        return this->value == eval::accept;
     }
 
     [[nodiscard]] constexpr bool operator==(const eval value) const {
@@ -64,6 +68,21 @@ using non_void_return_type =
 
 // --- constants ---
 
-inline constexpr id_type no_root_vertex = constants::invalid_id;
+template <traits::c_id_type IdType>
+inline constexpr IdType no_root_v = invalid_id_v<IdType>;
+
+struct no_root_t {
+    template <traits::c_id_type IdType>
+    [[nodiscard]] constexpr operator IdType() const noexcept {
+        return no_root_v<IdType>;
+    }
+
+    template <traits::c_id_type IdType>
+    [[nodiscard]] friend constexpr bool operator==(const IdType& lhs, no_root_t) noexcept {
+        return lhs == no_root_v<IdType>;
+    }
+};
+
+inline constexpr no_root_t no_root{};
 
 } // namespace gl::algorithm

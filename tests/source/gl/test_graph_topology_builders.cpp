@@ -140,9 +140,9 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const gl::id_type source_id) {
+    return [&graph](const gl::default_id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
-        const gl::id_type parent_id = source_id == 0uz ? 0uz : (source_id - 1uz) / 2uz;
+        const auto parent_id = source_id == 0u ? 0u : (source_id - 1u) / 2u;
 
         if (target_ids.first >= graph.order()) {
             // no need to check second as second = first + 1

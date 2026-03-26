@@ -26,16 +26,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     static_assert(gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper mst descriptor for a valid graph") {
-        using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
+        using vertex_id_pair = std::pair<gl::default_id_type, gl::default_id_type>;
 
         sut_type sut;
-        gl::id_type source_id;
+        gl::default_id_type source_id;
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = 0uz;
+            source_id = 0u;
 
             const weight_type edge_weight = 3;
             for (const auto vertex_id : sut.vertex_ids()) {
@@ -52,11 +52,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = 0uz;
+            source_id = 0u;
 
             const fs::path edges_file_path = data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
-            const auto vertex_id_list = load_list<gl::id_type>(n_vertex_ids, edges_file_path);
+            const auto vertex_id_list =
+                load_list<gl::default_id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
@@ -113,12 +114,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = gl::graph<TraitsType>;
     using distance_type = gl::default_vertex_distance_type;
     using weight_type = distance_type;
-    using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
+    using vertex_id_pair = std::pair<gl::default_id_type, gl::default_id_type>;
 
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-    const gl::id_type source_id = 0uz;
+    const gl::default_id_type source_id = 0u;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())
@@ -165,16 +166,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     static_assert(gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper mst descriptor for a valid graph") {
-        using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
+        using vertex_id_pair = std::pair<gl::default_id_type, gl::default_id_type>;
 
         sut_type sut;
-        gl::id_type source_id;
+        gl::default_id_type source_id;
         std::vector<vertex_id_pair> expected_edges;
         distance_type expected_weight;
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = 0uz;
+            source_id = 0u;
 
             const weight_type edge_weight = 3;
             for (const auto vertex_id : sut.vertex_ids()) {
@@ -191,11 +192,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = data_path / "mst_graph.gsf";
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = 0uz;
+            source_id = 0u;
 
             const fs::path edges_file_path = data_path / "mst_edges.txt";
             const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
-            const auto vertex_id_list = load_list<gl::id_type>(n_vertex_ids, edges_file_path);
+            const auto vertex_id_list =
+                load_list<gl::default_id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
                 expected_edges.emplace_back(vertex_id_list[i], vertex_id_list[i + 1]);
 
@@ -252,12 +254,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = gl::graph<TraitsType>;
     using distance_type = gl::default_vertex_distance_type;
     using weight_type = distance_type;
-    using vertex_id_pair = std::pair<gl::id_type, gl::id_type>;
+    using vertex_id_pair = std::pair<gl::default_id_type, gl::default_id_type>;
 
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     const auto sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-    const gl::id_type source_id = 0uz;
+    const gl::default_id_type source_id = 0u;
 
     std::vector<vertex_id_pair> expected_edges;
     for (const auto vertex_id : sut.vertex_ids())

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/traits.hpp"
 #include "gl/algorithm/util.hpp"
 
@@ -13,14 +14,19 @@ namespace gl::algorithm {
 
 template <
     traits::c_graph GraphType,
-    std::predicate<algorithm::vertex_info, algorithm::vertex_info> PQCompare,
-    traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
-        std::vector<algorithm::vertex_info>,
-    traits::c_optional_id_callback<GraphType, bool> VisitVertexPredicate,
-    traits::c_optional_id_callback<bool, id_type> VisitCallback,
-    traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_predicate<algorithm::vertex_info<GraphType>, algorithm::vertex_info<GraphType>>
+        PQCompare,
+    traits::c_forward_range_of<algorithm::vertex_info<GraphType>> InitQueueRangeType =
+        std::vector<algorithm::vertex_info<GraphType>>,
+    traits::c_optional_predicate<typename GraphType::id_type> VisitVertexPredicate,
+    traits::c_optional_predicate<typename GraphType::id_type, typename GraphType::id_type>
+        VisitCallback,
+    traits::c_decision_predicate<typename GraphType::id_type, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
 bool pfs(
     const GraphType& graph,
     const PQCompare& pq_compare,
@@ -35,8 +41,10 @@ bool pfs(
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type =
-        std::priority_queue<algorithm::vertex_info, std::vector<algorithm::vertex_info>, PQCompare>;
+    using vertex_queue_type = std::priority_queue<
+        algorithm::vertex_info<GraphType>,
+        std::vector<algorithm::vertex_info<GraphType>>,
+        PQCompare>;
     vertex_queue_type vertex_queue(pq_compare);
 
     for (const auto& vinfo : initial_queue_content)
@@ -62,7 +70,7 @@ bool pfs(
             const auto incident_vertex_id = edge.incident_vertex(vinfo.id);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
-            if (enqueue == predicate_result::unknown)
+            if (enqueue == decision::abort)
                 return false;
 
             if (enqueue)

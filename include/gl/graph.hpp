@@ -66,11 +66,14 @@ template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
     using traits_type = GraphTraits;
+
     using directional_tag = typename traits_type::directional_tag;
     using implementation_tag = typename traits_type::implementation_tag;
 
     using implementation_type = typename implementation_tag::template type<traits_type>;
     friend implementation_type;
+
+    using id_type = typename traits_type::id_type;
 
     using vertex_type = typename traits_type::vertex_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
@@ -134,7 +137,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(constants::initial_id, this->_n_vertices);
+        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
@@ -155,7 +158,7 @@ public:
 
     const vertex_type add_vertex() {
         this->_impl.add_vertex();
-        const auto new_vertex_id = this->_n_vertices++;
+        const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{
@@ -171,7 +174,7 @@ public:
     {
         this->_impl.add_vertex();
         return vertex_descriptor{
-            this->_n_vertices++,
+            static_cast<id_type>(this->_n_vertices++),
             *this->_vertex_properties.emplace_back(
                 std::make_unique<vertex_properties_type>(std::move(properties))
             )
@@ -185,7 +188,7 @@ public:
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
-            for (auto i = old_size; i < this->_n_vertices; ++i)
+            for (auto _ = old_size; _ < this->_n_vertices; ++_)
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
         }
     }
@@ -329,14 +332,14 @@ public:
     // --- edge methods ---
 
     [[nodiscard]] gl_attr_force_inline auto edge_ids() const noexcept {
-        return std::views::iota(constants::initial_id, this->_n_edges);
+        return std::views::iota(initial_id_v<id_type>, this->_n_edges);
     }
 
     const edge_type add_edge(const id_type source_id, const id_type target_id) {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        const auto new_edge_id = this->_n_edges++;
+        const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
@@ -357,7 +360,7 @@ public:
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
-        const auto new_edge_id = this->_n_edges++;
+        const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
         auto& p =
@@ -397,7 +400,9 @@ public:
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_id_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges), source_id, target_id_rng
+            std::views::iota(static_cast<id_type>(prev_n_edges), this->_n_edges),
+            source_id,
+            target_id_rng
         );
     }
 
@@ -415,7 +420,7 @@ public:
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_rng);
         this->_impl.add_edges_from(
-            std::views::iota(prev_n_edges, this->_n_edges),
+            std::views::iota(static_cast<id_type>(prev_n_edges), this->_n_edges),
             source.id(),
             target_rng | std::views::transform(&vertex_type::id)
         );
