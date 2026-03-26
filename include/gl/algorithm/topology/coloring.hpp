@@ -8,7 +8,7 @@
 
 namespace gl::algorithm {
 
-using bicoloring_type = std::vector<types::binary_color>;
+using bicoloring_type = std::vector<binary_color>;
 
 template <
     traits::c_graph GraphType,
@@ -37,7 +37,7 @@ template <
             init_range(root_id),
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
-            [&coloring](const types::id_type vertex_id, const edge_type& in_edge)
+            [&coloring](const id_type vertex_id, const edge_type& in_edge)
                 -> predicate_result { // enqueue predicate
                 if (in_edge.is_loop())
                     return false;
@@ -69,7 +69,7 @@ template <
     return bipartite_coloring(graph).has_value();
 }
 
-template <traits::c_graph GraphType, traits::c_sized_range_of<types::binary_color> ColorRange>
+template <traits::c_graph GraphType, traits::c_sized_range_of<binary_color> ColorRange>
 requires(traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
 bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
     if (std::ranges::size(color_range) != graph.order())

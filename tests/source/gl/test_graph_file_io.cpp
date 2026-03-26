@@ -36,8 +36,7 @@ TEST_SUITE_BEGIN("test_graph_file_io");
 // Tests covering only the io functionality with the graph specification format enabled
 
 struct test_graph_file_io {
-    using traits_type =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_graph_file_io() {
@@ -56,7 +55,7 @@ struct test_graph_file_io {
         fs::remove(path);
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
 
     fs::path path{"test_directed_graph_file_io.gsf"};
@@ -80,7 +79,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
 
     SUBCASE("load shoul throw if a file does not exist") {
         GL_REQUIRE_THROWS_FS_ERROR(
-            func::discard_result(gl::io::load<SutType>(fixture.path)),
+            discard_result(gl::io::load<SutType>(fixture.path)),
             std::errc::no_such_file_or_directory
         );
     }
@@ -89,7 +88,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path);
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with vertex properties"
@@ -97,16 +96,16 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_vertex_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_vertex_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_vertex_properties(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with edge properties") {
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_edge_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_edge_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_edge_properties(sut_in, fixture.sut_out);
     }
 
     SUBCASE("file io should properly save and load a graph in a gsf format with vertex and edge "
@@ -114,9 +113,9 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         gl::io::save(fixture.sut_out, fixture.path, {gl::io::with_properties});
         const auto sut_in = gl::io::load<sut_type>(fixture.path);
 
-        io_common::verify_graph_structure(sut_in, fixture.sut_out);
-        io_common::verify_vertex_properties(sut_in, fixture.sut_out);
-        io_common::verify_edge_properties(sut_in, fixture.sut_out);
+        verify_graph_structure(sut_in, fixture.sut_out);
+        verify_vertex_properties(sut_in, fixture.sut_out);
+        verify_edge_properties(sut_in, fixture.sut_out);
     }
 }
 

@@ -13,22 +13,15 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_properties");
 
 struct test_name_property {
-    using sut_type = gl::types::name_property;
-    using value_type = typename sut_type::value_type;
+    using sut_type = gl::name_property;
 
     static_assert(gl::traits::c_properties<sut_type>);
 
-    const value_type value = "element name";
+    std::string value = "element name";
     sut_type sut{value};
 
     std::stringstream ss;
 };
-
-TEST_CASE_FIXTURE(
-    test_name_property, "name() should return the name the porperty was initialized with"
-) {
-    CHECK_EQ(sut.name(), value);
-}
 
 TEST_CASE_FIXTURE(
     test_name_property, "operator<< should insert a quoted string to the output stream"
@@ -50,7 +43,7 @@ TEST_CASE_FIXTURE(
     ss << input_name;
 
     ss >> sut;
-    CHECK_EQ(sut.name(), first_word);
+    CHECK_EQ(sut, first_word);
 }
 
 TEST_CASE_FIXTURE(
@@ -60,11 +53,11 @@ TEST_CASE_FIXTURE(
     ss << std::quoted(input_name);
 
     ss >> sut;
-    CHECK_EQ(sut.name(), input_name);
+    CHECK_EQ(sut, input_name);
 }
 
 struct test_dynamic_properties {
-    using sut_type = gl::types::dynamic_properties;
+    using sut_type = gl::dynamic_properties;
     using key_type = typename sut_type::key_type;
 
     static_assert(gl::traits::c_properties<sut_type>);
@@ -98,12 +91,12 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "is_present should return true for a 
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for a not present key") {
-    CHECK_THROWS_AS(func::discard_result(sut.get<int>(not_present_key)), std::out_of_range);
+    CHECK_THROWS_AS(discard_result(sut.get<int>(not_present_key)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(test_dynamic_properties, "get should throw for an invalid value type") {
     sut.underlying()[key] = std::any{value};
-    CHECK_THROWS_AS(func::discard_result(sut.get<double>(key)), std::bad_any_cast);
+    CHECK_THROWS_AS(discard_result(sut.get<double>(key)), std::bad_any_cast);
 }
 
 TEST_CASE_FIXTURE(
@@ -164,7 +157,7 @@ TEST_CASE_FIXTURE(test_dynamic_properties, "remove should properly erase the key
 }
 
 struct test_binary_color {
-    using sut_type = gl::types::binary_color;
+    using sut_type = gl::binary_color;
     using color = sut_type::value;
 
     static constexpr color out_of_bounds_color =
@@ -212,8 +205,8 @@ TEST_CASE_FIXTURE(
 }
 
 // assertions for not tested property types
-static_assert(gl::traits::c_properties<gl::types::binary_color_property>);
-static_assert(gl::traits::c_properties<gl::types::weight_property<>>);
+static_assert(gl::traits::c_properties<gl::binary_color_property>);
+static_assert(gl::traits::c_properties<gl::weight_property<>>);
 
 TEST_SUITE_END(); // test_properties
 

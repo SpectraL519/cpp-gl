@@ -4,7 +4,7 @@
 
 #include <doctest.h>
 
-namespace gl_testing::io_common {
+namespace gl_testing {
 
 template <gl::traits::c_graph GraphType>
 void verify_graph_structure(const GraphType& actual, const GraphType& expected) {
@@ -42,4 +42,4 @@ void verify_edge_properties(const GraphType& actual, const GraphType& expected) 
     }));
 }
 
-} // namespace gl_testing::io_common
+} // namespace gl_testing

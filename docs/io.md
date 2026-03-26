@@ -85,7 +85,7 @@ Below you can find an example program showing how to use the I/O option setters:
 
 int main() {
     // declare the graph traits
-    using graph_traits = gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using graph_traits = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using graph_type = gl::graph<graph_traits>;
 
     // initialize a biclique where |A| = 2 and |B| = 3
@@ -214,7 +214,7 @@ Below you can find an example showing how to use the `save` and `load` functions
 
 int main() {
     // declare the graph type
-    using graph_traits = gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using graph_traits = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using graph_type = gl::graph<graph_traits>;
 
     // initialize a clique of size 3

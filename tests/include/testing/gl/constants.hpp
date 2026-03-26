@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include "testing/gl/types.hpp"
 
 #include <gl/constants.hpp>
 #include <gl/types/core.hpp>
@@ -11,37 +11,30 @@
 
 namespace gl_testing::constants {
 
-IC gl::types::size_type zero = 0ull;
-IC gl::types::size_type one = 1ull;
-IC gl::types::size_type two = 2ull;
-IC gl::types::size_type three = 3ull;
-
-IC gl::types::size_type n_elements = three;
-IC gl::types::size_type zero_elements = zero;
-IC gl::types::size_type one_element = one;
+// n_elements for simple tests
+IC gl::size_type n_elements = 3uz;
 
 // n_elements for graph topology tests
-IC gl::types::size_type n_elements_top = 10ull;
+IC gl::size_type n_elements_top = 10uz;
 
 // n_elements for graph algorithm tests
-IC gl::types::size_type n_elements_alg = 10ull;
-IC gl::types::size_type depth = 5ull;
+IC gl::size_type n_elements_alg = 10uz;
+IC gl::size_type depth = 5uz;
 
-IC gl::types::size_type first_element_idx = zero;
-IC gl::types::size_type last_element_idx = n_elements - one_element;
-IC gl::types::size_type out_of_range_element_idx = n_elements;
+IC gl::size_type first_elem_idx = 0uz;
+IC gl::size_type out_of_rng_idx = n_elements;
 
-IC gl::types::id_type vertex_id_1 = first_element_idx;
-IC gl::types::id_type vertex_id_2 = vertex_id_1 + one_element;
-IC gl::types::id_type vertex_id_3 = vertex_id_2 + one_element;
-IC gl::types::id_type invalid_id = gl::constants::invalid_id;
+IC gl::id_type v1_id = 0uz;
+IC gl::id_type v2_id = 1uz;
+IC gl::id_type v3_id = 2uz;
+IC gl::id_type invalid_id = gl::constants::invalid_id;
 
-IC auto vertex_id_view = std::views::iota(first_element_idx, n_elements);
+IC auto vertex_id_view = std::views::iota(0uz, n_elements);
 
-IC types::visited_property visited{true};
-IC types::visited_property not_visited{false};
+IC visited_property visited{true};
+IC visited_property not_visited{false};
 
-IC types::used_property used{true};
-IC types::used_property not_used{false};
+IC used_property used{true};
+IC used_property not_used{false};
 
 } // namespace gl_testing::constants

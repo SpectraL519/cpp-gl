@@ -20,7 +20,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("acyclic graph") {
         sut_type sut;
-        std::vector<gl::types::id_type> expected_topological_order;
+        std::vector<gl::id_type> expected_topological_order;
 
         SUBCASE("path graph") {
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
@@ -33,12 +33,11 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
             const auto& additional_vertex = sut.add_vertex();
-            sut.add_edge(additional_vertex.id(), constants::vertex_id_2);
+            sut.add_edge(additional_vertex.id(), constants::v2_id);
 
-            expected_topological_order.push_back(constants::vertex_id_1);
+            expected_topological_order.push_back(constants::v1_id);
             expected_topological_order.push_back(additional_vertex.id());
-            for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
-                 id++)
+            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++)
                 expected_topological_order.push_back(id);
         }
 
@@ -51,13 +50,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_acyclic_graph.gsf";
             sut = gl::io::load<sut_type>(gsf_file_path);
 
             const fs::path order_file_path =
-                alg_common::data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order =
-                alg_common::load_list<gl::types::id_type>(sut.order(), order_file_path);
+                data_path / "topological_sort_directed_acyclic_order.txt";
+            expected_topological_order = load_list<gl::id_type>(sut.order(), order_file_path);
         }
 
         CAPTURE(sut);
@@ -82,7 +80,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         SUBCASE("custom graph") {
             const fs::path gsf_file_path =
-                alg_common::data_path / "topological_sort_directed_not_acyclic_graph.gsf";
+                data_path / "topological_sort_directed_not_acyclic_graph.gsf";
             sut = gl::io::load<sut_type>(gsf_file_path);
         }
 

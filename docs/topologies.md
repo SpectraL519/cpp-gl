@@ -25,7 +25,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
-    - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
+    - `n_vertices: size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/clique.hpp](/include/gl/topology/clique.hpp)
 
@@ -34,8 +34,8 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
-    - `n_vertices_a: types::size_type` - the number of vertices of the first vertex set of the graph
-    - `n_vertices_b: types::size_type` - the number of vertices of the second vertex set of the graph
+    - `n_vertices_a: size_type` - the number of vertices of the first vertex set of the graph
+    - `n_vertices_b: size_type` - the number of vertices of the second vertex set of the graph
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/bipartite.hpp](/include/gl/topology/bipartite.hpp)
 
@@ -44,7 +44,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
-    - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
+    - `n_vertices: size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/path.hpp](/include/gl/topology/path.hpp)
 
@@ -55,7 +55,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* path graph, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `path(n_vertices)`
   - *Parameters*:
-    - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
+    - `n_vertices: size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/path.hpp](/include/gl/topology/path.hpp)
 
@@ -64,7 +64,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
-    - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
+    - `n_vertices: size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/path.hpp](/include/gl/topology/path.hpp)
 
@@ -75,7 +75,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* cycle graph, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `cycle(n_vertices)`
   - *Parameters*:
-    - `n_vertices: types::size_type` - the number of vertices the graph will be initialized with
+    - `n_vertices: size_type` - the number of vertices the graph will be initialized with
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/cycle.hpp](/include/gl/topology/cycle.hpp)
 
@@ -84,7 +84,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
   - *Template parameters*:
     - `GraphType: traits::c_graph` - the type of the generated graph
   - *Parameters*:
-    - `depth: types::size_type` - the leaf depth of the generated binary tree graph
+    - `depth: size_type` - the leaf depth of the generated binary tree graph
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/binary_tree.hpp](/include/gl/topology/binary_tree.hpp)
 
@@ -95,7 +95,7 @@ The `CPP-GL` library provides a set of graph topology generator functions, which
     - For directed graphs: for each edge $(v_i, v_j)$ of a *normal* regular binary tree, an additional edge is added - $(v_j, v_i)$
     - For undirected edges: equivalent to `regular_binary_tree(n_vertices)`
   - *Parameters*:
-    - `depth: types::size_type` - the leaf depth of the generated binary tree graph
+    - `depth: size_type` - the leaf depth of the generated binary tree graph
   - *Return type*: `GraphType`
   - *Defined in*: [gl/topology/binary_tree.hpp](/include/gl/topology/binary_tree.hpp)
 
@@ -121,7 +121,7 @@ void print_graph(const GraphType& graph, const std::string& name) {
 
 int main() {
     // define the graph type
-    using graph_traits = gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using graph_traits = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using graph_type = gl::graph<graph_traits>;
 
     // clique of size 3

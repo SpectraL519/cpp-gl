@@ -16,9 +16,9 @@ template <traits::c_undirected_graph GraphType>
 struct mst_descriptor {
     using graph_type = GraphType;
     using edge_type = typename graph_type::edge_type;
-    using weight_type = types::vertex_distance_type<graph_type>;
+    using weight_type = vertex_distance_type<graph_type>;
 
-    mst_descriptor(const types::size_type n_vertices) {
+    mst_descriptor(const size_type n_vertices) {
         edges.reserve(n_vertices - 1uz);
     }
 
@@ -28,7 +28,7 @@ struct mst_descriptor {
 
 template <traits::c_undirected_graph GraphType>
 [[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
-    const GraphType& graph, const std::optional<types::id_type> root_id_opt
+    const GraphType& graph, const std::optional<id_type> root_id_opt
 ) {
     // type definitions
     using edge_type = typename GraphType::edge_type;
@@ -50,14 +50,14 @@ template <traits::c_undirected_graph GraphType>
     queue_type edge_queue;
 
     // insert the edges adjacent to the root vertex to the queue
-    const types::id_type root_id = root_id_opt.value_or(constants::initial_id);
+    const id_type root_id = root_id_opt.value_or(constants::initial_id);
 
     for (const auto& edge : graph.adjacent_edges(root_id))
         edge_queue.emplace(edge);
 
     // mark the root vertex as visited
     visited[root_id] = true;
-    types::size_type n_vertices_in_mst = 1uz;
+    size_type n_vertices_in_mst = 1uz;
 
     // find the mst
     while (n_vertices_in_mst < n_vertices) {
@@ -84,13 +84,13 @@ template <traits::c_undirected_graph GraphType>
 }
 
 template <traits::c_undirected_graph GraphType>
-requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>>
+requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
-    const GraphType& graph, const std::optional<types::id_type> root_id_opt
+    const GraphType& graph, const std::optional<id_type> root_id_opt
 ) {
     // type definitions
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
+    using distance_type = vertex_distance_type<GraphType>;
 
     // Prepare the necessary utility
     const auto n_vertices = graph.order();
@@ -103,12 +103,12 @@ requires traits::c_has_numeric_limits_max<types::vertex_distance_type<GraphType>
     // set the distance to the root vertex to 0
     min_cost.at(root_id_opt.value_or(constants::initial_id)) = static_cast<distance_type>(0);
 
-    auto heap_comparator = [&min_cost](const types::id_type lhs, const types::id_type rhs) {
+    auto heap_comparator = [&min_cost](const id_type lhs, const id_type rhs) {
         return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost
     };
 
     // Initialize the vertex info and the heap
-    std::vector<types::id_type> heap(n_vertices);
+    std::vector<id_type> heap(n_vertices);
     std::iota(heap.begin(), heap.end(), constants::initial_id);
     std::make_heap(heap.begin(), heap.end(), heap_comparator);
 

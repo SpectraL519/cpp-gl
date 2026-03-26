@@ -72,16 +72,16 @@ TEST_CASE_FIXTURE(
     test_undirected_vertex_major_incidence_matrix,
     "remove_vertex should properly remove the row and implicitly shift vertex IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::id_type hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(constants::id2, hyperedge_id);
     sut.bind(constants::id4, hyperedge_id);
 
-    hgl::types::id_type rem_vid;
-    hgl::types::size_type expected_hyperedge_size;
-    std::vector<hgl::types::id_type> expected_vertices;
+    hgl::id_type rem_vid;
+    hgl::size_type expected_hyperedge_size;
+    std::vector<hgl::id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -185,16 +185,16 @@ TEST_CASE_FIXTURE(
     test_undirected_vertex_major_incidence_matrix,
     "remove_hyperedge should properly remove the column and implicitly shift hyperedge IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::types::id_type vertex_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::id_type vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(vertex_id, constants::id2);
     sut.bind(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_eid;
-    hgl::types::size_type expected_vertex_degree;
-    std::vector<hgl::types::id_type> expected_hyperedges;
+    hgl::id_type rem_eid;
+    hgl::size_type expected_vertex_degree;
+    std::vector<hgl::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -313,17 +313,17 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (std::size_t i = 0uz; i < n_elements; i++)
-        for (std::size_t j = 0uz; j <= i; j++)
+    for (auto i = 0uz; i < n_elements; i++)
+        for (auto j = 0uz; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
     const auto esize_map = sut.hyperedge_size_map(n_elements);
-    for (std::size_t i = 0uz; i < n_elements; i++) {
+    for (auto i = 0uz; i < n_elements; i++) {
         CHECK_EQ(deg_map[i], i + 1uz);
         CHECK_EQ(esize_map[i], n_elements - i);
     }
@@ -413,16 +413,16 @@ TEST_CASE_FIXTURE(
     test_undirected_hyperedge_major_incidence_matrix,
     "remove_vertex should properly remove the column and implicitly shift vertex IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::id_type hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(constants::id2, hyperedge_id);
     sut.bind(constants::id4, hyperedge_id);
 
-    hgl::types::id_type rem_vid;
-    hgl::types::size_type expected_hyperedge_size;
-    std::vector<hgl::types::id_type> expected_vertices;
+    hgl::id_type rem_vid;
+    hgl::size_type expected_hyperedge_size;
+    std::vector<hgl::id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -512,16 +512,16 @@ TEST_CASE_FIXTURE(
     test_undirected_hyperedge_major_incidence_matrix,
     "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::types::id_type vertex_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::id_type vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(vertex_id, constants::id2);
     sut.bind(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_eid;
-    hgl::types::size_type expected_vertex_degree;
-    std::vector<hgl::types::id_type> expected_hyperedges;
+    hgl::id_type rem_eid;
+    hgl::size_type expected_vertex_degree;
+    std::vector<hgl::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -640,17 +640,17 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (std::size_t i = 0uz; i < n_elements; i++)
-        for (std::size_t j = 0uz; j <= i; j++)
+    for (auto i = 0uz; i < n_elements; i++)
+        for (auto j = 0uz; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
     const auto esize_map = sut.hyperedge_size_map(n_elements);
-    for (std::size_t i = 0uz; i < n_elements; i++) {
+    for (auto i = 0uz; i < n_elements; i++) {
         CHECK_EQ(deg_map[i], i + 1uz);
         CHECK_EQ(esize_map[i], n_elements - i);
     }
@@ -691,11 +691,11 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
     }
 
     auto altbind_to_vertex(
-        auto& sut, const hgl::types::id_type vertex_id, const hgl::types::size_type n_hyperedges
+        auto& sut, const hgl::id_type vertex_id, const hgl::size_type n_hyperedges
     ) {
-        std::vector<hgl::types::id_type> tail_bound, head_bound;
+        std::vector<hgl::id_type> tail_bound, head_bound;
 
-        for (std::size_t i = 0uz; i < n_hyperedges; ++i) {
+        for (auto i = 0uz; i < n_hyperedges; ++i) {
             if (i % 2 == 0) {
                 sut.bind_tail(vertex_id, i);
                 tail_bound.push_back(i);
@@ -710,11 +710,11 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
     }
 
     auto altbind_to_hyperedge(
-        auto& sut, const hgl::types::id_type hyperedge_id, const hgl::types::size_type n_vertices
+        auto& sut, const hgl::id_type hyperedge_id, const hgl::size_type n_vertices
     ) {
-        std::vector<hgl::types::id_type> tail_bound, head_bound;
+        std::vector<hgl::id_type> tail_bound, head_bound;
 
-        for (std::size_t i = 0uz; i < n_vertices; ++i) {
+        for (auto i = 0uz; i < n_vertices; ++i) {
             if (i % 2 == 0) {
                 sut.bind_tail(i, hyperedge_id);
                 tail_bound.push_back(i);
@@ -773,16 +773,16 @@ TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_matrix,
     "remove_vertex should properly remove the row and implicitly shift vertex IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::id_type hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(constants::id2, hyperedge_id);
     sut.bind_head(constants::id4, hyperedge_id);
 
-    hgl::types::id_type rem_vid;
-    hgl::types::size_type expected_hyperedge_size;
-    std::vector<hgl::types::id_type> expected_vertices;
+    hgl::id_type rem_vid;
+    hgl::size_type expected_hyperedge_size;
+    std::vector<hgl::id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -894,16 +894,16 @@ TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_matrix,
     "remove_hyperedge should properly remove the column and implicitly shift hyperedge IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::types::id_type vertex_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::id_type vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(vertex_id, constants::id2);
     sut.bind_head(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_eid;
-    hgl::types::size_type expected_vertex_degree;
-    std::vector<hgl::types::id_type> expected_hyperedges;
+    hgl::id_type rem_eid;
+    hgl::size_type expected_vertex_degree;
+    std::vector<hgl::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -1071,7 +1071,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
@@ -1080,15 +1080,15 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0uz; i < n_elements; i++)
+            for (auto j = 0uz; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
         const auto out_deg_map = sut.out_degree_map(n_elements);
         const auto esize_map = sut.hyperedge_size_map(n_elements);
         const auto tsize_map = sut.tail_size_map(n_elements);
-        for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (auto i = 0uz; i < n_elements; i++) {
             CHECK_EQ(deg_map[i], i + 1uz);
             CHECK_EQ(out_deg_map[i], i + 1uz);
             CHECK_EQ(esize_map[i], n_elements - i);
@@ -1099,15 +1099,15 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0uz; i < n_elements; i++)
+            for (auto j = 0uz; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
         const auto in_deg_map = sut.in_degree_map(n_elements);
         const auto esize_map = sut.hyperedge_size_map(n_elements);
         const auto hsize_map = sut.head_size_map(n_elements);
-        for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (auto i = 0uz; i < n_elements; i++) {
             CHECK_EQ(deg_map[i], i + 1uz);
             CHECK_EQ(in_deg_map[i], i + 1uz);
             CHECK_EQ(esize_map[i], n_elements - i);
@@ -1118,8 +1118,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (std::size_t i = 0uz; i < n_elements; i++) {
-        for (std::size_t j = 0uz; j <= i; j++) {
+    for (auto i = 0uz; i < n_elements; i++) {
+        for (auto j = 0uz; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else
@@ -1135,7 +1135,7 @@ TEST_CASE_FIXTURE(
     const auto tsize_map = sut.tail_size_map(n_elements);
     const auto hsize_map = sut.head_size_map(n_elements);
 
-    for (std::size_t i = 0uz; i < n_elements; i++) {
+    for (auto i = 0uz; i < n_elements; i++) {
         CHECK_EQ(deg_map[i], i + 1uz);
         CHECK_EQ(out_deg_map[i], 1uz);
         CHECK_EQ(in_deg_map[i], i);
@@ -1239,16 +1239,16 @@ TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_matrix,
     "remove_vertex should properly remove the column and implicitly shift vertex IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::types::id_type hyperedge_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
+    constexpr hgl::id_type hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(constants::id2, hyperedge_id);
     sut.bind_head(constants::id4, hyperedge_id);
 
-    hgl::types::id_type rem_vid;
-    hgl::types::size_type expected_hyperedge_size;
-    std::vector<hgl::types::id_type> expected_vertices;
+    hgl::id_type rem_vid;
+    hgl::size_type expected_hyperedge_size;
+    std::vector<hgl::id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -1347,16 +1347,16 @@ TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_matrix,
     "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
 ) {
-    constexpr hgl::types::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::types::id_type vertex_id = constants::id1;
+    constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
+    constexpr hgl::id_type vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(vertex_id, constants::id2);
     sut.bind_head(vertex_id, constants::id4);
 
-    hgl::types::id_type rem_eid;
-    hgl::types::size_type expected_vertex_degree;
-    std::vector<hgl::types::id_type> expected_hyperedges;
+    hgl::id_type rem_eid;
+    hgl::size_type expected_vertex_degree;
+    std::vector<hgl::id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -1524,7 +1524,7 @@ TEST_CASE_FIXTURE(
     constexpr auto n_elements = 5ull;
     sut_type sut{n_elements, n_elements};
 
-    constexpr auto is_zero = [](const auto& size) { return size == 0ull; };
+    constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.out_degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.in_degree_map(n_elements), is_zero));
@@ -1533,15 +1533,15 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0uz; i < n_elements; i++)
+            for (auto j = 0uz; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
         const auto out_deg_map = sut.out_degree_map(n_elements);
         const auto esize_map = sut.hyperedge_size_map(n_elements);
         const auto tsize_map = sut.tail_size_map(n_elements);
-        for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (auto i = 0uz; i < n_elements; i++) {
             CHECK_EQ(deg_map[i], i + 1uz);
             CHECK_EQ(out_deg_map[i], i + 1uz);
             CHECK_EQ(esize_map[i], n_elements - i);
@@ -1552,15 +1552,15 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0uz; i < n_elements; i++)
+            for (auto j = 0uz; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
         const auto in_deg_map = sut.in_degree_map(n_elements);
         const auto esize_map = sut.hyperedge_size_map(n_elements);
         const auto hsize_map = sut.head_size_map(n_elements);
-        for (std::size_t i = 0uz; i < n_elements; i++) {
+        for (auto i = 0uz; i < n_elements; i++) {
             CHECK_EQ(deg_map[i], i + 1uz);
             CHECK_EQ(in_deg_map[i], i + 1uz);
             CHECK_EQ(esize_map[i], n_elements - i);
@@ -1571,8 +1571,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (std::size_t i = 0uz; i < n_elements; i++) {
-        for (std::size_t j = 0uz; j <= i; j++) {
+    for (auto i = 0uz; i < n_elements; i++) {
+        for (auto j = 0uz; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else
@@ -1588,7 +1588,7 @@ TEST_CASE_FIXTURE(
     const auto tsize_map = sut.tail_size_map(n_elements);
     const auto hsize_map = sut.head_size_map(n_elements);
 
-    for (std::size_t i = 0uz; i < n_elements; i++) {
+    for (auto i = 0uz; i < n_elements; i++) {
         CHECK_EQ(deg_map[i], i + 1uz);
         CHECK_EQ(out_deg_map[i], 1uz);
         CHECK_EQ(in_deg_map[i], i);

@@ -17,7 +17,7 @@ template <
     traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
         std::vector<algorithm::vertex_info>,
     traits::c_optional_id_callback<GraphType, bool> VisitVertexPredicate,
-    traits::c_optional_id_callback<bool, types::id_type> VisitCallback,
+    traits::c_optional_id_callback<bool, id_type> VisitCallback,
     traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
     traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>

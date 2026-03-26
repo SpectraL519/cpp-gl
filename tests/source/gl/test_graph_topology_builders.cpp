@@ -11,20 +11,18 @@ TEST_SUITE_BEGIN("test_graph_topology_builders");
 namespace {
 
 template <gl::traits::c_graph GraphType>
-[[nodiscard]] gl::types::size_type n_unique_edges_for_bidir_topology(
-    const gl::types::size_type n_connections
-) {
+[[nodiscard]] gl::size_type n_unique_edges_for_bidir_topology(const gl::size_type n_connections) {
     if constexpr (gl::traits::c_directed_graph<GraphType>)
         return n_connections;
     else
-        return n_connections / constants::two;
+        return n_connections / 2uz;
 }
 
 template <gl::traits::c_graph GraphType>
 void verify_graph_size(
     const GraphType& graph,
-    const gl::types::size_type expected_n_vertices,
-    const gl::types::size_type expected_n_connections
+    const gl::size_type expected_n_vertices,
+    const gl::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
     REQUIRE_EQ(graph.size(), expected_n_connections);
@@ -33,8 +31,8 @@ void verify_graph_size(
 template <gl::traits::c_graph GraphType>
 void verify_bidir_graph_size(
     const GraphType& graph,
-    const gl::types::size_type expected_n_vertices,
-    const gl::types::size_type expected_n_connections
+    const gl::size_type expected_n_vertices,
+    const gl::size_type expected_n_connections
 ) {
     REQUIRE_EQ(graph.order(), expected_n_vertices);
     REQUIRE_EQ(graph.size(), n_unique_edges_for_bidir_topology<GraphType>(expected_n_connections));
@@ -81,8 +79,7 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.order());
+        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -94,9 +91,8 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.order() - constants::one_element) % graph.order()
-        );
+        const auto prev_vertex =
+            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex) == graph.has_edge(source, vertex);
@@ -108,12 +104,10 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex =
-            graph.get_vertex((source.id() + constants::one_element) % graph.order());
+        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
 
-        const auto prev_vertex = graph.get_vertex(
-            (source.id() + graph.order() - constants::one_element) % graph.order()
-        );
+        const auto prev_vertex =
+            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
@@ -130,7 +124,7 @@ template <gl::traits::c_graph GraphType>
 
         if (target_ids.first >= graph.order())
             // no need to check second as second = first + 1
-            return gl::util::range_size(graph.adjacent_edges(source)) == constants::zero;
+            return gl::util::range_size(graph.adjacent_edges(source)) == 0uz;
 
         const auto target_1 = graph.get_vertex(target_ids.first);
         const auto target_2 = graph.get_vertex(target_ids.second);
@@ -146,18 +140,15 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
     using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const gl::types::id_type source_id) {
+    return [&graph](const gl::id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
-        const gl::types::id_type parent_id =
-            source_id == constants::zero
-                ? constants::zero
-                : (source_id - constants::one) / constants::two;
+        const gl::id_type parent_id = source_id == 0uz ? 0uz : (source_id - 1uz) / 2uz;
 
         if (target_ids.first >= graph.order()) {
             // no need to check second as second = first + 1
             auto adjacent_edges = graph.adjacent_edges(source_id);
 
-            return gl::util::range_size(adjacent_edges) == constants::one
+            return gl::util::range_size(adjacent_edges) == 1uz
                and (*std::ranges::begin(adjacent_edges)).incident_vertex(source_id) == parent_id;
         }
 
@@ -168,7 +159,7 @@ template <gl::traits::c_graph GraphType>
             if (vertex_id == target_1 or vertex_id == target_2)
                 return graph.has_edge(source_id, vertex_id);
 
-            if (vertex_id == parent_id and source_id != constants::zero)
+            if (vertex_id == parent_id and source_id != 0uz)
                 return graph.has_edge(source_id, vertex_id);
 
             return not graph.has_edge(source_id, vertex_id);
@@ -189,7 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
 
         const auto expected_n_connections =
-            constants::n_elements_top * (constants::n_elements_top - constants::one_element);
+            constants::n_elements_top * (constants::n_elements_top - 1uz);
         verify_bidir_graph_size(clique, constants::n_elements_top, expected_n_connections);
 
         CHECK(std::ranges::all_of(clique.vertices(), predicate::is_vertex_fully_connected(clique)));
@@ -202,8 +193,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto expected_n_vertices = constants::n_elements_top + constants::n_elements;
         // `2x` is required to account for adding edges both ways
-        const auto expected_n_connections =
-            constants::two * constants::n_elements_top * constants::n_elements;
+        const auto expected_n_connections = 2uz * constants::n_elements_top * constants::n_elements;
         verify_bidir_graph_size(biclique, expected_n_vertices, expected_n_connections);
 
         const auto vertices = biclique.vertices();
@@ -236,17 +226,15 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
         SUBCASE("depth = 0 : empty graph") {
-            const auto complete_bin_tree =
-                gl::topology::regular_binary_tree<graph_type>(constants::zero);
-            REQUIRE_EQ(complete_bin_tree.order(), constants::zero_elements);
-            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
+            const auto complete_bin_tree = gl::topology::regular_binary_tree<graph_type>(0uz);
+            REQUIRE_EQ(complete_bin_tree.order(), 0uz);
+            REQUIRE_EQ(complete_bin_tree.size(), 0uz);
         }
 
         SUBCASE("depth = 1 : graph with one vertex and no edges") {
-            const auto complete_bin_tree =
-                gl::topology::regular_binary_tree<graph_type>(constants::one);
-            REQUIRE_EQ(complete_bin_tree.order(), constants::one_element);
-            REQUIRE_EQ(complete_bin_tree.size(), constants::zero_elements);
+            const auto complete_bin_tree = gl::topology::regular_binary_tree<graph_type>(1uz);
+            REQUIRE_EQ(complete_bin_tree.order(), 1uz);
+            REQUIRE_EQ(complete_bin_tree.size(), 0uz);
         }
     }
 }
@@ -280,9 +268,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("bidirectional_cycle(n_vertices) should build a two-way cycle graph of size n_vertices"
     ) {
         const auto cycle = gl::topology::bidirectional_cycle<graph_type>(constants::n_elements_top);
-        verify_graph_size(
-            cycle, constants::n_elements_top, constants::two * constants::n_elements_top
-        );
+        verify_graph_size(cycle, constants::n_elements_top, 2uz * constants::n_elements_top);
 
         CHECK(std::ranges::all_of(
             cycle.vertices(), predicate::is_vertex_connected_to_id_adjacent(cycle)
@@ -291,7 +277,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -304,14 +290,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
 
-        verify_graph_size(path, constants::n_elements_top, constants::two * n_source_vertices);
+        verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
-            std::ranges::next(vertices.begin(), constants::one_element),
+            std::ranges::next(vertices.begin(), 1uz),
             std::ranges::next(vertices.begin(), n_source_vertices),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
@@ -324,9 +310,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             "given depth") {
         const auto bin_tree = gl::topology::regular_binary_tree<graph_type>(constants::depth);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
-        const auto expected_n_connections = expected_n_vertices - constants::one;
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
+        const auto expected_n_connections = expected_n_vertices - 1uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
@@ -339,9 +324,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto bin_tree =
             gl::topology::bidirectional_regular_binary_tree<graph_type>(constants::depth);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
-        const auto expected_n_connections = (expected_n_vertices - constants::one) * constants::two;
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
+        const auto expected_n_connections = (expected_n_vertices - 1uz) * 2uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(
@@ -397,13 +381,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CAPTURE(path);
 
-        const auto n_source_vertices = path.order() - constants::one_element;
+        const auto n_source_vertices = path.order() - 1uz;
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
-            std::ranges::next(vertices.begin(), constants::one_element),
+            std::ranges::next(vertices.begin(), 1uz),
             std::ranges::next(vertices.begin(), n_source_vertices),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
@@ -426,9 +410,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CAPTURE(bin_tree);
 
-        const auto expected_n_vertices =
-            gl::util::upow_sum(constants::two, constants::zero, constants::depth - constants::one);
-        const auto expected_n_connections = expected_n_vertices - constants::one;
+        const auto expected_n_vertices = gl::util::upow_sum(2uz, 0uz, constants::depth - 1uz);
+        const auto expected_n_connections = expected_n_vertices - 1uz;
         verify_graph_size(bin_tree, expected_n_vertices, expected_n_connections);
 
         CHECK(std::ranges::all_of(

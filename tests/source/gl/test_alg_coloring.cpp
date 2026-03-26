@@ -17,36 +17,36 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
     SUBCASE("apply_coloring should return false if the size of coloring is different then "
             "n_vertices") {
         sut_type sut{constants::n_elements_alg};
-        std::vector<gl::types::binary_color> empty_coloring;
+        std::vector<gl::binary_color> empty_coloring;
 
         CHECK_FALSE(gl::algorithm::apply_coloring(sut, empty_coloring));
     }
 
     SUBCASE("bipartite graph") {
         sut_type sut;
-        std::vector<gl::types::binary_color> expected_coloring;
+        std::vector<gl::binary_color> expected_coloring;
 
         SUBCASE("biclique") {
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
             sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
 
             expected_coloring =
-                std::vector<gl::types::binary_color>(n_vertices_a, gl::bin_color_value::black);
-            for (gl::types::size_type i = constants::first_element_idx; i < n_vertices_b; i++)
+                std::vector<gl::binary_color>(n_vertices_a, gl::bin_color_value::black);
+            for (gl::size_type i = 0uz; i < n_vertices_b; i++)
                 expected_coloring.emplace_back(gl::bin_color_value::white);
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
 
-            gl::types::size_type n_vertices = constants::one_element;
-            gl::types::binary_color c{gl::bin_color_value::black};
+            gl::size_type n_vertices = 1uz;
+            gl::binary_color c{gl::bin_color_value::black};
 
-            for (gl::types::size_type d = constants::zero; d < constants::depth; d++) {
-                for (gl::types::size_type i = constants::zero; i < n_vertices; i++)
+            for (auto d = 0uz; d < constants::depth; d++) {
+                for (auto i = 0uz; i < n_vertices; i++)
                     expected_coloring.push_back(c);
 
-                n_vertices *= constants::two;
+                n_vertices *= 2uz;
                 c = c.next();
             }
         }
@@ -54,19 +54,19 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         SUBCASE("path graph") {
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
 
-            gl::types::binary_color c{gl::bin_color_value::black};
-            for (gl::types::size_type i = constants::zero; i < constants::n_elements_alg; i++) {
+            gl::binary_color c{gl::bin_color_value::black};
+            for (auto i = 0uz; i < constants::n_elements_alg; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }
         }
 
         SUBCASE("even cycle graph") {
-            const auto n_vertices = constants::two * constants::n_elements_alg;
+            const auto n_vertices = 2uz * constants::n_elements_alg;
             sut = gl::topology::cycle<sut_type>(n_vertices);
 
-            gl::types::binary_color c{gl::bin_color_value::black};
-            for (gl::types::size_type i = constants::zero; i < n_vertices; i++) {
+            gl::binary_color c{gl::bin_color_value::black};
+            for (auto i = 0uz; i < n_vertices; i++) {
                 expected_coloring.push_back(c);
                 c = c.next();
             }
@@ -74,18 +74,16 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
         SUBCASE("custom graph") {
             fs::path gsf_file_path =
-                alg_common::data_path
+                data_path
                 / (gl::traits::c_directed_graph<sut_type>
                        ? "bicoloring_directed_bipartite_graph.gsf"
                        : "bicoloring_undirected_bipartite_graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
 
-            fs::path coloring_file_path =
-                alg_common::data_path / "bicoloring_bipartite_graph_coloring.txt";
+            fs::path coloring_file_path = data_path / "bicoloring_bipartite_graph_coloring.txt";
 
-            const auto coloring_values =
-                alg_common::load_list<std::uint16_t>(sut.order(), coloring_file_path);
+            const auto coloring_values = load_list<std::uint16_t>(sut.order(), coloring_file_path);
 
             std::transform(
                 coloring_values.begin(),
@@ -124,25 +122,23 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
         }
 
         SUBCASE("odd cycle graph") {
-            sut = gl::topology::cycle<sut_type>(
-                constants::two * constants::n_elements_alg + constants::one
-            );
+            sut = gl::topology::cycle<sut_type>(2uz * constants::n_elements_alg + 1uz);
         }
 
         SUBCASE("regular binary tree with an additional edge between siblings") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            sut.add_edge(constants::vertex_id_2, constants::vertex_id_3);
+            sut.add_edge(constants::v2_id, constants::v3_id);
         }
 
         SUBCASE("biclique with an additional edge between vertices from the same set") {
             const auto [n_vertices_a, n_vertices_b] = std::make_pair(4ull, 6ull);
             sut = gl::topology::biclique<sut_type>(n_vertices_a, n_vertices_b);
-            sut.add_edge(constants::vertex_id_1, constants::vertex_id_2);
+            sut.add_edge(constants::v1_id, constants::v2_id);
         }
 
         SUBCASE("custom graph") {
             fs::path gsf_file_path =
-                alg_common::data_path
+                data_path
                 / (gl::traits::c_directed_graph<sut_type>
                        ? "bicoloring_directed_not_bipartite_graph.gsf"
                        : "bicoloring_undirected_not_bipartite_graph.gsf");
@@ -164,22 +160,22 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     traits_type_template,
     gl::list_graph_traits<
         gl::directed_t,
-        gl::types::binary_color_property>, // directed adjacency list graph
+        gl::binary_color_property>, // directed adjacency list graph
     gl::list_graph_traits<
         gl::undirected_t,
-        gl::types::binary_color_property>, // undirected adjacency list graph
+        gl::binary_color_property>, // undirected adjacency list graph
     gl::flat_list_graph_traits<
         gl::directed_t,
-        gl::types::binary_color_property>, // directed flat adjacency list graph
+        gl::binary_color_property>, // directed flat adjacency list graph
     gl::flat_list_graph_traits<
         gl::undirected_t,
-        gl::types::binary_color_property>, // undirected flat adjacency list graph
+        gl::binary_color_property>, // undirected flat adjacency list graph
     gl::matrix_graph_traits<
         gl::directed_t,
-        gl::types::binary_color_property>, // directed adjacency matrix graph
+        gl::binary_color_property>, // directed adjacency matrix graph
     gl::matrix_graph_traits<
         gl::undirected_t,
-        gl::types::binary_color_property> // undirected adjacency matrix graph
+        gl::binary_color_property> // undirected adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_coloring

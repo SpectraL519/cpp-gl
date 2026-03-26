@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace gl::types {
+namespace gl {
 
 /// @brief A flattened 2D vector (jagged array) providing efficient storage for variable-length segments.
 ///
@@ -1178,4 +1178,4 @@ private:
     std::vector<size_type> _offsets{0uz};
 };
 
-} // namespace gl::types
+} // namespace gl

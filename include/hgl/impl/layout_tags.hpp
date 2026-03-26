@@ -34,7 +34,7 @@ struct vertex_major_t {
     }
 
     template <std::regular T>
-    [[nodiscard]] static constexpr types::homogeneous_pair<T> majmin(
+    [[nodiscard]] static constexpr homogeneous_pair<T> majmin(
         const T& vertex_el, const T& hyperedge_el
     ) noexcept {
         return std::make_pair(vertex_el, hyperedge_el);
@@ -60,7 +60,7 @@ struct hyperedge_major_t {
     }
 
     template <std::regular T>
-    [[nodiscard]] static constexpr types::homogeneous_pair<T> majmin(
+    [[nodiscard]] static constexpr homogeneous_pair<T> majmin(
         const T& vertex_el, const T& hyperedge_el
     ) noexcept {
         return std::make_pair(hyperedge_el, vertex_el);

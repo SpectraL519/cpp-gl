@@ -17,17 +17,16 @@ namespace gl::algorithm {
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
-using predecessors_map = std::vector<types::id_type>;
+using predecessors_map = std::vector<id_type>;
 
 struct vertex_info {
-    vertex_info(types::id_type id) : id(id), pred_id(id) {}
+    vertex_info(id_type id) : id(id), pred_id(id) {}
 
-    vertex_info(types::id_type id, types::id_type pred_id) : id(id), pred_id(pred_id) {}
+    vertex_info(id_type id, id_type pred_id) : id(id), pred_id(pred_id) {}
 
     // if id == pred_id then vertex_id is the id of the starting vertex
-    // TODO: add has_pred/is_root method?
-    types::id_type id;
-    types::id_type pred_id;
+    id_type id;
+    id_type pred_id;
 };
 
 struct predicate_result {
@@ -65,6 +64,6 @@ using non_void_return_type =
 
 // --- constants ---
 
-inline constexpr types::id_type no_root_vertex = constants::invalid_id;
+inline constexpr id_type no_root_vertex = constants::invalid_id;
 
 } // namespace gl::algorithm
