@@ -61,10 +61,10 @@ An example on how to define an undirected graph with a *weight* edge properties 
 #include <gl/graph.hpp>
 
 using traits = gl::graph_traits<
-    gl::undirected_t,                // DirectionalTag
+    gl::undirected_t,         // DirectionalTag
     gl::empty_properties,     // VertexProperties
     gl::weight_property<int>, // EdgeProperties
-    gl::impl::matrix_t>;             // ImplTag
+    gl::impl::matrix_t>;      // ImplTag
 
 int main() {
     gl::graph<traits> graph;

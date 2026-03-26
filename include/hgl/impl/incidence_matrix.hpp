@@ -209,16 +209,15 @@ private:
         std::vector<size_type> size_map(n_elements, 0uz);
 
         if constexpr (Element == layout_tag::major_element) { // count map major
-            const size_type limit =
-                std::min(n_elements, static_cast<size_type>(this->_matrix.size()));
-            for (size_type i = 0uz; i < limit; ++i) {
-                size_map[i] = static_cast<size_type>(std::ranges::count(this->_matrix[i], true));
+            const size_type limit = std::min(n_elements, this->_matrix.size());
+            for (auto i = 0uz; i < limit; ++i) {
+                size_map[i] = std::ranges::count(this->_matrix[i], true);
             }
         }
         else { // count map minor
             const size_type limit = std::min(n_elements, this->_matrix_row_size);
             for (const auto& row : this->_matrix) {
-                for (size_type j = 0uz; j < limit; ++j) {
+                for (auto j = 0uz; j < limit; ++j) {
                     if (row[j]) {
                         ++size_map[j];
                     }
@@ -511,24 +510,18 @@ private:
         std::vector<size_type> size_map(n_elements, 0uz);
 
         if constexpr (Element == layout_tag::major_element) { // count map major
-            const size_type limit =
-                std::min(n_elements, static_cast<size_type>(this->_matrix.size()));
-            for (size_type i = 0uz; i < limit; ++i) {
-                for (const auto val : this->_matrix[i]) {
-                    if (pred(val)) {
+            const size_type limit = std::min(n_elements, this->_matrix.size());
+            for (auto i = 0uz; i < limit; ++i)
+                for (const auto val : this->_matrix[i])
+                    if (pred(val))
                         ++size_map[i];
-                    }
-                }
-            }
         }
         else { // count map minor
             for (const auto& row : this->_matrix) {
                 const size_type limit = std::min(n_elements, this->_matrix_row_size);
-                for (size_type j = 0uz; j < limit; ++j) {
-                    if (pred(row[j])) {
+                for (auto j = 0uz; j < limit; ++j)
+                    if (pred(row[j]))
                         ++size_map[j];
-                    }
-                }
             }
         }
 

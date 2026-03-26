@@ -201,8 +201,7 @@ public:
 #endif
 
 private:
-    using element_type = id_type;
-    using storage_type = flat_jagged_vector<element_type>;
+    using storage_type = flat_jagged_vector<id_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -480,8 +479,7 @@ public:
 #endif
 
 private:
-    using element_type = id_type;
-    using storage_type = flat_jagged_vector<element_type>;
+    using storage_type = flat_jagged_vector<id_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 

@@ -14,7 +14,7 @@ template <traits::c_graph GraphType>
 [[nodiscard]] GraphType cycle(const size_type n_vertices) {
     GraphType graph{n_vertices};
 
-    for (id_type source_id = constants::initial_id; source_id < n_vertices; ++source_id)
+    for (auto source_id = constants::initial_id; source_id < n_vertices; ++source_id)
         graph.add_edge(source_id, (source_id + 1uz) % n_vertices);
 
     return graph;
@@ -31,7 +31,7 @@ template <traits::c_graph GraphType>
     if constexpr (traits::c_directed_graph<GraphType>) {
         GraphType graph{n_vertices};
 
-        for (id_type source_id = constants::initial_id; source_id < n_vertices; ++source_id) {
+        for (auto source_id = constants::initial_id; source_id < n_vertices; ++source_id) {
             const auto target_id = (source_id + 1uz) % n_vertices;
             graph.add_edge(source_id, target_id);
             graph.add_edge(target_id, source_id);

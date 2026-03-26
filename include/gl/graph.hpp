@@ -185,7 +185,7 @@ public:
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
-            for (size_type i = old_size; i < this->_n_vertices; ++i)
+            for (auto i = old_size; i < this->_n_vertices; ++i)
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
         }
     }
@@ -783,7 +783,7 @@ private:
             else {
                 // read vertex properties and use them to initialze the vertices
                 std::vector<vertex_properties_type> vertex_properties(n_vertices);
-                for (id_type i = 0uz; i < n_vertices; ++i)
+                for (auto i = 0uz; i < n_vertices; ++i)
                     is >> vertex_properties[i];
                 this->add_vertices_with(vertex_properties);
             }
@@ -805,7 +805,7 @@ private:
                 id_type source_id, target_id;
                 edge_properties_type properties;
 
-                for (size_type _ = 0uz; _ < n_edges; ++_) {
+                for (auto _ = 0uz; _ < n_edges; ++_) {
                     is >> source_id >> target_id >> properties;
                     this->add_edge_with(source_id, target_id, properties);
                 }
@@ -815,7 +815,7 @@ private:
             // read the edges
             id_type source_id, target_id;
 
-            for (size_type _ = 0uz; _ < n_edges; ++_) {
+            for (auto _ = 0uz; _ < n_edges; ++_) {
                 is >> source_id >> target_id;
                 this->add_edge(source_id, target_id);
             }

@@ -114,12 +114,10 @@ struct directed_adjacency_matrix {
     }
 
     static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
-        auto removed_edges_view =
+        auto removed_edges =
             self._matrix[vertex_id]
-            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
-
-        // TODO: use std::ranges::to (requires newer compiler)
-        std::vector<id_type> removed_edges(removed_edges_view.begin(), removed_edges_view.end());
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
+            | std::ranges::to<std::vector>();
 
         self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
 
@@ -214,11 +212,10 @@ struct undirected_adjacency_matrix {
     }
 
     static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
-        auto removed_edges_view =
+        const auto removed_edges =
             self._matrix[vertex_id]
-            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; });
-        // TODO: use std::ranges::to (requires newer compiler)
-        std::vector<id_type> removed_edges(removed_edges_view.begin(), removed_edges_view.end());
+            | std::views::filter([](auto edge_id) { return edge_id != constants::invalid_id; })
+            | std::ranges::to<std::vector>();
 
         self._matrix.erase(std::next(std::begin(self._matrix), vertex_id));
         for (auto& row : self._matrix)

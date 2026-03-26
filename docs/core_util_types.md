@@ -147,7 +147,7 @@ The table below contains the basic type aliases defined in the library.
   - `operator==(const binary_color&) const -> bool` - Equality operator (*default*).
 
 - *Associated type definitions*:
-  - `gl::bin_color_value = typename binary_color::value`
+  - `bin_color_value = typename binary_color::value`
 
 ### `struct binary_color_property`
 
@@ -204,7 +204,7 @@ This section describes the type traits that are associated with the property typ
 
   ```cpp
   template <typename T>
-  concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
+  concept c_empty_properties = c_properties<T> and std::same_as<T, empty_properties>;
   ```
 
 - `c_non_empty_properties<T>`
