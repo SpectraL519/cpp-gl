@@ -8,7 +8,8 @@
 
 #include <limits>
 
-namespace gl::constants {
+namespace gl {
+namespace constants {
 
 template <traits::c_id_type IdType>
 inline constexpr IdType initial_id{0};
@@ -16,4 +17,5 @@ inline constexpr IdType initial_id{0};
 template <traits::c_id_type IdType>
 inline constexpr IdType invalid_id{std::numeric_limits<IdType>::max()};
 
-} // namespace gl::constants
+} // namespace constants
+} // namespace gl
