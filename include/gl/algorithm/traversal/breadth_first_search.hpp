@@ -31,7 +31,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> breadth_first_sear
 
     // clang-format off
 
-    if (root_vertex_id != invalid_id) {
+    if (root_vertex_id != no_root) {
         bfs(
             graph,
             init_range<GraphType>(root_vertex_id),

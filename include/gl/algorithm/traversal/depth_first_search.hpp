@@ -30,7 +30,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search
 
     // clang-format off
 
-    if (root_vertex_id != invalid_id) {
+    if (root_vertex_id != no_root) {
         dfs(
             graph,
             root_vertex_id,
@@ -78,7 +78,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_fi
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
-    if (root_vertex_id != invalid_id) {
+    if (root_vertex_id != no_root) {
         r_dfs(
             graph,
             root_vertex_id,

@@ -76,6 +76,11 @@ struct no_root_t {
     [[nodiscard]] constexpr operator IdType() const noexcept {
         return no_root_v<IdType>;
     }
+
+    template <traits::c_id_type IdType>
+    [[nodiscard]] friend constexpr bool operator==(const IdType& lhs, no_root_t) noexcept {
+        return lhs == no_root_v<IdType>;
+    }
 };
 
 inline constexpr no_root_t no_root{};

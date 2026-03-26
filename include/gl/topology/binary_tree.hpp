@@ -9,8 +9,6 @@
 #include "gl/graph.hpp"
 #include "gl/util/pow.hpp"
 
-#include <sys/types.h>
-
 #include <initializer_list>
 
 namespace gl::topology {
