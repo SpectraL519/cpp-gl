@@ -36,7 +36,7 @@ TEST_CASE("vertex_descriptor should be valid only if it has a valid id") {
     CHECK(gl::vertex_descriptor{constants::v1_id}.is_valid());
 
     CHECK_FALSE(gl::vertex_descriptor<>::invalid().is_valid());
-    CHECK_FALSE(gl::vertex_descriptor{constants::invalid_id}.is_valid());
+    CHECK_FALSE(gl::vertex_descriptor{gl::invalid_id_v<gl::default_id_type>}.is_valid());
 }
 
 TEST_CASE("properties should be properly initialized") {
@@ -52,7 +52,7 @@ TEST_CASE("accessing properties should throw for an invalid vertex") {
 
     CHECK_THROWS_AS(discard_result(sut_type::invalid().properties()), std::logic_error);
     CHECK_THROWS_AS(
-        discard_result(sut_type{constants::invalid_id, property}.properties()), std::logic_error
+        discard_result(sut_type{gl::invalid_id, property}.properties()), std::logic_error
     );
 }
 

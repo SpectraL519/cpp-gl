@@ -16,10 +16,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     bfs_no_return_graph_template
 ) {
     using graph_type = GraphType;
+    using id_type = typename graph_type::id_type;
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::vector<gl::id_type> expected_previsit_order;
+    std::vector<id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
         graph = gl::topology::clique<graph_type>(0uz);
@@ -33,13 +34,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++)
+        for (id_type id = gl::initial_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
     SUBCASE("path graph") {
         graph = gl::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++)
+        for (id_type id = gl::initial_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
     }
 
@@ -56,17 +57,17 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
 
-    std::vector<gl::id_type> expected_postvisit_order = expected_previsit_order;
+    std::vector<gl::default_id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::id_type> previsit_order, postvisit_order;
+    std::vector<gl::default_id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
-        gl::algorithm::no_root_vertex,
-        [&](const gl::id_type vertex_id) { // previsit
+        gl::algorithm::no_root,
+        [&](const gl::default_id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::id_type vertex_id) { // postvisit
+        [&](const gl::default_id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
             vertex_properties[vertex_id].visited = true;
         }
@@ -105,10 +106,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     bfs_no_return_with_root_graph_template
 ) {
     using graph_type = GraphType;
+    using id_type = typename graph_type::id_type;
 
     graph_type graph;
-    gl::id_type root_vertex_id = constants::invalid_id;
-    std::deque<gl::id_type> expected_previsit_order;
+    gl::default_id_type root_vertex_id = gl::invalid_id;
+    std::deque<gl::default_id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
@@ -120,7 +122,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
         root_vertex_id = constants::v3_id;
 
-        for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
+        for (id_type id = gl::initial_id; id < constants::n_elements_alg; id++) {
             if (id != constants::v3_id)
                 expected_previsit_order.push_back(id);
         }
@@ -131,16 +133,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
 
-    std::deque<gl::id_type> expected_postvisit_order = expected_previsit_order;
+    std::deque<gl::default_id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::id_type> previsit_order, postvisit_order;
+    std::vector<gl::default_id_type> previsit_order, postvisit_order;
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const gl::id_type vertex_id) { // previsit
+        [&](const gl::default_id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::id_type vertex_id) { // postvisit
+        [&](const gl::default_id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
         }
     );

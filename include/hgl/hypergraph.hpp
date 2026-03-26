@@ -135,7 +135,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(constants::initial_id, this->_n_vertices);
+        return std::views::iota(constants::initial_id<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
@@ -156,7 +156,7 @@ public:
 
     vertex_type add_vertex() {
         this->_impl.add_vertices(1uz);
-        const auto new_vertex_id = this->_n_vertices++;
+        const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{
@@ -172,7 +172,7 @@ public:
     {
         this->_impl.add_vertices(1uz);
         return vertex_type{
-            this->_n_vertices++,
+            static_cast<id_type>(this->_n_vertices++),
             *this->_vertex_properties.emplace_back(
                 std::make_unique<vertex_properties_type>(std::move(properties))
             )
@@ -262,7 +262,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
-        return std::views::iota(constants::initial_id, this->_n_hyperedges);
+        return std::views::iota(constants::initial_id<id_type>, this->_n_hyperedges);
     }
 
     [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
@@ -283,7 +283,7 @@ public:
 
     hyperedge_type add_hyperedge() {
         this->_impl.add_hyperedges(1uz);
-        const auto new_hyperedge_id = this->_n_hyperedges++;
+        const auto new_hyperedge_id = static_cast<id_type>(this->_n_hyperedges++);
 
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{
@@ -301,7 +301,7 @@ public:
     {
         this->_impl.add_hyperedges(1uz);
         return hyperedge_type{
-            this->_n_hyperedges++,
+            static_cast<id_type>(this->_n_hyperedges++),
             *this->_hyperedge_properties.emplace_back(
                 std::make_unique<hyperedge_properties_type>(std::move(properties))
             )

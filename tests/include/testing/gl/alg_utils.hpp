@@ -34,10 +34,8 @@ requires(gl::traits::c_readable<T>)
     return list;
 }
 
-[[nodiscard]] inline auto has_correct_bin_predecessor(
-    const gl::algorithm::predecessors_map& pred_map
-) {
-    return [pred_map](const gl::id_type vertex_id) {
+[[nodiscard]] inline auto has_correct_bin_predecessor(const auto& pred_map) {
+    return [&pred_map](const auto vertex_id) {
         if (not gl::algorithm::is_reachable(pred_map, vertex_id))
             return false;
 

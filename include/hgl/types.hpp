@@ -12,8 +12,8 @@ namespace hgl {
 
 // --- core types ---
 
-using gl::id_type;
 using gl::size_type;
+using id_type = size_type;
 
 // --- generic data structures ---
 

@@ -6,23 +6,28 @@
 
 #include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/pfs.hpp"
+#include "gl/algorithm/util.hpp"
 #include "gl/constants.hpp"
+#include "gl/types/core.hpp"
 
 #include <deque>
 
 namespace gl::algorithm {
 
-template <traits::c_arithmetic VertexDistanceType>
+template <traits::c_graph GraphType, traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor {
-    paths_descriptor(const size_type n_vertices)
-    : predecessors(n_vertices, constants::invalid_id), distances(n_vertices) {}
+    using id_type = typename GraphType::id_type;
+    using distance_type = VertexDistanceType;
 
-    predecessors_map predecessors;
-    std::vector<VertexDistanceType> distances;
+    paths_descriptor(const size_type n_vertices)
+    : predecessors(n_vertices, invalid_id), distances(n_vertices) {}
+
+    predecessors_map<GraphType> predecessors;
+    std::vector<distance_type> distances;
 };
 
 template <traits::c_graph GraphType>
-using paths_descriptor_type = paths_descriptor<vertex_distance_type<GraphType>>;
+using paths_descriptor_type = paths_descriptor<GraphType, vertex_distance_type<GraphType>>;
 
 template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
@@ -33,14 +38,17 @@ template <traits::c_graph GraphType>
 
 template <
     traits::c_graph GraphType,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
-    const id_type source_id,
+    typename GraphType::id_type source_id,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
+    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
     using distance_type = vertex_distance_type<GraphType>;
 
@@ -53,27 +61,30 @@ template <
 
     pfs(
         graph,
-        [&paths](const algorithm::vertex_info& lhs, const algorithm::vertex_info& rhs) {
-            return paths.distances[lhs.id] > paths.distances[rhs.id];
-        },
-        init_range(source_id),
+        [&paths](
+            const algorithm::vertex_info<GraphType>& lhs,
+            const algorithm::vertex_info<GraphType>& rhs
+        ) { return paths.distances[lhs.id] > paths.distances[rhs.id]; },
+        init_range<GraphType>(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
-        [&paths, &negative_edge](const id_type vertex_id, const edge_type& in_edge)
-            -> predicate_result { // enqueue predicate
+        [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
+            -> decision { // enqueue predicate
             const auto pred_id = in_edge.incident_vertex(vertex_id);
 
             const auto edge_weight = get_weight<GraphType>(in_edge);
             if (edge_weight < 0) {
                 negative_edge.emplace(in_edge);
-                return predicate_result::unknown;
+                return decision::abort;
             }
 
-            const auto new_distance = paths.distances[pred_id] + edge_weight;
-            if (paths.predecessors[vertex_id] == constants::invalid_id
-                or new_distance < paths.distances[vertex_id]) {
-                paths.distances[vertex_id] = new_distance;
-                paths.predecessors[vertex_id] = pred_id;
+            const auto new_distance = paths.distances[to_idx(pred_id)] + edge_weight;
+            auto& v_pred = paths.predecessors[to_idx(vertex_id)];
+            auto& v_dist = paths.distances[to_idx(vertex_id)];
+
+            if (v_pred == invalid_id or new_distance < v_dist) {
+                v_dist = new_distance;
+                v_pred = pred_id;
                 return true;
             }
 
@@ -96,21 +107,21 @@ template <
     return paths;
 }
 
-template <traits::c_random_access_range_of<std::optional<id_type>> IdRange>
-[[nodiscard]] std::deque<id_type> reconstruct_path(
-    const IdRange& predecessor_map, const id_type vertex_id
+template <traits::c_id_type IdType, traits::c_random_access_range_of<IdType> IdRange>
+[[nodiscard]] std::deque<IdType> reconstruct_path(
+    const IdRange& predecessor_map, const IdType vertex_id
 ) {
-    if (not std::ranges::next(predecessor_map.begin(), vertex_id)->has_value())
+    if (not is_reachable(predecessor_map, vertex_id))
         throw std::invalid_argument(
             std::format("[alg::reconstruct_path] The given vertex is unreachable: {}", vertex_id)
         );
 
-    std::deque<id_type> path;
-    id_type current_vertex = vertex_id;
+    std::deque<IdType> path;
+    IdType current_vertex = vertex_id;
 
     while (true) {
         path.push_front(current_vertex);
-        id_type predecessor = (predecessor_map.begin() + current_vertex)->value();
+        IdType predecessor = predecessor_map[to_idx(current_vertex)];
 
         if (predecessor == current_vertex)
             break;
