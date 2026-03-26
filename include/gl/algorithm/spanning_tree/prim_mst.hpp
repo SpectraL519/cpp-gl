@@ -31,6 +31,7 @@ template <traits::c_undirected_graph GraphType>
     const GraphType& graph, const std::optional<id_type> root_id_opt
 ) {
     // type definitions
+    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
 
     struct edge_comparator {
@@ -50,7 +51,7 @@ template <traits::c_undirected_graph GraphType>
     queue_type edge_queue;
 
     // insert the edges adjacent to the root vertex to the queue
-    const id_type root_id = root_id_opt.value_or(constants::initial_id);
+    const id_type root_id = root_id_opt.value_or(constants::initial_id<id_type>);
 
     for (const auto& edge : graph.adjacent_edges(root_id))
         edge_queue.emplace(edge);
@@ -90,6 +91,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
     const GraphType& graph, const std::optional<id_type> root_id_opt
 ) {
     // type definitions
+    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
     using distance_type = vertex_distance_type<GraphType>;
 
@@ -102,7 +104,8 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
     std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
-    min_cost.at(root_id_opt.value_or(constants::initial_id)) = static_cast<distance_type>(0);
+    min_cost.at(root_id_opt.value_or(constants::initial_id<id_type>)) =
+        static_cast<distance_type>(0);
 
     auto heap_comparator = [&min_cost](const id_type lhs, const id_type rhs) {
         return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost
@@ -110,7 +113,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
 
     // Initialize the vertex info and the heap
     std::vector<id_type> heap(n_vertices);
-    std::iota(heap.begin(), heap.end(), constants::initial_id);
+    std::iota(heap.begin(), heap.end(), constants::initial_id<id_type>);
     std::make_heap(heap.begin(), heap.end(), heap_comparator);
 
     while (not heap.empty()) {

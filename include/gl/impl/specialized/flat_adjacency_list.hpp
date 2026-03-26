@@ -21,11 +21,12 @@ template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(traits::c_directed_edge<typename AdjacencyList::edge_type>)
 struct directed_flat_adjacency_list {
     using impl_type = AdjacencyList;
+    using id_type = typename impl_type::id_type;
     using edge_type = typename impl_type::edge_type;
 
-    [[nodiscard]] static auto in_edges(const impl_type& self, const id_type vertex_id) {
+    [[nodiscard]] static auto in_edges(const impl_type& self, id_type vertex_id) {
         std::vector<adjacency_list_item> in_edges;
-        for (auto src_id = constants::initial_id; src_id < self._list.size(); ++src_id) {
+        for (auto src_id = constants::initial_id<id_type>; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
                 self._list[src_id] | std::views::filter([tgt_id = vertex_id](const auto& item) {
                     return item.vertex_id == tgt_id;
@@ -38,20 +39,20 @@ struct directed_flat_adjacency_list {
         return in_edges;
     }
 
-    [[nodiscard]] static size_type in_degree(const impl_type& self, const id_type vertex_id) {
+    [[nodiscard]] static size_type in_degree(const impl_type& self, id_type vertex_id) {
         return std::ranges::count(
             self._list.data_view(), vertex_id, &adjacency_list_item::vertex_id
         );
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type out_degree(
-        const impl_type& self, const id_type vertex_id
+        const impl_type& self, id_type vertex_id
     ) {
         return self._list[vertex_id].size();
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type degree(
-        const impl_type& self, const id_type vertex_id
+        const impl_type& self, id_type vertex_id
     ) {
         return in_degree(self, vertex_id) + out_degree(self, vertex_id);
     }
@@ -68,7 +69,7 @@ struct directed_flat_adjacency_list {
     ) {
         std::vector<size_type> out_degree;
         out_degree.reserve(self._list.size());
-        for (auto id = constants::initial_id; id < self._list.size(); ++id)
+        for (auto id = constants::initial_id<id_type>; id < self._list.size(); ++id)
             out_degree.push_back(self._list.segment_size(id));
         return out_degree;
     }
@@ -76,7 +77,7 @@ struct directed_flat_adjacency_list {
     [[nodiscard]] static std::vector<size_type> degree_map(const impl_type& self) {
         std::vector<size_type> degree_map(self._list.size(), 0uz);
 
-        for (auto id = constants::initial_id; id < self._list.size(); ++id) {
+        for (auto id = constants::initial_id<id_type>; id < self._list.size(); ++id) {
             degree_map[id] += self._list.segment_size(id);
             for (const auto& item : self._list[id])
                 ++degree_map[item.vertex_id];
@@ -85,7 +86,7 @@ struct directed_flat_adjacency_list {
         return degree_map;
     }
 
-    static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
+    static std::vector<id_type> remove_vertex(impl_type& self, id_type vertex_id) {
         std::vector<id_type> removed_edges;
 
         // extract out-edges
@@ -98,7 +99,7 @@ struct directed_flat_adjacency_list {
         new_list.reserve_data(self._list.data_size() - self._list[vertex_id].size());
 
         std::vector<adjacency_list_item> buffer;
-        for (auto id = constants::initial_id; id < self._list.size(); ++id) {
+        for (auto id = constants::initial_id<id_type>; id < self._list.size(); ++id) {
             if (id == vertex_id)
                 continue;
 
@@ -125,7 +126,7 @@ struct directed_flat_adjacency_list {
     static void add_edges_from(
         impl_type& self,
         const traits::c_forward_range_of<id_type> auto& edge_ids,
-        const id_type source_id,
+        id_type source_id,
         const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
@@ -144,27 +145,28 @@ template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires(traits::c_undirected_edge<typename AdjacencyList::edge_type>)
 struct undirected_flat_adjacency_list {
     using impl_type = AdjacencyList;
+    using id_type = typename impl_type::id_type;
     using edge_type = typename impl_type::edge_type;
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
-        const impl_type& self, const id_type vertex_id
+        const impl_type& self, id_type vertex_id
     ) {
         return self._list[vertex_id];
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type in_degree(
-        const impl_type& self, const id_type vertex_id
+        const impl_type& self, id_type vertex_id
     ) {
         return degree(self, vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type out_degree(
-        const impl_type& self, const id_type vertex_id
+        const impl_type& self, id_type vertex_id
     ) {
         return degree(self, vertex_id);
     }
 
-    [[nodiscard]] static size_type degree(const impl_type& self, const id_type vertex_id) {
+    [[nodiscard]] static size_type degree(const impl_type& self, id_type vertex_id) {
         size_type degree = 0uz;
         for (const auto& item : self._list[vertex_id])
             degree += 1uz + static_cast<size_type>(item.vertex_id == vertex_id);
@@ -186,12 +188,12 @@ struct undirected_flat_adjacency_list {
     [[nodiscard]] static std::vector<size_type> degree_map(const impl_type& self) {
         std::vector<size_type> degree_map;
         degree_map.reserve(self._list.size());
-        for (auto id = constants::initial_id; id < self._list.size(); ++id)
+        for (auto id = constants::initial_id<id_type>; id < self._list.size(); ++id)
             degree_map.push_back(degree(self, id));
         return degree_map;
     }
 
-    static std::vector<id_type> remove_vertex(impl_type& self, const id_type vertex_id) {
+    static std::vector<id_type> remove_vertex(impl_type& self, id_type vertex_id) {
         // all removed edges are stored in the vertex's list segment
         auto removed_edges =
             self._list[vertex_id] | std::views::transform(&adjacency_list_item::edge_id)
@@ -205,7 +207,7 @@ struct undirected_flat_adjacency_list {
         new_list.reserve_data(estimated_new_size);
 
         std::vector<adjacency_list_item> buffer;
-        for (id_type id = constants::initial_id; id < self._list.size(); ++id) {
+        for (auto id = constants::initial_id<id_type>; id < self._list.size(); ++id) {
             if (id == vertex_id)
                 continue;
 
@@ -230,7 +232,7 @@ struct undirected_flat_adjacency_list {
     static void add_edges_from(
         impl_type& self,
         const traits::c_forward_range_of<id_type> auto& edge_ids,
-        const id_type source_id,
+        id_type source_id,
         const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids)) {

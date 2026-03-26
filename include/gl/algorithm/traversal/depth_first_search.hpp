@@ -17,7 +17,7 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map> depth_first_search(
     const GraphType& graph,
-    const id_type root_vertex_id = no_root_vertex,
+    const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -28,7 +28,7 @@ return_type<ResultDiscriminator, predecessors_map> depth_first_search(
 
     // clang-format off
 
-    if (root_vertex_id != constants::invalid_id) {
+    if (root_vertex_id != constants::invalid_id<typename GraphType::id_type>) {
         dfs(
             graph,
             root_vertex_id,
@@ -65,7 +65,7 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
     const GraphType& graph,
-    const id_type root_vertex_id = no_root_vertex,
+    const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -74,7 +74,7 @@ return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
-    if (root_vertex_id != constants::invalid_id) {
+    if (root_vertex_id != constants::invalid_id<typename GraphType::id_type>) {
         r_dfs(
             graph,
             root_vertex_id,

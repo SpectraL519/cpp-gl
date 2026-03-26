@@ -18,7 +18,7 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map> breadth_first_search(
     const GraphType& graph,
-    const id_type root_vertex_id = no_root_vertex,
+    const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
@@ -29,7 +29,7 @@ return_type<ResultDiscriminator, predecessors_map> breadth_first_search(
 
     // clang-format off
 
-    if (root_vertex_id != constants::invalid_id) {
+    if (root_vertex_id != constants::invalid_id<typename GraphType::id_type>) {
         bfs(
             graph,
             init_range(root_vertex_id),

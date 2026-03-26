@@ -81,7 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = data_path / (file_name_prefix + "graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = gl::constants::initial_id;
+            source_id = constants::v1_id;
 
             const fs::path predecessors_file_path =
                 data_path / (file_name_prefix + "predecessors.txt");

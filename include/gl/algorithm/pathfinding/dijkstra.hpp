@@ -13,23 +13,26 @@
 
 namespace gl::algorithm {
 
-template <traits::c_arithmetic VertexDistanceType>
+template <traits::c_arithmetic VertexDistanceType, traits::c_id_type IdType = default_id_type>
 struct paths_descriptor {
+    using id_type = IdType;
+    using distance_type = VertexDistanceType;
+
     paths_descriptor(const size_type n_vertices)
-    : predecessors(n_vertices, constants::invalid_id), distances(n_vertices) {}
+    : predecessors(n_vertices, constants::invalid_id<id_type>), distances(n_vertices) {}
 
     predecessors_map predecessors;
-    std::vector<VertexDistanceType> distances;
+    std::vector<distance_type> distances;
 };
 
-template <traits::c_graph GraphType>
+template <traits::c_graph GraphType, traits::c_id_type IdType = default_id_type>
 using paths_descriptor_type = paths_descriptor<vertex_distance_type<GraphType>>;
 
 template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
     const GraphType& graph
 ) {
-    return paths_descriptor_type<GraphType>{graph.order()};
+    return paths_descriptor_type<GraphType, typename GraphType::id_type>{graph.order()};
 }
 
 template <
@@ -38,10 +41,11 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
-    const id_type source_id,
+    typename GraphType::id_type source_id,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
+    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
     using distance_type = vertex_distance_type<GraphType>;
 
@@ -60,7 +64,7 @@ template <
         init_range(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
-        [&paths, &negative_edge](const id_type vertex_id, const edge_type& in_edge)
+        [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
             -> predicate_result { // enqueue predicate
             const auto pred_id = in_edge.incident_vertex(vertex_id);
 
@@ -75,7 +79,7 @@ template <
             auto& v_pred = paths.predecessors[static_cast<size_type>(vertex_id)];
             auto& v_dist = paths.distances[static_cast<size_type>(vertex_id)];
 
-            if (v_pred == constants::invalid_id or new_distance < v_dist) {
+            if (v_pred == constants::invalid_id<id_type> or new_distance < v_dist) {
                 v_dist = new_distance;
                 v_pred = pred_id;
                 return true;
@@ -100,6 +104,7 @@ template <
     return paths;
 }
 
+// TODO: use range of c_id_type and std::vector instead of std::deque
 template <traits::c_random_access_range_of<std::optional<id_type>> IdRange>
 [[nodiscard]] std::deque<id_type> reconstruct_path(
     const IdRange& predecessor_map, const id_type vertex_id

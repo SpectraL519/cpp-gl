@@ -17,8 +17,10 @@ namespace gl::algorithm {
 enum class result_discriminator : bool { ret = true, noret = false };
 using enum result_discriminator;
 
+// TODO: template
 using predecessors_map = std::vector<id_type>;
 
+// TODO: template
 struct vertex_info {
     vertex_info(id_type id) : id(id), pred_id(id) {}
 
@@ -64,6 +66,7 @@ using non_void_return_type =
 
 // --- constants ---
 
-inline constexpr id_type no_root_vertex = constants::invalid_id;
+template <traits::c_id_type IdType>
+inline constexpr IdType no_root_vertex = constants::invalid_id<IdType>;
 
 } // namespace gl::algorithm

@@ -11,22 +11,24 @@
 
 namespace gl::algorithm {
 
-template <result_discriminator ResultDiscriminator>
+template <result_discriminator ResultDiscriminator, traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline non_void_return_type<ResultDiscriminator, predecessors_map>
-init_predecessors_map(const traits::c_graph auto& graph) {
+init_predecessors_map(const GraphType& graph) {
     using return_type = non_void_return_type<ResultDiscriminator, predecessors_map>;
     if constexpr (ResultDiscriminator == algorithm::ret)
-        return return_type(graph.order(), constants::invalid_id);
+        return return_type(graph.order(), constants::invalid_id<typename GraphType::id_type>);
     else
         return return_type();
 }
 
+template <traits::c_id_type IdType>
 [[nodiscard]] gl_attr_force_inline bool is_reachable(
-    const traits::c_random_access_range_of<id_type> auto& pred_map, const id_type vertex_id
+    const traits::c_random_access_range_of<IdType> auto& pred_map, IdType vertex_id
 ) noexcept {
-    return pred_map[vertex_id] != constants::invalid_id;
+    return pred_map[vertex_id] != constants::invalid_id<IdType>;
 }
 
+// TODO: align
 template <
     traits::c_forward_range_of<algorithm::vertex_info> InitRangeType =
         std::vector<algorithm::vertex_info>>
@@ -35,7 +37,7 @@ template <
 }
 
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](const id_type vertex_id) -> bool {
+    return [&](traits::c_id_type auto vertex_id) -> bool {
         return not visited[static_cast<size_type>(vertex_id)];
     };
 }
@@ -45,7 +47,7 @@ template <result_discriminator ResultDiscriminator>
     std::vector<bool>& visited,
     non_void_return_type<ResultDiscriminator, predecessors_map>& pred_map
 ) {
-    return [&](const id_type vertex_id, const id_type pred_id) {
+    return [&](traits::c_id_type auto vertex_id, traits::c_id_type auto pred_id) {
         visited[static_cast<size_type>(vertex_id)] = true;
         if constexpr (ResultDiscriminator == algorithm::ret)
             pred_map[static_cast<size_type>(vertex_id)] = pred_id;
@@ -57,10 +59,10 @@ template <traits::c_graph GraphType, bool AsResult = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
     using return_type = std::conditional_t<AsResult, predicate_result, bool>;
-
-    return
-        [&](const id_type vertex_id, [[maybe_unused]] const typename GraphType::edge_type& in_edge
-        ) -> return_type { return not visited[static_cast<size_type>(vertex_id)]; };
+    return [&](typename GraphType::id_type vertex_id,
+               [[maybe_unused]] const typename GraphType::edge_type& in_edge) -> return_type {
+        return not visited[static_cast<size_type>(vertex_id)];
+    };
 }
 
 } // namespace gl::algorithm

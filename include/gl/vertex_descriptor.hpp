@@ -16,10 +16,13 @@
 
 namespace gl {
 
-template <traits::c_properties Properties = empty_properties>
+template <
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
 class vertex_descriptor final {
 public:
     using type = std::type_identity_t<vertex_descriptor<Properties>>;
+    using id_type = IdType;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         traits::c_empty_properties<properties_type>,
@@ -41,14 +44,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return vertex_descriptor(constants::invalid_id);
+        return vertex_descriptor(constants::invalid_id<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return vertex_descriptor(constants::invalid_id, invalid_properties);
+        return vertex_descriptor(constants::invalid_id<id_type>, invalid_properties);
     }
 
     vertex_descriptor(const vertex_descriptor&) = default;
@@ -75,7 +78,7 @@ public:
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id;
+        return this->_id != constants::invalid_id<id_type>;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
@@ -131,7 +134,9 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
-template <traits::c_properties Properties = empty_properties>
-using vertex = vertex_descriptor<Properties>;
+template <
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using vertex = vertex_descriptor<Properties, IdType>;
 
 } // namespace gl

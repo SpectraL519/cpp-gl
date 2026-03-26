@@ -7,16 +7,19 @@
 #include "gl/constants.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/io/format.hpp"
+#include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 
 namespace gl {
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties Properties = empty_properties>
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
 class edge_descriptor final {
 public:
     using type = edge_descriptor<DirectionalTag, Properties>;
+    using id_type = IdType;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
@@ -43,7 +46,7 @@ public:
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return edge_descriptor(constants::invalid_id, constants::invalid_id, constants::invalid_id);
+        return edge_descriptor(constants::invalid_id<id_type>, constants::invalid_id<id_type>, constants::invalid_id<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
@@ -51,7 +54,10 @@ public:
     {
         static properties_type invalid_properties{};
         return edge_descriptor(
-            constants::invalid_id, constants::invalid_id, constants::invalid_id, invalid_properties
+            constants::invalid_id<id_type>,
+            constants::invalid_id<id_type>,
+            constants::invalid_id<id_type>,
+            invalid_properties
         );
     }
 
@@ -90,8 +96,9 @@ public:
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id and this->_vertices.first != constants::invalid_id
-           and this->_vertices.second != constants::invalid_id;
+        return this->_id != constants::invalid_id<id_type>
+           and this->_vertices.first != constants::invalid_id<id_type>
+           and this->_vertices.second != constants::invalid_id<id_type>;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
@@ -205,13 +212,18 @@ private:
 
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties Properties = empty_properties>
-using edge = edge_descriptor<DirectionalTag, Properties>;
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using edge = edge_descriptor<DirectionalTag, Properties, IdType>;
 
-template <traits::c_properties Properties = empty_properties>
-using directed_edge = edge_descriptor<directed_t, Properties>;
+template <
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using directed_edge = edge_descriptor<directed_t, Properties, IdType>;
 
-template <traits::c_properties Properties = empty_properties>
-using undirected_edge = edge_descriptor<undirected_t, Properties>;
+template <
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using undirected_edge = edge_descriptor<undirected_t, Properties, IdType>;
 
 } // namespace gl
