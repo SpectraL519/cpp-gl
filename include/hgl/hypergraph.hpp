@@ -85,21 +85,19 @@ public:
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     using vertex_properties_map_type = std::conditional_t<
         traits::c_empty_properties<vertex_properties_type>,
-        types::empty_properties_map,
+        empty_properties_map,
         std::vector<std::unique_ptr<vertex_properties_type>>>;
 
     using hyperedge_type = typename traits_type::hyperedge_type;
     using hyperedge_properties_type = typename traits_type::hyperedge_properties_type;
     using hyperedge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<hyperedge_properties_type>,
-        types::empty_properties_map,
+        empty_properties_map,
         std::vector<std::unique_ptr<hyperedge_properties_type>>>;
 
     hypergraph& operator=(const hypergraph&) = delete;
 
-    explicit hypergraph(
-        const types::size_type n_vertices = 0uz, const types::size_type n_hyperedges = 0uz
-    )
+    explicit hypergraph(const size_type n_vertices = 0uz, const size_type n_hyperedges = 0uz)
     : _n_vertices(n_vertices), _n_hyperedges(n_hyperedges), _impl(n_vertices, n_hyperedges) {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             this->_vertex_properties.reserve(n_vertices);
@@ -122,11 +120,11 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline types::size_type order() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type order() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type size() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type size() const noexcept {
         return this->_n_hyperedges;
     }
 
@@ -140,7 +138,7 @@ public:
         return std::views::iota(constants::initial_id, this->_n_vertices);
     }
 
-    [[nodiscard]] vertex_type get_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
@@ -148,7 +146,7 @@ public:
             return vertex_type{vertex_id};
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const types::id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
         return vertex_id < this->_n_vertices;
     }
 
@@ -181,14 +179,14 @@ public:
         };
     }
 
-    void add_vertices(const types::size_type n) {
+    void add_vertices(const size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>) {
             const auto old_size = this->_vertex_properties.size();
             this->_vertex_properties.reserve(this->_n_vertices);
-            for (types::size_type i = old_size; i < this->_n_vertices; ++i)
+            for (size_type i = old_size; i < this->_n_vertices; ++i)
                 this->_vertex_properties.push_back(std::make_unique<vertex_properties_type>());
         }
     }
@@ -212,7 +210,7 @@ public:
         }
     }
 
-    gl_attr_force_inline void remove_vertex(const types::id_type vertex_id) {
+    gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
         this->_remove_vertex_impl(vertex_id);
     }
 
@@ -220,10 +218,9 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(const traits::c_forward_range_of<types::id_type> auto& vertex_id_rng
-    ) {
+    void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // sorts ids in a descending order and removes duplicate ids
-        std::set<types::id_type, std::greater<types::id_type>> vertex_id_set(
+        std::set<id_type, std::greater<id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
 
@@ -250,7 +247,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
-        const types::id_type vertex_id
+        const id_type vertex_id
     ) const
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -268,7 +265,7 @@ public:
         return std::views::iota(constants::initial_id, this->_n_hyperedges);
     }
 
-    [[nodiscard]] hyperedge_type get_hyperedge(const types::id_type hyperedge_id) const {
+    [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
@@ -276,7 +273,7 @@ public:
             return hyperedge_type{hyperedge_id};
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const types::id_type hyperedge_id) const {
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
         return hyperedge_id < this->_n_hyperedges;
     }
 
@@ -311,14 +308,14 @@ public:
         };
     }
 
-    void add_hyperedges(const types::size_type n) {
+    void add_hyperedges(const size_type n) {
         this->_impl.add_hyperedges(n);
         this->_n_hyperedges += n;
 
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             const auto old_size = this->_hyperedge_properties.size();
             this->_hyperedge_properties.reserve(this->_n_hyperedges);
-            for (types::size_type i = old_size; i < this->_n_hyperedges; ++i)
+            for (size_type i = old_size; i < this->_n_hyperedges; ++i)
                 this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
                 );
         }
@@ -343,7 +340,7 @@ public:
         }
     }
 
-    gl_attr_force_inline void remove_hyperedge(const types::id_type hyperedge_id) {
+    gl_attr_force_inline void remove_hyperedge(const id_type hyperedge_id) {
         this->_remove_hyperedge_impl(hyperedge_id);
     }
 
@@ -351,11 +348,9 @@ public:
         this->remove_hyperedge(hyperedge.id());
     }
 
-    void remove_hyperedges_from(
-        const traits::c_forward_range_of<types::id_type> auto& hyperedge_id_rng
-    ) {
+    void remove_hyperedges_from(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
         // sorts ids in a descending order and removes duplicate ids
-        std::set<types::id_type, std::greater<types::id_type>> hyperedge_id_set(
+        std::set<id_type, std::greater<id_type>> hyperedge_id_set(
             std::ranges::begin(hyperedge_id_rng), std::ranges::end(hyperedge_id_rng)
         );
 
@@ -383,7 +378,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& get_hyperedge_properties(
-        const types::id_type id
+        const id_type id
     ) const
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
@@ -393,7 +388,7 @@ public:
 
     // --- incidence methods ---
 
-    void bind(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    void bind(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, undirected_t>
     {
         this->_verify_vertex_id(vertex_id);
@@ -407,7 +402,7 @@ public:
         this->bind(vertex.id(), hyperedge.id());
     }
 
-    void bind_head(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    void bind_head(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
@@ -421,7 +416,7 @@ public:
         this->bind_head(vertex.id(), hyperedge.id());
     }
 
-    void bind_tail(const types::id_type vertex_id, const types::id_type hyperedge_id)
+    void bind_tail(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
@@ -435,7 +430,7 @@ public:
         this->bind_tail(vertex.id(), hyperedge.id());
     }
 
-    void unbind(const types::id_type vertex_id, const types::id_type hyperedge_id) {
+    void unbind(const id_type vertex_id, const id_type hyperedge_id) {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
         this->_impl.unbind(vertex_id, hyperedge_id);
@@ -445,9 +440,7 @@ public:
         this->unbind(vertex.id(), hyperedge.id());
     }
 
-    [[nodiscard]] bool are_incident(
-        const types::id_type vertex_id, const types::id_type hyperedge_id
-    ) const {
+    [[nodiscard]] bool are_incident(const id_type vertex_id, const id_type hyperedge_id) const {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.are_bound(vertex_id, hyperedge_id);
@@ -459,8 +452,7 @@ public:
         return this->are_incident(vertex.id(), hyperedge.id());
     }
 
-    [[nodiscard]] bool is_tail(const types::id_type vertex_id, const types::id_type hyperedge_id)
-        const
+    [[nodiscard]] bool is_tail(const id_type vertex_id, const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
@@ -476,8 +468,7 @@ public:
         return this->is_tail(vertex.id(), hyperedge.id());
     }
 
-    [[nodiscard]] bool is_head(const types::id_type vertex_id, const types::id_type hyperedge_id)
-        const
+    [[nodiscard]] bool is_head(const id_type vertex_id, const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
@@ -493,7 +484,7 @@ public:
         return this->is_head(vertex.id(), hyperedge.id());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const types::id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const id_type vertex_id) {
         return this->incident_hyperedge_ids(vertex_id)
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
@@ -502,7 +493,7 @@ public:
         return this->incident_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto incident_hyperedge_ids(const types::id_type vertex_id) const {
+    [[nodiscard]] auto incident_hyperedge_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.incident_hyperedges(vertex_id);
     }
@@ -512,20 +503,20 @@ public:
         return this->incident_hyperedge_ids(vertex.id());
     }
 
-    [[nodiscard]] types::size_type degree(const types::id_type vertex_id) const {
+    [[nodiscard]] size_type degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.degree(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type degree(const vertex_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline size_type degree(const vertex_type& vertex) const {
         return this->degree(vertex.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> degree_map() const {
+    [[nodiscard]] std::vector<size_type> degree_map() const {
         return this->_impl.degree_map(this->_n_vertices);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const types::id_type vertex_id)
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const id_type vertex_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_hyperedge_ids(vertex_id)
@@ -538,7 +529,7 @@ public:
         return this->out_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto out_hyperedge_ids(const types::id_type vertex_id) const {
+    [[nodiscard]] auto out_hyperedge_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.out_hyperedges(vertex_id);
     }
@@ -547,26 +538,26 @@ public:
         return this->out_hyperedge_ids(vertex.id());
     }
 
-    [[nodiscard]] types::size_type out_degree(const types::id_type vertex_id) const
+    [[nodiscard]] size_type out_degree(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.out_degree(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type out_degree(const vertex_type& vertex) const
+    [[nodiscard]] gl_attr_force_inline size_type out_degree(const vertex_type& vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_degree(vertex.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> out_degree_map() const
+    [[nodiscard]] std::vector<size_type> out_degree_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.out_degree_map(this->_n_vertices);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const types::id_type vertex_id)
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const id_type vertex_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->in_hyperedge_ids(vertex_id)
@@ -579,7 +570,7 @@ public:
         return this->in_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto in_hyperedge_ids(const types::id_type vertex_id) const {
+    [[nodiscard]] auto in_hyperedge_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.in_hyperedges(vertex_id);
     }
@@ -588,26 +579,26 @@ public:
         return this->in_hyperedge_ids(vertex.id());
     }
 
-    [[nodiscard]] types::size_type in_degree(const types::id_type vertex_id) const
+    [[nodiscard]] size_type in_degree(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.in_degree(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type in_degree(const vertex_type& vertex) const
+    [[nodiscard]] gl_attr_force_inline size_type in_degree(const vertex_type& vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->in_degree(vertex.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> in_degree_map() const
+    [[nodiscard]] std::vector<size_type> in_degree_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.in_degree_map(this->_n_vertices);
     }
 
-    [[nodiscard]] auto incident_vertices(const types::id_type hyperedge_id) {
+    [[nodiscard]] auto incident_vertices(const id_type hyperedge_id) {
         return this->incident_vertex_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
@@ -616,7 +607,7 @@ public:
         return this->incident_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto incident_vertex_ids(const types::id_type hyperedge_id) const {
+    [[nodiscard]] auto incident_vertex_ids(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.incident_vertices(hyperedge_id);
     }
@@ -626,22 +617,21 @@ public:
         return this->incident_vertex_ids(hyperedge.id());
     }
 
-    [[nodiscard]] types::size_type hyperedge_size(const types::id_type hyperedge_id) const {
+    [[nodiscard]] size_type hyperedge_size(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.hyperedge_size(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type hyperedge_size(
-        const hyperedge_type& hyperedge
+    [[nodiscard]] gl_attr_force_inline size_type hyperedge_size(const hyperedge_type& hyperedge
     ) const {
         return this->hyperedge_size(hyperedge.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> hyperedge_size_map() const {
+    [[nodiscard]] std::vector<size_type> hyperedge_size_map() const {
         return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const types::id_type hyperedge_id)
+    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_vertex_ids(hyperedge_id)
@@ -654,7 +644,7 @@ public:
         return this->tail_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto tail_vertex_ids(const types::id_type hyperedge_id) const
+    [[nodiscard]] auto tail_vertex_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
@@ -667,27 +657,26 @@ public:
         return this->tail_vertex_ids(hyperedge.id());
     }
 
-    [[nodiscard]] types::size_type tail_size(const types::id_type hyperedge_id) const
+    [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.tail_size(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type tail_size(const hyperedge_type& hyperedge
-    ) const
+    [[nodiscard]] gl_attr_force_inline size_type tail_size(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_size(hyperedge.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> tail_size_map() const
+    [[nodiscard]] std::vector<size_type> tail_size_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.tail_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const types::id_type hyperedge_id)
+    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_vertex_ids(hyperedge_id)
@@ -700,7 +689,7 @@ public:
         return this->head_vertices(hyperedge.id());
     }
 
-    [[nodiscard]] auto head_vertex_ids(const types::id_type hyperedge_id) const
+    [[nodiscard]] auto head_vertex_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
@@ -713,21 +702,20 @@ public:
         return this->head_vertex_ids(hyperedge.id());
     }
 
-    [[nodiscard]] types::size_type head_size(const types::id_type hyperedge_id) const
+    [[nodiscard]] size_type head_size(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.head_size(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline types::size_type head_size(const hyperedge_type& hyperedge
-    ) const
+    [[nodiscard]] gl_attr_force_inline size_type head_size(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_size(hyperedge.id());
     }
 
-    [[nodiscard]] std::vector<types::size_type> head_size_map() const
+    [[nodiscard]] std::vector<size_type> head_size_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.head_size_map(this->_n_hyperedges);
@@ -793,12 +781,12 @@ private:
 
     // --- vertex methods ---
 
-    gl_attr_force_inline void _verify_vertex_id(const types::id_type vertex_id) const {
+    gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
             throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
-    void _remove_vertex_impl(const types::id_type vertex_id) {
+    void _remove_vertex_impl(const id_type vertex_id) {
         if (not this->has_vertex(vertex_id))
             return;
 
@@ -810,12 +798,12 @@ private:
 
     // --- hyperedge methods ---
 
-    gl_attr_force_inline void _verify_hyperedge_id(const types::id_type hyperedge_id) const {
+    gl_attr_force_inline void _verify_hyperedge_id(const id_type hyperedge_id) const {
         if (not this->has_hyperedge(hyperedge_id))
             throw std::out_of_range(std::format("Got invalid hyperedge id [{}]", hyperedge_id));
     }
 
-    void _remove_hyperedge_impl(const types::id_type hyperedge_id) {
+    void _remove_hyperedge_impl(const id_type hyperedge_id) {
         if (not this->has_hyperedge(hyperedge_id))
             return;
 
@@ -830,13 +818,13 @@ private:
     gl_attr_force_inline auto _create_vertex_descriptor() noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
-        return [](const types::id_type id) { return vertex_type{id}; };
+        return [](const id_type id) { return vertex_type{id}; };
     }
 
     gl_attr_force_inline auto _create_vertex_descriptor() noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        return [&pmap = this->_vertex_properties](const types::id_type id) {
+        return [&pmap = this->_vertex_properties](const id_type id) {
             return vertex_type{id, *pmap[id]};
         };
     }
@@ -844,21 +832,21 @@ private:
     gl_attr_force_inline auto _create_hyperedge_descriptor() noexcept
     requires(traits::c_empty_properties<hyperedge_properties_type>)
     {
-        return [](const types::id_type id) { return hyperedge_type{id}; };
+        return [](const id_type id) { return hyperedge_type{id}; };
     }
 
     gl_attr_force_inline auto _create_hyperedge_descriptor() noexcept
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
-        return [&pmap = this->_hyperedge_properties](const types::id_type id) {
+        return [&pmap = this->_hyperedge_properties](const id_type id) {
             return hyperedge_type{id, *pmap[id]};
         };
     }
 
     // --- data members ---
 
-    types::size_type _n_vertices = 0uz;
-    types::size_type _n_hyperedges = 0uz;
+    size_type _n_vertices = 0uz;
+    size_type _n_hyperedges = 0uz;
 
     implementation_type _impl{};
 
@@ -875,37 +863,35 @@ template <traits::c_hypergraph Hypergraph>
 
 // --- degree bounds ---
 
-[[nodiscard]] types::size_type max_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] size_type max_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto degrees = hypergraph.degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
-[[nodiscard]] types::size_type min_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] size_type min_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto degrees = hypergraph.degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
 }
 
-[[nodiscard]] types::size_type max_out_degree(
-    const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type max_out_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
-[[nodiscard]] types::size_type min_out_degree(
-    const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type min_out_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
 }
 
-[[nodiscard]] types::size_type max_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type max_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::max_element(degrees);
 }
 
-[[nodiscard]] types::size_type min_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type min_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
     return degrees.empty() ? 0uz : *std::ranges::min_element(degrees);
@@ -913,35 +899,35 @@ template <traits::c_hypergraph Hypergraph>
 
 // --- hyperedge size bounds ---
 
-[[nodiscard]] types::size_type rank(const traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] size_type rank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type corank(const traits::c_hypergraph auto& hypergraph) noexcept {
+[[nodiscard]] size_type corank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
 }
 
-[[nodiscard]] types::size_type max_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type max_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type min_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type min_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
 }
 
-[[nodiscard]] types::size_type max_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type max_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
-[[nodiscard]] types::size_type min_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
+[[nodiscard]] size_type min_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
@@ -950,7 +936,7 @@ template <traits::c_hypergraph Hypergraph>
 // --- regularity ---
 
 [[nodiscard]] bool is_regular(
-    const traits::c_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.degree_map(), k);
 }
@@ -960,7 +946,7 @@ template <traits::c_hypergraph Hypergraph>
 }
 
 [[nodiscard]] bool is_out_regular(
-    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.out_degree_map(), k);
 }
@@ -971,7 +957,7 @@ template <traits::c_hypergraph Hypergraph>
 }
 
 [[nodiscard]] bool is_in_regular(
-    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.in_degree_map(), k);
 }
@@ -983,7 +969,7 @@ template <traits::c_hypergraph Hypergraph>
 // --- uniformity ---
 
 [[nodiscard]] bool is_uniform(
-    const traits::c_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.hyperedge_size_map(), k);
 }
@@ -993,7 +979,7 @@ template <traits::c_hypergraph Hypergraph>
 }
 
 [[nodiscard]] bool is_tail_uniform(
-    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.tail_size_map(), k);
 }
@@ -1004,7 +990,7 @@ template <traits::c_hypergraph Hypergraph>
 }
 
 [[nodiscard]] bool is_head_uniform(
-    const traits::c_bf_directed_hypergraph auto& hypergraph, const types::size_type k
+    const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
     return util::all_equal(hypergraph.head_size_map(), k);
 }

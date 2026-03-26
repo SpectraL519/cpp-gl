@@ -21,22 +21,21 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::deque<gl::types::id_type> expected_previsit_order;
+    std::deque<gl::id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
-        graph = gl::topology::clique<graph_type>(constants::zero_elements);
+        graph = gl::topology::clique<graph_type>(0uz);
         expected_previsit_order = {};
     }
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(1uz);
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = gl::constants::initial_id + constants::one; id < constants::n_elements_alg;
-             id++)
+        for (auto id = 1uz; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_front(id);
         expected_previsit_order.push_front(gl::constants::initial_id);
     }
@@ -57,24 +56,24 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 2 connected to B (4 visited) [s: 3 1 3]
         finally: 0 -> 4 -> 2 -> 1 -> 3
         */
-        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(3uz, 2uz);
         expected_previsit_order = {0, 4, 2, 3, 1};
     }
 
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
 
-    std::deque<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
+    std::deque<gl::id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    std::vector<gl::id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex,
-        [&](const gl::types::id_type vertex_id) { // previsit
+        [&](const gl::id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::types::id_type vertex_id) { // postvisit
+        [&](const gl::id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
             vertex_properties[vertex_id].visited = true;
         }
@@ -83,29 +82,28 @@ TEST_CASE_TEMPLATE_DEFINE(
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
     CHECK(std::ranges::all_of(
-        graph.vertices(), std::identity{}, alg_common::vertex_visited_projection<vertex_type>{}
+        graph.vertices(), std::identity{}, vertex_visited_projection<vertex_type>{}
     ));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     dfs_no_return_graph_template,
-    gl::graph<
-        gl::list_graph_traits<gl::directed_t, types::visited_property>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::directed_t, visited_property>>, // directed adjacency list
     gl::graph<gl::list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected adjacency list
+        visited_property>>, // undirected adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed flat adjacency list
+        visited_property>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected flat adjacency list
+        visited_property>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed adjacency matrix
+        visited_property>>, // directed adjacency matrix
     gl::graph<gl::matrix_graph_traits<
         gl::undirected_t,
-        types::visited_property>> // undirected adjacency matrix
+        visited_property>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -116,40 +114,40 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    gl::types::id_type root_vertex_id;
-    std::deque<gl::types::id_type> expected_previsit_order;
+    gl::id_type root_vertex_id;
+    std::deque<gl::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id = constants::vertex_id_1;
+        graph = gl::topology::clique<graph_type>(1uz);
+        root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id = constants::vertex_id_3;
+        root_vertex_id = constants::v3_id;
 
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
-            if (id != constants::vertex_id_3)
+            if (id != constants::v3_id)
                 expected_previsit_order.push_front(id);
         }
-        expected_previsit_order.push_front(constants::vertex_id_3);
+        expected_previsit_order.push_front(constants::v3_id);
     }
 
     CAPTURE(graph);
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
 
-    std::deque<gl::types::id_type> expected_postvisit_order = expected_previsit_order;
+    std::deque<gl::id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    std::vector<gl::id_type> previsit_order, postvisit_order;
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const gl::types::id_type vertex_id) { // previsit
+        [&](const gl::id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::types::id_type vertex_id) { // postvisit
+        [&](const gl::id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
         }
     );
@@ -176,13 +174,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
+    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::depth);
     const auto pred_map = gl::algorithm::depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pred_map.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
-    );
+    CHECK(std::ranges::all_of(graph.vertex_ids(), has_correct_bin_predecessor(pred_map)));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -206,15 +203,15 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::vector<gl::types::id_type> expected_previsit_order;
+    std::vector<gl::id_type> expected_previsit_order;
 
     SUBCASE("empty graph") {
-        graph = gl::topology::clique<graph_type>(constants::zero_elements);
+        graph = gl::topology::clique<graph_type>(0uz);
         expected_previsit_order = {};
     }
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
+        graph = gl::topology::clique<graph_type>(1uz);
         expected_previsit_order = {0};
     }
 
@@ -241,7 +238,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         -> 4 connected to A (2)
         finally: 0 -> 3 -> 1 -> 4 -> 2
         */
-        graph = gl::topology::biclique<graph_type>(constants::three, constants::two);
+        graph = gl::topology::biclique<graph_type>(3uz, 2uz);
         expected_previsit_order = {0, 3, 1, 4, 2};
     }
 
@@ -255,15 +252,15 @@ TEST_CASE_TEMPLATE_DEFINE(
     */
     const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
-    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    std::vector<gl::id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex,
-        [&](const gl::types::id_type vertex_id) { // previsit
+        [&](const gl::id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::types::id_type vertex_id) { // postvisit
+        [&](const gl::id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
             vertex_properties[vertex_id].visited = true;
         }
@@ -272,29 +269,28 @@ TEST_CASE_TEMPLATE_DEFINE(
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
     CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
     CHECK(std::ranges::all_of(
-        graph.vertices(), std::identity{}, alg_common::vertex_visited_projection<vertex_type>{}
+        graph.vertices(), std::identity{}, vertex_visited_projection<vertex_type>{}
     ));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
     rdfs_no_return_graph_template,
-    gl::graph<
-        gl::list_graph_traits<gl::directed_t, types::visited_property>>, // directed adjacency list
+    gl::graph<gl::list_graph_traits<gl::directed_t, visited_property>>, // directed adjacency list
     gl::graph<gl::list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected adjacency list
+        visited_property>>, // undirected adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed flat adjacency list
+        visited_property>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<
         gl::undirected_t,
-        types::visited_property>>, // undirected flat adjacency list
+        visited_property>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<
         gl::directed_t,
-        types::visited_property>>, // directed adjacency matrix
+        visited_property>>, // directed adjacency matrix
     gl::graph<gl::matrix_graph_traits<
         gl::undirected_t,
-        types::visited_property>> // undirected adjacency matrix
+        visited_property>> // undirected adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -305,22 +301,22 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     graph_type graph;
-    gl::types::id_type root_vertex_id = constants::invalid_id;
-    std::vector<gl::types::id_type> expected_previsit_order;
+    gl::id_type root_vertex_id = constants::invalid_id;
+    std::vector<gl::id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
-        graph = gl::topology::clique<graph_type>(constants::one_element);
-        root_vertex_id = constants::vertex_id_1;
+        graph = gl::topology::clique<graph_type>(1uz);
+        root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        root_vertex_id = constants::vertex_id_3;
+        root_vertex_id = constants::v3_id;
 
-        expected_previsit_order.push_back(constants::vertex_id_3);
+        expected_previsit_order.push_back(constants::v3_id);
         for (auto id = gl::constants::initial_id; id < constants::n_elements_alg; id++) {
-            if (id != constants::vertex_id_3)
+            if (id != constants::v3_id)
                 expected_previsit_order.push_back(id);
         }
     }
@@ -336,14 +332,14 @@ TEST_CASE_TEMPLATE_DEFINE(
     */
     const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
 
-    std::vector<gl::types::id_type> previsit_order, postvisit_order;
+    std::vector<gl::id_type> previsit_order, postvisit_order;
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const gl::types::id_type vertex_id) { // previsit
+        [&](const gl::id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::types::id_type vertex_id) { // postvisit
+        [&](const gl::id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
         }
     );
@@ -370,14 +366,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
 
-    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::three);
+    const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::depth);
     const auto pred_map =
         gl::algorithm::recursive_depth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pred_map.size(), graph.order());
-    CHECK(std::ranges::all_of(graph.vertex_ids(), alg_common::has_correct_bin_predecessor(pred_map))
-    );
+    CHECK(std::ranges::all_of(graph.vertex_ids(), has_correct_bin_predecessor(pred_map)));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

@@ -16,8 +16,7 @@ TEST_SUITE_BEGIN("test_graph_io");
 // Tests covering only the io functionality with the graph specification format enabled
 
 struct test_directed_graph_io {
-    using traits_type =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_directed_graph_io() {
@@ -34,7 +33,7 @@ struct test_directed_graph_io {
         }
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 
@@ -60,7 +59,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::directed_t, std::monostate, gl::types::name_property>;
+        gl::graph_traits<gl::directed_t, std::monostate, gl::name_property>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -73,7 +72,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::directed_t, gl::types::name_property, std::monostate>;
+        gl::graph_traits<gl::directed_t, gl::name_property, std::monostate>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -87,7 +86,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -97,8 +96,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -108,8 +107,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -120,14 +119,13 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 struct test_undirected_graph_io {
-    using traits_type =
-        gl::graph_traits<gl::undirected_t, gl::types::name_property, gl::types::name_property>;
+    using traits_type = gl::graph_traits<gl::undirected_t, gl::name_property, gl::name_property>;
     using sut_type = gl::graph<traits_type>;
 
     test_undirected_graph_io() {
@@ -145,7 +143,7 @@ struct test_undirected_graph_io {
         }
     }
 
-    const gl::types::size_type n_vertices = 5ull;
+    const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
     sut_type sut_in;
 
@@ -171,7 +169,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::undirected_t, std::monostate, gl::types::name_property>;
+        gl::graph_traits<gl::undirected_t, std::monostate, gl::name_property>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -184,7 +182,7 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
 
     using not_readable_vp_traits =
-        gl::graph_traits<gl::undirected_t, gl::types::name_property, std::monostate>;
+        gl::graph_traits<gl::undirected_t, gl::name_property, std::monostate>;
     gl::graph<not_readable_vp_traits> invalid_sut_in;
 
     CHECK_THROWS_AS(ss >> invalid_sut_in, std::ios_base::failure);
@@ -198,7 +196,7 @@ TEST_CASE_FIXTURE(
     ss << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -208,8 +206,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -219,8 +217,8 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_CASE_FIXTURE(
@@ -231,9 +229,9 @@ TEST_CASE_FIXTURE(
     ss << gl::io::with_vertex_properties << gl::io::with_edge_properties << sut_out;
     ss >> sut_in;
 
-    io_common::verify_graph_structure(sut_in, sut_out);
-    io_common::verify_vertex_properties(sut_in, sut_out);
-    io_common::verify_edge_properties(sut_in, sut_out);
+    verify_graph_structure(sut_in, sut_out);
+    verify_vertex_properties(sut_in, sut_out);
+    verify_edge_properties(sut_in, sut_out);
 }
 
 TEST_SUITE_END(); // test_graph_io

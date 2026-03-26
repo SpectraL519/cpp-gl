@@ -19,7 +19,7 @@ namespace hgl_testing {
 TEST_SUITE_BEGIN("test_converters");
 
 struct test_hypergraph_conversion {
-    using property_type = hgl::types::name_property;
+    using property_type = hgl::name_property;
 
     template <hgl::traits::c_undirected_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
@@ -237,36 +237,36 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hypergraph_params_template,
     std::tuple<
         hgl::undirected_t,
-        hgl::types::empty_properties,
-        hgl::types::empty_properties>, // undirected, no properties
+        hgl::empty_properties,
+        hgl::empty_properties>, // undirected, no properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::empty_properties,
-        hgl::types::empty_properties>, // bf-directed, no properties
+        hgl::empty_properties,
+        hgl::empty_properties>, // bf-directed, no properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::empty_properties>, // undirected, vertex properties
+        hgl::name_property,
+        hgl::empty_properties>, // undirected, vertex properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::empty_properties>, // bf-directed, vertex properties
+        hgl::name_property,
+        hgl::empty_properties>, // bf-directed, vertex properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::empty_properties,
-        hgl::types::name_property>, // undirected, hyperedge properties
+        hgl::empty_properties,
+        hgl::name_property>, // undirected, hyperedge properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::empty_properties,
-        hgl::types::name_property>, // bf-directed, hyperedge properties
+        hgl::empty_properties,
+        hgl::name_property>, // bf-directed, hyperedge properties
     std::tuple<
         hgl::undirected_t,
-        hgl::types::name_property,
-        hgl::types::name_property>, // undirected, all properties
+        hgl::name_property,
+        hgl::name_property>, // undirected, all properties
     std::tuple<
         hgl::bf_directed_t,
-        hgl::types::name_property,
-        hgl::types::name_property> // bf-directed, all properties
+        hgl::name_property,
+        hgl::name_property> // bf-directed, all properties
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -284,31 +284,31 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{4ull, 4ull};
 
         // e0 = {0,1,2}
-        sut.bind(0ull, 0ull);
-        sut.bind(1ull, 0ull);
-        sut.bind(2ull, 0ull);
+        sut.bind(0uz, 0uz);
+        sut.bind(1uz, 0uz);
+        sut.bind(2uz, 0uz);
 
         // e1 = {1,2,3}
-        sut.bind(1ull, 1ull);
-        sut.bind(2ull, 1ull);
-        sut.bind(3ull, 1ull);
+        sut.bind(1uz, 1uz);
+        sut.bind(2uz, 1uz);
+        sut.bind(3uz, 1uz);
 
         // e2 = {0,3}
-        sut.bind(0ull, 2ull);
-        sut.bind(3ull, 2ull);
+        sut.bind(0uz, 2uz);
+        sut.bind(3uz, 2uz);
 
         // e3 = {0} (should not add any edge)
-        sut.bind(0ull, 3ull);
+        sut.bind(0uz, 3uz);
 
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
-            {0ull, 1ull},
-            {0ull, 2ull},
-            {1ull, 2ull},
-            {1ull, 3ull},
+            {0uz, 1uz},
+            {0uz, 2uz},
+            {1uz, 2uz},
+            {1uz, 3uz},
             // e1: (1,2) - exists, (1,3), (2,3)
-            {2ull, 3ull},
-            {0ull, 3ull},
+            {2uz, 3uz},
+            {0uz, 3uz},
             // e3: none
         };
 
@@ -332,37 +332,37 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{4ull, 4ull};
 
         // e0 = {0,1,2}
-        sut.bind(0ull, 0ull);
-        sut.bind(1ull, 0ull);
-        sut.bind(2ull, 0ull);
+        sut.bind(0uz, 0uz);
+        sut.bind(1uz, 0uz);
+        sut.bind(2uz, 0uz);
 
         // e1 = {1,2,3}
-        sut.bind(1ull, 1ull);
-        sut.bind(2ull, 1ull);
-        sut.bind(3ull, 1ull);
+        sut.bind(1uz, 1uz);
+        sut.bind(2uz, 1uz);
+        sut.bind(3uz, 1uz);
 
         // e2 = {0,3}
-        sut.bind(0ull, 2ull);
-        sut.bind(3ull, 2ull);
+        sut.bind(0uz, 2uz);
+        sut.bind(3uz, 2uz);
 
         // e3 = {0}
-        sut.bind(0ull, 3ull);
+        sut.bind(0uz, 3uz);
 
         // Expected edges: vertices 0-3, hyperedges 4-7
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0 (4): {0,1,2}
-            {0ull, 4ull},
-            {1ull, 4ull},
-            {2ull, 4ull},
+            {0uz, 4ull},
+            {1uz, 4ull},
+            {2uz, 4ull},
             // e1 (5): {1,2,3}
-            {1ull, 5ull},
-            {2ull, 5ull},
-            {3ull, 5ull},
+            {1uz, 5ull},
+            {2uz, 5ull},
+            {3uz, 5ull},
             // e2 (6): {0,3}
-            {0ull, 6ull},
-            {3ull, 6ull},
+            {0uz, 6ull},
+            {3uz, 6ull},
             // e3 (7): {0}
-            {0ull, 7ull}
+            {0uz, 7ull}
         };
 
         auto test_conversion_for =
@@ -418,42 +418,36 @@ TEST_CASE_TEMPLATE_DEFINE(
     using sut_type = hgl::hypergraph<HypergraphTraits>;
 
     // Define the three target graph models
-    using list_graph = gl::graph<gl::directed_graph_traits<
-        gl::types::empty_properties,
-        gl::types::empty_properties,
-        gl::impl::list_t>>;
-    using flat_list_graph = gl::graph<gl::directed_graph_traits<
-        gl::types::empty_properties,
-        gl::types::empty_properties,
-        gl::impl::flat_list_t>>;
-    using matrix_graph = gl::graph<gl::directed_graph_traits<
-        gl::types::empty_properties,
-        gl::types::empty_properties,
-        gl::impl::matrix_t>>;
+    using list_graph = gl::graph<
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::list_t>>;
+    using flat_list_graph = gl::graph<
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::flat_list_t>>;
+    using matrix_graph = gl::graph<
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::matrix_t>>;
 
     SUBCASE("projection should produce directed edges from tails to heads for each hyperedge") {
-        sut_type sut{4ull, 2ull};
+        sut_type sut{4ull, 2uz};
 
         // e0: T={0,1} -> H={2,3}
-        sut.bind_tail(0ull, 0ull);
-        sut.bind_tail(1ull, 0ull);
-        sut.bind_head(2ull, 0ull);
-        sut.bind_head(3ull, 0ull);
+        sut.bind_tail(0uz, 0uz);
+        sut.bind_tail(1uz, 0uz);
+        sut.bind_head(2uz, 0uz);
+        sut.bind_head(3uz, 0uz);
 
         // e1: T={2} -> H={0,1}
-        sut.bind_tail(2ull, 1ull);
-        sut.bind_head(0ull, 1ull);
-        sut.bind_head(1ull, 1ull);
+        sut.bind_tail(2uz, 1uz);
+        sut.bind_head(0uz, 1uz);
+        sut.bind_head(1uz, 1uz);
 
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
-            {0ull, 2ull},
-            {0ull, 3ull},
-            {1ull, 2ull},
-            {1ull, 3ull},
+            {0uz, 2uz},
+            {0uz, 3uz},
+            {1uz, 2uz},
+            {1uz, 3uz},
             // e1: 2->0, 2->1
-            {2ull, 0ull},
-            {2ull, 1ull}
+            {2uz, 0uz},
+            {2uz, 1uz}
         };
 
         auto test_conversion_for =
@@ -474,30 +468,30 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("incidence_graph should produce a directed bipartite graph connecting tails to "
             "hyperedges and hyperedges to heads") {
-        sut_type sut{4ull, 2ull};
+        sut_type sut{4ull, 2uz};
 
         // e0: T={0,1} -> H={2,3}
-        sut.bind_tail(0ull, 0ull);
-        sut.bind_tail(1ull, 0ull);
-        sut.bind_head(2ull, 0ull);
-        sut.bind_head(3ull, 0ull);
+        sut.bind_tail(0uz, 0uz);
+        sut.bind_tail(1uz, 0uz);
+        sut.bind_head(2uz, 0uz);
+        sut.bind_head(3uz, 0uz);
 
         // e1: T={2} -> H={0,1}
-        sut.bind_tail(2ull, 1ull);
-        sut.bind_head(0ull, 1ull);
-        sut.bind_head(1ull, 1ull);
+        sut.bind_tail(2uz, 1uz);
+        sut.bind_head(0uz, 1uz);
+        sut.bind_head(1uz, 1uz);
 
         // Expected directed edges: vertices 0-3, hyperedges 4-5
-        const std::vector<std::pair<hgl::types::id_type, hgl::types::id_type>> expected_edges{
+        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
-            {0ull, 4ull},
-            {1ull, 4ull},
-            {2ull, 5ull},
+            { 0uz, 4ull},
+            { 1uz, 4ull},
+            { 2uz, 5ull},
             // Hyperedges to heads: 4->2, 4->3, 5->0, 5->1
-            {4ull, 2ull},
-            {4ull, 3ull},
-            {5ull, 0ull},
-            {5ull, 1ull}
+            {4ull,  2uz},
+            {4ull,  3uz},
+            {5ull,  0uz},
+            {5ull,  1uz}
         };
 
         // Generic runner for the target models

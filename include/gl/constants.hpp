@@ -10,7 +10,7 @@
 
 namespace gl::constants {
 
-inline constexpr types::id_type initial_id{std::numeric_limits<types::id_type>::min()};
-inline constexpr types::id_type invalid_id{std::numeric_limits<types::id_type>::max()};
+inline constexpr id_type initial_id{std::numeric_limits<id_type>::min()};
+inline constexpr id_type invalid_id{std::numeric_limits<id_type>::max()};
 
 } // namespace gl::constants

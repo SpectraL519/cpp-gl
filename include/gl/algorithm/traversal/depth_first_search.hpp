@@ -17,12 +17,12 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map> depth_first_search(
     const GraphType& graph,
-    const types::id_type root_vertex_id = no_root_vertex,
+    const id_type root_vertex_id = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<types::id_type> sources(graph.order());
+    std::vector<id_type> sources(graph.order());
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
@@ -65,12 +65,12 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
     const GraphType& graph,
-    const types::id_type root_vertex_id = no_root_vertex,
+    const id_type root_vertex_id = no_root_vertex,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<types::id_type> sources(graph.order());
+    std::vector<id_type> sources(graph.order());
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 

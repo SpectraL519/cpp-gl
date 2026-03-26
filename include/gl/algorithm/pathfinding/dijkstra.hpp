@@ -14,7 +14,7 @@ namespace gl::algorithm {
 
 template <traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor {
-    paths_descriptor(const types::size_type n_vertices)
+    paths_descriptor(const size_type n_vertices)
     : predecessors(n_vertices, constants::invalid_id), distances(n_vertices) {}
 
     predecessors_map predecessors;
@@ -22,7 +22,7 @@ struct paths_descriptor {
 };
 
 template <traits::c_graph GraphType>
-using paths_descriptor_type = paths_descriptor<types::vertex_distance_type<GraphType>>;
+using paths_descriptor_type = paths_descriptor<vertex_distance_type<GraphType>>;
 
 template <traits::c_graph GraphType>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
@@ -37,12 +37,12 @@ template <
     traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
-    const types::id_type source_id,
+    const id_type source_id,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     using edge_type = typename GraphType::edge_type;
-    using distance_type = types::vertex_distance_type<GraphType>;
+    using distance_type = vertex_distance_type<GraphType>;
 
     auto paths = make_paths_descriptor<GraphType>(graph);
 
@@ -59,7 +59,7 @@ template <
         init_range(source_id),
         algorithm::empty_callback{}, // visit predicate
         algorithm::empty_callback{}, // visit callback
-        [&paths, &negative_edge](const types::id_type vertex_id, const edge_type& in_edge)
+        [&paths, &negative_edge](const id_type vertex_id, const edge_type& in_edge)
             -> predicate_result { // enqueue predicate
             const auto pred_id = in_edge.incident_vertex(vertex_id);
 
@@ -96,21 +96,21 @@ template <
     return paths;
 }
 
-template <traits::c_random_access_range_of<std::optional<types::id_type>> IdRange>
-[[nodiscard]] std::deque<types::id_type> reconstruct_path(
-    const IdRange& predecessor_map, const types::id_type vertex_id
+template <traits::c_random_access_range_of<std::optional<id_type>> IdRange>
+[[nodiscard]] std::deque<id_type> reconstruct_path(
+    const IdRange& predecessor_map, const id_type vertex_id
 ) {
     if (not std::ranges::next(predecessor_map.begin(), vertex_id)->has_value())
         throw std::invalid_argument(
             std::format("[alg::reconstruct_path] The given vertex is unreachable: {}", vertex_id)
         );
 
-    std::deque<types::id_type> path;
-    types::id_type current_vertex = vertex_id;
+    std::deque<id_type> path;
+    id_type current_vertex = vertex_id;
 
     while (true) {
         path.push_front(current_vertex);
-        types::id_type predecessor = (predecessor_map.begin() + current_vertex)->value();
+        id_type predecessor = (predecessor_map.begin() + current_vertex)->value();
 
         if (predecessor == current_vertex)
             break;

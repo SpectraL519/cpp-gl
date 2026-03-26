@@ -13,7 +13,7 @@ namespace gl_testing {
 TEST_SUITE_BEGIN("test_flat_jagged_vector");
 
 struct test_flat_jagged_vector_constructors {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -157,7 +157,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_flat_jagged_vector_comparison {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -206,7 +206,7 @@ TEST_CASE_FIXTURE(test_flat_jagged_vector_comparison, "empty segment_vectors sho
 }
 
 struct test_flat_jagged_vector_capacity {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
     sut_type sut;
 };
 
@@ -386,7 +386,7 @@ TEST_CASE_FIXTURE(test_flat_jagged_vector_capacity, "clear should remove all seg
 }
 
 struct test_segment_vector_accessors {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 
     sut_type sut{
         {1, 2, 3},
@@ -687,7 +687,7 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "const back() should return con
 }
 
 struct test_flat_jagged_vector_element_accessors {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 
     std::vector<int> seg0{1, 2, 3};
     std::vector<int> seg1{4, 5};
@@ -871,7 +871,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_flat_jagged_vector_segment_modifiers {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 
     sut_type sut;
     std::vector<int> seg0{1, 2, 3};
@@ -1031,7 +1031,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_flat_jagged_vector_element_modifiers {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
     sut_type sut{
         {1, 2, 3},
         {4, 5}
@@ -1218,7 +1218,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_flat_jagged_vector_complex_operations {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 };
 
 TEST_CASE_FIXTURE(
@@ -1283,7 +1283,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_flat_jagged_vector_iterators {
-    using sut_type = gl::types::flat_jagged_vector<int>;
+    using sut_type = gl::flat_jagged_vector<int>;
 
     sut_type sut{
         {1, 2, 3},

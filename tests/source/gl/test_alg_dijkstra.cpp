@@ -1,3 +1,4 @@
+#include "gl/constants.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
@@ -27,55 +28,46 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should throw if there is an edge with a negative weight") {
         const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-        sut.get_edge(constants::vertex_id_1, constants::vertex_id_2)->properties().weight =
+        sut.get_edge(constants::v1_id, constants::v2_id)->properties().weight =
             -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
-            func::discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::vertex_id_1)
-            ),
+            discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::v1_id)),
             std::invalid_argument
         );
     }
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::types::id_type source_id;
-        std::vector<gl::types::id_type> expected_predecessors;
+        gl::id_type source_id;
+        std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
-        const auto source_distance = static_cast<distance_type>(constants::zero);
+        const distance_type source_distance = 0;
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_element_idx;
+            source_id = 0uz;
 
-            expected_predecessors =
-                std::vector<gl::types::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
-            for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
-                 id++) {
-                sut.get_edge(constants::vertex_id_1, id)->properties().weight = edge_weight;
+            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++) {
+                sut.get_edge(constants::v1_id, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id =
-                    id == constants::zero
-                        ? constants::zero
-                        : (id - constants::one) / constants::two;
+                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth =
-                    constants::zero
-                        ? constants::zero
-                        : static_cast<gl::types::size_type>(std::log2(id + constants::one));
+                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -86,20 +78,17 @@ TEST_CASE_TEMPLATE_DEFINE(
                     ? "dijkstra_directed_"
                     : "dijkstra_undirected_";
 
-            const fs::path gsf_file_path = alg_common::data_path / (file_name_prefix + "graph.gsf");
+            const fs::path gsf_file_path = data_path / (file_name_prefix + "graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = constants::first_element_idx;
+            source_id = gl::constants::initial_id;
 
             const fs::path predecessors_file_path =
-                alg_common::data_path / (file_name_prefix + "predecessors.txt");
-            expected_predecessors =
-                alg_common::load_list<gl::types::id_type>(sut.order(), predecessors_file_path);
+                data_path / (file_name_prefix + "predecessors.txt");
+            expected_predecessors = load_list<gl::id_type>(sut.order(), predecessors_file_path);
 
-            const fs::path distances_file_path =
-                alg_common::data_path / (file_name_prefix + "distances.txt");
-            expected_distances =
-                alg_common::load_list<distance_type>(sut.order(), distances_file_path);
+            const fs::path distances_file_path = data_path / (file_name_prefix + "distances.txt");
+            expected_distances = load_list<distance_type>(sut.order(), distances_file_path);
         }
 
         CAPTURE(sut);
@@ -122,28 +111,28 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     wieghted_edge_traits_type_template,
     gl::list_graph_traits<
         gl::directed_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>>, // directed adjacency list graph
+        gl::empty_properties,
+        gl::weight_property<>>, // directed adjacency list graph
     gl::list_graph_traits<
         gl::undirected_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>>, // undirected adjacency list graph
+        gl::empty_properties,
+        gl::weight_property<>>, // undirected adjacency list graph
     gl::flat_list_graph_traits<
         gl::directed_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>>, // directed flat adjacency list graph
+        gl::empty_properties,
+        gl::weight_property<>>, // directed flat adjacency list graph
     gl::flat_list_graph_traits<
         gl::undirected_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>>, // undirected flat adjacency list graph
+        gl::empty_properties,
+        gl::weight_property<>>, // undirected flat adjacency list graph
     gl::matrix_graph_traits<
         gl::directed_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>>, // directed adjacency matrix graph
+        gl::empty_properties,
+        gl::weight_property<>>, // directed adjacency matrix graph
     gl::matrix_graph_traits<
         gl::undirected_t,
-        gl::types::empty_properties,
-        gl::types::weight_property<>> // undirected adjacency matrix graph
+        gl::empty_properties,
+        gl::weight_property<>> // undirected adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -152,46 +141,38 @@ TEST_CASE_TEMPLATE_DEFINE(
     unwieghted_edge_traits_type_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using distance_type = gl::types::default_vertex_distance_type;
+    using distance_type = gl::default_vertex_distance_type;
 
     static_assert(not gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::types::id_type source_id;
-        std::vector<gl::types::id_type> expected_predecessors;
+        gl::id_type source_id;
+        std::vector<gl::id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
-        const auto source_distance = static_cast<distance_type>(constants::zero);
+        const distance_type source_distance = 0;
 
         SUBCASE("clique") {
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-            source_id = constants::first_element_idx;
+            source_id = 0uz;
 
-            expected_predecessors =
-                std::vector<gl::types::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
-            for (gl::types::id_type id = constants::vertex_id_2; id < constants::n_elements_alg;
-                 id++)
-                expected_distances.push_back(constants::one);
+            for (auto id = constants::v2_id; id < constants::n_elements_alg; id++)
+                expected_distances.push_back(1uz);
         }
 
         SUBCASE("regular binary tree") {
             sut = gl::topology::regular_binary_tree<sut_type>(constants::depth);
-            source_id = constants::first_element_idx;
+            source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id =
-                    id == constants::zero
-                        ? constants::zero
-                        : (id - constants::one) / constants::two;
+                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth =
-                    constants::zero
-                        ? constants::zero
-                        : static_cast<gl::types::size_type>(std::log2(id + constants::one));
+                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -223,20 +204,20 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
-    const std::vector<std::optional<gl::types::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
-    gl::types::id_type vertex_id = predecessor_map.size() - constants::one;
+    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
+    gl::id_type vertex_id = predecessor_map.size() - 1uz;
 
     CHECK_THROWS_AS(
-        func::discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
+        discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
         std::invalid_argument
     );
 }
 
 TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {
-    const std::vector<std::optional<gl::types::id_type>> predecessor_map = {0, 3, 1, 0};
+    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, 0};
 
-    gl::types::id_type vertex_id;
-    std::deque<gl::types::id_type> expected_path;
+    gl::id_type vertex_id;
+    std::deque<gl::id_type> expected_path;
 
     SUBCASE("starting vertex = 0") {
         vertex_id = 0;

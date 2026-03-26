@@ -44,7 +44,7 @@ struct directed_t {
     template <traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(traits::c_directed_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
-        const EdgeType& edge, const types::id_type vertex_id
+        const EdgeType& edge, const id_type vertex_id
     ) {
         return vertex_id == edge._vertices.first;
     }
@@ -52,7 +52,7 @@ struct directed_t {
     template <traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(traits::c_directed_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_to(
-        const EdgeType& edge, const types::id_type vertex_id
+        const EdgeType& edge, const id_type vertex_id
     ) {
         return vertex_id == edge._vertices.second;
     }
@@ -64,7 +64,7 @@ struct undirected_t {
     template <traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(traits::c_undirected_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_from(
-        const EdgeType& edge, const types::id_type vertex_id
+        const EdgeType& edge, const id_type vertex_id
     ) {
         return edge.is_incident_with(vertex_id);
     }
@@ -72,7 +72,7 @@ struct undirected_t {
     template <traits::c_instantiation_of<edge_descriptor> EdgeType>
     requires(traits::c_undirected_edge<EdgeType>)
     [[nodiscard]] gl_attr_force_inline static bool is_incident_to(
-        const EdgeType& edge, const types::id_type vertex_id
+        const EdgeType& edge, const id_type vertex_id
     ) {
         return edge.is_incident_with(vertex_id);
     }
