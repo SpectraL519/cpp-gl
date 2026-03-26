@@ -39,8 +39,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::id_type source_id;
-        std::vector<gl::id_type> expected_predecessors;
+        gl::default_id_type source_id;
+        std::vector<gl::default_id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
         const distance_type source_distance = 0;
@@ -49,11 +49,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
             source_id = 0uz;
 
-            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors =
+                std::vector<gl::default_id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
-            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++) {
+            for (auto id = constants::v2_id; id < constants::n_elements_alg; id++) {
                 sut.get_edge(constants::v1_id, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
@@ -81,11 +82,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path gsf_file_path = data_path / (file_name_prefix + "graph.gsf");
 
             sut = gl::io::load<sut_type>(gsf_file_path);
-            source_id = gl::constants::initial_id;
+            source_id = constants::v1_id;
 
             const fs::path predecessors_file_path =
                 data_path / (file_name_prefix + "predecessors.txt");
-            expected_predecessors = load_list<gl::id_type>(sut.order(), predecessors_file_path);
+            expected_predecessors =
+                load_list<gl::default_id_type>(sut.order(), predecessors_file_path);
 
             const fs::path distances_file_path = data_path / (file_name_prefix + "distances.txt");
             expected_distances = load_list<distance_type>(sut.order(), distances_file_path);
@@ -147,8 +149,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should return a proper paths descriptor for a valid graph") {
         sut_type sut;
-        gl::id_type source_id;
-        std::vector<gl::id_type> expected_predecessors;
+        gl::default_id_type source_id;
+        std::vector<gl::default_id_type> expected_predecessors;
         std::vector<distance_type> expected_distances;
 
         const distance_type source_distance = 0;
@@ -157,7 +159,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
             source_id = 0uz;
 
-            expected_predecessors = std::vector<gl::id_type>(constants::n_elements_alg, source_id);
+            expected_predecessors =
+                std::vector<gl::default_id_type>(constants::n_elements_alg, source_id);
 
             expected_distances.push_back(source_distance);
             for (auto id = constants::v2_id; id < constants::n_elements_alg; id++)
@@ -204,8 +207,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
-    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, std::nullopt};
-    gl::id_type vertex_id = predecessor_map.size() - 1uz;
+    const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, gl::invalid_id};
+    gl::default_id_type vertex_id = predecessor_map.size() - 1uz;
 
     CHECK_THROWS_AS(
         discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
@@ -214,10 +217,10 @@ TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
 }
 
 TEST_CASE("reconstruct_path should properly reconstruct the search path to the specified vertex") {
-    const std::vector<std::optional<gl::id_type>> predecessor_map = {0, 3, 1, 0};
+    const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, 0};
 
-    gl::id_type vertex_id;
-    std::deque<gl::id_type> expected_path;
+    gl::default_id_type vertex_id;
+    std::deque<gl::default_id_type> expected_path;
 
     SUBCASE("starting vertex = 0") {
         vertex_id = 0;

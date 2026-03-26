@@ -294,7 +294,9 @@ requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::fla
 template <gl::traits::c_undirected_graph G>
 [[nodiscard]] G incidence_graph(const traits::c_undirected_hypergraph auto& h) {
     G g{h.order() + h.size()};
-    const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+    const auto align_edge_id = [shift = h.order()](const auto eid) -> gl::default_id_type {
+        return eid + shift;
+    };
 
     for (const auto vid : h.vertex_ids()) {
         const auto targets =
@@ -315,17 +317,21 @@ requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::fla
 
 template <gl::traits::c_directed_graph G>
 [[nodiscard]] G incidence_graph(const traits::c_bf_directed_hypergraph auto& h) {
+    using g_id_type = typename G::id_type;
+
     G g{h.order() + h.size()};
-    const auto align_edge_id = [shift = h.order()](const auto eid) { return eid + shift; };
+    const auto align_edge_id = [shift = h.order()](const auto eid) -> gl::default_id_type {
+        return eid + shift;
+    };
 
     for (const auto vid : h.vertex_ids()) {
         const auto targets =
             h.out_hyperedge_ids(vid) | std::views::transform(align_edge_id)
-            | std::ranges::to<std::vector>();
+            | std::ranges::to<std::vector<g_id_type>>();
         g.add_edges_from(vid, targets);
     }
     for (const auto eid : h.hyperedge_ids()) {
-        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector>();
+        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector<g_id_type>>();
         g.add_edges_from(align_edge_id(eid), targets);
     }
 

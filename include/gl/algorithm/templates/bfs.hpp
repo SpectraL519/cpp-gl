@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/traits.hpp"
 #include "gl/algorithm/util.hpp"
 
@@ -13,13 +14,17 @@ namespace gl::algorithm {
 
 template <
     traits::c_graph GraphType,
-    traits::c_forward_range_of<algorithm::vertex_info> InitQueueRangeType =
-        std::vector<algorithm::vertex_info>,
-    traits::c_optional_id_callback<bool> VisitVertexPredicate,
-    traits::c_optional_id_callback<bool, id_type> VisitCallback,
-    traits::c_id_callback<predicate_result, const typename GraphType::edge_type&> EnqueueVertexPred,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_forward_range_of<algorithm::vertex_info<GraphType>> InitQueueRangeType =
+        std::vector<algorithm::vertex_info<GraphType>>,
+    traits::c_optional_predicate<typename GraphType::id_type> VisitVertexPredicate,
+    traits::c_optional_predicate<typename GraphType::id_type, typename GraphType::id_type>
+        VisitCallback,
+    traits::c_decision_predicate<typename GraphType::id_type, const typename GraphType::edge_type&>
+        EnqueueVertexPred,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
 bool bfs(
     const GraphType& graph,
     const InitQueueRangeType& initial_queue_content,
@@ -33,7 +38,7 @@ bool bfs(
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type = std::queue<algorithm::vertex_info>;
+    using vertex_queue_type = std::queue<algorithm::vertex_info<GraphType>>;
     vertex_queue_type vertex_queue;
 
     for (const auto& vinfo : initial_queue_content)
@@ -59,7 +64,7 @@ bool bfs(
             const auto incident_vertex_id = edge.incident_vertex(vinfo.id);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
-            if (enqueue == predicate_result::unknown)
+            if (enqueue == decision::abort)
                 return false;
 
             if (enqueue)

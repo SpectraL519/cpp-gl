@@ -8,6 +8,7 @@
 #include "gl/graph.hpp"
 #include "gl/impl/impl_tags.hpp"
 #include "gl/traits.hpp"
+#include "gl/types/core.hpp"
 
 #include <utility>
 
@@ -24,9 +25,10 @@ template <
     traits::c_properties VP,
     traits::c_properties EP,
     traits::c_graph_impl_tag OldImplTag,
-    traits::c_graph_impl_tag NewImplTag>
-struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
-    using type = graph_traits<Dir, VP, EP, NewImplTag>;
+    traits::c_graph_impl_tag NewImplTag,
+    traits::c_id_type IdType>
+struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag, IdType>, NewImplTag> {
+    using type = graph_traits<Dir, VP, EP, NewImplTag, IdType>;
 };
 
 template <
@@ -34,9 +36,10 @@ template <
     traits::c_properties VP,
     traits::c_properties EP,
     traits::c_graph_impl_tag OldImplTag,
-    traits::c_graph_impl_tag NewImplTag>
-struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag>>, NewImplTag> {
-    using type = graph<graph_traits<Dir, VP, EP, NewImplTag>>;
+    traits::c_graph_impl_tag NewImplTag,
+    traits::c_id_type IdType>
+struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag, IdType>>, NewImplTag> {
+    using type = graph<graph_traits<Dir, VP, EP, NewImplTag, IdType>>;
 };
 
 template <typename GT, traits::c_graph_impl_tag NewImplTag>

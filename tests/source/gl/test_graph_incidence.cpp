@@ -98,7 +98,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
     }
 
     SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
-        const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
+        const typename SutType::edge_type invalid_edge{gl::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             discard_result(sut.are_incident(vd_1, invalid_edge)), std::invalid_argument
@@ -128,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE("incidence functions tests", SutType, graph_type_templ
 
     SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
         const auto edge = sut.add_edge(vd_1, vd_2);
-        const typename SutType::edge_type invalid_edge{constants::invalid_id, vd_1.id(), vd_2.id()};
+        const typename SutType::edge_type invalid_edge{gl::invalid_id, vd_1.id(), vd_2.id()};
 
         CHECK_THROWS_AS(
             discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument

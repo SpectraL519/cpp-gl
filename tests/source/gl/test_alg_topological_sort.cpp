@@ -20,7 +20,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("acyclic graph") {
         sut_type sut;
-        std::vector<gl::id_type> expected_topological_order;
+        std::vector<gl::default_id_type> expected_topological_order;
 
         SUBCASE("path graph") {
             sut = gl::topology::path<sut_type>(constants::n_elements_alg);
@@ -37,7 +37,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             expected_topological_order.push_back(constants::v1_id);
             expected_topological_order.push_back(additional_vertex.id());
-            for (gl::id_type id = constants::v2_id; id < constants::n_elements_alg; id++)
+            for (auto id = constants::v2_id; id < constants::n_elements_alg; id++)
                 expected_topological_order.push_back(id);
         }
 
@@ -55,7 +55,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             const fs::path order_file_path =
                 data_path / "topological_sort_directed_acyclic_order.txt";
-            expected_topological_order = load_list<gl::id_type>(sut.order(), order_file_path);
+            expected_topological_order =
+                load_list<gl::default_id_type>(sut.order(), order_file_path);
         }
 
         CAPTURE(sut);

@@ -13,12 +13,12 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = gl::vertex_descriptor<>;
 
-    static constexpr gl::id_type id1 = 0uz;
-    static constexpr gl::id_type id2 = id1 + 1uz;
+    static constexpr gl::default_id_type id1 = 0uz;
+    static constexpr gl::default_id_type id2 = id1 + 1uz;
 
-    static constexpr gl::id_type v1 = constants::v1_id;
-    static constexpr gl::id_type v2 = constants::v2_id;
-    static constexpr gl::id_type v3 = constants::v3_id;
+    static constexpr gl::default_id_type v1 = constants::v1_id;
+    static constexpr gl::default_id_type v2 = constants::v2_id;
+    static constexpr gl::default_id_type v3 = constants::v3_id;
 };
 
 TEST_CASE_FIXTURE(
@@ -79,23 +79,17 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("accessing properties should throw for invalid edges") {
         CHECK_THROWS_AS(
-            discard_result(
-                EdgeType(constants::invalid_id, fixture.v1, fixture.v2, used).properties()
-            ),
+            discard_result(EdgeType(gl::invalid_id, fixture.v1, fixture.v2, used).properties()),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            discard_result(
-                EdgeType(fixture.id1, constants::invalid_id, fixture.v2, used).properties()
-            ),
+            discard_result(EdgeType(fixture.id1, gl::invalid_id, fixture.v2, used).properties()),
             std::logic_error
         );
 
         CHECK_THROWS_AS(
-            discard_result(
-                EdgeType(fixture.id1, fixture.v1, constants::invalid_id, used).properties()
-            ),
+            discard_result(EdgeType(fixture.id1, fixture.v1, gl::invalid_id, used).properties()),
             std::logic_error
         );
 
@@ -112,10 +106,10 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
 
     SUBCASE("an edge should be valid if it has a valid ID and vertices") {
         CHECK(sut.is_valid());
-        CHECK_FALSE(EdgeType{constants::invalid_id, constants::invalid_id, constants::invalid_id});
-        CHECK_FALSE(EdgeType{constants::invalid_id, fixture.v1, fixture.v2});
-        CHECK_FALSE(EdgeType{fixture.id1, constants::invalid_id, fixture.v2});
-        CHECK_FALSE(EdgeType{fixture.id1, fixture.v1, constants::invalid_id});
+        CHECK_FALSE(EdgeType{gl::invalid_id, gl::invalid_id, gl::invalid_id});
+        CHECK_FALSE(EdgeType{gl::invalid_id, fixture.v1, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, gl::invalid_id, fixture.v2});
+        CHECK_FALSE(EdgeType{fixture.id1, fixture.v1, gl::invalid_id});
     }
 
     SUBCASE("id() should return the ID of the edge") {
@@ -158,8 +152,8 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
         CHECK(sut.is_incident_with(fixture.v1));
         CHECK(sut.is_incident_with(fixture.v2));
 
-        CHECK_FALSE(sut.is_incident_with(constants::invalid_id));
-        CHECK_FALSE(sut.is_incident_with(constants::invalid_id));
+        CHECK_FALSE(sut.is_incident_with(gl::invalid_id));
+        CHECK_FALSE(sut.is_incident_with(gl::invalid_id));
     }
 
     SUBCASE("is_loop should return true onlyu for edges where both vertices are the same") {

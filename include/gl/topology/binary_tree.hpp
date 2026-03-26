@@ -15,8 +15,12 @@ namespace gl::topology {
 
 namespace detail {
 
-[[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(const size_type source_id) {
-    return std::make_pair(2uz * source_id + 1uz, 2uz * source_id + 2uz);
+[[nodiscard]] gl_attr_force_inline auto get_binary_target_ids(traits::c_id_type auto source_id) {
+    using id_type = std::decay_t<decltype(source_id)>;
+    return std::make_pair(
+        static_cast<id_type>(2) * source_id + static_cast<id_type>(1),
+        static_cast<id_type>(2) * source_id + static_cast<id_type>(2)
+    );
 }
 
 constexpr size_type min_non_trivial_bin_tree_depth = 2uz;
@@ -24,7 +28,9 @@ constexpr size_type min_non_trivial_bin_tree_depth = 2uz;
 } // namespace detail
 
 template <traits::c_graph GraphType>
-[[nodiscard]] GraphType regular_binary_tree(const size_type depth) {
+[[nodiscard]] GraphType regular_binary_tree(size_type depth) {
+    using id_type = typename GraphType::id_type;
+
     if (depth < detail::min_non_trivial_bin_tree_depth)
         return GraphType{depth};
 
@@ -37,7 +43,7 @@ template <traits::c_graph GraphType>
 
     const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-    for (auto source_id = 0uz; source_id < n_source_vertices; ++source_id) {
+    for (id_type source_id = initial_id; source_id < n_source_vertices; ++source_id) {
         const auto target_ids = detail::get_binary_target_ids(source_id);
         graph.add_edges_from(
             source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}
@@ -48,14 +54,16 @@ template <traits::c_graph GraphType>
 }
 
 template <traits::c_flat_list_graph GraphType>
-[[nodiscard]] GraphType regular_binary_tree(const size_type depth) {
+[[nodiscard]] GraphType regular_binary_tree(size_type depth) {
     using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
 }
 
 template <traits::c_graph GraphType>
-[[nodiscard]] GraphType bidirectional_regular_binary_tree(const size_type depth) {
+[[nodiscard]] GraphType bidirectional_regular_binary_tree(size_type depth) {
     if constexpr (traits::c_directed_graph<GraphType>) {
+        using id_type = typename GraphType::id_type;
+
         if (depth < detail::min_non_trivial_bin_tree_depth)
             return GraphType{depth};
 
@@ -68,7 +76,7 @@ template <traits::c_graph GraphType>
 
         const auto n_source_vertices = n_vertices - util::upow(base, i_end);
 
-        for (auto source_id = 0uz; source_id < n_source_vertices; ++source_id) {
+        for (id_type source_id = initial_id; source_id < n_source_vertices; ++source_id) {
             const auto target_ids = detail::get_binary_target_ids(source_id);
             graph.add_edges_from(
                 source_id, std::initializer_list<id_type>{target_ids.first, target_ids.second}
@@ -85,7 +93,7 @@ template <traits::c_graph GraphType>
 }
 
 template <traits::c_flat_list_graph GraphType>
-[[nodiscard]] GraphType bidirectional_regular_binary_tree(const size_type depth) {
+[[nodiscard]] GraphType bidirectional_regular_binary_tree(size_type depth) {
     using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
     return to<impl::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
 }

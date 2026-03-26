@@ -19,7 +19,7 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_conversion");
 
-constexpr auto get_id = [](auto&& element) -> gl::id_type { return element.id(); };
+constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
 
 struct test_conversion {
     using property_type = gl::name_property;
@@ -73,7 +73,7 @@ struct test_conversion {
     }
 
     gl::size_type test_order{5};
-    std::vector<gl::homogeneous_pair<gl::id_type>> test_edges{
+    std::vector<gl::homogeneous_pair<gl::default_id_type>> test_edges{
         {0, 1},
         {0, 2},
         {1, 3},

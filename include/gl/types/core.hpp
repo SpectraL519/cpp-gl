@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
+
+#include <concepts>
 #include <cstdint>
 #include <optional>
 #include <utility>
@@ -11,7 +14,18 @@
 namespace gl {
 
 using size_type = std::size_t;
-using id_type = size_type;
+using default_id_type = std::uint32_t;
+
+namespace traits {
+
+template <typename T>
+concept c_id_type = std::unsigned_integral<T>;
+
+} // namespace traits
+
+[[nodiscard]] gl_attr_force_inline constexpr size_type to_idx(traits::c_id_type auto id) noexcept {
+    return static_cast<size_type>(id);
+}
 
 template <typename T>
 using homogeneous_pair = std::pair<T, T>;

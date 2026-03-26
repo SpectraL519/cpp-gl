@@ -1,3 +1,4 @@
+#include "gl/types/core.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 
@@ -23,10 +24,10 @@ struct test_adjacency_matrix {
         return sut._matrix.size();
     }
 
-    gl::size_type next_edge_id = 0uz;
+    gl::default_id_type next_edge_id = 0u;
 };
 
-inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
+inline constexpr auto is_valid_id = [](const auto& id) { return id != gl::invalid_id; };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent tests", SutType, directional_tag_sut_template
@@ -91,7 +92,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         SutType sut{constants::n_elements};
         const auto target_ids = {constants::v1_id, constants::v2_id, constants::v3_id};
 
-        sut.add_edges_from(std::views::iota(0uz, target_ids.size()), constants::v1_id, target_ids);
+        sut.add_edges_from(
+            std::views::iota(constants::v1_id, target_ids.size()), constants::v1_id, target_ids
+        );
 
         REQUIRE(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto target_id) {
             return sut.has_edge(constants::v1_id, target_id);
@@ -149,13 +152,13 @@ struct test_directed_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::directed_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const gl::default_id_type source_id, const gl::default_id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -206,7 +209,7 @@ TEST_CASE_FIXTURE(
     test_directed_adjacency_matrix,
     "at should return a view equivalent to the matrix row of the given vertex"
 ) {
-    for (const auto vertex_id : std::views::iota(0uz, constants::n_elements)) {
+    for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements)) {
         const auto edge = add_edge(vertex_id, (vertex_id + 1) % constants::n_elements);
         auto row_view = sut.at(vertex_id);
 
@@ -250,7 +253,7 @@ TEST_CASE_FIXTURE(
     const auto valid_edge = add_edge(constants::v1_id, constants::v2_id);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{constants::invalid_id, constants::v1_id, constants::v2_id};
+    const edge_type invalid_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
@@ -340,7 +343,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<gl::size_type(const gl::id_type)> deg_proj;
+    std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
     SUBCASE("in_degree") {
         deg_proj = [this](const auto vertex_id) { return sut.in_degree(vertex_id); };
@@ -389,7 +392,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements;
 
-    std::vector<gl::id_type> degree_map;
+    std::vector<gl::size_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();
@@ -413,7 +416,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements * 2uz;
 
-    std::vector<gl::id_type> degree_map = sut.degree_map();
+    std::vector<gl::size_type> degree_map = sut.degree_map();
 
     REQUIRE_EQ(degree_map.size(), constants::n_elements);
     CHECK_EQ(std::ranges::count(degree_map, expected_deg), constants::n_elements);
@@ -459,13 +462,13 @@ struct test_undirected_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::undirected_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>>;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -590,7 +593,7 @@ TEST_CASE_FIXTURE(
     const auto valid_edge = add_edge(constants::v1_id, constants::v2_id);
     CHECK(sut.has_edge(valid_edge));
 
-    const edge_type invalid_edge{constants::invalid_id, constants::v1_id, constants::v2_id};
+    const edge_type invalid_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
     CHECK_FALSE(sut.has_edge(invalid_edge));
 
     // edge connecting vertices not connected in the actual graph
@@ -682,7 +685,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<gl::size_type(const gl::id_type)> deg_proj;
+    std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
     SUBCASE("degree") {
         deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };
@@ -720,7 +723,7 @@ TEST_CASE_FIXTURE(
     init_complete_graph(false);
     const auto expected_deg = constants::n_elements + 1;
 
-    std::vector<gl::id_type> degree_map;
+    std::vector<gl::size_type> degree_map;
 
     SUBCASE("in_degree") {
         degree_map = sut.in_degree_map();

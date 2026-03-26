@@ -8,9 +8,37 @@
 
 #include <limits>
 
-namespace gl::constants {
+namespace gl {
 
-inline constexpr id_type initial_id{std::numeric_limits<id_type>::min()};
-inline constexpr id_type invalid_id{std::numeric_limits<id_type>::max()};
+template <traits::c_id_type IdType>
+inline constexpr IdType initial_id_v{0};
 
-} // namespace gl::constants
+struct initial_id_t {
+    template <traits::c_id_type IdType>
+    [[nodiscard]] constexpr operator IdType() const noexcept {
+        return initial_id_v<IdType>;
+    }
+};
+
+inline constexpr initial_id_t initial_id{};
+
+// --- invalid id ---
+
+template <traits::c_id_type IdType>
+inline constexpr IdType invalid_id_v{std::numeric_limits<IdType>::max()};
+
+struct invalid_id_t {
+    template <traits::c_id_type IdType>
+    [[nodiscard]] constexpr operator IdType() const noexcept {
+        return invalid_id_v<IdType>;
+    }
+
+    template <traits::c_id_type IdType>
+    [[nodiscard]] friend constexpr bool operator==(const IdType& lhs, invalid_id_t) noexcept {
+        return lhs == invalid_id_v<IdType>;
+    }
+};
+
+inline constexpr invalid_id_t invalid_id{};
+
+} // namespace gl
