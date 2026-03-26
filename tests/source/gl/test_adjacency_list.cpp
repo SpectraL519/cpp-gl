@@ -23,7 +23,7 @@ struct test_adjacency_list {
         return sut._list.size();
     }
 
-    gl::id_type next_edge_id = 0u;
+    gl::default_id_type next_edge_id = 0u;
 };
 
 TEST_CASE_TEMPLATE_DEFINE("common adjacency list tests", SutType, common_adj_list_template) {
@@ -116,13 +116,13 @@ struct test_directed_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
     using edge_type = typename sut_type::edge_type;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -156,13 +156,12 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     auto& sut = fixture.sut;
 
     const auto size = [&fixture](const auto& sut) { return fixture.size(sut); };
-    const auto add_edge = [&fixture](const gl::id_type source_id, const gl::id_type target_id) {
+    const auto add_edge = [&fixture](const auto source_id, const auto target_id) {
         return fixture.add_edge(source_id, target_id);
     };
-    const auto fully_connect_vertex =
-        [&fixture](const gl::id_type source_id, const bool no_loops = true) {
-            fixture.fully_connect_vertex(source_id, no_loops);
-        };
+    const auto fully_connect_vertex = [&fixture](const auto source_id, const bool no_loops = true) {
+        fixture.fully_connect_vertex(source_id, no_loops);
+    };
     const auto init_complete_graph = [&fixture](const bool no_loops = true) {
         fixture.init_complete_graph(no_loops);
     };
@@ -295,7 +294,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     ) {
         init_complete_graph();
 
-        std::function<gl::size_type(const gl::id_type)> deg_proj;
+        std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
         SUBCASE("in_degree") {
             deg_proj = [&sut](const auto vertex_id) { return sut.in_degree(vertex_id); };
@@ -413,13 +412,13 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
     using edge_type = typename sut_type::edge_type;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -460,13 +459,12 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
     auto& sut = fixture.sut;
 
     const auto size = [&fixture](const auto& sut) { return fixture.size(sut); };
-    const auto add_edge = [&fixture](const gl::id_type source_id, const gl::id_type target_id) {
+    const auto add_edge = [&fixture](const auto source_id, const auto target_id) {
         return fixture.add_edge(source_id, target_id);
     };
-    const auto fully_connect_vertex =
-        [&fixture](const gl::id_type source_id, const bool no_loops = true) {
-            fixture.fully_connect_vertex(source_id, no_loops);
-        };
+    const auto fully_connect_vertex = [&fixture](const auto source_id, const bool no_loops = true) {
+        fixture.fully_connect_vertex(source_id, no_loops);
+    };
     const auto init_complete_graph = [&fixture](const bool no_loops = true) {
         fixture.init_complete_graph(no_loops);
     };
@@ -625,7 +623,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
             "vertex") {
         init_complete_graph();
 
-        std::function<gl::size_type(const gl::id_type)> deg_proj;
+        std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
         SUBCASE("degree") {
             deg_proj = [&sut](const auto vertex_id) { return sut.degree(vertex_id); };

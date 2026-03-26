@@ -57,17 +57,17 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
 
-    std::vector<gl::id_type> expected_postvisit_order = expected_previsit_order;
+    std::vector<gl::default_id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::id_type> previsit_order, postvisit_order;
+    std::vector<gl::default_id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root_vertex<id_type>,
-        [&](const gl::id_type vertex_id) { // previsit
+        [&](const gl::default_id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::id_type vertex_id) { // postvisit
+        [&](const gl::default_id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
             vertex_properties[vertex_id].visited = true;
         }
@@ -109,8 +109,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     using id_type = typename graph_type::id_type;
 
     graph_type graph;
-    gl::id_type root_vertex_id = constants::invalid_id;
-    std::deque<gl::id_type> expected_previsit_order;
+    gl::default_id_type root_vertex_id = constants::invalid_id;
+    std::deque<gl::default_id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
@@ -133,16 +133,16 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
 
-    std::deque<gl::id_type> expected_postvisit_order = expected_previsit_order;
+    std::deque<gl::default_id_type> expected_postvisit_order = expected_previsit_order;
 
-    std::vector<gl::id_type> previsit_order, postvisit_order;
+    std::vector<gl::default_id_type> previsit_order, postvisit_order;
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const gl::id_type vertex_id) { // previsit
+        [&](const gl::default_id_type vertex_id) { // previsit
             previsit_order.push_back(vertex_id);
         },
-        [&](const gl::id_type vertex_id) { // postvisit
+        [&](const gl::default_id_type vertex_id) { // postvisit
             postvisit_order.push_back(vertex_id);
         }
     );

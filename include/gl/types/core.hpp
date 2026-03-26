@@ -12,7 +12,6 @@
 namespace gl {
 
 using size_type = std::size_t;
-using id_type = std::uint32_t;
 using default_id_type = std::uint32_t;
 
 namespace traits {

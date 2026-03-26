@@ -14,22 +14,21 @@ template <typename F>
 concept c_empty_callback = std::same_as<F, algorithm::empty_callback>;
 
 template <typename F, typename ReturnType, typename... Args>
-concept c_optional_callback = c_empty_callback<F> or std::is_invocable_r_v<ReturnType, F, Args...>;
+concept c_callback = std::is_invocable_r_v<ReturnType, F, Args...>;
 
 template <typename F, typename ReturnType, typename... Args>
-concept c_id_callback = std::is_invocable_r_v<ReturnType, F, const id_type, Args...>;
+concept c_optional_callback = c_empty_callback<F> or c_callback<F, ReturnType, Args...>;
 
-template <typename F, typename ReturnType, typename... Args>
-concept c_optional_id_callback = c_optional_callback<F, ReturnType, const id_type, Args...>;
+template <typename F, typename... Args>
+concept c_predicate = std::predicate<F, Args...>;
 
-template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_edge_callback =
-    c_graph<GraphType>
-    and std::is_invocable_r_v<ReturnType, F, const typename GraphType::edge_type&, Args...>;
+template <typename F, typename... Args>
+concept c_optional_predicate = c_empty_callback<F> or c_predicate<F, Args...>;
 
-template <typename F, typename GraphType, typename ReturnType, typename... Args>
-concept c_optional_edge_callback =
-    c_graph<GraphType>
-    and c_optional_callback<F, ReturnType, const typename GraphType::edge_type&, Args...>;
+template <typename F, typename... Args>
+concept c_decision_predicate = std::is_invocable_r_v<algorithm::decision, F, Args...>;
+
+template <typename F, typename... Args>
+concept c_optional_decision_predicate = c_empty_callback<F> or c_decision_predicate<F, Args...>;
 
 } // namespace gl::traits

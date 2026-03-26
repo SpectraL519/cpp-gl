@@ -13,12 +13,12 @@ TEST_SUITE_BEGIN("test_edge_descriptor");
 struct test_edge_descriptor {
     using vertex_type = gl::vertex_descriptor<>;
 
-    static constexpr gl::id_type id1 = 0uz;
-    static constexpr gl::id_type id2 = id1 + 1uz;
+    static constexpr gl::default_id_type id1 = 0uz;
+    static constexpr gl::default_id_type id2 = id1 + 1uz;
 
-    static constexpr gl::id_type v1 = constants::v1_id;
-    static constexpr gl::id_type v2 = constants::v2_id;
-    static constexpr gl::id_type v3 = constants::v3_id;
+    static constexpr gl::default_id_type v1 = constants::v1_id;
+    static constexpr gl::default_id_type v2 = constants::v2_id;
+    static constexpr gl::default_id_type v3 = constants::v3_id;
 };
 
 TEST_CASE_FIXTURE(

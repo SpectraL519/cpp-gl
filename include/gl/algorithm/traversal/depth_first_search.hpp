@@ -13,16 +13,18 @@ namespace gl::algorithm {
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
     traits::c_graph GraphType,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
-return_type<ResultDiscriminator, predecessors_map> depth_first_search(
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
+return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search(
     const GraphType& graph,
     const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<id_type> sources(graph.order());
+    std::vector<typename GraphType::id_type> sources(graph.order());
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
@@ -33,7 +35,7 @@ return_type<ResultDiscriminator, predecessors_map> depth_first_search(
             graph,
             root_vertex_id,
             default_visit_vertex_predicate(visited),
-            default_visit_callback<ResultDiscriminator>(visited, pred_map),
+            default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
             default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
@@ -45,7 +47,7 @@ return_type<ResultDiscriminator, predecessors_map> depth_first_search(
                 graph,
                 root_vertex_id,
                 default_visit_vertex_predicate(visited),
-                default_visit_callback<ResultDiscriminator>(visited, pred_map),
+                default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
                 default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit
@@ -61,16 +63,18 @@ return_type<ResultDiscriminator, predecessors_map> depth_first_search(
 template <
     result_discriminator ResultDiscriminator = algorithm::ret,
     traits::c_graph GraphType,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
-return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
+return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_first_search(
     const GraphType& graph,
     const typename GraphType::id_type root_vertex_id = no_root_vertex<typename GraphType::id_type>,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<id_type> sources(graph.order());
+    std::vector<typename GraphType::id_type> sources(graph.order());
 
     auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
 
@@ -80,7 +84,7 @@ return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
             root_vertex_id,
             root_vertex_id, // pred_id
             default_visit_vertex_predicate(visited),
-            default_visit_callback<ResultDiscriminator>(visited, pred_map),
+            default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
             default_enqueue_vertex_predicate<GraphType>(visited),
             pre_visit,
             post_visit
@@ -93,7 +97,7 @@ return_type<ResultDiscriminator, predecessors_map> recursive_depth_first_search(
                 root_id,
                 root_id, // pred_id
                 default_visit_vertex_predicate(visited),
-                default_visit_callback<ResultDiscriminator>(visited, pred_map),
+                default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
                 default_enqueue_vertex_predicate<GraphType>(visited),
                 pre_visit,
                 post_visit

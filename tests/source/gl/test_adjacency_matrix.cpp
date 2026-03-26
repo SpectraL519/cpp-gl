@@ -1,3 +1,4 @@
+#include "gl/types/core.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 
@@ -23,7 +24,7 @@ struct test_adjacency_matrix {
         return sut._matrix.size();
     }
 
-    gl::id_type next_edge_id = 0u;
+    gl::default_id_type next_edge_id = 0u;
 };
 
 inline constexpr auto is_valid_id = [](const auto& id) { return id != constants::invalid_id; };
@@ -151,13 +152,13 @@ struct test_directed_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::directed_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const gl::default_id_type source_id, const gl::default_id_type target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -342,7 +343,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<gl::size_type(const gl::id_type)> deg_proj;
+    std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
     SUBCASE("in_degree") {
         deg_proj = [this](const auto vertex_id) { return sut.in_degree(vertex_id); };
@@ -461,13 +462,13 @@ struct test_undirected_adjacency_matrix : public test_adjacency_matrix {
     using edge_type = gl::undirected_edge<>;
     using sut_type = gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>>;
 
-    edge_type add_edge(const gl::id_type source_id, const gl::id_type target_id) {
+    edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;
         sut.add_edge(new_edge_id, source_id, target_id);
         return edge_type{new_edge_id, source_id, target_id};
     }
 
-    void fully_connect_vertex(const gl::id_type source_id, const bool no_loops = true) {
+    void fully_connect_vertex(const auto source_id, const bool no_loops = true) {
         for (const auto target_id : constants::vertex_id_view) {
             if (target_id == source_id and no_loops)
                 continue;
@@ -684,7 +685,7 @@ TEST_CASE_FIXTURE(
 ) {
     init_complete_graph();
 
-    std::function<gl::size_type(const gl::id_type)> deg_proj;
+    std::function<gl::size_type(const gl::default_id_type)> deg_proj;
 
     SUBCASE("degree") {
         deg_proj = [this](const auto vertex_id) { return sut.degree(vertex_id); };

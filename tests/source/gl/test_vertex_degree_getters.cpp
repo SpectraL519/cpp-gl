@@ -11,7 +11,7 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_vertex_degree_getters");
 
-inline constexpr auto get_id = [](auto&& element) -> gl::id_type { return element.id(); };
+inline constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for directed graphs", TraitsType, directed_graph_traits_template
@@ -81,7 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = 0uz;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const gl::id_type vertex_id) {
+        [&](const gl::default_id_type vertex_id) {
             const bool result =
                 sut.in_degree(vertex_id) == expected_in_deg_list[i]
                 and sut.out_degree(vertex_id) == expected_out_deg_list[i]
@@ -153,7 +153,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     i = 0uz;
     CHECK(std::ranges::all_of(
         sut.vertices(),
-        [&](const gl::id_type vertex_id) {
+        [&](const gl::default_id_type vertex_id) {
             const auto expected_deg = expected_deg_list[i];
             const bool result =
                 sut.in_degree(vertex_id) == expected_deg

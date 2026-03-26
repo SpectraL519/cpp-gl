@@ -35,7 +35,7 @@ public:
 
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using item_type = specialized::adjacency_list_item;
+    using item_type = specialized::adjacency_list_item<id_type>;
     using adjacency_list_type = typename specialized::adjacency_list_impl_traits<
         adjacency_list>::template storage_type<item_type>;
 
@@ -106,14 +106,12 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
-        return std::ranges::contains(
-            this->_list[source_id], target_id, &specialized::adjacency_list_item::vertex_id
-        );
+        return std::ranges::contains(this->_list[source_id], target_id, &item_type::vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
         return std::ranges::contains(
-            this->_list[edge.source()], specialized::adjacency_list_item{edge.target(), edge.id()}
+            this->_list[edge.source()], item_type{edge.target(), edge.id()}
         );
     }
 
@@ -121,9 +119,7 @@ public:
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto& adjacent_edges = this->_list[source_id];
-        const auto item_it = std::ranges::find(
-            adjacent_edges, target_id, &specialized::adjacency_list_item::vertex_id
-        );
+        const auto item_it = std::ranges::find(adjacent_edges, target_id, &item_type::vertex_id);
         if (item_it == adjacent_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);

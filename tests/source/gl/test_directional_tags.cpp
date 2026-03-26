@@ -7,15 +7,15 @@
 
 namespace gl_testing {
 
-TEST_SUITE_BEGIN("test_edge_tags");
+TEST_SUITE_BEGIN("test_directional_tags");
 
-struct test_edge_tags {
-    static constexpr gl::id_type id = 0uz;
-    static constexpr gl::id_type v1 = constants::v1_id;
-    static constexpr gl::id_type v2 = constants::v2_id;
+struct test_directional_tags {
+    static constexpr gl::default_id_type id = 0uz;
+    static constexpr gl::default_id_type v1 = constants::v1_id;
+    static constexpr gl::default_id_type v2 = constants::v2_id;
 };
 
-struct test_directed_edge_tag : test_edge_tags {
+struct test_directed_edge_tag : test_directional_tags {
     using sut_type = gl::directed_t;
     using edge_type = gl::directed_edge<>;
 
@@ -38,7 +38,7 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(sut_type::is_incident_to(edge, constants::invalid_id));
 }
 
-struct test_undirected_edge_tag : test_edge_tags {
+struct test_undirected_edge_tag : test_directional_tags {
     using sut_type = gl::undirected_t;
     using edge_type = gl::undirected_edge<>;
 
@@ -63,6 +63,6 @@ TEST_CASE_FIXTURE(test_undirected_edge_tag, "is_incident_to should return true f
     CHECK_FALSE(sut_type::is_incident_to(edge, constants::invalid_id));
 }
 
-TEST_SUITE_END(); // untest_edge_tags
+TEST_SUITE_END(); // untest_directional_tags
 
 } // namespace gl_testing

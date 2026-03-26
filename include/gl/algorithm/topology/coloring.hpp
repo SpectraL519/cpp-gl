@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/bfs.hpp"
 
 namespace gl::algorithm {
@@ -12,8 +13,10 @@ using bicoloring_type = std::vector<binary_color>;
 
 template <
     traits::c_graph GraphType,
-    traits::c_optional_id_callback<void> PreVisitCallback = algorithm::empty_callback,
-    traits::c_optional_id_callback<void> PostVisitCallback = algorithm::empty_callback>
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
+        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
+        algorithm::empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     const GraphType& graph,
     const PreVisitCallback& pre_visit = {},
@@ -31,21 +34,21 @@ template <
 
         const bool is_bipartite = bfs(
             graph,
-            init_range(root_id),
+            init_range<GraphType>(root_id),
             algorithm::empty_callback{}, // visit predicate
             algorithm::empty_callback{}, // visit callback
-            [&coloring](const id_type vertex_id, const edge_type& in_edge)
-                -> predicate_result { // enqueue predicate
+            [&coloring](const typename GraphType::id_type vertex_id, const edge_type& in_edge)
+                -> decision { // enqueue predicate
                 if (in_edge.is_loop())
-                    return predicate_result::unknown; // graph is not bipartite
+                    return decision::abort; // graph is not bipartite
 
                 const auto pred_id = in_edge.incident_vertex(vertex_id);
 
-                auto& v_color = coloring[static_cast<size_type>(vertex_id)];
-                auto p_color = coloring[static_cast<size_type>(pred_id)];
+                auto& v_color = coloring[to_idx(vertex_id)];
+                auto p_color = coloring[to_idx(pred_id)];
 
                 if (v_color == p_color)
-                    return predicate_result::unknown; // graph is not bipartite
+                    return decision::abort; // graph is not bipartite
 
                 if (not v_color.is_set()) {
                     v_color = p_color.next();

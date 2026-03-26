@@ -28,7 +28,7 @@ struct mst_descriptor {
 
 template <traits::c_undirected_graph GraphType>
 [[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
-    const GraphType& graph, const std::optional<id_type> root_id_opt
+    const GraphType& graph, typename GraphType::id_type root_id
 ) {
     // type definitions
     using id_type = typename GraphType::id_type;
@@ -51,7 +51,8 @@ template <traits::c_undirected_graph GraphType>
     queue_type edge_queue;
 
     // insert the edges adjacent to the root vertex to the queue
-    const id_type root_id = root_id_opt.value_or(constants::initial_id<id_type>);
+    if (root_id == constants::invalid_id<id_type>)
+        root_id = constants::initial_id<id_type>;
 
     for (const auto& edge : graph.adjacent_edges(root_id))
         edge_queue.emplace(edge);
@@ -88,7 +89,7 @@ template <traits::c_undirected_graph GraphType>
 template <traits::c_undirected_graph GraphType>
 requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
 [[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
-    const GraphType& graph, const std::optional<id_type> root_id_opt
+    const GraphType& graph, typename GraphType::id_type root_id
 ) {
     // type definitions
     using id_type = typename GraphType::id_type;
@@ -104,8 +105,10 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
     std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
-    min_cost.at(root_id_opt.value_or(constants::initial_id<id_type>)) =
-        static_cast<distance_type>(0);
+    if (root_id == constants::invalid_id<id_type>)
+        root_id = constants::initial_id<id_type>;
+
+    min_cost.at(root_id) = static_cast<distance_type>(0);
 
     auto heap_comparator = [&min_cost](const id_type lhs, const id_type rhs) {
         return min_cost[lhs] > min_cost[rhs]; // min-heap based on min_cost

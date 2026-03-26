@@ -86,7 +86,7 @@ struct test_graph {
         REQUIRE(std::ranges::all_of(
             graph.vertex_ids(),
             [&graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
-                const gl::id_type vertex_id
+                const gl::default_id_type vertex_id
             ) { return gl::util::range_size(graph.adjacent_edges(vertex_id)) == expected_n_edges; }
         ));
     }
@@ -100,9 +100,9 @@ struct test_graph {
     const vertex_type invalid_vertex{constants::invalid_id}; // remove?
 };
 
-using vertex_id_list = std::vector<gl::id_type>;
+using vertex_id_list = std::vector<gl::default_id_type>;
 
-inline constexpr auto get_id = [](auto&& element) -> gl::id_type { return element.id(); };
+inline constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
 
 TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_template) {
     using fixture_type = test_graph<TraitsType>;
@@ -136,9 +136,12 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             static_cast<void>(sut.get_vertex(constants::out_of_rng_idx)), std::out_of_range
         );
 
-        CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const gl::id_type vertex_id) {
-            return sut.adjacent_edges(vertex_id).empty();
-        }));
+        CHECK(std::ranges::all_of(
+            constants::vertex_id_view,
+            [&sut](const gl::default_id_type vertex_id) {
+                return sut.adjacent_edges(vertex_id).empty();
+            }
+        ));
     }
 
     // --- vertex method tests ---
@@ -147,10 +150,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         sut_type sut;
 
         constexpr gl::size_type target_n_vertices = constants::n_elements;
-        for (gl::id_type v_id = 0uz; v_id < target_n_vertices; v_id++) {
+        for (auto v_id = 0u; v_id < target_n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
-            CHECK_EQ(sut.order(), v_id + 1uz);
+            CHECK_EQ(sut.order(), v_id + 1u);
             CHECK(sut.adjacent_edges(v_id).empty());
         }
 
@@ -256,7 +259,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         ));
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
-            [&sut, expected_n_incident_edges](const gl::id_type vertex_id) {
+            [&sut, expected_n_incident_edges](const gl::default_id_type vertex_id) {
                 return gl::util::range_size(sut.adjacent_edges(vertex_id))
                     == expected_n_incident_edges;
             }
@@ -288,7 +291,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         ));
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
-            [&sut, expected_n_incident_edges](const gl::id_type vertex_id) {
+            [&sut, expected_n_incident_edges](const gl::default_id_type vertex_id) {
                 return gl::util::range_size(sut.adjacent_edges(vertex_id))
                     == expected_n_incident_edges;
             }
@@ -437,7 +440,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             REQUIRE_EQ(sut.size(), 0uz);
 
             constexpr auto source_id = constants::v1_id;
-            const std::vector<gl::id_type> target_id_list{
+            const std::vector<gl::default_id_type> target_id_list{
                 constants::v1_id, constants::v2_id, constants::v3_id
             };
 
