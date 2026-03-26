@@ -33,10 +33,12 @@
 
 ## Table of content
 
+- [Overview](#overview)
+- [Table of content](#table-of-content)
 - [Installing the library](#installing-the-library)
 - [CMake integration](#cmake-integration)
-- [Documentation](#documentation)
-- [Dev notes](#dev-notes)
+- [Documentation - TODO](#documentation---todo)
+- [Dev notes - TODO](#dev-notes---todo)
 - [Compiler support](#compiler-support)
 - [Licence](#licence)
 
@@ -83,52 +85,11 @@ target_link_libraries(my_project PRIVATE cpp-gl)
 
 <br />
 
-## Documentation
-
-> [!NOTE]
-> The `CPP-GL` library does not use any dedicated documentation tools in the initial release, however it is planned to add such a tool in a future release
-
-### Quick start
-
-The core of the library is the template [graph class](/docs/graph.md) which holds the graph's [vertices](/docs/vertex.md) and [edges](/docs/edge.md) and defines methods allowing for the manipulation of the graph's structure.
-
-```cpp
-#include <gl/graph.hpp>
-
-#include <print>
-
-int main() {
-    // initialize the graph with 5 vertices
-    gl::graph<> graph(5);
-
-    // add some edges
-    graph.add_edge(0, 1);
-    graph.add_edge(1, 4);
-    graph.add_edge(4, 2);
-    graph.add_edge(4, 3);
-
-    // print the size of the graph
-    std::println("number of vertices: {}\nnumber of edges: {}", graph.order(), graph.size());
-}
-```
-
-The [graph class](/docs/graph.md) can be easily customized to suit your needs by defining the directional and implementation types of the graph as well as the [vertex](/docs/graph_elements.md) and [edge](/docs/graph_elements.md) properties types.
-
-While the `gl::graph` class is the key element of the library, it's not the only one. The `CPP-GL` library provides a wide range of functionalities designed to handle various graph-related operations efficiently. For detailed explanations and usage examples of these features, please refer to the dedicated documentation pages linked below.
-
-- [The graph class - library's core](/docs/graph.md)
-- [The vertex and edge classes - representation of the graph's elements](/docs/graph_elements.md)
-- [I/O operations](/docs/io.md)
-- [Graph topology generators](/docs/topologies.md)
-- [Algorithms](/docs/algorithms.md)
-- [Core utility types](/docs/core_util_types.md)
-- [Additional functionality](/docs/additional_functionality.md)
+## Documentation - TODO
 
 <br />
 
-## Dev notes
-
-The instructions and requirements of working on the `CPP-GL` project can be found [here](/docs/dev_notes.md).
+## Dev notes - TODO
 
 <br />
 
