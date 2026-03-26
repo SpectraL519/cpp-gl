@@ -109,7 +109,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using id_type = typename graph_type::id_type;
 
     graph_type graph;
-    gl::default_id_type root_vertex_id = constants::invalid_id_v;
+    gl::default_id_type root_vertex_id = gl::invalid_id;
     std::deque<gl::default_id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {

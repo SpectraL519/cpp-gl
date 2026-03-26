@@ -304,7 +304,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using id_type = typename GraphType::id_type;
 
     graph_type graph;
-    id_type root_vertex_id = constants::invalid_id_v;
+    id_type root_vertex_id = gl::invalid_id;
     std::vector<id_type> expected_previsit_order;
 
     SUBCASE("single vertex graph") {

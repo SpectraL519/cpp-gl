@@ -46,19 +46,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return edge_descriptor(constants::invalid_id_v<id_type>, constants::invalid_id_v<id_type>, constants::invalid_id_v<id_type>);
+        return edge_descriptor(invalid_id, invalid_id, invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return edge_descriptor(
-            constants::invalid_id_v<id_type>,
-            constants::invalid_id_v<id_type>,
-            constants::invalid_id_v<id_type>,
-            invalid_properties
-        );
+        return edge_descriptor(invalid_id, invalid_id, invalid_id, invalid_properties);
     }
 
     edge_descriptor(const edge_descriptor&) = default;
@@ -96,9 +91,8 @@ public:
     }
 
     [[nodiscard]] bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id_v<id_type>
-           and this->_vertices.first != constants::invalid_id_v<id_type>
-           and this->_vertices.second != constants::invalid_id_v<id_type>;
+        return this->_id != invalid_id and this->_vertices.first != invalid_id
+           and this->_vertices.second != invalid_id;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {

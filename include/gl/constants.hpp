@@ -14,9 +14,6 @@ namespace constants {
 template <traits::c_id_type IdType>
 inline constexpr IdType initial_id_v{0};
 
-template <traits::c_id_type IdType>
-inline constexpr IdType invalid_id_v{std::numeric_limits<IdType>::max()};
-
 } // namespace constants
 
 struct initial_id_t {
@@ -28,15 +25,20 @@ struct initial_id_t {
 
 inline constexpr initial_id_t initial_id{};
 
+// --- invalid id ---
+
+template <traits::c_id_type IdType>
+inline constexpr IdType invalid_id_v{std::numeric_limits<IdType>::max()};
+
 struct invalid_id_t {
     template <traits::c_id_type IdType>
     [[nodiscard]] constexpr operator IdType() const noexcept {
-        return constants::invalid_id_v<IdType>;
+        return invalid_id_v<IdType>;
     }
 
     template <traits::c_id_type IdType>
     [[nodiscard]] friend constexpr bool operator==(const IdType& lhs, invalid_id_t) noexcept {
-        return lhs == constants::invalid_id_v<IdType>;
+        return lhs == invalid_id_v<IdType>;
     }
 };
 

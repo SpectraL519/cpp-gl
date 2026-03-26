@@ -27,7 +27,7 @@ TEST_CASE_FIXTURE(
 ) {
     CHECK(sut_type::is_incident_from(edge, v1));
     CHECK_FALSE(sut_type::is_incident_from(edge, v2));
-    CHECK_FALSE(sut_type::is_incident_from(edge, constants::invalid_id_v));
+    CHECK_FALSE(sut_type::is_incident_from(edge, gl::invalid_id));
 }
 
 TEST_CASE_FIXTURE(
@@ -35,7 +35,7 @@ TEST_CASE_FIXTURE(
 ) {
     CHECK(sut_type::is_incident_to(edge, v2));
     CHECK_FALSE(sut_type::is_incident_to(edge, v1));
-    CHECK_FALSE(sut_type::is_incident_to(edge, constants::invalid_id_v));
+    CHECK_FALSE(sut_type::is_incident_to(edge, gl::invalid_id));
 }
 
 struct test_undirected_edge_tag : test_directional_tags {
@@ -51,16 +51,16 @@ TEST_CASE_FIXTURE(
     CHECK(sut_type::is_incident_from(edge, v1));
     CHECK(sut_type::is_incident_from(edge, v2));
 
-    CHECK_FALSE(sut_type::is_incident_from(edge, constants::invalid_id_v));
-    CHECK_FALSE(sut_type::is_incident_from(edge, constants::invalid_id_v));
+    CHECK_FALSE(sut_type::is_incident_from(edge, gl::invalid_id));
+    CHECK_FALSE(sut_type::is_incident_from(edge, gl::invalid_id));
 }
 
 TEST_CASE_FIXTURE(test_undirected_edge_tag, "is_incident_to should return true for both vertices") {
     CHECK(sut_type::is_incident_to(edge, v1));
     CHECK(sut_type::is_incident_to(edge, v2));
 
-    CHECK_FALSE(sut_type::is_incident_to(edge, constants::invalid_id_v));
-    CHECK_FALSE(sut_type::is_incident_to(edge, constants::invalid_id_v));
+    CHECK_FALSE(sut_type::is_incident_to(edge, gl::invalid_id));
+    CHECK_FALSE(sut_type::is_incident_to(edge, gl::invalid_id));
 }
 
 TEST_SUITE_END(); // untest_directional_tags

@@ -184,7 +184,7 @@ public:
         auto removed_edge_ids =
             edges | std::views::transform([](const auto& edge) { return edge.id(); })
             | std::ranges::to<std::vector>();
-        this->_remap_element_ids(constants::invalid_id_v<id_type>, removed_edge_ids);
+        this->_remap_element_ids(invalid_id, removed_edge_ids);
         return removed_edge_ids;
     }
 
@@ -294,7 +294,7 @@ private:
             for (auto& edge_item : adj) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
                 if (it != removed_edge_ids.end() and *it == edge_item.edge_id)
-                    edge_item.edge_id = constants::invalid_id_v<id_type>; // edge was removed
+                    edge_item.edge_id = invalid_id; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id
                     edge_item.edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);

@@ -20,7 +20,7 @@ struct paths_descriptor {
     using distance_type = VertexDistanceType;
 
     paths_descriptor(const size_type n_vertices)
-    : predecessors(n_vertices, constants::invalid_id_v<id_type>), distances(n_vertices) {}
+    : predecessors(n_vertices, invalid_id), distances(n_vertices) {}
 
     predecessors_map<GraphType> predecessors;
     std::vector<distance_type> distances;
@@ -82,7 +82,7 @@ template <
             auto& v_pred = paths.predecessors[to_idx(vertex_id)];
             auto& v_dist = paths.distances[to_idx(vertex_id)];
 
-            if (v_pred == constants::invalid_id_v<id_type> or new_distance < v_dist) {
+            if (v_pred == invalid_id or new_distance < v_dist) {
                 v_dist = new_distance;
                 v_pred = pred_id;
                 return true;

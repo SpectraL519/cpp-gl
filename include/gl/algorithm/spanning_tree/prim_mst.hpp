@@ -51,7 +51,7 @@ template <traits::c_undirected_graph GraphType>
     queue_type edge_queue;
 
     // insert the edges adjacent to the root vertex to the queue
-    if (root_id == constants::invalid_id_v<id_type>)
+    if (root_id == invalid_id)
         root_id = constants::initial_id_v<id_type>;
 
     for (const auto& edge : graph.adjacent_edges(root_id))
@@ -105,7 +105,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
     std::vector<std::optional<edge_type>> min_cost_edges(n_vertices, std::nullopt);
 
     // set the distance to the root vertex to 0
-    if (root_id == constants::invalid_id_v<id_type>)
+    if (root_id == invalid_id)
         root_id = constants::initial_id_v<id_type>;
 
     min_cost.at(root_id) = static_cast<distance_type>(0);

@@ -199,7 +199,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         const auto valid_edge = add_edge(constants::v1_id, constants::v2_id);
         CHECK(sut.has_edge(valid_edge));
 
-        const edge_type invalid_edge{constants::invalid_id_v, constants::v1_id, constants::v2_id};
+        const edge_type invalid_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
         CHECK_FALSE(sut.has_edge(invalid_edge));
 
         // edge connecting vertices not connected in the actual graph
@@ -247,9 +247,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
     SUBCASE("remove_edge should throw when an edge is invalid") {
         // not existing edge between valid vertices
-        const edge_type not_existing_edge{
-            constants::invalid_id_v, constants::v1_id, constants::v2_id
-        };
+        const edge_type not_existing_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
         CHECK_THROWS_AS(sut.remove_edge(not_existing_edge), std::invalid_argument);
     }
 
@@ -519,7 +517,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         const auto& valid_edge = add_edge(constants::v1_id, constants::v2_id);
         CHECK(sut.has_edge(valid_edge));
 
-        const edge_type invalid_edge{constants::invalid_id_v, constants::v1_id, constants::v2_id};
+        const edge_type invalid_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
         CHECK_FALSE(sut.has_edge(invalid_edge));
 
         // edge connecting vertices not connected in the actual graph
@@ -574,9 +572,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
     SUBCASE("remove_edge should throw when an edge is invalid") {
         // not existing edge between valid vertices
-        const edge_type not_existing_edge{
-            constants::invalid_id_v, constants::v1_id, constants::v2_id
-        };
+        const edge_type not_existing_edge{gl::invalid_id, constants::v1_id, constants::v2_id};
         CHECK_THROWS_AS(sut.remove_edge(not_existing_edge), std::invalid_argument);
     }
 
