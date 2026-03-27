@@ -16,6 +16,8 @@
 #include <ranges>
 #include <vector>
 
+// TODO: remove impl::
+
 #ifdef HGL_TESTING
 namespace hgl_testing {
 struct test_incidence_matrix;

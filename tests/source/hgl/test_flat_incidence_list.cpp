@@ -1,3 +1,5 @@
+#include "hgl/directional_tags.hpp"
+#include "hgl/impl/layout_tags.hpp"
 #include "testing/hgl/constants.hpp"
 
 #include <doctest.h>
@@ -34,7 +36,8 @@ struct test_flat_incidence_list {
 };
 
 struct test_undirected_vertex_major_flat_incidence_list : public test_flat_incidence_list {
-    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(

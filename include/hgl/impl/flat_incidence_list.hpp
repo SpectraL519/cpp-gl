@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
-#include "hgl/impl/impl_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
 
@@ -17,6 +17,8 @@
 #include <functional>
 #include <ranges>
 #include <vector>
+
+// TODO: remove impl::
 
 #ifdef HGL_TESTING
 namespace hgl_testing {
@@ -888,9 +890,9 @@ public:
 
 private:
     using vertex_major_list =
-        flat_incidence_list<DirectionalTag, impl::flat_list_t<impl::vertex_major_t, id_type>>;
+        flat_incidence_list<DirectionalTag, flat_list_t<vertex_major_t, id_type>>;
     using hyperedge_major_list =
-        flat_incidence_list<DirectionalTag, impl::flat_list_t<impl::hyperedge_major_t, id_type>>;
+        flat_incidence_list<DirectionalTag, flat_list_t<hyperedge_major_t, id_type>>;
 
     vertex_major_list _v_list;
     hyperedge_major_list _e_list;
