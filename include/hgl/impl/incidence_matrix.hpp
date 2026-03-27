@@ -35,14 +35,17 @@ namespace impl {
 
 template <
     traits::c_hypergraph_directional_tag DirectionalTag,
-    traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+    traits::c_hypergraph_matrix_impl ImplTag>
 class incidence_matrix;
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class incidence_matrix<hgl::undirected_t, LayoutTag> final {
+template <traits::c_hypergraph_matrix_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class incidence_matrix<hgl::undirected_t, ImplTag> final {
 public:
     using directional_tag = hgl::undirected_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     incidence_matrix() = default;
 
@@ -232,11 +235,14 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class incidence_matrix<hgl::bf_directed_t, LayoutTag> final {
+template <traits::c_hypergraph_matrix_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class incidence_matrix<hgl::bf_directed_t, ImplTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     incidence_matrix() = default;
 

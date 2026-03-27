@@ -7,6 +7,7 @@
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
+#include "hgl/impl/impl_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
 
@@ -36,17 +37,21 @@ namespace impl {
 
 namespace detail {
 
-using flat_list_storage_type = flat_jagged_vector<id_type>;
+template <traits::c_id_type IdType>
+using flat_list_storage_type = flat_jagged_vector<IdType>;
 
+template <traits::c_id_type IdType>
 [[nodiscard]] inline bool contains(
-    const flat_list_storage_type::const_segment_type& segment, const id_type minor_id
+    const typename flat_list_storage_type<IdType>::const_segment_type& segment,
+    const IdType minor_id
 ) noexcept {
     const auto minor_it = std::ranges::lower_bound(segment, minor_id);
     return minor_it != segment.end() and *minor_it == minor_id;
 }
 
+template <traits::c_id_type IdType>
 inline void unique_insert(
-    flat_list_storage_type& storage, const id_type major_id, const id_type minor_id
+    flat_list_storage_type<IdType>& storage, const IdType major_id, const IdType minor_id
 ) noexcept {
     const auto segment = storage[major_id];
     const auto insert_it = std::ranges::lower_bound(segment, minor_id);
@@ -56,7 +61,8 @@ inline void unique_insert(
     }
 }
 
-inline void remove_minor(flat_list_storage_type& storage, const id_type id) noexcept {
+template <traits::c_id_type IdType>
+inline void remove_minor(flat_list_storage_type<IdType>& storage, const IdType id) noexcept {
     auto& data = storage.data_storage();
     auto& offsets = storage.offsets_storage();
 
@@ -86,14 +92,17 @@ inline void remove_minor(flat_list_storage_type& storage, const id_type id) noex
 
 template <
     traits::c_hypergraph_directional_tag DirectionalTag,
-    traits::c_hypergraph_layout_tag LayoutTag>
+    traits::c_hypergraph_flat_list_impl ImplTag>
 class flat_incidence_list;
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class flat_incidence_list<hgl::undirected_t, LayoutTag> final {
+template <traits::c_hypergraph_flat_list_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class flat_incidence_list<hgl::undirected_t, ImplTag> final {
 public:
     using directional_tag = hgl::undirected_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     flat_incidence_list() = default;
 
@@ -202,8 +211,7 @@ public:
 #endif
 
 private:
-    using element_type = id_type;
-    using storage_type = flat_jagged_vector<element_type>;
+    using storage_type = flat_jagged_vector<id_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -271,11 +279,14 @@ private:
     storage_type _storage;
 };
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class flat_incidence_list<hgl::bf_directed_t, LayoutTag> final {
+template <traits::c_hypergraph_flat_list_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class flat_incidence_list<hgl::bf_directed_t, ImplTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     flat_incidence_list() = default;
 
@@ -481,8 +492,7 @@ public:
 #endif
 
 private:
-    using element_type = id_type;
-    using storage_type = flat_jagged_vector<element_type>;
+    using storage_type = flat_jagged_vector<id_type>;
     using storage_segment_type = typename storage_type::segment_type;
     using storage_const_segment_type = typename storage_type::const_segment_type;
 
@@ -647,11 +657,16 @@ private:
     storage_type _head_storage;
 };
 
-template <traits::c_hypergraph_directional_tag DirectionalTag>
-class flat_incidence_list<DirectionalTag, bidirectional_t> final {
+template <
+    traits::c_hypergraph_directional_tag DirectionalTag,
+    traits::c_hypergraph_flat_list_impl ImplTag>
+requires std::same_as<typename ImplTag::layout_tag, bidirectional_t>
+class flat_incidence_list<DirectionalTag, ImplTag> final {
 public:
     using directional_tag = DirectionalTag;
-    using layout_tag = bidirectional_t;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     flat_incidence_list() = default;
 
@@ -872,8 +887,10 @@ public:
 #endif
 
 private:
-    using vertex_major_list = flat_incidence_list<DirectionalTag, vertex_major_t>;
-    using hyperedge_major_list = flat_incidence_list<DirectionalTag, hyperedge_major_t>;
+    using vertex_major_list =
+        flat_incidence_list<DirectionalTag, impl::flat_list_t<impl::vertex_major_t, id_type>>;
+    using hyperedge_major_list =
+        flat_incidence_list<DirectionalTag, impl::flat_list_t<impl::hyperedge_major_t, id_type>>;
 
     vertex_major_list _v_list;
     hyperedge_major_list _e_list;

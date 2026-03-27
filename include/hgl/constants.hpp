@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include "gl/constants.hpp"
 #include "hgl/traits.hpp"
 
-namespace hgl::constants {
+namespace hgl {
+
+namespace constants {
 
 template <traits::c_id_type IdType>
 inline constexpr IdType initial_id{0};
@@ -14,4 +17,14 @@ inline constexpr IdType initial_id{0};
 template <traits::c_id_type IdType>
 inline constexpr IdType invalid_id{std::numeric_limits<IdType>::max()};
 
-} // namespace hgl::constants
+} // namespace constants
+
+using gl::initial_id;
+using gl::initial_id_t;
+using gl::initial_id_v;
+
+using gl::invalid_id;
+using gl::invalid_id_t;
+using gl::invalid_id_v;
+
+} // namespace hgl

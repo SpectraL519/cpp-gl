@@ -134,6 +134,7 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
+// TODO: remove ???
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>

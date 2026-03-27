@@ -5,18 +5,23 @@
 #pragma once
 
 #include "hgl/impl/layout_tags.hpp"
+#include "hgl/types.hpp"
 
 namespace hgl {
 
 namespace impl {
 
-template <traits::c_hypergraph_layout_tag LayoutTag>
+// TODO: add default LayoutTag values
+
+template <traits::c_hypergraph_layout_tag LayoutTag, traits::c_id_type IdType = default_id_type>
 struct list_t;
 
-template <traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_layout_tag LayoutTag, traits::c_id_type IdType = default_id_type>
 struct flat_list_t;
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
+template <
+    traits::c_hypergraph_asymmetric_layout_tag LayoutTag,
+    traits::c_id_type IdType = default_id_type>
 struct matrix_t;
 
 } // namespace impl

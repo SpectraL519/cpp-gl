@@ -8,6 +8,7 @@
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
+#include "hgl/impl/impl_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
 
@@ -35,16 +36,17 @@ struct to_impl;
 
 namespace impl {
 
-template <
-    traits::c_hypergraph_directional_tag DirectionalTag,
-    traits::c_hypergraph_layout_tag LayoutTag>
+template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_impl ImplTag>
 class incidence_list;
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class incidence_list<hgl::undirected_t, LayoutTag> final {
+template <traits::c_hypergraph_list_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class incidence_list<hgl::undirected_t, ImplTag> final {
 public:
     using directional_tag = hgl::undirected_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
 
     incidence_list() = default;
 
@@ -236,11 +238,15 @@ private:
     major_storage_type _major_storage;
 };
 
-template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag>
-class incidence_list<hgl::bf_directed_t, LayoutTag> final {
+template <traits::c_hypergraph_list_impl ImplTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
+class incidence_list<hgl::bf_directed_t, ImplTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
-    using layout_tag = LayoutTag;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
+
 
     incidence_list() = default;
 
@@ -601,11 +607,15 @@ private:
     major_storage_type _head_storage;
 };
 
-template <traits::c_hypergraph_directional_tag DirectionalTag>
-class incidence_list<DirectionalTag, bidirectional_t> final {
+template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_impl ImplTag>
+requires std::same_as<typename ImplTag::layout_tag, bidirectional_t>
+class incidence_list<DirectionalTag, ImplTag> final {
 public:
     using directional_tag = DirectionalTag;
-    using layout_tag = bidirectional_t;
+    using implementation_tag = ImplTag;
+    using layout_tag = typename implementation_tag::layout_tag;
+    using id_type = typename implementation_tag::id_type;
+
 
     incidence_list() = default;
 
@@ -825,8 +835,10 @@ public:
 #endif
 
 private:
-    using vertex_major_list = incidence_list<DirectionalTag, vertex_major_t>;
-    using hyperedge_major_list = incidence_list<DirectionalTag, hyperedge_major_t>;
+    using vertex_major_list =
+        flat_incidence_list<DirectionalTag, impl::list_t<impl::vertex_major_t, id_type>>;
+    using hyperedge_major_list =
+        flat_incidence_list<DirectionalTag, impl::list_t<impl::hyperedge_major_t, id_type>>;
 
     vertex_major_list _v_list;
     hyperedge_major_list _e_list;

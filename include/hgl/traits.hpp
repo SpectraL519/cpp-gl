@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/traits.hpp"
+#include "hgl/types.hpp"
 
 namespace hgl::traits {
 
