@@ -5,6 +5,7 @@
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/traits.hpp"
 
 namespace gl {

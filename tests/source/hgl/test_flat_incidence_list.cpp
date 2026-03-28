@@ -1,7 +1,10 @@
 #include "testing/hgl/constants.hpp"
 
 #include <doctest.h>
+#include <hgl/directional_tags.hpp>
 #include <hgl/impl/flat_incidence_list.hpp>
+#include <hgl/impl/impl_tags.hpp>
+#include <hgl/impl/layout_tags.hpp>
 
 #include <algorithm>
 #include <ranges>
@@ -34,7 +37,8 @@ struct test_flat_incidence_list {
 };
 
 struct test_undirected_vertex_major_flat_incidence_list : public test_flat_incidence_list {
-    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -168,14 +172,14 @@ TEST_CASE_FIXTURE(
     "> hyperedge_id"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 4uz;
-    constexpr hgl::id_type vertex_id = constants::id1;
+    constexpr auto vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(vertex_id, constants::id2);
     sut.bind(vertex_id, constants::id4);
 
-    hgl::id_type rem_heid;
-    std::vector<hgl::id_type> expected_hyperedges;
+    hgl::default_id_type rem_heid;
+    std::vector<hgl::default_id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_heid = constants::id1;
@@ -320,8 +324,8 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_hyperedge_major_flat_incidence_list : public test_flat_incidence_list {
-    using sut_type =
-        hgl::impl::flat_incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -455,14 +459,14 @@ TEST_CASE_FIXTURE(
     "remove_vertex should properly unbind (if necessary) the given vertex and align ids > vertex_id"
 ) {
     constexpr hgl::size_type n_vertices = 4uz, n_hyperedges = 1uz;
-    constexpr hgl::id_type hyperedge_id = constants::id1;
+    constexpr auto hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind(constants::id2, hyperedge_id);
     sut.bind(constants::id4, hyperedge_id);
 
-    hgl::id_type rem_vid;
-    std::vector<hgl::id_type> expected_vertices;
+    hgl::default_id_type rem_vid;
+    std::vector<hgl::default_id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -599,9 +603,9 @@ TEST_CASE_FIXTURE(
 
 struct test_bf_directed_flat_incidence_list : public test_flat_incidence_list {
     auto altbind_to_vertex(
-        auto& sut, const hgl::id_type vertex_id, const hgl::size_type n_hyperedges
+        auto& sut, const hgl::default_id_type vertex_id, const hgl::size_type n_hyperedges
     ) {
-        std::vector<hgl::id_type> tail_bound, head_bound;
+        std::vector<hgl::default_id_type> tail_bound, head_bound;
 
         for (std::size_t i = 0uz; i < n_hyperedges; ++i) {
             if (i % 2 == 0) {
@@ -618,9 +622,9 @@ struct test_bf_directed_flat_incidence_list : public test_flat_incidence_list {
     }
 
     auto altbind_to_hyperedge(
-        auto& sut, const hgl::id_type hyperedge_id, const hgl::size_type n_vertices
+        auto& sut, const hgl::default_id_type hyperedge_id, const hgl::size_type n_vertices
     ) {
-        std::vector<hgl::id_type> tail_bound, head_bound;
+        std::vector<hgl::default_id_type> tail_bound, head_bound;
 
         for (std::size_t i = 0uz; i < n_vertices; ++i) {
             if (i % 2 == 0) {
@@ -641,7 +645,8 @@ constexpr auto is_empty_pred = [](const auto& rng) { return rng.empty(); };
 
 struct test_bf_directed_vertex_major_flat_incidence_list
 : public test_bf_directed_flat_incidence_list {
-    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -685,15 +690,15 @@ TEST_CASE_FIXTURE(
     "remove_vertex should properly remove the major entry and implicitly shift vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::id_type hyperedge_id = constants::id1;
+    constexpr auto hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(constants::id2, hyperedge_id);
     sut.bind_head(constants::id4, hyperedge_id);
 
-    hgl::id_type rem_vid;
+    hgl::default_id_type rem_vid;
     hgl::size_type expected_hyperedge_size;
-    std::vector<hgl::id_type> expected_vertices;
+    std::vector<hgl::default_id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -795,15 +800,15 @@ TEST_CASE_FIXTURE(
     "remove_hyperedge should properly remove the minor entries and shift the hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::id_type vertex_id = constants::id1;
+    constexpr auto vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(vertex_id, constants::id2);
     sut.bind_head(vertex_id, constants::id4);
 
-    hgl::id_type rem_eid;
+    hgl::default_id_type rem_eid;
     hgl::size_type expected_vertex_degree;
-    std::vector<hgl::id_type> expected_hyperedges;
+    std::vector<hgl::default_id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -955,7 +960,7 @@ TEST_CASE_FIXTURE(
     "unbind should erase the hyperedge id from a proper vertex entry"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    std::vector<hgl::id_type> expected_storage;
+    std::vector<hgl::default_id_type> expected_storage;
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);
@@ -1120,8 +1125,8 @@ TEST_CASE_FIXTURE(
 
 struct test_bf_directed_hyperedge_major_flat_incidence_list
 : public test_bf_directed_flat_incidence_list {
-    using sut_type =
-        hgl::impl::flat_incidence_list<hgl::bf_directed_t, hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -1163,15 +1168,15 @@ TEST_CASE_FIXTURE(
     "remove_vertex should properly remove the minor entries and shift the vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
-    constexpr hgl::id_type hyperedge_id = constants::id1;
+    constexpr auto hyperedge_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(constants::id2, hyperedge_id);
     sut.bind_head(constants::id4, hyperedge_id);
 
-    hgl::id_type rem_vid;
+    hgl::default_id_type rem_vid;
     hgl::size_type expected_hyperedge_size;
-    std::vector<hgl::id_type> expected_vertices;
+    std::vector<hgl::default_id_type> expected_vertices;
 
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
@@ -1274,15 +1279,15 @@ TEST_CASE_FIXTURE(
     "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
-    constexpr hgl::id_type vertex_id = constants::id1;
+    constexpr auto vertex_id = constants::id1;
 
     sut_type sut{n_vertices, n_hyperedges};
     sut.bind_tail(vertex_id, constants::id2);
     sut.bind_head(vertex_id, constants::id4);
 
-    hgl::id_type rem_eid;
+    hgl::default_id_type rem_eid;
     hgl::size_type expected_vertex_degree;
-    std::vector<hgl::id_type> expected_hyperedges;
+    std::vector<hgl::default_id_type> expected_hyperedges;
 
     SUBCASE("not present hyperedge < first incident hyperedge") {
         rem_eid = constants::id1;
@@ -1438,7 +1443,7 @@ TEST_CASE_FIXTURE(
     "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    std::vector<hgl::id_type> expected_storage;
+    std::vector<hgl::default_id_type> expected_storage;
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);

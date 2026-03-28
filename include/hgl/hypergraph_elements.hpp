@@ -14,15 +14,17 @@ namespace hgl {
 
 // hypergraph vertex descriptor
 
-template <traits::c_properties Properties = empty_properties>
-using vertex_descriptor = gl::vertex_descriptor<Properties, id_type>;
+using gl::vertex_descriptor;
 
 // hyperedge descriptor
 
-template <traits::c_properties Properties = empty_properties>
+template <
+    traits::c_properties Properties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
 class hyperedge_descriptor final {
 public:
     using type = hyperedge_descriptor<Properties>;
+    using id_type = IdType;
     using properties_type = Properties;
     using properties_ref_type = std::conditional_t<
         traits::c_empty_properties<properties_type>,
@@ -44,14 +46,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return hyperedge_descriptor(constants::invalid_id<id_type>);
+        return hyperedge_descriptor(invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return hyperedge_descriptor(constants::invalid_id<id_type>, invalid_properties);
+        return hyperedge_descriptor(invalid_id, invalid_properties);
     }
 
     hyperedge_descriptor(const hyperedge_descriptor&) = default;
@@ -77,7 +79,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id<id_type>;
+        return this->_id != invalid_id;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
@@ -98,8 +100,5 @@ private:
         empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
-
-template <traits::c_properties Properties = empty_properties>
-using hyperedge = hyperedge_descriptor<Properties>;
 
 } // namespace hgl
