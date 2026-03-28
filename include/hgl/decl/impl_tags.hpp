@@ -11,16 +11,18 @@ namespace hgl {
 
 namespace impl {
 
-// TODO: add default LayoutTag values
-
-template <traits::c_hypergraph_layout_tag LayoutTag, traits::c_id_type IdType = default_id_type>
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = bidirectional_t,
+    traits::c_id_type IdType = default_id_type>
 struct list_t;
 
-template <traits::c_hypergraph_layout_tag LayoutTag, traits::c_id_type IdType = default_id_type>
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = bidirectional_t,
+    traits::c_id_type IdType = default_id_type>
 struct flat_list_t;
 
 template <
-    traits::c_hypergraph_asymmetric_layout_tag LayoutTag,
+    traits::c_hypergraph_asymmetric_layout_tag LayoutTag = hyperedge_major_t,
     traits::c_id_type IdType = default_id_type>
 struct matrix_t;
 
