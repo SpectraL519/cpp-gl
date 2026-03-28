@@ -4,6 +4,7 @@
 #include "hgl/hypergraph.hpp"
 #include "hgl/hypergraph_traits.hpp"
 #include "hgl/impl/layout_tags.hpp"
+#include "hgl/types.hpp"
 
 #include <doctest.h>
 
@@ -300,7 +301,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e3 = {0} (should not add any edge)
         sut.bind(0uz, 3uz);
 
-        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
+        const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
             {0uz, 1uz},
             {0uz, 2uz},
@@ -349,7 +350,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind(0uz, 3uz);
 
         // Expected edges: vertices 0-3, hyperedges 4-7
-        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
+        const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0 (4): {0,1,2}
             {0uz, 4ull},
             {1uz, 4ull},
@@ -439,7 +440,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(0uz, 1uz);
         sut.bind_head(1uz, 1uz);
 
-        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
+        const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
             {0uz, 2uz},
             {0uz, 3uz},
@@ -482,7 +483,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.bind_head(1uz, 1uz);
 
         // Expected directed edges: vertices 0-3, hyperedges 4-5
-        const std::vector<std::pair<hgl::id_type, hgl::id_type>> expected_edges{
+        const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
             { 0uz, 4ull},
             { 1uz, 4ull},

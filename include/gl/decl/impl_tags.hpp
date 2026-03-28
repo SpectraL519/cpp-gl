@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "gl/directional_tags.hpp"
 #include "gl/traits.hpp"
 
 namespace gl {

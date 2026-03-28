@@ -80,6 +80,7 @@ public:
     using implementation_tag = typename traits_type::implementation_tag;
     using implementation_type =
         typename implementation_tag::template implementation_type<directional_tag>;
+    using id_type = typename traits_type::id_type;
 
     using vertex_type = typename traits_type::vertex_type;
     using vertex_properties_type = typename traits_type::vertex_properties_type;
@@ -135,7 +136,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_vertices);
+        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
@@ -262,7 +263,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_hyperedges);
+        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
     }
 
     [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
@@ -315,7 +316,7 @@ public:
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             const auto old_size = this->_hyperedge_properties.size();
             this->_hyperedge_properties.reserve(this->_n_hyperedges);
-            for (size_type i = old_size; i < this->_n_hyperedges; ++i)
+            for (auto i = old_size; i < this->_n_hyperedges; ++i)
                 this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
                 );
         }
@@ -825,7 +826,7 @@ private:
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = this->_vertex_properties](const id_type id) {
-            return vertex_type{id, *pmap[id]};
+            return vertex_type{id, *pmap[to_idx(id)]};
         };
     }
 
@@ -839,7 +840,7 @@ private:
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return [&pmap = this->_hyperedge_properties](const id_type id) {
-            return hyperedge_type{id, *pmap[id]};
+            return hyperedge_type{id, *pmap[to_idx(id)]};
         };
     }
 
