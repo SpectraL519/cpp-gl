@@ -14,8 +14,8 @@ static_assert(std::same_as<hgl::vertex_descriptor<>, gl::vertex_descriptor<>>);
 struct test_hyperedge_descriptor {
     using sut_type = hgl::hyperedge_descriptor<>;
 
-    static constexpr hgl::id_type id1 = 0uz;
-    static constexpr hgl::id_type id2 = 1uz;
+    static constexpr hgl::default_id_type id1 = 0u;
+    static constexpr hgl::default_id_type id2 = 1u;
 
     sut_type he1{id1};
     sut_type he2{id2};

@@ -10,6 +10,7 @@
 #include "gl/types/core.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph.hpp"
+#include "hgl/types.hpp"
 
 #include <algorithm>
 #include <ranges>
@@ -230,7 +231,7 @@ template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hype
 
 template <gl::traits::c_undirected_graph G>
 [[nodiscard]] G projection(const traits::c_undirected_hypergraph auto& h) {
-    using edge_vertices = std::pair<id_type, id_type>;
+    using edge_vertices = hgl::homogeneous_pair<typename G::id_type>;
     std::vector<edge_vertices> edges;
 
     for (const auto eid : h.hyperedge_ids()) {
@@ -262,7 +263,7 @@ requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::fla
 
 template <gl::traits::c_directed_graph G>
 [[nodiscard]] G projection(const traits::c_bf_directed_hypergraph auto& h) {
-    using edge_vertices = std::pair<id_type, id_type>;
+    using edge_vertices = hgl::homogeneous_pair<typename G::id_type>;
     std::vector<edge_vertices> edges;
 
     for (const auto eid : h.hyperedge_ids()) {
