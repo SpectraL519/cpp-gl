@@ -316,7 +316,7 @@ public:
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>) {
             const auto old_size = this->_hyperedge_properties.size();
             this->_hyperedge_properties.reserve(this->_n_hyperedges);
-            for (size_type i = old_size; i < this->_n_hyperedges; ++i)
+            for (auto i = old_size; i < this->_n_hyperedges; ++i)
                 this->_hyperedge_properties.push_back(std::make_unique<hyperedge_properties_type>()
                 );
         }
@@ -826,7 +826,7 @@ private:
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = this->_vertex_properties](const id_type id) {
-            return vertex_type{id, *pmap[id]};
+            return vertex_type{id, *pmap[to_idx(id)]};
         };
     }
 
@@ -840,7 +840,7 @@ private:
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return [&pmap = this->_hyperedge_properties](const id_type id) {
-            return hyperedge_type{id, *pmap[id]};
+            return hyperedge_type{id, *pmap[to_idx(id)]};
         };
     }
 

@@ -114,7 +114,7 @@ public:
 
     gl_attr_force_inline void bind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        auto& minor_storage = this->_major_storage[major_id];
+        auto& minor_storage = this->_major_storage[to_idx(major_id)];
 
         // insert the id at the correct position to keep the minor-id collection sorted
         const auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);
@@ -124,7 +124,7 @@ public:
 
     gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        auto& minor_storage = this->_major_storage[major_id];
+        auto& minor_storage = this->_major_storage[to_idx(major_id)];
         const auto minor_it = std::ranges::lower_bound(minor_storage, minor_id);
         if (minor_it != minor_storage.end() and *minor_it == minor_id)
             minor_storage.erase(minor_it);
@@ -134,7 +134,7 @@ public:
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         return this->_contains(
-            this->_major_storage[layout_tag::major(vertex_id, hyperedge_id)],
+            this->_major_storage[to_idx(layout_tag::major(vertex_id, hyperedge_id))],
             layout_tag::minor(vertex_id, hyperedge_id)
         );
     }
@@ -187,11 +187,11 @@ private:
     template <element_type Element>
     [[nodiscard]] gl_attr_force_inline auto _incident_with(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // incident with major
-            return std::views::all(this->_major_storage[id]);
+            return std::views::all(this->_major_storage[to_idx(id)]);
         }
         else { // incident with minor
             return std::views::iota(initial_id_v<size_type>, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](const size_type major_idx) {
+                 | std::views::filter([this, minor_id = id](size_type major_idx) {
                        return this->_contains(this->_major_storage[major_idx], minor_id);
                    });
         }
@@ -200,7 +200,7 @@ private:
     template <element_type Element>
     [[nodiscard]] size_type _size(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            return this->_major_storage[id].size();
+            return this->_major_storage[to_idx(id)].size();
         }
         else { // size minor
             size_type size = 0uz;
@@ -222,8 +222,8 @@ private:
         else { // size minor
             std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& major_entry : this->_major_storage)
-                for (const auto& minor_id : major_entry)
-                    ++size_map[static_cast<std::size_t>(minor_id)];
+                for (const auto minor_id : major_entry)
+                    ++size_map[to_idx(minor_id)];
             return size_map;
         }
     }
@@ -374,44 +374,48 @@ public:
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_remove_no_align(this->_head_storage[major_id], minor_id);
-        this->_unique_insert(this->_tail_storage[major_id], minor_id);
+        const auto major_idx = to_idx(major_id);
+        this->_remove_no_align(this->_head_storage[major_idx], minor_id);
+        this->_unique_insert(this->_tail_storage[major_idx], minor_id);
     }
 
     gl_attr_force_inline void bind_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_remove_no_align(this->_tail_storage[major_id], minor_id);
-        this->_unique_insert(this->_head_storage[major_id], minor_id);
+        const auto major_idx = to_idx(major_id);
+        this->_remove_no_align(this->_tail_storage[major_idx], minor_id);
+        this->_unique_insert(this->_head_storage[major_idx], minor_id);
     }
 
     gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_remove_no_align(this->_tail_storage[major_id], minor_id);
-        this->_remove_no_align(this->_head_storage[major_id], minor_id);
+        const auto major_idx = to_idx(major_id);
+        this->_remove_no_align(this->_tail_storage[major_idx], minor_id);
+        this->_remove_no_align(this->_head_storage[major_idx], minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_contains(this->_tail_storage[major_id], minor_id)
-            or this->_contains(this->_head_storage[major_id], minor_id);
+        const auto major_idx = to_idx(major_id);
+        return this->_contains(this->_tail_storage[major_idx], minor_id)
+            or this->_contains(this->_head_storage[major_idx], minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_tail(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_contains(this->_tail_storage[major_id], minor_id);
+        return this->_contains(this->_tail_storage[to_idx(major_id)], minor_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_contains(this->_head_storage[major_id], minor_id);
+        return this->_contains(this->_head_storage[to_idx(major_id)], minor_id);
     }
 
     // --- comparison ---
@@ -476,14 +480,15 @@ private:
     template <element_type Element>
     [[nodiscard]] gl_attr_force_inline auto _get(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // get major
+            const auto idx = to_idx(id);
             return std::array<std::span<const minor_element_type>, 2>{
-                       this->_tail_storage[id], this->_head_storage[id]
+                       this->_tail_storage[idx], this->_head_storage[idx]
                    }
                  | std::views::join;
         }
         else { // get minor
             return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
-                 | std::views::filter([this, minor_id = id](const size_type major_idx) {
+                 | std::views::filter([this, minor_id = id](size_type major_idx) {
                        return this->_contains(this->_tail_storage[major_idx], minor_id)
                            or this->_contains(this->_head_storage[major_idx], minor_id);
                    });
@@ -494,21 +499,23 @@ private:
     [[nodiscard]] gl_attr_force_inline auto _get(const id_type id, const Projection storage_proj)
         const noexcept {
         if constexpr (Element == layout_tag::major_element) { // get major
-            return std::views::all(std::invoke(storage_proj, this)[id]);
+            return std::views::all(std::invoke(storage_proj, this)[to_idx(id)]);
         }
         else { // get minor
             return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
-                 | std::views::filter([this, storage_proj, minor_id = id](const size_type major_idx
-                                      ) {
-                       return this->_contains(std::invoke(storage_proj, this)[major_idx], minor_id);
-                   });
+                 | std::views::filter(
+                       [this, &storage = std::invoke(storage_proj, this), minor_id = id](
+                           size_type major_idx
+                       ) { return this->_contains(storage[major_idx], minor_id); }
+                 );
         }
     }
 
     template <element_type Element>
     [[nodiscard]] gl_attr_force_inline size_type _size(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            return this->_tail_storage[id].size() + this->_head_storage[id].size();
+            const auto idx = to_idx(id);
+            return this->_tail_storage[idx].size() + this->_head_storage[idx].size();
         }
         else { // size minor
             size_type size = 0uz;
@@ -526,7 +533,7 @@ private:
     [[nodiscard]] gl_attr_force_inline size_type
     _size(const id_type id, const Projection storage_proj) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            return std::invoke(storage_proj, this)[id].size();
+            return std::invoke(storage_proj, this)[to_idx(id)].size();
         }
         else { // size minor
             size_type size = 0uz;
@@ -550,10 +557,10 @@ private:
             std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& minor_storage : this->_tail_storage)
                 for (const auto minor_id : minor_storage)
-                    ++size_map[static_cast<std::size_t>(minor_id)];
+                    ++size_map[to_idx(minor_id)];
             for (const auto& minor_storage : this->_head_storage)
                 for (const auto minor_id : minor_storage)
-                    ++size_map[static_cast<std::size_t>(minor_id)];
+                    ++size_map[to_idx(minor_id)];
             return size_map;
         }
     }
@@ -574,7 +581,7 @@ private:
             std::vector<size_type> size_map(n_elements, 0uz);
             for (const auto& minor_storage : std::invoke(storage_proj, this))
                 for (const auto minor_id : minor_storage)
-                    ++size_map[static_cast<std::size_t>(minor_id)];
+                    ++size_map[to_idx(minor_id)];
             return size_map;
         }
     }

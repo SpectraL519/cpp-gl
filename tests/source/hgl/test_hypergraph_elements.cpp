@@ -9,8 +9,6 @@ namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_hypergraph_elements");
 
-static_assert(std::same_as<hgl::vertex_descriptor<>, gl::vertex_descriptor<>>);
-
 struct test_hyperedge_descriptor {
     using sut_type = hgl::hyperedge_descriptor<>;
 
@@ -47,12 +45,12 @@ TEST_CASE_FIXTURE(test_hyperedge_descriptor, "hyperedge descriptors should be in
 TEST_CASE_FIXTURE(test_hyperedge_descriptor, "properties should be properly initialized") {
     boolean_property property{constants::p_true};
 
-    const hgl::hyperedge<boolean_property> sut{id1, property};
+    const hgl::hyperedge_descriptor<boolean_property> sut{id1, property};
     CHECK_EQ(&sut.properties(), &property);
 }
 
 TEST_CASE("accessing properties should throw for an invalid hyperedge") {
-    using sut_type = hgl::hyperedge<boolean_property>;
+    using sut_type = hgl::hyperedge_descriptor<boolean_property>;
     boolean_property property{constants::p_true};
 
     CHECK_THROWS_AS(static_cast<void>(sut_type::invalid().properties()), std::logic_error);

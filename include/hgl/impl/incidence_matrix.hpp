@@ -114,19 +114,19 @@ public:
 
     gl_attr_force_inline void bind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[major_id][minor_id] = true;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = true;
     }
 
     gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[major_id][minor_id] = false;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = false;
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[major_id][minor_id];
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)];
     }
 
     // --- comparison ---
@@ -169,7 +169,7 @@ private:
             this->_matrix.erase(this->_matrix.begin() + static_cast<std::ptrdiff_t>(id));
         }
         else { // remove minor
-            if (this->_matrix_row_size == 0)
+            if (this->_matrix_row_size == 0uz)
                 return;
             this->_matrix_row_size--;
             for (auto& row : this->_matrix) {
@@ -197,12 +197,13 @@ private:
     [[nodiscard]] gl_attr_force_inline size_type _count(const id_type id) const noexcept {
         size_type count = 0uz;
         if constexpr (Element == layout_tag::major_element) { // count major
-            for (const bool bit : this->_matrix[id])
+            for (const bool bit : this->_matrix[to_idx(id)])
                 count += static_cast<size_type>(bit);
         }
         else { // count minor
+            const auto idx = to_idx(id);
             for (const auto& row : this->_matrix)
-                count += static_cast<size_type>(row[id]);
+                count += static_cast<size_type>(row[idx]);
         }
         return count;
     }
@@ -219,13 +220,10 @@ private:
         }
         else { // count map minor
             const size_type limit = std::min(n_elements, this->_matrix_row_size);
-            for (const auto& row : this->_matrix) {
-                for (auto j = 0uz; j < limit; ++j) {
-                    if (row[j]) {
+            for (const auto& row : this->_matrix)
+                for (auto j = 0uz; j < limit; ++j)
+                    if (row[j])
                         ++size_map[j];
-                    }
-                }
-            }
         }
         return size_map;
     }
@@ -369,40 +367,40 @@ public:
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[major_id][minor_id] = incidence_type::backward;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::backward;
     }
 
     gl_attr_force_inline void bind_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[major_id][minor_id] = incidence_type::forward;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::forward;
     }
 
     gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[major_id][minor_id] = incidence_type::none;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::none;
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[major_id][minor_id] != incidence_type::none;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] != incidence_type::none;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_tail(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[major_id][minor_id] == incidence_type::backward;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == incidence_type::backward;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[major_id][minor_id] == incidence_type::forward;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == incidence_type::forward;
     }
 
     // --- comparison ---
@@ -499,12 +497,13 @@ private:
     _count(const id_type id, std::predicate<incidence_type> auto&& pred) const noexcept {
         size_type count = 0uz;
         if constexpr (Element == layout_tag::major_element) { // count major
-            for (const incidence_type t : this->_matrix[id])
+            for (const incidence_type t : this->_matrix[to_idx(id)])
                 count += static_cast<size_type>(pred(t));
         }
         else { // count minor
+            const auto idx = to_idx(id);
             for (const auto& row : this->_matrix)
-                count += static_cast<size_type>(pred(row[id]));
+                count += static_cast<size_type>(pred(row[idx]));
         }
         return count;
     }

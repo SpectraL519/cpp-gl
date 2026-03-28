@@ -14,10 +14,7 @@ namespace hgl {
 
 // hypergraph vertex descriptor
 
-template <
-    traits::c_properties Properties = empty_properties,
-    traits::c_id_type IdType = default_id_type>
-using vertex_descriptor = gl::vertex_descriptor<Properties, IdType>;
+using gl::vertex_descriptor;
 
 // hyperedge descriptor
 
@@ -103,9 +100,5 @@ private:
         empty_properties,
         std::reference_wrapper<properties_type>> _properties;
 };
-
-// TODO: remove
-template <traits::c_properties Properties = empty_properties>
-using hyperedge = hyperedge_descriptor<Properties>;
 
 } // namespace hgl

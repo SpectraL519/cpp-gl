@@ -236,8 +236,8 @@ template <gl::traits::c_undirected_graph G>
 
     for (const auto eid : h.hyperedge_ids()) {
         const auto clique_vertices = h.incident_vertex_ids(eid) | std::ranges::to<std::vector>();
-        for (std::size_t i = 0uz; i < clique_vertices.size(); i++) {
-            for (std::size_t j = 0uz; j < i; j++) {
+        for (auto i = 0uz; i < clique_vertices.size(); i++) {
+            for (auto j = 0uz; j < i; j++) {
                 const auto [u, v] = std::minmax(clique_vertices[i], clique_vertices[j]);
                 edges.emplace_back(u, v);
             }
