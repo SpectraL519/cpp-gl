@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_elements.hpp"
 #include "hgl/impl/impl_tags.hpp"
@@ -15,13 +16,12 @@ template <
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
-    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>,
-    traits::c_id_type IdType = default_id_type>
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t, default_id_type>>
 struct hypergraph_traits {
     using directional_tag = DirectionalTag;
     using implementation_tag = ImplTag;
     using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = IdType;
+    using id_type = typename implementation_tag::id_type;
 
     using vertex_type = vertex_descriptor<VertexProperties, id_type>;
     using vertex_properties_type = typename vertex_type::properties_type;
@@ -40,8 +40,7 @@ using list_hypergraph_traits = hypergraph_traits<
     DirectionalTag,
     VertexProperties,
     HyperedgeProperties,
-    impl::list_t<LayoutTag>,
-    IdType>;
+    impl::list_t<LayoutTag, IdType>>;
 
 template <
     traits::c_hypergraph_layout_tag LayoutTag = impl::hyperedge_major_t,
@@ -53,8 +52,7 @@ using flat_list_hypergraph_traits = hypergraph_traits<
     DirectionalTag,
     VertexProperties,
     HyperedgeProperties,
-    impl::flat_list_t<LayoutTag>,
-    IdType>;
+    impl::flat_list_t<LayoutTag, IdType>>;
 
 template <
     traits::c_hypergraph_asymmetric_layout_tag LayoutTag = impl::hyperedge_major_t,
@@ -66,24 +64,21 @@ using matrix_hypergraph_traits = hypergraph_traits<
     DirectionalTag,
     VertexProperties,
     HyperedgeProperties,
-    impl::matrix_t<LayoutTag>,
-    IdType>;
+    impl::matrix_t<LayoutTag, IdType>>;
 
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
-    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>,
-    traits::c_id_type IdType = default_id_type>
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t, default_id_type>>
 using undirected_hypergraph_traits =
-    hypergraph_traits<undirected_t, VertexProperties, HyperedgeProperties, ImplTag, IdType>;
+    hypergraph_traits<undirected_t, VertexProperties, HyperedgeProperties, ImplTag>;
 
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
-    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t>,
-    traits::c_id_type IdType = default_id_type>
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<impl::hyperedge_major_t, default_id_type>>
 using bf_directed_hypergraph_traits =
-    hypergraph_traits<bf_directed_t, VertexProperties, HyperedgeProperties, ImplTag, IdType>;
+    hypergraph_traits<bf_directed_t, VertexProperties, HyperedgeProperties, ImplTag>;
 
 namespace traits {
 
