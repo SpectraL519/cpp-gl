@@ -190,9 +190,9 @@ private:
             return std::views::all(this->_major_storage[id]);
         }
         else { // incident with minor
-            return std::views::iota(constants::initial_id<size_type>, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](const size_type major_id) {
-                       return this->_contains(this->_major_storage[major_id], minor_id);
+            return std::views::iota(initial_id_v<size_type>, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](const size_type major_idx) {
+                       return this->_contains(this->_major_storage[major_idx], minor_id);
                    });
         }
     }
@@ -482,10 +482,10 @@ private:
                  | std::views::join;
         }
         else { // get minor
-            return std::views::iota(constants::initial_id<size_type>, this->_tail_storage.size())
-                 | std::views::filter([this, minor_id = id](const size_type major_id) {
-                       return this->_contains(this->_tail_storage[major_id], minor_id)
-                           or this->_contains(this->_head_storage[major_id], minor_id);
+            return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
+                 | std::views::filter([this, minor_id = id](const size_type major_idx) {
+                       return this->_contains(this->_tail_storage[major_idx], minor_id)
+                           or this->_contains(this->_head_storage[major_idx], minor_id);
                    });
         }
     }
@@ -497,9 +497,10 @@ private:
             return std::views::all(std::invoke(storage_proj, this)[id]);
         }
         else { // get minor
-            return std::views::iota(constants::initial_id<size_type>, this->_tail_storage.size())
-                 | std::views::filter([this, storage_proj, minor_id = id](const size_type major_id) {
-                       return this->_contains(std::invoke(storage_proj, this)[major_id], minor_id);
+            return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
+                 | std::views::filter([this, storage_proj, minor_id = id](const size_type major_idx
+                                      ) {
+                       return this->_contains(std::invoke(storage_proj, this)[major_idx], minor_id);
                    });
         }
     }

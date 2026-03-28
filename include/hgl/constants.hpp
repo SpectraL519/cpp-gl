@@ -12,9 +12,6 @@ namespace hgl {
 namespace constants {
 
 template <traits::c_id_type IdType>
-inline constexpr IdType initial_id{0};
-
-template <traits::c_id_type IdType>
 inline constexpr IdType invalid_id{std::numeric_limits<IdType>::max()};
 
 } // namespace constants

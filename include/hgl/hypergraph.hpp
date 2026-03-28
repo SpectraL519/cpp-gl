@@ -136,7 +136,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_vertices);
+        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
@@ -263,7 +263,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
-        return std::views::iota(constants::initial_id<id_type>, this->_n_hyperedges);
+        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
     }
 
     [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
