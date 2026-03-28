@@ -12,7 +12,7 @@ namespace hgl_testing::constants {
 IC hgl::size_type n_vertices = 3uz;
 IC hgl::size_type n_hyperedges = 4uz;
 
-IC hgl::default_id_type id1 = hgl::initial_id_v<hgl::default_id_type>;
+IC hgl::default_id_type id1 = hgl::initial_id;
 IC hgl::default_id_type id2 = id1 + 1uz;
 IC hgl::default_id_type id3 = id2 + 1uz;
 IC hgl::default_id_type id4 = id3 + 1uz;
