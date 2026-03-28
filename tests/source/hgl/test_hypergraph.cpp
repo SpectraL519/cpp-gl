@@ -222,7 +222,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{n_vertices};
         sut.remove_vertices_from(
-            std::vector<hgl::id_type>{constants::id1, constants::id3, constants::id1}
+            std::vector<hgl::default_id_type>{constants::id1, constants::id3, constants::id1}
         );
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
@@ -366,7 +366,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{0uz, n_hyperedges};
         sut.remove_hyperedges_from(
-            std::vector<hgl::id_type>{constants::id1, constants::id3, constants::id1}
+            std::vector<hgl::default_id_type>{constants::id1, constants::id3, constants::id1}
         );
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;

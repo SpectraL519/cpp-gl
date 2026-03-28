@@ -9,9 +9,7 @@ namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_hypergraph_elements");
 
-static_assert(std::same_as<
-              hgl::vertex_descriptor<hgl::empty_properties>,
-              gl::vertex_descriptor<gl::empty_properties, hgl::id_type>>);
+static_assert(std::same_as<hgl::vertex_descriptor<>, gl::vertex_descriptor<>>);
 
 struct test_hyperedge_descriptor {
     using sut_type = hgl::hyperedge_descriptor<>;
@@ -43,7 +41,7 @@ TEST_CASE_FIXTURE(test_hyperedge_descriptor, "id() should return the id of the h
 
 TEST_CASE_FIXTURE(test_hyperedge_descriptor, "hyperedge descriptors should be invalid by default") {
     CHECK_FALSE(sut_type{}.is_valid());
-    CHECK_EQ(sut_type{}.id(), hgl::constants::invalid_id<hgl::id_type>);
+    CHECK_EQ(sut_type{}.id(), hgl::constants::invalid_id<hgl::default_id_type>);
 }
 
 TEST_CASE_FIXTURE(test_hyperedge_descriptor, "properties should be properly initialized") {
@@ -59,7 +57,8 @@ TEST_CASE("accessing properties should throw for an invalid hyperedge") {
 
     CHECK_THROWS_AS(static_cast<void>(sut_type::invalid().properties()), std::logic_error);
     CHECK_THROWS_AS(
-        static_cast<void>(sut_type{hgl::constants::invalid_id<hgl::id_type>, property}.properties()
+        static_cast<void>(
+            sut_type{hgl::constants::invalid_id<hgl::default_id_type>, property}.properties()
         ),
         std::logic_error
     );

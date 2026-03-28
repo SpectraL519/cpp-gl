@@ -1,9 +1,10 @@
-#include "hgl/directional_tags.hpp"
-#include "hgl/impl/layout_tags.hpp"
 #include "testing/hgl/constants.hpp"
 
 #include <doctest.h>
+#include <hgl/directional_tags.hpp>
 #include <hgl/impl/flat_incidence_list.hpp>
+#include <hgl/impl/impl_tags.hpp>
+#include <hgl/impl/layout_tags.hpp>
 
 #include <algorithm>
 #include <ranges>
@@ -323,8 +324,8 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_hyperedge_major_flat_incidence_list : public test_flat_incidence_list {
-    using sut_type =
-        hgl::impl::flat_incidence_list<hgl::undirected_t, hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -644,7 +645,8 @@ constexpr auto is_empty_pred = [](const auto& rng) { return rng.empty(); };
 
 struct test_bf_directed_vertex_major_flat_incidence_list
 : public test_bf_directed_flat_incidence_list {
-    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -958,7 +960,7 @@ TEST_CASE_FIXTURE(
     "unbind should erase the hyperedge id from a proper vertex entry"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    std::vector<hgl::id_type> expected_storage;
+    std::vector<hgl::default_id_type> expected_storage;
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);
@@ -1123,8 +1125,8 @@ TEST_CASE_FIXTURE(
 
 struct test_bf_directed_hyperedge_major_flat_incidence_list
 : public test_bf_directed_flat_incidence_list {
-    using sut_type =
-        hgl::impl::flat_incidence_list<hgl::bf_directed_t, hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::impl::flat_list_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
@@ -1441,7 +1443,7 @@ TEST_CASE_FIXTURE(
     "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
-    std::vector<hgl::id_type> expected_storage;
+    std::vector<hgl::default_id_type> expected_storage;
 
     SUBCASE("tail bound") {
         sut.bind_tail(constants::id1, constants::id1);
