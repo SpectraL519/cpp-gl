@@ -49,14 +49,14 @@ public:
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_empty_properties<properties_type>)
     {
-        return hyperedge_descriptor(constants::invalid_id<id_type>);
+        return hyperedge_descriptor(invalid_id);
     }
 
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
     requires(traits::c_non_empty_properties<properties_type>)
     {
         static properties_type invalid_properties{};
-        return hyperedge_descriptor(constants::invalid_id<id_type>, invalid_properties);
+        return hyperedge_descriptor(invalid_id, invalid_properties);
     }
 
     hyperedge_descriptor(const hyperedge_descriptor&) = default;
@@ -82,7 +82,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_valid() const noexcept {
-        return this->_id != constants::invalid_id<id_type>;
+        return this->_id != invalid_id;
     }
 
     [[nodiscard]] gl_attr_force_inline id_type id() const noexcept {
