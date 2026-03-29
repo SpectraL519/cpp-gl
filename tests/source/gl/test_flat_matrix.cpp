@@ -245,6 +245,235 @@ TEST_CASE_FIXTURE(test_flat_matrix_comparison, "empty matrices should be equal")
     CHECK_EQ(m1, m2);
 }
 
+struct test_flat_matrix_capacity {
+    using sut_type = gl::flat_matrix<int>;
+    sut_type sut;
+};
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "size and n_rows should return the number of rows and n_cols should return the number of "
+    "columns"
+) {
+    CHECK_EQ(sut.size(), 0uz);
+    CHECK_EQ(sut.n_rows(), 0uz);
+    CHECK_EQ(sut.n_cols(), 0uz);
+
+    sut.push_row({1, 2, 3});
+    CHECK_EQ(sut.size(), 1uz);
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+
+    sut.push_row({4, 5, 6});
+    CHECK_EQ(sut.size(), 2uz);
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+
+    sut.push_row({7, 8, 9});
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "empty should return true only when there are no elements in the matrix"
+) {
+    CHECK(sut.empty());
+
+    sut.push_row({1, 2, 3});
+    CHECK_FALSE(sut.empty());
+
+    sut.pop_row();
+    CHECK(sut.empty());
+
+    sut.push_col({1, 2, 3});
+    CHECK_FALSE(sut.empty());
+
+    sut.pop_col();
+    CHECK(sut.empty());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_capacity, "reserve_data should reserve space for elements") {
+    sut.reserve_data(10uz);
+    CHECK_EQ(sut.data_capacity(), 10uz);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_capacity, "shrink_to_fit should reduce capacity") {
+    sut.push_row({1, 2, 3});
+    sut.shrink_to_fit();
+
+    CHECK_EQ(sut.data_capacity(), 3uz);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should shrink container when n_rows < current n_rows"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(2uz, 3uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should shrink container when c_cols < current n_cols"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(3uz, 2uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should grow container with the fiven value when n_rows > current "
+    "n_rows"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(4uz, 3uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 4uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 12uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9}));
+    CHECK(std::ranges::equal(sut[3uz], std::vector<int>{-1, -1, -1}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should grow container with default type value when n_cols > current "
+    "n_cols"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(3uz, 4uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 4uz);
+    CHECK_EQ(sut.data_size(), 12uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3, -1}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6, -1}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9, -1}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should properly change the dimensions of the matrix for mixed size "
+    "differences"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(4uz, 4uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 4uz);
+    CHECK_EQ(sut.n_cols(), 4uz);
+    CHECK_EQ(sut.data_size(), 16uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3, -1}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6, -1}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9, -1}));
+    CHECK(std::ranges::equal(sut[3uz], std::vector<int>{-1, -1, -1, -1}));
+
+    sut.resize(3uz, 5uz, -2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 5uz);
+    CHECK_EQ(sut.data_size(), 15uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3, -1, -2}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6, -1, -2}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9, -1, -2}));
+
+    sut.resize(5uz, 3uz, -3);
+
+    CHECK_EQ(sut.n_rows(), 5uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 15uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9}));
+    CHECK(std::ranges::equal(sut[3uz], std::vector<int>{-3, -3, -3}));
+    CHECK(std::ranges::equal(sut[4uz], std::vector<int>{-3, -3, -3}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_capacity,
+    "resize(n_rows, n_cols, v) should do nothing when dimensions are not changed"
+) {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+    sut.push_row({7, 8, 9});
+
+    REQUIRE_EQ(sut.n_rows(), 3uz);
+    REQUIRE_EQ(sut.n_cols(), 3uz);
+    REQUIRE_EQ(sut.data_size(), 9uz);
+
+    sut.resize(3uz, 3uz, -1);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 9uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{1, 2, 3}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 5, 6}));
+    CHECK(std::ranges::equal(sut[2uz], std::vector<int>{7, 8, 9}));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_capacity, "clear should remove all data") {
+    sut.push_row({1, 2, 3});
+    sut.push_row({4, 5, 6});
+
+    sut.clear();
+
+    CHECK(sut.empty());
+    CHECK_EQ(sut.n_rows(), 0uz);
+    CHECK_EQ(sut.n_cols(), 0uz);
+    CHECK_EQ(sut.data_size(), 0uz);
+}
+
 TEST_SUITE_END(); // test_flat_matrix
 
 } // namespace gl_testing
