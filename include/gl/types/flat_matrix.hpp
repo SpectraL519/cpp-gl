@@ -324,12 +324,14 @@ public:
     }
 
     [[nodiscard]] reference at(size_type r, size_type c) {
-        this->_check_bounds(r, c);
+        this->_check_row(r);
+        this->_check_col(c);
         return (*this)[r, c];
     }
 
     [[nodiscard]] const_reference at(size_type r, size_type c) const {
-        this->_check_bounds(r, c);
+        this->_check_row(r);
+        this->_check_col(c);
         return (*this)[r, c];
     }
 
@@ -453,20 +455,44 @@ public:
         return this->rend();
     }
 
-    // --- modifiers ---
+    // --- modifiers (rows) ---
 
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
-    void push_back(R&& r) {
+    void push_row(R&& r) {
+        this->insert_row(this->_n_rows, std::forward<R>(r));
+    }
+
+    void push_row(std::initializer_list<value_type> ilist) {
+        this->insert_row(this->_n_rows, std::span<const value_type>{ilist});
+    }
+
+    void push_row(const value_type& value) {
+        this->insert_row(this->_n_rows, value);
+    }
+
+    template <std::ranges::input_range R>
+    requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
+    void insert_row(size_type pos, R&& r) {
+        if (pos > this->_n_rows) {
+            throw std::out_of_range(std::format(
+                "flat_matrix::insert_row: pos (which is {}) > this->rows() (which is {})",
+                pos,
+                this->_n_rows
+            ));
+        }
+
+        const auto insert_idx = pos * this->_n_cols;
+
         if constexpr (std::ranges::sized_range<R>) {
             const auto row_size = static_cast<size_type>(std::ranges::size(r));
-
-            if (this->_n_rows > 0uz and row_size != this->_n_cols)
+            if (this->_n_rows > 0uz and row_size != this->_n_cols) {
                 throw std::invalid_argument(std::format(
-                    "flat_matrix::push_back: row size mismatch (expected {}, got {})",
+                    "flat_matrix::insert_row: row size mismatch (expected {}, got {})",
                     this->_n_cols,
                     row_size
                 ));
+            }
 
             if (this->_n_rows == 0uz and this->_n_cols == 0uz)
                 this->_n_cols = row_size;
@@ -475,44 +501,59 @@ public:
 
             if constexpr (std::ranges::contiguous_range<R>) {
                 auto* ptr = std::ranges::data(r);
-                this->_data.insert(this->_data.end(), ptr, ptr + row_size);
+                this->_data.insert(this->_data.begin() + insert_idx, ptr, ptr + row_size);
             }
             else {
-                this->_data.insert(this->_data.end(), std::ranges::begin(r), std::ranges::end(r));
+                this->_data.insert(
+                    this->_data.begin() + insert_idx, std::ranges::begin(r), std::ranges::end(r)
+                );
             }
         }
         else {
-            // can't consume an input range
-            // size has to be determined by consuming the range and counting how many elements were inserted into _data
+            // single-pass input range: insert, validate size, rollback if mismatched (strong exception guarantee)
             const auto old_size = this->_data.size();
 
-            this->_data.insert(this->_data.end(), std::ranges::begin(r), std::ranges::end(r));
+            this->_data.insert(
+                this->_data.begin() + insert_idx, std::ranges::begin(r), std::ranges::end(r)
+            );
 
             const auto row_size = this->_data.size() - old_size;
-
             if (this->_n_rows > 0uz and row_size != this->_n_cols) {
-                this->_data.resize(old_size
-                ); // rollback the insertion for strong exception guarantee
+                this->_data.erase(
+                    this->_data.begin() + insert_idx, this->_data.begin() + insert_idx + row_size
+                );
                 throw std::invalid_argument(std::format(
-                    "flat_matrix::push_back: row size mismatch (expected {}, got {})",
+                    "flat_matrix::insert_row: row size mismatch (expected {}, got {})",
                     this->_n_cols,
                     row_size
                 ));
             }
 
             if (this->_n_rows == 0uz and this->_n_cols == 0uz)
-                this->_n_cols =
-                    row_size; // set the number of columns based on the first inserted row for an unsized range
+                this->_n_cols = row_size;
         }
 
         ++this->_n_rows;
     }
 
-    void push_back(std::initializer_list<value_type> ilist) {
-        this->push_back(std::span<const value_type>{ilist});
+    void insert_row(size_type pos, std::initializer_list<value_type> ilist) {
+        this->insert_row(pos, std::span<const value_type>{ilist});
     }
 
-    void pop_back() {
+    void insert_row(size_type pos, const value_type& value) {
+        if (pos > this->_n_rows) {
+            throw std::out_of_range(std::format(
+                "flat_matrix::insert_row: pos (which is {}) > this->rows() (which is {})",
+                pos,
+                this->_n_rows
+            ));
+        }
+
+        this->_data.insert(this->_data.begin() + (pos * this->_n_cols), this->_n_cols, value);
+        ++this->_n_rows;
+    }
+
+    void pop_row() {
         if (this->empty())
             return;
 
@@ -521,6 +562,165 @@ public:
 
         if (this->_n_rows == 0uz)
             this->_n_cols = 0uz;
+    }
+
+    void erase_row(size_type pos) {
+        this->_check_row(pos);
+        if (this->_n_rows == 1uz) {
+            this->clear();
+            return;
+        }
+
+        const auto start_it = this->_data.begin() + (pos * this->_n_cols);
+        this->_data.erase(start_it, start_it + this->_n_cols);
+        --this->_n_rows;
+    }
+
+    // --- modifiers (columns) ---
+
+    template <std::ranges::input_range R>
+    requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
+    void push_col(R&& r) {
+        this->insert_col(this->_n_cols, std::forward<R>(r));
+    }
+
+    void push_col(std::initializer_list<value_type> ilist) {
+        this->insert_col(this->_n_cols, std::span<const value_type>{ilist});
+    }
+
+    void push_col(const value_type& value) {
+        this->insert_col(this->_n_cols, value);
+    }
+
+    template <std::ranges::input_range R>
+    requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
+    void insert_col(size_type pos, R&& r) {
+        if (pos > this->_n_cols) {
+            throw std::out_of_range(std::format(
+                "flat_matrix::insert_col: pos (which is {}) > this->cols() (which is {})",
+                pos,
+                this->_n_cols
+            ));
+        }
+
+        if constexpr (std::ranges::sized_range<R>) {
+            const auto col_size = static_cast<size_type>(std::ranges::size(r));
+            if (this->_n_cols > 0uz and col_size != this->_n_rows) {
+                throw std::invalid_argument(std::format(
+                    "flat_matrix::insert_col: col size mismatch (expected {}, got {})",
+                    this->_n_rows,
+                    col_size
+                ));
+            }
+
+            if (this->_n_rows == 0uz and this->_n_cols == 0uz)
+                this->_n_rows = col_size;
+
+            // pre-allocate new vector to guarantee O(V^2) structural shift, avoiding O(V^3) with multiple inserts
+            std::vector<value_type> new_data;
+            new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
+
+            auto r_it = std::ranges::begin(r);
+            for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
+                auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+
+                // move old row elements up to insertion point
+                new_data.insert(
+                    new_data.end(),
+                    std::make_move_iterator(row_begin),
+                    std::make_move_iterator(row_begin + pos)
+                );
+                // insert new column element
+                new_data.push_back(*r_it++);
+                // move the remainder of old row
+                new_data.insert(
+                    new_data.end(),
+                    std::make_move_iterator(row_begin + pos),
+                    std::make_move_iterator(row_begin + this->_n_cols)
+                );
+            }
+
+            this->_data = std::move(new_data);
+            ++this->_n_cols;
+        }
+        else {
+            // create a temporary sized range and recursively call the method to leverage the sized range logic,
+            // ensuring strong exception guarantee for unsized input
+            this->insert_col(pos, std::ranges::to<std::vector<value_type>>(std::forward<R>(r)));
+        }
+    }
+
+    void insert_col(size_type pos, std::initializer_list<value_type> ilist) {
+        this->insert_col(pos, std::span<const value_type>{ilist});
+    }
+
+    void insert_col(size_type pos, const value_type& value) {
+        if (pos > this->_n_cols) {
+            throw std::out_of_range(std::format(
+                "flat_matrix::insert_col: pos (which is {}) > this->cols() (which is {})",
+                pos,
+                this->_n_cols
+            ));
+        }
+
+        std::vector<value_type> new_data;
+        new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
+
+        for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
+            auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+
+            new_data.insert(
+                new_data.end(),
+                std::make_move_iterator(row_begin),
+                std::make_move_iterator(row_begin + pos)
+            );
+            new_data.push_back(value); // Insert the fill value
+            new_data.insert(
+                new_data.end(),
+                std::make_move_iterator(row_begin + pos),
+                std::make_move_iterator(row_begin + this->_n_cols)
+            );
+        }
+
+        this->_data = std::move(new_data);
+        ++this->_n_cols;
+    }
+
+    void pop_col() {
+        if (this->empty() || this->_n_cols == 0uz)
+            return;
+
+        this->erase_col(this->_n_cols - 1uz);
+    }
+
+    void erase_col(size_type pos) {
+        this->_check_col(pos);
+
+        if (this->_n_cols == 1uz) {
+            this->clear();
+            return;
+        }
+
+        std::vector<value_type> new_data;
+        new_data.reserve(this->_n_rows * (this->_n_cols - 1uz));
+
+        for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
+            auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+
+            new_data.insert(
+                new_data.end(),
+                std::make_move_iterator(row_begin),
+                std::make_move_iterator(row_begin + pos)
+            );
+            new_data.insert(
+                new_data.end(),
+                std::make_move_iterator(row_begin + pos + 1uz),
+                std::make_move_iterator(row_begin + this->_n_cols)
+            );
+        }
+
+        this->_data = std::move(new_data);
+        --this->_n_cols;
     }
 
 private:
@@ -534,11 +734,10 @@ private:
         }
     }
 
-    void _check_bounds(size_type r, size_type c) const {
-        this->_check_row(r);
+    void _check_col(size_type c) const {
         if (c >= this->_n_cols) {
             throw std::out_of_range(std::format(
-                "flat_matrix::_check_bounds: c (which is {}) >= this->n_cols() (which is {})",
+                "flat_matrix::_check_col: c (which is {}) >= this->n_cols() (which is {})",
                 c,
                 this->_n_cols
             ));
