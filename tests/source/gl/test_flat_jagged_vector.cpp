@@ -162,47 +162,47 @@ struct test_flat_jagged_vector_comparison {
 
 TEST_CASE_FIXTURE(
     test_flat_jagged_vector_comparison,
-    "equality operator should return true for equal segment_vectors"
+    "equality operator should return true for equal flat_jagged_vectors"
 ) {
-    sut_type sv1{
+    sut_type jv1{
         {1, 2},
         {3, 4}
     };
-    sut_type sv2{
+    sut_type jv2{
         {1, 2},
         {3, 4}
     };
 
-    CHECK_EQ(sv1, sv2);
+    CHECK_EQ(jv1, jv2);
 }
 
 TEST_CASE_FIXTURE(
     test_flat_jagged_vector_comparison,
-    "inequality operator should return true for different segment_vectors"
+    "inequality operator should return true for different flat_jagged_vectors"
 ) {
-    sut_type sv1{
+    sut_type jv1{
         {1, 2},
         {3, 4}
     };
-    sut_type sv2{
+    sut_type jv2{
         {1, 2},
         {3, 5}
     };
-    sut_type sv3{
+    sut_type jv3{
         {1, 2},
         {3, 4},
         {5}
     };
 
-    CHECK_NE(sv1, sv2);
-    CHECK_NE(sv1, sv3);
+    CHECK_NE(jv1, jv2);
+    CHECK_NE(jv1, jv3);
 }
 
-TEST_CASE_FIXTURE(test_flat_jagged_vector_comparison, "empty segment_vectors should be equal") {
-    sut_type sv1;
-    sut_type sv2;
+TEST_CASE_FIXTURE(test_flat_jagged_vector_comparison, "empty flat_jagged_vectors should be equal") {
+    sut_type jv1;
+    sut_type jv2;
 
-    CHECK_EQ(sv1, sv2);
+    CHECK_EQ(jv1, jv2);
 }
 
 struct test_flat_jagged_vector_capacity {
