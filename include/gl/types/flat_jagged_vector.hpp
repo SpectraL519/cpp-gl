@@ -228,7 +228,7 @@ public:
     /// @brief Reverse const iterator
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    // --- constructors ---
+    // --- constructors and assignment ---
 
     /// @brief Default constructor creates an empty `flat_jagged_vector`.
     /// @post `empty() == true`, `size() == 0`, `data_size() == 0`
@@ -330,7 +330,7 @@ public:
     /// @return `true` if both vectors have the same structure and elements
     friend bool operator==(const flat_jagged_vector&, const flat_jagged_vector&) = default;
 
-    // --- capacity ---
+    // --- size and capacity ---
 
     /// @brief Returns the number of segments in this container.
     /// @return The count of segments
