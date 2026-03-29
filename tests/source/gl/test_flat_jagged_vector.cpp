@@ -385,7 +385,7 @@ TEST_CASE_FIXTURE(test_flat_jagged_vector_capacity, "clear should remove all seg
     CHECK_EQ(sut.data_size(), 0uz);
 }
 
-struct test_segment_vector_accessors {
+struct test_flat_jagged_vector_accessors {
     using sut_type = gl::flat_jagged_vector<int>;
 
     sut_type sut{
@@ -406,7 +406,9 @@ struct test_segment_vector_accessors {
     std::size_t dummy_offset = 999uz;
 };
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "operator[] should return segment at given index") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "operator[] should return segment at given index"
+) {
     auto seg0 = sut[0uz];
     CHECK(std::ranges::equal(seg0, data[0uz]));
     seg0.front() = dummy_value;
@@ -424,7 +426,7 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "operator[] should return segme
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "const operator[] should return const segment at given index"
+    test_flat_jagged_vector_accessors, "const operator[] should return const segment at given index"
 ) {
     const auto& const_sut = sut;
 
@@ -435,7 +437,7 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(seg1, data[1uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "at() should return segment at given index") {
+TEST_CASE_FIXTURE(test_flat_jagged_vector_accessors, "at() should return segment at given index") {
     auto seg0 = sut.at(0uz);
     CHECK(std::ranges::equal(seg0, data[0uz]));
     seg0.front() = dummy_value;
@@ -452,13 +454,13 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "at() should return segment at 
     CHECK_EQ(sut.at(2uz).front(), dummy_value);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "at() should throw for out of range index") {
+TEST_CASE_FIXTURE(test_flat_jagged_vector_accessors, "at() should throw for out of range index") {
     CHECK_THROWS_AS(static_cast<void>(sut.at(3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(sut.at(10uz)), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "const at() should return const segment at given index"
+    test_flat_jagged_vector_accessors, "const at() should return const segment at given index"
 ) {
     const auto& const_sut = sut;
 
@@ -472,13 +474,17 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(seg2, data[2uz]));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "const at() should throw for out of range index") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "const at() should throw for out of range index"
+) {
     const auto& const_sut = sut;
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(3uz)), std::out_of_range);
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(10uz)), std::out_of_range);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "segments() should return a view of all segments") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "segments() should return a view of all segments"
+) {
     auto n_segments = 0uz;
     for (auto seg : sut.segments()) {
         CHECK(std::ranges::equal(seg, data[n_segments]));
@@ -493,7 +499,7 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "segments() should return a vie
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "const segments() should return a const view of all segments"
+    test_flat_jagged_vector_accessors, "const segments() should return a const view of all segments"
 ) {
     const auto& const_sut = sut;
 
@@ -507,7 +513,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "empty(i) should return true for empty segments and false for non-empty segments"
 ) {
     CHECK_FALSE(sut.empty(0uz));
@@ -519,7 +525,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "segment_size(i) should return the size of a segment"
+    test_flat_jagged_vector_accessors, "segment_size(i) should return the size of a segment"
 ) {
     CHECK_EQ(sut.segment_size(0uz), 3uz);
     CHECK_EQ(sut.segment_size(1uz), 2uz);
@@ -527,26 +533,28 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "data_size() should return the total number of elements"
+    test_flat_jagged_vector_accessors, "data_size() should return the total number of elements"
 ) {
     CHECK_EQ(sut.data_size(), 6uz);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "data_view() should return a span of all data") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "data_view() should return a span of all data"
+) {
     CHECK(std::ranges::equal(sut.data_view(), flat_data));
     sut.data_view().front() = dummy_value;
     CHECK_EQ(sut.data_view().front(), dummy_value);
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "const data_view() should return a const span of all data"
+    test_flat_jagged_vector_accessors, "const data_view() should return a const span of all data"
 ) {
     const auto& const_sut = sut;
     CHECK(std::ranges::equal(const_sut.data_view(), flat_data));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "data_storage() should return a mutable reference to the internal vector"
 ) {
     auto& storage_ref = sut.data_storage();
@@ -559,7 +567,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "const data_storage() should return a const reference to the internal vector"
 ) {
     const auto& const_sut = sut;
@@ -570,7 +578,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "data_ptr() should return a mutable raw pointer to the first element"
 ) {
     auto* ptr = sut.data_ptr();
@@ -584,7 +592,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "const data_ptr() should return a const raw pointer to the first element"
 ) {
     const auto& const_sut = sut;
@@ -595,7 +603,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "offsets_view() should return a span of all offsets"
+    test_flat_jagged_vector_accessors, "offsets_view() should return a span of all offsets"
 ) {
     CHECK(std::ranges::equal(sut.offsets_view(), offsets));
     sut.offsets_view().front() = dummy_offset;
@@ -603,14 +611,15 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors, "const offsets_view() should return a const span of all offsets"
+    test_flat_jagged_vector_accessors,
+    "const offsets_view() should return a const span of all offsets"
 ) {
     const auto& const_sut = sut;
     CHECK(std::ranges::equal(const_sut.offsets_view(), offsets));
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "offsets_storage() should return a mutable reference to the internal vector"
 ) {
     auto& storage_ref = sut.offsets_storage();
@@ -623,7 +632,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "const offsets_storage() should return a const reference to the internal vector"
 ) {
     const auto& const_sut = sut;
@@ -634,7 +643,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "offsets_ptr() should return a mutable raw pointer to the first element"
 ) {
     auto* ptr = sut.offsets_ptr();
@@ -648,7 +657,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_segment_vector_accessors,
+    test_flat_jagged_vector_accessors,
     "const offsets_ptr() should return a const raw pointer to the first element"
 ) {
     const auto& const_sut = sut;
@@ -658,7 +667,7 @@ TEST_CASE_FIXTURE(
     CHECK(std::equal(ptr, ptr + const_sut.offsets_view().size(), offsets.begin()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "front() should return the first segment") {
+TEST_CASE_FIXTURE(test_flat_jagged_vector_accessors, "front() should return the first segment") {
     auto front_seg = sut.front();
     CHECK(std::ranges::equal(front_seg, data.front()));
 
@@ -666,13 +675,15 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "front() should return the firs
     CHECK_EQ(sut.front().front(), dummy_value);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "const front() should return const first segment") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "const front() should return const first segment"
+) {
     const auto& const_sut = sut;
     auto front_seg = const_sut.front();
     CHECK(std::ranges::equal(front_seg, data.front()));
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "back() should return the last segment") {
+TEST_CASE_FIXTURE(test_flat_jagged_vector_accessors, "back() should return the last segment") {
     auto back_seg = sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
 
@@ -680,7 +691,9 @@ TEST_CASE_FIXTURE(test_segment_vector_accessors, "back() should return the last 
     CHECK_EQ(sut.back().front(), dummy_value);
 }
 
-TEST_CASE_FIXTURE(test_segment_vector_accessors, "const back() should return const last segment") {
+TEST_CASE_FIXTURE(
+    test_flat_jagged_vector_accessors, "const back() should return const last segment"
+) {
     const auto& const_sut = sut;
     auto back_seg = const_sut.back();
     CHECK(std::ranges::equal(back_seg, data.back()));
@@ -710,7 +723,6 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut[0uz, 1uz], seg0[1uz]);
     sut[0uz, 1uz] = dummy_value;
     CHECK_EQ(sut[0uz, 1uz], dummy_value);
-
 
     CHECK_EQ(sut[0uz, 2uz], seg0[2uz]);
     sut[0uz, 2uz] = dummy_value;
