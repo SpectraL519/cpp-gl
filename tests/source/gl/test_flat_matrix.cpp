@@ -812,6 +812,168 @@ TEST_CASE_FIXTURE(
     CHECK(std::equal(ptr, ptr + const_sut.data_size(), flat_data.begin()));
 }
 
+struct test_flat_matrix_row_modifiers {
+    using sut_type = gl::flat_matrix<int>;
+
+    sut_type sut;
+    std::vector<int> sut_row0{1, 2, 3};
+    std::vector<int> sut_row1{4, 5, 6};
+    std::vector<int> sut_row2{7, 8, 9};
+};
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "push_row with span should add new row") {
+    sut.push_row(std::span<const int>{sut_row0});
+
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "push_row with vector should add new row") {
+    sut.push_row(sut_row0);
+
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "push_row with initializer list should add new row"
+) {
+    sut.push_row({1, 2, 3});
+
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "multiple push_row calls should add multiple rows"
+) {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+    sut.push_row(sut_row2);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row1.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+    CHECK(std::ranges::equal(sut[1uz], sut_row1));
+    CHECK(std::ranges::equal(sut[2uz], sut_row2));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "pop_row should remove last row") {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+
+    REQUIRE(std::ranges::equal(sut.back(), sut_row1));
+
+    sut.pop_row();
+
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size());
+    CHECK(std::ranges::equal(sut.back(), sut_row0));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "pop_row on empty container should do nothing") {
+    sut.pop_row();
+    CHECK(sut.empty());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "pop_row should remove all rows sequentially") {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+    sut.push_row(sut_row2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row1.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut.back(), sut_row2));
+
+    sut.pop_row();
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row1.size());
+    CHECK(std::ranges::equal(sut.back(), sut_row1));
+
+    sut.pop_row();
+    CHECK_EQ(sut.n_rows(), 1uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size());
+    CHECK(std::ranges::equal(sut.back(), sut_row0));
+
+    sut.pop_row();
+    CHECK(sut.empty());
+    CHECK_EQ(sut.n_rows(), 0uz);
+    CHECK_EQ(sut.n_cols(), 0uz);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "insert_row should add row at given position") {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row2);
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+    CHECK(std::ranges::equal(sut[1uz], sut_row2));
+
+    sut.insert_row(1uz, sut_row1);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row1.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+    CHECK(std::ranges::equal(sut[1uz], sut_row1));
+    CHECK(std::ranges::equal(sut[2uz], sut_row2));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "insert_row should throw for an invalid position"
+) {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+
+    CHECK_THROWS_AS(sut.insert_row(3uz, sut_row2), std::out_of_range);
+    CHECK_THROWS_AS(sut.insert_row(10uz, sut_row2), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "erase_row should remove segment at given position"
+) {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+    sut.push_row(sut_row2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row1.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+    CHECK(std::ranges::equal(sut[1uz], sut_row1));
+    CHECK(std::ranges::equal(sut[2uz], sut_row2));
+
+    sut.erase_row(1uz);
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_row0.size() + sut_row2.size());
+    CHECK(std::ranges::equal(sut[0uz], sut_row0));
+    CHECK(std::ranges::equal(sut[1uz], sut_row2));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "erase_row should throw for an invalid position") {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+
+    CHECK_THROWS_AS(sut.erase_row(2uz), std::out_of_range);
+    CHECK_THROWS_AS(sut.erase_row(10uz), std::out_of_range);
+}
+
+// TODO: col modifiers, iterators, more (when added)
+
 TEST_SUITE_END(); // test_flat_matrix
 
 } // namespace gl_testing

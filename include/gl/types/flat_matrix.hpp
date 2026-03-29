@@ -16,6 +16,10 @@
 
 namespace gl {
 
+// TODO:
+// col accessors -> views
+// transposition
+
 template <std::semiregular T>
 class flat_matrix {
 public:
@@ -405,56 +409,6 @@ public:
         return this->_data.data();
     }
 
-    // --- iterators ---
-
-    [[nodiscard]] iterator begin() noexcept {
-        return iterator(this->_data.data(), this->_n_cols, 0uz);
-    }
-
-    [[nodiscard]] iterator end() noexcept {
-        return iterator(this->_data.data(), this->_n_cols, this->_n_rows);
-    }
-
-    [[nodiscard]] const_iterator begin() const noexcept {
-        return const_iterator(this->_data.data(), this->_n_cols, 0uz);
-    }
-
-    [[nodiscard]] const_iterator end() const noexcept {
-        return const_iterator(this->_data.data(), this->_n_cols, this->_n_rows);
-    }
-
-    [[nodiscard]] const_iterator cbegin() const noexcept {
-        return this->begin();
-    }
-
-    [[nodiscard]] const_iterator cend() const noexcept {
-        return this->end();
-    }
-
-    [[nodiscard]] reverse_iterator rbegin() noexcept {
-        return reverse_iterator(this->end());
-    }
-
-    [[nodiscard]] reverse_iterator rend() noexcept {
-        return reverse_iterator(this->begin());
-    }
-
-    [[nodiscard]] const_reverse_iterator rbegin() const noexcept {
-        return const_reverse_iterator(this->end());
-    }
-
-    [[nodiscard]] const_reverse_iterator rend() const noexcept {
-        return const_reverse_iterator(this->begin());
-    }
-
-    [[nodiscard]] const_reverse_iterator crbegin() const noexcept {
-        return this->rbegin();
-    }
-
-    [[nodiscard]] const_reverse_iterator crend() const noexcept {
-        return this->rend();
-    }
-
     // --- modifiers (rows) ---
 
     template <std::ranges::input_range R>
@@ -721,6 +675,56 @@ public:
 
         this->_data = std::move(new_data);
         --this->_n_cols;
+    }
+
+    // --- iterators ---
+
+    [[nodiscard]] iterator begin() noexcept {
+        return iterator(this->_data.data(), this->_n_cols, 0uz);
+    }
+
+    [[nodiscard]] iterator end() noexcept {
+        return iterator(this->_data.data(), this->_n_cols, this->_n_rows);
+    }
+
+    [[nodiscard]] const_iterator begin() const noexcept {
+        return const_iterator(this->_data.data(), this->_n_cols, 0uz);
+    }
+
+    [[nodiscard]] const_iterator end() const noexcept {
+        return const_iterator(this->_data.data(), this->_n_cols, this->_n_rows);
+    }
+
+    [[nodiscard]] const_iterator cbegin() const noexcept {
+        return this->begin();
+    }
+
+    [[nodiscard]] const_iterator cend() const noexcept {
+        return this->end();
+    }
+
+    [[nodiscard]] reverse_iterator rbegin() noexcept {
+        return reverse_iterator(this->end());
+    }
+
+    [[nodiscard]] reverse_iterator rend() noexcept {
+        return reverse_iterator(this->begin());
+    }
+
+    [[nodiscard]] const_reverse_iterator rbegin() const noexcept {
+        return const_reverse_iterator(this->end());
+    }
+
+    [[nodiscard]] const_reverse_iterator rend() const noexcept {
+        return const_reverse_iterator(this->begin());
+    }
+
+    [[nodiscard]] const_reverse_iterator crbegin() const noexcept {
+        return this->rbegin();
+    }
+
+    [[nodiscard]] const_reverse_iterator crend() const noexcept {
+        return this->rend();
     }
 
 private:
