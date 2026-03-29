@@ -155,8 +155,8 @@ public:
 
     ~flat_matrix() = default;
 
-    flat_matrix(size_type n_rows, size_type n_cols, const value_type& initial_value = value_type{})
-    : _n_rows(n_rows), _n_cols(n_cols), _data(n_rows * n_cols, initial_value) {}
+    flat_matrix(size_type n_rows, size_type n_cols, const value_type& value = value_type{})
+    : _n_rows(n_rows), _n_cols(n_cols), _data(n_rows * n_cols, value) {}
 
     flat_matrix(std::initializer_list<std::initializer_list<value_type>> ilist) {
         this->_n_rows = ilist.size();
@@ -208,8 +208,8 @@ public:
             if (first) {
                 this->_n_cols = row_size;
 
-                if constexpr (std::ranges::sized_range<
-                                  R>) // prevent reallocation during loop for sized range
+                // prevent reallocation during loop for sized range
+                if constexpr (std::ranges::sized_range<R>)
                     this->_data.reserve(this->_n_rows * this->_n_cols);
 
                 first = false;
@@ -223,8 +223,8 @@ public:
             }
         }
 
-        if constexpr (not std::ranges::sized_range<
-                          R>) // calculate the number of rows for an unsized range
+        // calculate the number of rows for an unsized range
+        if constexpr (not std::ranges::sized_range<R>)
             this->_n_rows = this->_data.size() / (this->_n_cols > 0uz ? this->_n_cols : 1uz);
     }
 
