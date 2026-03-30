@@ -485,7 +485,12 @@ struct test_flat_matrix_accessors {
     std::vector<int> sut_row0{1, 2, 3};
     std::vector<int> sut_row1{4, 5, 6};
 
-    std::vector<std::vector<int>> data{sut_row0, sut_row1};
+    std::vector<int> sut_col0{1, 4};
+    std::vector<int> sut_col1{2, 5};
+    std::vector<int> sut_col2{3, 6};
+
+    std::vector<std::vector<int>> sut_rows{sut_row0, sut_row1}; // rename to sut_rows
+    std::vector<std::vector<int>> sut_cols{sut_col0, sut_col1, sut_col2};
     std::vector<int> flat_data{1, 2, 3, 4, 5, 6};
 
     std::size_t sut_n_rows = 2uz;
@@ -496,12 +501,12 @@ struct test_flat_matrix_accessors {
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "operator[r] should return row at given index") {
     auto r0 = sut[0uz];
-    CHECK(std::ranges::equal(r0, data[0uz]));
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
     r0.front() = dummy_value;
     CHECK_EQ(sut[0uz].front(), dummy_value);
 
     auto r1 = sut[1uz];
-    CHECK(std::ranges::equal(r1, data[1uz]));
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
     r1.front() = dummy_value;
     CHECK_EQ(sut[1uz].front(), dummy_value);
 }
@@ -512,10 +517,10 @@ TEST_CASE_FIXTURE(
     const auto& const_sut = sut;
 
     auto r0 = const_sut[0uz];
-    CHECK(std::ranges::equal(r0, data[0uz]));
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
 
     auto r1 = const_sut[1uz];
-    CHECK(std::ranges::equal(r1, data[1uz]));
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
 }
 
 TEST_CASE_FIXTURE(
@@ -559,12 +564,12 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const operator[](r, c) should ret
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "at(r) should return row at given index") {
     auto r0 = sut.at(0uz);
-    CHECK(std::ranges::equal(r0, data[0uz]));
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
     r0.front() = dummy_value;
     CHECK_EQ(sut.at(0uz).front(), dummy_value);
 
     auto r1 = sut.at(1uz);
-    CHECK(std::ranges::equal(r1, data[1uz]));
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
     r1.front() = dummy_value;
     CHECK_EQ(sut.at(1uz).front(), dummy_value);
 }
@@ -578,10 +583,10 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const at(r) should return const r
     const auto& const_sut = sut;
 
     auto r0 = const_sut.at(0uz);
-    CHECK(std::ranges::equal(r0, data[0uz]));
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
 
     auto r1 = const_sut.at(1uz);
-    CHECK(std::ranges::equal(r1, data[1uz]));
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
 }
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const at(r) should throw for out of range index") {
@@ -651,10 +656,116 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const at(r, c) should throw for i
     CHECK_THROWS_AS(static_cast<void>(const_sut.at(1uz, 10uz)), std::out_of_range);
 }
 
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front() should return the first row") {
+    auto front_row = sut.front();
+    CHECK(std::ranges::equal(front_row, sut_rows.front()));
+
+    front_row.front() = dummy_value;
+    CHECK_EQ(sut.front().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const front() should return const first row") {
+    const auto& const_sut = sut;
+    auto front_row = const_sut.front();
+    CHECK(std::ranges::equal(front_row, sut_rows.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back() should return the last row") {
+    auto back_row = sut.back();
+    CHECK(std::ranges::equal(back_row, sut_rows.back()));
+
+    back_row.front() = dummy_value;
+    CHECK_EQ(sut.back().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const back() should return const last row") {
+    const auto& const_sut = sut;
+    auto back_row = const_sut.back();
+    CHECK(std::ranges::equal(back_row, sut_rows.back()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "row(r) should return row at given index") {
+    auto r0 = sut.row(0uz);
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
+    r0.front() = dummy_value;
+    CHECK_EQ(sut.row(0uz).front(), dummy_value);
+
+    auto r1 = sut.row(1uz);
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
+    r1.front() = dummy_value;
+    CHECK_EQ(sut.row(1uz).front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "row(r) should throw for out of range index") {
+    CHECK_THROWS_AS(static_cast<void>(sut.row(2uz)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(sut.row(10uz)), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_accessors, "const row(r) should return const row at given index"
+) {
+    const auto& const_sut = sut;
+
+    auto r0 = const_sut.row(0uz);
+    CHECK(std::ranges::equal(r0, sut_rows[0uz]));
+
+    auto r1 = const_sut.row(1uz);
+    CHECK(std::ranges::equal(r1, sut_rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const row(r) should throw for out of range index") {
+    const auto& const_sut = sut;
+    CHECK_THROWS_AS(static_cast<void>(const_sut.row(2uz)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(const_sut.row(10uz)), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "col(c) should return column at given index") {
+    auto c0 = sut.col(0uz);
+    CHECK(std::ranges::equal(c0, sut_col0));
+    c0.front() = dummy_value;
+    CHECK_EQ(sut.col(0uz).front(), dummy_value);
+
+    auto c1 = sut.col(1uz);
+    CHECK(std::ranges::equal(c1, sut_col1));
+    c1.front() = dummy_value;
+    CHECK_EQ(sut.col(1uz).front(), dummy_value);
+
+    auto c2 = sut.col(2uz);
+    CHECK(std::ranges::equal(c2, sut_col2));
+    c2.front() = dummy_value;
+    CHECK_EQ(sut.col(2uz).front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "col(c) should throw for out of range index") {
+    CHECK_THROWS_AS(static_cast<void>(sut.col(3uz)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(sut.col(10uz)), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_accessors, "const col(c) should return const column at given index"
+) {
+    const auto& const_sut = sut;
+
+    auto c0 = const_sut.col(0uz);
+    CHECK(std::ranges::equal(c0, sut_col0));
+
+    auto c1 = const_sut.col(1uz);
+    CHECK(std::ranges::equal(c1, sut_col1));
+
+    auto c2 = const_sut.col(2uz);
+    CHECK(std::ranges::equal(c2, sut_col2));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const col(c) should throw for out of range index") {
+    const auto& const_sut = sut;
+    CHECK_THROWS_AS(static_cast<void>(const_sut.col(3uz)), std::out_of_range);
+    CHECK_THROWS_AS(static_cast<void>(const_sut.col(10uz)), std::out_of_range);
+}
+
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "rows() should return a view of all rows") {
     auto n_rows = 0uz;
     for (auto row : sut.rows()) {
-        CHECK(std::ranges::equal(row, data[n_rows]));
+        CHECK(std::ranges::equal(row, sut_rows[n_rows]));
         const auto orig_val = std::exchange(row.front(), dummy_value);
         CHECK_EQ(sut[n_rows].front(), dummy_value);
         row.front() = orig_val; // revert change
@@ -665,70 +776,6 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "rows() should return a view of al
     CHECK_EQ(n_rows, sut_n_rows);
 }
 
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front() should return the first row") {
-    auto front_row = sut.front();
-    CHECK(std::ranges::equal(front_row, data.front()));
-
-    front_row.front() = dummy_value;
-    CHECK_EQ(sut.front().front(), dummy_value);
-}
-
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const front() should return const first row") {
-    const auto& const_sut = sut;
-    auto front_row = const_sut.front();
-    CHECK(std::ranges::equal(front_row, data.front()));
-}
-
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front(row) should return first element in row") {
-    CHECK_EQ(sut.front(0uz), sut_row0.front());
-    sut.front(0uz) = dummy_value;
-    CHECK_EQ(sut[0uz].front(), dummy_value);
-
-    CHECK_EQ(sut.front(1uz), sut_row1.front());
-    sut.front(1uz) = dummy_value;
-    CHECK_EQ(sut[1uz].front(), dummy_value);
-}
-
-TEST_CASE_FIXTURE(
-    test_flat_matrix_accessors, "const front(row) should return const first element in row"
-) {
-    const auto& const_sut = sut;
-    CHECK_EQ(const_sut.front(0uz), sut_row0.front());
-    CHECK_EQ(const_sut.front(1uz), sut_row1.front());
-}
-
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back() should return the last row") {
-    auto back_row = sut.back();
-    CHECK(std::ranges::equal(back_row, data.back()));
-
-    back_row.front() = dummy_value;
-    CHECK_EQ(sut.back().front(), dummy_value);
-}
-
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const back() should return const last row") {
-    const auto& const_sut = sut;
-    auto back_row = const_sut.back();
-    CHECK(std::ranges::equal(back_row, data.back()));
-}
-
-TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back(row) should return last element in row") {
-    CHECK_EQ(sut.back(0uz), sut_row0.back());
-    sut.back(0uz) = dummy_value;
-    CHECK_EQ(sut[0uz].back(), dummy_value);
-
-    CHECK_EQ(sut.back(1uz), sut_row1.back());
-    sut.back(1uz) = dummy_value;
-    CHECK_EQ(sut[1uz].back(), dummy_value);
-}
-
-TEST_CASE_FIXTURE(
-    test_flat_matrix_accessors, "const back(row) should return const last element in row"
-) {
-    const auto& const_sut = sut;
-    CHECK_EQ(const_sut.back(0uz), sut_row0.back());
-    CHECK_EQ(const_sut.back(1uz), sut_row1.back());
-}
-
 TEST_CASE_FIXTURE(
     test_flat_matrix_accessors, "const rows() should return a const view of all rows"
 ) {
@@ -736,11 +783,39 @@ TEST_CASE_FIXTURE(
 
     auto n_rows = 0uz;
     for (auto row : const_sut.rows()) {
-        CHECK(std::ranges::equal(row, data[n_rows]));
+        CHECK(std::ranges::equal(row, sut_rows[n_rows]));
         n_rows++;
     }
 
     CHECK_EQ(n_rows, sut_n_rows);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "cols() should return a view of all columns") {
+    auto n_cols = 0uz;
+    for (auto col : sut.cols()) {
+        CHECK(std::ranges::equal(col, sut_cols[n_cols]));
+        const auto orig_val = std::exchange(col.front(), dummy_value);
+        CHECK_EQ(sut.col(n_cols).front(), dummy_value);
+        col.front() = orig_val; // revert change
+
+        n_cols++;
+    }
+
+    CHECK_EQ(n_cols, sut_n_cols);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_accessors, "const cols() should return a const view of all columns"
+) {
+    const auto& const_sut = sut;
+
+    auto n_cols = 0uz;
+    for (auto col : const_sut.cols()) {
+        CHECK(std::ranges::equal(col, sut_cols[n_cols]));
+        n_cols++;
+    }
+
+    CHECK_EQ(n_cols, sut_n_cols);
 }
 
 TEST_CASE_FIXTURE(
@@ -851,6 +926,15 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "push_row should throw for a not matching row size"
+) {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+
+    CHECK_THROWS_AS(sut.push_row({11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(
     test_flat_matrix_row_modifiers, "multiple push_row calls should add multiple rows"
 ) {
     sut.push_row(sut_row0);
@@ -942,8 +1026,15 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_flat_matrix_row_modifiers, "erase_row should remove segment at given position"
+    test_flat_matrix_row_modifiers, "insert_row should throw for a not matching row size"
 ) {
+    sut.push_row(sut_row0);
+    sut.push_row(sut_row1);
+
+    CHECK_THROWS_AS(sut.insert_row(1uz, {11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "erase_row should remove row at given position") {
     sut.push_row(sut_row0);
     sut.push_row(sut_row1);
     sut.push_row(sut_row2);
@@ -970,6 +1061,184 @@ TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "erase_row should throw for an
 
     CHECK_THROWS_AS(sut.erase_row(2uz), std::out_of_range);
     CHECK_THROWS_AS(sut.erase_row(10uz), std::out_of_range);
+}
+
+struct test_flat_matrix_col_modifiers {
+    using sut_type = gl::flat_matrix<int>;
+
+    sut_type sut;
+    std::vector<int> sut_col0{1, 2, 3};
+    std::vector<int> sut_col1{4, 5, 6};
+    std::vector<int> sut_col2{7, 8, 9};
+};
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "push_col with span should add new column") {
+    sut.push_col(std::span<const int>{sut_col0});
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 1uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "push_col with vector should add new column") {
+    sut.push_col(sut_col0);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 1uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "push_col with initializer list should add new column"
+) {
+    sut.push_col({1, 2, 3});
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 1uz);
+    CHECK_EQ(sut.data_size(), 3uz);
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "push_col should throw for a not matching col size"
+) {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+
+    CHECK_THROWS_AS(sut.push_col({11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "multiple push_col calls should add multiple columns"
+) {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+    sut.push_col(sut_col2);
+
+    CHECK_EQ(sut.size(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col1.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+    CHECK(std::ranges::equal(sut.col(1uz), sut_col1));
+    CHECK(std::ranges::equal(sut.col(2uz), sut_col2));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "pop_col should remove last column") {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+
+    REQUIRE(std::ranges::equal(sut.back_col(), sut_col1));
+
+    sut.pop_col();
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 1uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size());
+    CHECK(std::ranges::equal(sut.back_col(), sut_col0));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "pop_col on empty container should do nothing") {
+    sut.pop_col();
+    CHECK(sut.empty());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "pop_col should remove all columns sequentially") {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+    sut.push_col(sut_col2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col1.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.back_col(), sut_col2));
+
+    sut.pop_col();
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col1.size());
+    CHECK(std::ranges::equal(sut.back_col(), sut_col1));
+
+    sut.pop_col();
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 1uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size());
+    CHECK(std::ranges::equal(sut.back_col(), sut_col0));
+
+    sut.pop_col();
+    CHECK(sut.empty());
+    CHECK_EQ(sut.n_rows(), 0uz);
+    CHECK_EQ(sut.n_cols(), 0uz);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "insert_col should add column at given position") {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+    CHECK(std::ranges::equal(sut.col(1uz), sut_col2));
+
+    sut.insert_col(1uz, sut_col1);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col1.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+    CHECK(std::ranges::equal(sut.col(1uz), sut_col1));
+    CHECK(std::ranges::equal(sut.col(2uz), sut_col2));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "insert_col should throw for an invalid position"
+) {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+
+    CHECK_THROWS_AS(sut.insert_row(4uz, sut_col2), std::out_of_range);
+    CHECK_THROWS_AS(sut.insert_row(10uz, sut_col2), std::out_of_range);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "insert_col should throw for a not matching col size"
+) {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+
+    CHECK_THROWS_AS(sut.insert_col(1uz, {11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_col_modifiers, "erase_col should remove column at given position"
+) {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+    sut.push_col(sut_col2);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col1.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+    CHECK(std::ranges::equal(sut.col(1uz), sut_col1));
+    CHECK(std::ranges::equal(sut.col(2uz), sut_col2));
+
+    sut.erase_col(1uz);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), sut_col0.size() + sut_col2.size());
+    CHECK(std::ranges::equal(sut.col(0uz), sut_col0));
+    CHECK(std::ranges::equal(sut.col(1uz), sut_col2));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "erase_col should throw for an invalid position") {
+    sut.push_col(sut_col0);
+    sut.push_col(sut_col1);
+
+    CHECK_THROWS_AS(sut.erase_col(2uz), std::out_of_range);
+    CHECK_THROWS_AS(sut.erase_col(10uz), std::out_of_range);
 }
 
 // TODO: col modifiers, iterators, more (when added)

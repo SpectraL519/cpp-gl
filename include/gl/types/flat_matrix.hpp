@@ -355,20 +355,58 @@ public:
         return (*this)[this->_n_rows - 1uz];
     }
 
-    [[nodiscard]] reference front(size_type r) noexcept {
-        return (*this)[r, 0uz];
+    // TODO: add tests
+
+    [[nodiscard]] row_type front_row() noexcept {
+        return this->front();
     }
 
-    [[nodiscard]] const_reference front(size_type r) const noexcept {
-        return (*this)[r, 0uz];
+    [[nodiscard]] const_row_type front_row() const noexcept {
+        return this->front();
     }
 
-    [[nodiscard]] reference back(size_type r) noexcept {
-        return (*this)[r, this->_n_cols - 1uz];
+    [[nodiscard]] row_type back_row() noexcept {
+        return this->back();
     }
 
-    [[nodiscard]] const_reference back(size_type r) const noexcept {
-        return (*this)[r, this->_n_cols - 1uz];
+    [[nodiscard]] const_row_type back_row() const noexcept {
+        return this->back();
+    }
+
+    [[nodiscard]] auto front_col() noexcept {
+        return this->_col_impl(0uz);
+    }
+
+    [[nodiscard]] auto front_col() const noexcept {
+        return this->_col_impl(0uz);
+    }
+
+    [[nodiscard]] auto back_col() noexcept {
+        return this->_col_impl(this->_n_cols - 1uz);
+    }
+
+    [[nodiscard]] auto back_col() const noexcept {
+        return this->_col_impl(this->_n_cols - 1uz);
+    }
+
+    // TODO: end
+
+    [[nodiscard]] row_type row(size_type r) {
+        return this->at(r);
+    }
+
+    [[nodiscard]] const_row_type row(size_type r) const {
+        return this->at(r);
+    }
+
+    [[nodiscard]] auto col(size_type c) {
+        this->_check_col(c);
+        return this->_col_impl(c);
+    }
+
+    [[nodiscard]] auto col(size_type c) const {
+        this->_check_col(c);
+        return this->_col_impl(c);
     }
 
     [[nodiscard]] auto rows() noexcept {
@@ -380,6 +418,18 @@ public:
         return std::views::iota(size_type{0}, this->_n_rows)
              | std::views::transform([this](size_type i) -> const_row_type { return (*this)[i]; });
     }
+
+    [[nodiscard]] auto cols() noexcept {
+        return std::views::iota(size_type{0}, this->_n_cols)
+             | std::views::transform([this](size_type c) { return this->_col_impl(c); });
+    }
+
+    [[nodiscard]] auto cols() const noexcept {
+        return std::views::iota(size_type{0}, this->_n_cols)
+             | std::views::transform([this](size_type c) { return this->_col_impl(c); });
+    }
+
+    // --- accessors (data) ---
 
     [[nodiscard]] size_type data_size() const noexcept {
         return this->_data.size();
@@ -746,6 +796,14 @@ private:
                 this->_n_cols
             ));
         }
+    }
+
+    [[nodiscard]] auto _col_impl(size_type c) noexcept {
+        return std::views::drop(this->_data, c) | std::views::stride(this->_n_cols);
+    }
+
+    [[nodiscard]] auto _col_impl(size_type c) const noexcept {
+        return std::views::drop(this->_data, c) | std::views::stride(this->_n_cols);
     }
 
     size_type _n_rows{0uz};
