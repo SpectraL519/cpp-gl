@@ -666,8 +666,7 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front() should return the first r
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const front() should return const first row") {
     const auto& const_sut = sut;
-    auto front_row = const_sut.front();
-    CHECK(std::ranges::equal(front_row, sut_rows.front()));
+    CHECK(std::ranges::equal(const_sut.front(), sut_rows.front()));
 }
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back() should return the last row") {
@@ -680,8 +679,59 @@ TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back() should return the last row
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const back() should return const last row") {
     const auto& const_sut = sut;
-    auto back_row = const_sut.back();
+    CHECK(std::ranges::equal(const_sut.back(), sut_rows.back()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front_row() should return the first row") {
+    auto front_row = sut.front_row();
+    CHECK(std::ranges::equal(front_row, sut_rows.front()));
+
+    front_row.front() = dummy_value;
+    CHECK_EQ(sut.front_row().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const front_row() should return const first row") {
+    const auto& const_sut = sut;
+    CHECK(std::ranges::equal(const_sut.front_row(), sut_rows.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back_row() should return the last row") {
+    auto back_row = sut.back_row();
     CHECK(std::ranges::equal(back_row, sut_rows.back()));
+
+    back_row.front() = dummy_value;
+    CHECK_EQ(sut.back_row().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const back_row() should return const last row") {
+    const auto& const_sut = sut;
+    CHECK(std::ranges::equal(const_sut.back_row(), sut_rows.back()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "front_col() should return the first column") {
+    auto front_col = sut.front_col();
+    CHECK(std::ranges::equal(front_col, sut_cols.front()));
+
+    front_col.front() = dummy_value;
+    CHECK_EQ(sut.front_col().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const front_col() should return const first column") {
+    const auto& const_sut = sut;
+    CHECK(std::ranges::equal(const_sut.front_col(), sut_cols.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "back_col() should return the last column") {
+    auto back_col = sut.back_col();
+    CHECK(std::ranges::equal(back_col, sut_cols.back()));
+
+    back_col.front() = dummy_value;
+    CHECK_EQ(sut.back_col().front(), dummy_value);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_accessors, "const back_col() should return const last column") {
+    const auto& const_sut = sut;
+    CHECK(std::ranges::equal(const_sut.back_col(), sut_cols.back()));
 }
 
 TEST_CASE_FIXTURE(test_flat_matrix_accessors, "row(r) should return row at given index") {

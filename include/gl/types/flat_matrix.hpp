@@ -17,7 +17,6 @@
 namespace gl {
 
 // TODO:
-// col accessors -> views
 // transposition
 
 template <std::semiregular T>
@@ -355,8 +354,6 @@ public:
         return (*this)[this->_n_rows - 1uz];
     }
 
-    // TODO: add tests
-
     [[nodiscard]] row_type front_row() noexcept {
         return this->front();
     }
@@ -388,8 +385,6 @@ public:
     [[nodiscard]] auto back_col() const noexcept {
         return this->_col_impl(this->_n_cols - 1uz);
     }
-
-    // TODO: end
 
     [[nodiscard]] row_type row(size_type r) {
         return this->at(r);
