@@ -1291,7 +1291,364 @@ TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "erase_col should throw for an
     CHECK_THROWS_AS(sut.erase_col(10uz), std::out_of_range);
 }
 
-// TODO: col modifiers, iterators, more (when added)
+struct test_flat_matrix_complex_operations {
+    using sut_type = gl::flat_matrix<int>;
+};
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_complex_operations, "interleaved row and col operations should work correctly"
+) {
+    sut_type sut;
+
+    sut.push_row({1, 2});
+    sut.push_col({3});
+    sut.insert_row(0uz, {10, 20, 30});
+    sut.insert_col(1uz, {15, 25});
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 4uz);
+    CHECK_EQ(sut.data_size(), 8uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{10, 15, 20, 30}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{1, 25, 2, 3}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_complex_operations, "clearing and refilling should work correctly"
+) {
+    sut_type sut{
+        {1, 2, 3},
+        {4, 5, 6}
+    };
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+
+    sut.clear();
+
+    CHECK(sut.empty());
+
+    sut.push_row({9, 8});
+    sut.push_row({7, 6});
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), 4uz);
+    CHECK(std::ranges::equal(sut[0uz], std::vector<int>{9, 8}));
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{7, 6}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_complex_operations, "large flat_matrix operations should maintain integrity"
+) {
+    sut_type sut;
+
+    for (int i = 0; i < 100; ++i) {
+        std::vector<int> row;
+        for (int j = 0; j < 10; ++j)
+            row.push_back(i * 10 + j);
+        sut.push_row(row);
+    }
+
+    CHECK_EQ(sut.n_rows(), 100uz);
+    CHECK_EQ(sut.n_cols(), 10uz);
+    CHECK_EQ(sut.data_size(), 1000uz);
+    for (int i = 0; i < 100; ++i) {
+        auto row = sut[i];
+        for (int j = 0; j < 10; ++j)
+            CHECK_EQ(row[j], i * 10 + j);
+    }
+}
+
+struct test_flat_matrix_iterators {
+    using sut_type = gl::flat_matrix<int>;
+
+    sut_type sut{
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    std::vector<std::vector<int>> rows{
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+};
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "begin() should return iterator to first row") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, rows.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "end() should return iterator past last row") {
+    auto it_begin = sut.begin();
+    auto it_end = sut.end();
+    CHECK_EQ(it_end - it_begin, rows.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_iterators, "const begin() should return const iterator to first row"
+) {
+    const auto& const_sut = sut;
+    auto it = const_sut.begin();
+    CHECK(std::ranges::equal(*it, rows.front()));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_iterators, "const end() should return const iterator past last row"
+) {
+    const auto& const_sut = sut;
+    auto it_begin = const_sut.begin();
+    auto it_end = const_sut.end();
+    CHECK_EQ(it_end - it_begin, rows.size());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "cbegin() should return const iterator") {
+    auto it = sut.cbegin();
+    CHECK(std::ranges::equal(*it, rows.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "cend() should return const iterator") {
+    auto it_begin = sut.cbegin();
+    auto it_end = sut.cend();
+    CHECK_EQ(it_end - it_begin, rows.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_iterators, "non-const iterator should convert to const iterator implicitly"
+) {
+    auto non_const_it = sut.begin();
+    typename sut_type::const_iterator const_it = non_const_it;
+    CHECK(std::ranges::equal(*const_it, rows.front()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "dereferencing iterator should return row") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+
+    ++it;
+    CHECK(std::ranges::equal(*it, rows[1uz]));
+
+    ++it;
+    CHECK(std::ranges::equal(*it, rows[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator[] should access row at offset") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(it[0uz], rows[0uz]));
+    CHECK(std::ranges::equal(it[1uz], rows[1uz]));
+    CHECK(std::ranges::equal(it[2uz], rows[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "pre-increment should advance iterator") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+
+    auto& ret = ++it;
+    CHECK(std::ranges::equal(*ret, rows[1uz]));
+    CHECK(std::ranges::equal(*it, rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "post-increment should return old iterator") {
+    auto it = sut.begin();
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+
+    auto old_it = it++;
+    CHECK(std::ranges::equal(*old_it, rows[0uz]));
+    CHECK(std::ranges::equal(*it, rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "pre-decrement should move iterator backward") {
+    auto it = sut.end();
+    --it;
+    CHECK(std::ranges::equal(*it, rows[2uz]));
+
+    auto& ret = --it;
+    CHECK(std::ranges::equal(*ret, rows[1uz]));
+    CHECK(std::ranges::equal(*it, rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "post-decrement should return old iterator") {
+    auto it = sut.end();
+    --it;
+    CHECK(std::ranges::equal(*it, rows[2uz]));
+
+    auto old_it = it--;
+    CHECK(std::ranges::equal(*old_it, rows[2uz]));
+    CHECK(std::ranges::equal(*it, rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator+= should advance iterator") {
+    auto it = sut.begin();
+    it += 2;
+    CHECK(std::ranges::equal(*it, rows[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator-= should move iterator backward") {
+    auto it = sut.end();
+    it -= 1;
+    CHECK(std::ranges::equal(*it, rows[2uz]));
+
+    it -= 2;
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator+ should create new iterator") {
+    auto it = sut.begin();
+    auto new_it = it + 1;
+
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+    CHECK(std::ranges::equal(*new_it, rows[1uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "reverse operator+ should create new iterator") {
+    auto it = sut.begin();
+    auto new_it = 2 + it;
+
+    CHECK(std::ranges::equal(*it, rows[0uz]));
+    CHECK(std::ranges::equal(*new_it, rows[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator- should create new iterator") {
+    auto it = sut.end();
+    auto new_it = it - 1;
+
+    CHECK(std::ranges::equal(*new_it, rows[2uz]));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator- with two iterators should give distance") {
+    auto it1 = sut.begin();
+    auto it2 = sut.end();
+
+    CHECK_EQ(it2 - it1, sut.n_rows());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator== should compare iterators") {
+    auto it1 = sut.begin();
+    auto it2 = sut.begin();
+    auto it3 = sut.begin() + 1;
+
+    CHECK_EQ(it1, it2);
+    CHECK_NE(it1, it3);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "operator<=> should compare iterators") {
+    auto it1 = sut.begin();
+    auto it2 = sut.begin() + 1;
+    auto it3 = sut.begin() + 2;
+
+    CHECK_LT(it1, it2);
+    CHECK_LT(it2, it3);
+    CHECK_LE(it1, it2);
+    CHECK_LE(it1, it1);
+    CHECK_GT(it2, it1);
+    CHECK_GT(it3, it2);
+    CHECK_GE(it2, it1);
+    CHECK_GE(it2, it2);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "range-based for loop should iterate all rows") {
+    std::size_t idx = 0uz;
+    for (auto row : sut)
+        CHECK(std::ranges::equal(row, rows[idx++]));
+    CHECK_EQ(idx, 3uz);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "const range-based for loop should iterate all rows") {
+    const auto& const_sut = sut;
+    std::size_t idx = 0uz;
+    for (auto row : const_sut)
+        CHECK(std::ranges::equal(row, rows[idx++]));
+    CHECK_EQ(idx, 3uz);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "rbegin() should return reverse iterator") {
+    auto it = sut.rbegin();
+    CHECK(std::ranges::equal(*it, rows.back()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "rend() should return reverse iterator past first") {
+    auto it_rbegin = sut.rbegin();
+    auto it_rend = sut.rend();
+    CHECK_EQ(it_rend - it_rbegin, rows.size());
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "crbegin() should return const reverse iterator") {
+    auto it = sut.crbegin();
+    CHECK(std::ranges::equal(*it, rows.back()));
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_iterators, "crend() should return const reverse iterator") {
+    auto it_rbegin = sut.crbegin();
+    auto it_rend = sut.crend();
+    CHECK_EQ(it_rend - it_rbegin, rows.size());
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_iterators, "reverse range-based for loop should iterate in reverse"
+) {
+    std::size_t idx = 2uz;
+    for (auto it : std::ranges::reverse_view(sut)) {
+        CHECK(std::ranges::equal(it, rows[idx]));
+        if (idx > 0uz)
+            --idx;
+    }
+}
+
+struct test_flat_matrix_transformations {
+    using sut_type = gl::flat_matrix<int>;
+};
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_transformations, "transpose should correctly transpose a square matrix"
+) {
+    sut_type sut{
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    auto transposed = sut.transpose();
+
+    CHECK_EQ(transposed.n_rows(), 3uz);
+    CHECK_EQ(transposed.n_cols(), 3uz);
+    CHECK_EQ(transposed.data_size(), 9uz);
+    CHECK(std::ranges::equal(transposed[0uz], std::vector<int>{1, 4, 7}));
+    CHECK(std::ranges::equal(transposed[1uz], std::vector<int>{2, 5, 8}));
+    CHECK(std::ranges::equal(transposed[2uz], std::vector<int>{3, 6, 9}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_transformations, "transpose should correctly transpose a rectangular matrix"
+) {
+    sut_type sut{
+        {1, 2, 3, 4},
+        {5, 6, 7, 8}
+    };
+
+    auto transposed = sut.transpose();
+
+    CHECK_EQ(transposed.n_rows(), 4uz);
+    CHECK_EQ(transposed.n_cols(), 2uz);
+    CHECK_EQ(transposed.data_size(), 8uz);
+    CHECK(std::ranges::equal(transposed[0uz], std::vector<int>{1, 5}));
+    CHECK(std::ranges::equal(transposed[1uz], std::vector<int>{2, 6}));
+    CHECK(std::ranges::equal(transposed[2uz], std::vector<int>{3, 7}));
+    CHECK(std::ranges::equal(transposed[3uz], std::vector<int>{4, 8}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_transformations, "transpose on an empty matrix should return an empty matrix"
+) {
+    sut_type sut;
+
+    auto transposed = sut.transpose();
+
+    CHECK(transposed.empty());
+    CHECK_EQ(transposed.n_rows(), 0uz);
+    CHECK_EQ(transposed.n_cols(), 0uz);
+    CHECK_EQ(transposed.data_size(), 0uz);
+}
 
 TEST_SUITE_END(); // test_flat_matrix
 

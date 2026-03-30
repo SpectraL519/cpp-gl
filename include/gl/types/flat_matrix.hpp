@@ -16,9 +16,6 @@
 
 namespace gl {
 
-// TODO:
-// transposition
-
 template <std::semiregular T>
 class flat_matrix {
 public:
@@ -770,6 +767,16 @@ public:
 
     [[nodiscard]] const_reverse_iterator crend() const noexcept {
         return this->rend();
+    }
+
+    // --- transformations ---
+
+    [[nodiscard]] flat_matrix transpose() const {
+        flat_matrix result(this->_n_cols, this->_n_rows);
+        for (size_type r = 0uz; r < this->_n_rows; ++r)
+            for (size_type c = 0uz; c < this->_n_cols; ++c)
+                result[c, r] = (*this)[r, c];
+        return result;
     }
 
 private:
