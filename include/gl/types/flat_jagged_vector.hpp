@@ -846,8 +846,6 @@ public:
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void push_back(R&& r) {
         this->_ensure_offset_capacity();
-        if constexpr (std::ranges::sized_range<R>)
-            this->_data.reserve(this->_data.size() + std::ranges::size(r));
 
         if constexpr (std::ranges::contiguous_range<R>) {
             auto* ptr = std::ranges::data(r);
@@ -908,8 +906,6 @@ public:
         const auto old_size = this->_data.size();
 
         this->_ensure_offset_capacity();
-        if constexpr (std::ranges::sized_range<R>)
-            this->_data.reserve(this->_data.size() + std::ranges::size(r));
 
         if constexpr (std::ranges::contiguous_range<R>) {
             auto* ptr = std::ranges::data(r);
