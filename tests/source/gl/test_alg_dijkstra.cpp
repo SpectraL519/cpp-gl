@@ -134,7 +134,15 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::matrix_graph_traits<
         gl::undirected_t,
         gl::empty_properties,
-        gl::weight_property<>> // undirected adjacency matrix graph
+        gl::weight_property<>>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<
+        gl::directed_t,
+        gl::empty_properties,
+        gl::weight_property<>>, // directed flat adjacency matrix graph
+    gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::weight_property<>> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -203,7 +211,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list graph
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
     gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix graph
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::directed_t>, // directed flat adjacency matrix
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix
 );
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {

@@ -175,7 +175,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         gl::binary_color_property>, // directed adjacency matrix graph
     gl::matrix_graph_traits<
         gl::undirected_t,
-        gl::binary_color_property> // undirected adjacency matrix graph
+        gl::binary_color_property>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<
+        gl::directed_t,
+        gl::binary_color_property>, // directed flat adjacency matrix graph
+    gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        gl::binary_color_property> // undirected flat adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_coloring

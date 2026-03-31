@@ -92,6 +92,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using list_graph = gl::graph<gl::list_graph_traits<DT, VP, EP>>;
     using flat_list_graph = gl::graph<gl::flat_list_graph_traits<DT, VP, EP>>;
     using matrix_graph = gl::graph<gl::matrix_graph_traits<DT, VP, EP>>;
+    using flat_matrix_graph = gl::graph<gl::flat_matrix_graph_traits<DT, VP, EP>>;
 
     test_conversion fixture;
 
@@ -113,12 +114,18 @@ TEST_CASE_TEMPLATE_DEFINE(
                     auto dst = gl::to<gl::impl::matrix_t>(std::move(src));
                     fixture.validate_graph(dst);
                 }
+                SUBCASE("to flat-matrix") {
+                    auto src = fixture.create_test_graph<Source>();
+                    auto dst = gl::to<gl::impl::flat_matrix_t>(std::move(src));
+                    fixture.validate_graph(dst);
+                }
             }
         };
 
     test_conversion_for(std::type_identity<list_graph>{}, "source: list");
     test_conversion_for(std::type_identity<flat_list_graph>{}, "source: flat-list");
     test_conversion_for(std::type_identity<matrix_graph>{}, "source: matrix");
+    test_conversion_for(std::type_identity<flat_matrix_graph>{}, "source: matrix");
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
