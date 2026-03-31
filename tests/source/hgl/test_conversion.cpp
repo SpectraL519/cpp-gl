@@ -280,6 +280,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using list_graph = gl::graph<gl::list_graph_traits<gl::undirected_t>>;
     using flat_list_graph = gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>;
     using matrix_graph = gl::graph<gl::matrix_graph_traits<gl::undirected_t>>;
+    using flat_matrix_graph = gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>>;
 
     SUBCASE("projection should produce a clique for each hyperedge") {
         sut_type sut{4ull, 4ull};
@@ -327,6 +328,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
         test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat-list");
         test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
+        test_conversion_for(std::type_identity<flat_matrix_graph>{}, "target model: flat-matrix");
     }
 
     SUBCASE("incidence_graph should produce a bipartite graph connecting vertices to hyperedges") {
@@ -380,6 +382,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
         test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
         test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
+        test_conversion_for(std::type_identity<flat_matrix_graph>{}, "target model: flat-matrix");
     }
 }
 
@@ -425,6 +428,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::flat_list_t>>;
     using matrix_graph = gl::graph<
         gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::matrix_t>>;
+    using flat_matrix_graph = gl::graph<gl::directed_graph_traits<
+        gl::empty_properties,
+        gl::empty_properties,
+        gl::impl::flat_matrix_t>>;
 
     SUBCASE("projection should produce directed edges from tails to heads for each hyperedge") {
         sut_type sut{4ull, 2uz};
@@ -465,6 +472,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
         test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
         test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
+        test_conversion_for(std::type_identity<flat_matrix_graph>{}, "target model: flat-matrix");
     }
 
     SUBCASE("incidence_graph should produce a directed bipartite graph connecting tails to "
@@ -510,6 +518,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         test_conversion_for(std::type_identity<list_graph>{}, "target model: list");
         test_conversion_for(std::type_identity<flat_list_graph>{}, "target model: flat list");
         test_conversion_for(std::type_identity<matrix_graph>{}, "target model: matrix");
+        test_conversion_for(std::type_identity<flat_matrix_graph>{}, "target model: flat-matrix");
     }
 }
 

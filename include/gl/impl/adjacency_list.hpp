@@ -36,7 +36,7 @@ public:
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
     using item_type = specialized::adjacency_list_item<id_type>;
-    using adjacency_list_type = typename specialized::adjacency_list_impl_traits<
+    using adjacency_storage_type = typename specialized::adjacency_list_impl_traits<
         adjacency_list>::template storage_type<item_type>;
 
     adjacency_list() = default;
@@ -305,7 +305,7 @@ private:
         }
     }
 
-    adjacency_list_type _list{};
+    adjacency_storage_type _list{};
 };
 
 } // namespace impl

@@ -104,7 +104,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         visited_property>>, // directed adjacency matrix
     gl::graph<gl::matrix_graph_traits<
         gl::undirected_t,
-        visited_property>> // undirected adjacency matrix
+        visited_property>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<
+        gl::directed_t,
+        visited_property>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        visited_property>> // undirected flat adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -165,7 +171,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -190,7 +198,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adjacency matrix
 );
 
 // --- recursive dfs tests ---
@@ -292,7 +302,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         visited_property>>, // directed adjacency matrix
     gl::graph<gl::matrix_graph_traits<
         gl::undirected_t,
-        visited_property>> // undirected adjacency matrix
+        visited_property>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<
+        gl::directed_t,
+        visited_property>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        visited_property>> // undirected flat adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -358,7 +374,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adjacency matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -384,7 +402,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adjacency matrix
 );
 
 TEST_SUITE_END(); // test_alg_dfs

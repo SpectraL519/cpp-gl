@@ -898,7 +898,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list
     gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix
+    gl::matrix_graph_traits<gl::directed_t>, // directed adj matrix
+    gl::matrix_graph_traits<gl::undirected_t> // undirected adj matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_traits_template) {
@@ -961,7 +963,15 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::matrix_graph_traits<
         gl::undirected_t,
         gl::name_property,
-        gl::name_property> // undirected adjacency matrix
+        gl::name_property>, // undirected adjacency matrix
+    gl::flat_matrix_graph_traits<
+        gl::directed_t,
+        gl::name_property,
+        gl::name_property>, // directed flat adjacency matrix
+    gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        gl::name_property,
+        gl::name_property> // undirected flat adjacency matrix
 );
 
 TEST_SUITE_END(); // test_graph
