@@ -162,7 +162,7 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        for (auto& row : this->_matrix)
+        for (auto&& row : this->_matrix)
             for (auto& edge_id : row)
                 if (edge_id != invalid_id and edge_id > edge.id())
                     edge_id--;
@@ -315,7 +315,7 @@ private:
             std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
         );
 
-        for (auto& row : this->_matrix) {
+        for (auto&& row : this->_matrix) {
             for (auto& edge_id : row) {
                 if (edge_id == invalid_id)
                     continue;

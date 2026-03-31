@@ -52,7 +52,7 @@ struct directed_flat_adjacency_matrix {
         const impl_type& self, id_type vertex_id
     ) {
         const auto row = self._matrix[to_idx(vertex_id)];
-        return row.size() - std::ranges::count(row, invalid_id);
+        return row.size() - std::ranges::count(row, invalid_id_v<id_type>); // <-- FIXED
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type degree(
@@ -116,7 +116,8 @@ struct directed_flat_adjacency_matrix {
         // extract in-edges
         const auto col = self._matrix.col(vertex_idx);
         for (auto r_idx = 0uz; r_idx < self._matrix.n_rows(); ++r_idx) {
-            if (r_idx == vertex_idx) continue;
+            if (r_idx == vertex_idx)
+                continue;
             if (const auto edge_id = col[r_idx]; edge_id != invalid_id)
                 removed_edges.push_back(edge_id);
         }
@@ -193,8 +194,7 @@ struct undirected_flat_adjacency_matrix {
     ) {
         const auto vertex_idx = to_idx(vertex_id);
         const auto row = self._matrix[vertex_idx];
-        return self._matrix.n_cols()
-             - std::ranges::count(row, invalid_id)
+        return self._matrix.n_cols() - std::ranges::count(row, invalid_id_v<id_type>)
              + static_cast<size_type>(self._matrix[vertex_idx, vertex_idx] != invalid_id);
     }
 

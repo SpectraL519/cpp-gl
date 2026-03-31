@@ -1,3 +1,4 @@
 1. matrix <-> flat matrix conversions specializations
 2. Extend conversion template tests
 3. Extend hgl -> gl conversion tests
+4. Extend common graph/io/algorithm/topology tests

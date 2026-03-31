@@ -23,7 +23,8 @@ struct flat_matrix_t;
 namespace traits {
 
 template <typename T>
-concept c_graph_impl_tag = c_one_of<T, impl::list_t, impl::flat_list_t, impl::matrix_t, impl::flat_matrix_t>;
+concept c_graph_impl_tag =
+    c_one_of<T, impl::list_t, impl::flat_list_t, impl::matrix_t, impl::flat_matrix_t>;
 
 } // namespace traits
 
