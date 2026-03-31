@@ -54,6 +54,14 @@ using matrix_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t, IdType>;
 
 template <
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_matrix_graph_traits =
+    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_matrix_t, IdType>;
+
+template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_impl_tag ImplTag = impl::list_t,
@@ -91,7 +99,13 @@ concept c_matrix_graph_traits =
     and std::same_as<typename TraitsType::implementation_tag, impl::matrix_t>;
 
 template <typename TraitsType>
-concept c_adjacency_matrix_graph_traits = c_matrix_graph_traits<TraitsType>;
+concept c_flat_matrix_graph_traits =
+    c_instantiation_of<TraitsType, graph_traits>
+    and std::same_as<typename TraitsType::implementation_tag, impl::flat_matrix_t>;
+
+template <typename TraitsType>
+concept c_adjacency_matrix_graph_traits =
+    c_matrix_graph_traits<TraitsType> or c_flat_matrix_graph_traits<TraitsType>;
 
 template <typename TraitsType>
 concept c_directed_graph_traits =

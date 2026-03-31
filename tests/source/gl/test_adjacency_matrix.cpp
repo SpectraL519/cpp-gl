@@ -139,7 +139,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 TEST_CASE_TEMPLATE_INSTANTIATE(
     directional_tag_sut_template,
     gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::directed_t>>, // directed adj list
-    gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj list
+    gl::impl::adjacency_matrix<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adj list
+    gl::impl::adjacency_matrix<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adj list
+    gl::impl::adjacency_matrix<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adj list
 );
 
 namespace {
