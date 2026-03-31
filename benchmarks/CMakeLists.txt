@@ -4,12 +4,10 @@ project(gl_benchmarks LANGUAGES CXX)
 include(FetchContent)
 
 # Build options
-set(BENCH_GL_TAG "master" CACHE STRING "The branch or tag name used to fetch the CPP-GL library for benchmarks")
 set(BENCH_GL_DEFS "" CACHE STRING "Additional compile definitions for the CPP-GL target")
-set(BENCH_OPT_MODE "0" CACHE STRING "The optimisation mode used to build the project benchmarks (-O${BENCH_OPT_MODE})") # TODO: handle
+set(BENCH_OPT_MODE "3" CACHE STRING "The optimisation mode used to build the project benchmarks (default: 3)")
 
 message(STATUS "Build options:")
-message(STATUS "[BENCH_GL_TAG = ${BENCH_GL_TAG}]")
 message(STATUS "[BENCH_GL_DEFS = ${BENCH_GL_DEFS}]")
 message(STATUS "[BENCH_OPT_MODE = ${BENCH_OPT_MODE}]")
 
@@ -30,21 +28,27 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cpp-argon)
 
-# Fetch CPP-GL
-FetchContent_Declare(
-    cpp-gl
-    GIT_REPOSITORY https://github.com/SpectraL519/cpp-gl.git
-    GIT_TAG ${BENCH_GL_TAG}
-)
-FetchContent_MakeAvailable(cpp-gl)
-
 # Find Boost for BGL comparisons
-find_package(Boost REQUIRED)
+find_package(Boost CONFIG REQUIRED)
 
 add_executable(gl_benchmarks
     source/main.cpp
     source/runner.cpp
     suites/is_bipartite.cpp
+)
+
+target_compile_options(gl_benchmarks PRIVATE
+    -Werror
+    -Wall
+    -Wextra
+    -Wcast-align
+    -Wconversion
+    -Wsign-conversion
+    -Wunreachable-code
+    -Wuninitialized
+    -Wunused
+    -pedantic
+    -O${BENCH_OPT_MODE}
 )
 
 target_include_directories(gl_benchmarks PRIVATE include)
@@ -54,3 +58,8 @@ target_link_libraries(gl_benchmarks PRIVATE
     cpp-gl
     Boost::headers
 )
+
+if(BENCH_GL_DEFS)
+    separate_arguments(BENCH_GL_DEFS_LIST NATIVE_COMMAND "${BENCH_GL_DEFS}")
+    target_compile_definitions(gl_benchmarks PRIVATE ${BENCH_GL_DEFS_LIST})
+endif()

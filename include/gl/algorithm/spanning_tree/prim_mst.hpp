@@ -31,7 +31,6 @@ template <traits::c_undirected_graph GraphType>
     const GraphType& graph, typename GraphType::id_type root_id
 ) {
     // type definitions
-    using id_type = typename GraphType::id_type;
     using edge_type = typename GraphType::edge_type;
 
     struct edge_comparator {

@@ -7,14 +7,24 @@ namespace gl_bench {
 
 runner::runner() : _parser("gl_benchmarks") {
     auto& glob_args = this->_parser.add_group("Global Benchmark Options");
+    this->_parser.add_optional_argument<argon::none_type>(glob_args, "help", "h")
+        .help("Display the help message")
+        .action<argon::action_type::on_flag>(argon::action::print_help(this->_parser, 0));
+    this->_parser.add_optional_argument<argon::none_type>(glob_args, "gbench-help")
+        .help("Display the Google Benchmar help message")
+        .action<argon::action_type::on_flag>([]() {
+            benchmark::PrintDefaultHelp();
+            std::exit(0);
+        });
     this->_parser.add_optional_argument<fs::path>(glob_args, "output", "o")
         .help("Path to the output JSON file")
+        .nargs(1uz)
         .action<argon::action_type::observe>([](const fs::path& path) {
             if (not fs::is_regular_file(path) or path.extension() != ".json")
-                throw std::runtime_error(
-                    std::format("Invlid output file path (must be a .json file, got: {})", path)
-                );
-        })
+                throw std::runtime_error(std::format(
+                    "Invlid output file path (must be a .json file, got: {})", path.string()
+                ));
+        });
 }
 
 void runner::add_suite(suite suite) {
@@ -33,14 +43,14 @@ int runner::run(int argc, char** argv) {
 
     // Handle JSON export if requested
     if (this->_parser.has_value("output")) {
-        fs::path out_path = this->_parser.value<fs::path>("output");
+        auto out_path = this->_parser.value<fs::path>("output");
         gbench_args.push_back("--benchmark_out=" + out_path.string());
         gbench_args.push_back("--benchmark_out_format=json");
     }
 
     // Reconstruct argv for Google Benchmark
     std::vector<char*> gbench_argv;
-    gbench_argv.push_back(this->_argv[0]);
+    gbench_argv.push_back(argv[0]);
     for (auto& arg : gbench_args)
         gbench_argv.push_back(arg.data());
 

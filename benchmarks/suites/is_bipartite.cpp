@@ -12,7 +12,23 @@
 
 namespace gl_bench::is_bipartite {
 
-// --- Graph Generation Utilities ---
+// CPP-GL Benchmark
+
+template <gl::traits::c_undirected_graph Graph>
+void bm_gl_is_bipartite(benchmark::State& state) {
+    const auto n_vertices = static_cast<gl::size_type>(state.range(0));
+    auto graph = gl::topology::biclique<Graph>(n_vertices, n_vertices);
+
+    for (auto _ : state) {
+        bool is_bip = gl::algorithm::is_bipartite(graph);
+        benchmark::DoNotOptimize(is_bip);
+    }
+
+    state.counters["Vertices"] = static_cast<double>(graph.order());
+    state.counters["Edges"] = static_cast<double>(graph.size());
+}
+
+// BGL Benchmark
 
 template <typename GraphType>
 GraphType gen_bgl_biclique(const std::size_t n_vertices_a, const std::size_t n_vertices_b) {
@@ -30,22 +46,6 @@ GraphType gen_bgl_biclique(const std::size_t n_vertices_a, const std::size_t n_v
     return graph;
 }
 
-// --- Benchmark Implementations ---
-
-template <gl::traits::c_undirected_graph Graph>
-void bm_gl_is_bipartite(benchmark::State& state) {
-    const auto n_vertices = static_cast<gl::size_type>(state.range(0));
-    auto graph = gl::topology::biclique<Graph>(n_vertices, n_vertices);
-
-    for (auto _ : state) {
-        bool is_bip = gl::algorithm::is_bipartite(graph);
-        benchmark::DoNotOptimize(is_bip);
-    }
-
-    state.counters["Vertices"] = graph.order();
-    state.counters["Edges"] = graph.size();
-}
-
 template <typename GraphType>
 void bm_bgl_is_bipartite(benchmark::State& state) {
     const auto n_vertices = static_cast<std::size_t>(state.range(0));
@@ -56,13 +56,10 @@ void bm_bgl_is_bipartite(benchmark::State& state) {
         benchmark::DoNotOptimize(is_bip);
     }
 
-    state.counters["Vertices"] = boost::num_vertices(graph);
-    state.counters["Edges"] = boost::num_edges(graph);
+    state.counters["Vertices"] = static_cast<double>(boost::num_vertices(graph));
+    state.counters["Edges"] = static_cast<double>(boost::num_edges(graph));
 }
 
-// --- Suite Registration Interface ---
-
-// Phase 1: Declare arguments specific to this benchmark
 void add_args(argon::argument_parser& parser) {
     auto& group = parser.add_group("Is-Bipartite Benchmark Options");
     parser.add_optional_argument<std::size_t>(group, "bip-v")
@@ -70,8 +67,9 @@ void add_args(argon::argument_parser& parser) {
         .help("Number of vertices for a single set in bipartite generation");
 }
 
-// Phase 2: Read arguments and register
 void register_benchmarks(const argon::argument_parser& parser) {
+    // TODO: add matrix models, add u64 id variants
+
     using gl_list_u32 = gl::graph<gl::list_graph_traits<
         gl::undirected_t,
         gl::empty_properties,
@@ -84,21 +82,20 @@ void register_benchmarks(const argon::argument_parser& parser) {
         std::uint32_t>>;
     using bgl_list = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>;
 
-    const auto v = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
+    const auto n_vertices = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
 
-    // Register BGL
-    benchmark::RegisterBenchmark("BGL/List/is_bipartite", bm_bgl_is_bipartite<bgl_list>)
-        ->Arg(v)
+    benchmark::RegisterBenchmark("is_bipartite/BGL/list", bm_bgl_is_bipartite<bgl_list>)
+        ->Arg(n_vertices)
         ->Unit(benchmark::kMillisecond);
 
     // Register CPP-GL U32
-    benchmark::RegisterBenchmark("CPP-GL/List_U32/is_bipartite", bm_gl_is_bipartite<gl_list_u32>)
-        ->Arg(v)
+    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u32", bm_gl_is_bipartite<gl_list_u32>)
+        ->Arg(n_vertices)
         ->Unit(benchmark::kMillisecond);
 
     benchmark::
-        RegisterBenchmark("CPP-GL/FlatList_U32/is_bipartite", bm_gl_is_bipartite<gl_flat_list_u32>)
-            ->Arg(v)
+        RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u32", bm_gl_is_bipartite<gl_flat_list_u32>)
+            ->Arg(n_vertices)
             ->Unit(benchmark::kMillisecond);
 }
 
