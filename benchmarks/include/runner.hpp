@@ -14,14 +14,12 @@ namespace gl_bench {
 
 class runner {
 public:
-    runner(int argc, char** argv);
+    runner();
 
     void add_suite(suite suite);
-    int run();
+    int run(int argc, char** argv);
 
 private:
-    int _argc;
-    char** _argv;
     argon::argument_parser _parser;
     std::vector<suite> _suites;
 };
