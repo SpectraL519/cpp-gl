@@ -1,4 +1,7 @@
 #include "runner.hpp"
+#include "suite.hpp"
+
+#include <benchmark/benchmark.h>
 
 #include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
@@ -8,7 +11,7 @@
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/bipartite.hpp>
 
-namespace gl_bench {
+namespace gl_bench::is_bipartite {
 
 // --- Graph Generation Utilities ---
 
@@ -40,7 +43,6 @@ void bm_gl_is_bipartite(benchmark::State& state) {
         benchmark::DoNotOptimize(is_bip);
     }
 
-    // Store metadata for the JSON report (perfect for python plotting scripts later!)
     state.counters["Vertices"] = graph.order();
     state.counters["Edges"] = graph.size();
 }
@@ -59,15 +61,23 @@ void bm_bgl_is_bipartite(benchmark::State& state) {
     state.counters["Edges"] = boost::num_edges(graph);
 }
 
-// --- Registration Logic ---
+// --- Suite Registration Interface ---
 
-void register_is_bipartite(const benchmark_config& config) {
-    // Aliases to keep registration clean
+// Phase 1: Declare arguments specific to this benchmark
+void add_args(argon::argument_parser& parser) {
+    auto& group = parser.add_group("Is-Bipartite Benchmark Options");
+    parser.add_optional_argument<std::size_t>(group, "bip-v")
+          .default_values(1000uz)
+          .help("Number of vertices for a single set in bipartite generation");
+}
+
+// Phase 2: Read arguments and register
+void register_benchmarks(const argon::argument_parser& parser) {
     using gl_list_u32 = gl::graph<gl::list_graph_traits<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint32_t>>;
     using gl_flat_list_u32 = gl::graph<gl::flat_list_graph_traits<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint32_t>>;
     using bgl_list = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>;
 
-    const auto v = static_cast<int64_t>(config.n_vertices);
+    const auto v = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
 
     // Register BGL
     benchmark::RegisterBenchmark("BGL/List/is_bipartite", bm_bgl_is_bipartite<bgl_list>)
@@ -79,8 +89,10 @@ void register_is_bipartite(const benchmark_config& config) {
 
     benchmark::RegisterBenchmark("CPP-GL/FlatList_U32/is_bipartite", bm_gl_is_bipartite<gl_flat_list_u32>)
         ->Arg(v)->Unit(benchmark::kMillisecond);
-
-    // NOTE: You can easily add U64, Matrix, and Flat-Matrix registrations here using the same pattern!
 }
 
-} // namespace gl_bench
+suite get_suite() {
+    return suite{add_args, register_benchmarks};
+}
+
+} // namespace gl_bench::is_bipartite

@@ -5,6 +5,7 @@ CompileFlags:
     - -Iinclude
     - -Itests/include
     - -Itests/external
+    - -Ibenchmarks/include
     - -Wall
     - -Wextra
     - -ftemplate-depth=512
