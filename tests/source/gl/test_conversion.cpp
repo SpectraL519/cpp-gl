@@ -125,7 +125,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     test_conversion_for(std::type_identity<list_graph>{}, "source: list");
     test_conversion_for(std::type_identity<flat_list_graph>{}, "source: flat-list");
     test_conversion_for(std::type_identity<matrix_graph>{}, "source: matrix");
-    test_conversion_for(std::type_identity<flat_matrix_graph>{}, "source: matrix");
+    test_conversion_for(std::type_identity<flat_matrix_graph>{}, "source: flat-matrix");
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
