@@ -1,7 +1,7 @@
 #include "runner.hpp"
 
-#include <iostream>
 #include <format>
+#include <iostream>
 
 namespace gl_bench {
 
@@ -11,7 +11,9 @@ runner::runner() : _parser("gl_benchmarks") {
         .help("Path to the output JSON file")
         .action<argon::action_type::observe>([](const fs::path& path) {
             if (not fs::is_regular_file(path) or path.extension() != ".json")
-                throw std::runtime_error(std::format("Invlid output file path (must be a .json file, got: {})", path));
+                throw std::runtime_error(
+                    std::format("Invlid output file path (must be a .json file, got: {})", path)
+                );
         })
 }
 
