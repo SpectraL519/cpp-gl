@@ -23,11 +23,13 @@ requires(traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
 struct directed_flat_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using id_type = typename impl_type::id_type;
+    using storage_type = typename impl_type::adjacency_storage_type;
+
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
 
     static void init(impl_type& self, size_type n_vertices) {
-        self._matrix.resize(n_vertices, n_vertices, invalid_id);
+        self._matrix = storage_type(n_vertices, n_vertices, invalid_id);
     }
 
     static void add_vertex(impl_type& self) {
@@ -52,7 +54,7 @@ struct directed_flat_adjacency_matrix {
         const impl_type& self, id_type vertex_id
     ) {
         const auto row = self._matrix[to_idx(vertex_id)];
-        return row.size() - std::ranges::count(row, invalid_id_v<id_type>); // <-- FIXED
+        return row.size() - std::ranges::count(row, invalid_id_v<id_type>);
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type degree(
@@ -73,7 +75,7 @@ struct directed_flat_adjacency_matrix {
     [[nodiscard]] static std::vector<size_type> in_degree_map(const impl_type& self) {
         std::vector<size_type> in_degree_map(self._matrix.n_rows(), 0uz);
 
-        for (const auto& row : self._matrix.rows())
+        for (const auto row : self._matrix.rows())
             for (auto [target_id, edge_id] : std::views::enumerate(row))
                 in_degree_map[static_cast<size_type>(target_id)] +=
                     static_cast<size_type>(edge_id != invalid_id);
@@ -105,13 +107,12 @@ struct directed_flat_adjacency_matrix {
     static std::vector<id_type> remove_vertex(impl_type& self, id_type vertex_id) {
         const auto vertex_idx = to_idx(vertex_id);
         std::vector<id_type> removed_edges;
+        removed_edges.reserve(self._matrix.size());
 
         // extract out-edges
-        const auto row = self._matrix[vertex_idx];
-        for (auto edge_id : row) {
+        for (auto edge_id : self._matrix[vertex_idx])
             if (edge_id != invalid_id)
                 removed_edges.push_back(edge_id);
-        }
 
         // extract in-edges
         const auto col = self._matrix.col(vertex_idx);
@@ -160,11 +161,13 @@ requires(traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
 struct undirected_flat_adjacency_matrix {
     using impl_type = AdjacencyMatrix;
     using id_type = typename impl_type::id_type;
+    using storage_type = typename impl_type::adjacency_storage_type;
+
     using vertex_type = typename impl_type::vertex_type;
     using edge_type = typename impl_type::edge_type;
 
     static void init(impl_type& self, size_type n_vertices) {
-        self._matrix.resize(n_vertices, n_vertices, invalid_id);
+        self._matrix = storage_type(n_vertices, n_vertices, invalid_id);
     }
 
     static void add_vertex(impl_type& self) {

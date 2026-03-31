@@ -403,8 +403,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
     }
 
     SUBCASE("degree_map should return a map of the numbers of edges incident with the "
-            "corresponding "
-            "vertices") {
+            "corresponding vertices") {
         init_complete_graph(false);
         const auto expected_deg = constants::n_elements * 2uz;
 
