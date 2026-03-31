@@ -1,4 +1,5 @@
 CompileFlags:
+  CompilationDatabase: build_gcc
   Add:
     - -std=c++23
     - -xc++-header
@@ -22,3 +23,10 @@ Diagnostics:
 
 Index:
   Background: Build
+
+---
+
+If:
+  PathMatch: benchmarks/.*
+CompileFlags:
+  CompilationDatabase: build_bench
