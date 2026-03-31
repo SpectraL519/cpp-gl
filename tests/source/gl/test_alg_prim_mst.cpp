@@ -1,3 +1,4 @@
+#include "gl/impl/impl_tags.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
@@ -103,7 +104,11 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::matrix_t> // undirected adjacency matrix graph
+        gl::impl::matrix_t>, // undirected adjacency matrix graph,
+    gl::undirected_graph_traits<
+        gl::empty_properties,
+        gl::weight_property<>,
+        gl::impl::flat_matrix_t> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -151,7 +156,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     edge_heap_prim_unwieghted_edge_traits_type_template,
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -243,7 +249,11 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::matrix_t> // undirected adjacency matrix graph
+        gl::impl::matrix_t>, // undirected adjacency matrix graph
+    gl::undirected_graph_traits<
+        gl::empty_properties,
+        gl::weight_property<>,
+        gl::impl::flat_matrix_t> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -291,7 +301,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     vertex_heap_prim_unwieghted_edge_traits_type_template,
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_alg_mst

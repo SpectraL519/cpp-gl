@@ -111,6 +111,37 @@ struct to_impl<impl::list_t, impl::flat_list_t> {
     }
 };
 
+// Conversion: matrix -> flat matrix
+template <>
+struct to_impl<impl::flat_matrix_t, impl::matrix_t> {
+    template <typename TargetGraph, typename SourceGraph>
+    static void convert(TargetGraph& target, SourceGraph& source) {
+        auto& target_matrix = target._impl._matrix;
+        auto& source_matrix = source._impl._matrix;
+
+        const auto n_vertices = source_matrix.size();
+        target_matrix.resize(n_vertices, n_vertices);
+
+        auto* target_ptr = target_matrix.data_ptr();
+        for (auto& row : source_matrix)
+            target_ptr = std::ranges::move(row, target_ptr).out;
+    }
+};
+
+// Conversion: flat matrix -> matrix
+template <>
+struct to_impl<impl::matrix_t, impl::flat_matrix_t> {
+    template <typename TargetGraph, typename SourceGraph>
+    static void convert(TargetGraph& target, SourceGraph& source) {
+        auto& target_matrix = target._impl._matrix;
+        auto& source_matrix = source._impl._matrix;
+
+        target_matrix.reserve(source_matrix.n_rows());
+        for (auto row : source_matrix.rows())
+            target_matrix.emplace_back(row.begin(), row.end());
+    }
+};
+
 } // namespace detail
 
 /// @brief Converts a graph from one implementation model to another.

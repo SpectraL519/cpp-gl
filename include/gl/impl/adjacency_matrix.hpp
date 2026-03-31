@@ -6,6 +6,7 @@
 
 #include "gl/constants.hpp"
 #include "gl/impl/specialized/adjacency_matrix.hpp"
+#include "gl/impl/specialized/flat_adjacency_matrix.hpp"
 #include "gl/types/core.hpp"
 
 #ifdef GL_TESTING
@@ -33,15 +34,14 @@ public:
 
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using row_type = std::vector<id_type>;
-    using matrix_type = std::vector<row_type>;
+
+    using adjacency_storage_type = typename specialized::adjacency_matrix_impl_traits<
+        adjacency_matrix>::template storage_type<id_type>;
 
     adjacency_matrix() = default;
 
-    explicit adjacency_matrix(size_type n_vertices) : _matrix(n_vertices) {
-        // initialize a full n x n matrix with null elements
-        for (auto& row : this->_matrix)
-            row.resize(n_vertices, invalid_id);
+    explicit adjacency_matrix(size_type n_vertices) {
+        specialized_impl::init(*this, n_vertices);
     }
 
     adjacency_matrix(const adjacency_matrix&) = default;
@@ -55,19 +55,11 @@ public:
     // --- vertex methods ---
 
     void add_vertex() {
-        for (auto& row : this->_matrix)
-            row.emplace_back(invalid_id);
-        this->_matrix.emplace_back(this->_matrix.size() + 1uz, invalid_id);
+        specialized_impl::add_vertex(*this);
     }
 
     void add_vertices(size_type n) {
-        const auto new_n_vertices = this->_matrix.size() + n;
-
-        for (auto& row : this->_matrix)
-            row.resize(new_n_vertices, invalid_id);
-
-        for (auto _ = 0uz; _ < n; ++_)
-            this->_matrix.emplace_back(new_n_vertices, invalid_id);
+        specialized_impl::add_vertices(*this, n);
     }
 
     [[nodiscard]] gl_attr_force_inline size_type in_degree(id_type vertex_id) const {
@@ -170,7 +162,7 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        for (auto& row : this->_matrix)
+        for (auto&& row : this->_matrix)
             for (auto& edge_id : row)
                 if (edge_id != invalid_id and edge_id > edge.id())
                     edge_id--;
@@ -323,7 +315,7 @@ private:
             std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
         );
 
-        for (auto& row : this->_matrix) {
+        for (auto&& row : this->_matrix) {
             for (auto& edge_id : row) {
                 if (edge_id == invalid_id)
                     continue;
@@ -339,7 +331,7 @@ private:
         }
     }
 
-    matrix_type _matrix{};
+    adjacency_storage_type _matrix{};
 };
 
 } // namespace impl

@@ -97,7 +97,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     directed_graph_traits_template,
     gl::list_graph_traits<gl::directed_t>, // directed adjacency list graph
     gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list graph
-    gl::matrix_graph_traits<gl::directed_t> // directed adjacency matrix graph
+    gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::directed_t> // directed flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -170,7 +171,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     undirected_graph_traits_template,
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adjacency matrix graph
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix graph
 );
 
 TEST_SUITE_END(); // test_vertex_degree_getters
