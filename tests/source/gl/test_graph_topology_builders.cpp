@@ -246,7 +246,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adjacency list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adjacency matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adj matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adj matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -338,7 +340,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     directed_graph_type_template,
     gl::graph<gl::list_graph_traits<gl::directed_t>>, // adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // flat adjacency list
-    gl::graph<gl::matrix_graph_traits<gl::directed_t>> // adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>> // flat adj matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -424,7 +427,8 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     undirected_graph_type_template,
     gl::graph<gl::list_graph_traits<gl::undirected_t>>, // adjacency list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // flat adjacency list
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // adjacency matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // adjacency matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // flat adj matrix
 );
 
 TEST_SUITE_END(); // test_graph_topology_builders

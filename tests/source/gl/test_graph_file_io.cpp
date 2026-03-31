@@ -126,7 +126,9 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adj list
     gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adj list
     gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adj matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>> // undirected adj matrix
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adj matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adj matrix
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adj matrix
 );
 
 TEST_SUITE_END(); // test_graph_file_io

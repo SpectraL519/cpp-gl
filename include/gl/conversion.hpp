@@ -111,6 +111,8 @@ struct to_impl<impl::list_t, impl::flat_list_t> {
     }
 };
 
+// TODO: matrix <-> flat matrix conversions specializations
+
 } // namespace detail
 
 /// @brief Converts a graph from one implementation model to another.
