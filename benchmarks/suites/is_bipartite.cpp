@@ -68,35 +68,100 @@ void add_args(argon::argument_parser& parser) {
 }
 
 void register_benchmarks(const argon::argument_parser& parser) {
-    // TODO: add matrix models, add u64 id variants
+    const auto n_vertices = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
 
+    // CPP-GL Adjacency List Benchmarks
     using gl_list_u32 = gl::graph<gl::list_graph_traits<
         gl::undirected_t,
         gl::empty_properties,
         gl::empty_properties,
         std::uint32_t>>;
+    using gl_list_u64 = gl::graph<gl::list_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint64_t>>;
+
+    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u32", bm_gl_is_bipartite<gl_list_u32>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u64", bm_gl_is_bipartite<gl_list_u64>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+
+    // CPP-GL Flat Adjacency List Benchmarks
     using gl_flat_list_u32 = gl::graph<gl::flat_list_graph_traits<
         gl::undirected_t,
         gl::empty_properties,
         gl::empty_properties,
         std::uint32_t>>;
-    using bgl_list = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>;
-
-    const auto n_vertices = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
-
-    benchmark::RegisterBenchmark("is_bipartite/BGL/list", bm_bgl_is_bipartite<bgl_list>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
-
-    // Register CPP-GL U32
-    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u32", bm_gl_is_bipartite<gl_list_u32>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
+    using gl_flat_list_u64 = gl::graph<gl::flat_list_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint64_t>>;
 
     benchmark::
         RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u32", bm_gl_is_bipartite<gl_flat_list_u32>)
             ->Arg(n_vertices)
             ->Unit(benchmark::kMillisecond);
+    benchmark::
+        RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u64", bm_gl_is_bipartite<gl_flat_list_u64>)
+            ->Arg(n_vertices)
+            ->Unit(benchmark::kMillisecond);
+
+    // CPP-GL Adjacency Matrix Benchmarks
+    using gl_matrix_u32 = gl::graph<gl::matrix_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint32_t>>;
+    using gl_matrix_u64 = gl::graph<gl::matrix_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint64_t>>;
+
+    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/matrix/u32", bm_gl_is_bipartite<gl_matrix_u32>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/matrix/u64", bm_gl_is_bipartite<gl_matrix_u64>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+
+    // CPP-GL Flat Adjacency Matrix Benchmarks
+    using gl_flat_matrix_u32 = gl::graph<gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint32_t>>;
+    using gl_flat_matrix_u64 = gl::graph<gl::flat_matrix_graph_traits<
+        gl::undirected_t,
+        gl::empty_properties,
+        gl::empty_properties,
+        std::uint64_t>>;
+
+    benchmark::
+        RegisterBenchmark("is_bipartite/CPP-GL/flat_matrix/u32", bm_gl_is_bipartite<gl_flat_matrix_u32>)
+            ->Arg(n_vertices)
+            ->Unit(benchmark::kMillisecond);
+    benchmark::
+        RegisterBenchmark("is_bipartite/CPP-GL/flat_matrix/u64", bm_gl_is_bipartite<gl_flat_matrix_u64>)
+            ->Arg(n_vertices)
+            ->Unit(benchmark::kMillisecond);
+
+
+    // BGL Benchmarks
+    using bgl_list = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>;
+    using bgl_matrix =
+        boost::adjacency_matrix<boost::directedS, boost::no_property, boost::no_property>;
+
+    benchmark::RegisterBenchmark("is_bipartite/BGL/list", bm_bgl_is_bipartite<bgl_list>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+    benchmark::RegisterBenchmark("is_bipartite/BGL/matrix", bm_bgl_is_bipartite<bgl_matrix>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
 }
 
 suite get_suite() {

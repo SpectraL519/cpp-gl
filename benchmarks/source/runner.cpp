@@ -18,7 +18,7 @@ runner::runner() : _parser("gl_benchmarks") {
         });
     this->_parser.add_optional_argument<fs::path>(glob_args, "output", "o")
         .help("Path to the output JSON file")
-        .nargs(1uz)
+        .nargs(argon::nargs::up_to(1uz))
         .action<argon::action_type::observe>([](const fs::path& path) {
             if (not fs::is_regular_file(path) or path.extension() != ".json")
                 throw std::runtime_error(std::format(
