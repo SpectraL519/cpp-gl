@@ -12,7 +12,7 @@ Here you can find the necessery information to be able to work on the project
 ### Build the testing executable
 
 ```shell
-cmake -B build
+cmake -B build -DBUILD_TESTS=ON
 cd build
 make # -j <n>
 ```
@@ -28,6 +28,10 @@ cd build
 
 > [!NOTE]
 > Test suites in the project have the same names as the files they're in except for the `test_extarnal_libs_config.cpp` file which defines the `test_doctest_config` test suite.
+
+### Running project benchmarks
+
+TODO
 
 <br />
 

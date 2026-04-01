@@ -22,9 +22,6 @@ impl::alg_return_type<AlgReturnType, predecessors_descriptor> depth_first_search
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
-    using edge_type = typename GraphType::edge_type;
-
     std::vector<bool> visited(graph.n_vertices(), false);
     std::vector<types::id_type> sources(graph.n_vertices());
 
@@ -71,9 +68,6 @@ impl::alg_return_type<AlgReturnType, predecessors_descriptor> recursive_depth_fi
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using vertex_type = typename GraphType::vertex_type;
-    using edge_type = typename GraphType::edge_type;
-
     std::vector<bool> visited(graph.n_vertices(), false);
     std::vector<types::id_type> sources(graph.n_vertices());
 

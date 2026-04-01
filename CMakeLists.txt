@@ -14,14 +14,17 @@ project(cpp-gl
     LANGUAGES CXX
 )
 
-option(BUILD_TESTS "Build project tests" ON)
+set(MIN_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+option(BUILD_TESTS "Build project tests" OFF)
+option(BUILD_BENCHMARKS "Build project benchmarks" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-elseif(CMAKE_CXX_STANDARD LESS 20)
+    set(CMAKE_CXX_STANDARD ${MIN_CXX_STANDARD})
+elseif(CMAKE_CXX_STANDARD LESS ${MIN_CXX_STANDARD})
     message(WARNING "The defined C++ standard (${CMAKE_CXX_STANDARD}) is too low - overriding!")
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD ${MIN_CXX_STANDARD})
 endif()
 message(STATUS "The C++ standard is set to ${CMAKE_CXX_STANDARD}")
 
@@ -83,4 +86,9 @@ export(PACKAGE cpp-gl)
 # Include test directory if cpp-gl is a top level project
 if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
     add_subdirectory(tests)
+endif()
+
+# Include test directory if cpp-gl is a top level project
+if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
 endif()
