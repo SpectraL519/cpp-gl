@@ -1,10 +1,12 @@
-name: clang++
+name: Clang++
 on:
   push:
     branches:
       - "*"
     paths:
       - .github/workflows/clang.yaml
+      - CMakeLists.txt
+      - cmake/
       - include/**
       - tests/**
 
@@ -27,7 +29,7 @@ jobs:
 
       - name: Build test executable
         run: |
-          cmake --build build_clang/ -j5
+          cmake --build build_clang/ -j$(nproc)
         continue-on-error: false
 
       - name: Run tests

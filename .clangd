@@ -1,12 +1,18 @@
 CompileFlags:
+  CompilationDatabase: build
   Add:
     - -std=c++23
     - -xc++-header
     - -Iinclude
-    - -Itests/include
-    - -Itests/external
     - -Wall
     - -Wextra
+    - -Wcast-align
+    - -Wconversion
+    - -Wsign-conversion
+    - -Wunreachable-code
+    - -Wuninitialized
+    - -Wunused
+    - -pedantic
     - -ftemplate-depth=512
 
 Diagnostics:
@@ -21,3 +27,21 @@ Diagnostics:
 
 Index:
   Background: Build
+
+---
+
+If:
+  PathMatch: tests/.*
+CompileFlags:
+  Add:
+    - -Itests/include
+    - -Itests/external
+
+---
+
+If:
+  PathMatch: benchmarks/.*
+CompileFlags:
+  CompilationDatabase: build_bench
+  Add:
+    - -Ibenchmarks/include

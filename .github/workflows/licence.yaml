@@ -1,10 +1,11 @@
-name: licence
+name: Licence
 on:
   push:
     branches:
       - "*"
     paths:
       - .github/workflows/licence.yaml
+      - scripts/common.py
       - scripts/check_licence.py
       - include/**
 
