@@ -27,7 +27,7 @@ jobs:
 
       - name: Build test executable
         run: |
-          cmake --build build_clang/ -j5
+          cmake --build build_clang/ -j$(nproc)
         continue-on-error: false
 
       - name: Run tests

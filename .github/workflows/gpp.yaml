@@ -27,7 +27,7 @@ jobs:
 
       - name: Build test executable
         run: |
-          cmake --build build_gcc/ -j5
+          cmake --build build_gcc/ -j$(nproc)
         continue-on-error: false
 
       - name: Run tests

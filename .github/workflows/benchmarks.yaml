@@ -1,0 +1,38 @@
+name: Benchmarks Smoke Test
+on:
+  push:
+    branches:
+      - "*"
+    paths:
+      - .github/workflows/benchmarks.yaml
+      - include/**
+      - benchmarks/**
+
+jobs:
+  build:
+    name: Build and run benchmarks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        env:
+          CC: gcc-14
+          CXX: g++-14
+        run: |
+          cmake -B build_bench \
+            -DBUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
+        continue-on-error: false
+
+      - name: Build the benchmarks
+        run: |
+          cmake --build build_bench/ -j$(nproc)
+        continue-on-error: false
+
+      - name: Execute Smoke Test
+        run: |
+          ./build_bench/benchmarks/gl_benchmarks \
+            --benchmark_repetitions=1 --benchmark_display_aggregates_only=true \
+            --bip-v 100
