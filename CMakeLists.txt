@@ -17,6 +17,7 @@ project(cpp-gl
 set(MIN_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build project tests" OFF)
+option(BUILD_BENCHMARKS "Build project benchmarks" OFF)
 
 # Set the proper cxx standard
 if(NOT DEFINED CMAKE_CXX_STANDARD)
@@ -87,4 +88,9 @@ export(PACKAGE cpp-gl)
 # Include test directory if cpp-gl is a top level project
 if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
     add_subdirectory(tests)
+endif()
+
+# Include test directory if cpp-gl is a top level project
+if (CPP_GL_IS_TOP_LEVEL_PROJECT AND BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
 endif()

@@ -8,7 +8,7 @@ from common import find_files
 
 class DefaultParameters:
     modified_files: bool = False
-    search_paths: list[str] = ["include", "tests"]
+    search_paths: list[str] = ["include", "tests", "benchmarks"]
     file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
     exclude_paths: list[str] = ["tests/external"]
     check: bool = False
