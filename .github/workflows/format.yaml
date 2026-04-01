@@ -5,11 +5,13 @@ on:
       - '*'
     paths:
       - .github/workflows/format.yaml
+      - scripts/common.py
       - scripts/format.py
       - include/**
       - tests/include/**
       - tests/source/**
       - tests/app/**
+      - benchmarks/**
 
 
 jobs:
