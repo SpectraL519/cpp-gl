@@ -1,4 +1,4 @@
-name: format
+name: Code Formatting
 on:
   push:
     branches:

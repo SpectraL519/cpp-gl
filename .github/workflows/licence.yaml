@@ -1,4 +1,4 @@
-name: licence
+name: Licence
 on:
   push:
     branches:
