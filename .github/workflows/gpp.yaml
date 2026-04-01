@@ -5,6 +5,8 @@ on:
       - "*"
     paths:
       - .github/workflows/gpp.yaml
+      - CMakeLists.txt
+      - cmake/
       - include/**
       - tests/**
 

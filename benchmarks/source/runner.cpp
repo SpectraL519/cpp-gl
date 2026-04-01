@@ -2,6 +2,9 @@
 
 #include <format>
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 namespace gl_bench {
 

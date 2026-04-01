@@ -5,10 +5,7 @@
 #include <argon/argument_parser.hpp>
 #include <benchmark/benchmark.h>
 
-#include <filesystem>
 #include <vector>
-
-namespace fs = std::filesystem;
 
 namespace gl_bench {
 

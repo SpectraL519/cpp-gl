@@ -30,3 +30,4 @@ If:
   PathMatch: benchmarks/.*
 CompileFlags:
   CompilationDatabase: build_bench
+  Add:

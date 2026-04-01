@@ -5,6 +5,8 @@ on:
       - "*"
     paths:
       - .github/workflows/benchmarks.yaml
+      - CMakeLists.txt
+      - cmake/
       - include/**
       - benchmarks/**
 
@@ -16,6 +18,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install Dependencies (Boost)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libboost-graph-dev
 
       - name: Prepare
         env:
@@ -31,7 +38,7 @@ jobs:
           cmake --build build_bench/ -j$(nproc)
         continue-on-error: false
 
-      - name: Execute Smoke Test
+      - name: Execute the smoke test
         run: |
           ./build_bench/benchmarks/gl_benchmarks \
             --benchmark_repetitions=1 --benchmark_display_aggregates_only=true \
