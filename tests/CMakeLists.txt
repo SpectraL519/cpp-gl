@@ -18,7 +18,7 @@ endforeach()
 if(NOT DEFINED CMAKE_CXX_FLAGS)
     set(
         CMAKE_CXX_FLAGS
-        "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -Wunused -pedantic -g -O3"
+        "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -Wunused -pedantic -g -O2"
         CACHE STRING "Default C++ compile flags" FORCE
     )
 endif()

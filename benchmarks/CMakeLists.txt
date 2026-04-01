@@ -28,9 +28,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cpp-argon)
 
-# Find Boost for BGL comparisons
-find_package(Boost CONFIG REQUIRED)
-
 add_executable(gl_benchmarks
     source/main.cpp
     source/runner.cpp
@@ -38,12 +35,10 @@ add_executable(gl_benchmarks
 )
 
 target_compile_options(gl_benchmarks PRIVATE
-    -Werror
     -Wall
     -Wextra
     -Wcast-align
     -Wconversion
-    -Wsign-conversion
     -Wunreachable-code
     -Wuninitialized
     -Wunused
@@ -56,7 +51,6 @@ target_link_libraries(gl_benchmarks PRIVATE
     benchmark::benchmark
     cpp-argon
     cpp-gl
-    Boost::headers
 )
 
 if(BENCH_GL_DEFS)

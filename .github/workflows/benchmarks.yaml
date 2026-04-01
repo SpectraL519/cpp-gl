@@ -19,11 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Dependencies (Boost)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libboost-graph-dev
-
       - name: Prepare
         env:
           CC: gcc-13

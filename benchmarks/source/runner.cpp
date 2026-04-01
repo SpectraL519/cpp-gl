@@ -23,10 +23,17 @@ runner::runner() : _parser("gl_benchmarks") {
         .help("Path to the output JSON file")
         .nargs(argon::nargs::up_to(static_cast<std::size_t>(1)))
         .action<argon::action_type::observe>([](const fs::path& path) {
-            if (not fs::is_regular_file(path) or path.extension() != ".json")
+            if (path.extension() != ".json") {
                 throw std::runtime_error(std::format(
-                    "Invlid output file path (must be a .json file, got: {})", path.string()
+                    "Invalid output file path (must be a .json file, got: {})", path.string()
                 ));
+            }
+
+            if (path.has_parent_path() and not fs::exists(path.parent_path())) {
+                throw std::runtime_error(
+                    std::format("Output directory does not exist: {}", path.parent_path().string())
+                );
+            }
         });
 }
 
