@@ -1,0 +1,45 @@
+name: benchmarks
+on:
+  push:
+    branches:
+      - "*"
+    paths:
+      - .github/workflows/benchmarks.yaml
+      - CMakeLists.txt
+      - cmake/
+      - include/**
+      - benchmarks/**
+
+jobs:
+  build:
+    name: Build and run benchmarks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies (Boost)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libboost-graph-dev
+
+      - name: Prepare
+        env:
+          CC: gcc-13
+          CXX: g++-13
+        run: |
+          cmake -B build_bench \
+            -DBUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
+        continue-on-error: false
+
+      - name: Build the benchmarks
+        run: |
+          cmake --build build_bench/ -j$(nproc)
+        continue-on-error: false
+
+      - name: Execute the smoke test
+        run: |
+          ./build_bench/benchmarks/gl_benchmarks \
+            --benchmark_repetitions=1 --benchmark_display_aggregates_only=true \
+            --bip-v 100

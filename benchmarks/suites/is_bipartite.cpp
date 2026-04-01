@@ -86,12 +86,12 @@ void register_benchmarks(const argon::argument_parser& parser) {
     using bgl_matrix =
         boost::adjacency_matrix<boost::directedS, boost::no_property, boost::no_property>;
 
-    // benchmark::RegisterBenchmark("is_bipartite/BGL/list", bm_bgl_is_bipartite<bgl_list>)
-    //     ->Arg(n_vertices)
-    //     ->Unit(benchmark::kMillisecond);
-    // benchmark::RegisterBenchmark("is_bipartite/BGL/matrix", bm_bgl_is_bipartite<bgl_matrix>)
-    //     ->Arg(n_vertices)
-    //     ->Unit(benchmark::kMillisecond);
+    benchmark::RegisterBenchmark("is_bipartite/BGL/list", bm_bgl_is_bipartite<bgl_list>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+    benchmark::RegisterBenchmark("is_bipartite/BGL/matrix", bm_bgl_is_bipartite<bgl_matrix>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
 }
 
 suite get_suite() {
