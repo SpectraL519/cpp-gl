@@ -1,8 +1,8 @@
 #include "runner.hpp"
 
+#include <filesystem>
 #include <format>
 #include <iostream>
-#include <filesystem>
 
 namespace fs = std::filesystem;
 
