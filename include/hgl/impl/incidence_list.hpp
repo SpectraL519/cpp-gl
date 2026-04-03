@@ -190,9 +190,9 @@ private:
             return std::views::all(this->_major_storage[to_idx(id)]);
         }
         else { // incident with minor
-            return std::views::iota(initial_id_v<size_type>, this->_major_storage.size())
-                 | std::views::filter([this, minor_id = id](size_type major_idx) {
-                       return this->_contains(this->_major_storage[major_idx], minor_id);
+            return std::views::iota(initial_id_v<id_type>, this->_major_storage.size())
+                 | std::views::filter([this, minor_id = id](id_type major_id) {
+                       return this->_contains(this->_major_storage[to_idx(major_id)], minor_id);
                    });
         }
     }
@@ -487,10 +487,10 @@ private:
                  | std::views::join;
         }
         else { // get minor
-            return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
-                 | std::views::filter([this, minor_id = id](size_type major_idx) {
-                       return this->_contains(this->_tail_storage[major_idx], minor_id)
-                           or this->_contains(this->_head_storage[major_idx], minor_id);
+            return std::views::iota(initial_id_v<id_type>, this->_tail_storage.size())
+                 | std::views::filter([this, minor_id = id](id_type major_id) {
+                       return this->_contains(this->_tail_storage[to_idx(major_id)], minor_id)
+                           or this->_contains(this->_head_storage[to_idx(major_id)], minor_id);
                    });
         }
     }
@@ -502,11 +502,11 @@ private:
             return std::views::all(std::invoke(storage_proj, this)[to_idx(id)]);
         }
         else { // get minor
-            return std::views::iota(initial_id_v<size_type>, this->_tail_storage.size())
+            return std::views::iota(initial_id_v<id_type>, this->_tail_storage.size())
                  | std::views::filter(
                        [this, &storage = std::invoke(storage_proj, this), minor_id = id](
-                           size_type major_idx
-                       ) { return this->_contains(storage[major_idx], minor_id); }
+                           id_type major_id
+                       ) { return this->_contains(storage[to_idx(major_id)], minor_id); }
                  );
         }
     }

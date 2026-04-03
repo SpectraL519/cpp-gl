@@ -1,4 +1,5 @@
 #include "gl/constants.hpp"
+#include "gl/types/core.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
@@ -65,10 +66,10 @@ TEST_CASE_TEMPLATE_DEFINE(
             source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
+                const auto parent_id = id == 0u ? 0u : (id - 1u) / 2u;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
+                const auto vertex_depth = static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -180,10 +181,10 @@ TEST_CASE_TEMPLATE_DEFINE(
             source_id = 0uz;
 
             for (const auto id : sut.vertex_ids()) {
-                const auto parent_id = id == 0uz ? 0uz : (id - 1uz) / 2uz;
+                const auto parent_id = id == 0u ? 0u : (id - 1u) / 2u;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth = static_cast<gl::size_type>(std::log2(id + 1uz));
+                const auto vertex_depth = static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -218,7 +219,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 
 TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
     const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, gl::invalid_id};
-    gl::default_id_type vertex_id = predecessor_map.size() - 1uz;
+    const auto vertex_id = static_cast<gl::default_id_type>(predecessor_map.size() - 1uz);
 
     CHECK_THROWS_AS(
         discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),

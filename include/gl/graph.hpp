@@ -9,6 +9,7 @@
 #include "gl/impl/impl_tags.hpp"
 #include "gl/io/stream_options_manipulator.hpp"
 #include "gl/util/ranges.hpp"
+#include <sys/types.h>
 
 #include <set>
 
@@ -212,7 +213,7 @@ public:
         }
     }
 
-    gl_attr_force_inline void remove_vertex(const size_type vertex_id) {
+    gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
         this->_remove_vertex_impl(vertex_id);
     }

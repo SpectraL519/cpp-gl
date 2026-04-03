@@ -74,8 +74,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("add_edge should throw an error if the vertices are already incident") {
-        using edge_type = typename SutType::edge_type;
-
         SutType sut{constants::n_elements};
         sut.add_edge(fixture.next_edge_id++, constants::v1_id, constants::v2_id);
         REQUIRE(sut.has_edge(constants::v1_id, constants::v2_id));
@@ -87,8 +85,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("add_edges_from should throw an error if the vertices are already incident") {
-        using edge_type = typename SutType::edge_type;
-
         SutType sut{constants::n_elements};
         const auto target_ids = {constants::v1_id, constants::v2_id, constants::v3_id};
 
@@ -197,7 +193,6 @@ struct test_directed_adjacency_matrix : public test_adjacency_matrix {
 
 TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_adj_matrix_template) {
     using fixture_type = test_directed_adjacency_matrix<SutType>;
-    using sut_type = typename fixture_type::sut_type;
     using edge_type = typename fixture_type::edge_type;
 
     fixture_type fixture;
@@ -230,7 +225,8 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
 
     SUBCASE("at should return a view equivalent to the matrix row of the given vertex") {
         for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements)) {
-            const auto edge = add_edge(vertex_id, (vertex_id + 1u) % constants::n_elements);
+            const auto target_id = static_cast<gl::default_id_type>((vertex_id + 1u) % constants::n_elements);
+            const auto edge = add_edge(vertex_id, target_id);
             auto row_view = sut.at(vertex_id);
 
             REQUIRE_EQ(std::ranges::count_if(row_view, &edge_type::is_valid), 1uz);
@@ -502,7 +498,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "undirected adjacency matrix tests", SutType, undirected_adj_matrix_template
 ) {
     using fixture_type = test_undirected_adjacency_matrix<SutType>;
-    using sut_type = typename fixture_type::sut_type;
     using edge_type = typename fixture_type::edge_type;
 
     fixture_type fixture;

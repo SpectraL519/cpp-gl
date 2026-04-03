@@ -77,9 +77,11 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
+        const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.order());
+        const auto next_vertex = graph.get_vertex(next_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -89,10 +91,11 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto prev_vertex =
-            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id = static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex) == graph.has_edge(source, vertex);
@@ -102,12 +105,14 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
+        const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.order());
+        const auto next_vertex = graph.get_vertex(next_vertex_id);
 
-        const auto prev_vertex =
-            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id = static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
@@ -139,7 +144,6 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
     return [&graph](const gl::default_id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
         const auto parent_id = source_id == 0u ? 0u : (source_id - 1u) / 2u;
@@ -174,7 +178,6 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
@@ -255,8 +258,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "directed graph specific topology builders tests", GraphType, directed_graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a one-way cycle graph of size n_vertices") {
         const auto cycle = gl::topology::cycle<graph_type>(constants::n_elements_top);
@@ -348,8 +349,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "undirected graph specific topology builders tests", GraphType, undirected_graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a two-way cycle graph of size n_vertices") {
         graph_type cycle;
