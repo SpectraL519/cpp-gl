@@ -1231,9 +1231,10 @@ TEST_CASE_FIXTURE(
     const auto [tail_bound_hyperedges, head_bound_hyperedges] =
         altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
 
-    CHECK(std::ranges::is_permutation(
-        sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
-    ));
+    // NOTE: An explicit allocation is needed because of the GCC's false positive -Wmaybe-uninitialized warning
+    const auto incident_hyperedges =
+        sut.incident_hyperedges(vertex_id) | std::ranges::to<std::vector>();
+    CHECK(std::ranges::is_permutation(incident_hyperedges, constants::hyperedge_ids_view));
     CHECK(std::ranges::equal(sut.out_hyperedges(vertex_id), tail_bound_hyperedges));
     CHECK(std::ranges::equal(sut.in_hyperedges(vertex_id), head_bound_hyperedges));
 }

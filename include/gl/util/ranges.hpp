@@ -41,8 +41,16 @@ inline constexpr auto deref_view =
 
 // TODO: add tests
 
-/// @brief A generic view that concatenates two ranges/views.
-/// @todo Replace with `std::views::concat` (Requires C++26)
+/// @brief A view concatenating two ranges sequentially (C++20 polyfill for C++26 `std::views::concat`).
+///
+/// @warning **GCC 13/14 Bug:** Using branching views (like this or `std::ranges::filter_view`)
+/// inside complex algorithms (e.g., `std::ranges::is_permutation`) may trigger false-positive
+/// `-Wmaybe-uninitialized` warnings. To work around this, suppress the warning at the call site
+/// or materialize the view into a contiguous container like `std::vector`.
+///
+/// @tparam V1 First view type.
+/// @tparam V2 Second view type.
+/// @todo Replace with `std::views::concat` (C++26).
 template <std::ranges::view V1, std::ranges::view V2>
 class concat_view : public std::ranges::view_interface<concat_view<V1, V2>> {
 public:
@@ -179,8 +187,10 @@ struct concat_fn {
 
 } // namespace detail
 
-/// @brief Concatenates two ranges sequentially into a single view.
-/// @todo replace with `std::views::concat`
+/// @brief Concatenates two viewable ranges into a `concat_view`.
+/// @param r1 First range to concatenate.
+/// @param r2 Second range to concatenate.
+/// @todo Replace with `std::views::concat` (C++26).
 inline constexpr detail::concat_fn concat{};
 
 } // namespace gl::util

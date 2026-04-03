@@ -1,6 +1,10 @@
-#include <gl/util/pow.hpp>
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/util/math.hpp>
+#include <gl/util/ranges.hpp>
+
+#include <ranges>
+#include <vector>
 
 namespace gl_testing {
 
