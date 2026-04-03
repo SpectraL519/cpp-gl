@@ -1,12 +1,12 @@
-#include "gl/types/properties.hpp"
-#include "hgl/directional_tags.hpp"
-#include "hgl/hypergraph.hpp"
-#include "hgl/hypergraph_traits.hpp"
-#include "hgl/impl/layout_tags.hpp"
+#include "doctest.h"
+#include "testing/common/wrnsup.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
-#include <doctest.h>
+#include <hgl/directional_tags.hpp>
+#include <hgl/hypergraph.hpp>
+#include <hgl/hypergraph_traits.hpp>
+#include <hgl/impl/layout_tags.hpp>
 
 #include <algorithm>
 #include <concepts>
@@ -524,6 +524,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {
+        SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
             static_cast<void>(sut.incident_hyperedges(vertex_type{constants::out_of_rng_vid})),
@@ -532,6 +534,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_THROWS_AS(
             static_cast<void>(sut.degree(vertex_type{constants::out_of_rng_vid})), std::out_of_range
         );
+
+        SUPPRESS_WARNING_END;
     }
 
     SUBCASE("incident_hyperedges should return an empty view by default and degree should return 0 "
@@ -652,6 +656,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("incident_vertices and hyperedge_size should throw if the given hyperedge (id) is "
             "invalid") {
+        SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
             static_cast<void>(sut.incident_vertices(hyperedge_type{constants::out_of_rng_eid})),
@@ -661,6 +667,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             static_cast<void>(sut.hyperedge_size(hyperedge_type{constants::out_of_rng_eid})),
             std::out_of_range
         );
+
+        SUPPRESS_WARNING_END;
     }
 
     SUBCASE("incident_vertices should return an empty view by default and hyperedge_size should "
@@ -791,8 +799,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(), is_zero));
 
         if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
-            for (auto i = 0uz; i < n_elements; i++)
-                for (auto j = 0uz; j <= i; j++)
+            for (auto i = 0u; i < n_elements; i++)
+                for (auto j = 0u; j <= i; j++)
                     sut.bind(i, j);
 
             const auto deg_map = sut.degree_map();
@@ -810,8 +818,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             REQUIRE(std::ranges::all_of(sut.tail_size_map(), is_zero));
             REQUIRE(std::ranges::all_of(sut.head_size_map(), is_zero));
 
-            for (auto i = 0uz; i < n_elements; i++) {
-                for (auto j = 0uz; j <= i; j++) {
+            for (auto i = 0u; i < n_elements; i++) {
+                for (auto j = 0u; j <= i; j++) {
                     if (i == j)
                         sut.bind_tail(i, j);
                     else

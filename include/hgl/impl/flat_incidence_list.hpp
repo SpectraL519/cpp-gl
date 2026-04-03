@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
+#include "hgl/util.hpp"
 
 #include <algorithm>
 #include <concepts>
@@ -496,15 +496,10 @@ private:
     ) const noexcept {
         const auto idx = to_idx(id);
         if constexpr (std::same_as<Projection, std::identity>) {
-            // TODO: use std::views::concat (C++26)
-            // NOTE: This is safe because the range operator | creates an owning view over the array
-            return std::array<storage_const_segment_type, 2uz>{
-                       this->_tail_storage[idx], this->_head_storage[idx]
-                   }
-                 | std::views::join;
+            return util::concat(this->_tail_storage[idx], this->_head_storage[idx]);
         }
         else {
-            return std::invoke(storage_proj, this)[idx];
+            return (this->*storage_proj)[idx];
         }
     }
 
@@ -545,10 +540,7 @@ private:
     [[nodiscard]] gl_attr_force_inline auto _get(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // get major
             const auto idx = to_idx(id);
-            return std::array<storage_const_segment_type, 2uz>{
-                       this->_tail_storage[idx], this->_head_storage[idx]
-                   }
-                 | std::views::join;
+            return util::concat(this->_tail_storage[idx], this->_head_storage[idx]);
         }
         else { // get minor
             return std::views::iota(initial_id_v<id_type>, this->_tail_storage.size())
@@ -563,14 +555,14 @@ private:
     [[nodiscard]] gl_attr_force_inline auto _get(const id_type id, const auto&& storage_proj)
         const noexcept {
         if constexpr (Element == layout_tag::major_element) { // get major
-            return std::invoke(storage_proj, this)[to_idx(id)];
+            return (this->*storage_proj)[to_idx(id)];
         }
         else { // get minor
             return std::views::iota(initial_id_v<id_type>, this->_tail_storage.size())
                  | std::views::filter(
-                       [this, &storage = std::invoke(storage_proj, this), minor_id = id](
-                           id_type major_id
-                       ) { return detail::contains(storage[to_idx(major_id)], minor_id); }
+                       [this, &storage = this->*storage_proj, minor_id = id](id_type major_id) {
+                           return detail::contains(storage[to_idx(major_id)], minor_id);
+                       }
                  );
         }
     }
@@ -597,11 +589,11 @@ private:
     [[nodiscard]] gl_attr_force_inline size_type
     _size(const id_type id, const auto&& storage_proj) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // size major
-            return std::invoke(storage_proj, this)[to_idx(id)].size();
+            return (this->*storage_proj)[to_idx(id)].size();
         }
         else { // size minor
             size_type size = 0uz;
-            for (const auto segment : std::invoke(storage_proj, this))
+            for (const auto segment : this->*storage_proj)
                 if (detail::contains(segment, id))
                     ++size;
             return size;
@@ -636,7 +628,7 @@ private:
     [[nodiscard]] std::vector<size_type> _size_map(
         const size_type n_elements, const auto&& storage_proj
     ) const noexcept {
-        const auto& storage = std::invoke(storage_proj, this);
+        const auto& storage = this->*storage_proj;
         if constexpr (Element == layout_tag::major_element) { // size major
             std::vector<size_type> size_map(n_elements, 0uz);
 
