@@ -559,11 +559,10 @@ private:
         }
         else { // get minor
             return std::views::iota(initial_id_v<id_type>, this->_tail_storage.size())
-                 | std::views::filter(
-                       [this, &storage = this->*storage_proj, minor_id = id](id_type major_id) {
-                           return detail::contains(storage[to_idx(major_id)], minor_id);
-                       }
-                 );
+                 | std::views::filter([&storage = this->*storage_proj,
+                                       minor_id = id](id_type major_id) {
+                       return detail::contains(storage[to_idx(major_id)], minor_id);
+                   });
         }
     }
 

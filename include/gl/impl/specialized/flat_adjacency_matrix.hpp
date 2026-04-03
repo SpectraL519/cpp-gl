@@ -12,6 +12,7 @@
 #include "gl/types/flat_matrix.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <format>
 #include <ranges>
 #include <vector>
@@ -45,16 +46,16 @@ struct directed_flat_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static size_type in_degree(
         const impl_type& self, id_type vertex_id
     ) {
-        return std::ranges::count_if(self._matrix.col(to_idx(vertex_id)), [](auto edge_id) {
-            return edge_id != invalid_id;
-        });
+        return static_cast<size_type>(std::ranges::count_if(
+            self._matrix.col(to_idx(vertex_id)), [](auto edge_id) { return edge_id != invalid_id; }
+        ));
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type out_degree(
         const impl_type& self, id_type vertex_id
     ) {
         const auto row = self._matrix[to_idx(vertex_id)];
-        return row.size() - std::ranges::count(row, invalid_id_v<id_type>);
+        return row.size() - static_cast<size_type>(std::ranges::count(row, invalid_id_v<id_type>));
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type degree(
@@ -67,7 +68,7 @@ struct directed_flat_adjacency_matrix {
 
         for (auto v_idx = 0uz; v_idx < self._matrix.n_rows(); ++v_idx)
             deg += static_cast<size_type>(row[v_idx] != invalid_id)
-                 + static_cast<size_type>(col[v_idx] != invalid_id);
+                 + static_cast<size_type>(col[static_cast<std::ptrdiff_t>(v_idx)] != invalid_id);
 
         return deg;
     }
@@ -119,7 +120,9 @@ struct directed_flat_adjacency_matrix {
         for (auto r_idx = 0uz; r_idx < self._matrix.n_rows(); ++r_idx) {
             if (r_idx == vertex_idx)
                 continue;
-            if (const auto edge_id = col[r_idx]; edge_id != invalid_id)
+
+            const auto edge_id = col[static_cast<std::ptrdiff_t>(r_idx)];
+            if (edge_id != invalid_id)
                 removed_edges.push_back(edge_id);
         }
 
@@ -197,7 +200,8 @@ struct undirected_flat_adjacency_matrix {
     ) {
         const auto vertex_idx = to_idx(vertex_id);
         const auto row = self._matrix[vertex_idx];
-        return self._matrix.n_cols() - std::ranges::count(row, invalid_id_v<id_type>)
+        return self._matrix.n_cols()
+             - static_cast<size_type>(std::ranges::count(row, invalid_id_v<id_type>))
              + static_cast<size_type>(self._matrix[vertex_idx, vertex_idx] != invalid_id);
     }
 

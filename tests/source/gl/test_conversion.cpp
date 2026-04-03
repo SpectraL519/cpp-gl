@@ -19,8 +19,6 @@ namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_conversion");
 
-constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
-
 struct test_conversion {
     using property_type = gl::name_property;
 

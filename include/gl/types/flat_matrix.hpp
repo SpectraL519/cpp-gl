@@ -5,6 +5,7 @@
 #pragma once
 
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <format>
 #include <initializer_list>
@@ -137,7 +138,7 @@ public:
         /// @param n Number of rows to advance (can be negative)
         /// @return Reference to this iterator
         row_iterator& operator+=(difference_type n) noexcept {
-            this->_row_idx += n;
+            this->_row_idx += static_cast<size_type>(n);
             return *this;
         }
 
@@ -145,7 +146,7 @@ public:
         /// @param n Number of rows to move backward (can be negative)
         /// @return Reference to this iterator
         row_iterator& operator-=(difference_type n) noexcept {
-            this->_row_idx -= n;
+            this->_row_idx -= static_cast<size_type>(n);
             return *this;
         }
 
@@ -180,7 +181,7 @@ public:
         [[nodiscard]] friend difference_type operator-(
             const row_iterator& lhs, const row_iterator& rhs
         ) noexcept {
-            return lhs._row_idx - rhs._row_idx;
+            return static_cast<difference_type>(lhs._row_idx - rhs._row_idx);
         }
 
         /// @brief Tests equality of two iterators.
@@ -776,10 +777,15 @@ public:
     }
 
     /// @brief Appends a newly created row filled with a specific value.
+    ///
+    /// If the matrix is empty (has no columns), this operation has no effect,
+    /// as the size of the new row will be determined as 0.
+    ///
     /// @param value The value to fill the new row with
     /// @post `n_rows()` increases by 1
     /// @exception std::bad_alloc If memory allocation fails
     /// @warning Invalidates all iterators, pointers, and references if reallocation occurs.
+    /// @note If the matrix is empty, nothing will happen.
     /// @note **Time Complexity:** Amortized $O(C)$ where $C$ is the number of columns.
     void push_row(const value_type& value) {
         this->insert_row(this->_n_rows, value);
@@ -808,7 +814,7 @@ public:
             ));
         }
 
-        const auto insert_idx = pos * this->_n_cols;
+        const auto insert_pos = static_cast<std::ptrdiff_t>(pos * this->_n_cols);
 
         if constexpr (std::ranges::sized_range<R>) {
             const auto row_size = static_cast<size_type>(std::ranges::size(r));
@@ -825,11 +831,11 @@ public:
 
             if constexpr (std::ranges::contiguous_range<R>) {
                 auto* ptr = std::ranges::data(r);
-                this->_data.insert(this->_data.begin() + insert_idx, ptr, ptr + row_size);
+                this->_data.insert(this->_data.begin() + insert_pos, ptr, ptr + row_size);
             }
             else {
                 this->_data.insert(
-                    this->_data.begin() + insert_idx, std::ranges::begin(r), std::ranges::end(r)
+                    this->_data.begin() + insert_pos, std::ranges::begin(r), std::ranges::end(r)
                 );
             }
         }
@@ -838,13 +844,13 @@ public:
             const auto old_size = this->_data.size();
 
             this->_data.insert(
-                this->_data.begin() + insert_idx, std::ranges::begin(r), std::ranges::end(r)
+                this->_data.begin() + insert_pos, std::ranges::begin(r), std::ranges::end(r)
             );
 
             const auto row_size = this->_data.size() - old_size;
             if (this->_n_rows > 0uz and row_size != this->_n_cols) {
                 this->_data.erase(
-                    this->_data.begin() + insert_idx, this->_data.begin() + insert_idx + row_size
+                    this->_data.begin() + insert_pos, this->_data.begin() + insert_pos + row_size
                 );
                 throw std::invalid_argument(std::format(
                     "flat_matrix::insert_row: row size mismatch (expected {}, got {})",
@@ -875,6 +881,10 @@ public:
     }
 
     /// @brief Inserts a newly created row filled with a specific value at the specified position.
+    ///
+    /// If the matrix is empty (has no columns), this operation has no effect,
+    /// as the size of the new row will be determined as 0.
+    ///
     /// @param pos The row position where the elements will be inserted
     /// @param value The value to fill the new row with
     /// @post `n_rows()` increases by 1; rows at and after `pos` are shifted down
@@ -892,7 +902,8 @@ public:
             ));
         }
 
-        this->_data.insert(this->_data.begin() + (pos * this->_n_cols), this->_n_cols, value);
+        const auto insert_pos = static_cast<std::ptrdiff_t>(pos * this->_n_cols);
+        this->_data.insert(this->_data.begin() + insert_pos, this->_n_cols, value);
         ++this->_n_rows;
     }
 
@@ -926,8 +937,9 @@ public:
             return;
         }
 
-        const auto start_it = this->_data.begin() + (pos * this->_n_cols);
-        this->_data.erase(start_it, start_it + this->_n_cols);
+        const auto start_it =
+            this->_data.begin() + static_cast<std::ptrdiff_t>(pos * this->_n_cols);
+        this->_data.erase(start_it, start_it + static_cast<std::ptrdiff_t>(this->_n_cols));
         --this->_n_rows;
     }
 
@@ -961,6 +973,10 @@ public:
     }
 
     /// @brief Appends a newly created column filled with a specific value at the right edge.
+    ///
+    /// If the matrix is empty (has no rows), this operation has no effect,
+    /// as the size of the new column will be determined as 0.
+    ///
     /// @param value The value to fill the new column with
     /// @post `n_cols()` increases by 1
     /// @exception std::bad_alloc If memory allocation fails
@@ -1011,22 +1027,25 @@ public:
             new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
 
             auto r_it = std::ranges::begin(r);
-            for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
-                auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+            const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
+            const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
+            const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+            for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
+                auto row_begin = this->_data.begin() + r_pos * row_size;
 
                 // move old row elements up to insertion point
                 new_data.insert(
                     new_data.end(),
                     std::make_move_iterator(row_begin),
-                    std::make_move_iterator(row_begin + pos)
+                    std::make_move_iterator(row_begin + c_pos)
                 );
                 // insert new column element
                 new_data.push_back(*r_it++);
                 // move the remainder of old row
                 new_data.insert(
                     new_data.end(),
-                    std::make_move_iterator(row_begin + pos),
-                    std::make_move_iterator(row_begin + this->_n_cols)
+                    std::make_move_iterator(row_begin + c_pos),
+                    std::make_move_iterator(row_begin + row_size)
                 );
             }
 
@@ -1055,6 +1074,10 @@ public:
     }
 
     /// @brief Inserts a newly created column filled with a specific value at the specified position.
+    ///
+    /// If the matrix is empty (has no rows), this operation has no effect,
+    /// as the size of the new column will be determined as 0.
+    ///
     /// @param pos The column position where elements will be inserted
     /// @param value The value to fill the new column with
     /// @post `n_cols()` increases by 1
@@ -1075,19 +1098,22 @@ public:
         std::vector<value_type> new_data;
         new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
 
-        for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
-            auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+        const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
+        const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
+        const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+        for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
+            auto row_begin = this->_data.begin() + r_pos * row_size;
 
             new_data.insert(
                 new_data.end(),
                 std::make_move_iterator(row_begin),
-                std::make_move_iterator(row_begin + pos)
+                std::make_move_iterator(row_begin + c_pos)
             );
             new_data.push_back(value); // Insert the fill value
             new_data.insert(
                 new_data.end(),
-                std::make_move_iterator(row_begin + pos),
-                std::make_move_iterator(row_begin + this->_n_cols)
+                std::make_move_iterator(row_begin + c_pos),
+                std::make_move_iterator(row_begin + row_size)
             );
         }
 
@@ -1124,18 +1150,21 @@ public:
         std::vector<value_type> new_data;
         new_data.reserve(this->_n_rows * (this->_n_cols - 1uz));
 
-        for (size_type r_idx = 0uz; r_idx < this->_n_rows; ++r_idx) {
-            auto row_begin = this->_data.begin() + r_idx * this->_n_cols;
+        const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
+        const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
+        const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+        for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
+            auto row_begin = this->_data.begin() + r_pos * row_size;
 
             new_data.insert(
                 new_data.end(),
                 std::make_move_iterator(row_begin),
-                std::make_move_iterator(row_begin + pos)
+                std::make_move_iterator(row_begin + c_pos)
             );
             new_data.insert(
                 new_data.end(),
-                std::make_move_iterator(row_begin + pos + 1uz),
-                std::make_move_iterator(row_begin + this->_n_cols)
+                std::make_move_iterator(row_begin + c_pos + 1z),
+                std::make_move_iterator(row_begin + row_size)
             );
         }
 
@@ -1275,14 +1304,16 @@ private:
     /// @param c The column index (assumed valid)
     /// @return A zero-overhead `std::views::stride` representing the column elements
     [[nodiscard]] auto _col_impl(size_type c) noexcept {
-        return std::views::drop(this->_data, c) | std::views::stride(this->_n_cols);
+        return std::views::drop(this->_data, static_cast<std::ptrdiff_t>(c))
+             | std::views::stride(this->_n_cols);
     }
 
     /// @brief Internal non-throwing helper generating a const strided view over a column.
     /// @param c The column index (assumed valid)
     /// @return A zero-overhead `std::views::stride` representing the const column elements
     [[nodiscard]] auto _col_impl(size_type c) const noexcept {
-        return std::views::drop(this->_data, c) | std::views::stride(this->_n_cols);
+        return std::views::drop(this->_data, static_cast<std::ptrdiff_t>(c))
+             | std::views::stride(this->_n_cols);
     }
 
     size_type _n_rows{0uz};

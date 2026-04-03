@@ -5,6 +5,7 @@
 #pragma once
 
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <format>
 #include <initializer_list>
@@ -29,6 +30,7 @@ namespace gl {
 /// @todo Implement assign, and swap methods.
 /// @todo Implement iterator-based insert, emplace and erase methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
+/// @todo Use `std::ptrdiff_t` instead of `std::size_t` for offset values.
 template <std::semiregular T>
 class flat_jagged_vector {
 public:
@@ -903,6 +905,7 @@ public:
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void insert(size_type pos, R&& r) {
         const auto beg = this->_offsets[pos];
+        const auto beg_pos = static_cast<std::ptrdiff_t>(beg);
         const auto old_size = this->_data.size();
 
         this->_ensure_offset_capacity();
@@ -910,16 +913,16 @@ public:
         if constexpr (std::ranges::contiguous_range<R>) {
             auto* ptr = std::ranges::data(r);
             const auto n = std::ranges::size(r);
-            this->_data.insert(this->_data.begin() + beg, ptr, ptr + n);
+            this->_data.insert(this->_data.begin() + beg_pos, ptr, ptr + n);
         }
         else {
             this->_data.insert(
-                this->_data.begin() + beg, std::ranges::begin(r), std::ranges::end(r)
+                this->_data.begin() + beg_pos, std::ranges::begin(r), std::ranges::end(r)
             );
         }
 
         const auto inserted = this->_data.size() - old_size;
-        this->_offsets.insert(this->_offsets.begin() + pos, beg);
+        this->_offsets.insert(this->_offsets.begin() + static_cast<std::ptrdiff_t>(pos), beg);
         for (size_type i = pos + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i] += inserted;
     }
@@ -949,12 +952,12 @@ public:
     ///       the erased segment in the underlying vector, $S$ is the number of segments after `pos`,
     ///       and $L$ is the size of the erased segment. Erasing the **last** segment is $O(L)$.
     void erase(size_type pos) {
-        const auto start = this->_offsets[pos];
-        const auto end = this->_offsets[pos + 1uz];
-        const auto len = end - start;
+        const auto start = static_cast<std::ptrdiff_t>(this->_offsets[pos]);
+        const auto end = static_cast<std::ptrdiff_t>(this->_offsets[pos + 1uz]);
+        const auto len = static_cast<size_type>(end - start);
 
         this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
-        this->_offsets.erase(this->_offsets.begin() + pos);
+        this->_offsets.erase(this->_offsets.begin() + static_cast<std::ptrdiff_t>(pos));
         for (size_type i = pos; i < this->_offsets.size(); i++)
             this->_offsets[i] -= len;
     }
@@ -1019,7 +1022,8 @@ public:
     /// @note **Time Complexity:** Amortized $O(E + S)$ where $E$ is the number of elements after
     ///       the insertion point in the underlying vector, and $S$ is the number of segments after `seg`.
     void insert(size_type seg, size_type pos, const value_type& value) {
-        this->_data.insert(this->_data.begin() + this->_offsets[seg] + pos, value);
+        const auto insert_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        this->_data.insert(this->_data.begin() + insert_pos, value);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]++;
     }
@@ -1037,9 +1041,8 @@ public:
     ///       the insertion point in the underlying vector, and $S$ is the number of segments after `seg`.
     template <class... Args>
     void emplace(size_type seg, size_type pos, Args&&... args) {
-        this->_data.emplace(
-            this->_data.begin() + this->_offsets[seg] + pos, std::forward<Args>(args)...
-        );
+        const auto insert_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        this->_data.emplace(this->_data.begin() + insert_pos, std::forward<Args>(args)...);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]++;
     }
@@ -1052,7 +1055,8 @@ public:
     /// @note **Time Complexity:** $O(E + S)$ where $E$ is the number of elements after the erased
     ///       position in the underlying vector, and $S$ is the number of segments after `seg`.
     void erase(size_type seg, size_type pos) {
-        this->_data.erase(this->_data.begin() + this->_offsets[seg] + pos);
+        const auto erase_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        this->_data.erase(this->_data.begin() + erase_pos);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]--;
     }
@@ -1076,8 +1080,8 @@ public:
         const auto curr_count = this->segment_size(seg);
         if (n < curr_count) {
             const auto diff = curr_count - n;
-            const auto start = this->_offsets[seg] + n;
-            const auto end = this->_offsets[seg + 1uz];
+            const auto start = static_cast<std::ptrdiff_t>(this->_offsets[seg] + n);
+            const auto end = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
 
             this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1085,7 +1089,7 @@ public:
         }
         else if (n > curr_count) {
             const auto diff = n - curr_count;
-            const auto pos = this->_offsets[seg + 1uz];
+            const auto pos = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
 
             this->_data.insert(this->_data.begin() + pos, diff, value_type());
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1113,8 +1117,8 @@ public:
         const auto curr_count = this->segment_size(seg);
         if (n < curr_count) {
             const auto diff = curr_count - n;
-            const auto start = this->_offsets[seg] + n;
-            const auto end = this->_offsets[seg + 1uz];
+            const auto start = static_cast<std::ptrdiff_t>(this->_offsets[seg] + n);
+            const auto end = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
 
             this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1122,7 +1126,7 @@ public:
         }
         else if (n > curr_count) {
             const auto diff = n - curr_count;
-            const auto pos = this->_offsets[seg + 1uz];
+            const auto pos = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
 
             this->_data.insert(this->_data.begin() + pos, diff, value);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)

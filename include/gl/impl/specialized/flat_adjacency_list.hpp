@@ -8,6 +8,7 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
+#include "gl/types/core.hpp"
 #include "gl/types/flat_jagged_vector.hpp"
 
 #include <algorithm>
@@ -42,7 +43,9 @@ struct directed_flat_adjacency_list {
     }
 
     [[nodiscard]] static size_type in_degree(const impl_type& self, id_type vertex_id) {
-        return std::ranges::count(self._list.data_view(), vertex_id, &item_type::vertex_id);
+        return static_cast<size_type>(
+            std::ranges::count(self._list.data_view(), vertex_id, &item_type::vertex_id)
+        );
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type out_degree(

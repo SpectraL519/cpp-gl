@@ -30,6 +30,7 @@ function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
         -Wextra
         -Wcast-align
         -Wconversion
+        -Wsign-conversion
         -Wunreachable-code
         -Wuninitialized
         -Wunused

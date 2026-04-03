@@ -217,7 +217,7 @@ private:
         if constexpr (Element == layout_tag::major_element) { // count map major
             const size_type limit = std::min(n_elements, this->_matrix.size());
             for (auto i = 0uz; i < limit; ++i) {
-                size_map[i] = std::ranges::count(this->_matrix[i], true);
+                size_map[i] = static_cast<size_type>(std::ranges::count(this->_matrix[i], true));
             }
         }
         else { // count map minor

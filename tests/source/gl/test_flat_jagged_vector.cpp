@@ -1291,9 +1291,9 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.size(), 100uz);
     CHECK_EQ(sut.data_size(), 1000uz);
     for (int i = 0; i < 100; ++i) {
-        auto seg = sut[i];
+        auto seg = sut[static_cast<std::size_t>(i)];
         for (int j = 0; j < 10; ++j)
-            CHECK_EQ(seg[j], i * 10 + j);
+            CHECK_EQ(seg[static_cast<std::size_t>(j)], i * 10 + j);
     }
 }
 

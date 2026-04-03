@@ -4,6 +4,8 @@
 
 #include <doctest.h>
 
+#include <cstddef>
+
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_topology_builders");
@@ -283,6 +285,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -290,12 +293,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             path.vertices() | std::views::take(n_source_vertices),
             predicate::is_vertex_connected_to_next_only(path)
         ));
-        CHECK(predicate::is_vertex_not_connected(path)(path.vertices()[n_source_vertices]));
+        CHECK(predicate::is_vertex_not_connected(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
@@ -303,12 +307,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE(std::ranges::all_of(
             std::ranges::next(vertices.begin(), 1uz),
-            std::ranges::next(vertices.begin(), n_source_vertices),
+            std::ranges::next(vertices.begin(), last_vertex_pos),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
-        );
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("regular_binary_tree(depth) should return a one-way regular binay tree with the "
@@ -386,18 +389,18 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(path);
 
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
             std::ranges::next(vertices.begin(), 1uz),
-            std::ranges::next(vertices.begin(), n_source_vertices),
+            std::ranges::next(vertices.begin(), last_vertex_pos),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
-        );
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {
