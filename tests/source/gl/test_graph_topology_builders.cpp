@@ -94,7 +94,8 @@ template <gl::traits::c_graph GraphType>
     using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto prev_vertex_id = static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id =
+            static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
         const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
@@ -111,7 +112,8 @@ template <gl::traits::c_graph GraphType>
         const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.order());
         const auto next_vertex = graph.get_vertex(next_vertex_id);
 
-        const auto prev_vertex_id = static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id =
+            static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
         const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {

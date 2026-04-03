@@ -225,7 +225,8 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
 
     SUBCASE("at should return a view equivalent to the matrix row of the given vertex") {
         for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements)) {
-            const auto target_id = static_cast<gl::default_id_type>((vertex_id + 1u) % constants::n_elements);
+            const auto target_id =
+                static_cast<gl::default_id_type>((vertex_id + 1u) % constants::n_elements);
             const auto edge = add_edge(vertex_id, target_id);
             auto row_view = sut.at(vertex_id);
 

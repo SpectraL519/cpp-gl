@@ -69,7 +69,8 @@ TEST_CASE_TEMPLATE_DEFINE(
                 const auto parent_id = id == 0u ? 0u : (id - 1u) / 2u;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth = static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
+                const auto vertex_depth =
+                    static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
                 expected_distances.push_back(vertex_depth);
             }
         }
@@ -184,7 +185,8 @@ TEST_CASE_TEMPLATE_DEFINE(
                 const auto parent_id = id == 0u ? 0u : (id - 1u) / 2u;
                 expected_predecessors.push_back(parent_id);
 
-                const auto vertex_depth = static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
+                const auto vertex_depth =
+                    static_cast<distance_type>(std::floor(std::log2(id + 1uz)));
                 expected_distances.push_back(vertex_depth);
             }
         }

@@ -4,8 +4,8 @@
 
 #define SUPPRESS_PRAGMA(x) _Pragma(#x)
 
-#define SUPPRESS_WARNING_BEGIN(w) \
-    SUPPRESS_PRAGMA(GCC diagnostic push)   \
+#define SUPPRESS_WARNING_BEGIN(w)        \
+    SUPPRESS_PRAGMA(GCC diagnostic push) \
     SUPPRESS_PRAGMA(GCC diagnostic ignored w)
 
 #define SUPPRESS_WARNING_END SUPPRESS_PRAGMA(GCC diagnostic pop)

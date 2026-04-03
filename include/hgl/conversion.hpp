@@ -297,7 +297,8 @@ template <gl::traits::c_undirected_graph G>
     using g_id_type = typename G::id_type;
 
     G g{h.order() + h.size()};
-    const auto align_edge_id = [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
+    const auto align_edge_id =
+        [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
         return eid + shift;
     };
 
@@ -323,7 +324,8 @@ template <gl::traits::c_directed_graph G>
     using g_id_type = typename G::id_type;
 
     G g{h.order() + h.size()};
-    const auto align_edge_id = [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
+    const auto align_edge_id =
+        [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
         return eid + shift;
     };
 

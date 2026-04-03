@@ -3,6 +3,7 @@
 #include <gl/util/math.hpp>
 #include <gl/util/ranges.hpp>
 
+#include <algorithm>
 #include <ranges>
 #include <vector>
 
@@ -53,6 +54,83 @@ TEST_CASE("upow_sum function test") {
     CAPTURE(expected_result);
 
     CHECK_EQ(gl::util::upow_sum(base, i_begin, i_end), expected_result);
+}
+
+struct test_concat_view {
+    std::vector<int> v1;
+    std::vector<int> v2;
+    std::vector<int> expected;
+};
+
+TEST_CASE_FIXTURE(test_concat_view, "concat should sequentially combine two identical range types") {
+    SUBCASE("Both ranges are non-empty") {
+        v1 = {1, 2, 3};
+        v2 = {4, 5, 6};
+        expected = {1, 2, 3, 4, 5, 6};
+    }
+    SUBCASE("First range is empty") {
+        v1 = {};
+        v2 = {4, 5, 6};
+        expected = {4, 5, 6};
+    }
+    SUBCASE("Second range is empty") {
+        v1 = {1, 2, 3};
+        v2 = {};
+        expected = {1, 2, 3};
+    }
+    SUBCASE("Both ranges are empty") {
+        v1 = {};
+        v2 = {};
+        expected = {};
+    }
+
+    auto concat_vw = gl::util::concat(v1, v2);
+
+    CHECK_EQ(std::ranges::distance(concat_vw), expected.size());
+    CHECK(std::ranges::equal(concat_vw, expected));
+
+    const auto concat_vec = concat_vw | std::ranges::to<std::vector>();
+    CHECK_EQ(concat_vec.size(), expected.size());
+    CHECK(std::ranges::equal(concat_vec, expected));
+}
+
+TEST_CASE_FIXTURE(test_concat_view, "concat_view satisfies C++20 range concepts") {
+    v1 = {1, 2};
+    v2 = {3, 4};
+
+    auto concat_vw = gl::util::concat(v1, v2);
+
+    static_assert(std::ranges::view<decltype(concat_vw)>);
+    static_assert(std::ranges::forward_range<decltype(concat_vw)>);
+
+    CHECK_EQ(std::ranges::distance(concat_vw), 4);
+}
+
+TEST_CASE_FIXTURE(test_concat_view, "concat_view propagates const correctness") {
+    v1 = {10, 20};
+    v2 = {30, 40};
+
+    const auto& cv1 = v1;
+    const auto& cv2 = v2;
+
+    auto concat_vw = gl::util::concat(cv1, cv2);
+
+    int sum = 0;
+    for (const auto& val : concat_vw)
+        sum += val;
+
+    CHECK_EQ(sum, 100);
+}
+
+TEST_CASE("concat should seamlessly bridge heterogeneous view types") {
+    auto vw1 = std::views::iota(1, 4);
+    std::vector<int> vw2 = {4, 5, 6};
+
+    auto concat_vw = gl::util::concat(vw1, vw2);
+    std::vector<int> expected = {1, 2, 3, 4, 5, 6};
+
+    CHECK_EQ(std::ranges::distance(concat_vw), expected.size());
+    CHECK(std::ranges::equal(concat_vw, expected));
 }
 
 TEST_SUITE_END(); // test_util

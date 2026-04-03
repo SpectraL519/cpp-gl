@@ -125,7 +125,10 @@ private:
         }
 
         constexpr iterator& operator++() {
-            (this->_it1 != this->_end1) ? ++this->_it1 : ++this->_it2;
+            if (this->_it1 != this->_end1)
+                ++this->_it1;
+            else
+                ++this->_it2;
             return *this;
         }
 

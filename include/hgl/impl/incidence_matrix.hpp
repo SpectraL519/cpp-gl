@@ -183,7 +183,9 @@ private:
     gl_attr_force_inline auto _incident_with(const id_type id) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // incident with major
             return std::views::iota(initial_id_v<id_type>, this->_matrix_row_size)
-                 | std::views::filter([&row = this->_matrix[to_idx(id)]](id_type minor_id) { return row[to_idx(minor_id)]; });
+                 | std::views::filter([&row = this->_matrix[to_idx(id)]](id_type minor_id) {
+                       return row[to_idx(minor_id)];
+                   });
         }
         else { // incident with minor
             return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
@@ -487,8 +489,8 @@ private:
         else { // query minor
             return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
                  | std::views::filter([this, minor_idx = to_idx(id), pred](id_type major_id) {
-                    return pred(this->_matrix[to_idx(major_id)][minor_idx]);
-                });
+                       return pred(this->_matrix[to_idx(major_id)][minor_idx]);
+                   });
         }
     }
 
