@@ -1,6 +1,6 @@
 #include "doctest.h"
-#include "testing/common/wrnsup.hpp"
 
+#include <gl/attributes/diagnostics.hpp>
 #include <gl/types/flat_jagged_vector.hpp>
 
 #include <algorithm>
@@ -92,9 +92,9 @@ TEST_CASE_FIXTURE(
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
 
-    SUPPRESS_WARNING_BEGIN("-Wself-move");
+    GL_SUPPRESS_WARNING_BEGIN("-Wself-move");
     sut = std::move(sut);
-    SUPPRESS_WARNING_END;
+    GL_SUPPRESS_WARNING_END;
 
     CHECK_EQ(sut.size(), 2uz);
     CHECK_EQ(sut.data_size(), 5uz);

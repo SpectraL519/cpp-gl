@@ -1,7 +1,8 @@
 #include "doctest.h"
-#include "testing/common/wrnsup.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
+
+#include <gl/attributes/diagnostics.hpp>
 
 #include <hgl/directional_tags.hpp>
 #include <hgl/hypergraph.hpp>
@@ -524,7 +525,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {
-        SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+        GL_SUPPRESS_WARNING_BEGIN("-Warray-bounds");
 
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
@@ -535,7 +536,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             static_cast<void>(sut.degree(vertex_type{constants::out_of_rng_vid})), std::out_of_range
         );
 
-        SUPPRESS_WARNING_END;
+        GL_SUPPRESS_WARNING_END;
     }
 
     SUBCASE("incident_hyperedges should return an empty view by default and degree should return 0 "
@@ -656,7 +657,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("incident_vertices and hyperedge_size should throw if the given hyperedge (id) is "
             "invalid") {
-        SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+        GL_SUPPRESS_WARNING_BEGIN("-Warray-bounds");
 
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
@@ -668,7 +669,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::out_of_range
         );
 
-        SUPPRESS_WARNING_END;
+        GL_SUPPRESS_WARNING_END;
     }
 
     SUBCASE("incident_vertices should return an empty view by default and hyperedge_size should "

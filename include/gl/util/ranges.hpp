@@ -39,8 +39,6 @@ template <std::ranges::forward_range R>
 inline constexpr auto deref_view =
     std::views::transform([](auto&& p) -> decltype(auto) { return *p; });
 
-// TODO: add tests
-
 /// @brief A view concatenating two ranges sequentially (C++20 polyfill for C++26 `std::views::concat`).
 ///
 /// @warning **GCC 13/14 Bug:** Using branching views (like this or `std::ranges::filter_view`)
