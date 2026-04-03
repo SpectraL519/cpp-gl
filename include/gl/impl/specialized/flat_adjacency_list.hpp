@@ -8,7 +8,6 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
-#include "gl/types/core.hpp"
 #include "gl/types/flat_jagged_vector.hpp"
 
 #include <algorithm>

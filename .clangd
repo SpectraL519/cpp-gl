@@ -8,6 +8,7 @@ CompileFlags:
     - -Wextra
     - -Wcast-align
     - -Wconversion
+    - -Wsign-conversion
     - -Wunreachable-code
     - -Wuninitialized
     - -Wunused

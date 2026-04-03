@@ -83,6 +83,8 @@ struct test_graph {
         validate_full_graph_edges(graph);
     }
 
+    // clang-format off
+
     template <gl::traits::c_instantiation_of<gl::graph> GraphType>
     void validate_full_graph_edges(const GraphType& graph) {
         REQUIRE(std::ranges::all_of(
@@ -90,12 +92,13 @@ struct test_graph {
             [&graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
                 const gl::default_id_type vertex_id
             ) {
-                return static_cast<std::size_t>(gl::util::range_size(graph.adjacent_edges(vertex_id)
-                       ))
+                return static_cast<std::size_t>(gl::util::range_size(graph.adjacent_edges(vertex_id)))
                     == expected_n_edges;
             }
         ));
     }
+
+    // clang-format on
 
     template <gl::traits::c_instantiation_of<gl::graph> GraphType>
     gl::size_type n_incident_edges_for_fully_connected_vertex(const GraphType& graph) {

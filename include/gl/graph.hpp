@@ -10,8 +10,6 @@
 #include "gl/io/stream_options_manipulator.hpp"
 #include "gl/util/ranges.hpp"
 
-#include <sys/types.h>
-
 #include <set>
 
 namespace gl {

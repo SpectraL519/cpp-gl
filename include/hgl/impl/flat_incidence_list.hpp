@@ -495,12 +495,10 @@ private:
         const id_type id, const Projection storage_proj
     ) const noexcept {
         const auto idx = to_idx(id);
-        if constexpr (std::same_as<Projection, std::identity>) {
+        if constexpr (std::same_as<Projection, std::identity>)
             return util::concat(this->_tail_storage[idx], this->_head_storage[idx]);
-        }
-        else {
+        else
             return (this->*storage_proj)[idx];
-        }
     }
 
     template <element_type Element>

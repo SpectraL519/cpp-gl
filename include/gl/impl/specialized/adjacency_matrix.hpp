@@ -277,9 +277,10 @@ struct undirected_adjacency_matrix {
             | std::views::filter([](auto edge_id) { return edge_id != invalid_id; })
             | std::ranges::to<std::vector>();
 
-        self._matrix.erase(self._matrix.begin() + static_cast<std::ptrdiff_t>(vertex_id));
+        const auto vertex_pos = static_cast<std::ptrdiff_t>(vertex_id);
+        self._matrix.erase(self._matrix.begin() + vertex_pos);
         for (auto& row : self._matrix)
-            row.erase(row.begin() + static_cast<std::ptrdiff_t>(vertex_id));
+            row.erase(row.begin() + vertex_pos);
 
         return removed_edges;
     }

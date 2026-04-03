@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
