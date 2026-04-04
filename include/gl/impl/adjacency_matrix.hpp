@@ -107,17 +107,17 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
-        return this->_matrix[to_idx(source_id)][to_idx(target_id)] != invalid_id;
+        return specialized_impl::get_entry(*this, source_id, target_id) != invalid_id;
     }
 
     [[nodiscard]] bool has_edge(const edge_type& edge) const {
-        return this->_matrix[to_idx(edge.source())][to_idx(edge.target())] == edge.id();
+        return specialized_impl::get_entry(*this, edge.source(), edge.target()) == edge.id();
     }
 
     [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
+        const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::nullopt;
         return std::make_optional<edge_type>(edge_id, source_id, target_id);
@@ -128,7 +128,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
+        const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::nullopt;
         return std::make_optional<edge_type>(
@@ -139,7 +139,7 @@ public:
     [[nodiscard]] std::vector<edge_type> get_edges(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
+        const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
@@ -152,7 +152,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(target_id)];
+        const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::vector<edge_type>();
         return std::vector<edge_type>{
@@ -197,11 +197,13 @@ public:
     {
         return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
-                   return this->_matrix[to_idx(source_id)][to_idx(vertex_id)] != invalid_id;
+                   return specialized_impl::get_entry(*this, source_id, vertex_id) != invalid_id;
                })
              | std::views::transform([this, vertex_id](const auto source_id) {
                    return edge_type{
-                       this->_matrix[to_idx(source_id)][to_idx(vertex_id)], source_id, vertex_id
+                       specialized_impl::get_entry(*this, source_id, vertex_id),
+                       source_id,
+                       vertex_id
                    };
                });
     }
@@ -213,10 +215,10 @@ public:
     {
         return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](const auto source_id) {
-                   return this->_matrix[to_idx(source_id)][to_idx(vertex_id)] != invalid_id;
+                   return specialized_impl::get_entry(*this, source_id, vertex_id) != invalid_id;
                })
              | std::views::transform([this, vertex_id, &edge_properties_map](const auto source_id) {
-                   const auto edge_id = this->_matrix[to_idx(source_id)][to_idx(vertex_id)];
+                   const auto edge_id = specialized_impl::get_entry(*this, source_id, vertex_id);
                    return edge_type{
                        edge_id, source_id, vertex_id, *edge_properties_map[to_idx(edge_id)]
                    };

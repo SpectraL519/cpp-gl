@@ -7,6 +7,7 @@
 #include "gl/attributes/force_inline.hpp"
 
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <utility>
@@ -25,6 +26,10 @@ concept c_id_type = std::unsigned_integral<T>;
 
 [[nodiscard]] gl_attr_force_inline constexpr size_type to_idx(traits::c_id_type auto id) noexcept {
     return static_cast<size_type>(id);
+}
+
+[[nodiscard]] gl_attr_force_inline constexpr std::ptrdiff_t to_diff(std::integral auto i) noexcept {
+    return static_cast<std::ptrdiff_t>(i);
 }
 
 template <typename T>

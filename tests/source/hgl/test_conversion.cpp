@@ -162,6 +162,14 @@ TEST_CASE_TEMPLATE_DEFINE(
     using emajor_matrix_hypergraph =
         hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, emajor_matrix_tag>>;
 
+    using vmajor_flat_matrix_tag = hgl::impl::flat_matrix_t<hgl::impl::vertex_major_t>;
+    using emajor_flat_matrix_tag = hgl::impl::flat_matrix_t<hgl::impl::hyperedge_major_t>;
+
+    using vmajor_flat_matrix_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, vmajor_flat_matrix_tag>>;
+    using emajor_flat_matrix_hypergraph =
+        hgl::hypergraph<hgl::hypergraph_traits<DT, VP, EP, emajor_flat_matrix_tag>>;
+
     test_hypergraph_conversion fixture;
 
     auto test_conversion_for =
@@ -207,6 +215,16 @@ TEST_CASE_TEMPLATE_DEFINE(
                     auto dst = hgl::to<emajor_matrix_tag>(std::move(src));
                     fixture.validate_hypergraph(dst);
                 }
+                SUBCASE("to vertex-major flat-matrix") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<vmajor_flat_matrix_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
+                SUBCASE("to hyperedge-major flat-matrix") {
+                    auto src = fixture.create_test_hypergraph<Source>();
+                    auto dst = hgl::to<emajor_flat_matrix_tag>(std::move(src));
+                    fixture.validate_hypergraph(dst);
+                }
             }
         };
 
@@ -231,6 +249,13 @@ TEST_CASE_TEMPLATE_DEFINE(
     );
     test_conversion_for(
         std::type_identity<emajor_matrix_hypergraph>{}, "source: hyperedge-major matrix"
+    );
+
+    test_conversion_for(
+        std::type_identity<vmajor_flat_matrix_hypergraph>{}, "source: vertex-major flat-matrix"
+    );
+    test_conversion_for(
+        std::type_identity<emajor_flat_matrix_hypergraph>{}, "source: hyperedge-major flat-matrix"
     );
 }
 
@@ -403,15 +428,15 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     hgl::flat_list_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
         hgl::undirected_t>, // undirected hyperedge-major flat incidence list
-    hgl::flat_list_hypergraph_traits<
-        hgl::impl::vertex_major_t,
-        hgl::undirected_t>, // undirected vertex-major flat incidence list
     hgl::matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::undirected_t>, // vertex-major incidence matrix
+    hgl::flat_matrix_hypergraph_traits<
         hgl::impl::hyperedge_major_t,
-        hgl::undirected_t>, // hyperedge-major incidence matrix
-    hgl::matrix_hypergraph_traits<
+        hgl::undirected_t>, // hyperedge-major flat incidence matrix
+    hgl::flat_matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
-        hgl::undirected_t> // vertex-major incidence matrix
+        hgl::undirected_t> // vertex-major flat incidence matrix
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -547,7 +572,13 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::bf_directed_t>, // hyperedge-major incidence matrix
     hgl::matrix_hypergraph_traits<
         hgl::impl::vertex_major_t,
-        hgl::bf_directed_t> // vertex-major incidence matrix
+        hgl::bf_directed_t>, // vertex-major incidence matrix
+    hgl::flat_matrix_hypergraph_traits<
+        hgl::impl::hyperedge_major_t,
+        hgl::bf_directed_t>, // hyperedge-major flat incidence matrix
+    hgl::flat_matrix_hypergraph_traits<
+        hgl::impl::vertex_major_t,
+        hgl::bf_directed_t> // vertex-major flat incidence matrix
 );
 
 TEST_SUITE_END(); // test_converters

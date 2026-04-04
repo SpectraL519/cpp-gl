@@ -6,6 +6,7 @@
 
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/impl/flat_incidence_list.hpp"
+#include "hgl/impl/flat_incidence_matrix.hpp"
 #include "hgl/impl/incidence_list.hpp"
 #include "hgl/impl/incidence_matrix.hpp"
 #include "hgl/impl/layout_tags.hpp"
@@ -43,6 +44,17 @@ struct matrix_t {
 
     template <traits::c_hypergraph_directional_tag DirectionalTag>
     using implementation_type = incidence_matrix<DirectionalTag, type>;
+};
+
+template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag, traits::c_id_type IdType>
+struct flat_matrix_t {
+    using type = flat_matrix_t<LayoutTag, IdType>;
+
+    using layout_tag = LayoutTag;
+    using id_type = IdType;
+
+    template <traits::c_hypergraph_directional_tag DirectionalTag>
+    using implementation_type = flat_incidence_matrix<DirectionalTag, type>;
 };
 
 } // namespace hgl::impl

@@ -1449,7 +1449,7 @@ TEST_CASE_FIXTURE(
     for (int i = 0; i < 100; ++i) {
         auto row = sut[static_cast<std::size_t>(i)];
         for (int j = 0; j < 10; ++j)
-            CHECK_EQ(row[static_cast<std::size_t>(j)], i * 10 + j);
+            CHECK_EQ(row[gl::to_diff(j)], i * 10 + j);
     }
 }
 
