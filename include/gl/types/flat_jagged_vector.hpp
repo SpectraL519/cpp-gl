@@ -4,8 +4,9 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
+
 #include <concepts>
-#include <cstddef>
 #include <cstdint>
 #include <format>
 #include <initializer_list>
@@ -30,7 +31,7 @@ namespace gl {
 /// @todo Implement assign, and swap methods.
 /// @todo Implement iterator-based insert, emplace and erase methods.
 /// @todo Add `operator<<` overload for `std::ostream` and specialize `std::formatter`.
-/// @todo Use `std::ptrdiff_t` instead of `std::size_t` for offset values.
+/// @todo Use std::ptrdiff_t instead of std::size_t for offset values
 template <std::semiregular T>
 class flat_jagged_vector {
 public:
@@ -38,14 +39,16 @@ public:
     using value_type = T;
     /// @brief Unsigned integral type used for sizes and indices
     using size_type = std::size_t;
+    /// @brief The underlying contiguous storage container
+    using container_type = std::vector<value_type>;
     /// @brief Reference to an element
-    using reference = value_type&;
+    using reference = typename container_type::reference;
     /// @brief Const reference to an element
-    using const_reference = const value_type&;
-    /// @brief Span type representing a non-owning segment of elements
-    using segment_type = std::span<value_type>;
-    /// @brief Const span type representing a non-owning const segment of elements
-    using const_segment_type = std::span<const value_type>;
+    using const_reference = typename container_type::const_reference;
+    /// @brief Subrange type representing a non-owning segment of elements
+    using segment_type = std::ranges::subrange<typename container_type::iterator>;
+    /// @brief Const subrange type representing a non-owning const segment of elements
+    using const_segment_type = std::ranges::subrange<typename container_type::const_iterator>;
 
     // --- iterators ---
 
@@ -60,7 +63,10 @@ public:
     /// @warning Invalidated when the `flat_jagged_vector` is modified (structure changes or element insertions/deletions).
     template <bool Const>
     class segment_iterator {
-        using data_ptr_type = std::conditional_t<Const, const T*, T*>;
+        using data_iter_type = std::conditional_t<
+            Const,
+            typename container_type::const_iterator,
+            typename container_type::iterator>;
         using offset_ptr_type = const size_type*;
 
     public:
@@ -81,25 +87,25 @@ public:
         segment_iterator() = default;
 
         /// @brief Constructs an iterator pointing to a specific segment.
-        /// @param data_ptr Pointer to the underlying element data (may be null for null iterator)
+        /// @param data_iter Iterator to the underlying element data (may be null for null iterator)
         /// @param offset_ptr Pointer to the offsets array at the position of this segment
-        segment_iterator(data_ptr_type data_ptr, offset_ptr_type offset_ptr) noexcept
-        : _data_ptr(data_ptr), _offset_ptr(offset_ptr) {}
+        segment_iterator(data_iter_type data_iter, offset_ptr_type offset_ptr) noexcept
+        : _data_iter(data_iter), _offset_ptr(offset_ptr) {}
 
         /// @brief Implicit conversion from mutable to const iterator
         /// @return A const iterator pointing to the same segment
         operator segment_iterator<true>() const noexcept
         requires(not Const)
         {
-            return segment_iterator<true>(this->_data_ptr, this->_offset_ptr);
+            return segment_iterator<true>(this->_data_iter, this->_offset_ptr);
         }
 
         /// @brief Dereferences the iterator to the current segment.
         /// @return A span representing the segment at the current position
         [[nodiscard]] reference operator*() const noexcept {
-            const auto beg = *this->_offset_ptr;
-            const auto end = *(this->_offset_ptr + 1uz);
-            return reference(this->_data_ptr + beg, end - beg);
+            const auto beg = to_diff(*this->_offset_ptr);
+            const auto end = to_diff(*(this->_offset_ptr + 1uz));
+            return reference(this->_data_iter + beg, this->_data_iter + end);
         }
 
         /// @brief Random access to a segment at offset from current position.
@@ -217,7 +223,7 @@ public:
         }
 
     private:
-        data_ptr_type _data_ptr{nullptr};
+        data_iter_type _data_iter;
         offset_ptr_type _offset_ptr{nullptr};
     };
 
@@ -471,9 +477,9 @@ public:
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] segment_type operator[](size_type i) {
-        const auto beg = this->_offsets[i];
-        const auto end = this->_offsets[i + 1uz];
-        return segment_type(this->_data.data() + beg, end - beg);
+        const auto beg = to_diff(this->_offsets[i]);
+        const auto end = to_diff(this->_offsets[i + 1uz]);
+        return segment_type(this->_data.begin() + beg, this->_data.begin() + end);
     }
 
     /// @brief Returns a const segment at the given index without bounds checking.
@@ -483,9 +489,9 @@ public:
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] const_segment_type operator[](size_type i) const {
-        const auto beg = this->_offsets[i];
-        const auto end = this->_offsets[i + 1uz];
-        return const_segment_type(this->_data.data() + beg, end - beg);
+        const auto beg = to_diff(this->_offsets[i]);
+        const auto end = to_diff(this->_offsets[i + 1uz]);
+        return const_segment_type(this->_data.begin() + beg, this->_data.begin() + end);
     }
 
     /// @brief Returns a reference to an element within a segment without bounds checking.
@@ -693,14 +699,20 @@ public:
 
     /// @brief Returns a raw pointer to the underlying flat data array.
     /// @return A raw pointer to the first element in the `_data` array.
-    /// @warning No bounds checking is performed. Structural modifications (like resizing) cannot be done via this pointer; use `data_storage()` instead.
-    [[nodiscard]] value_type* data_ptr() noexcept {
+    /// @warning Structural modifications (like resizing) cannot be done via this pointer; use `data_storage()` instead.
+    /// @warning Not available for boolean vectors.
+    [[nodiscard]] value_type* data_ptr() noexcept
+    requires(not std::same_as<value_type, bool>)
+    {
         return this->_data.data();
     }
 
     /// @brief Returns a const raw pointer to the underlying flat data array.
     /// @return A const raw pointer to the first element in the `_data` array.
-    [[nodiscard]] const value_type* data_ptr() const noexcept {
+    /// @warning Not available for boolean vectors.
+    [[nodiscard]] const value_type* data_ptr() const noexcept
+    requires(not std::same_as<value_type, bool>)
+    {
         return this->_data.data();
     }
 
@@ -749,28 +761,28 @@ public:
     /// @return Iterator to the first segment
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] iterator begin() noexcept {
-        return iterator(this->_data.data(), this->_offsets.data());
+        return iterator(this->_data.begin(), this->_offsets.data());
     }
 
     /// @brief Returns a mutable iterator past the last segment (end sentinel).
     /// @return Iterator one position past the last segment
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] iterator end() noexcept {
-        return iterator(this->_data.data(), this->_offsets.data() + this->size());
+        return iterator(this->_data.begin(), this->_offsets.data() + this->size());
     }
 
     /// @brief Returns a const iterator to the first segment.
     /// @return Const iterator to the first segment
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] const_iterator begin() const noexcept {
-        return const_iterator(this->_data.data(), this->_offsets.data());
+        return const_iterator(this->_data.begin(), this->_offsets.data());
     }
 
     /// @brief Returns a const iterator past the last segment (end sentinel).
     /// @return Const iterator one position past the last segment
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] const_iterator end() const noexcept {
-        return const_iterator(this->_data.data(), this->_offsets.data() + this->size());
+        return const_iterator(this->_data.begin(), this->_offsets.data() + this->size());
     }
 
     /// @brief Returns a const iterator to the first segment (explicit const form).
@@ -905,7 +917,7 @@ public:
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void insert(size_type pos, R&& r) {
         const auto beg = this->_offsets[pos];
-        const auto beg_pos = static_cast<std::ptrdiff_t>(beg);
+        const auto beg_pos = to_diff(beg);
         const auto old_size = this->_data.size();
 
         this->_ensure_offset_capacity();
@@ -922,7 +934,7 @@ public:
         }
 
         const auto inserted = this->_data.size() - old_size;
-        this->_offsets.insert(this->_offsets.begin() + static_cast<std::ptrdiff_t>(pos), beg);
+        this->_offsets.insert(this->_offsets.begin() + to_diff(pos), beg);
         for (size_type i = pos + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i] += inserted;
     }
@@ -952,12 +964,12 @@ public:
     ///       the erased segment in the underlying vector, $S$ is the number of segments after `pos`,
     ///       and $L$ is the size of the erased segment. Erasing the **last** segment is $O(L)$.
     void erase(size_type pos) {
-        const auto start = static_cast<std::ptrdiff_t>(this->_offsets[pos]);
-        const auto end = static_cast<std::ptrdiff_t>(this->_offsets[pos + 1uz]);
+        const auto start = to_diff(this->_offsets[pos]);
+        const auto end = to_diff(this->_offsets[pos + 1uz]);
         const auto len = static_cast<size_type>(end - start);
 
         this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
-        this->_offsets.erase(this->_offsets.begin() + static_cast<std::ptrdiff_t>(pos));
+        this->_offsets.erase(this->_offsets.begin() + to_diff(pos));
         for (size_type i = pos; i < this->_offsets.size(); i++)
             this->_offsets[i] -= len;
     }
@@ -1022,7 +1034,7 @@ public:
     /// @note **Time Complexity:** Amortized $O(E + S)$ where $E$ is the number of elements after
     ///       the insertion point in the underlying vector, and $S$ is the number of segments after `seg`.
     void insert(size_type seg, size_type pos, const value_type& value) {
-        const auto insert_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        const auto insert_pos = to_diff(this->_offsets[seg] + pos);
         this->_data.insert(this->_data.begin() + insert_pos, value);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]++;
@@ -1041,7 +1053,7 @@ public:
     ///       the insertion point in the underlying vector, and $S$ is the number of segments after `seg`.
     template <class... Args>
     void emplace(size_type seg, size_type pos, Args&&... args) {
-        const auto insert_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        const auto insert_pos = to_diff(this->_offsets[seg] + pos);
         this->_data.emplace(this->_data.begin() + insert_pos, std::forward<Args>(args)...);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]++;
@@ -1055,7 +1067,7 @@ public:
     /// @note **Time Complexity:** $O(E + S)$ where $E$ is the number of elements after the erased
     ///       position in the underlying vector, and $S$ is the number of segments after `seg`.
     void erase(size_type seg, size_type pos) {
-        const auto erase_pos = static_cast<std::ptrdiff_t>(this->_offsets[seg] + pos);
+        const auto erase_pos = to_diff(this->_offsets[seg] + pos);
         this->_data.erase(this->_data.begin() + erase_pos);
         for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
             this->_offsets[i]--;
@@ -1080,8 +1092,8 @@ public:
         const auto curr_count = this->segment_size(seg);
         if (n < curr_count) {
             const auto diff = curr_count - n;
-            const auto start = static_cast<std::ptrdiff_t>(this->_offsets[seg] + n);
-            const auto end = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
+            const auto start = to_diff(this->_offsets[seg] + n);
+            const auto end = to_diff(this->_offsets[seg + 1uz]);
 
             this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1089,7 +1101,7 @@ public:
         }
         else if (n > curr_count) {
             const auto diff = n - curr_count;
-            const auto pos = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
+            const auto pos = to_diff(this->_offsets[seg + 1uz]);
 
             this->_data.insert(this->_data.begin() + pos, diff, value_type());
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1117,8 +1129,8 @@ public:
         const auto curr_count = this->segment_size(seg);
         if (n < curr_count) {
             const auto diff = curr_count - n;
-            const auto start = static_cast<std::ptrdiff_t>(this->_offsets[seg] + n);
-            const auto end = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
+            const auto start = to_diff(this->_offsets[seg] + n);
+            const auto end = to_diff(this->_offsets[seg + 1uz]);
 
             this->_data.erase(this->_data.begin() + start, this->_data.begin() + end);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)
@@ -1126,7 +1138,7 @@ public:
         }
         else if (n > curr_count) {
             const auto diff = n - curr_count;
-            const auto pos = static_cast<std::ptrdiff_t>(this->_offsets[seg + 1uz]);
+            const auto pos = to_diff(this->_offsets[seg + 1uz]);
 
             this->_data.insert(this->_data.begin() + pos, diff, value);
             for (size_type i = seg + 1uz; i < this->_offsets.size(); i++)

@@ -7,7 +7,6 @@
 #include "gl/types/core.hpp"
 
 #include <concepts>
-#include <cstddef>
 #include <cstdint>
 #include <format>
 #include <initializer_list>
