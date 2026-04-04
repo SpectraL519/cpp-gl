@@ -285,7 +285,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
-        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
+        const auto last_vertex_pos = gl::to_diff(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -299,7 +299,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
-        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
+        const auto last_vertex_pos = gl::to_diff(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
@@ -389,7 +389,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(path);
 
         const auto n_source_vertices = path.order() - 1uz;
-        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
+        const auto last_vertex_pos = gl::to_diff(n_source_vertices);
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();

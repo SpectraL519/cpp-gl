@@ -1,10 +1,10 @@
-#include "hgl/impl/bf_incidence.hpp"
-#include "hgl/impl/layout_tags.hpp"
+#include "doctest.h"
 #include "testing/hgl/constants.hpp"
 
-#include <doctest.h>
+#include <hgl/impl/bf_incidence.hpp>
+#include <hgl/impl/flat_incidence_matrix.hpp>
 #include <hgl/impl/impl_tags.hpp>
-#include <hgl/impl/incidence_matrix.hpp>
+#include <hgl/impl/layout_tags.hpp>
 
 #include <algorithm>
 #include <ranges>
@@ -12,29 +12,29 @@
 
 namespace hgl_testing {
 
-TEST_SUITE_BEGIN("test_incidence_matrix");
+TEST_SUITE_BEGIN("test_flat_incidence_matrix");
 
-struct test_incidence_matrix {
+struct test_flat_incidence_matrix {
     template <typename IncidenceMatrix>
     typename IncidenceMatrix::hypergraph_storage_type& matrix(IncidenceMatrix& sut) const noexcept {
         return sut._matrix;
     }
 };
 
-struct test_undirected_vertex_major_incidence_matrix : public test_incidence_matrix {
-    using impl_tag = hgl::impl::matrix_t<hgl::impl::vertex_major_t>;
-    using sut_type = hgl::impl::incidence_matrix<hgl::undirected_t, impl_tag>;
+struct test_undirected_vertex_major_flat_incidence_matrix : public test_flat_incidence_matrix {
+    using impl_tag = hgl::impl::flat_matrix_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_matrix<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "should initialize empty matrix by default"
+    test_undirected_vertex_major_flat_incidence_matrix, "should initialize empty matrix by default"
 ) {
     sut_type sut{};
     CHECK(matrix(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "initialization with size parameters should properly initialize the matrix"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
@@ -48,7 +48,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "add_vertices should properly extend the matrix"
+    test_undirected_vertex_major_flat_incidence_matrix,
+    "add_vertices should properly extend the matrix"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     const auto initial_size = matrix(sut).size();
@@ -62,7 +63,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "remove_vertex should properly remove the row and implicitly shift vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
@@ -117,7 +118,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -132,7 +133,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "degree should return the number of the vertex's incident hyperedges"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -147,7 +148,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "add_hyperedges should properly extend the hypergraph matrix (resize columns)"
 ) {
     sut_type sut{constants::n_vertices, 0uz};
@@ -161,7 +162,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "remove_hyperedge should properly erase the proper hyperedge matrix entries (column)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -175,7 +176,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "remove_hyperedge should properly remove the column and implicitly shift hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
@@ -230,7 +231,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "incident_vertices should return an empty view by default"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -240,7 +241,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "hyperedge_size should return 0 by default"
+    test_undirected_vertex_major_flat_incidence_matrix, "hyperedge_size should return 0 by default"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     CHECK(std::ranges::all_of(constants::hyperedge_ids_view, [&sut](const auto hyperedge_id) {
@@ -249,7 +250,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "bind should set the corresponding bit"
+    test_undirected_vertex_major_flat_incidence_matrix, "bind should set the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
@@ -270,7 +271,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix, "unbind should clear the corresponding bit"
+    test_undirected_vertex_major_flat_incidence_matrix, "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -287,7 +288,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "are_bound should return true only when the bit is set"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -300,10 +301,10 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "element size map getters should return maps of properly calculated element sizes"
 ) {
-    constexpr auto n_elements = 5ull;
+    constexpr auto n_elements = 5uz;
     sut_type sut{n_elements, n_elements};
 
     constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
@@ -323,7 +324,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_vertex_major_incidence_matrix,
+    test_undirected_vertex_major_flat_incidence_matrix,
     "equality operator should correctly compare undirected incidence matrices"
 ) {
     sut_type sut1{constants::n_vertices, constants::n_hyperedges};
@@ -349,20 +350,21 @@ TEST_CASE_FIXTURE(
     }
 }
 
-struct test_undirected_hyperedge_major_incidence_matrix : public test_incidence_matrix {
-    using impl_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
-    using sut_type = hgl::impl::incidence_matrix<hgl::undirected_t, impl_tag>;
+struct test_undirected_hyperedge_major_flat_incidence_matrix : public test_flat_incidence_matrix {
+    using impl_tag = hgl::impl::flat_matrix_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_matrix<hgl::undirected_t, impl_tag>;
 };
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix, "should initialize empty matrix by default"
+    test_undirected_hyperedge_major_flat_incidence_matrix,
+    "should initialize empty matrix by default"
 ) {
     sut_type sut{};
     CHECK(matrix(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "initialization with size parameters should properly initialize the matrix"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
@@ -376,7 +378,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "add_vertices should properly extend the hypergraph matrix (resize columns)"
 ) {
     sut_type sut{0uz, constants::n_hyperedges};
@@ -390,7 +392,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "remove_vertex should properly erase the proper vertex matrix entries (column)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -404,7 +406,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "remove_vertex should properly remove the column and implicitly shift vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
@@ -459,7 +461,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -474,7 +476,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "degree should return the number of the vertex's incident hyperedges"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -489,7 +491,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix, "add_hyperedges should properly extend matrix"
+    test_undirected_hyperedge_major_flat_incidence_matrix,
+    "add_hyperedges should properly extend matrix"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     const auto initial_size = matrix(sut).size();
@@ -503,7 +506,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
@@ -558,7 +561,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "incident_vertices should return an empty view by default"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -568,7 +571,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix, "hyperedge_size should return 0 by default"
+    test_undirected_hyperedge_major_flat_incidence_matrix,
+    "hyperedge_size should return 0 by default"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     CHECK(std::ranges::all_of(constants::hyperedge_ids_view, [&sut](const auto hyperedge_id) {
@@ -577,7 +581,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix, "bind should set the corresponding bit"
+    test_undirected_hyperedge_major_flat_incidence_matrix, "bind should set the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     REQUIRE(std::ranges::empty(sut.incident_vertices(constants::id1)));
@@ -598,7 +602,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix, "unbind should clear the corresponding bit"
+    test_undirected_hyperedge_major_flat_incidence_matrix,
+    "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -615,7 +620,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "are_bound should return true only when the bit is set"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -628,10 +633,10 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "element size map getters should return maps of properly calculated element sizes"
 ) {
-    constexpr auto n_elements = 5ull;
+    constexpr auto n_elements = 5uz;
     sut_type sut{n_elements, n_elements};
 
     constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
@@ -651,7 +656,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_undirected_hyperedge_major_incidence_matrix,
+    test_undirected_hyperedge_major_flat_incidence_matrix,
     "equality operator should correctly compare undirected incidence matrices"
 ) {
     sut_type sut1{constants::n_vertices, constants::n_hyperedges};
@@ -677,7 +682,7 @@ TEST_CASE_FIXTURE(
     }
 }
 
-struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
+struct test_bf_directed_flat_incidence_matrix : public test_flat_incidence_matrix {
     auto altbind_to_vertex(
         auto& sut, const hgl::default_id_type vertex_id, const hgl::size_type n_hyperedges
     ) {
@@ -717,21 +722,22 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
     }
 };
 
-struct test_bf_directed_vertex_major_incidence_matrix : public test_bf_directed_incidence_matrix {
-    using impl_tag = hgl::impl::matrix_t<hgl::impl::vertex_major_t>;
-    using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, impl_tag>;
+struct test_bf_directed_vertex_major_flat_incidence_matrix
+: public test_bf_directed_flat_incidence_matrix {
+    using impl_tag = hgl::impl::flat_matrix_t<hgl::impl::vertex_major_t>;
+    using sut_type = hgl::impl::flat_incidence_matrix<hgl::bf_directed_t, impl_tag>;
     using incidence_type = hgl::impl::bf_incidence;
 };
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix, "should initialize empty matrix by default"
+    test_bf_directed_vertex_major_flat_incidence_matrix, "should initialize empty matrix by default"
 ) {
     sut_type sut{};
     CHECK(matrix(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "initialization with size parameters should properly initialize the matrix"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
@@ -745,7 +751,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix, "add_vertices should properly extend the matrix"
+    test_bf_directed_vertex_major_flat_incidence_matrix,
+    "add_vertices should properly extend the matrix"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     const auto initial_size = matrix(sut).size();
@@ -759,7 +766,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "remove_vertex should properly remove the row and implicitly shift vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
@@ -776,19 +783,19 @@ TEST_CASE_FIXTURE(
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
         expected_hyperedge_size = 2uz;
-        expected_vertices = {constants::id2 - 1uz, constants::id4 - 1uz};
+        expected_vertices = {constants::id2 - 1u, constants::id4 - 1u};
     }
 
     SUBCASE("present vertex = first incident vertex") {
         rem_vid = constants::id2;
         expected_hyperedge_size = 1uz;
-        expected_vertices = {constants::id4 - 1uz};
+        expected_vertices = {constants::id4 - 1u};
     }
 
     SUBCASE("not present vertex > first incident vertex") {
         rem_vid = constants::id3;
         expected_hyperedge_size = 2uz;
-        expected_vertices = {constants::id2, constants::id4 - 1uz};
+        expected_vertices = {constants::id2, constants::id4 - 1u};
     }
 
     SUBCASE("present vertex = last incident vertex") {
@@ -798,7 +805,7 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("not present vertex > last incident vertex") {
-        rem_vid = constants::id4 + 1uz;
+        rem_vid = constants::id4 + 1u;
         expected_hyperedge_size = 2uz;
         expected_vertices = {constants::id2, constants::id4};
     }
@@ -814,7 +821,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
     "out_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
     "in_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
@@ -833,7 +840,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "degree should return the number of the vertex's incident hyperedges,"
     "out_degree should return the number of the vertex's outgoing hyperedges (v in T(e)),"
     "in_degree should return the number of the vertex's incoming hyperedges (v in H(e))"
@@ -852,7 +859,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "add_hyperedges should properly extend the hypergraph matrix (resize columns)"
 ) {
     sut_type sut{constants::n_vertices, 0uz};
@@ -866,7 +873,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "remove_hyperedge should properly erase the proper hyperedge matrix entries (column)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -880,7 +887,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "remove_hyperedge should properly remove the column and implicitly shift hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
@@ -935,7 +942,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "incident_vertices should return a view of the hyperedge's incident vertex ids, "
     "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
     "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
@@ -954,7 +961,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "hyperedge_size should return the number of the hyperedge's incident vertices, "
     "tail_size should return the number of the hyperedge's tail vertices: |T(e)|, "
     "head_size should return the number of the hyperedge's head vertices: |H(e)|"
@@ -973,7 +980,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "bind_tail should set the corresponding matrix entry to backward incidence"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -990,7 +997,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "bind_head should set the corresponding matrix entry to forward incidence"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1007,7 +1014,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix, "unbind should clear the corresponding bit"
+    test_bf_directed_vertex_major_flat_incidence_matrix, "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -1031,7 +1038,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
     "set to a valid, matching incidence type"
 ) {
@@ -1054,10 +1061,10 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "element size map getters should return maps of properly calculated element sizes"
 ) {
-    constexpr auto n_elements = 5ull;
+    constexpr auto n_elements = 5uz;
     sut_type sut{n_elements, n_elements};
 
     constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
@@ -1136,7 +1143,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_vertex_major_incidence_matrix,
+    test_bf_directed_vertex_major_flat_incidence_matrix,
     "equality operator should correctly compare directed incidence matrices"
 ) {
     sut_type sut1{constants::n_vertices, constants::n_hyperedges};
@@ -1169,22 +1176,23 @@ TEST_CASE_FIXTURE(
     }
 }
 
-struct test_bf_directed_hyperedge_major_incidence_matrix
-: public test_bf_directed_incidence_matrix {
-    using impl_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
-    using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, impl_tag>;
+struct test_bf_directed_hyperedge_major_flat_incidence_matrix
+: public test_bf_directed_flat_incidence_matrix {
+    using impl_tag = hgl::impl::flat_matrix_t<hgl::impl::hyperedge_major_t>;
+    using sut_type = hgl::impl::flat_incidence_matrix<hgl::bf_directed_t, impl_tag>;
     using incidence_type = hgl::impl::bf_incidence;
 };
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix, "should initialize empty matrix by default"
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
+    "should initialize empty matrix by default"
 ) {
     sut_type sut{};
     CHECK(matrix(sut).empty());
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "initialization with size parameters should properly initialize the matrix"
 ) {
     sut_type sut(constants::n_vertices, constants::n_hyperedges);
@@ -1198,7 +1206,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "add_vertices should properly extend the hypergraph matrix (resize columns)"
 ) {
     sut_type sut{0uz, constants::n_hyperedges};
@@ -1212,7 +1220,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "remove_vertex should properly erase the proper vertex matrix entries (column)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1226,7 +1234,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "remove_vertex should properly remove the column and implicitly shift vertex IDs"
 ) {
     constexpr hgl::size_type n_vertices = 5uz, n_hyperedges = 1uz;
@@ -1243,19 +1251,19 @@ TEST_CASE_FIXTURE(
     SUBCASE("not present vertex < first incident vertex") {
         rem_vid = constants::id1;
         expected_hyperedge_size = 2uz;
-        expected_vertices = {constants::id2 - 1uz, constants::id4 - 1uz};
+        expected_vertices = {constants::id2 - 1u, constants::id4 - 1u};
     }
 
     SUBCASE("present vertex = first incident vertex") {
         rem_vid = constants::id2;
         expected_hyperedge_size = 1uz;
-        expected_vertices = {constants::id4 - 1uz};
+        expected_vertices = {constants::id4 - 1u};
     }
 
     SUBCASE("not present vertex > first incident vertex") {
         rem_vid = constants::id3;
         expected_hyperedge_size = 2uz;
-        expected_vertices = {constants::id2, constants::id4 - 1uz};
+        expected_vertices = {constants::id2, constants::id4 - 1u};
     }
 
     SUBCASE("present vertex = last incident vertex") {
@@ -1265,7 +1273,7 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("not present vertex > last incident vertex") {
-        rem_vid = constants::id4 + 1uz;
+        rem_vid = constants::id4 + 1u;
         expected_hyperedge_size = 2uz;
         expected_vertices = {constants::id2, constants::id4};
     }
@@ -1281,7 +1289,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "incident_hyperedges should return a view of the vertex's incident hyperedge ids,"
     "out_hyperedges should return a view of the vertex's outgoing hyperedge ids (v in T(e)),"
     "in_hyperedges should return a view of the vertex's incoming hyperedge ids (v in H(e))"
@@ -1300,7 +1308,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "degree should return the number of the vertex's incident hyperedges,"
     "out_degree should return the number of the vertex's outgoing hyperedges (v in T(e)),"
     "in_degree should return the number of the vertex's incoming hyperedges (v in H(e))"
@@ -1319,7 +1327,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "add_hyperedges should properly extend matrix"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1334,7 +1342,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "remove_hyperedge should properly remove the row and implicitly shift hyperedge IDs"
 ) {
     constexpr hgl::size_type n_vertices = 1uz, n_hyperedges = 5uz;
@@ -1389,7 +1397,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "incident_vertices should return a view of the hyperedge's incident vertex ids, "
     "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
     "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
@@ -1408,7 +1416,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "hyperedge_size should return the number of the hyperedge's incident vertices, "
     "tail_size should return the number of the hyperedge's tail vertices: |T(e)|, "
     "head_size should return the number of the hyperedge's head vertices: |H(e)|"
@@ -1427,7 +1435,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "bind_tail should set the corresponding matrix entry to backward incidence"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1444,7 +1452,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "bind_head should set the corresponding matrix entry to forward incidence"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
@@ -1461,7 +1469,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix, "unbind should clear the corresponding bit"
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
+    "unbind should clear the corresponding bit"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -1485,7 +1494,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "are_bound, is_tail, is_head should return true only when the corresponding matrix entry is "
     "set to a valid, matching incidence type"
 ) {
@@ -1508,10 +1517,10 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "element size map getters should return maps of properly calculated element sizes"
 ) {
-    constexpr auto n_elements = 5ull;
+    constexpr auto n_elements = 5uz;
     sut_type sut{n_elements, n_elements};
 
     constexpr auto is_zero = [](const auto& size) { return size == 0uz; };
@@ -1590,7 +1599,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_bf_directed_hyperedge_major_incidence_matrix,
+    test_bf_directed_hyperedge_major_flat_incidence_matrix,
     "equality operator should correctly compare directed incidence matrices"
 ) {
     sut_type sut1{constants::n_vertices, constants::n_hyperedges};
@@ -1623,6 +1632,6 @@ TEST_CASE_FIXTURE(
     }
 }
 
-TEST_SUITE_END(); // test_incidence_matrix
+TEST_SUITE_END(); // test_flat_incidence_matrix
 
 } // namespace hgl_testing

@@ -1,4 +1,5 @@
 #include "doctest.h"
+#include "gl/types/core.hpp"
 
 #include <gl/attributes/diagnostics.hpp>
 #include <gl/types/flat_jagged_vector.hpp>
@@ -1293,7 +1294,7 @@ TEST_CASE_FIXTURE(
     for (int i = 0; i < 100; ++i) {
         auto seg = sut[static_cast<std::size_t>(i)];
         for (int j = 0; j < 10; ++j)
-            CHECK_EQ(seg[static_cast<std::size_t>(j)], i * 10 + j);
+            CHECK_EQ(seg[gl::to_diff(j)], i * 10 + j);
     }
 }
 

@@ -169,9 +169,7 @@ private:
     template <element_type Element>
     void _remove(const id_type id) noexcept {
         if constexpr (Element == layout_tag::major_element) { // remove major
-            this->_major_storage.erase(
-                this->_major_storage.begin() + static_cast<std::ptrdiff_t>(id)
-            );
+            this->_major_storage.erase(this->_major_storage.begin() + to_diff(id));
         }
         else { // remove minor
             for (auto& minor_storage : this->_major_storage) {
@@ -449,12 +447,8 @@ private:
     template <element_type Element>
     void _remove(const id_type id) noexcept {
         if constexpr (Element == layout_tag::major_element) { // remove major
-            this->_tail_storage.erase(
-                this->_tail_storage.begin() + static_cast<std::ptrdiff_t>(id)
-            );
-            this->_head_storage.erase(
-                this->_head_storage.begin() + static_cast<std::ptrdiff_t>(id)
-            );
+            this->_tail_storage.erase(this->_tail_storage.begin() + to_diff(id));
+            this->_head_storage.erase(this->_head_storage.begin() + to_diff(id));
         }
         else { // remove minor
             for (auto& minor_storage : this->_tail_storage)

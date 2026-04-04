@@ -4,8 +4,9 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
+
 #include <concepts>
-#include <cstddef>
 #include <cstdint>
 #include <format>
 #include <initializer_list>
@@ -27,6 +28,7 @@ namespace gl {
 ///
 /// @warning Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural
 ///          capacity of the matrix invalidates all iterators, pointers, and references to its elements.
+/// @todo Implement the row_unchecked and col_unchecked methods.
 template <std::semiregular T>
 class flat_matrix {
 public:
@@ -34,20 +36,22 @@ public:
     using value_type = T;
     /// @brief Unsigned integral type used for sizes and indices
     using size_type = std::size_t;
+    /// @brief The underlying contiguous storage container
+    using container_type = std::vector<value_type>;
     /// @brief Reference to an element
-    using reference = value_type&;
+    using reference = typename container_type::reference;
     /// @brief Const reference to an element
-    using const_reference = const value_type&;
-    /// @brief Span type representing a non-owning uniform row of elements
-    using row_type = std::span<value_type>;
-    /// @brief Const span type representing a non-owning uniform const row of elements
-    using const_row_type = std::span<const value_type>;
+    using const_reference = typename container_type::const_reference;
+    /// @brief Subrange type representing a non-owning uniform row of elements
+    using row_type = std::ranges::subrange<typename container_type::iterator>;
+    /// @brief Const subrange type representing a non-owning uniform const row of elements
+    using const_row_type = std::ranges::subrange<typename container_type::const_iterator>;
 
     // --- iterators ---
 
     /// @brief Random access iterator over the rows of the `flat_matrix`.
     ///
-    /// This iterator dereferences to a `row_type` (span of elements representing a single matrix row),
+    /// This iterator dereferences to a `row_type` (subrange of elements representing a single matrix row),
     /// allowing efficient iteration and random access. It calculates the memory offsets mathematically
     /// based on the column dimension.
     ///
@@ -56,44 +60,48 @@ public:
     /// @warning Invalidated when the `flat_matrix` structural dimensions are modified or memory is reallocated.
     template <bool Const>
     class row_iterator {
-        using data_ptr_type = std::conditional_t<Const, const T*, T*>;
+        using data_iter_type = std::conditional_t<
+            Const,
+            typename container_type::const_iterator,
+            typename container_type::iterator>;
 
     public:
         /// @brief Satisfies random access iterator concept
         using iterator_concept = std::random_access_iterator_tag;
         /// @brief Legacy iterator category (random access)
         using iterator_category = std::random_access_iterator_tag;
-        /// @brief Type of row this iterator dereferences to (span or const span)
+        /// @brief Type of row this iterator dereferences to (subrange or const subrange)
         using value_type = std::conditional_t<Const, const_row_type, row_type>;
         /// @brief Signed integral difference type
         using difference_type = std::ptrdiff_t;
         /// @brief Pointer type (void because iterators dereference to spans)
         using pointer = void;
-        /// @brief Reference type (span of elements)
+        /// @brief Reference type (subrange of elements)
         using reference = value_type;
 
         /// @brief Default constructor creates a null iterator
         row_iterator() = default;
 
         /// @brief Constructs an iterator pointing to a specific row.
-        /// @param data_ptr Pointer to the underlying flat element data
+        /// @param data_iter Iterator to the underlying flat element data
         /// @param n_cols The number of columns in the matrix
         /// @param row_idx The index of the row this iterator currently points to
-        row_iterator(data_ptr_type data_ptr, size_type n_cols, size_type row_idx) noexcept
-        : _data_ptr(data_ptr), _row_size(n_cols), _row_idx(row_idx) {}
+        row_iterator(data_iter_type data_iter, size_type n_cols, size_type row_idx) noexcept
+        : _data_iter(data_iter), _row_size(n_cols), _row_idx(row_idx) {}
 
         /// @brief Implicit conversion from mutable to const iterator
         /// @return A const iterator pointing to the same row
         operator row_iterator<true>() const noexcept
         requires(not Const)
         {
-            return row_iterator<true>(this->_data_ptr, this->_row_size, this->_row_idx);
+            return row_iterator<true>(this->_data_iter, this->_row_size, this->_row_idx);
         }
 
         /// @brief Dereferences the iterator to the current row.
-        /// @return A span representing the row at the current position
+        /// @return A subrange representing the row at the current position
         [[nodiscard]] reference operator*() const noexcept {
-            return reference(this->_data_ptr + this->_row_idx * this->_row_size, this->_row_size);
+            const auto row_beg = this->_data_iter + to_diff(this->_row_idx * this->_row_size);
+            return reference(row_beg, row_beg + to_diff(this->_row_size));
         }
 
         /// @brief Random access to a row at an offset from the current position.
@@ -181,7 +189,7 @@ public:
         [[nodiscard]] friend difference_type operator-(
             const row_iterator& lhs, const row_iterator& rhs
         ) noexcept {
-            return static_cast<difference_type>(lhs._row_idx - rhs._row_idx);
+            return to_diff(lhs._row_idx - rhs._row_idx);
         }
 
         /// @brief Tests equality of two iterators.
@@ -205,7 +213,7 @@ public:
         }
 
     private:
-        data_ptr_type _data_ptr{nullptr};
+        data_iter_type _data_iter;
         size_type _row_size{0uz};
         size_type _row_idx{0uz};
     };
@@ -438,7 +446,7 @@ public:
             return;
         }
 
-        std::vector<value_type> new_data(new_rows * new_cols, value);
+        container_type new_data(new_rows * new_cols, value);
         const auto min_rows = std::min(this->_n_rows, new_rows);
         const auto min_cols = std::min(this->_n_cols, new_cols);
 
@@ -473,20 +481,22 @@ public:
 
     /// @brief Returns the row at the given index without bounds checking.
     /// @param r The index of the row to access
-    /// @return A span representing the row at index r
+    /// @return A subrange representing the row at index r
     /// @pre `r < n_rows()`; otherwise Undefined Behavior
     /// @warning No bounds checking is performed for performance.
     [[nodiscard]] row_type operator[](size_type r) {
-        return row_type(this->_data.data() + r * this->_n_cols, this->_n_cols);
+        const auto row_beg = this->_data.begin() + to_diff(r * this->_n_cols);
+        return row_type(row_beg, row_beg + to_diff(this->_n_cols));
     }
 
     /// @brief Returns a const row at the given index without bounds checking.
     /// @param r The index of the row to access
-    /// @return A const span representing the row at index r
+    /// @return A const subrange representing the row at index r
     /// @pre `r < n_rows()`; otherwise Undefined Behavior
     /// @warning No bounds checking is performed.
     [[nodiscard]] const_row_type operator[](size_type r) const {
-        return const_row_type(this->_data.data() + r * this->_n_cols, this->_n_cols);
+        const auto row_beg = this->_data.begin() + to_diff(r * this->_n_cols);
+        return const_row_type(row_beg, row_beg + to_diff(this->_n_cols));
     }
 
     /// @brief Returns a reference to an element without bounds checking.
@@ -511,7 +521,7 @@ public:
 
     /// @brief Returns the row at the given index with bounds checking.
     /// @param r The index of the row
-    /// @return A span representing the row at index r
+    /// @return A subrange representing the row at index r
     /// @exception std::out_of_range If `r >= n_rows()`
     [[nodiscard]] row_type at(size_type r) {
         this->_check_row(r);
@@ -520,7 +530,7 @@ public:
 
     /// @brief Returns a const row at the given index with bounds checking.
     /// @param r The index of the row
-    /// @return A const span representing the row at index r
+    /// @return A const subrange representing the row at index r
     /// @exception std::out_of_range If `r >= n_rows()`
     [[nodiscard]] const_row_type at(size_type r) const {
         this->_check_row(r);
@@ -550,7 +560,7 @@ public:
     }
 
     /// @brief Returns the first row without bounds checking.
-    /// @return A span representing the first row
+    /// @return A subrange representing the first row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking is performed.
     [[nodiscard]] row_type front() noexcept {
@@ -558,7 +568,7 @@ public:
     }
 
     /// @brief Returns a const reference to the first row without bounds checking.
-    /// @return A const span representing the first row
+    /// @return A const subrange representing the first row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking is performed.
     [[nodiscard]] const_row_type front() const noexcept {
@@ -566,7 +576,7 @@ public:
     }
 
     /// @brief Returns the last row without bounds checking.
-    /// @return A span representing the last row
+    /// @return A subrange representing the last row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking is performed.
     [[nodiscard]] row_type back() noexcept {
@@ -574,7 +584,7 @@ public:
     }
 
     /// @brief Returns a const reference to the last row without bounds checking.
-    /// @return A const span representing the last row
+    /// @return A const subrange representing the last row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking is performed.
     [[nodiscard]] const_row_type back() const noexcept {
@@ -582,28 +592,28 @@ public:
     }
 
     /// @brief Explicitly named alias for `front()` yielding the first row.
-    /// @return A span representing the first row
+    /// @return A subrange representing the first row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     [[nodiscard]] row_type front_row() noexcept {
         return this->front();
     }
 
     /// @brief Explicitly named alias for `front()` yielding the first const row.
-    /// @return A const span representing the first row
+    /// @return A const subrange representing the first row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     [[nodiscard]] const_row_type front_row() const noexcept {
         return this->front();
     }
 
     /// @brief Explicitly named alias for `back()` yielding the last row.
-    /// @return A span representing the last row
+    /// @return A subrange representing the last row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     [[nodiscard]] row_type back_row() noexcept {
         return this->back();
     }
 
     /// @brief Explicitly named alias for `back()` yielding the last const row.
-    /// @return A const span representing the last row
+    /// @return A const subrange representing the last row
     /// @pre Matrix must not be empty; otherwise Undefined Behavior
     [[nodiscard]] const_row_type back_row() const noexcept {
         return this->back();
@@ -643,7 +653,7 @@ public:
 
     /// @brief Semantically symmetric alias for `at(r)` returning a bounds-checked row.
     /// @param r The row index
-    /// @return A span representing the row
+    /// @return A subrange representing the row
     /// @exception std::out_of_range If `r >= n_rows()`
     [[nodiscard]] row_type row(size_type r) {
         return this->at(r);
@@ -651,7 +661,7 @@ public:
 
     /// @brief Semantically symmetric alias for `at(r)` returning a bounds-checked const row.
     /// @param r The row index
-    /// @return A const span representing the row
+    /// @return A const subrange representing the row
     /// @exception std::out_of_range If `r >= n_rows()`
     [[nodiscard]] const_row_type row(size_type r) const {
         return this->at(r);
@@ -711,14 +721,14 @@ public:
         return this->_data.size();
     }
 
-    /// @brief Returns a span over all element data in flattened 1D form.
-    /// @return A span of all elements in the underlying `_data` array.
+    /// @brief Returns a subrange of all element data in flattened 1D form.
+    /// @return A subrange of all elements in the underlying `_data` array.
     [[nodiscard]] row_type data_view() noexcept {
         return row_type(this->_data);
     }
 
-    /// @brief Returns a const span over all element data in flattened 1D form.
-    /// @return A const span of all elements in the underlying `_data` array.
+    /// @brief Returns a const subrange of all element data in flattened 1D form.
+    /// @return A const subrange of all elements in the underlying `_data` array.
     [[nodiscard]] const_row_type data_view() const noexcept {
         return const_row_type(this->_data);
     }
@@ -726,26 +736,31 @@ public:
     /// @brief Returns a reference to the underlying flat data container.
     /// @return A mutable reference to the underlying `_data` array.
     /// @warning Modifying this vector directly can fatally corrupt the matrix structure. Use for advanced operations only.
-    [[nodiscard]] std::vector<value_type>& data_storage() noexcept {
+    [[nodiscard]] container_type& data_storage() noexcept {
         return this->_data;
     }
 
     /// @brief Returns a const reference to the underlying flat data container.
     /// @return A const reference to the underlying `_data` array.
-    [[nodiscard]] const std::vector<value_type>& data_storage() const noexcept {
+    [[nodiscard]] const container_type& data_storage() const noexcept {
         return this->_data;
     }
 
     /// @brief Returns a raw pointer to the underlying flat data array.
     /// @return A raw pointer to the first element in the `_data` array.
-    /// @warning No bounds checking is performed.
-    [[nodiscard]] value_type* data_ptr() noexcept {
+    /// @warning Not available for boolean matrices.
+    [[nodiscard]] value_type* data_ptr() noexcept
+    requires(not std::same_as<value_type, bool>)
+    {
         return this->_data.data();
     }
 
     /// @brief Returns a const raw pointer to the underlying flat data array.
     /// @return A const raw pointer to the first element in the `_data` array.
-    [[nodiscard]] const value_type* data_ptr() const noexcept {
+    /// @warning Not available for boolean matrices.
+    [[nodiscard]] const value_type* data_ptr() const noexcept
+    requires(not std::same_as<value_type, bool>)
+    {
         return this->_data.data();
     }
 
@@ -785,7 +800,6 @@ public:
     /// @post `n_rows()` increases by 1
     /// @exception std::bad_alloc If memory allocation fails
     /// @warning Invalidates all iterators, pointers, and references if reallocation occurs.
-    /// @note If the matrix is empty, nothing will happen.
     /// @note **Time Complexity:** Amortized $O(C)$ where $C$ is the number of columns.
     void push_row(const value_type& value) {
         this->insert_row(this->_n_rows, value);
@@ -814,7 +828,7 @@ public:
             ));
         }
 
-        const auto insert_pos = static_cast<std::ptrdiff_t>(pos * this->_n_cols);
+        const auto insert_pos = to_diff(pos * this->_n_cols);
 
         if constexpr (std::ranges::sized_range<R>) {
             const auto row_size = static_cast<size_type>(std::ranges::size(r));
@@ -902,7 +916,7 @@ public:
             ));
         }
 
-        const auto insert_pos = static_cast<std::ptrdiff_t>(pos * this->_n_cols);
+        const auto insert_pos = to_diff(pos * this->_n_cols);
         this->_data.insert(this->_data.begin() + insert_pos, this->_n_cols, value);
         ++this->_n_rows;
     }
@@ -937,9 +951,8 @@ public:
             return;
         }
 
-        const auto start_it =
-            this->_data.begin() + static_cast<std::ptrdiff_t>(pos * this->_n_cols);
-        this->_data.erase(start_it, start_it + static_cast<std::ptrdiff_t>(this->_n_cols));
+        const auto start_it = this->_data.begin() + to_diff(pos * this->_n_cols);
+        this->_data.erase(start_it, start_it + to_diff(this->_n_cols));
         --this->_n_rows;
     }
 
@@ -1023,13 +1036,13 @@ public:
                 this->_n_rows = col_size;
 
             // pre-allocate new vector to guarantee O(RxC) structural shift, avoiding cubic complexity with multiple inserts
-            std::vector<value_type> new_data;
+            container_type new_data;
             new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
 
             auto r_it = std::ranges::begin(r);
-            const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
-            const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
-            const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+            const auto n_rows_bound = to_diff(this->_n_rows);
+            const auto row_size = to_diff(this->_n_cols);
+            const auto c_pos = to_diff(pos);
             for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
                 auto row_begin = this->_data.begin() + r_pos * row_size;
 
@@ -1055,7 +1068,7 @@ public:
         else {
             // create a temporary sized range and recursively call the method to leverage the sized range logic,
             // ensuring strong exception guarantee for unsized input
-            this->insert_col(pos, std::ranges::to<std::vector<value_type>>(std::forward<R>(r)));
+            this->insert_col(pos, std::ranges::to<container_type>(std::forward<R>(r)));
         }
     }
 
@@ -1095,12 +1108,12 @@ public:
             ));
         }
 
-        std::vector<value_type> new_data;
+        container_type new_data;
         new_data.reserve(this->_n_rows * (this->_n_cols + 1uz));
 
-        const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
-        const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
-        const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+        const auto n_rows_bound = to_diff(this->_n_rows);
+        const auto row_size = to_diff(this->_n_cols);
+        const auto c_pos = to_diff(pos);
         for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
             auto row_begin = this->_data.begin() + r_pos * row_size;
 
@@ -1147,12 +1160,12 @@ public:
             return;
         }
 
-        std::vector<value_type> new_data;
+        container_type new_data;
         new_data.reserve(this->_n_rows * (this->_n_cols - 1uz));
 
-        const auto n_rows_bound = static_cast<std::ptrdiff_t>(this->_n_rows);
-        const auto row_size = static_cast<std::ptrdiff_t>(this->_n_cols);
-        const auto c_pos = static_cast<std::ptrdiff_t>(pos);
+        const auto n_rows_bound = to_diff(this->_n_rows);
+        const auto row_size = to_diff(this->_n_cols);
+        const auto c_pos = to_diff(pos);
         for (auto r_pos = 0z; r_pos < n_rows_bound; ++r_pos) {
             auto row_begin = this->_data.begin() + r_pos * row_size;
 
@@ -1178,28 +1191,28 @@ public:
     /// @return Iterator to the first row
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] iterator begin() noexcept {
-        return iterator(this->_data.data(), this->_n_cols, 0uz);
+        return iterator(this->_data.begin(), this->_n_cols, 0uz);
     }
 
     /// @brief Returns a mutable iterator past the last row (end sentinel).
     /// @return Iterator one position past the last row
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] iterator end() noexcept {
-        return iterator(this->_data.data(), this->_n_cols, this->_n_rows);
+        return iterator(this->_data.begin(), this->_n_cols, this->_n_rows);
     }
 
     /// @brief Returns a const iterator to the first row.
     /// @return Const iterator to the first row
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] const_iterator begin() const noexcept {
-        return const_iterator(this->_data.data(), this->_n_cols, 0uz);
+        return const_iterator(this->_data.begin(), this->_n_cols, 0uz);
     }
 
     /// @brief Returns a const iterator past the last row (end sentinel).
     /// @return Const iterator one position past the last row
     /// @note Iterator invalidated by structural modifications
     [[nodiscard]] const_iterator end() const noexcept {
-        return const_iterator(this->_data.data(), this->_n_cols, this->_n_rows);
+        return const_iterator(this->_data.begin(), this->_n_cols, this->_n_rows);
     }
 
     /// @brief Returns a const iterator to the first row (explicit const form).
@@ -1304,21 +1317,19 @@ private:
     /// @param c The column index (assumed valid)
     /// @return A zero-overhead `std::views::stride` representing the column elements
     [[nodiscard]] auto _col_impl(size_type c) noexcept {
-        return std::views::drop(this->_data, static_cast<std::ptrdiff_t>(c))
-             | std::views::stride(this->_n_cols);
+        return std::views::drop(this->_data, to_diff(c)) | std::views::stride(this->_n_cols);
     }
 
     /// @brief Internal non-throwing helper generating a const strided view over a column.
     /// @param c The column index (assumed valid)
     /// @return A zero-overhead `std::views::stride` representing the const column elements
     [[nodiscard]] auto _col_impl(size_type c) const noexcept {
-        return std::views::drop(this->_data, static_cast<std::ptrdiff_t>(c))
-             | std::views::stride(this->_n_cols);
+        return std::views::drop(this->_data, to_diff(c)) | std::views::stride(this->_n_cols);
     }
 
     size_type _n_rows{0uz};
     size_type _n_cols{0uz};
-    std::vector<value_type> _data;
+    container_type _data;
 };
 
 } // namespace gl

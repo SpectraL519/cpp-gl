@@ -67,6 +67,18 @@ using matrix_hypergraph_traits = hypergraph_traits<
     impl::matrix_t<LayoutTag, IdType>>;
 
 template <
+    traits::c_hypergraph_asymmetric_layout_tag LayoutTag = impl::hyperedge_major_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_matrix_hypergraph_traits = hypergraph_traits<
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    impl::flat_matrix_t<LayoutTag, IdType>>;
+
+template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
     traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
@@ -101,8 +113,14 @@ concept c_matrix_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_matrix_impl<typename TraitsType::implementation_tag>;
 
-template <typename TypeTraits>
-concept c_incidence_matrix_hypergraph_traits = c_matrix_hypergraph_traits<TypeTraits>;
+template <typename TraitsType>
+concept c_flat_matrix_hypergraph_traits =
+    c_instantiation_of<TraitsType, hypergraph_traits>
+    and c_hypergraph_flat_matrix_impl<typename TraitsType::implementation_tag>;
+
+template <typename TraitsType>
+concept c_incidence_matrix_hypergraph_traits =
+    c_matrix_hypergraph_traits<TraitsType> or c_flat_matrix_hypergraph_traits<TraitsType>;
 
 template <typename TraitsType>
 concept c_undirected_hypergraph_traits =

@@ -154,7 +154,7 @@ struct directed_adjacency_list {
         }
 
         // remove the list of edges incident from the vertex entirely
-        self._list.erase(self._list.begin() + static_cast<std::ptrdiff_t>(vertex_id));
+        self._list.erase(self._list.begin() + to_diff(vertex_id));
         return removed_edges;
     }
 
@@ -255,7 +255,7 @@ struct undirected_adjacency_list {
         const auto removed_edges =
             self._list[vertex_idx] | std::views::transform(&item_type::edge_id)
             | std::ranges::to<std::vector>();
-        self._list.erase(self._list.begin() + static_cast<std::ptrdiff_t>(vertex_id));
+        self._list.erase(self._list.begin() + to_diff(vertex_id));
         return removed_edges;
     }
 
