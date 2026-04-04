@@ -165,7 +165,7 @@ struct directed_adjacency_matrix {
         return removed_edges;
     }
 
-    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+    static id_type get_entry(const impl_type& self, id_type source_id, id_type target_id) {
         return self._matrix[to_idx(source_id)][to_idx(target_id)];
     }
 
@@ -289,7 +289,7 @@ struct undirected_adjacency_matrix {
         return removed_edges;
     }
 
-    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+    static id_type get_entry(const impl_type& self, id_type source_id, id_type target_id) {
         return self._matrix[to_idx(source_id)][to_idx(target_id)];
     }
 

@@ -97,9 +97,10 @@ struct directed_flat_adjacency_matrix {
         const auto row = self._matrix[vertex_idx];
         const auto col = self._matrix.col(vertex_idx);
 
-        for (auto v_idx = 0uz; v_idx < self._matrix.n_rows(); ++v_idx)
-            deg += static_cast<size_type>(row[v_idx] != invalid_id)
-                 + static_cast<size_type>(col[static_cast<std::ptrdiff_t>(v_idx)] != invalid_id);
+        const auto n_rows_bound = to_diff(self._matrix.n_rows());
+        for (auto v_pos = 0z; v_pos < n_rows_bound; ++v_pos)
+            deg += static_cast<size_type>(row[v_pos] != invalid_id)
+                 + static_cast<size_type>(col[v_pos] != invalid_id);
 
         return deg;
     }
@@ -152,7 +153,7 @@ struct directed_flat_adjacency_matrix {
             if (r_idx == vertex_idx)
                 continue;
 
-            const auto edge_id = col[static_cast<std::ptrdiff_t>(r_idx)];
+            const auto edge_id = col[to_diff(r_idx)];
             if (edge_id != invalid_id)
                 removed_edges.push_back(edge_id);
         }
@@ -164,7 +165,7 @@ struct directed_flat_adjacency_matrix {
         return removed_edges;
     }
 
-    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+    static id_type get_entry(const impl_type& self, id_type source_id, id_type target_id) {
         return self._matrix[to_idx(source_id), to_idx(target_id)];
     }
 
@@ -281,7 +282,7 @@ struct undirected_flat_adjacency_matrix {
         return removed_edges;
     }
 
-    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+    static id_type get_entry(const impl_type& self, id_type source_id, id_type target_id) {
         return self._matrix[to_idx(source_id), to_idx(target_id)];
     }
 
