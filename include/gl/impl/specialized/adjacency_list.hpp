@@ -8,8 +8,10 @@
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/traits.hpp"
+#include "gl/types/core.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <format>
 #include <iostream>
 #include <ranges>
@@ -77,7 +79,9 @@ struct directed_adjacency_list {
     [[nodiscard]] static size_type in_degree(const impl_type& self, id_type vertex_id) {
         size_type in_deg = 0uz;
         for (const auto& adjacent_edges : self._list)
-            in_deg += std::ranges::count(adjacent_edges, vertex_id, &item_type::vertex_id);
+            in_deg += static_cast<size_type>(
+                std::ranges::count(adjacent_edges, vertex_id, &item_type::vertex_id)
+            );
 
         return in_deg;
     }
@@ -150,7 +154,7 @@ struct directed_adjacency_list {
         }
 
         // remove the list of edges incident from the vertex entirely
-        self._list.erase(std::next(std::begin(self._list), vertex_idx));
+        self._list.erase(self._list.begin() + static_cast<std::ptrdiff_t>(vertex_id));
         return removed_edges;
     }
 
@@ -251,7 +255,7 @@ struct undirected_adjacency_list {
         const auto removed_edges =
             self._list[vertex_idx] | std::views::transform(&item_type::edge_id)
             | std::ranges::to<std::vector>();
-        self._list.erase(std::next(std::begin(self._list), vertex_idx));
+        self._list.erase(self._list.begin() + static_cast<std::ptrdiff_t>(vertex_id));
         return removed_edges;
     }
 

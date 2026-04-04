@@ -1,6 +1,7 @@
-#include <gl/types/flat_jagged_vector.hpp>
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/attributes/diagnostics.hpp>
+#include <gl/types/flat_jagged_vector.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -91,7 +92,9 @@ TEST_CASE_FIXTURE(
     sut.push_back({1, 2, 3});
     sut.push_back({4, 5});
 
+    GL_SUPPRESS_WARNING_BEGIN("-Wself-move");
     sut = std::move(sut);
+    GL_SUPPRESS_WARNING_END;
 
     CHECK_EQ(sut.size(), 2uz);
     CHECK_EQ(sut.data_size(), 5uz);
@@ -1288,9 +1291,9 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.size(), 100uz);
     CHECK_EQ(sut.data_size(), 1000uz);
     for (int i = 0; i < 100; ++i) {
-        auto seg = sut[i];
+        auto seg = sut[static_cast<std::size_t>(i)];
         for (int j = 0; j < 10; ++j)
-            CHECK_EQ(seg[j], i * 10 + j);
+            CHECK_EQ(seg[static_cast<std::size_t>(j)], i * 10 + j);
     }
 }
 

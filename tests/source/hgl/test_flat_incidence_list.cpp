@@ -284,8 +284,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (std::size_t i = 0uz; i < n_elements; i++)
-        for (std::size_t j = 0uz; j <= i; j++)
+    for (auto i = 0u; i < n_elements; i++)
+        for (auto j = 0u; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
@@ -562,8 +562,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (std::size_t i = 0uz; i < n_elements; i++)
-        for (std::size_t j = 0uz; j <= i; j++)
+    for (auto i = 0u; i < n_elements; i++)
+        for (auto j = 0u; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
@@ -607,8 +607,8 @@ struct test_bf_directed_flat_incidence_list : public test_flat_incidence_list {
     ) {
         std::vector<hgl::default_id_type> tail_bound, head_bound;
 
-        for (std::size_t i = 0uz; i < n_hyperedges; ++i) {
-            if (i % 2 == 0) {
+        for (auto i = 0u; i < n_hyperedges; ++i) {
+            if (i % 2u == 0u) {
                 sut.bind_tail(vertex_id, i);
                 tail_bound.push_back(i);
             }
@@ -626,8 +626,8 @@ struct test_bf_directed_flat_incidence_list : public test_flat_incidence_list {
     ) {
         std::vector<hgl::default_id_type> tail_bound, head_bound;
 
-        for (std::size_t i = 0uz; i < n_vertices; ++i) {
-            if (i % 2 == 0) {
+        for (auto i = 0u; i < n_vertices; ++i) {
+            if (i % 2u == 0u) {
                 sut.bind_tail(i, hyperedge_id);
                 tail_bound.push_back(i);
             }
@@ -1023,8 +1023,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1042,8 +1042,8 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1061,8 +1061,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (std::size_t i = 0uz; i < n_elements; i++) {
-        for (std::size_t j = 0uz; j <= i; j++) {
+    for (auto i = 0u; i < n_elements; i++) {
+        for (auto j = 0u; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else
@@ -1231,9 +1231,10 @@ TEST_CASE_FIXTURE(
     const auto [tail_bound_hyperedges, head_bound_hyperedges] =
         altbind_to_vertex(sut, vertex_id, constants::n_hyperedges);
 
-    CHECK(std::ranges::is_permutation(
-        sut.incident_hyperedges(vertex_id), constants::hyperedge_ids_view
-    ));
+    // NOTE: An explicit allocation is needed because of the GCC's false positive -Wmaybe-uninitialized warning
+    const auto incident_hyperedges =
+        sut.incident_hyperedges(vertex_id) | std::ranges::to<std::vector>();
+    CHECK(std::ranges::is_permutation(incident_hyperedges, constants::hyperedge_ids_view));
     CHECK(std::ranges::equal(sut.out_hyperedges(vertex_id), tail_bound_hyperedges));
     CHECK(std::ranges::equal(sut.in_hyperedges(vertex_id), head_bound_hyperedges));
 }
@@ -1506,8 +1507,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1525,8 +1526,8 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (std::size_t i = 0uz; i < n_elements; i++)
-            for (std::size_t j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1544,8 +1545,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (std::size_t i = 0uz; i < n_elements; i++) {
-        for (std::size_t j = 0uz; j <= i; j++) {
+    for (auto i = 0u; i < n_elements; i++) {
+        for (auto j = 0u; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else

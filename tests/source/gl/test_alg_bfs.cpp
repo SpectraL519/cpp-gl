@@ -175,7 +175,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     bfs_return_graph_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::depth);
     const auto pred_map =

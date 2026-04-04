@@ -9,6 +9,8 @@
 namespace hgl::util {
 
 using gl::util::all_equal;
+using gl::util::concat;
+using gl::util::concat_view;
 using gl::util::deref_view;
 using gl::util::is_constant;
 using gl::util::range_size;

@@ -1,5 +1,6 @@
 #include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
+#include "gl/types/core.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 #include "testing/gl/types.hpp"
@@ -10,6 +11,7 @@
 #include <doctest.h>
 
 #include <algorithm>
+#include <cstddef>
 #include <ranges>
 
 namespace gl_testing {
@@ -81,15 +83,22 @@ struct test_graph {
         validate_full_graph_edges(graph);
     }
 
+    // clang-format off
+
     template <gl::traits::c_instantiation_of<gl::graph> GraphType>
     void validate_full_graph_edges(const GraphType& graph) {
         REQUIRE(std::ranges::all_of(
             graph.vertex_ids(),
             [&graph, expected_n_edges = n_incident_edges_for_fully_connected_vertex(graph)](
                 const gl::default_id_type vertex_id
-            ) { return gl::util::range_size(graph.adjacent_edges(vertex_id)) == expected_n_edges; }
+            ) {
+                return static_cast<std::size_t>(gl::util::range_size(graph.adjacent_edges(vertex_id)))
+                    == expected_n_edges;
+            }
         ));
     }
+
+    // clang-format on
 
     template <gl::traits::c_instantiation_of<gl::graph> GraphType>
     gl::size_type n_incident_edges_for_fully_connected_vertex(const GraphType& graph) {
@@ -214,7 +223,10 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     SUBCASE("get_vertex should throw if the given id is invalid") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(static_cast<void>(sut.get_vertex(sut.order())), std::out_of_range);
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(static_cast<gl::default_id_type>(sut.order()))),
+            std::out_of_range
+        );
     }
 
     SUBCASE("get_vertex should return a vertex with the given id") {
@@ -260,7 +272,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
             [&sut, expected_n_incident_edges](const gl::default_id_type vertex_id) {
-                return gl::util::range_size(sut.adjacent_edges(vertex_id))
+                return static_cast<std::size_t>(gl::util::range_size(sut.adjacent_edges(vertex_id)))
                     == expected_n_incident_edges;
             }
         ));
@@ -292,7 +304,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         REQUIRE(std::ranges::all_of(
             vertex_id_view,
             [&sut, expected_n_incident_edges](const gl::default_id_type vertex_id) {
-                return gl::util::range_size(sut.adjacent_edges(vertex_id))
+                return static_cast<std::size_t>(gl::util::range_size(sut.adjacent_edges(vertex_id)))
                     == expected_n_incident_edges;
             }
         ));
@@ -909,8 +921,9 @@ TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_
     sut_type sut{constants::n_elements};
     for (auto vertex : sut.vertices()) {
         vertex.properties() = std::format("vertex_{}", vertex.id());
-        sut.add_edge(vertex.id(), (vertex.id() + 1uz) % constants::n_elements).properties() =
-            std::format("edge_{}", vertex.id());
+        const auto target_id =
+            static_cast<gl::default_id_type>((vertex.id() + 1uz) % constants::n_elements);
+        sut.add_edge(vertex.id(), target_id).properties() = std::format("edge_{}", vertex.id());
     }
 
     auto vmap = sut.vertex_properties_map();
@@ -930,7 +943,10 @@ TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_
     for (auto [id, property] : std::views::enumerate(emap)) {
         CHECK_EQ(property, std::format("edge_{}", id));
         CHECK_EQ(emap[id], std::format("edge_{}", id));
-        CHECK_EQ(sut.get_edge_properties(id), std::format("edge_{}", id));
+        CHECK_EQ(
+            sut.get_edge_properties(static_cast<gl::default_id_type>(id)),
+            std::format("edge_{}", id)
+        );
     }
 
     CHECK_THROWS_AS(
