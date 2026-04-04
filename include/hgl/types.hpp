@@ -6,6 +6,7 @@
 
 #include "gl/types/core.hpp"
 #include "gl/types/flat_jagged_vector.hpp"
+#include "gl/types/flat_matrix.hpp"
 #include "gl/types/properties.hpp"
 
 namespace hgl {
@@ -15,11 +16,13 @@ namespace hgl {
 using gl::default_id_type;
 using gl::size_type;
 
+using gl::to_diff;
 using gl::to_idx;
 
 // --- generic data structures ---
 
 using gl::flat_jagged_vector;
+using gl::flat_matrix;
 using gl::homogeneous_pair;
 
 // --- property types ---

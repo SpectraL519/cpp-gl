@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/diagnostics.hpp"
 #include "gl/constants.hpp"
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
@@ -18,6 +19,36 @@
 #include <vector>
 
 namespace gl::impl::specialized {
+
+namespace detail {
+
+template <traits::c_id_type IdType>
+[[nodiscard]] auto& strict_get(flat_matrix<IdType>& id_matrix, const auto& edge) {
+    // get the edge and validate the address
+    const auto [source_id, target_id] = edge.incident_vertices();
+    auto& edge_id = id_matrix[to_idx(source_id), to_idx(target_id)];
+    if (edge.id() != edge_id)
+        throw std::invalid_argument(std::format(
+            "Got invalid edge [id = {} | vertices = ({}, {})]", edge.id(), source_id, target_id
+        ));
+
+    return edge_id;
+}
+
+template <traits::c_id_type IdType>
+inline void check_edge_override(
+    const flat_matrix<IdType>& id_matrix, const IdType source_id, const IdType target_id
+) {
+    if (const auto edge_id = id_matrix[to_idx(source_id), to_idx(target_id)]; edge_id != invalid_id)
+        throw std::logic_error(std::format(
+            "Cannot override an existing edge: [id = {}, vertices = ({}, {})]",
+            edge_id,
+            source_id,
+            target_id
+        ));
+}
+
+} // namespace detail
 
 template <traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
 requires(traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
@@ -133,6 +164,10 @@ struct directed_flat_adjacency_matrix {
         return removed_edges;
     }
 
+    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+        return self._matrix[to_idx(source_id), to_idx(target_id)];
+    }
+
     static inline void add_edge(
         impl_type& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
@@ -151,7 +186,7 @@ struct directed_flat_adjacency_matrix {
 
         auto matrix_source_row = self._matrix[to_idx(source_id)];
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
-            matrix_source_row[to_idx(target_id)] = edge_id;
+            matrix_source_row[to_diff(target_id)] = edge_id;
     }
 
     static inline void remove_edge(impl_type& self, const edge_type& edge) {
@@ -246,6 +281,10 @@ struct undirected_flat_adjacency_matrix {
         return removed_edges;
     }
 
+    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+        return self._matrix[to_idx(source_id), to_idx(target_id)];
+    }
+
     static void add_edge(impl_type& self, id_type edge_id, id_type source_id, id_type target_id) {
         detail::check_edge_override(self._matrix, source_id, target_id);
 
@@ -271,7 +310,7 @@ struct undirected_flat_adjacency_matrix {
 
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids)) {
             const auto target_idx = to_idx(target_id);
-            matrix_source_row[target_idx] = edge_id;
+            matrix_source_row[to_diff(target_id)] = edge_id;
             if (target_idx != source_idx)
                 self._matrix[target_idx, source_idx] = edge_id;
         }

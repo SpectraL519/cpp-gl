@@ -165,6 +165,10 @@ struct directed_adjacency_matrix {
         return removed_edges;
     }
 
+    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+        return self._matrix[to_idx(source_id)][to_idx(target_id)];
+    }
+
     static inline void add_edge(
         impl_type& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
@@ -283,6 +287,10 @@ struct undirected_adjacency_matrix {
             row.erase(row.begin() + vertex_pos);
 
         return removed_edges;
+    }
+
+    static id_type get_edge_id(const impl_type& self, id_type source_id, id_type target_id) {
+        return self._matrix[to_idx(source_id)][to_idx(target_id)];
     }
 
     static void add_edge(impl_type& self, id_type edge_id, id_type source_id, id_type target_id) {
