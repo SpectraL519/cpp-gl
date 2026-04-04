@@ -166,14 +166,14 @@ private:
     template <element_type Element>
     void _remove(const id_type id) noexcept {
         if constexpr (Element == layout_tag::major_element) { // remove major
-            this->_matrix.erase(this->_matrix.begin() + static_cast<std::ptrdiff_t>(id));
+            this->_matrix.erase(this->_matrix.begin() + to_diff(id));
         }
         else { // remove minor
             if (this->_matrix_row_size == 0uz)
                 return;
             this->_matrix_row_size--;
             for (auto& row : this->_matrix) {
-                row.erase(row.begin() + static_cast<std::ptrdiff_t>(id));
+                row.erase(row.begin() + to_diff(id));
             }
         }
     }
@@ -464,14 +464,14 @@ private:
     template <element_type Element>
     void _remove(const id_type id) noexcept {
         if constexpr (Element == layout_tag::major_element) { // remove major
-            this->_matrix.erase(this->_matrix.begin() + static_cast<std::ptrdiff_t>(id));
+            this->_matrix.erase(this->_matrix.begin() + to_diff(id));
         }
         else { // remove minor
             if (this->_matrix_row_size == 0uz)
                 return;
             this->_matrix_row_size--;
             for (auto& row : this->_matrix)
-                row.erase(row.begin() + static_cast<std::ptrdiff_t>(id));
+                row.erase(row.begin() + to_diff(id));
         }
     }
 

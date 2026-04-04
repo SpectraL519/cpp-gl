@@ -54,7 +54,7 @@ public:
 
     /// @brief Random access iterator over segments of the `flat_jagged_vector`.
     ///
-    /// This iterator dereferences to a `segment_type` (span of elements in a single segment),
+    /// This iterator dereferences to a `segment_type` (subrange of elements in a single segment),
     /// allowing efficient iteration and random access to individual segments. The iterator maintains
     /// pointers to the element data and the offsets array for dereferencing.
     ///
@@ -74,13 +74,13 @@ public:
         using iterator_concept = std::random_access_iterator_tag;
         /// @brief Legacy iterator category (random access)
         using iterator_category = std::random_access_iterator_tag;
-        /// @brief Type of segment this iterator dereferences to (span or const span)
+        /// @brief Type of segment this iterator dereferences to (subrange or const subrange)
         using value_type = std::conditional_t<Const, const_segment_type, segment_type>;
         /// @brief Signed integral difference type
         using difference_type = std::ptrdiff_t;
-        /// @brief Pointer type (void because segment iterators dereference to spans)
+        /// @brief Pointer type (void because segment iterators dereference to subranges)
         using pointer = void;
-        /// @brief Reference type (span of elements)
+        /// @brief Reference type (subrange of elements)
         using reference = value_type;
 
         /// @brief Default constructor creates a null iterator
@@ -101,7 +101,7 @@ public:
         }
 
         /// @brief Dereferences the iterator to the current segment.
-        /// @return A span representing the segment at the current position
+        /// @return A subrange representing the segment at the current position
         [[nodiscard]] reference operator*() const noexcept {
             const auto beg = to_diff(*this->_offset_ptr);
             const auto end = to_diff(*(this->_offset_ptr + 1uz));
@@ -472,7 +472,7 @@ public:
 
     /// @brief Returns the segment at the given index without bounds checking.
     /// @param i The index of the segment to access
-    /// @return A span representing the segment at index i
+    /// @return A subrange representing the segment at index i
     /// @pre `i < size()`; otherwise Undefined Behavior
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
@@ -484,7 +484,7 @@ public:
 
     /// @brief Returns a const segment at the given index without bounds checking.
     /// @param i The index of the segment to access
-    /// @return A const span representing the segment at index i
+    /// @return A const subrange representing the segment at index i
     /// @pre `i < size()`; otherwise Undefined Behavior
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
@@ -518,7 +518,7 @@ public:
 
     /// @brief Returns the segment at the given index with bounds checking.
     /// @param i The index of the segment
-    /// @return A span representing the segment at index i
+    /// @return A subrange representing the segment at index i
     /// @exception std::out_of_range If `i >= size()`
     /// @note Provides the same safety as `std::vector::at()`
     [[nodiscard]] segment_type at(size_type i) {
@@ -528,7 +528,7 @@ public:
 
     /// @brief Returns a const segment at the given index with bounds checking.
     /// @param i The index of the segment
-    /// @return A const span representing the segment at index i
+    /// @return A const subrange representing the segment at index i
     /// @exception std::out_of_range If `i >= size()`
     /// @note Provides the same safety as `std::vector::at()`
     [[nodiscard]] const_segment_type at(size_type i) const {
@@ -561,7 +561,7 @@ public:
     }
 
     /// @brief Returns the first segment without bounds checking.
-    /// @return A span representing the first segment
+    /// @return A subrange representing the first segment
     /// @pre Container must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking. Results in Undefined Behavior if container is empty.
     [[nodiscard]] segment_type front() noexcept {
@@ -569,7 +569,7 @@ public:
     }
 
     /// @brief Returns a const reference to the first segment without bounds checking.
-    /// @return A const span representing the first segment
+    /// @return A const subrange representing the first segment
     /// @pre Container must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking. Results in Undefined Behavior if container is empty.
     [[nodiscard]] const_segment_type front() const noexcept {
@@ -577,7 +577,7 @@ public:
     }
 
     /// @brief Returns the last segment without bounds checking.
-    /// @return A span representing the last segment
+    /// @return A subrange representing the last segment
     /// @pre Container must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking. Results in Undefined Behavior if container is empty.
     [[nodiscard]] segment_type back() noexcept {
@@ -585,7 +585,7 @@ public:
     }
 
     /// @brief Returns a const reference to the last segment without bounds checking.
-    /// @return A const span representing the last segment
+    /// @return A const subrange representing the last segment
     /// @pre Container must not be empty; otherwise Undefined Behavior
     /// @warning No bounds checking. Results in Undefined Behavior if container is empty.
     [[nodiscard]] const_segment_type back() const noexcept {
@@ -670,15 +670,15 @@ public:
         return this->_data.size();
     }
 
-    /// @brief Returns a span over all element data in flattened form.
-    /// @return A span of all elements in the underlying `_data` array.
+    /// @brief Returns a subrange of all element data in flattened form.
+    /// @return A subrange of all elements in the underlying `_data` array.
     /// @note Allows direct access to the flattened representation of all segments.
     [[nodiscard]] segment_type data_view() noexcept {
         return segment_type(this->_data);
     }
 
-    /// @brief Returns a const span over all element data in flattened form.
-    /// @return A const span of all elements in the underlying `_data` array.
+    /// @brief Returns a const subrange of all element data in flattened form.
+    /// @return A const subrange of all elements in the underlying `_data` array.
     /// @note Allows direct access to the flattened representation of all segments.
     [[nodiscard]] const_segment_type data_view() const noexcept {
         return const_segment_type(this->_data);

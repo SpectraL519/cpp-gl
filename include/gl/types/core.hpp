@@ -28,7 +28,6 @@ concept c_id_type = std::unsigned_integral<T>;
     return static_cast<size_type>(id);
 }
 
-// TODO: replace static_cast calls with to_diff
 [[nodiscard]] gl_attr_force_inline constexpr std::ptrdiff_t to_diff(std::integral auto i) noexcept {
     return static_cast<std::ptrdiff_t>(i);
 }
