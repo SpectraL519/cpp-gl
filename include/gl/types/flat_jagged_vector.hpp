@@ -103,9 +103,10 @@ public:
         /// @brief Dereferences the iterator to the current segment.
         /// @return A subrange representing the segment at the current position
         [[nodiscard]] reference operator*() const noexcept {
-            const auto beg = to_diff(*this->_offset_ptr);
-            const auto end = to_diff(*(this->_offset_ptr + 1uz));
-            return reference(this->_data_iter + beg, this->_data_iter + end);
+            return reference(
+                this->_data_iter + to_diff(*this->_offset_ptr),
+                this->_data_iter + to_diff(*(this->_offset_ptr + 1uz))
+            );
         }
 
         /// @brief Random access to a segment at offset from current position.
@@ -477,9 +478,10 @@ public:
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] segment_type operator[](size_type i) {
-        const auto beg = to_diff(this->_offsets[i]);
-        const auto end = to_diff(this->_offsets[i + 1uz]);
-        return segment_type(this->_data.begin() + beg, this->_data.begin() + end);
+        return segment_type(
+            this->_data.begin() + to_diff(this->_offsets[i]),
+            this->_data.begin() + to_diff(this->_offsets[i + 1uz])
+        );
     }
 
     /// @brief Returns a const segment at the given index without bounds checking.
@@ -489,9 +491,10 @@ public:
     /// @warning No bounds checking is performed for performance. Use `at()` for bounds-checked access.
     ///          Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] const_segment_type operator[](size_type i) const {
-        const auto beg = to_diff(this->_offsets[i]);
-        const auto end = to_diff(this->_offsets[i + 1uz]);
-        return const_segment_type(this->_data.begin() + beg, this->_data.begin() + end);
+        return const_segment_type(
+            this->_data.begin() + to_diff(this->_offsets[i]),
+            this->_data.begin() + to_diff(this->_offsets[i + 1uz])
+        );
     }
 
     /// @brief Returns a reference to an element within a segment without bounds checking.

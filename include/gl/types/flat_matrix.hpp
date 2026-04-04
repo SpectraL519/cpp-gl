@@ -28,7 +28,6 @@ namespace gl {
 ///
 /// @warning Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural
 ///          capacity of the matrix invalidates all iterators, pointers, and references to its elements.
-///
 /// @todo Implement the row_unchecked and col_unchecked methods.
 template <std::semiregular T>
 class flat_matrix {

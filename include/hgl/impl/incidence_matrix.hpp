@@ -4,9 +4,11 @@
 
 #pragma once
 
+#include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
 #include "hgl/decl/impl_tags.hpp"
 #include "hgl/directional_tags.hpp"
+#include "hgl/impl/bf_incidence.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "hgl/types.hpp"
 
@@ -171,10 +173,11 @@ private:
         else { // remove minor
             if (this->_matrix_row_size == 0uz)
                 return;
+
             this->_matrix_row_size--;
-            for (auto& row : this->_matrix) {
-                row.erase(row.begin() + to_diff(id));
-            }
+            const auto pos = to_diff(id);
+            for (auto& row : this->_matrix)
+                row.erase(row.begin() + pos);
         }
     }
 
@@ -248,7 +251,7 @@ public:
     : _matrix_row_size{layout_tag::minor(n_vertices, n_hyperedges)},
       _matrix(
           layout_tag::major(n_vertices, n_hyperedges),
-          matrix_row_type(_matrix_row_size, incidence_type::none)
+          matrix_row_type(_matrix_row_size, bf_incidence::none)
       ) {}
 
     incidence_matrix(const incidence_matrix&) = default;
@@ -273,39 +276,39 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const id_type vertex_id
     ) const noexcept {
-        return this->_query<element_type::vertex>(vertex_id, _is_incident);
+        return this->_query<element_type::vertex>(vertex_id, bf_is_incident);
     }
 
     [[nodiscard]] size_type degree(const id_type vertex_id) const noexcept {
-        return this->_count<element_type::vertex>(vertex_id, _is_incident);
+        return this->_count<element_type::vertex>(vertex_id, bf_is_incident);
     }
 
     [[nodiscard]] std::vector<size_type> degree_map(const size_type n_vertices) const noexcept {
-        return this->_count_map<element_type::vertex>(n_vertices, _is_incident);
+        return this->_count_map<element_type::vertex>(n_vertices, bf_is_incident);
     }
 
     [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const id_type vertex_id) const noexcept {
-        return this->_query<element_type::vertex>(vertex_id, _is_tail);
+        return this->_query<element_type::vertex>(vertex_id, bf_is_tail);
     }
 
     [[nodiscard]] size_type out_degree(const id_type vertex_id) const noexcept {
-        return this->_count<element_type::vertex>(vertex_id, _is_tail);
+        return this->_count<element_type::vertex>(vertex_id, bf_is_tail);
     }
 
     [[nodiscard]] std::vector<size_type> out_degree_map(const size_type n_vertices) const noexcept {
-        return this->_count_map<element_type::vertex>(n_vertices, _is_tail);
+        return this->_count_map<element_type::vertex>(n_vertices, bf_is_tail);
     }
 
     [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const id_type vertex_id) const noexcept {
-        return this->_query<element_type::vertex>(vertex_id, _is_head);
+        return this->_query<element_type::vertex>(vertex_id, bf_is_head);
     }
 
     [[nodiscard]] size_type in_degree(const id_type vertex_id) const noexcept {
-        return this->_count<element_type::vertex>(vertex_id, _is_head);
+        return this->_count<element_type::vertex>(vertex_id, bf_is_head);
     }
 
     [[nodiscard]] std::vector<size_type> in_degree_map(const size_type n_vertices) const noexcept {
-        return this->_count_map<element_type::vertex>(n_vertices, _is_head);
+        return this->_count_map<element_type::vertex>(n_vertices, bf_is_head);
     }
 
     // --- hyperedge methods : general ---
@@ -322,44 +325,44 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto incident_vertices(const id_type hyperedge_id
     ) const noexcept {
-        return this->_query<element_type::hyperedge>(hyperedge_id, _is_incident);
+        return this->_query<element_type::hyperedge>(hyperedge_id, bf_is_incident);
     }
 
     [[nodiscard]] size_type hyperedge_size(const id_type hyperedge_id) const noexcept {
-        return this->_count<element_type::hyperedge>(hyperedge_id, _is_incident);
+        return this->_count<element_type::hyperedge>(hyperedge_id, bf_is_incident);
     }
 
     [[nodiscard]] std::vector<size_type> hyperedge_size_map(const size_type n_hyperedges
     ) const noexcept {
-        return this->_count_map<element_type::hyperedge>(n_hyperedges, _is_incident);
+        return this->_count_map<element_type::hyperedge>(n_hyperedges, bf_is_incident);
     }
 
     [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id
     ) const noexcept {
-        return this->_query<element_type::hyperedge>(hyperedge_id, _is_tail);
+        return this->_query<element_type::hyperedge>(hyperedge_id, bf_is_tail);
     }
 
     [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const noexcept {
-        return this->_count<element_type::hyperedge>(hyperedge_id, _is_tail);
+        return this->_count<element_type::hyperedge>(hyperedge_id, bf_is_tail);
     }
 
     [[nodiscard]] std::vector<size_type> tail_size_map(const size_type n_hyperedges
     ) const noexcept {
-        return this->_count_map<element_type::hyperedge>(n_hyperedges, _is_tail);
+        return this->_count_map<element_type::hyperedge>(n_hyperedges, bf_is_tail);
     }
 
     [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id
     ) const noexcept {
-        return this->_query<element_type::hyperedge>(hyperedge_id, _is_head);
+        return this->_query<element_type::hyperedge>(hyperedge_id, bf_is_head);
     }
 
     [[nodiscard]] size_type head_size(const id_type hyperedge_id) const noexcept {
-        return this->_count<element_type::hyperedge>(hyperedge_id, _is_head);
+        return this->_count<element_type::hyperedge>(hyperedge_id, bf_is_head);
     }
 
     [[nodiscard]] std::vector<size_type> head_size_map(const size_type n_hyperedges
     ) const noexcept {
-        return this->_count_map<element_type::hyperedge>(n_hyperedges, _is_head);
+        return this->_count_map<element_type::hyperedge>(n_hyperedges, bf_is_head);
     }
 
     // --- binding methods ---
@@ -368,40 +371,40 @@ public:
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::backward;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::backward;
     }
 
     gl_attr_force_inline void bind_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::forward;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::forward;
     }
 
     gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = incidence_type::none;
+        this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::none;
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_bound(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] != incidence_type::none;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] != bf_incidence::none;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_tail(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == incidence_type::backward;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == bf_incidence::backward;
     }
 
     [[nodiscard]] gl_attr_force_inline bool is_head(
         const id_type vertex_id, const id_type hyperedge_id
     ) const noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
-        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == incidence_type::forward;
+        return this->_matrix[to_idx(major_id)][to_idx(minor_id)] == bf_incidence::forward;
     }
 
     // --- comparison ---
@@ -421,29 +424,9 @@ public:
 #endif
 
 private:
-    // --- incidence utility ---
-
-    enum class incidence_type : std::int8_t {
-        none = 0, // v not in E
-        backward = -1, // v in Tail(E)
-        forward = 1, // v in Head(E)
-    };
-
-    static constexpr auto _is_incident = [](const incidence_type t) {
-        return t != incidence_type::none;
-    };
-
-    static constexpr auto _is_tail = [](const incidence_type t) {
-        return t == incidence_type::backward;
-    };
-
-    static constexpr auto _is_head = [](const incidence_type t) {
-        return t == incidence_type::forward;
-    };
-
     // --- storage management ---
 
-    using matrix_row_type = std::vector<incidence_type>;
+    using matrix_row_type = std::vector<bf_incidence>;
     using hypergraph_storage_type = std::vector<matrix_row_type>;
 
     template <element_type Element>
@@ -451,13 +434,13 @@ private:
         if constexpr (Element == layout_tag::major_element) { // add major
             this->_matrix.resize(
                 this->_matrix.size() + n,
-                matrix_row_type(this->_matrix_row_size, incidence_type::none)
+                matrix_row_type(this->_matrix_row_size, bf_incidence::none)
             );
         }
         else { // add minor
             this->_matrix_row_size += n;
             for (auto& row : this->_matrix)
-                row.resize(this->_matrix_row_size, incidence_type::none);
+                row.resize(this->_matrix_row_size, bf_incidence::none);
         }
     }
 
@@ -469,15 +452,17 @@ private:
         else { // remove minor
             if (this->_matrix_row_size == 0uz)
                 return;
+
             this->_matrix_row_size--;
+            const auto pos = to_diff(id);
             for (auto& row : this->_matrix)
-                row.erase(row.begin() + to_diff(id));
+                row.erase(row.begin() + pos);
         }
     }
 
     template <element_type Element>
     [[nodiscard]] gl_attr_force_inline auto _query(
-        const id_type id, std::predicate<incidence_type> auto&& pred
+        const id_type id, std::predicate<bf_incidence> auto&& pred
     ) const noexcept {
         if constexpr (Element == layout_tag::major_element) { // query major
             return std::views::iota(initial_id_v<id_type>, this->_matrix_row_size)
@@ -495,10 +480,10 @@ private:
 
     template <element_type Element>
     [[nodiscard]] gl_attr_force_inline size_type
-    _count(const id_type id, std::predicate<incidence_type> auto&& pred) const noexcept {
+    _count(const id_type id, std::predicate<bf_incidence> auto&& pred) const noexcept {
         size_type count = 0uz;
         if constexpr (Element == layout_tag::major_element) { // count major
-            for (const incidence_type t : this->_matrix[to_idx(id)])
+            for (const bf_incidence t : this->_matrix[to_idx(id)])
                 count += static_cast<size_type>(pred(t));
         }
         else { // count minor
@@ -511,7 +496,7 @@ private:
 
     template <element_type Element>
     [[nodiscard]] std::vector<size_type> _count_map(
-        const size_type n_elements, std::predicate<incidence_type> auto&& pred
+        const size_type n_elements, std::predicate<bf_incidence> auto&& pred
     ) const noexcept {
         std::vector<size_type> size_map(n_elements, 0uz);
 

@@ -1,3 +1,4 @@
+#include "hgl/impl/bf_incidence.hpp"
 #include "hgl/impl/layout_tags.hpp"
 #include "testing/hgl/constants.hpp"
 
@@ -18,17 +19,6 @@ struct test_incidence_matrix {
     typename IncidenceMatrix::hypergraph_storage_type& matrix(IncidenceMatrix& sut) const noexcept {
         return sut._matrix;
     }
-
-    template <typename IncidenceMatrix>
-    struct incidence_descriptor {
-        using type = std::conditional_t<
-            std::same_as<typename IncidenceMatrix::directional_tag, hgl::bf_directed_t>,
-            typename IncidenceMatrix::incidence_type,
-            bool>;
-    };
-
-    template <typename IncidenceMatrix>
-    using incidence_descriptor_type = typename incidence_descriptor<IncidenceMatrix>::type;
 };
 
 struct test_undirected_vertex_major_incidence_matrix : public test_incidence_matrix {
@@ -688,12 +678,6 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
-    template <typename SutType>
-    auto is_incident_pred() {
-        using incidence_type = incidence_descriptor_type<SutType>;
-        return [](const incidence_type t) { return t != incidence_type::none; };
-    }
-
     auto altbind_to_vertex(
         auto& sut, const hgl::default_id_type vertex_id, const hgl::size_type n_hyperedges
     ) {
@@ -736,7 +720,7 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
 struct test_bf_directed_vertex_major_incidence_matrix : public test_bf_directed_incidence_matrix {
     using impl_tag = hgl::impl::matrix_t<hgl::impl::vertex_major_t>;
     using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, impl_tag>;
-    using incidence_type = incidence_descriptor_type<sut_type>;
+    using incidence_type = hgl::impl::bf_incidence;
 };
 
 TEST_CASE_FIXTURE(
@@ -755,8 +739,8 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
         return row.size() == constants::n_hyperedges;
     }));
-    CHECK(std::ranges::all_of(matrix(sut), [this](const auto& row) {
-        return std::ranges::none_of(row, is_incident_pred<sut_type>());
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return std::ranges::none_of(row, hgl::impl::bf_is_incident);
     }));
 }
 
@@ -1189,7 +1173,7 @@ struct test_bf_directed_hyperedge_major_incidence_matrix
 : public test_bf_directed_incidence_matrix {
     using impl_tag = hgl::impl::matrix_t<hgl::impl::hyperedge_major_t>;
     using sut_type = hgl::impl::incidence_matrix<hgl::bf_directed_t, impl_tag>;
-    using incidence_type = incidence_descriptor_type<sut_type>;
+    using incidence_type = hgl::impl::bf_incidence;
 };
 
 TEST_CASE_FIXTURE(
@@ -1208,8 +1192,8 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
         return row.size() == constants::n_vertices;
     }));
-    CHECK(std::ranges::all_of(matrix(sut), [this](const auto& row) {
-        return std::ranges::none_of(row, is_incident_pred<sut_type>());
+    CHECK(std::ranges::all_of(matrix(sut), [](const auto& row) {
+        return std::ranges::none_of(row, hgl::impl::bf_is_incident);
     }));
 }
 
