@@ -212,7 +212,7 @@ public:
         }
     }
 
-    gl_attr_force_inline void remove_vertex(const size_type vertex_id) {
+    gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
         this->_remove_vertex_impl(vertex_id);
     }

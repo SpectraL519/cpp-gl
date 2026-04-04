@@ -4,6 +4,8 @@
 
 #include <doctest.h>
 
+#include <cstddef>
+
 namespace gl_testing {
 
 TEST_SUITE_BEGIN("test_graph_topology_builders");
@@ -77,9 +79,11 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
+        const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.order());
+        const auto next_vertex = graph.get_vertex(next_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -89,10 +93,12 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto prev_vertex =
-            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id =
+            static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex) == graph.has_edge(source, vertex);
@@ -102,12 +108,15 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
+    using id_type = typename GraphType::id_type;
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
-        const auto next_vertex = graph.get_vertex((source.id() + 1uz) % graph.order());
+        const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.order());
+        const auto next_vertex = graph.get_vertex(next_vertex_id);
 
-        const auto prev_vertex =
-            graph.get_vertex((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex_id =
+            static_cast<id_type>((source.id() + graph.order() - 1uz) % graph.order());
+        const auto prev_vertex = graph.get_vertex(prev_vertex_id);
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
@@ -139,7 +148,6 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_biconnected_to_binary_chlidren(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
     return [&graph](const gl::default_id_type source_id) {
         const auto target_ids = gl::topology::detail::get_binary_target_ids(source_id);
         const auto parent_id = source_id == 0u ? 0u : (source_id - 1u) / 2u;
@@ -174,7 +182,6 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     using graph_type = GraphType;
     using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
@@ -255,8 +262,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "directed graph specific topology builders tests", GraphType, directed_graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a one-way cycle graph of size n_vertices") {
         const auto cycle = gl::topology::cycle<graph_type>(constants::n_elements_top);
@@ -280,6 +285,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("path(n_vertices) should build a one-way path graph of size n_vertices") {
         const auto path = gl::topology::path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
@@ -287,12 +293,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             path.vertices() | std::views::take(n_source_vertices),
             predicate::is_vertex_connected_to_next_only(path)
         ));
-        CHECK(predicate::is_vertex_not_connected(path)(path.vertices()[n_source_vertices]));
+        CHECK(predicate::is_vertex_not_connected(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("bidirectional_path(n_vertices) should build a two-way path graph of size n_vertices") {
         const auto path = gl::topology::bidirectional_path<graph_type>(constants::n_elements_top);
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
 
         verify_graph_size(path, constants::n_elements_top, 2uz * n_source_vertices);
 
@@ -300,12 +307,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE(std::ranges::all_of(
             std::ranges::next(vertices.begin(), 1uz),
-            std::ranges::next(vertices.begin(), n_source_vertices),
+            std::ranges::next(vertices.begin(), last_vertex_pos),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
-        );
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("regular_binary_tree(depth) should return a one-way regular binay tree with the "
@@ -348,8 +354,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "undirected graph specific topology builders tests", GraphType, undirected_graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
-    using edge_type = typename graph_type::edge_type;
 
     SUBCASE("cycle(n_vertices) should build a two-way cycle graph of size n_vertices") {
         graph_type cycle;
@@ -385,18 +389,18 @@ TEST_CASE_TEMPLATE_DEFINE(
         CAPTURE(path);
 
         const auto n_source_vertices = path.order() - 1uz;
+        const auto last_vertex_pos = static_cast<std::ptrdiff_t>(n_source_vertices);
         verify_graph_size(path, constants::n_elements_top, n_source_vertices);
 
         const auto vertices = path.vertices();
 
         REQUIRE(std::ranges::all_of(
             std::ranges::next(vertices.begin(), 1uz),
-            std::ranges::next(vertices.begin(), n_source_vertices),
+            std::ranges::next(vertices.begin(), last_vertex_pos),
             predicate::is_vertex_connected_to_id_adjacent(path)
         ));
         CHECK(predicate::is_vertex_connected_to_next_only(path)(*path.vertices().begin()));
-        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[n_source_vertices])
-        );
+        CHECK(predicate::is_vertex_connected_to_prev_only(path)(path.vertices()[last_vertex_pos]));
     }
 
     SUBCASE("regular_binary_tree(depth) should return a regular binay tree with the given depth") {

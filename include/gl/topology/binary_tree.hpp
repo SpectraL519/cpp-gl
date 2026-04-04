@@ -7,7 +7,7 @@
 #include "gl/constants.hpp"
 #include "gl/conversion.hpp"
 #include "gl/graph.hpp"
-#include "gl/util/pow.hpp"
+#include "gl/util/math.hpp"
 
 #include <initializer_list>
 

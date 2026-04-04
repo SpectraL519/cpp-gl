@@ -149,7 +149,6 @@ struct test_directed_adjacency_list : public test_adjacency_list {
 
 TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj_list_template) {
     using fixture_type = test_directed_adjacency_list<SutType>;
-    using sut_type = typename fixture_type::sut_type;
     using edge_type = typename fixture_type::edge_type;
 
     fixture_type fixture;
@@ -450,7 +449,6 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
 
 TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected_adj_list_template) {
     using fixture_type = test_undirected_adjacency_list<SutType>;
-    using sut_type = typename fixture_type::sut_type;
     using edge_type = typename fixture_type::edge_type;
 
     fixture_type fixture;

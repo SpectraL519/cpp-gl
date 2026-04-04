@@ -297,7 +297,7 @@ private:
                     edge_item.edge_id = invalid_id; // edge was removed
                 else
                     // shift by the number of removed IDs < edge-id
-                    edge_item.edge_id -= std::ranges::distance(removed_edge_ids.begin(), it);
+                    edge_item.edge_id -= static_cast<id_type>(it - removed_edge_ids.begin());
 
                 // align the vertex id
                 edge_item.vertex_id -= edge_item.vertex_id > removed_vertex_id;

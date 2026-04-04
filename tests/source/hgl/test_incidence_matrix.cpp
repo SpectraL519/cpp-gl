@@ -320,8 +320,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (auto i = 0uz; i < n_elements; i++)
-        for (auto j = 0uz; j <= i; j++)
+    for (auto i = 0u; i < n_elements; i++)
+        for (auto j = 0u; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
@@ -648,8 +648,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.degree_map(n_elements), is_zero));
     REQUIRE(std::ranges::all_of(sut.hyperedge_size_map(n_elements), is_zero));
 
-    for (auto i = 0uz; i < n_elements; i++)
-        for (auto j = 0uz; j <= i; j++)
+    for (auto i = 0u; i < n_elements; i++)
+        for (auto j = 0u; j <= i; j++)
             sut.bind(i, j);
 
     const auto deg_map = sut.degree_map(n_elements);
@@ -699,8 +699,8 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
     ) {
         std::vector<hgl::default_id_type> tail_bound, head_bound;
 
-        for (auto i = 0uz; i < n_hyperedges; ++i) {
-            if (i % 2 == 0) {
+        for (auto i = 0u; i < n_hyperedges; ++i) {
+            if (i % 2u == 0u) {
                 sut.bind_tail(vertex_id, i);
                 tail_bound.push_back(i);
             }
@@ -718,8 +718,8 @@ struct test_bf_directed_incidence_matrix : public test_incidence_matrix {
     ) {
         std::vector<hgl::default_id_type> tail_bound, head_bound;
 
-        for (auto i = 0uz; i < n_vertices; ++i) {
-            if (i % 2 == 0) {
+        for (auto i = 0u; i < n_vertices; ++i) {
+            if (i % 2u == 0u) {
                 sut.bind_tail(i, hyperedge_id);
                 tail_bound.push_back(i);
             }
@@ -1085,8 +1085,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (auto i = 0uz; i < n_elements; i++)
-            for (auto j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1104,8 +1104,8 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (auto i = 0uz; i < n_elements; i++)
-            for (auto j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1123,8 +1123,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (auto i = 0uz; i < n_elements; i++) {
-        for (auto j = 0uz; j <= i; j++) {
+    for (auto i = 0u; i < n_elements; i++) {
+        for (auto j = 0u; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else
@@ -1539,8 +1539,8 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::ranges::all_of(sut.head_size_map(n_elements), is_zero));
 
     SUBCASE("tail bind") {
-        for (auto i = 0uz; i < n_elements; i++)
-            for (auto j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_tail(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1558,8 +1558,8 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("head bind") {
-        for (auto i = 0uz; i < n_elements; i++)
-            for (auto j = 0uz; j <= i; j++)
+        for (auto i = 0u; i < n_elements; i++)
+            for (auto j = 0u; j <= i; j++)
                 sut.bind_head(i, j);
 
         const auto deg_map = sut.degree_map(n_elements);
@@ -1577,8 +1577,8 @@ TEST_CASE_FIXTURE(
     }
 
     // diagonal = tail, everything else is head
-    for (auto i = 0uz; i < n_elements; i++) {
-        for (auto j = 0uz; j <= i; j++) {
+    for (auto i = 0u; i < n_elements; i++) {
+        for (auto j = 0u; j <= i; j++) {
             if (i == j)
                 sut.bind_tail(i, j);
             else

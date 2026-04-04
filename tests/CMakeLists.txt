@@ -1,15 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(cpp-gl-test)
 
-# Set compile options
-if(NOT DEFINED CMAKE_CXX_FLAGS)
-    set(
-        CMAKE_CXX_FLAGS
-        "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wsign-conversion -Wunreachable-code -Wuninitialized -Wunused -pedantic -g -O2"
-        CACHE STRING "Default C++ compile flags" FORCE
-    )
-endif()
-
 # Common structure
 set(SOURCE_DIRS "app")
 set(INCLUDE_DIRS "include" "external")
@@ -33,7 +24,20 @@ function(add_test_target TARGET_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
     )
 
     target_include_directories(${TARGET_NAME} PRIVATE ${INCLUDE_DIRS})
-    target_compile_options(${TARGET_NAME} PRIVATE ${CMAKE_CXX_FLAGS})
+    target_compile_options(${TARGET_NAME} PRIVATE
+        -Werror
+        -Wall
+        -Wextra
+        -Wcast-align
+        -Wconversion
+        -Wsign-conversion
+        -Wunreachable-code
+        -Wuninitialized
+        -Wunused
+        -pedantic
+        -g
+        -O2
+    )
     target_compile_definitions(${TARGET_NAME} PRIVATE
         ${TESTING_DEF}
         TEST_DATA_PATH="${DATA_DIR}"

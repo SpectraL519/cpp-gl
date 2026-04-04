@@ -46,7 +46,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 }
             }
 
-            expected_weight = edge_weight * (sut.order() - 1uz);
+            expected_weight = edge_weight * static_cast<weight_type>(sut.order() - 1uz);
         }
 
         SUBCASE("custom graph") {
@@ -131,7 +131,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (const auto& edge : sut.adjacent_edges(vertex_id))
             expected_edges.emplace_back(edge.source(), edge.target());
 
-    const weight_type expected_weight = sut.order() - 1uz;
+    const auto expected_weight = static_cast<weight_type>(sut.order() - 1uz);
 
     const auto mst = gl::algorithm::edge_heap_prim_mst(sut, source_id);
 
@@ -191,7 +191,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 }
             }
 
-            expected_weight = edge_weight * (sut.order() - 1uz);
+            expected_weight = edge_weight * static_cast<weight_type>(sut.order() - 1uz);
         }
 
         SUBCASE("custom graph") {
@@ -276,7 +276,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (const auto& edge : sut.adjacent_edges(vertex_id))
             expected_edges.emplace_back(edge.source(), edge.target());
 
-    const weight_type expected_weight = sut.order() - 1uz;
+    const auto expected_weight = static_cast<weight_type>(sut.order() - 1uz);
 
     const auto mst = gl::algorithm::vertex_heap_prim_mst(sut, source_id);
 

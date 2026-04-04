@@ -4,12 +4,14 @@
 
 #pragma once
 
+#include "gl/attributes/diagnostics.hpp"
 #include "gl/constants.hpp"
 #include "gl/decl/impl_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/types/core.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <vector>
 
 namespace gl::impl {
@@ -76,19 +78,28 @@ struct directed_adjacency_matrix {
             self._matrix.emplace_back(new_n_vertices, invalid_id);
     }
 
+    GL_SUPPRESS_WARNING_BEGIN("-Wsign-conversion")
+
+    // NOTE: Indexing into a row which might be a vector (requires size type) or a span/subrange (requires difference type)
+
     [[nodiscard]] gl_attr_force_inline static size_type in_degree(
         const impl_type& self, id_type vertex_id
     ) {
-        return std::ranges::count_if(self._matrix, [vertex_id](const auto& row) {
-            return row[to_idx(vertex_id)] != invalid_id;
-        });
+        return static_cast<size_type>(std::ranges::count_if(
+            self._matrix,
+            [vertex_id](const auto& row) { return row[to_idx(vertex_id)] != invalid_id; }
+        ));
     }
+
+    GL_SUPPRESS_WARNING_END
 
     [[nodiscard]] gl_attr_force_inline static size_type out_degree(
         const impl_type& self, id_type vertex_id
     ) {
         return self._matrix[vertex_id].size()
-             - std::ranges::count(self._matrix[vertex_id], invalid_id_v<id_type>);
+             - static_cast<size_type>(
+                   std::ranges::count(self._matrix[vertex_id], invalid_id_v<id_type>)
+             );
     }
 
     [[nodiscard]] gl_attr_force_inline static size_type degree(
@@ -143,12 +154,12 @@ struct directed_adjacency_matrix {
             | std::views::filter([](auto edge_id) { return edge_id != invalid_id; })
             | std::ranges::to<std::vector>();
 
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex_idx));
+        self._matrix.erase(self._matrix.begin() + static_cast<std::ptrdiff_t>(vertex_id));
 
         for (auto& row : self._matrix) {
             if (const auto edge_id = row[vertex_idx]; edge_id != invalid_id)
                 removed_edges.push_back(edge_id);
-            row.erase(std::next(std::begin(row), vertex_idx));
+            row.erase(row.begin() + static_cast<std::ptrdiff_t>(vertex_id));
         }
 
         return removed_edges;
@@ -225,7 +236,9 @@ struct undirected_adjacency_matrix {
     ) {
         const auto vertex_idx = to_idx(vertex_id);
         return self._matrix.size()
-             - std::ranges::count(self._matrix[vertex_idx], invalid_id_v<id_type>)
+             - static_cast<size_type>(
+                   std::ranges::count(self._matrix[vertex_idx], invalid_id_v<id_type>)
+             )
              + static_cast<size_type>(self._matrix[vertex_idx][vertex_idx] != invalid_id);
     }
 
@@ -264,9 +277,10 @@ struct undirected_adjacency_matrix {
             | std::views::filter([](auto edge_id) { return edge_id != invalid_id; })
             | std::ranges::to<std::vector>();
 
-        self._matrix.erase(std::next(std::begin(self._matrix), vertex_idx));
+        const auto vertex_pos = static_cast<std::ptrdiff_t>(vertex_id);
+        self._matrix.erase(self._matrix.begin() + vertex_pos);
         for (auto& row : self._matrix)
-            row.erase(std::next(std::begin(row), vertex_idx));
+            row.erase(row.begin() + vertex_pos);
 
         return removed_edges;
     }

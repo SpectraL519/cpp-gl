@@ -17,7 +17,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for directed graphs", TraitsType, directed_graph_traits_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
 
@@ -105,7 +104,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "vertex degree getter tests for undirected graphs", TraitsType, undirected_graph_traits_template
 ) {
     using sut_type = gl::graph<TraitsType>;
-    using vertex_type = typename sut_type::vertex_type;
 
     const auto n_vertices = constants::n_elements_top;
 

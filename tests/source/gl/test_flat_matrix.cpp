@@ -1,6 +1,7 @@
-#include <gl/types/flat_matrix.hpp>
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/attributes/diagnostics.hpp>
+#include <gl/types/flat_matrix.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -97,7 +98,9 @@ TEST_CASE_FIXTURE(
     sut.push_row({1, 2, 3});
     sut.push_row({4, 5, 6});
 
+    GL_SUPPRESS_WARNING_BEGIN("-Wself-move");
     sut = std::move(sut);
+    GL_SUPPRESS_WARNING_END;
 
     CHECK_EQ(sut.size(), 2uz);
     CHECK_EQ(sut.n_rows(), 2uz);
@@ -998,6 +1001,25 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut[2uz], sut_row2));
 }
 
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "push_row with value should add new row") {
+    sut.push_row({1, 2, 3});
+    sut.push_row(4);
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 4, 4}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "push_row with value should do nothing if the matrix is empty"
+) {
+    REQUIRE(sut.empty());
+
+    sut.push_row(0);
+    CHECK(sut.empty());
+}
+
 TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "pop_row should remove last row") {
     sut.push_row(sut_row0);
     sut.push_row(sut_row1);
@@ -1082,6 +1104,32 @@ TEST_CASE_FIXTURE(
     sut.push_row(sut_row1);
 
     CHECK_THROWS_AS(sut.insert_row(1uz, {11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "insert_row with value should add new row") {
+    sut.push_row({1, 2, 3});
+    sut.insert_row(1uz, 4);
+
+    CHECK_EQ(sut.n_rows(), 2uz);
+    CHECK_EQ(sut.n_cols(), 3uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut[1uz], std::vector<int>{4, 4, 4}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "insert_row with value should do nothing if the matrix is empty"
+) {
+    REQUIRE(sut.empty());
+
+    sut.insert_row(0uz, 0);
+    CHECK(sut.empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "insert_row with value should throw for invalid position"
+) {
+    sut.push_row({1, 2, 3});
+    CHECK_THROWS_AS(sut.insert_row(2uz, 4), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "erase_row should remove row at given position") {
@@ -1174,6 +1222,25 @@ TEST_CASE_FIXTURE(
     CHECK(std::ranges::equal(sut.col(2uz), sut_col2));
 }
 
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "push_col with value should add new column") {
+    sut.push_col({1, 2, 3});
+    sut.push_col(4);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut.col(1uz), std::vector<int>{4, 4, 4}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "push_col with value should do nothing if the matrix is empty"
+) {
+    REQUIRE(sut.empty());
+
+    sut.push_col(0);
+    CHECK(sut.empty());
+}
+
 TEST_CASE_FIXTURE(test_flat_matrix_col_modifiers, "pop_col should remove last column") {
     sut.push_col(sut_col0);
     sut.push_col(sut_col1);
@@ -1258,6 +1325,32 @@ TEST_CASE_FIXTURE(
     sut.push_col(sut_col1);
 
     CHECK_THROWS_AS(sut.insert_col(1uz, {11, 22}), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(test_flat_matrix_row_modifiers, "insert_col with value should add new col") {
+    sut.push_col({1, 2, 3});
+    sut.insert_col(1uz, 4);
+
+    CHECK_EQ(sut.n_rows(), 3uz);
+    CHECK_EQ(sut.n_cols(), 2uz);
+    CHECK_EQ(sut.data_size(), 6uz);
+    CHECK(std::ranges::equal(sut.col(1uz), std::vector<int>{4, 4, 4}));
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "insert_col with value should do nothing if the matrix is empty"
+) {
+    REQUIRE(sut.empty());
+
+    sut.insert_col(0uz, 0);
+    CHECK(sut.empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_flat_matrix_row_modifiers, "insert_col with value should throw for invalid position"
+) {
+    sut.push_col({1, 2, 3});
+    CHECK_THROWS_AS(sut.insert_col(2uz, 4), std::out_of_range);
 }
 
 TEST_CASE_FIXTURE(
@@ -1354,9 +1447,9 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.n_cols(), 10uz);
     CHECK_EQ(sut.data_size(), 1000uz);
     for (int i = 0; i < 100; ++i) {
-        auto row = sut[i];
+        auto row = sut[static_cast<std::size_t>(i)];
         for (int j = 0; j < 10; ++j)
-            CHECK_EQ(row[j], i * 10 + j);
+            CHECK_EQ(row[static_cast<std::size_t>(j)], i * 10 + j);
     }
 }
 
