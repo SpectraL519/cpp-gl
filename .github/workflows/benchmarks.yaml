@@ -29,8 +29,8 @@ jobs:
           CC: gcc-14
           CXX: g++-14
         run: |
-          cmake -B build_bench \
-            -DBUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
+          cmake -B build_bench -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC \
+            -DBUILD_BENCHMARKS=ON -DBENCH_INCLUDE_BGL=ON -DCMAKE_BUILD_TYPE=Release
         continue-on-error: false
 
       - name: Build the benchmarks
