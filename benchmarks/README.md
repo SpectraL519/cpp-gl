@@ -18,7 +18,7 @@ To configure and build the benchmark executable, use the following standard CMak
 
 ```shell
 cmake -B build_bench -DBUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build_bench --config Release
+cmake --build build_bench # -j<n>
 ```
 
 ### Enabling Boost Graph Library (BGL) Comparisons
