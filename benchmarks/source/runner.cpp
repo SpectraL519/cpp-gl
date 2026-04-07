@@ -3,13 +3,18 @@
 #include <filesystem>
 #include <format>
 #include <iostream>
+#include <print>
+#include <ranges>
 
 namespace fs = std::filesystem;
+namespace vw = std::views;
 
 namespace gl_bench {
 
 runner::runner() : _parser("gl_benchmarks") {
     auto& glob_args = this->_parser.add_group("Global Benchmark Options");
+    this->_glob_args = &glob_args;
+
     this->_parser.add_optional_argument<argon::none_type>(glob_args, "help", "h")
         .help("Display the help message")
         .action<argon::action_type::on_flag>(argon::action::print_help(this->_parser, 0));
@@ -37,25 +42,31 @@ runner::runner() : _parser("gl_benchmarks") {
         });
 }
 
-void runner::add_suite(suite suite) {
-    this->_suites.push_back(suite);
+void runner::add_suite(const std::string& name, suite suite) {
+    this->_suites[name] = suite;
     if (suite.add_args)
         suite.add_args(this->_parser);
 }
 
 int runner::run(int argc, char** argv) {
+    this->_parser.add_optional_argument(*this->_glob_args, "suites", "s")
+        .choices(this->_suites | vw::keys)
+        .default_values(this->_suites | vw::keys)
+        .help("Select the suites to run (all by default)");
+
     std::vector<std::string> gbench_args = this->_parser.try_parse_known_args(argc, argv);
 
     // Register benchmark suites
-    for (const auto& suite : this->_suites)
-        if (suite.register_benchmarks)
-            suite.register_benchmarks(this->_parser);
+    for (const auto& suite_name : this->_parser.values("suites")) {
+        const auto& suite = this->_suites.at(suite_name);
+        suite.register_benchmarks(this->_parser);
+    }
 
     // Handle JSON export if requested
     if (this->_parser.has_value("output")) {
         auto out_path = this->_parser.value<fs::path>("output");
         gbench_args.push_back("--benchmark_out=" + out_path.string());
-        gbench_args.push_back("--benchmark_out_format=json");
+        gbench_args.emplace_back("--benchmark_out_format=json");
     }
 
     // Reconstruct argv for Google Benchmark

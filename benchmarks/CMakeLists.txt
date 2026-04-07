@@ -6,6 +6,7 @@ include(FetchContent)
 # Build options
 set(BENCH_GL_DEFS "" CACHE STRING "Additional compile definitions for the CPP-GL target")
 set(BENCH_OPT_MODE "3" CACHE STRING "The optimisation mode used to build the project benchmarks (default: 3)")
+option(BENCH_INCLUDE_BGL "Include Boost Graph Library benchmarks in the build" OFF)
 
 message(STATUS "Build options:")
 message(STATUS "[BENCH_GL_DEFS = ${BENCH_GL_DEFS}]")
@@ -28,9 +29,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cpp-argon)
 
-# Find Boost for BGL comparisons
-find_package(Boost CONFIG REQUIRED)
-
+# Define the benchmarks target
 add_executable(gl_benchmarks
     source/main.cpp
     source/runner.cpp
@@ -56,10 +55,15 @@ target_link_libraries(gl_benchmarks PRIVATE
     benchmark::benchmark
     cpp-argon
     cpp-gl
-    Boost::headers
 )
 
 if(BENCH_GL_DEFS)
     separate_arguments(BENCH_GL_DEFS_LIST NATIVE_COMMAND "${BENCH_GL_DEFS}")
     target_compile_definitions(gl_benchmarks PRIVATE ${BENCH_GL_DEFS_LIST})
+endif()
+
+# Include Boost Graph Library
+if(BENCH_INCLUDE_BGL)
+    find_package(Boost CONFIG REQUIRED)
+    target_link_libraries(gl_benchmarks PRIVATE Boost::headers)
 endif()

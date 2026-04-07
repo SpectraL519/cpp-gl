@@ -5,20 +5,29 @@
 #include <argon/argument_parser.hpp>
 #include <benchmark/benchmark.h>
 
-#include <vector>
+#include <map>
 
 namespace gl_bench {
 
 class runner {
 public:
-    runner();
+    static runner& get() {
+        static runner instance;
+        return instance;
+    }
 
-    void add_suite(suite suite);
+    runner(const runner&) = delete;
+    runner& operator=(const runner&) = delete;
+
+    void add_suite(const std::string& name, suite suite);
     int run(int argc, char** argv);
 
 private:
+    runner();
+
     argon::argument_parser _parser;
-    std::vector<suite> _suites;
+    argon::argument_group* _glob_args = nullptr;
+    std::map<std::string, suite> _suites;
 };
 
 } // namespace gl_bench
