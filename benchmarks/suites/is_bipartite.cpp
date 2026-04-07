@@ -6,9 +6,12 @@
 #include <gl/topologies.hpp>
 
 #include <benchmark/benchmark.h>
+
+#ifdef GL_BENCH_INCLUDE_BGL
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/bipartite.hpp>
+#endif
 
 namespace gl_bench::is_bipartite {
 
@@ -27,6 +30,8 @@ void bm_gl_is_bipartite(benchmark::State& state) {
     state.counters["Vertices"] = static_cast<double>(graph.order());
     state.counters["Edges"] = static_cast<double>(graph.size());
 }
+
+#ifdef GL_BENCH_INCLUDE_BGL
 
 // BGL Benchmark
 
@@ -60,8 +65,10 @@ void bm_bgl_is_bipartite(benchmark::State& state) {
     state.counters["Edges"] = static_cast<double>(boost::num_edges(graph));
 }
 
+#endif
+
 void add_args(argon::argument_parser& parser) {
-    auto& group = parser.add_group("Is-Bipartite Benchmark Options");
+    auto& group = parser.add_group("Is-Bipartite Benchmark Suite Options (is-bipartite)");
     parser.add_optional_argument<std::size_t>(group, "bip-v")
         .default_values(1000uz)
         .help("Number of vertices for a single set in bipartite generation");
@@ -151,6 +158,7 @@ void register_benchmarks(const argon::argument_parser& parser) {
             ->Unit(benchmark::kMillisecond);
 
 
+#ifdef GL_BENCH_INCLUDE_BGL
     // BGL Benchmarks
     using bgl_list = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>;
     using bgl_matrix =
@@ -162,10 +170,19 @@ void register_benchmarks(const argon::argument_parser& parser) {
     benchmark::RegisterBenchmark("is_bipartite/BGL/matrix", bm_bgl_is_bipartite<bgl_matrix>)
         ->Arg(n_vertices)
         ->Unit(benchmark::kMillisecond);
+#endif
 }
 
-suite get_suite() {
-    return suite{add_args, register_benchmarks};
-}
+namespace {
+
+// Register the suite
+bool _registered = []() {
+    gl_bench::runner::get().add_suite(
+        "is-bipartite", suite{.add_args = add_args, .register_benchmarks = register_benchmarks}
+    );
+    return true;
+}();
+
+} // namespace
 
 } // namespace gl_bench::is_bipartite
