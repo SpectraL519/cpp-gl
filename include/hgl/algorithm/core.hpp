@@ -30,3 +30,5 @@ using gl::algorithm::no_root_v;
 using gl::algorithm::is_reachable;
 
 } // namespace hgl::algorithm
+
+// TODO! Validate `const Callback&` vs `Callback&&` in alg templates
