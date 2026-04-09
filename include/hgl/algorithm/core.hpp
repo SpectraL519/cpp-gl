@@ -15,11 +15,13 @@ namespace hgl::algorithm {
 
 // -- GL core ---
 
+using gl::algorithm::empty_callback;
+
 using gl::algorithm::decision;
+
 using gl::algorithm::result_discriminator;
 using enum result_discriminator;
 
-using gl::algorithm::empty_callback;
 using gl::algorithm::non_void_return_type;
 using gl::algorithm::return_type;
 
@@ -27,25 +29,31 @@ using gl::algorithm::no_root;
 using gl::algorithm::no_root_t;
 using gl::algorithm::no_root_v;
 
-// --- basic types ---
+// --- traversal types ---
 
 template <traits::c_hypergraph HypergraphType>
-struct traversal_context {
+struct search_node {
     using id_type = typename HypergraphType::id_type;
 
-    traversal_context(id_type id) : id(id), pred_id(id), hyperedge_id(invalid_id) {}
+    search_node() = default;
 
-    traversal_context(id_type id, id_type pred_id, id_type hyperedge_id)
-    : id(id), pred_id(pred_id), hyperedge_id(hyperedge_id) {}
+    search_node(id_type vertex_id)
+    : vertex_id(vertex_id), pred_id(vertex_id), hyperedge_id(invalid_id) {}
 
-    // if id == pred_id and hyperedge_id is invalid then id is the id of the root vertex
-    id_type id;
-    id_type pred_id;
-    id_type hyperedge_id;
+    search_node(id_type vertex_id, id_type pred_id, id_type hyperedge_id)
+    : vertex_id(vertex_id), pred_id(pred_id), hyperedge_id(hyperedge_id) {}
+
+    [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
+        return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
+    }
+
+    id_type vertex_id = invalid_id;
+    id_type pred_id = invalid_id;
+    id_type hyperedge_id = invalid_id;
 };
 
 template <hgl::traits::c_hypergraph HypergraphType>
-using predecessors_map = std::vector<traversal_context<HypergraphType>>;
+using search_tree = std::vector<search_node<HypergraphType>>;
 
 // --- generic algorithm traits ---
 

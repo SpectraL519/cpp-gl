@@ -11,11 +11,11 @@ namespace hgl::algorithm {
 
 template <result_discriminator ResultDiscriminator, hgl::traits::c_hypergraph HypergraphType>
 [[nodiscard]] gl_attr_force_inline
-    non_void_return_type<ResultDiscriminator, predecessors_map<HypergraphType>>
-    init_predecessors_map(const HypergraphType& hypergraph) {
-    using return_t = non_void_return_type<ResultDiscriminator, predecessors_map<HypergraphType>>;
+    non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>
+    init_search_tree(const HypergraphType& hypergraph) {
+    using return_t = non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>;
     if constexpr (ResultDiscriminator == ret)
-        return return_t(hypergraph.order(), traversal_context<HypergraphType>{no_root});
+        return return_t(hypergraph.order());
     else
         return return_t();
 }
@@ -23,32 +23,30 @@ template <result_discriminator ResultDiscriminator, hgl::traits::c_hypergraph Hy
 // TODO: is_reachable
 
 template <hgl::traits::c_hypergraph HypergraphType>
-[[nodiscard]] gl_attr_force_inline std::vector<traversal_context<HypergraphType>> init_range(
+[[nodiscard]] gl_attr_force_inline std::vector<search_node<HypergraphType>> init_range(
     typename HypergraphType::id_type root_vertex_id
 ) {
-    return std::vector<traversal_context<HypergraphType>>{
-        traversal_context<HypergraphType>{root_vertex_id}
-    };
+    return std::vector<search_node<HypergraphType>>{search_node<HypergraphType>{root_vertex_id}};
 }
 
 template <hgl::traits::c_hypergraph HypergraphType>
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited_v
 ) {
-    return [&](const traversal_context<HypergraphType>& ctx) -> bool {
-        return not visited_v[to_idx(ctx.id)];
+    return [&](const search_node<HypergraphType>& node) -> bool {
+        return not visited_v[to_idx(node.vertex_id)];
     };
 }
 
 template <hgl::traits::c_hypergraph HypergraphType, result_discriminator ResultDiscriminator>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited_v,
-    non_void_return_type<ResultDiscriminator, predecessors_map<HypergraphType>>& pred_map
+    non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>& pred_map
 ) {
-    return [&](const traversal_context<HypergraphType>& ctx) {
-        const auto vertex_idx = to_idx(ctx.id);
+    return [&](const search_node<HypergraphType>& node) {
+        const auto vertex_idx = to_idx(node.vertex_id);
         visited_v[vertex_idx] = true;
         if constexpr (ResultDiscriminator == ret)
-            pred_map[vertex_idx] = ctx;
+            pred_map[vertex_idx] = node;
         return true;
     };
 }
@@ -71,8 +69,8 @@ template <hgl::traits::c_hypergraph HypergraphType, bool AsResult = false>
     std::vector<bool>& visited_v
 ) {
     using return_t = std::conditional_t<AsResult, decision, bool>;
-    return [&](const traversal_context<HypergraphType>& ctx) -> return_t {
-        return return_t(not visited_v[gl::to_idx(ctx.id)]);
+    return [&](const search_node<HypergraphType>& node) -> return_t {
+        return return_t(not visited_v[gl::to_idx(node.id)]);
     };
 }
 

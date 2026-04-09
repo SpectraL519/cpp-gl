@@ -13,11 +13,11 @@ namespace hgl::algorithm {
 template <
     result_discriminator ResultDiscriminator = ret,
     hgl::traits::c_hypergraph HypergraphType,
-    gl::traits::c_optional_callback<void, const traversal_context<HypergraphType>&>
-        PreVisitCallback = empty_callback,
-    gl::traits::c_optional_callback<void, const traversal_context<HypergraphType>&>
-        PostVisitCallback = empty_callback>
-return_type<ResultDiscriminator, predecessors_map<HypergraphType>> breadth_first_search(
+    gl::traits::c_optional_callback<void, const search_node<HypergraphType>&> PreVisitCallback =
+        empty_callback,
+    gl::traits::c_optional_callback<void, const search_node<HypergraphType>&> PostVisitCallback =
+        empty_callback>
+return_type<ResultDiscriminator, search_tree<HypergraphType>> breadth_first_search(
     const HypergraphType& hypergraph,
     const typename HypergraphType::id_type root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
@@ -37,7 +37,7 @@ return_type<ResultDiscriminator, predecessors_map<HypergraphType>> breadth_first
             init_range<HypergraphType>(root_vertex_id),
             default_visit_vertex_predicate<HypergraphType>(visited_vertices),
             default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, pred_map),
-            default_traverse_hyperedge_predicate(visited_hyperedges), // Pass the hyperedge state!
+            default_traverse_hyperedge_predicate(visited_hyperedges),
             default_enqueue_vertex_predicate<HypergraphType, true>(visited_vertices),
             pre_visit,
             post_visit
@@ -50,7 +50,7 @@ return_type<ResultDiscriminator, predecessors_map<HypergraphType>> breadth_first
                 init_range<HypergraphType>(root_id),
                 default_visit_vertex_predicate<HypergraphType>(visited_vertices),
                 default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, pred_map),
-                default_traverse_hyperedge_predicate(visited_hyperedges), // Pass the hyperedge state!
+                default_traverse_hyperedge_predicate(visited_hyperedges),
                 default_enqueue_vertex_predicate<HypergraphType, true>(visited_vertices),
                 pre_visit,
                 post_visit
