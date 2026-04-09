@@ -16,7 +16,7 @@ template <result_discriminator ResultDiscriminator, traits::c_graph GraphType>
     non_void_return_type<ResultDiscriminator, predecessors_map<GraphType>>
     init_predecessors_map(const GraphType& graph) {
     using return_type = non_void_return_type<ResultDiscriminator, predecessors_map<GraphType>>;
-    if constexpr (ResultDiscriminator == algorithm::ret)
+    if constexpr (ResultDiscriminator == ret)
         return return_type(graph.order(), invalid_id);
     else
         return return_type();
@@ -31,11 +31,11 @@ template <traits::c_id_type IdType>
 
 template <
     traits::c_graph GraphType,
-    traits::c_forward_range_of<algorithm::vertex_info<GraphType>> InitRangeType =
-        std::vector<algorithm::vertex_info<GraphType>>>
+    traits::c_forward_range_of<vertex_info<GraphType>> InitRangeType =
+        std::vector<vertex_info<GraphType>>>
 [[nodiscard]] gl_attr_force_inline InitRangeType
 init_range(typename GraphType::id_type root_vertex_id) {
-    return InitRangeType{algorithm::vertex_info<GraphType>{root_vertex_id}};
+    return InitRangeType{vertex_info<GraphType>{root_vertex_id}};
 }
 
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
@@ -51,7 +51,7 @@ template <traits::c_graph GraphType, result_discriminator ResultDiscriminator>
     return [&](id_type vertex_id, id_type pred_id) {
         const auto vertex_idx = to_idx(vertex_id);
         visited[vertex_idx] = true;
-        if constexpr (ResultDiscriminator == algorithm::ret)
+        if constexpr (ResultDiscriminator == ret)
             pred_map[vertex_idx] = pred_id;
         return true;
     };

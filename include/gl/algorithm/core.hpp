@@ -20,6 +20,7 @@ using enum result_discriminator;
 template <traits::c_graph GraphType>
 using predecessors_map = std::vector<typename GraphType::id_type>;
 
+// TODO: rename to traversal_context
 template <traits::c_graph GraphType>
 struct vertex_info {
     using id_type = typename GraphType::id_type;
@@ -28,7 +29,7 @@ struct vertex_info {
 
     vertex_info(id_type id, id_type pred_id) : id(id), pred_id(pred_id) {}
 
-    // if id == pred_id then vertex_id is the id of the starting vertex
+    // if id == pred_id then id is the id of the root vertex
     id_type id;
     id_type pred_id;
 };

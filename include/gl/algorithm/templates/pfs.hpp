@@ -14,19 +14,17 @@ namespace gl::algorithm {
 
 template <
     traits::c_graph GraphType,
-    traits::c_predicate<algorithm::vertex_info<GraphType>, algorithm::vertex_info<GraphType>>
-        PQCompare,
-    traits::c_forward_range_of<algorithm::vertex_info<GraphType>> InitQueueRangeType =
-        std::vector<algorithm::vertex_info<GraphType>>,
+    traits::c_predicate<vertex_info<GraphType>, vertex_info<GraphType>> PQCompare,
+    traits::c_forward_range_of<vertex_info<GraphType>> InitQueueRangeType =
+        std::vector<vertex_info<GraphType>>,
     traits::c_optional_predicate<typename GraphType::id_type> VisitVertexPredicate,
     traits::c_optional_predicate<typename GraphType::id_type, typename GraphType::id_type>
         VisitCallback,
     traits::c_decision_predicate<typename GraphType::id_type, const typename GraphType::edge_type&>
         EnqueueVertexPred,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
+        empty_callback>
 bool pfs(
     const GraphType& graph,
     const PQCompare& pq_compare,
@@ -41,10 +39,8 @@ bool pfs(
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type = std::priority_queue<
-        algorithm::vertex_info<GraphType>,
-        std::vector<algorithm::vertex_info<GraphType>>,
-        PQCompare>;
+    using vertex_queue_type =
+        std::priority_queue<vertex_info<GraphType>, std::vector<vertex_info<GraphType>>, PQCompare>;
     vertex_queue_type vertex_queue(pq_compare);
 
     for (const auto& vinfo : initial_queue_content)

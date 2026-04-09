@@ -11,12 +11,11 @@
 namespace gl::algorithm {
 
 template <
-    result_discriminator ResultDiscriminator = algorithm::ret,
+    result_discriminator ResultDiscriminator = ret,
     traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
+        empty_callback>
 return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search(
     const GraphType& graph,
     const typename GraphType::id_type root_vertex_id = no_root,
@@ -56,17 +55,16 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search
 
     // clang-format on
 
-    if constexpr (ResultDiscriminator == algorithm::ret)
+    if constexpr (ResultDiscriminator == ret)
         return pred_map;
 }
 
 template <
-    result_discriminator ResultDiscriminator = algorithm::ret,
+    result_discriminator ResultDiscriminator = ret,
     traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
+        empty_callback>
 return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_first_search(
     const GraphType& graph,
     const typename GraphType::id_type root_vertex_id = no_root,
@@ -104,7 +102,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_fi
             );
     }
 
-    if constexpr (ResultDiscriminator == algorithm::ret)
+    if constexpr (ResultDiscriminator == ret)
         return pred_map;
 }
 

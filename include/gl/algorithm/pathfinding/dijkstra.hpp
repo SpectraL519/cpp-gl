@@ -38,10 +38,9 @@ template <traits::c_graph GraphType>
 
 template <
     traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
+    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
+        empty_callback>
 [[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
     const GraphType& graph,
     typename GraphType::id_type source_id,
@@ -61,13 +60,12 @@ template <
 
     pfs(
         graph,
-        [&paths](
-            const algorithm::vertex_info<GraphType>& lhs,
-            const algorithm::vertex_info<GraphType>& rhs
-        ) { return paths.distances[lhs.id] > paths.distances[rhs.id]; },
+        [&paths](const vertex_info<GraphType>& lhs, const vertex_info<GraphType>& rhs) {
+            return paths.distances[lhs.id] > paths.distances[rhs.id];
+        },
         init_range<GraphType>(source_id),
-        algorithm::empty_callback{}, // visit predicate
-        algorithm::empty_callback{}, // visit callback
+        empty_callback{}, // visit predicate
+        empty_callback{}, // visit callback
         [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
             -> decision { // enqueue predicate
             const auto pred_id = in_edge.incident_vertex(vertex_id);
