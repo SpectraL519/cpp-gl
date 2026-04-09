@@ -70,7 +70,7 @@ template <hgl::traits::c_hypergraph HypergraphType, bool AsResult = false>
 ) {
     using return_t = std::conditional_t<AsResult, decision, bool>;
     return [&](const search_node<HypergraphType>& node) -> return_t {
-        return return_t(not visited_v[gl::to_idx(node.id)]);
+        return return_t(not visited_v[gl::to_idx(node.vertex_id)]);
     };
 }
 

@@ -23,11 +23,10 @@ return_type<ResultDiscriminator, search_tree<HypergraphType>> breadth_first_sear
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    // Two state vectors required for efficient hypergraph traversal
     std::vector<bool> visited_vertices(hypergraph.order(), false);
     std::vector<bool> visited_hyperedges(hypergraph.size(), false);
 
-    auto pred_map = init_predecessors_map<ResultDiscriminator>(hypergraph);
+    auto stree = init_search_tree<ResultDiscriminator>(hypergraph);
 
     // clang-format off
 
@@ -36,7 +35,7 @@ return_type<ResultDiscriminator, search_tree<HypergraphType>> breadth_first_sear
             hypergraph,
             init_range<HypergraphType>(root_vertex_id),
             default_visit_vertex_predicate<HypergraphType>(visited_vertices),
-            default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, pred_map),
+            default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, stree),
             default_traverse_hyperedge_predicate(visited_hyperedges),
             default_enqueue_vertex_predicate<HypergraphType, true>(visited_vertices),
             pre_visit,
@@ -49,7 +48,7 @@ return_type<ResultDiscriminator, search_tree<HypergraphType>> breadth_first_sear
                 hypergraph,
                 init_range<HypergraphType>(root_id),
                 default_visit_vertex_predicate<HypergraphType>(visited_vertices),
-                default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, pred_map),
+                default_visit_callback<HypergraphType, ResultDiscriminator>(visited_vertices, stree),
                 default_traverse_hyperedge_predicate(visited_hyperedges),
                 default_enqueue_vertex_predicate<HypergraphType, true>(visited_vertices),
                 pre_visit,
@@ -60,7 +59,7 @@ return_type<ResultDiscriminator, search_tree<HypergraphType>> breadth_first_sear
     // clang-format on
 
     if constexpr (ResultDiscriminator == ret)
-        return pred_map;
+        return stree;
 }
 
 } // namespace hgl::algorithm
