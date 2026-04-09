@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/graph.hpp"
 #include "gl/types/core.hpp"
@@ -12,27 +13,9 @@
 
 namespace gl::algorithm {
 
-// --- types ---
+// --- general types ---
 
-enum class result_discriminator : bool { ret = true, noret = false };
-using enum result_discriminator;
-
-template <traits::c_graph GraphType>
-using predecessors_map = std::vector<typename GraphType::id_type>;
-
-// TODO: rename to traversal_context
-template <traits::c_graph GraphType>
-struct vertex_info {
-    using id_type = typename GraphType::id_type;
-
-    vertex_info(id_type id) : id(id), pred_id(id) {}
-
-    vertex_info(id_type id, id_type pred_id) : id(id), pred_id(pred_id) {}
-
-    // if id == pred_id then id is the id of the root vertex
-    id_type id;
-    id_type pred_id;
-};
+struct empty_callback {};
 
 struct decision {
     enum class eval : std::uint8_t { accept, reject, abort };
@@ -58,14 +41,36 @@ struct decision {
     eval value;
 };
 
-struct empty_callback {};
+enum class result_discriminator : bool { ret = true, noret = false };
+using enum result_discriminator;
 
-template <result_discriminator ResultDiscriminator, typename ReturnType>
-using return_type = std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, void>;
+template <result_discriminator Result, typename ReturnType>
+using return_type = std::conditional_t<Result == algorithm::ret, ReturnType, void>;
 
-template <result_discriminator ResultDiscriminator, typename ReturnType>
+template <result_discriminator Result, typename ReturnType>
 using non_void_return_type =
-    std::conditional_t<ResultDiscriminator == algorithm::ret, ReturnType, std::monostate>;
+    std::conditional_t<Result == algorithm::ret, ReturnType, std::monostate>;
+
+// --- traversal types ---
+
+template <traits::c_graph GraphType>
+using predecessors_map = std::vector<typename GraphType::id_type>;
+
+template <traits::c_graph GraphType>
+struct search_node {
+    using id_type = typename GraphType::id_type;
+
+    search_node(id_type vertex_id) : vertex_id(vertex_id), pred_id(vertex_id) {}
+
+    search_node(id_type vertex_id, id_type pred_id) : vertex_id(vertex_id), pred_id(pred_id) {}
+
+    [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
+        return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
+    }
+
+    id_type vertex_id;
+    id_type pred_id;
+};
 
 // --- constants ---
 

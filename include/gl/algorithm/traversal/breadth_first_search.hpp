@@ -12,31 +12,30 @@
 namespace gl::algorithm {
 
 template <
-    result_discriminator ResultDiscriminator = ret,
-    traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        empty_callback>
-return_type<ResultDiscriminator, predecessors_map<GraphType>> breadth_first_search(
-    const GraphType& graph,
-    const typename GraphType::id_type root_vertex_id = no_root,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    result_discriminator Result = ret,
+    traits::c_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+return_type<Result, predecessors_map<G>> breadth_first_search(
+    const G& graph,
+    const typename G::id_type root_vertex_id = no_root,
+    PreVisitCallback pre_visit = {},
+    PostVisitCallback post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<typename GraphType::id_type> sources(graph.order());
+    std::vector<typename G::id_type> sources(graph.order());
 
-    auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
+    auto pred_map = init_predecessors_map<Result>(graph);
 
     // clang-format off
 
     if (root_vertex_id != no_root) {
         bfs(
             graph,
-            init_range<GraphType>(root_vertex_id),
+            init_range<G>(root_vertex_id),
             default_visit_vertex_predicate(visited),
-            default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-            default_enqueue_vertex_predicate<GraphType, true>(visited),
+            default_visit_callback<G, Result>(visited, pred_map),
+            default_enqueue_vertex_predicate<G, true>(visited),
             pre_visit,
             post_visit
         );
@@ -45,10 +44,10 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> breadth_first_sear
         for (const auto root_id : graph.vertex_ids())
             bfs(
                 graph,
-                init_range<GraphType>(root_id),
+                init_range<G>(root_id),
                 default_visit_vertex_predicate(visited),
-                default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-                default_enqueue_vertex_predicate<GraphType, true>(visited),
+                default_visit_callback<G, Result>(visited, pred_map),
+                default_enqueue_vertex_predicate<G, true>(visited),
                 pre_visit,
                 post_visit
             );
@@ -56,7 +55,7 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> breadth_first_sear
 
     // clang-format on
 
-    if constexpr (ResultDiscriminator == ret)
+    if constexpr (Result == ret)
         return pred_map;
 }
 

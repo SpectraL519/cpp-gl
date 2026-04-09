@@ -13,67 +13,64 @@
 namespace gl::algorithm {
 
 template <
-    traits::c_graph GraphType,
-    traits::c_predicate<vertex_info<GraphType>, vertex_info<GraphType>> PQCompare,
-    traits::c_forward_range_of<vertex_info<GraphType>> InitQueueRangeType =
-        std::vector<vertex_info<GraphType>>,
-    traits::c_optional_predicate<typename GraphType::id_type> VisitVertexPredicate,
-    traits::c_optional_predicate<typename GraphType::id_type, typename GraphType::id_type>
-        VisitCallback,
-    traits::c_decision_predicate<typename GraphType::id_type, const typename GraphType::edge_type&>
-        EnqueueVertexPred,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        empty_callback>
+    traits::c_graph G,
+    traits::c_predicate<search_node<G>, search_node<G>> PQCompare,
+    traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,
+    traits::c_optional_predicate<typename G::id_type> VisitVertexPredicate = empty_callback,
+    traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
+        empty_callback,
+    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
+        EnqueueVertexPred = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 bool pfs(
-    const GraphType& graph,
+    const G& graph,
     const PQCompare& pq_compare,
     const InitQueueRangeType& initial_queue_content,
-    const VisitVertexPredicate& visit_vertex_pred,
-    const VisitCallback& visit,
-    const EnqueueVertexPred& enqueue_vertex_pred,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    VisitVertexPredicate visit_vertex_pred = {},
+    VisitCallback visit = {},
+    EnqueueVertexPred enqueue_vertex_pred = {},
+    PreVisitCallback pre_visit = {},
+    PostVisitCallback post_visit = {}
 ) {
     if (std::ranges::empty(initial_queue_content))
         return false;
 
     // prepare the vertex queue
-    using vertex_queue_type =
-        std::priority_queue<vertex_info<GraphType>, std::vector<vertex_info<GraphType>>, PQCompare>;
-    vertex_queue_type vertex_queue(pq_compare);
+    using queue_type = std::priority_queue<search_node<G>, std::vector<search_node<G>>, PQCompare>;
+    queue_type q(pq_compare);
 
-    for (const auto& vinfo : initial_queue_content)
-        vertex_queue.push(vinfo);
+    for (const auto& node : initial_queue_content)
+        q.push(node);
 
     // search the graph
-    while (not vertex_queue.empty()) {
-        const auto vinfo = vertex_queue.top();
-        vertex_queue.pop();
+    while (not q.empty()) {
+        const auto node = q.top();
+        q.pop();
 
         if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
-            if (not visit_vertex_pred(vinfo.id))
+            if (not visit_vertex_pred(node.vertex_id))
                 continue;
 
         if constexpr (not traits::c_empty_callback<PreVisitCallback>)
-            pre_visit(vinfo.id);
+            pre_visit(node.vertex_id);
 
         if constexpr (not traits::c_empty_callback<VisitCallback>)
-            if (not visit(vinfo.id, vinfo.pred_id))
+            if (not visit(node.vertex_id, node.pred_id))
                 return false;
 
-        for (const auto& edge : graph.adjacent_edges(vinfo.id)) {
-            const auto incident_vertex_id = edge.incident_vertex(vinfo.id);
+        for (const auto& edge : graph.adjacent_edges(node.vertex_id)) {
+            const auto incident_vertex_id = edge.incident_vertex(node.vertex_id);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
             if (enqueue == decision::abort)
                 return false;
 
             if (enqueue)
-                vertex_queue.emplace(incident_vertex_id, vinfo.id);
+                q.emplace(incident_vertex_id, node.vertex_id);
         }
         if constexpr (not traits::c_empty_callback<PostVisitCallback>)
-            post_visit(vinfo.id);
+            post_visit(node.vertex_id);
     }
 
     return true;

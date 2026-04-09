@@ -12,9 +12,9 @@
 
 namespace gl::algorithm {
 
-template <traits::c_undirected_graph GraphType>
+template <traits::c_undirected_graph G>
 struct mst_descriptor {
-    using graph_type = GraphType;
+    using graph_type = G;
     using edge_type = typename graph_type::edge_type;
     using weight_type = vertex_distance_type<graph_type>;
 
@@ -26,18 +26,16 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(0);
 };
 
-template <traits::c_undirected_graph GraphType>
-[[nodiscard]] mst_descriptor<GraphType> edge_heap_prim_mst(
-    const GraphType& graph, typename GraphType::id_type root_id
-) {
+template <traits::c_undirected_graph G>
+[[nodiscard]] mst_descriptor<G> edge_heap_prim_mst(const G& graph, typename G::id_type root_id) {
     // type definitions
-    using edge_type = typename GraphType::edge_type;
+    using edge_type = typename G::edge_type;
 
     struct edge_comparator {
         [[nodiscard]] gl_attr_force_inline bool operator()(
             const edge_type& lhs, const edge_type& rhs
         ) const {
-            return get_weight<GraphType>(lhs) > get_weight<GraphType>(rhs);
+            return get_weight<G>(lhs) > get_weight<G>(rhs);
         }
     };
 
@@ -45,7 +43,7 @@ template <traits::c_undirected_graph GraphType>
 
     // prepare the necessary utility
     const auto n_vertices = graph.order();
-    mst_descriptor<GraphType> mst(n_vertices);
+    mst_descriptor<G> mst(n_vertices);
     std::vector<bool> visited(n_vertices, false);
     queue_type edge_queue;
 
@@ -71,7 +69,7 @@ template <traits::c_undirected_graph GraphType>
 
         // add the minimum weight edge to the mst
         mst.edges.emplace_back(min_edge);
-        mst.weight += get_weight<GraphType>(min_edge);
+        mst.weight += get_weight<G>(min_edge);
 
         visited[min_edge_tgt] = true;
         ++n_vertices_in_mst;
@@ -85,19 +83,17 @@ template <traits::c_undirected_graph GraphType>
     return mst;
 }
 
-template <traits::c_undirected_graph GraphType>
-requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
-[[nodiscard]] mst_descriptor<GraphType> vertex_heap_prim_mst(
-    const GraphType& graph, typename GraphType::id_type root_id
-) {
+template <traits::c_undirected_graph G>
+requires traits::c_has_numeric_limits_max<vertex_distance_type<G>>
+[[nodiscard]] mst_descriptor<G> vertex_heap_prim_mst(const G& graph, typename G::id_type root_id) {
     // type definitions
-    using id_type = typename GraphType::id_type;
-    using edge_type = typename GraphType::edge_type;
-    using distance_type = vertex_distance_type<GraphType>;
+    using id_type = typename G::id_type;
+    using edge_type = typename G::edge_type;
+    using distance_type = vertex_distance_type<G>;
 
     // Prepare the necessary utility
     const auto n_vertices = graph.order();
-    mst_descriptor<GraphType> mst(n_vertices);
+    mst_descriptor<G> mst(n_vertices);
 
     std::vector<bool> in_mst(n_vertices, false);
     std::vector<distance_type> min_cost(n_vertices, std::numeric_limits<distance_type>::max());
@@ -137,7 +133,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<GraphType>>
 
         // Update adjacent vertices
         for (const auto& edge : graph.adjacent_edges(vertex_id)) {
-            const auto edge_weight = get_weight<GraphType>(edge);
+            const auto edge_weight = get_weight<G>(edge);
             const auto incident_vertex_idx = to_idx(edge.incident_vertex(vertex_id));
 
             if (not in_mst[incident_vertex_idx] and edge_weight < min_cost[incident_vertex_idx]) {
