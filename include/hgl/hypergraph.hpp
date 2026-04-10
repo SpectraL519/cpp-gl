@@ -530,12 +530,16 @@ public:
         return this->out_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto out_hyperedge_ids(const id_type vertex_id) const {
+    [[nodiscard]] auto out_hyperedge_ids(const id_type vertex_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.out_hyperedges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto out_hyperedge_ids(const vertex_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedge_ids(const vertex_type& vertex) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
         return this->out_hyperedge_ids(vertex.id());
     }
 
@@ -571,12 +575,16 @@ public:
         return this->in_hyperedges(vertex.id());
     }
 
-    [[nodiscard]] auto in_hyperedge_ids(const id_type vertex_id) const {
+    [[nodiscard]] auto in_hyperedge_ids(const id_type vertex_id) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.in_hyperedges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto in_hyperedge_ids(const vertex_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedge_ids(const vertex_type& vertex) const
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
         return this->in_hyperedge_ids(vertex.id());
     }
 

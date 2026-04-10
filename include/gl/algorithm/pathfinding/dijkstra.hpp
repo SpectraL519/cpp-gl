@@ -14,45 +14,41 @@
 
 namespace gl::algorithm {
 
-template <traits::c_graph GraphType, traits::c_arithmetic VertexDistanceType>
+template <traits::c_graph G, traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor {
-    using id_type = typename GraphType::id_type;
+    using id_type = typename G::id_type;
     using distance_type = VertexDistanceType;
 
     paths_descriptor(const size_type n_vertices)
     : predecessors(n_vertices, invalid_id), distances(n_vertices) {}
 
-    predecessors_map<GraphType> predecessors;
+    predecessors_map<G> predecessors;
     std::vector<distance_type> distances;
 };
 
-template <traits::c_graph GraphType>
-using paths_descriptor_type = paths_descriptor<GraphType, vertex_distance_type<GraphType>>;
+template <traits::c_graph G>
+using paths_descriptor_type = paths_descriptor<G, vertex_distance_type<G>>;
 
-template <traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline paths_descriptor_type<GraphType> make_paths_descriptor(
-    const GraphType& graph
-) {
-    return paths_descriptor_type<GraphType>{graph.order()};
+template <traits::c_graph G>
+[[nodiscard]] gl_attr_force_inline paths_descriptor_type<G> make_paths_descriptor(const G& graph) {
+    return paths_descriptor_type<G>{graph.order()};
 }
 
 template <
-    traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
-[[nodiscard]] paths_descriptor_type<GraphType> dijkstra_shortest_paths(
-    const GraphType& graph,
-    typename GraphType::id_type source_id,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    traits::c_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+[[nodiscard]] paths_descriptor_type<G> dijkstra_shortest_paths(
+    const G& graph,
+    typename G::id_type source_id,
+    PreVisitCallback pre_visit = {},
+    PostVisitCallback post_visit = {}
 ) {
-    using id_type = typename GraphType::id_type;
-    using edge_type = typename GraphType::edge_type;
-    using distance_type = vertex_distance_type<GraphType>;
+    using id_type = typename G::id_type;
+    using edge_type = typename G::edge_type;
+    using distance_type = vertex_distance_type<G>;
 
-    auto paths = make_paths_descriptor<GraphType>(graph);
+    auto paths = make_paths_descriptor<G>(graph);
 
     paths.predecessors[source_id] = source_id;
     paths.distances[source_id] = distance_type{};
@@ -61,18 +57,17 @@ template <
 
     pfs(
         graph,
-        [&paths](
-            const algorithm::vertex_info<GraphType>& lhs,
-            const algorithm::vertex_info<GraphType>& rhs
-        ) { return paths.distances[lhs.id] > paths.distances[rhs.id]; },
-        init_range<GraphType>(source_id),
-        algorithm::empty_callback{}, // visit predicate
-        algorithm::empty_callback{}, // visit callback
+        [&paths](const search_node<G>& lhs, const search_node<G>& rhs) {
+            return paths.distances[lhs.vertex_id] > paths.distances[rhs.vertex_id];
+        },
+        init_range<G>(source_id),
+        empty_callback{}, // visit predicate
+        empty_callback{}, // visit callback
         [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
             -> decision { // enqueue predicate
             const auto pred_id = in_edge.incident_vertex(vertex_id);
 
-            const auto edge_weight = get_weight<GraphType>(in_edge);
+            const auto edge_weight = get_weight<G>(in_edge);
             if (edge_weight < 0) {
                 negative_edge.emplace(in_edge);
                 return decision::abort;
@@ -100,7 +95,7 @@ template <
             "[alg::dijkstra_shortest_paths] Found an edge with a negative weight: [{}, {} | w={}]",
             edge.source(),
             edge.target(),
-            get_weight<GraphType>(edge)
+            get_weight<G>(edge)
         ));
     }
 

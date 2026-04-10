@@ -293,6 +293,7 @@ public:
         return this->at(vertex.id());
     }
 
+    // TODO: rename to incident_edges
     [[nodiscard]] inline auto adjacent_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -301,6 +302,7 @@ public:
             return this->_impl.adjacent_edges(vertex_id);
     }
 
+    // TODO: rename to incident_edges
     [[nodiscard]] gl_attr_force_inline auto adjacent_edges(const vertex_type& vertex) const {
         return this->adjacent_edges(vertex.id());
     }
