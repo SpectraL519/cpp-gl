@@ -113,14 +113,19 @@ struct directed_adjacency_matrix {
 
     [[nodiscard]] static auto successor_ids(const impl_type& self, id_type vertex_id) {
         return self._matrix[to_idx(vertex_id)] | std::views::enumerate
-             | std::views::filter([](auto entry) { return entry.second != invalid_id; })
-             | std::views::transform([](auto entry) { return static_cast<id_type>(entry.first); });
+             | std::views::filter([](auto entry) {
+                   auto [target_id, edge_id] = entry;
+                   return edge_id != invalid_id;
+               })
+             | std::views::transform([](auto entry) {
+                   auto [target_id, edge_id] = entry;
+                   return static_cast<id_type>(target_id);
+               });
     }
 
     [[nodiscard]] static auto predecessor_ids(const impl_type& self, id_type vertex_id) {
-        const auto v_idx = to_idx(vertex_id);
         return std::views::iota(initial_id_v<id_type>, static_cast<id_type>(self._matrix.size()))
-             | std::views::filter([&](const auto src_id) {
+             | std::views::filter([&self, v_idx = to_idx(vertex_id)](const auto src_id) {
                    return self._matrix[to_idx(src_id)][v_idx] != invalid_id;
                });
     }
@@ -302,8 +307,14 @@ struct undirected_adjacency_matrix {
 
     [[nodiscard]] static auto neighbor_ids(const impl_type& self, id_type vertex_id) {
         return self._matrix[to_idx(vertex_id)] | std::views::enumerate
-             | std::views::filter([](auto entry) { return entry.second != invalid_id; })
-             | std::views::transform([](auto entry) { return static_cast<id_type>(entry.first); });
+             | std::views::filter([](auto entry) {
+                   auto [target_id, edge_id] = entry;
+                   return edge_id != invalid_id;
+               })
+             | std::views::transform([](auto entry) {
+                   auto [target_id, edge_id] = entry;
+                   return static_cast<id_type>(target_id);
+               });
     }
 
     [[nodiscard]] gl_attr_force_inline static auto predecessor_ids(

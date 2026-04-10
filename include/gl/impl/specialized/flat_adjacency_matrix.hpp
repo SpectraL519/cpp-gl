@@ -124,7 +124,7 @@ struct directed_flat_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static auto predecessor_ids(
         const impl_type& self, id_type vertex_id
     ) {
-        return std::views::iota(initial_id, static_cast<id_type>(self._matrix.n_rows()))
+        return std::views::iota(initial_id_v<id_type>, static_cast<id_type>(self._matrix.n_rows()))
              | std::views::filter([&self, v_idx = to_idx(vertex_id)](const auto r_id) {
                    return self._matrix[to_idx(r_id), v_idx] != invalid_id;
                });
@@ -133,7 +133,7 @@ struct directed_flat_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static auto successor_ids(
         const impl_type& self, id_type vertex_id
     ) {
-        return std::views::iota(initial_id, static_cast<id_type>(self._matrix.n_cols()))
+        return std::views::iota(initial_id_v<id_type>, static_cast<id_type>(self._matrix.n_cols()))
              | std::views::filter([&self, v_idx = to_idx(vertex_id)](const auto c_id) {
                    return self._matrix[v_idx, to_idx(c_id)] != invalid_id;
                });
@@ -302,7 +302,7 @@ struct undirected_flat_adjacency_matrix {
     [[nodiscard]] gl_attr_force_inline static auto neighbor_ids(
         const impl_type& self, id_type vertex_id
     ) {
-        return std::views::iota(initial_id, static_cast<id_type>(self._matrix.n_cols()))
+        return std::views::iota(initial_id_v<id_type>, static_cast<id_type>(self._matrix.n_cols()))
              | std::views::filter([&self, v_idx = to_idx(vertex_id)](const auto c_id) {
                    return self._matrix[v_idx, to_idx(c_id)] != invalid_id;
                });

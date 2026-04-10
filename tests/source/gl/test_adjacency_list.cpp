@@ -208,6 +208,51 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
     // --- vertex getters ---
 
+    SUBCASE("successor_ids should return the ids of vertices to which the outgoing edges are "
+            "directed") {
+        add_edge(constants::v1_id, constants::v2_id);
+        add_edge(constants::v1_id, constants::v3_id);
+
+        const auto successors =
+            sut.successor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+
+        REQUIRE_EQ(successors.size(), 2uz);
+        CHECK(std::ranges::contains(successors, constants::v2_id));
+        CHECK(std::ranges::contains(successors, constants::v3_id));
+
+        const auto successors_v2 =
+            sut.successor_ids(constants::v2_id) | std::ranges::to<std::vector>();
+        CHECK_EQ(successors_v2.size(), 0uz);
+    }
+
+    SUBCASE("predecessor_ids should return the ids of vertices from which the incoming edges "
+            "originate") {
+        add_edge(constants::v2_id, constants::v1_id);
+        add_edge(constants::v3_id, constants::v1_id);
+
+        const auto predecessors =
+            sut.predecessor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+
+        REQUIRE_EQ(predecessors.size(), 2uz);
+        CHECK(std::ranges::contains(predecessors, constants::v2_id));
+        CHECK(std::ranges::contains(predecessors, constants::v3_id));
+
+        const auto predecessors_v2 =
+            sut.predecessor_ids(constants::v2_id) | std::ranges::to<std::vector>();
+        CHECK_EQ(predecessors_v2.size(), 0uz);
+    }
+
+    SUBCASE("neighbor_ids should return the combined ids of predecessors and successors") {
+        add_edge(constants::v2_id, constants::v1_id); // v2 is a predecessor
+        add_edge(constants::v1_id, constants::v3_id); // v3 is a successor
+
+        const auto neighbors = sut.neighbor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+
+        REQUIRE_EQ(neighbors.size(), 2uz);
+        CHECK(std::ranges::contains(neighbors, constants::v2_id));
+        CHECK(std::ranges::contains(neighbors, constants::v3_id));
+    }
+
     // --- degree getters ---
 
     SUBCASE("degree should return the number of edges incident with the given vertex") {
@@ -525,6 +570,25 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
     }
 
     // --- vertex getters ---
+
+    SUBCASE("neighbor/predecessor/successor_ids should return the same sets of adjacent vertices "
+            "for undirected graphs") {
+        add_edge(constants::v1_id, constants::v2_id);
+        add_edge(constants::v3_id, constants::v1_id);
+
+        const auto neighbors = sut.neighbor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+        const auto predecessors =
+            sut.predecessor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+        const auto successors =
+            sut.successor_ids(constants::v1_id) | std::ranges::to<std::vector>();
+
+        REQUIRE_EQ(neighbors.size(), 2uz);
+        CHECK(std::ranges::contains(neighbors, constants::v2_id));
+        CHECK(std::ranges::contains(neighbors, constants::v3_id));
+
+        CHECK(std::ranges::is_permutation(neighbors, predecessors));
+        CHECK(std::ranges::is_permutation(neighbors, successors));
+    }
 
     // --- degree getters ---
 

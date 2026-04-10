@@ -254,6 +254,43 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
 
     // --- vertex getters ---
 
+    SUBCASE("successor_ids should return the ids of vertices to which the outgoing edges are "
+            "directed") {
+        add_edge(constants::v1_id, constants::v2_id);
+        add_edge(constants::v1_id, constants::v3_id);
+
+        auto successors = sut.successor_ids(constants::v1_id);
+
+        REQUIRE_EQ(gl::util::range_size(successors), 2uz);
+        CHECK(std::ranges::contains(successors, constants::v2_id));
+        CHECK(std::ranges::contains(successors, constants::v3_id));
+        CHECK_EQ(gl::util::range_size(sut.successor_ids(constants::v2_id)), 0uz);
+    }
+
+    SUBCASE("predecessor_ids should return the ids of vertices from which the incoming edges "
+            "originate") {
+        add_edge(constants::v2_id, constants::v1_id);
+        add_edge(constants::v3_id, constants::v1_id);
+
+        auto predecessors = sut.predecessor_ids(constants::v1_id);
+
+        REQUIRE_EQ(gl::util::range_size(predecessors), 2uz);
+        CHECK(std::ranges::contains(predecessors, constants::v2_id));
+        CHECK(std::ranges::contains(predecessors, constants::v3_id));
+        CHECK_EQ(gl::util::range_size(sut.predecessor_ids(constants::v2_id)), 0uz);
+    }
+
+    SUBCASE("neighbor_ids should return the combined ids of predecessors and successors") {
+        add_edge(constants::v2_id, constants::v1_id);
+        add_edge(constants::v1_id, constants::v3_id);
+
+        auto neighbors = sut.neighbor_ids(constants::v1_id);
+
+        REQUIRE_EQ(gl::util::range_size(neighbors), 2uz);
+        CHECK(std::ranges::contains(neighbors, constants::v2_id));
+        CHECK(std::ranges::contains(neighbors, constants::v3_id));
+    }
+
     // --- degree getters ---
 
     SUBCASE("degree should return the number of edges incident with the given vertex") {
@@ -561,6 +598,28 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     // --- vertex getters ---
+
+    SUBCASE("neighbor/predecessor/successor_ids should return the same sets of adjacent vertices "
+            "for undirected graphs") {
+        add_edge(constants::v1_id, constants::v2_id);
+        add_edge(constants::v3_id, constants::v1_id);
+
+        auto neighbors_view = sut.neighbor_ids(constants::v1_id);
+        auto predecessors_view = sut.predecessor_ids(constants::v1_id);
+        auto successors_view = sut.successor_ids(constants::v1_id);
+
+        REQUIRE_EQ(gl::util::range_size(neighbors_view), 2uz);
+        CHECK(std::ranges::contains(neighbors_view, constants::v2_id));
+        CHECK(std::ranges::contains(neighbors_view, constants::v3_id));
+
+        // Evaluate views to vectors to ensure robust equivalence checks
+        const auto neighbors = neighbors_view | std::ranges::to<std::vector>();
+        const auto predecessors = predecessors_view | std::ranges::to<std::vector>();
+        const auto successors = successors_view | std::ranges::to<std::vector>();
+
+        CHECK(std::ranges::equal(neighbors, predecessors));
+        CHECK(std::ranges::equal(neighbors, successors));
+    }
 
     // --- degree getters ---
 
