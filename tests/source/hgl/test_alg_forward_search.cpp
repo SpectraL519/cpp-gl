@@ -21,10 +21,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     hypergraph_type hypergraph;
     std::vector<id_type> root_vertices;
 
-    std::vector<id_type> expected_previsit_order;
-    std::vector<id_type> expected_postvisit_order;
+    std::vector<id_type> expected_visit_order;
     std::vector<id_type> expected_pred_map;
     std::vector<id_type> expected_in_hyperedges;
+    std::vector<id_type> unreachable_vertices;
 
     /* Topology:
        V = {v0, v1, v2, v3, v4}
@@ -61,8 +61,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // e2 CAN be traversed because v4 is its only head.
         root_vertices = {4u};
 
-        expected_previsit_order = {4u, 1u};
-        expected_postvisit_order = expected_previsit_order;
+        expected_visit_order = {4u, 1u};
 
         expected_pred_map.resize(order, hgl::invalid_id);
         expected_pred_map[4uz] = 4u; // Root
@@ -70,6 +69,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         expected_in_hyperedges.resize(order, hgl::invalid_id);
         expected_in_hyperedges[1uz] = e2;
+
+        unreachable_vertices = {0u, 2u, 3u};
     }
 
     SUBCASE("roots v3 and v4 (complete backward traversal)") {
@@ -85,8 +86,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // Queue: [v1, v0]
         // Pop v1 -> no incoming edges
         // Pop v0 -> no incoming edges
-        expected_previsit_order = {3u, 4u, 2u, 1u, 0u};
-        expected_postvisit_order = expected_previsit_order;
+        expected_visit_order = {3u, 4u, 2u, 1u, 0u};
 
         expected_pred_map = {
             2u, // v0 reached backward from v2 via e0
@@ -103,14 +103,16 @@ TEST_CASE_TEMPLATE_DEFINE(
             hgl::invalid_id, // v3 root
             hgl::invalid_id // v4 root
         };
+
+        unreachable_vertices = {};
     }
 
     CAPTURE(hypergraph);
     CAPTURE(root_vertices);
-    CAPTURE(expected_previsit_order);
-    CAPTURE(expected_postvisit_order);
+    CAPTURE(expected_visit_order);
     CAPTURE(expected_pred_map);
     CAPTURE(expected_in_hyperedges);
+    CAPTURE(unreachable_vertices);
 
     // --- noret search ---
 
@@ -130,8 +132,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         [&](const auto& node) { postvisit_order.push_back(node.vertex_id); }
     );
 
-    CHECK_EQ(previsit_order, expected_previsit_order);
-    CHECK_EQ(postvisit_order, expected_postvisit_order);
+    CHECK_EQ(previsit_order, expected_visit_order);
+    CHECK_EQ(postvisit_order, expected_visit_order);
     CHECK_EQ(noret_pred_map, expected_pred_map);
     CHECK_EQ(noret_in_hyperedges, expected_in_hyperedges);
 
@@ -148,6 +150,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     CHECK_EQ(ret_pred_map, expected_pred_map);
     CHECK_EQ(ret_in_hyperedges, expected_in_hyperedges);
+    CHECK(std::ranges::all_of(expected_visit_order, [&search_tree](const auto v_id) {
+        return hgl::algorithm::is_reachable(search_tree, v_id);
+    }));
+    CHECK(std::ranges::all_of(unreachable_vertices, [&search_tree](const auto v_id) {
+        return not hgl::algorithm::is_reachable(search_tree, v_id);
+    }));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -196,10 +204,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     hypergraph_type hypergraph;
     std::vector<id_type> root_vertices;
 
-    std::vector<id_type> expected_previsit_order;
-    std::vector<id_type> expected_postvisit_order;
+    std::vector<id_type> expected_visit_order;
     std::vector<id_type> expected_pred_map;
     std::vector<id_type> expected_in_hyperedges;
+    std::vector<id_type> unreachable_vertices;
 
     /* Topology:
        V = {v0, v1, v2, v3, v4}
@@ -234,8 +242,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("single root v4 (partial backward traversal)") {
         root_vertices = {4u};
 
-        expected_previsit_order = {4u, 1u};
-        expected_postvisit_order = expected_previsit_order;
+        expected_visit_order = {4u, 1u};
 
         expected_pred_map.resize(order, hgl::invalid_id);
         expected_pred_map[4uz] = 4u; // Root
@@ -243,6 +250,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         expected_in_hyperedges.resize(order, hgl::invalid_id);
         expected_in_hyperedges[1uz] = e2;
+
+        unreachable_vertices = {0u, 2u, 3u};
     }
 
     SUBCASE("roots v3 and v4 (complete backward traversal)") {
@@ -255,8 +264,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // Pop v3 -> e1 unlocked -> pushes v2.
         // Pop v2 -> e0 unlocked -> pushes v0, v1(visited).
         // Pop v0 -> no incoming edges.
-        expected_previsit_order = {4u, 1u, 3u, 2u, 0u};
-        expected_postvisit_order = expected_previsit_order;
+        expected_visit_order = {4u, 1u, 3u, 2u, 0u};
 
         // Notice v2's pred is v3 now! (v3 was popped after v4, unlocking e1)
         expected_pred_map = {
@@ -274,14 +282,16 @@ TEST_CASE_TEMPLATE_DEFINE(
             hgl::invalid_id, // v3 root
             hgl::invalid_id // v4 root
         };
+
+        unreachable_vertices = {};
     }
 
     CAPTURE(hypergraph);
     CAPTURE(root_vertices);
-    CAPTURE(expected_previsit_order);
-    CAPTURE(expected_postvisit_order);
+    CAPTURE(expected_visit_order);
     CAPTURE(expected_pred_map);
     CAPTURE(expected_in_hyperedges);
+    CAPTURE(unreachable_vertices);
 
     // --- noret search ---
 
@@ -301,8 +311,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         [&](const auto& node) { postvisit_order.push_back(node.vertex_id); }
     );
 
-    CHECK_EQ(previsit_order, expected_previsit_order);
-    CHECK_EQ(postvisit_order, expected_postvisit_order);
+    CHECK_EQ(previsit_order, expected_visit_order);
+    CHECK_EQ(postvisit_order, expected_visit_order);
     CHECK_EQ(noret_pred_map, expected_pred_map);
     CHECK_EQ(noret_in_hyperedges, expected_in_hyperedges);
 
@@ -319,6 +329,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     CHECK_EQ(ret_pred_map, expected_pred_map);
     CHECK_EQ(ret_in_hyperedges, expected_in_hyperedges);
+    CHECK(std::ranges::all_of(expected_visit_order, [&search_tree](const auto v_id) {
+        return hgl::algorithm::is_reachable(search_tree, v_id);
+    }));
+    CHECK(std::ranges::all_of(unreachable_vertices, [&search_tree](const auto v_id) {
+        return not hgl::algorithm::is_reachable(search_tree, v_id);
+    }));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

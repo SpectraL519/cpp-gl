@@ -7,11 +7,16 @@
 #include "gl/algorithm/core.hpp"
 #include "gl/algorithm/traits.hpp"
 #include "gl/algorithm/util.hpp"
+#include "gl/traits.hpp"
 #include "hgl/hypergraph.hpp"
 #include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
-namespace hgl::algorithm {
+#include <ranges>
+
+namespace hgl {
+
+namespace algorithm {
 
 // -- GL core ---
 
@@ -55,6 +60,19 @@ struct search_node {
 template <hgl::traits::c_hypergraph H>
 using search_tree = std::vector<search_node<H>>;
 
+} // namespace algorithm
+
+namespace traits {
+
+template <typename T>
+concept c_search_tree =
+    c_random_access_range<T>
+    and c_instantiation_of<std::ranges::range_value_t<T>, algorithm::search_node>;
+
+} // namespace traits
+
+namespace algorithm {
+
 // --- generic algorithm traits ---
 
 enum class traversal_direction : bool { forward, backward };
@@ -95,6 +113,5 @@ struct traversal_policy<H, traversal_direction::backward> {
     }
 };
 
-} // namespace hgl::algorithm
-
-// TODO! Validate `const Callback&` vs `Callback&&` in alg templates
+} // namespace algorithm
+} // namespace hgl

@@ -20,7 +20,11 @@ template <result_discriminator ResultDiscriminator, hgl::traits::c_hypergraph Hy
         return return_t();
 }
 
-// TODO: is_reachable
+[[nodiscard]] gl_attr_force_inline bool is_reachable(
+    const traits::c_search_tree auto& tree, traits::c_id_type auto vertex_id
+) noexcept {
+    return tree[gl::to_idx(vertex_id)].pred_id != invalid_id;
+}
 
 template <hgl::traits::c_hypergraph HypergraphType>
 [[nodiscard]] gl_attr_force_inline std::vector<search_node<HypergraphType>> init_range(
