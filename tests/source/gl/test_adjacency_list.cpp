@@ -113,7 +113,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 
 namespace {
 
-constexpr gl::size_type n_inc_edged_for_fully_connected_vertex = constants::n_elements - 1uz;
+constexpr gl::size_type n_inc_edges_for_fully_connected_vertex = constants::n_elements - 1uz;
 
 } // namespace
 
@@ -142,11 +142,11 @@ struct test_directed_adjacency_list : public test_adjacency_list {
 
         if (no_loops)
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adj_items) {
-                return adj_items.size() == n_inc_edged_for_fully_connected_vertex;
+                return adj_items.size() == n_inc_edges_for_fully_connected_vertex;
             }));
         else
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adj_items) {
-                return adj_items.size() == n_inc_edged_for_fully_connected_vertex + 1uz;
+                return adj_items.size() == n_inc_edges_for_fully_connected_vertex + 1uz;
             }));
     }
 
@@ -261,13 +261,13 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
         CHECK(std::ranges::all_of(
             constants::vertex_id_view,
-            [](const auto deg) { return deg == 2uz * n_inc_edged_for_fully_connected_vertex; },
+            [](const auto deg) { return deg == 2uz * n_inc_edges_for_fully_connected_vertex; },
             deg_proj
         ));
 
         add_edge(constants::v1_id, constants::v1_id);
 
-        CHECK_EQ(deg_proj(constants::v1_id), 2uz * (n_inc_edged_for_fully_connected_vertex + 1uz));
+        CHECK_EQ(deg_proj(constants::v1_id), 2uz * (n_inc_edges_for_fully_connected_vertex + 1uz));
     }
 
     SUBCASE("in/out_degree should return the number of edges incident {to/from} the given vertex") {
@@ -287,13 +287,13 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
 
         CHECK(std::ranges::all_of(
             constants::vertex_id_view,
-            [](const auto deg) { return deg == n_inc_edged_for_fully_connected_vertex; },
+            [](const auto deg) { return deg == n_inc_edges_for_fully_connected_vertex; },
             deg_proj
         ));
 
         add_edge(constants::v1_id, constants::v1_id);
 
-        CHECK_EQ(deg_proj(constants::v1_id), n_inc_edged_for_fully_connected_vertex + 1uz);
+        CHECK_EQ(deg_proj(constants::v1_id), n_inc_edges_for_fully_connected_vertex + 1uz);
     }
 
     SUBCASE("degree_map should return a map of the numbers of edges incident with the "
@@ -353,13 +353,13 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         fully_connect_vertex(constants::v1_id);
 
         auto out_edges = sut.out_edges(constants::v1_id);
-        REQUIRE_EQ(out_edges.size(), n_inc_edged_for_fully_connected_vertex);
+        REQUIRE_EQ(out_edges.size(), n_inc_edges_for_fully_connected_vertex);
 
         const auto& edge_to_remove = out_edges[0uz];
         sut.remove_edge(edge_to_remove);
 
         out_edges = sut.out_edges(constants::v1_id);
-        REQUIRE_EQ(out_edges.size(), n_inc_edged_for_fully_connected_vertex - 1uz);
+        REQUIRE_EQ(out_edges.size(), n_inc_edges_for_fully_connected_vertex - 1uz);
         // validate that the incident edges list has been properly aligned
         CHECK_EQ(std::ranges::find(out_edges, edge_to_remove), out_edges.end());
     }
@@ -504,18 +504,18 @@ struct test_undirected_adjacency_list : public test_adjacency_list {
 
         if (no_loops)
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adj_items) {
-                return adj_items.size() == n_inc_edged_for_fully_connected_vertex;
+                return adj_items.size() == n_inc_edges_for_fully_connected_vertex;
             }));
         else
             REQUIRE(std::ranges::all_of(get(sut), [&](const auto& adj_items) {
-                return adj_items.size() == n_inc_edged_for_fully_connected_vertex + 1uz;
+                return adj_items.size() == n_inc_edges_for_fully_connected_vertex + 1uz;
             }));
     }
 
     sut_type sut{constants::n_elements};
 
     const gl::size_type n_unique_edges_in_full_graph =
-        (n_inc_edged_for_fully_connected_vertex * constants::n_elements) / 2uz;
+        (n_inc_edges_for_fully_connected_vertex * constants::n_elements) / 2uz;
 };
 
 TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected_adj_list_template) {
@@ -614,7 +614,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
         CHECK(std::ranges::all_of(
             constants::vertex_id_view,
-            [](const auto deg) { return deg == n_inc_edged_for_fully_connected_vertex; },
+            [](const auto deg) { return deg == n_inc_edges_for_fully_connected_vertex; },
             deg_proj
         ));
 
@@ -622,7 +622,7 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
 
         CHECK_EQ(
             deg_proj(constants::v1_id),
-            n_inc_edged_for_fully_connected_vertex + 2uz // loops counted twice
+            n_inc_edges_for_fully_connected_vertex + 2uz // loops counted twice
         );
     }
 
@@ -658,16 +658,16 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         REQUIRE(new_edge.is_incident_from(constants::v1_id));
         REQUIRE(new_edge.is_incident_to(constants::v2_id));
 
-        const auto inc_edged_1 = sut.incident_edges(constants::v1_id);
-        const auto inc_edged_2 = sut.incident_edges(constants::v2_id);
+        const auto inc_edges_1 = sut.incident_edges(constants::v1_id);
+        const auto inc_edges_2 = sut.incident_edges(constants::v2_id);
 
-        REQUIRE_EQ(inc_edged_1.size(), 1uz);
-        REQUIRE_EQ(inc_edged_2.size(), 1uz);
+        REQUIRE_EQ(inc_edges_1.size(), 1uz);
+        REQUIRE_EQ(inc_edges_2.size(), 1uz);
 
-        const auto& new_edge_extracted_1 = inc_edged_1[0uz];
+        const auto& new_edge_extracted_1 = inc_edges_1[0uz];
         CHECK_EQ(new_edge_extracted_1, new_edge);
 
-        const auto& new_edge_extracted_2 = inc_edged_2[0uz];
+        const auto& new_edge_extracted_2 = inc_edges_2[0uz];
         CHECK_EQ(new_edge_extracted_2, new_edge);
     }
 
@@ -692,10 +692,10 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
     SUBCASE("remove_edge should remove the edge from both the first and second vertices' list") {
         fully_connect_vertex(constants::v1_id);
 
-        auto inc_edged_first = sut.incident_edges(constants::v1_id);
-        REQUIRE_EQ(inc_edged_first.size(), n_inc_edged_for_fully_connected_vertex);
+        auto inc_edges_first = sut.incident_edges(constants::v1_id);
+        REQUIRE_EQ(inc_edges_first.size(), n_inc_edges_for_fully_connected_vertex);
 
-        const auto& edge_to_remove = inc_edged_first[0uz];
+        const auto& edge_to_remove = inc_edges_first[0uz];
 
         const auto target_id = edge_to_remove.target();
         REQUIRE_EQ(sut.incident_edges(target_id).size(), 1uz);
@@ -703,14 +703,14 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         sut.remove_edge(edge_to_remove);
 
         // validate that the first incident edges list has been properly aligned
-        inc_edged_first = sut.incident_edges(0uz);
-        REQUIRE_EQ(inc_edged_first.size(), n_inc_edged_for_fully_connected_vertex - 1uz);
-        CHECK_EQ(std::ranges::find(inc_edged_first, edge_to_remove), inc_edged_first.end());
+        inc_edges_first = sut.incident_edges(0uz);
+        REQUIRE_EQ(inc_edges_first.size(), n_inc_edges_for_fully_connected_vertex - 1uz);
+        CHECK_EQ(std::ranges::find(inc_edges_first, edge_to_remove), inc_edges_first.end());
 
         // validate that the second adjacent edges list has been properly aligned
-        const auto inc_edged_second = sut.incident_edges(target_id);
-        REQUIRE_EQ(inc_edged_second.size(), 0uz);
-        CHECK_EQ(std::ranges::find(inc_edged_second, edge_to_remove), inc_edged_second.end());
+        const auto inc_edges_second = sut.incident_edges(target_id);
+        REQUIRE_EQ(inc_edges_second.size(), 0uz);
+        CHECK_EQ(std::ranges::find(inc_edges_second, edge_to_remove), inc_edges_second.end());
     }
 
     // --- edge getters ---

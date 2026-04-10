@@ -207,9 +207,7 @@ struct undirected_flat_adjacency_list {
         // rebuild the graph (faster then shifting the entire data block for each removed edge)
         typename impl_type::adjacency_storage_type new_list;
         new_list.reserve_segments(self._list.size() - 1uz);
-        const auto estimated_new_size =
-            self._list.data_size() - (self._list[vertex_idx].size() * 2uz);
-        new_list.reserve_data(estimated_new_size);
+        new_list.reserve_data(self._list.data_size() - self._list[vertex_idx].size());
 
         std::vector<item_type> buffer;
         for (auto idx = 0uz; idx < self._list.size(); ++idx) {

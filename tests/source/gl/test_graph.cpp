@@ -926,13 +926,6 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             );
         }
 
-        SUBCASE("are_adjacent(vertex_id, vertex_id) should return true the ids are the same and "
-                "valid") {
-            CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-                return sut.are_adjacent(vertex_id, vertex_id);
-            }));
-        }
-
         SUBCASE("are_adjacent(vertex_id, vertex_id) should return true if there is an edge "
                 "connecting the given vertices") {
             sut.add_edge(v1, v2);
@@ -942,6 +935,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             CHECK_FALSE(sut.are_adjacent(constants::v1_id, constants::v3_id));
             CHECK_FALSE(sut.are_adjacent(constants::v2_id, constants::v3_id));
+
+            // self adjacency
+            CHECK_FALSE(sut.are_adjacent(constants::v1_id, constants::v1_id));
+            sut.add_edge(v1, v1);
+            CHECK(sut.are_adjacent(constants::v1_id, constants::v1_id));
         }
 
         SUBCASE("are_adjacent(vertex, vertex) should throw if at least one of the vertices is "
@@ -969,13 +967,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             CHECK_FALSE(sut.are_adjacent(v1, v3));
             CHECK_FALSE(sut.are_adjacent(v2, v3));
-        }
 
-        SUBCASE("are_adjacent(vertex, vertex) should return true the vertices are the same and "
-                "valid") {
-            CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& vertex) {
-                return sut.are_adjacent(vertex, vertex);
-            }));
+            // self adjacency
+            CHECK_FALSE(sut.are_adjacent(v1, v1));
+            sut.add_edge(v1, v1);
+            CHECK(sut.are_adjacent(v1, v1));
         }
 
         SUBCASE("are_adjacent(edge, edge) should throw if either edge is invalid") {
@@ -990,11 +986,13 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             );
         }
 
-        SUBCASE("are_adjacent(edge, edge) should return true only when the edges share a vertex") {
+        SUBCASE("are_adjacent(edge, edge) should return true only when the edges are distinct and "
+                "share a vertex") {
             const auto edge_1 = sut.add_edge(v1, v2);
             const auto edge_2 = sut.add_edge(v2, v3);
             const auto loop_3 = sut.add_edge(v3, v3);
 
+            CHECK_FALSE(sut.are_adjacent(edge_1, edge_1));
             CHECK(sut.are_adjacent(edge_1, edge_2));
             CHECK(sut.are_adjacent(edge_2, edge_1));
             CHECK_FALSE(sut.are_adjacent(edge_1, loop_3));

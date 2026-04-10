@@ -88,7 +88,7 @@ struct directed_flat_adjacency_matrix {
     static std::vector<id_type> remove_vertex(impl_type& self, id_type vertex_id) {
         const auto vertex_idx = to_idx(vertex_id);
         std::vector<id_type> removed_edges;
-        removed_edges.reserve(self._matrix.size());
+        removed_edges.reserve(self._matrix.size() * 2uz);
 
         // extract out-edges
         for (auto edge_id : self._matrix[vertex_idx])

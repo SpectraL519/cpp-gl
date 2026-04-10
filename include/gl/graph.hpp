@@ -524,17 +524,13 @@ public:
 
     // --- adjacency and incidence methods ---
 
-    [[nodiscard]] bool are_adjacent(const id_type source_id, const id_type target_id) const {
-        this->_verify_vertex_id(source_id);
-        if (source_id == target_id)
-            return true;
-
-        this->_verify_vertex_id(target_id);
-
-        if constexpr (traits::c_directed_edge<edge_type>)
-            return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
-        else
+    [[nodiscard]] gl_attr_force_inline bool are_adjacent(
+        const id_type source_id, const id_type target_id
+    ) const {
+        if constexpr (traits::c_undirected_graph<graph>)
             return this->has_edge(source_id, target_id);
+        else
+            return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
     }
 
     [[nodiscard]] gl_attr_force_inline bool are_adjacent(
@@ -546,6 +542,9 @@ public:
     [[nodiscard]] bool are_adjacent(const edge_type& edge_1, const edge_type& edge_2) const {
         this->_verify_edge(edge_1);
         this->_verify_edge(edge_2);
+
+        if (edge_1.id() == edge_2.id())
+            return false;
         return edge_1.is_incident_with(edge_2.source()) or edge_1.is_incident_with(edge_2.target());
     }
 
