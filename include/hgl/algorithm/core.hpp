@@ -57,7 +57,7 @@ struct search_node {
     id_type hyperedge_id = invalid_id;
 };
 
-template <hgl::traits::c_hypergraph H>
+template <traits::c_hypergraph H>
 using search_tree = std::vector<search_node<H>>;
 
 } // namespace algorithm
@@ -77,10 +77,10 @@ namespace algorithm {
 
 enum class traversal_direction : bool { forward, backward };
 
-template <hgl::traits::c_hypergraph H, traversal_direction Dir = traversal_direction::forward>
+template <traits::c_hypergraph H, traversal_direction Dir>
 struct traversal_policy;
 
-template <hgl::traits::c_undirected_hypergraph H, traversal_direction Dir>
+template <traits::c_undirected_hypergraph H, traversal_direction Dir>
 struct traversal_policy<H, Dir> {
     static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.incident_hyperedge_ids(v_id);
@@ -91,7 +91,7 @@ struct traversal_policy<H, Dir> {
     }
 };
 
-template <hgl::traits::c_bf_directed_hypergraph H>
+template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::forward> {
     static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.out_hyperedge_ids(v_id); // forward star
@@ -102,7 +102,7 @@ struct traversal_policy<H, traversal_direction::forward> {
     }
 };
 
-template <hgl::traits::c_bf_directed_hypergraph H>
+template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::backward> {
     static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.in_hyperedge_ids(v_id); // backward star

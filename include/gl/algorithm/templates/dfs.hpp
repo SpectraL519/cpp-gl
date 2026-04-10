@@ -24,7 +24,7 @@ template <
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 bool dfs(
     const G& graph,
-    const InitStackRangeType initial_stack_content,
+    const InitStackRangeType& initial_stack_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueVertexPred enqueue_vertex_pred = {},
@@ -34,7 +34,7 @@ bool dfs(
     if (std::ranges::empty(initial_stack_content))
         return false;
 
-    // prepare the vertex queue
+    // prepare the node stack
     std::stack<search_node<G>> s;
     for (const auto& node : initial_stack_content)
         s.push(node);

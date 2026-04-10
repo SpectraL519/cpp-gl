@@ -14,11 +14,11 @@ namespace gl::algorithm {
 template <result_discriminator Result, traits::c_graph G>
 [[nodiscard]] gl_attr_force_inline non_void_return_type<Result, predecessors_map<G>>
 init_predecessors_map(const G& graph) {
-    using return_type = non_void_return_type<Result, predecessors_map<G>>;
+    using return_t = non_void_return_type<Result, predecessors_map<G>>;
     if constexpr (Result == ret)
-        return return_type(graph.order(), invalid_id);
+        return return_t(graph.order(), invalid_id);
     else
-        return return_type();
+        return return_t();
 }
 
 template <traits::c_id_type IdType>
@@ -56,9 +56,10 @@ template <traits::c_graph G, result_discriminator Result>
 template <traits::c_graph G, bool AsResult = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
-    using return_type = std::conditional_t<AsResult, decision, bool>;
-    return [&](typename G::id_type vertex_id, [[maybe_unused]] const typename G::edge_type& in_edge
-           ) -> return_type { return not visited[to_idx(vertex_id)]; };
+    using return_t = std::conditional_t<AsResult, decision, bool>;
+    return [&](typename G::id_type vertex_id, const typename G::edge_type&) -> return_t {
+        return not visited[to_idx(vertex_id)];
+    };
 }
 
 } // namespace gl::algorithm

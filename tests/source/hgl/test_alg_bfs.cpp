@@ -128,7 +128,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (const id_type v : {3u, 4u})
             hypergraph.bind(v, e1);
 
-        root_vertex_id = gl::algorithm::no_root;
+        root_vertex_id = hgl::algorithm::no_root;
 
         expected_visit_order = {0u, 1u, 2u, 3u, 4u};
         expected_pred_map = {0u, 0u, 0u, 3u, 3u};
@@ -150,7 +150,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::breadth_first_search<gl::algorithm::noret>(
+    hgl::algorithm::breadth_first_search<hgl::algorithm::noret>(
         hypergraph,
         root_vertex_id,
         [&](const auto& node) {
@@ -169,7 +169,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     // --- ret bfs ---
 
     const auto search_tree =
-        hgl::algorithm::breadth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
+        hgl::algorithm::breadth_first_search<hgl::algorithm::ret>(hypergraph, root_vertex_id);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
@@ -346,7 +346,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         hypergraph.bind_tail(3uz, e1);
         hypergraph.bind_head(4uz, e1);
 
-        root_vertex_id = gl::algorithm::no_root;
+        root_vertex_id = hgl::algorithm::no_root;
 
         expected_visit_order = {0u, 1u, 2u, 3u, 4u};
         expected_pred_map = {0u, 0u, 0u, 3u, 3u};
@@ -368,7 +368,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::breadth_first_search<gl::algorithm::noret>(
+    hgl::algorithm::breadth_first_search<hgl::algorithm::noret>(
         hypergraph,
         root_vertex_id,
         [&](const auto& node) {
@@ -387,7 +387,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     // --- ret bfs ---
 
     const auto search_tree =
-        hgl::algorithm::breadth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
+        hgl::algorithm::breadth_first_search<hgl::algorithm::ret>(hypergraph, root_vertex_id);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();

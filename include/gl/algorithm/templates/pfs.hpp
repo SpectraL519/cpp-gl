@@ -36,7 +36,7 @@ bool pfs(
     if (std::ranges::empty(initial_queue_content))
         return false;
 
-    // prepare the vertex queue
+    // prepare the node queue
     using queue_type = std::priority_queue<search_node<G>, std::vector<search_node<G>>, PQCompare>;
     queue_type q(pq_compare);
 

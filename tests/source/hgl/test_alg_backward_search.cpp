@@ -88,7 +88,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::backward_bfs<gl::algorithm::noret>(
+    hgl::algorithm::backward_bfs<hgl::algorithm::noret>(
         hypergraph,
         root_vertices,
         [&](const auto& node) {
@@ -107,7 +107,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     // --- ret search ---
 
     const auto search_tree =
-        hgl::algorithm::backward_bfs<gl::algorithm::ret>(hypergraph, root_vertices);
+        hgl::algorithm::backward_bfs<hgl::algorithm::ret>(hypergraph, root_vertices);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
@@ -248,7 +248,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::backward_dfs<gl::algorithm::noret>(
+    hgl::algorithm::backward_dfs<hgl::algorithm::noret>(
         hypergraph,
         root_vertices,
         [&](const auto& node) {
@@ -267,7 +267,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     // --- ret search ---
 
     const auto search_tree =
-        hgl::algorithm::backward_dfs<gl::algorithm::ret>(hypergraph, root_vertices);
+        hgl::algorithm::backward_dfs<hgl::algorithm::ret>(hypergraph, root_vertices);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();

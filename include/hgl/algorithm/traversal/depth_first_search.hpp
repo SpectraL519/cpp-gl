@@ -12,9 +12,9 @@ namespace hgl::algorithm {
 
 template <
     result_discriminator Result = ret,
-    hgl::traits::c_hypergraph H,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_hypergraph H,
+    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
 return_type<Result, search_tree<H>> depth_first_search(
     const H& hypergraph,
     const typename H::id_type root_vertex_id = no_root,

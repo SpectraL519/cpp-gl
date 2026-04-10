@@ -12,7 +12,7 @@ namespace hgl::algorithm {
 
 template <
     traversal_direction Dir = traversal_direction::forward,
-    hgl::traits::c_hypergraph H,
+    traits::c_hypergraph H,
     traits::c_forward_range_of<search_node<H>> InitQueueRangeType = std::vector<search_node<H>>,
     traits::c_optional_predicate<const search_node<H>&> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<const search_node<H>&> VisitCallback = empty_callback,
@@ -66,7 +66,7 @@ bool dfs(
 
             for (const auto target_id : policy::target_vertices(hypergraph, he_id)) {
                 if (target_id == curr_node.vertex_id)
-                    continue; // Skip the source vertex
+                    continue;
 
                 search_node<H> tgt_node{target_id, curr_node.vertex_id, he_id};
                 const auto enqueue = enqueue_vertex_pred(tgt_node);

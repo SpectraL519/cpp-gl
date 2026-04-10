@@ -34,7 +34,7 @@ bool bfs(
     if (std::ranges::empty(initial_queue_content))
         return false;
 
-    // prepare the vertex queue
+    // prepare the node queue
     std::queue<search_node<G>> q;
     for (const auto& node : initial_queue_content)
         q.push(node);

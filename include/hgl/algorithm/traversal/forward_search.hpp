@@ -14,10 +14,10 @@ namespace hgl::algorithm {
 
 template <
     result_discriminator Result = ret,
-    hgl::traits::c_bf_directed_hypergraph H,
+    traits::c_bf_directed_hypergraph H,
     traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
 return_type<Result, search_tree<H>> forward_bfs(
     const H& hypergraph,
     const RootRange& root_vertices,
@@ -34,10 +34,6 @@ return_type<Result, search_tree<H>> forward_bfs(
         root_vertices
         | std::views::transform([](const id_type root_id) { return search_node<H>{root_id}; });
 
-    const auto traverse_hyperedge_pred = [&head_unvisited](id_type he_id, id_type) {
-        return static_cast<decision>(--head_unvisited[gl::to_idx(he_id)] == 0uz);
-    };
-
     // clang-format off
 
     bfs<traversal_direction::backward>(
@@ -45,7 +41,7 @@ return_type<Result, search_tree<H>> forward_bfs(
         root_queue,
         default_visit_vertex_predicate<H>(visited_vertices),
         default_visit_callback<H, Result>(visited_vertices, stree),
-        traverse_hyperedge_pred,
+        blocking_traverse_hyperedge_predicate(head_unvisited),
         default_enqueue_vertex_predicate<H, true>(visited_vertices),
         pre_visit,
         post_visit
@@ -59,10 +55,10 @@ return_type<Result, search_tree<H>> forward_bfs(
 
 template <
     result_discriminator Result = ret,
-    hgl::traits::c_bf_directed_hypergraph H,
+    traits::c_bf_directed_hypergraph H,
     traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    gl::traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
 return_type<Result, search_tree<H>> forward_dfs(
     const H& hypergraph,
     const RootRange& root_vertices,
@@ -79,10 +75,6 @@ return_type<Result, search_tree<H>> forward_dfs(
         root_vertices
         | std::views::transform([](const id_type root_id) { return search_node<H>{root_id}; });
 
-    const auto traverse_hyperedge_pred = [&head_unvisited](id_type he_id, id_type) {
-        return static_cast<decision>(--head_unvisited[gl::to_idx(he_id)] == 0uz);
-    };
-
     // clang-format off
 
     dfs<traversal_direction::backward>(
@@ -90,7 +82,7 @@ return_type<Result, search_tree<H>> forward_dfs(
         root_queue,
         default_visit_vertex_predicate<H>(visited_vertices),
         default_visit_callback<H, Result>(visited_vertices, stree),
-        traverse_hyperedge_pred,
+        blocking_traverse_hyperedge_predicate(head_unvisited),
         default_enqueue_vertex_predicate<H, true>(visited_vertices),
         pre_visit,
         post_visit
