@@ -55,15 +55,13 @@ bool bfs(
             if (not visit(node.vertex_id, node.pred_id))
                 return false;
 
-        for (const auto& edge : graph.adjacent_edges(node.vertex_id)) {
-            const auto incident_vertex_id = edge.incident_vertex(node.vertex_id);
-
-            const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
+        for (const auto& edge : graph.incident_edges(node.vertex_id)) {
+            const auto target_vertex_id = edge.other(node.vertex_id);
+            const auto enqueue = enqueue_vertex_pred(target_vertex_id, edge);
             if (enqueue == decision::abort)
                 return false;
-
             if (enqueue)
-                q.emplace(incident_vertex_id, node.vertex_id);
+                q.emplace(target_vertex_id, node.vertex_id);
         }
 
         if constexpr (not traits::c_empty_callback<PostVisitCallback>)
