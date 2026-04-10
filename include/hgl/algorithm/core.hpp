@@ -62,7 +62,7 @@ struct traversal_policy;
 
 template <hgl::traits::c_undirected_hypergraph H>
 struct traversal_policy<H> {
-    static auto out_hyperedges(const H& h, typename H::id_type v_id) {
+    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.incident_hyperedge_ids(v_id);
     }
 
@@ -73,7 +73,7 @@ struct traversal_policy<H> {
 
 template <hgl::traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H> {
-    static auto out_hyperedges(const H& h, typename H::id_type v_id) {
+    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.out_hyperedge_ids(v_id);
     }
 

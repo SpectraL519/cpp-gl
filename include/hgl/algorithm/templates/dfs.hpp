@@ -54,7 +54,7 @@ bool dfs(
             if (not visit(curr_node))
                 return false;
 
-        for (const auto he_id : policy::out_hyperedges(hypergraph, curr_node.vertex_id)) {
+        for (const auto he_id : policy::target_hyperedges(hypergraph, curr_node.vertex_id)) {
             if constexpr (not traits::c_empty_callback<TraverseHyperedgePred>) {
                 const auto traverse = traverse_he_pred(he_id, curr_node.vertex_id);
                 if (traverse == decision::abort)
