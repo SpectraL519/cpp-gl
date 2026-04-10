@@ -850,91 +850,90 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto v2 = sut.get_vertex(constants::v2_id);
         const auto v3 = sut.get_vertex(constants::v3_id);
 
-        SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
+        SUBCASE("are_adjacent(vertex_id, vertex_id) should throw for out of range vertex ids") {
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(constants::out_of_rng_idx, constants::v2_id)),
+                discard_result(sut.are_adjacent(constants::out_of_rng_idx, constants::v2_id)),
                 std::out_of_range
             );
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(constants::v1_id, constants::out_of_rng_idx)),
+                discard_result(sut.are_adjacent(constants::v1_id, constants::out_of_rng_idx)),
                 std::out_of_range
             );
         }
 
-        SUBCASE("are_incident(vertex_id, vertex_id) should return true the ids are the same and "
+        SUBCASE("are_adjacent(vertex_id, vertex_id) should return true the ids are the same and "
                 "valid") {
             CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-                return sut.are_incident(vertex_id, vertex_id);
+                return sut.are_adjacent(vertex_id, vertex_id);
             }));
         }
 
-        SUBCASE("are_incident(vertex_id, vertex_id) should return true if there is an edge "
+        SUBCASE("are_adjacent(vertex_id, vertex_id) should return true if there is an edge "
                 "connecting the given vertices") {
             sut.add_edge(v1, v2);
 
-            CHECK(sut.are_incident(constants::v1_id, constants::v2_id));
-            CHECK(sut.are_incident(constants::v2_id, constants::v1_id));
+            CHECK(sut.are_adjacent(constants::v1_id, constants::v2_id));
+            CHECK(sut.are_adjacent(constants::v2_id, constants::v1_id));
 
-            CHECK_FALSE(sut.are_incident(constants::v1_id, constants::v3_id));
-            CHECK_FALSE(sut.are_incident(constants::v2_id, constants::v3_id));
+            CHECK_FALSE(sut.are_adjacent(constants::v1_id, constants::v3_id));
+            CHECK_FALSE(sut.are_adjacent(constants::v2_id, constants::v3_id));
         }
 
-        SUBCASE("are_incident(vertex, vertex) should throw if at least one of the vertices is "
+        SUBCASE("are_adjacent(vertex, vertex) should throw if at least one of the vertices is "
                 "invalid") {
             CHECK_THROWS_AS(
                 discard_result(
-                    sut.are_incident(fixture.out_of_range_vertex, fixture.out_of_range_vertex)
+                    sut.are_adjacent(fixture.out_of_range_vertex, fixture.out_of_range_vertex)
                 ),
                 std::out_of_range
             );
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(fixture.out_of_range_vertex, v2)), std::out_of_range
+                discard_result(sut.are_adjacent(fixture.out_of_range_vertex, v2)), std::out_of_range
             );
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(v1, fixture.out_of_range_vertex)), std::out_of_range
+                discard_result(sut.are_adjacent(v1, fixture.out_of_range_vertex)), std::out_of_range
             );
         }
 
-        SUBCASE("are_incident(vertex, vertex) should return true if there is an edge connecting "
+        SUBCASE("are_adjacent(vertex, vertex) should return true if there is an edge connecting "
                 "the given vertices") {
             sut.add_edge(v1, v2);
 
-            CHECK(sut.are_incident(v1, v2));
-            CHECK(sut.are_incident(v2, v1));
+            CHECK(sut.are_adjacent(v1, v2));
+            CHECK(sut.are_adjacent(v2, v1));
 
-            CHECK_FALSE(sut.are_incident(v1, v3));
-            CHECK_FALSE(sut.are_incident(v2, v3));
+            CHECK_FALSE(sut.are_adjacent(v1, v3));
+            CHECK_FALSE(sut.are_adjacent(v2, v3));
         }
 
-        SUBCASE("are_incident(vertex, vertex) should return true the vertices are the same and "
+        SUBCASE("are_adjacent(vertex, vertex) should return true the vertices are the same and "
                 "valid") {
             CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& vertex) {
-                return sut.are_incident(vertex, vertex);
+                return sut.are_adjacent(vertex, vertex);
             }));
         }
 
-        SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
+        SUBCASE("are_adjacent(edge, edge) should throw if either edge is invalid") {
             const auto edge = sut.add_edge(v1, v2);
             const edge_type invalid_edge{gl::invalid_id, v1.id(), v2.id()};
 
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
+                discard_result(sut.are_adjacent(edge, invalid_edge)), std::invalid_argument
             );
             CHECK_THROWS_AS(
-                discard_result(sut.are_incident(invalid_edge, edge)), std::invalid_argument
+                discard_result(sut.are_adjacent(invalid_edge, edge)), std::invalid_argument
             );
         }
 
-        SUBCASE("are_incident(edge, edge) should return true only when the edges share a common "
-                "vertex") {
+        SUBCASE("are_adjacent(edge, edge) should return true only when the edges share a vertex") {
             const auto edge_1 = sut.add_edge(v1, v2);
             const auto edge_2 = sut.add_edge(v2, v3);
             const auto loop_3 = sut.add_edge(v3, v3);
 
-            CHECK(sut.are_incident(edge_1, edge_2));
-            CHECK(sut.are_incident(edge_2, edge_1));
-            CHECK_FALSE(sut.are_incident(edge_1, loop_3));
-            CHECK_FALSE(sut.are_incident(loop_3, edge_1));
+            CHECK(sut.are_adjacent(edge_1, edge_2));
+            CHECK(sut.are_adjacent(edge_2, edge_1));
+            CHECK_FALSE(sut.are_adjacent(edge_1, loop_3));
+            CHECK_FALSE(sut.are_adjacent(loop_3, edge_1));
         }
 
         SUBCASE("are_incident(vertex and edge pair) should throw if the vertex is invalid") {

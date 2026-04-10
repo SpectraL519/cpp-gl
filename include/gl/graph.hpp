@@ -524,8 +524,7 @@ public:
 
     // --- adjacency and incidence methods ---
 
-    // TODO: rename to are_adjacent
-    [[nodiscard]] bool are_incident(const id_type source_id, const id_type target_id) const {
+    [[nodiscard]] bool are_adjacent(const id_type source_id, const id_type target_id) const {
         this->_verify_vertex_id(source_id);
         if (source_id == target_id)
             return true;
@@ -538,15 +537,13 @@ public:
             return this->has_edge(source_id, target_id);
     }
 
-    // TODO: rename to are_adjacent
-    [[nodiscard]] gl_attr_force_inline bool are_incident(
+    [[nodiscard]] gl_attr_force_inline bool are_adjacent(
         const vertex_type& source, const vertex_type& target
     ) const {
-        return this->are_incident(source.id(), target.id());
+        return this->are_adjacent(source.id(), target.id());
     }
 
-    // TODO: rename to are_adjacent
-    [[nodiscard]] bool are_incident(const edge_type& edge_1, const edge_type& edge_2) const {
+    [[nodiscard]] bool are_adjacent(const edge_type& edge_1, const edge_type& edge_2) const {
         this->_verify_edge(edge_1);
         this->_verify_edge(edge_2);
         return edge_1.is_incident_with(edge_2.source()) or edge_1.is_incident_with(edge_2.target());
