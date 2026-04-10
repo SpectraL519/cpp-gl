@@ -215,9 +215,9 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
         REQUIRE(new_edge.is_incident_from(constants::v1_id));
         REQUIRE(new_edge.is_incident_to(constants::v2_id));
 
-        auto incident_edges_1 = sut.incidenct_edges(constants::v1_id);
+        auto incident_edges_1 = sut.incident_edges(constants::v1_id);
         CHECK_EQ(gl::util::range_size(incident_edges_1), 1uz);
-        CHECK_EQ(gl::util::range_size(sut.incidenct_edges(constants::v2_id)), 0uz);
+        CHECK_EQ(gl::util::range_size(sut.incident_edges(constants::v2_id)), 0uz);
 
         const auto& new_edge_extracted = *std::ranges::begin(incident_edges_1);
         CHECK_EQ(new_edge_extracted, new_edge);
@@ -238,14 +238,14 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
         }
     }
 
-    SUBCASE("incidenct_edges should return a filtered view of edges incident with the given vertex"
+    SUBCASE("incident_edges should return a filtered view of edges incident with the given vertex"
     ) {
         const auto vertex_id = constants::v1_id;
         const auto edge = add_edge(vertex_id, constants::v2_id);
-        auto incidenct_edges = sut.incidenct_edges(vertex_id);
+        auto incident_edges = sut.incident_edges(vertex_id);
 
-        REQUIRE_EQ(gl::util::range_size(incidenct_edges), 1uz);
-        CHECK_EQ(*std::ranges::begin(incidenct_edges), edge);
+        REQUIRE_EQ(gl::util::range_size(incident_edges), 1uz);
+        CHECK_EQ(*std::ranges::begin(incident_edges), edge);
     }
 
     SUBCASE("has_edge(id, id) should return true if there is an edge in the graph which connects "
@@ -296,20 +296,20 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
     SUBCASE("remove_edge should remove the edge from the source vertex's list") {
         fully_connect_vertex(constants::v1_id);
 
-        auto incidenct_edges = sut.incidenct_edges(constants::v1_id);
+        auto incident_edges = sut.incident_edges(constants::v1_id);
         REQUIRE_EQ(
-            gl::util::range_size(incidenct_edges), n_incident_edges_for_fully_connected_vertex
+            gl::util::range_size(incident_edges), n_incident_edges_for_fully_connected_vertex
         );
 
-        const auto edge_to_remove = *std::ranges::begin(incidenct_edges);
+        const auto edge_to_remove = *std::ranges::begin(incident_edges);
         sut.remove_edge(edge_to_remove);
 
         // validate that the incident edges list has been properly aligned
-        incidenct_edges = sut.incidenct_edges(constants::v1_id);
+        incident_edges = sut.incident_edges(constants::v1_id);
         REQUIRE_EQ(
-            gl::util::range_size(incidenct_edges), n_incident_edges_for_fully_connected_vertex - 1uz
+            gl::util::range_size(incident_edges), n_incident_edges_for_fully_connected_vertex - 1uz
         );
-        CHECK_EQ(std::ranges::find(incidenct_edges, edge_to_remove), incidenct_edges.end());
+        CHECK_EQ(std::ranges::find(incident_edges, edge_to_remove), incident_edges.end());
     }
 
     SUBCASE("in_edges should return edges where the vertex is the target") {
@@ -432,12 +432,12 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
         // Check the structure of the graph considering the aligned IDs
         CHECK_EQ(size(sut), constants::n_elements - 1uz);
 
-        auto adj_edges_1 = sut.incidenct_edges(constants::v1_id);
+        auto adj_edges_1 = sut.incident_edges(constants::v1_id);
         CHECK_EQ(gl::util::range_size(adj_edges_1), 1uz);
         CHECK_EQ((*std::ranges::begin(adj_edges_1)).id(), edge5.id() - n_removed_edges);
         CHECK_EQ((*std::ranges::begin(adj_edges_1)).target(), constants::v2_id);
 
-        auto adj_edges_2 = sut.incidenct_edges(constants::v2_id);
+        auto adj_edges_2 = sut.incident_edges(constants::v2_id);
         CHECK_EQ(gl::util::range_size(adj_edges_2), 1uz);
         CHECK_EQ((*std::ranges::begin(adj_edges_2)).id(), edge6.id() - n_removed_edges);
         CHECK_EQ((*std::ranges::begin(adj_edges_2)).target(), constants::v1_id);
@@ -520,8 +520,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(new_edge.is_incident_from(constants::v1_id));
         REQUIRE(new_edge.is_incident_to(constants::v2_id));
 
-        auto incident_edges_1 = sut.incidenct_edges(constants::v1_id);
-        auto incident_edges_2 = sut.incidenct_edges(constants::v2_id);
+        auto incident_edges_1 = sut.incident_edges(constants::v1_id);
+        auto incident_edges_2 = sut.incident_edges(constants::v2_id);
 
         REQUIRE_EQ(gl::util::range_size(incident_edges_1), 1uz);
         REQUIRE_EQ(gl::util::range_size(incident_edges_2), 1uz);
@@ -538,10 +538,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(new_edge.is_loop());
         REQUIRE(new_edge.is_incident_from(constants::v1_id));
 
-        auto incidenct_edges = sut.incidenct_edges(constants::v1_id);
-        REQUIRE_EQ(gl::util::range_size(incidenct_edges), 1uz);
+        auto incident_edges = sut.incident_edges(constants::v1_id);
+        REQUIRE_EQ(gl::util::range_size(incident_edges), 1uz);
 
-        const auto new_edge_extracted_1 = *std::ranges::begin(incidenct_edges);
+        const auto new_edge_extracted_1 = *std::ranges::begin(incident_edges);
         CHECK_EQ(new_edge_extracted_1, new_edge);
     }
 
@@ -566,14 +566,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(v3_row_view[constants::v2_id], edge2);
     }
 
-    SUBCASE("incidenct_edges should return a filtered view of edges incident with the given vertex"
+    SUBCASE("incident_edges should return a filtered view of edges incident with the given vertex"
     ) {
         const auto vertex_id = constants::v1_id;
         const auto edge = add_edge(vertex_id, constants::v2_id);
-        auto incidenct_edges = sut.incidenct_edges(vertex_id);
+        auto incident_edges = sut.incident_edges(vertex_id);
 
-        REQUIRE_EQ(gl::util::range_size(incidenct_edges), 1uz);
-        CHECK_EQ(*std::ranges::begin(incidenct_edges), edge);
+        REQUIRE_EQ(gl::util::range_size(incident_edges), 1uz);
+        CHECK_EQ(*std::ranges::begin(incident_edges), edge);
     }
 
     SUBCASE("has_edge(id, id) should return true if there is an edge in the graph which connects "
@@ -626,7 +626,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("remove_edge should remove the edge from both the first and second vertices' list") {
         fully_connect_vertex(constants::v1_id);
 
-        auto incident_edges_first = sut.incidenct_edges(constants::v1_id);
+        auto incident_edges_first = sut.incident_edges(constants::v1_id);
         REQUIRE_EQ(
             gl::util::range_size(incident_edges_first), n_incident_edges_for_fully_connected_vertex
         );
@@ -634,12 +634,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto edge_to_remove = *std::ranges::begin(incident_edges_first);
 
         const auto target_id = edge_to_remove.target();
-        REQUIRE_EQ(gl::util::range_size(sut.incidenct_edges(target_id)), 1uz);
+        REQUIRE_EQ(gl::util::range_size(sut.incident_edges(target_id)), 1uz);
 
         sut.remove_edge(edge_to_remove);
 
         // validate that the first incident edges list has been properly aligned
-        incident_edges_first = sut.incidenct_edges(constants::v1_id);
+        incident_edges_first = sut.incident_edges(constants::v1_id);
         REQUIRE_EQ(
             gl::util::range_size(incident_edges_first),
             n_incident_edges_for_fully_connected_vertex - 1uz
@@ -649,7 +649,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
 
         // validate that the second incident edges list has been properly aligned
-        auto incident_edges_second = sut.incidenct_edges(target_id);
+        auto incident_edges_second = sut.incident_edges(target_id);
         REQUIRE_EQ(gl::util::range_size(incident_edges_second), 0uz);
         CHECK_EQ(
             std::ranges::find(incident_edges_second, edge_to_remove), incident_edges_second.end()
@@ -663,8 +663,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         const auto in_edges = sut.in_edges(constants::v1_id) | std::ranges::to<std::vector>();
         const auto out_edges = sut.out_edges(constants::v1_id) | std::ranges::to<std::vector>();
 
-        CHECK(std::ranges::equal(in_edges, sut.incidenct_edges(constants::v1_id)));
-        CHECK(std::ranges::equal(out_edges, sut.incidenct_edges(constants::v1_id)));
+        CHECK(std::ranges::equal(in_edges, sut.incident_edges(constants::v1_id)));
+        CHECK(std::ranges::equal(out_edges, sut.incident_edges(constants::v1_id)));
     }
 
     SUBCASE("{in_/out_/}degree should return the number of edges incident {to/from/with} the given "
@@ -744,12 +744,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         // Check the structure of the graph considering the aligned IDs
         CHECK_EQ(size(sut), constants::n_elements - 1uz);
 
-        auto adj_edges_1 = sut.incidenct_edges(constants::v1_id);
+        auto adj_edges_1 = sut.incident_edges(constants::v1_id);
         CHECK_EQ(gl::util::range_size(adj_edges_1), 1uz);
         CHECK_EQ((*std::ranges::begin(adj_edges_1)).id(), edge3.id() - n_removed_edges);
         CHECK_EQ((*std::ranges::begin(adj_edges_1)).target(), constants::v2_id);
 
-        auto adj_edges_2 = sut.incidenct_edges(constants::v2_id);
+        auto adj_edges_2 = sut.incident_edges(constants::v2_id);
         CHECK_EQ(gl::util::range_size(adj_edges_2), 1uz);
         CHECK_EQ((*std::ranges::begin(adj_edges_2)).id(), edge3.id() - n_removed_edges);
         CHECK_EQ((*std::ranges::begin(adj_edges_2)).target(), constants::v1_id);

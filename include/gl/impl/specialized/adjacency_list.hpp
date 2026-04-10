@@ -78,9 +78,9 @@ struct directed_adjacency_list {
 
     [[nodiscard]] static size_type in_degree(const impl_type& self, id_type vertex_id) {
         size_type in_deg = 0uz;
-        for (const auto& incidenct_edges : self._list)
+        for (const auto& incident_edges : self._list)
             in_deg += static_cast<size_type>(
-                std::ranges::count(incidenct_edges, vertex_id, &item_type::vertex_id)
+                std::ranges::count(incident_edges, vertex_id, &item_type::vertex_id)
             );
 
         return in_deg;

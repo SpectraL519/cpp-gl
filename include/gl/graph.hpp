@@ -293,16 +293,16 @@ public:
         return this->at(vertex.id());
     }
 
-    [[nodiscard]] inline auto incidenct_edges(const id_type vertex_id) const {
+    [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.incidenct_edges(vertex_id, this->_edge_properties);
+            return this->_impl.incident_edges(vertex_id, this->_edge_properties);
         else
-            return this->_impl.incidenct_edges(vertex_id);
+            return this->_impl.incident_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto incidenct_edges(const vertex_type& vertex) const {
-        return this->incidenct_edges(vertex.id());
+    [[nodiscard]] gl_attr_force_inline auto incident_edges(const vertex_type& vertex) const {
+        return this->incident_edges(vertex.id());
     }
 
     [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
@@ -694,7 +694,7 @@ private:
 
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << "\n  incident edges:\n";
-            for (const auto& edge : this->incidenct_edges(vertex.id()))
+            for (const auto& edge : this->incident_edges(vertex.id()))
                 os << "\t- " << edge << '\n';
         }
     }
@@ -704,7 +704,7 @@ private:
 
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << " :";
-            for (const auto& edge : this->incidenct_edges(vertex.id()))
+            for (const auto& edge : this->incident_edges(vertex.id()))
                 os << ' ' << edge;
             os << '\n';
         }
@@ -734,7 +734,7 @@ private:
         if constexpr (traits::c_writable<typename edge_type::properties_type>) {
             if (with_edge_properties) {
                 const auto print_incident_edges = [this, &os](const id_type vertex_id) {
-                    for (const auto& edge : this->incidenct_edges(vertex_id)) {
+                    for (const auto& edge : this->incident_edges(vertex_id)) {
                         if (edge.source() != vertex_id)
                             continue; // vertex is not the source
                         os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
@@ -750,7 +750,7 @@ private:
         }
 
         const auto print_incident_edges = [this, &os](const id_type vertex_id) {
-            for (const auto& edge : this->incidenct_edges(vertex_id)) {
+            for (const auto& edge : this->incident_edges(vertex_id)) {
                 if (edge.source() != vertex_id)
                     continue; // vertex is not the source
                 os << edge.source() << ' ' << edge.target() << '\n';
