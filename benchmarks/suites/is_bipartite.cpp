@@ -3,7 +3,7 @@
 
 #include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
-#include <gl/topologies.hpp>
+#include <gl/topology.hpp>
 
 #include <benchmark/benchmark.h>
 

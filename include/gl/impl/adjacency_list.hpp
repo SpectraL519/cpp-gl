@@ -51,15 +51,37 @@ public:
 
     ~adjacency_list() = default;
 
-    // --- vertex methods ---
+    // --- vertex modifiers ---
 
     gl_attr_force_inline void add_vertex() {
         this->_list.resize(this->_list.size() + 1uz);
     }
 
-    inline void add_vertices(size_type n) {
+    gl_attr_force_inline void add_vertices(size_type n) {
         this->_list.resize(this->_list.size() + n);
     }
+
+    std::vector<id_type> remove_vertex(id_type vertex_id) {
+        auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
+        this->_remap_element_ids(vertex_id, removed_edge_ids);
+        return removed_edge_ids;
+    }
+
+    // --- vertex getters ---
+
+    [[nodiscard]] gl_attr_force_inline auto neighbor_ids(id_type vertex_id) const {
+        return specialized_impl::neighbor_ids(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto predecessor_ids(id_type vertex_id) const {
+        return specialized_impl::predecessor_ids(*this, vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto successor_ids(id_type vertex_id) const {
+        return specialized_impl::successor_ids(*this, vertex_id);
+    }
+
+    // --- degree getters ---
 
     [[nodiscard]] gl_attr_force_inline size_type degree(id_type vertex_id) const {
         return specialized_impl::degree(*this, vertex_id);
@@ -85,13 +107,7 @@ public:
         return specialized_impl::out_degree_map(*this);
     }
 
-    std::vector<id_type> remove_vertex(id_type vertex_id) {
-        auto removed_edge_ids = specialized_impl::remove_vertex(*this, vertex_id);
-        this->_remap_element_ids(vertex_id, removed_edge_ids);
-        return removed_edge_ids;
-    }
-
-    // --- edge methods ---
+    // --- edge modifiers ---
 
     gl_attr_force_inline void add_edge(id_type id, id_type source_id, id_type target_id) {
         specialized_impl::add_edge(*this, id, source_id, target_id);
@@ -104,6 +120,25 @@ public:
     ) {
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
+
+    gl_attr_force_inline void remove_edge(const edge_type& edge) {
+        specialized_impl::remove_edge(*this, edge);
+        for (auto&& inc : this->_list)
+            for (auto& item : inc)
+                item.edge_id -= static_cast<id_type>(item.edge_id > edge.id());
+    }
+
+    std::vector<id_type> remove_edges(const traits::c_range_of<edge_type> auto& edges) {
+        for (const auto& edge : edges)
+            specialized_impl::remove_edge(*this, edge);
+        auto removed_edge_ids =
+            edges | std::views::transform([](const auto& edge) { return edge.id(); })
+            | std::ranges::to<std::vector>();
+        this->_remap_element_ids(invalid_id, removed_edge_ids);
+        return removed_edge_ids;
+    }
+
+    // --- edge getters ---
 
     [[nodiscard]] gl_attr_force_inline bool has_edge(id_type source_id, id_type target_id) const {
         return std::ranges::contains(
@@ -120,9 +155,9 @@ public:
     [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto& incident_edges = this->_list[to_idx(source_id)];
-        const auto item_it = std::ranges::find(incident_edges, target_id, &item_type::vertex_id);
-        if (item_it == incident_edges.cend())
+        const auto& out_edges = this->_list[to_idx(source_id)];
+        const auto item_it = std::ranges::find(out_edges, target_id, &item_type::vertex_id);
+        if (item_it == out_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);
     }
@@ -132,11 +167,11 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto& incident_edges = this->_list[to_idx(source_id)];
-        const auto item_it = std::ranges::find(incident_edges, target_id, [](const auto& item) {
+        const auto& out_edges = this->_list[to_idx(source_id)];
+        const auto item_it = std::ranges::find(out_edges, target_id, [](const auto& item) {
             return item.vertex_id;
         });
-        if (item_it == incident_edges.cend())
+        if (item_it == out_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(
             item_it->edge_id, source_id, target_id, *edge_properties_map[to_idx(item_it->edge_id)]
@@ -171,27 +206,10 @@ public:
              | std::ranges::to<std::vector>();
     }
 
-    gl_attr_force_inline void remove_edge(const edge_type& edge) {
-        specialized_impl::remove_edge(*this, edge);
-        for (auto&& inc : this->_list)
-            for (auto& item : inc)
-                item.edge_id -= static_cast<id_type>(item.edge_id > edge.id());
-    }
-
-    std::vector<id_type> remove_edges(const traits::c_range_of<edge_type> auto& edges) {
-        for (const auto& edge : edges)
-            specialized_impl::remove_edge(*this, edge);
-        auto removed_edge_ids =
-            edges | std::views::transform([](const auto& edge) { return edge.id(); })
-            | std::ranges::to<std::vector>();
-        this->_remap_element_ids(invalid_id, removed_edge_ids);
-        return removed_edge_ids;
-    }
-
     [[nodiscard]] gl_attr_force_inline auto incident_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->out_edges(vertex_id);
+        return specialized_impl::incident_edges(*this, vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto incident_edges(
@@ -199,7 +217,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->out_edges(vertex_id, edge_properties_map);
+        return specialized_impl::incident_edges(*this, vertex_id, edge_properties_map);
     }
 
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id) const
@@ -257,14 +275,14 @@ public:
     [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->incident_edges(vertex_id);
+        return this->out_edges(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id, const auto& edge_properties_map)
         const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->incident_edges(vertex_id, edge_properties_map);
+        return this->out_edges(vertex_id, edge_properties_map);
     }
 
     // --- comparison ---
