@@ -5,12 +5,82 @@
 #pragma once
 
 #include "hgl/algorithm/core.hpp"
-#include "hgl/hypergraph.hpp"
 
 #include <stack>
 
 namespace hgl::algorithm {
 
-// TODO, dfs, r_dfs
+template <
+    hgl::traits::c_hypergraph H,
+    traits::c_forward_range_of<search_node<H>> InitQueueRangeType = std::vector<search_node<H>>,
+    traits::c_optional_predicate<const search_node<H>&> VisitVertexPredicate = empty_callback,
+    traits::c_optional_predicate<const search_node<H>&> VisitCallback = empty_callback,
+    traits::c_optional_decision_predicate<typename H::id_type, typename H::id_type>
+        TraverseHyperedgePred = empty_callback,
+    traits::c_decision_predicate<const search_node<H>&> EnqueueVertexPred = empty_callback,
+    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+bool dfs(
+    const H& hypergraph,
+    const InitQueueRangeType& initial_queue_content,
+    const VisitVertexPredicate& visit_vertex_pred = {},
+    const VisitCallback& visit = {},
+    const TraverseHyperedgePred& traverse_he_pred = {},
+    const EnqueueVertexPred& enqueue_vertex_pred = {},
+    const PreVisitCallback& pre_visit = {},
+    const PostVisitCallback& post_visit = {}
+) {
+    using policy = traversal_policy<H>;
+
+    if (std::ranges::empty(initial_queue_content))
+        return false;
+
+    std::stack<search_node<H>> s;
+    for (const auto& node : initial_queue_content)
+        s.push(node);
+
+    while (not s.empty()) {
+        const search_node curr_node = s.top();
+        s.pop();
+
+        if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
+            if (not visit_vertex_pred(curr_node))
+                continue;
+
+        if constexpr (not traits::c_empty_callback<PreVisitCallback>)
+            pre_visit(curr_node);
+
+        if constexpr (not traits::c_empty_callback<VisitCallback>)
+            if (not visit(curr_node))
+                return false;
+
+        for (const auto he_id : policy::out_hyperedges(hypergraph, curr_node.vertex_id)) {
+            if constexpr (not traits::c_empty_callback<TraverseHyperedgePred>) {
+                const auto traverse = traverse_he_pred(he_id, curr_node.vertex_id);
+                if (traverse == decision::abort)
+                    return false;
+                if (traverse == decision::reject)
+                    continue;
+            }
+
+            for (const auto target_id : policy::target_vertices(hypergraph, he_id)) {
+                if (target_id == curr_node.vertex_id)
+                    continue; // Skip the source vertex
+
+                search_node<H> tgt_node{target_id, curr_node.vertex_id, he_id};
+                const auto enqueue = enqueue_vertex_pred(tgt_node);
+                if (enqueue == decision::abort)
+                    return false;
+                if (enqueue)
+                    s.push(tgt_node);
+            }
+        }
+
+        if constexpr (not traits::c_empty_callback<PostVisitCallback>)
+            post_visit(curr_node);
+    }
+
+    return true;
+}
 
 } // namespace hgl::algorithm

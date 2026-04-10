@@ -31,9 +31,9 @@ using gl::algorithm::no_root_v;
 
 // --- traversal types ---
 
-template <traits::c_hypergraph HypergraphType>
+template <traits::c_hypergraph H>
 struct search_node {
-    using id_type = typename HypergraphType::id_type;
+    using id_type = typename H::id_type;
 
     search_node() = default;
 
@@ -52,32 +52,32 @@ struct search_node {
     id_type hyperedge_id = invalid_id;
 };
 
-template <hgl::traits::c_hypergraph HypergraphType>
-using search_tree = std::vector<search_node<HypergraphType>>;
+template <hgl::traits::c_hypergraph H>
+using search_tree = std::vector<search_node<H>>;
 
 // --- generic algorithm traits ---
 
-template <hgl::traits::c_hypergraph HypergraphType>
-struct traversal_traits;
+template <hgl::traits::c_hypergraph H>
+struct traversal_policy;
 
-template <hgl::traits::c_undirected_hypergraph HypergraphType>
-struct traversal_traits<HypergraphType> {
-    static auto out_hyperedges(const HypergraphType& h, typename HypergraphType::id_type v_id) {
+template <hgl::traits::c_undirected_hypergraph H>
+struct traversal_policy<H> {
+    static auto out_hyperedges(const H& h, typename H::id_type v_id) {
         return h.incident_hyperedge_ids(v_id);
     }
 
-    static auto target_vertices(const HypergraphType& h, typename HypergraphType::id_type he_id) {
+    static auto target_vertices(const H& h, typename H::id_type he_id) {
         return h.incident_vertex_ids(he_id);
     }
 };
 
-template <hgl::traits::c_bf_directed_hypergraph HypergraphType>
-struct traversal_traits<HypergraphType> {
-    static auto out_hyperedges(const HypergraphType& h, typename HypergraphType::id_type v_id) {
+template <hgl::traits::c_bf_directed_hypergraph H>
+struct traversal_policy<H> {
+    static auto out_hyperedges(const H& h, typename H::id_type v_id) {
         return h.out_hyperedge_ids(v_id);
     }
 
-    static auto target_vertices(const HypergraphType& h, typename HypergraphType::id_type he_id) {
+    static auto target_vertices(const H& h, typename H::id_type he_id) {
         return h.head_vertex_ids(he_id);
     }
 };

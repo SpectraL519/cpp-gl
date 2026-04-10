@@ -2,19 +2,19 @@
 #include "testing/common/io.hpp"
 #include "testing/hgl/constants.hpp"
 
-#include <hgl/algorithm/traversal/breadth_first_search.hpp>
+#include <hgl/algorithm/traversal/depth_first_search.hpp>
 #include <hgl/constants.hpp>
 
 #include <algorithm>
 
 namespace hgl_testing {
 
-TEST_SUITE_BEGIN("test_alg_bfs");
+TEST_SUITE_BEGIN("test_alg_dfs");
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "breadth_first_search should properly traverse the hypergraph and yield correct search trees",
+    "depth_first_search should properly traverse the hypergraph and yield correct search trees",
     HypergraphTraitsType,
-    bfs_undirected_hypergraph_traits_template
+    dfs_undirected_hypergraph_traits_template
 ) {
     using hypergraph_type = hgl::hypergraph<HypergraphTraitsType>;
     using id_type = typename hypergraph_type::id_type;
@@ -37,7 +37,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = hypergraph.vertex_ids() | std::ranges::to<std::vector>();
+        expected_previsit_order = {0u, 3u, 2u, 1u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, 0u};
         expected_in_hyperedges = {hgl::invalid_id, e, e, e};
@@ -61,7 +61,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = hypergraph.vertex_ids() | std::ranges::to<std::vector>();
+        // 0->1; 1->2,3; 3->4,5; 5; 4; 2
+        expected_previsit_order = {0u, 1u, 3u, 5u, 4u, 2u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 1u, 1u, 3u, 3u};
         expected_in_hyperedges = {hgl::invalid_id, e0, e1, e1, e2, e2};
@@ -89,11 +90,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        // BFS guarantees shortest path: 0 -> 3 via e2, skipping 1.
-        expected_previsit_order = {0u, 1u, 3u, 2u, 4u};
+        // 0->1,3; 3->1,2,4; 4; 2; 1
+        expected_previsit_order = {0u, 3u, 4u, 2u, 1u};
         expected_postvisit_order = expected_previsit_order;
-        expected_pred_map = {0u, 0u, 1u, 0u, 3u};
-        expected_in_hyperedges = {hgl::invalid_id, e0, e1, e2, e3};
+        expected_pred_map = {0u, 3u, 3u, 0u, 3u};
+        expected_in_hyperedges = {hgl::invalid_id, e1, e1, e2, e3};
     }
 
     SUBCASE("disconnected components (targeted root)") {
@@ -110,7 +111,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = {0u, 1u, 2u};
+        // 0->1,2; 2; 1
+        expected_previsit_order = {0u, 2u, 1u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, hgl::invalid_id, hgl::invalid_id};
         expected_in_hyperedges = {hgl::invalid_id, e0, e0, hgl::invalid_id, hgl::invalid_id};
@@ -130,7 +132,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = gl::algorithm::no_root;
 
-        expected_previsit_order = {0u, 1u, 2u, 3u, 4u};
+        // 0->1,2; 2; 1; 3->4; 4
+        expected_previsit_order = {0u, 2u, 1u, 3u, 4u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, 3u, 3u};
         expected_in_hyperedges = {hgl::invalid_id, e0, e0, hgl::invalid_id, e1};
@@ -150,7 +153,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::breadth_first_search<gl::algorithm::noret>(
+    hgl::algorithm::depth_first_search<gl::algorithm::noret>(
         hypergraph,
         root_vertex_id,
         [&](const auto& node) {
@@ -169,7 +172,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     // --- ret bfs ---
 
     const auto search_tree =
-        hgl::algorithm::breadth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
+        hgl::algorithm::depth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
@@ -182,7 +185,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    bfs_undirected_hypergraph_traits_template,
+    dfs_undirected_hypergraph_traits_template,
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::undirected_t>, // bidirectional incidence list
@@ -216,10 +219,10 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
-    "breadth_first_search should properly traverse the directed hypergraph and yield correct "
-    "search trees",
+    "depth_first_search should properly traverse the directed hypergraph and yield correct search "
+    "trees",
     HypergraphTraitsType,
-    bfs_bf_directed_hypergraph_traits_template
+    dfs_bf_directed_hypergraph_traits_template
 ) {
     using hypergraph_type = hgl::hypergraph<HypergraphTraitsType>;
     using id_type = typename hypergraph_type::id_type;
@@ -244,7 +247,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = hypergraph.vertex_ids() | std::ranges::to<std::vector>();
+        expected_previsit_order = {0u, 3u, 2u, 1u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, 0u};
         expected_in_hyperedges = {hgl::invalid_id, e, e, e};
@@ -270,7 +273,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = hypergraph.vertex_ids() | std::ranges::to<std::vector>();
+        // 0->1; 1->2,3; 3->4,5; 5; 4; 2
+        expected_previsit_order = {0u, 1u, 3u, 5u, 4u, 2u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 1u, 1u, 3u, 3u};
         expected_in_hyperedges = {hgl::invalid_id, e0, e1, e1, e2, e2};
@@ -299,8 +303,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        // BFS guarantees shortest path: 0 -> 3 via e2, skipping 1.
-        expected_previsit_order = {0u, 1u, 3u, 2u, 4u};
+        // 0->1,3; 3->4; 4; 1->2; 2
+        expected_previsit_order = {0u, 3u, 4u, 1u, 2u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 1u, 0u, 3u};
         expected_in_hyperedges = {hgl::invalid_id, e0, e1, e2, e3};
@@ -321,7 +325,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = hgl::initial_id;
 
-        expected_previsit_order = {0u, 1u, 2u};
+        // 0->1,2; 2; 1
+        expected_previsit_order = {0u, 2u, 1u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, hgl::invalid_id, hgl::invalid_id};
         expected_in_hyperedges = {hgl::invalid_id, e0, e0, hgl::invalid_id, hgl::invalid_id};
@@ -342,7 +347,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         root_vertex_id = gl::algorithm::no_root;
 
-        expected_previsit_order = {0u, 1u, 2u, 3u, 4u};
+        // 0->1,2; 2; 1; 3->4; 4
+        expected_previsit_order = {0u, 2u, 1u, 3u, 4u};
         expected_postvisit_order = expected_previsit_order;
         expected_pred_map = {0u, 0u, 0u, 3u, 3u};
         expected_in_hyperedges = {hgl::invalid_id, e0, e0, hgl::invalid_id, e1};
@@ -362,7 +368,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
     std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
 
-    hgl::algorithm::breadth_first_search<gl::algorithm::noret>(
+    hgl::algorithm::depth_first_search<gl::algorithm::noret>(
         hypergraph,
         root_vertex_id,
         [&](const auto& node) {
@@ -373,15 +379,15 @@ TEST_CASE_TEMPLATE_DEFINE(
         [&](const auto& node) { postvisit_order.push_back(node.vertex_id); }
     );
 
-    CHECK_EQ(previsit_order, expected_previsit_order);
-    CHECK_EQ(postvisit_order, expected_postvisit_order);
-    CHECK_EQ(noret_pred_map, expected_pred_map);
-    CHECK_EQ(noret_in_hyperedges, expected_in_hyperedges);
+    CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
+    CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+    CHECK(std::ranges::equal(noret_pred_map, expected_pred_map));
+    CHECK(std::ranges::equal(noret_in_hyperedges, expected_in_hyperedges));
 
     // --- ret bfs ---
 
     const auto search_tree =
-        hgl::algorithm::breadth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
+        hgl::algorithm::depth_first_search<gl::algorithm::ret>(hypergraph, root_vertex_id);
 
     const auto ret_pred_map =
         search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
@@ -389,12 +395,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         search_tree | std::views::transform(&node_type::hyperedge_id)
         | std::ranges::to<std::vector>();
 
-    CHECK_EQ(ret_pred_map, expected_pred_map);
-    CHECK_EQ(ret_in_hyperedges, expected_in_hyperedges);
+    CHECK(std::ranges::equal(ret_pred_map, expected_pred_map));
+    CHECK(std::ranges::equal(ret_in_hyperedges, expected_in_hyperedges));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    bfs_bf_directed_hypergraph_traits_template,
+    dfs_bf_directed_hypergraph_traits_template,
     hgl::list_hypergraph_traits<
         hgl::impl::bidirectional_t,
         hgl::bf_directed_t>, // bidirectional incidence list
@@ -427,6 +433,6 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
         hgl::bf_directed_t> // vertex-major flat incidence matrix
 );
 
-TEST_SUITE_END(); // test_alg_bfs
+TEST_SUITE_END(); // test_alg_dfs
 
 } // namespace hgl_testing

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "hgl/algorithm/core.hpp"
-#include "hgl/algorithm/templates/bfs.hpp"
+#include "hgl/algorithm/templates/dfs.hpp"
 #include "hgl/algorithm/util.hpp"
 
 namespace hgl::algorithm {
@@ -15,7 +15,7 @@ template <
     hgl::traits::c_hypergraph H,
     gl::traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
     gl::traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
-return_type<Result, search_tree<H>> breadth_first_search(
+return_type<Result, search_tree<H>> depth_first_search(
     const H& hypergraph,
     const typename H::id_type root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
@@ -29,7 +29,7 @@ return_type<Result, search_tree<H>> breadth_first_search(
     // clang-format off
 
     if (root_vertex_id != no_root) {
-        bfs(
+        dfs(
             hypergraph,
             init_range<H>(root_vertex_id),
             default_visit_vertex_predicate<H>(visited_vertices),
@@ -42,7 +42,7 @@ return_type<Result, search_tree<H>> breadth_first_search(
     }
     else {
         for (const auto root_id : hypergraph.vertex_ids())
-            bfs(
+            dfs(
                 hypergraph,
                 init_range<H>(root_id),
                 default_visit_vertex_predicate<H>(visited_vertices),

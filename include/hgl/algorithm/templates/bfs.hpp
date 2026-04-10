@@ -30,15 +30,14 @@ bool bfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using router = traversal_traits<H>;
+    using policy = traversal_policy<H>;
 
     if (std::ranges::empty(initial_queue_content))
         return false;
 
     std::queue<search_node<H>> q;
-
-    for (const auto& ctx : initial_queue_content)
-        q.push(ctx);
+    for (const auto& node : initial_queue_content)
+        q.push(node);
 
     while (not q.empty()) {
         const search_node curr_node = q.front();
@@ -55,7 +54,7 @@ bool bfs(
             if (not visit(curr_node))
                 return false;
 
-        for (const auto he_id : router::out_hyperedges(hypergraph, curr_node.vertex_id)) {
+        for (const auto he_id : policy::out_hyperedges(hypergraph, curr_node.vertex_id)) {
             if constexpr (not traits::c_empty_callback<TraverseHyperedgePred>) {
                 const auto traverse = traverse_he_pred(he_id, curr_node.vertex_id);
                 if (traverse == decision::abort)
@@ -64,7 +63,7 @@ bool bfs(
                     continue;
             }
 
-            for (const auto target_id : router::target_vertices(hypergraph, he_id)) {
+            for (const auto target_id : policy::target_vertices(hypergraph, he_id)) {
                 if (target_id == curr_node.vertex_id)
                     continue; // Skip the source vertex
 
