@@ -76,7 +76,7 @@ template <traits::c_undirected_graph G>
 
         // enqueue all edges incident with the `target` vertex if they lead to unvisited verties
         for (const auto& edge : graph.incidenct_edges(min_edge.target()))
-            if (not visited[to_idx(edge.incident_vertex(min_edge.target()))])
+            if (not visited[to_idx(edge.other(min_edge.target()))])
                 edge_queue.emplace(edge);
     }
 
@@ -134,7 +134,7 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<G>>
         // Update adjacent vertices
         for (const auto& edge : graph.incidenct_edges(vertex_id)) {
             const auto edge_weight = get_weight<G>(edge);
-            const auto target_vertex_idx = to_idx(edge.incident_vertex(vertex_id));
+            const auto target_vertex_idx = to_idx(edge.other(vertex_id));
 
             if (not in_mst[target_vertex_idx] and edge_weight < min_cost[target_vertex_idx]) {
                 min_cost[target_vertex_idx] = edge_weight;

@@ -60,7 +60,7 @@ bool pfs(
                 return false;
 
         for (const auto& edge : graph.incidenct_edges(node.vertex_id)) {
-            const auto target_vertex_id = edge.incident_vertex(node.vertex_id);
+            const auto target_vertex_id = edge.other(node.vertex_id);
             const auto enqueue = enqueue_vertex_pred(target_vertex_id, edge);
             if (enqueue == decision::abort)
                 return false;

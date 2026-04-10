@@ -65,7 +65,7 @@ template <
         empty_callback{}, // visit callback
         [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
             -> decision { // enqueue predicate
-            const auto pred_id = in_edge.incident_vertex(vertex_id);
+            const auto pred_id = in_edge.other(vertex_id);
 
             const auto edge_weight = get_weight<G>(in_edge);
             if (edge_weight < 0) {

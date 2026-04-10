@@ -157,7 +157,7 @@ template <gl::traits::c_graph GraphType>
             auto incidenct_edges = graph.incidenct_edges(source_id);
 
             return gl::util::range_size(incidenct_edges) == 1uz
-               and (*std::ranges::begin(incidenct_edges)).incident_vertex(source_id) == parent_id;
+               and (*std::ranges::begin(incidenct_edges)).other(source_id) == parent_id;
         }
 
         const auto target_1 = target_ids.first;

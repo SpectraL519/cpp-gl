@@ -56,7 +56,7 @@ bool dfs(
                 return false;
 
         for (const auto& edge : graph.incidenct_edges(node.vertex_id)) {
-            const auto target_vertex_id = edge.incident_vertex(node.vertex_id);
+            const auto target_vertex_id = edge.other(node.vertex_id);
             if (enqueue_vertex_pred(target_vertex_id, edge))
                 s.emplace(target_vertex_id, node.vertex_id);
         }
@@ -97,7 +97,7 @@ void r_dfs(
 
     // recursively search vertices adjacent to the current vertex
     for (const auto& edge : graph.incidenct_edges(vertex_id)) {
-        const auto target_vertex_id = edge.incident_vertex(vertex_id);
+        const auto target_vertex_id = edge.other(vertex_id);
         if (enqueue_vertex_pred(target_vertex_id, edge))
             r_dfs(
                 graph,

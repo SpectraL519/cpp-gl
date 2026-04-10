@@ -122,8 +122,7 @@ public:
 
     // clang-format on
 
-    // returns the `other` vertex or throws error if the given vertex is not incident with the edge
-    [[nodiscard]] const id_type incident_vertex(const id_type vertex_id) const {
+    [[nodiscard]] const id_type other(const id_type vertex_id) const {
         if (vertex_id == this->_vertices.first)
             return this->_vertices.second;
 
