@@ -12,17 +12,13 @@ namespace gl::algorithm {
 using bicoloring_type = std::vector<binary_color>;
 
 template <
-    traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
+    traits::c_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
-    const GraphType& graph,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    const G& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
-    using edge_type = typename GraphType::edge_type;
+    using edge_type = typename G::edge_type;
 
     bicoloring_type coloring(graph.order(), binary_color::value::unset);
     for (const auto root_id : graph.vertex_ids()) {
@@ -34,10 +30,10 @@ template <
 
         const bool is_bipartite = bfs(
             graph,
-            init_range<GraphType>(root_id),
-            algorithm::empty_callback{}, // visit predicate
-            algorithm::empty_callback{}, // visit callback
-            [&coloring](const typename GraphType::id_type vertex_id, const edge_type& in_edge)
+            init_range<G>(root_id),
+            empty_callback{}, // visit predicate
+            empty_callback{}, // visit callback
+            [&coloring](typename G::id_type vertex_id, const edge_type& in_edge)
                 -> decision { // enqueue predicate
                 if (in_edge.is_loop())
                     return decision::abort; // graph is not bipartite
@@ -72,9 +68,9 @@ template <
     return bipartite_coloring(graph).has_value();
 }
 
-template <traits::c_graph GraphType, traits::c_sized_range_of<binary_color> ColorRange>
-requires(traits::c_binary_color_properties_type<typename GraphType::vertex_properties_type>)
-bool apply_coloring(GraphType& graph, const ColorRange& color_range) {
+template <traits::c_graph G, traits::c_sized_range_of<binary_color> ColorRange>
+requires(traits::c_binary_color_properties_type<typename G::vertex_properties_type>)
+bool apply_coloring(G& graph, const ColorRange& color_range) {
     if (std::ranges::size(color_range) != graph.order())
         return false;
 

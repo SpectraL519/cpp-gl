@@ -6,49 +6,48 @@
 
 #include "gl/algorithm/core.hpp"
 #include "gl/algorithm/templates/dfs.hpp"
+#include "gl/algorithm/util.hpp"
 #include "gl/constants.hpp"
 
 namespace gl::algorithm {
 
 template <
-    result_discriminator ResultDiscriminator = algorithm::ret,
-    traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
-return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search(
-    const GraphType& graph,
-    const typename GraphType::id_type root_vertex_id = no_root,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    result_discriminator Result = ret,
+    traits::c_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+return_type<Result, predecessors_map<G>> depth_first_search(
+    const G& graph,
+    const typename G::id_type root_vertex_id = no_root,
+    PreVisitCallback pre_visit = {},
+    PostVisitCallback post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<typename GraphType::id_type> sources(graph.order());
+    std::vector<typename G::id_type> sources(graph.order());
 
-    auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
+    auto pred_map = init_predecessors_map<Result>(graph);
 
     // clang-format off
 
     if (root_vertex_id != no_root) {
         dfs(
             graph,
-            root_vertex_id,
+            init_range<G>(root_vertex_id),
             default_visit_vertex_predicate(visited),
-            default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-            default_enqueue_vertex_predicate<GraphType>(visited),
+            default_visit_callback<G, Result>(visited, pred_map),
+            default_enqueue_vertex_predicate<G>(visited),
             pre_visit,
             post_visit
         );
     }
     else {
-        for (const auto root_vertex_id : graph.vertex_ids())
+        for (const auto root_id : graph.vertex_ids())
             dfs(
                 graph,
-                root_vertex_id,
+                init_range<G>(root_id),
                 default_visit_vertex_predicate(visited),
-                default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-                default_enqueue_vertex_predicate<GraphType>(visited),
+                default_visit_callback<G, Result>(visited, pred_map),
+                default_enqueue_vertex_predicate<G>(visited),
                 pre_visit,
                 post_visit
             );
@@ -56,27 +55,25 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> depth_first_search
 
     // clang-format on
 
-    if constexpr (ResultDiscriminator == algorithm::ret)
+    if constexpr (Result == ret)
         return pred_map;
 }
 
 template <
-    result_discriminator ResultDiscriminator = algorithm::ret,
-    traits::c_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
-return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_first_search(
-    const GraphType& graph,
-    const typename GraphType::id_type root_vertex_id = no_root,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    result_discriminator Result = ret,
+    traits::c_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+return_type<Result, predecessors_map<G>> recursive_depth_first_search(
+    const G& graph,
+    const typename G::id_type root_vertex_id = no_root,
+    PreVisitCallback pre_visit = {},
+    PostVisitCallback post_visit = {}
 ) {
     std::vector<bool> visited(graph.order(), false);
-    std::vector<typename GraphType::id_type> sources(graph.order());
+    std::vector<typename G::id_type> sources(graph.order());
 
-    auto pred_map = init_predecessors_map<ResultDiscriminator>(graph);
+    auto pred_map = init_predecessors_map<Result>(graph);
 
     if (root_vertex_id != no_root) {
         r_dfs(
@@ -84,8 +81,8 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_fi
             root_vertex_id,
             root_vertex_id, // pred_id
             default_visit_vertex_predicate(visited),
-            default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-            default_enqueue_vertex_predicate<GraphType>(visited),
+            default_visit_callback<G, Result>(visited, pred_map),
+            default_enqueue_vertex_predicate<G>(visited),
             pre_visit,
             post_visit
         );
@@ -97,14 +94,14 @@ return_type<ResultDiscriminator, predecessors_map<GraphType>> recursive_depth_fi
                 root_id,
                 root_id, // pred_id
                 default_visit_vertex_predicate(visited),
-                default_visit_callback<GraphType, ResultDiscriminator>(visited, pred_map),
-                default_enqueue_vertex_predicate<GraphType>(visited),
+                default_visit_callback<G, Result>(visited, pred_map),
+                default_enqueue_vertex_predicate<G>(visited),
                 pre_visit,
                 post_visit
             );
     }
 
-    if constexpr (ResultDiscriminator == algorithm::ret)
+    if constexpr (Result == ret)
         return pred_map;
 }
 

@@ -10,24 +10,20 @@
 namespace gl::algorithm {
 
 template <
-    traits::c_directed_graph GraphType,
-    traits::c_optional_callback<void, typename GraphType::id_type> PreVisitCallback =
-        algorithm::empty_callback,
-    traits::c_optional_callback<void, typename GraphType::id_type> PostVisitCallback =
-        algorithm::empty_callback>
-[[nodiscard]] std::optional<std::vector<typename GraphType::id_type>> topological_sort(
-    const GraphType& graph,
-    const PreVisitCallback& pre_visit = {},
-    const PostVisitCallback& post_visit = {}
+    traits::c_directed_graph G,
+    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+[[nodiscard]] std::optional<std::vector<typename G::id_type>> topological_sort(
+    const G& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
-    using id_type = typename GraphType::id_type;
-    using edge_type = typename GraphType::edge_type;
+    using id_type = typename G::id_type;
+    using edge_type = typename G::edge_type;
 
     // prepare the vertex in degree map
     std::vector<size_type> in_degree_map = graph.in_degree_map();
 
     // prepare the initial queue content (source vertices)
-    std::vector<algorithm::vertex_info<GraphType>> source_vertex_list;
+    std::vector<search_node<G>> source_vertex_list;
     source_vertex_list.reserve(graph.order());
     for (const auto id : graph.vertex_ids())
         if (in_degree_map[to_idx(id)] == 0uz)
@@ -39,14 +35,12 @@ template <
     bfs(
         graph,
         source_vertex_list,
-        algorithm::empty_callback{}, // visit predicate
-        [&topological_order](
-            const id_type vertex_id, [[maybe_unused]] const id_type source_id
-        ) { // visit callback
+        empty_callback{}, // visit predicate
+        [&topological_order](id_type vertex_id, id_type) { // visit callback
             topological_order.push_back(vertex_id);
             return true;
         },
-        [&in_degree_map](const id_type vertex_id, const edge_type& in_edge)
+        [&in_degree_map](id_type vertex_id, const edge_type& in_edge)
             -> decision { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
