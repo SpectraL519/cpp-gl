@@ -1,17 +1,18 @@
-#include "gl/directional_tags.hpp"
-#include "gl/graph_traits.hpp"
-#include "gl/types/core.hpp"
+#include "doctest.h"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/functional.hpp"
 #include "testing/gl/types.hpp"
 
+#include <gl/directional_tags.hpp>
 #include <gl/graph.hpp>
+#include <gl/graph_traits.hpp>
+#include <gl/topology.hpp>
+#include <gl/types/core.hpp>
 #include <gl/util/ranges.hpp>
-
-#include <doctest.h>
 
 #include <algorithm>
 #include <cstddef>
+#include <deque>
 #include <ranges>
 
 namespace gl_testing {
@@ -113,7 +114,7 @@ using vertex_id_list = std::vector<gl::default_id_type>;
 
 inline constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
 
-TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_template) {
+TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_graph_traits_template) {
     using fixture_type = test_graph<TraitsType>;
     using sut_type = typename fixture_type::sut_type;
     using traits_type = typename fixture_type::traits_type;
@@ -122,7 +123,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 
     fixture_type fixture;
 
-    // --- general tests ---
+    // --- size methods ---
 
     SUBCASE("graph should be initialized with no vertices and no edges by default") {
         sut_type sut;
@@ -153,7 +154,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         ));
     }
 
-    // --- vertex method tests ---
+    // --- vertex modifiers ---
 
     SUBCASE("add_vertex should return a vertex_descriptor with an incremented id and no edges") {
         sut_type sut;
@@ -209,43 +210,6 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             std::ranges::equal_to{},
             [](const auto vertex) { return vertex.properties(); }
         ));
-    }
-
-    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
-            "the graph") {
-        sut_type sut{constants::n_elements};
-
-        CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
-            return sut.has_vertex(vertex_id);
-        }));
-        CHECK_FALSE(sut.has_vertex(constants::out_of_rng_idx));
-    }
-
-    SUBCASE("get_vertex should throw if the given id is invalid") {
-        sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(static_cast<gl::default_id_type>(sut.order()))),
-            std::out_of_range
-        );
-    }
-
-    SUBCASE("get_vertex should return a vertex with the given id") {
-        sut_type sut;
-        const auto added_vertex = sut.add_vertex();
-        CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
-    }
-
-    SUBCASE("vertices should return the correct vertex collection view") {
-        sut_type sut{constants::n_elements};
-
-        CHECK(std::ranges::equal(
-            sut.vertices(), constants::vertex_id_view, std::ranges::equal_to{}, get_id
-        ));
-    }
-
-    SUBCASE("vertex_ids should return a correct view") {
-        sut_type sut{constants::n_elements};
-        CHECK(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
     }
 
     SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
@@ -361,9 +325,51 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         ));
     }
 
-    // --- edge method tests ---
 
-    SUBCASE("edge method tests for default properties type") {
+    // --- vertex getters ---
+
+    SUBCASE("vertices should return the correct vertex collection view") {
+        sut_type sut{constants::n_elements};
+
+        CHECK(std::ranges::equal(
+            sut.vertices(), constants::vertex_id_view, std::ranges::equal_to{}, get_id
+        ));
+    }
+
+    SUBCASE("vertex_ids should return a correct view") {
+        sut_type sut{constants::n_elements};
+        CHECK(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
+    }
+
+    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
+            "the graph") {
+        sut_type sut{constants::n_elements};
+
+        CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
+            return sut.has_vertex(vertex_id);
+        }));
+        CHECK_FALSE(sut.has_vertex(constants::out_of_rng_idx));
+    }
+
+    SUBCASE("get_vertex should throw if the given id is invalid") {
+        sut_type sut{constants::n_elements};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.get_vertex(static_cast<gl::default_id_type>(sut.order()))),
+            std::out_of_range
+        );
+    }
+
+    SUBCASE("get_vertex should return a vertex with the given id") {
+        sut_type sut;
+        const auto added_vertex = sut.add_vertex();
+        CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
+    }
+
+    // --- degree getters ---
+
+    // --- edge modifiers ---
+
+    SUBCASE("edge modifiers tests for default properties type") {
         sut_type sut{constants::n_elements};
 
         const auto vertices = sut.vertices();
@@ -549,7 +555,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
     }
 
-    SUBCASE("edge method tests for non-default properties type") {
+    SUBCASE("edge modifiers tests for non-default properties type") {
         using properties_traits_type = add_edge_property<traits_type, used_property>;
         using property_edge_type = typename properties_traits_type::edge_type;
         gl::graph<properties_traits_type> sut{constants::n_elements};
@@ -682,17 +688,49 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         }
     }
 
+    // --- edge getters ---
+
+    SUBCASE("incident_edges(id) should throw if the vertex_id is invalid") {
+        sut_type sut{constants::n_elements};
+        CHECK_THROWS_AS(
+            discard_result(sut.incident_edges(constants::out_of_rng_idx)), std::out_of_range
+        );
+    }
+
+    SUBCASE("incident_edges(id) should return a proper iterator range for a valid vertex") {
+        sut_type sut{1uz};
+
+        CHECK_NOTHROW([&sut]() { CHECK_EQ(gl::util::range_size(sut.incident_edges(0uz)), 0uz); }());
+    }
+
+    SUBCASE("incident_edges(vertex) should throw if the vertex is invalid") {
+        sut_type sut{constants::n_elements};
+
+        CHECK_THROWS_AS(
+            discard_result(sut.incident_edges(fixture.out_of_range_vertex)), std::out_of_range
+        );
+    }
+
+    SUBCASE("incident_edges(vertex) should return a proper iterator range for a valid vertex") {
+        sut_type sut{1uz};
+        const auto vertex = sut.get_vertex(0uz);
+
+        CHECK_NOTHROW([&sut, &vertex]() {
+            CHECK_EQ(gl::util::range_size(sut.incident_edges(vertex)), 0uz);
+        }());
+    }
+
     SUBCASE("has_edge(vertex, vertex) should throw if one of the vertices is invalid") {
         sut_type sut{constants::n_elements};
 
-        const auto vd_1 = sut.get_vertex(constants::v1_id);
-        const auto vd_2 = sut.get_vertex(constants::v2_id);
+        const auto v1 = sut.get_vertex(constants::v1_id);
+        const auto v2 = sut.get_vertex(constants::v2_id);
 
         CHECK_THROWS_AS(
-            discard_result(sut.has_edge(fixture.out_of_range_vertex, vd_2)), std::out_of_range
+            discard_result(sut.has_edge(fixture.out_of_range_vertex, v2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            discard_result(sut.has_edge(vd_1, fixture.out_of_range_vertex)), std::out_of_range
+            discard_result(sut.has_edge(v1, fixture.out_of_range_vertex)), std::out_of_range
         );
     }
 
@@ -700,15 +738,15 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             "vertices in the graph") {
         sut_type sut{constants::n_elements};
 
-        const auto vd_1 = sut.get_vertex(constants::v1_id);
-        const auto vd_2 = sut.get_vertex(constants::v2_id);
-        const auto vd_3 = sut.get_vertex(constants::v3_id);
+        const auto v1 = sut.get_vertex(constants::v1_id);
+        const auto v2 = sut.get_vertex(constants::v2_id);
+        const auto v3 = sut.get_vertex(constants::v3_id);
 
-        sut.add_edge(vd_1, vd_2);
+        sut.add_edge(v1, v2);
 
-        CHECK(sut.has_edge(vd_1, vd_2));
-        CHECK_FALSE(sut.has_edge(vd_1, vd_3));
-        CHECK_FALSE(sut.has_edge(vd_2, vd_3));
+        CHECK(sut.has_edge(v1, v2));
+        CHECK_FALSE(sut.has_edge(v1, v3));
+        CHECK_FALSE(sut.has_edge(v2, v3));
     }
 
     SUBCASE("get_edge(vertex, vertex) should throw if either vertex is invalid") {
@@ -738,22 +776,22 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("get_edge(vertex, vertex) should return a valid edge if the given vetices are adjacent"
     ) {
         sut_type sut{constants::n_elements};
-        const auto vd_1 = sut.get_vertex(constants::v1_id);
-        const auto vd_2 = sut.get_vertex(constants::v2_id);
+        const auto v1 = sut.get_vertex(constants::v1_id);
+        const auto v2 = sut.get_vertex(constants::v2_id);
 
-        const auto edge = sut.add_edge(vd_1, vd_2);
+        const auto edge = sut.add_edge(v1, v2);
 
-        const auto edge_opt_1 = sut.get_edge(vd_1, vd_2);
+        const auto edge_opt_1 = sut.get_edge(v1, v2);
         REQUIRE(edge_opt_1.has_value());
         CHECK_EQ(*edge_opt_1, edge);
 
         if constexpr (gl::traits::c_undirected_edge<edge_type>) {
-            const auto edge_opt_2 = sut.get_edge(vd_2, vd_1);
+            const auto edge_opt_2 = sut.get_edge(v2, v1);
             REQUIRE(edge_opt_2.has_value());
             CHECK_EQ(*edge_opt_2, edge);
         }
         else {
-            CHECK_FALSE(sut.get_edge(vd_2, vd_1).has_value());
+            CHECK_FALSE(sut.get_edge(v2, v1).has_value());
         }
     }
 
@@ -805,45 +843,162 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
     SUBCASE("get_edges(vertex, vertex) should throw if either vertex is invalid") {
         sut_type sut{constants::n_elements};
 
-        const auto vd_1 = sut.get_vertex(constants::v1_id);
-        const auto vd_2 = sut.get_vertex(constants::v2_id);
+        const auto v1 = sut.get_vertex(constants::v1_id);
+        const auto v2 = sut.get_vertex(constants::v2_id);
 
         CHECK_THROWS_AS(
-            discard_result(sut.get_edges(fixture.out_of_range_vertex, vd_2)), std::out_of_range
+            discard_result(sut.get_edges(fixture.out_of_range_vertex, v2)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            discard_result(sut.get_edges(vd_1, fixture.out_of_range_vertex)), std::out_of_range
+            discard_result(sut.get_edges(v1, fixture.out_of_range_vertex)), std::out_of_range
         );
     }
 
-    SUBCASE("incident_edges(id) should throw if the vertex_id is invalid") {
+    // --- adjacency and incidence methods ---
+
+    SUBCASE("adjacency and incidence method tests") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(
-            discard_result(sut.incident_edges(constants::out_of_rng_idx)), std::out_of_range
-        );
-    }
+        const auto v1 = sut.get_vertex(constants::v1_id);
+        const auto v2 = sut.get_vertex(constants::v2_id);
+        const auto v3 = sut.get_vertex(constants::v3_id);
 
-    SUBCASE("incident_edges(id) should return a proper iterator range for a valid vertex") {
-        sut_type sut{1uz};
+        SUBCASE("are_incident(vertex_id, vertex_id) should throw for out of range vertex ids") {
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(constants::out_of_rng_idx, constants::v2_id)),
+                std::out_of_range
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(constants::v1_id, constants::out_of_rng_idx)),
+                std::out_of_range
+            );
+        }
 
-        CHECK_NOTHROW([&sut]() { CHECK_EQ(gl::util::range_size(sut.incident_edges(0uz)), 0uz); }());
-    }
+        SUBCASE("are_incident(vertex_id, vertex_id) should return true the ids are the same and "
+                "valid") {
+            CHECK(std::ranges::all_of(constants::vertex_id_view, [&sut](const auto vertex_id) {
+                return sut.are_incident(vertex_id, vertex_id);
+            }));
+        }
 
-    SUBCASE("incident_edges(vertex) should throw if the vertex is invalid") {
-        sut_type sut{constants::n_elements};
+        SUBCASE("are_incident(vertex_id, vertex_id) should return true if there is an edge "
+                "connecting the given vertices") {
+            sut.add_edge(v1, v2);
 
-        CHECK_THROWS_AS(
-            discard_result(sut.incident_edges(fixture.out_of_range_vertex)), std::out_of_range
-        );
-    }
+            CHECK(sut.are_incident(constants::v1_id, constants::v2_id));
+            CHECK(sut.are_incident(constants::v2_id, constants::v1_id));
 
-    SUBCASE("incident_edges(vertex) should return a proper iterator range for a valid vertex") {
-        sut_type sut{1uz};
-        const auto vertex = sut.get_vertex(0uz);
+            CHECK_FALSE(sut.are_incident(constants::v1_id, constants::v3_id));
+            CHECK_FALSE(sut.are_incident(constants::v2_id, constants::v3_id));
+        }
 
-        CHECK_NOTHROW([&sut, &vertex]() {
-            CHECK_EQ(gl::util::range_size(sut.incident_edges(vertex)), 0uz);
-        }());
+        SUBCASE("are_incident(vertex, vertex) should throw if at least one of the vertices is "
+                "invalid") {
+            CHECK_THROWS_AS(
+                discard_result(
+                    sut.are_incident(fixture.out_of_range_vertex, fixture.out_of_range_vertex)
+                ),
+                std::out_of_range
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(fixture.out_of_range_vertex, v2)), std::out_of_range
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(v1, fixture.out_of_range_vertex)), std::out_of_range
+            );
+        }
+
+        SUBCASE("are_incident(vertex, vertex) should return true if there is an edge connecting "
+                "the given vertices") {
+            sut.add_edge(v1, v2);
+
+            CHECK(sut.are_incident(v1, v2));
+            CHECK(sut.are_incident(v2, v1));
+
+            CHECK_FALSE(sut.are_incident(v1, v3));
+            CHECK_FALSE(sut.are_incident(v2, v3));
+        }
+
+        SUBCASE("are_incident(vertex, vertex) should return true the vertices are the same and "
+                "valid") {
+            CHECK(std::ranges::all_of(sut.vertices(), [&sut](const auto& vertex) {
+                return sut.are_incident(vertex, vertex);
+            }));
+        }
+
+        SUBCASE("are_incident(edge, edge) should throw if either edge is invalid") {
+            const auto edge = sut.add_edge(v1, v2);
+            const edge_type invalid_edge{gl::invalid_id, v1.id(), v2.id()};
+
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(edge, invalid_edge)), std::invalid_argument
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(invalid_edge, edge)), std::invalid_argument
+            );
+        }
+
+        SUBCASE("are_incident(edge, edge) should return true only when the edges share a common "
+                "vertex") {
+            const auto edge_1 = sut.add_edge(v1, v2);
+            const auto edge_2 = sut.add_edge(v2, v3);
+            const auto loop_3 = sut.add_edge(v3, v3);
+
+            CHECK(sut.are_incident(edge_1, edge_2));
+            CHECK(sut.are_incident(edge_2, edge_1));
+            CHECK_FALSE(sut.are_incident(edge_1, loop_3));
+            CHECK_FALSE(sut.are_incident(loop_3, edge_1));
+        }
+
+        SUBCASE("are_incident(vertex and edge pair) should throw if the vertex is invalid") {
+            const auto edge = sut.add_edge(v1, v2);
+
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
+                std::out_of_range
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(fixture.out_of_range_vertex, edge)),
+                std::out_of_range
+            );
+
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
+                std::out_of_range
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(edge, fixture.out_of_range_vertex)),
+                std::out_of_range
+            );
+        }
+
+        SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
+            const edge_type invalid_edge{gl::invalid_id, v1.id(), v2.id()};
+
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(v1, invalid_edge)), std::invalid_argument
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(v1, invalid_edge)), std::invalid_argument
+            );
+
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(invalid_edge, v2)), std::invalid_argument
+            );
+            CHECK_THROWS_AS(
+                discard_result(sut.are_incident(invalid_edge, v2)), std::invalid_argument
+            );
+        }
+
+        SUBCASE("are_incident(vertex and edge pair) should return true only when the edge and the "
+                "vertex are incident with each other") {
+            const auto edge = sut.add_edge(v1, v2);
+
+            CHECK(sut.are_incident(v1, edge));
+            CHECK(sut.are_incident(v2, edge));
+
+            CHECK(sut.are_incident(edge, v1));
+            CHECK(sut.are_incident(edge, v2));
+        }
     }
 
     // --- comparison and cloning ---
@@ -904,18 +1059,178 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    graph_traits_template,
+    common_graph_traits_template,
     gl::list_graph_traits<gl::directed_t>, // directed adjacency list
     gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list
     gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list
     gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list
     gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix
     gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix
-    gl::matrix_graph_traits<gl::directed_t>, // directed adj matrix
-    gl::matrix_graph_traits<gl::undirected_t> // undirected adj matrix
+    gl::flat_matrix_graph_traits<gl::directed_t>, // directed flat adjacency matrix
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix
 );
 
-TEST_CASE_TEMPLATE_DEFINE("properties getter tests", TraitsType, property_graph_traits_template) {
+TEST_CASE_TEMPLATE_DEFINE(
+    "directed graph structure tests", TraitsType, directed_graph_traits_template
+) {
+    using sut_type = gl::graph<TraitsType>;
+
+    const auto n_vertices = constants::n_elements_top;
+
+    sut_type sut;
+    std::deque<gl::size_type> expected_in_deg_list, expected_out_deg_list;
+
+    SUBCASE("clique") {
+        sut = gl::topology::clique<sut_type>(n_vertices);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
+        expected_out_deg_list = expected_in_deg_list;
+    }
+
+    SUBCASE("clique with an additional loop") {
+        sut = gl::topology::clique<sut_type>(n_vertices);
+        sut.add_edge(0uz, 0uz);
+
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
+        expected_in_deg_list.front()++;
+
+        expected_out_deg_list = expected_in_deg_list;
+    }
+
+    SUBCASE("cycle") {
+        sut = gl::topology::cycle<sut_type>(n_vertices);
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices, 1uz);
+        expected_out_deg_list = expected_in_deg_list;
+    }
+
+    SUBCASE("path") {
+        sut = gl::topology::path<sut_type>(n_vertices);
+
+        expected_in_deg_list = std::deque<gl::size_type>(n_vertices - 1uz, 1uz);
+        expected_in_deg_list.push_front(0uz);
+
+        expected_out_deg_list = std::deque<gl::size_type>(n_vertices - 1uz, 1uz);
+        expected_out_deg_list.push_back(0uz);
+    }
+
+    CAPTURE(sut);
+    CAPTURE(expected_in_deg_list);
+    CAPTURE(expected_out_deg_list);
+
+    std::deque<gl::size_type> expected_deg_list(n_vertices);
+    std::ranges::transform(
+        expected_in_deg_list,
+        expected_out_deg_list,
+        expected_deg_list.begin(),
+        std::plus<gl::size_type>{}
+    );
+
+    gl::size_type i = 0uz;
+    CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
+        const bool result =
+            sut.in_degree(vertex) == expected_in_deg_list[i]
+            and sut.out_degree(vertex) == expected_out_deg_list[i]
+            and sut.degree(vertex) == expected_deg_list[i];
+        ++i;
+        return result;
+    }));
+
+    i = 0uz;
+    CHECK(std::ranges::all_of(
+        sut.vertices(),
+        [&](const gl::default_id_type vertex_id) {
+            const bool result =
+                sut.in_degree(vertex_id) == expected_in_deg_list[i]
+                and sut.out_degree(vertex_id) == expected_out_deg_list[i]
+                and sut.degree(vertex_id) == expected_deg_list[i];
+            ++i;
+            return result;
+        },
+        get_id
+    ));
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    directed_graph_traits_template,
+    gl::list_graph_traits<gl::directed_t>, // directed adjacency list graph
+    gl::flat_list_graph_traits<gl::directed_t>, // directed flat adjacency list graph
+    gl::matrix_graph_traits<gl::directed_t>, // directed adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::directed_t> // directed flat adjacency matrix graph
+);
+
+TEST_CASE_TEMPLATE_DEFINE(
+    "undirected graph structure tests", TraitsType, undirected_graph_traits_template
+) {
+    using sut_type = gl::graph<TraitsType>;
+
+    const auto n_vertices = constants::n_elements_top;
+
+    sut_type sut;
+    std::deque<gl::size_type> expected_deg_list;
+
+    SUBCASE("clique") {
+        sut = gl::topology::clique<sut_type>(n_vertices);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
+    }
+
+    SUBCASE("clique with an additional loop") {
+        sut = gl::topology::clique<sut_type>(n_vertices);
+        sut.add_edge(0uz, 0uz);
+
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, n_vertices - 1uz);
+        expected_deg_list.front() += 2uz; // loops counted twice
+    }
+
+    SUBCASE("cycle") {
+        sut = gl::topology::cycle<sut_type>(n_vertices);
+        expected_deg_list = std::deque<gl::size_type>(n_vertices, 2uz);
+    }
+
+    SUBCASE("path") {
+        sut = gl::topology::path<sut_type>(n_vertices);
+
+        expected_deg_list = std::deque<gl::size_type>(n_vertices - 2uz, 2uz);
+        expected_deg_list.push_front(1uz);
+        expected_deg_list.push_back(1uz);
+    }
+
+    CAPTURE(sut);
+    CAPTURE(expected_deg_list);
+
+    gl::size_type i = 0uz;
+    CHECK(std::ranges::all_of(sut.vertices(), [&](const auto& vertex) {
+        const auto expected_deg = expected_deg_list[i];
+        const bool result =
+            sut.in_degree(vertex) == expected_deg and sut.out_degree(vertex) == expected_deg
+            and sut.degree(vertex) == expected_deg;
+        ++i;
+        return result;
+    }));
+
+    i = 0uz;
+    CHECK(std::ranges::all_of(
+        sut.vertices(),
+        [&](const gl::default_id_type vertex_id) {
+            const auto expected_deg = expected_deg_list[i];
+            const bool result =
+                sut.in_degree(vertex_id) == expected_deg
+                and sut.out_degree(vertex_id) == expected_deg
+                and sut.degree(vertex_id) == expected_deg;
+            ++i;
+            return result;
+        },
+        get_id
+    ));
+}
+
+TEST_CASE_TEMPLATE_INSTANTIATE(
+    undirected_graph_traits_template,
+    gl::list_graph_traits<gl::undirected_t>, // undirected adjacency list graph
+    gl::flat_list_graph_traits<gl::undirected_t>, // undirected flat adjacency list graph
+    gl::matrix_graph_traits<gl::undirected_t>, // undirected adjacency matrix graph
+    gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix graph
+);
+
+TEST_CASE_TEMPLATE_DEFINE("property getter tests", TraitsType, property_graph_traits_template) {
     using sut_type = gl::graph<TraitsType>;
 
     sut_type sut{constants::n_elements};

@@ -4,7 +4,7 @@
 
 #include <gl/graph.hpp>
 #include <gl/graph_file_io.hpp>
-#include <gl/topologies.hpp>
+#include <gl/topology.hpp>
 
 #include <doctest.h>
 

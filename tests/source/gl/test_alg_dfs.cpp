@@ -2,7 +2,7 @@
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
-#include <gl/topologies.hpp>
+#include <gl/topology.hpp>
 
 #include <doctest.h>
 
