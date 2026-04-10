@@ -16,20 +16,20 @@ TEST_CASE("id() should return the correct vertex id") {
 }
 
 TEST_CASE("vertex_descriptor objects should be compared by id") {
-    const gl::vertex_descriptor vd_1{constants::v1_id};
-    const gl::vertex_descriptor vd_2{constants::v2_id};
+    const gl::vertex_descriptor v1{constants::v1_id};
+    const gl::vertex_descriptor v2{constants::v2_id};
 
-    REQUIRE_NE(vd_1, vd_2);
-    CHECK_EQ(vd_1, vd_1);
-    CHECK_EQ(vd_2, vd_2);
+    REQUIRE_NE(v1, v2);
+    CHECK_EQ(v1, v1);
+    CHECK_EQ(v2, v2);
 
-    CHECK_LE(vd_1, vd_1);
-    CHECK_LE(vd_1, vd_2);
-    CHECK_LT(vd_1, vd_2);
+    CHECK_LE(v1, v1);
+    CHECK_LE(v1, v2);
+    CHECK_LT(v1, v2);
 
-    CHECK_GE(vd_2, vd_2);
-    CHECK_GE(vd_2, vd_1);
-    CHECK_GT(vd_2, vd_1);
+    CHECK_GE(v2, v2);
+    CHECK_GE(v2, v1);
+    CHECK_GT(v2, v1);
 }
 
 TEST_CASE("vertex_descriptor should be valid only if it has a valid id") {

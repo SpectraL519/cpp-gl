@@ -3,7 +3,7 @@
 
 #include <gl/graph.hpp>
 #include <gl/io.hpp>
-#include <gl/topologies.hpp>
+#include <gl/topology.hpp>
 
 #include <doctest.h>
 
@@ -28,7 +28,7 @@ struct test_directed_graph_io {
         std::size_t v_idx = 0, e_idx = 0;
         for (const auto& vertex : sut_out.vertices()) {
             vertex.properties() = std::format("vertex_{}", v_idx++);
-            for (const auto& edge : sut_out.incident_edges(vertex))
+            for (const auto& edge : sut_out.out_edges(vertex))
                 edge.properties() = std::format("edge_{}", e_idx++);
         }
     }
@@ -137,7 +137,7 @@ struct test_undirected_graph_io {
         std::size_t v_idx = 0, e_idx = 0;
         for (const auto& vertex : sut_out.vertices()) {
             vertex.properties() = std::format("vertex_{}", v_idx++);
-            for (const auto& edge : sut_out.incident_edges(vertex))
+            for (const auto& edge : sut_out.out_edges(vertex))
                 if (edge.source() == vertex.id())
                     edge.properties() = std::format("edge_{}", e_idx++);
         }
