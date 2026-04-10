@@ -4,8 +4,6 @@
 
 #include <hgl/algorithm/traversal/breadth_first_search.hpp>
 
-#include <algorithm>
-
 namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_alg_bfs");

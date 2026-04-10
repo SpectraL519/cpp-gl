@@ -5,8 +5,6 @@
 #include <hgl/algorithm/traversal/depth_first_search.hpp>
 #include <hgl/constants.hpp>
 
-#include <algorithm>
-
 namespace hgl_testing {
 
 TEST_SUITE_BEGIN("test_alg_dfs");
