@@ -133,7 +133,7 @@ template <gl::traits::c_graph GraphType>
 
         if (target_ids.first >= graph.order())
             // no need to check second as second = first + 1
-            return gl::util::range_size(graph.adjacent_edges(source)) == 0uz;
+            return gl::util::range_size(graph.incidenct_edges(source)) == 0uz;
 
         const auto target_1 = graph.get_vertex(target_ids.first);
         const auto target_2 = graph.get_vertex(target_ids.second);
@@ -154,10 +154,10 @@ template <gl::traits::c_graph GraphType>
 
         if (target_ids.first >= graph.order()) {
             // no need to check second as second = first + 1
-            auto adjacent_edges = graph.adjacent_edges(source_id);
+            auto incidenct_edges = graph.incidenct_edges(source_id);
 
-            return gl::util::range_size(adjacent_edges) == 1uz
-               and (*std::ranges::begin(adjacent_edges)).incident_vertex(source_id) == parent_id;
+            return gl::util::range_size(incidenct_edges) == 1uz
+               and (*std::ranges::begin(incidenct_edges)).incident_vertex(source_id) == parent_id;
         }
 
         const auto target_1 = target_ids.first;

@@ -55,7 +55,7 @@ bool bfs(
             if (not visit(node.vertex_id, node.pred_id))
                 return false;
 
-        for (const auto& edge : graph.adjacent_edges(node.vertex_id)) {
+        for (const auto& edge : graph.incidenct_edges(node.vertex_id)) {
             const auto incident_vertex_id = edge.incident_vertex(node.vertex_id);
 
             const auto enqueue = enqueue_vertex_pred(incident_vertex_id, edge);
