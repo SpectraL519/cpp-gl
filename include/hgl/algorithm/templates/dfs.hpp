@@ -11,6 +11,7 @@
 namespace hgl::algorithm {
 
 template <
+    traversal_direction Dir = traversal_direction::forward,
     hgl::traits::c_hypergraph H,
     traits::c_forward_range_of<search_node<H>> InitQueueRangeType = std::vector<search_node<H>>,
     traits::c_optional_predicate<const search_node<H>&> VisitVertexPredicate = empty_callback,
@@ -30,7 +31,7 @@ bool dfs(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using policy = traversal_policy<H>;
+    using policy = traversal_policy<H, Dir>;
 
     if (std::ranges::empty(initial_queue_content))
         return false;
