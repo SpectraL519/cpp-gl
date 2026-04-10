@@ -746,15 +746,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(*std::ranges::begin(incident_edges), edge);
     }
 
-    SUBCASE("in_edges and out_edges should return the same edges for undirected graphs") {
-        add_edge(constants::v1_id, constants::v2_id);
-        add_edge(constants::v1_id, constants::v3_id);
+    SUBCASE("incident/in/out_edges should return the same edge sets for undirected graphs") {
+        auto edge1 = add_edge(constants::v1_id, constants::v2_id);
+        auto edge2 = add_edge(constants::v3_id, constants::v1_id);
+        std::vector<edge_type> expected_edges = {edge1, edge2};
 
-        const auto in_edges = sut.in_edges(constants::v1_id) | std::ranges::to<std::vector>();
-        const auto out_edges = sut.out_edges(constants::v1_id) | std::ranges::to<std::vector>();
-
-        CHECK(std::ranges::equal(in_edges, sut.incident_edges(constants::v1_id)));
-        CHECK(std::ranges::equal(out_edges, sut.incident_edges(constants::v1_id)));
+        CHECK(std::ranges::equal(sut.incident_edges(constants::v1_id), expected_edges));
+        CHECK(std::ranges::equal(sut.in_edges(constants::v1_id), expected_edges));
+        CHECK(std::ranges::equal(sut.out_edges(constants::v1_id), expected_edges));
     }
 
     // --- access operators ---
