@@ -293,6 +293,36 @@ public:
         return this->at(vertex.id());
     }
 
+    [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
+        return this->neighbor_ids(vertex_id)
+             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto neighbor_ids(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.neighbor_ids(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
+        return this->predecessor_ids(vertex_id)
+             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto predecessor_ids(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.predecessor_ids(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
+        return this->successor_ids(vertex_id)
+             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto successor_ids(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->_impl.successor_ids(vertex_id);
+    }
+
     [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
