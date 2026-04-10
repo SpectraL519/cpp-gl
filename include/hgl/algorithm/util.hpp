@@ -9,12 +9,12 @@
 
 namespace hgl::algorithm {
 
-template <result_discriminator ResultDiscriminator, traits::c_hypergraph HypergraphType>
-[[nodiscard]] gl_attr_force_inline
-    non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>
-    init_search_tree(const HypergraphType& hypergraph) {
-    using return_t = non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>;
-    if constexpr (ResultDiscriminator == ret)
+template <result_discriminator Result, traits::c_hypergraph H>
+[[nodiscard]] gl_attr_force_inline non_void_return_type<Result, search_tree<H>> init_search_tree(
+    const H& hypergraph
+) {
+    using return_t = non_void_return_type<Result, search_tree<H>>;
+    if constexpr (Result == ret)
         return return_t(hypergraph.order());
     else
         return return_t();
@@ -26,30 +26,29 @@ template <result_discriminator ResultDiscriminator, traits::c_hypergraph Hypergr
     return tree[to_idx(vertex_id)].pred_id != invalid_id;
 }
 
-template <traits::c_hypergraph HypergraphType>
-[[nodiscard]] gl_attr_force_inline std::vector<search_node<HypergraphType>> init_range(
-    typename HypergraphType::id_type root_vertex_id
+template <traits::c_hypergraph H>
+[[nodiscard]] gl_attr_force_inline std::vector<search_node<H>> init_range(
+    typename H::id_type root_vertex_id
 ) {
-    return std::vector<search_node<HypergraphType>>{search_node<HypergraphType>{root_vertex_id}};
+    return std::vector<search_node<H>>{search_node<H>{root_vertex_id}};
 }
 
-template <traits::c_hypergraph HypergraphType>
+template <traits::c_hypergraph H>
 [[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited_v
 ) {
-    return [&](const search_node<HypergraphType>& node) -> bool {
+    return [&](const search_node<H>& node) -> bool {
         return not visited_v[to_idx(node.vertex_id)];
     };
 }
 
-template <traits::c_hypergraph HypergraphType, result_discriminator ResultDiscriminator>
+template <traits::c_hypergraph H, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited_v,
-    non_void_return_type<ResultDiscriminator, search_tree<HypergraphType>>& pred_map
+    std::vector<bool>& visited_v, non_void_return_type<Result, search_tree<H>>& pred_map
 ) {
-    return [&](const search_node<HypergraphType>& node) {
+    return [&](const search_node<H>& node) {
         const auto vertex_idx = to_idx(node.vertex_id);
         visited_v[vertex_idx] = true;
-        if constexpr (ResultDiscriminator == ret)
+        if constexpr (Result == ret)
             pred_map[vertex_idx] = node;
         return true;
     };
@@ -76,12 +75,12 @@ template <traits::c_hypergraph HypergraphType, result_discriminator ResultDiscri
     };
 }
 
-template <traits::c_hypergraph HypergraphType, bool AsResult = false>
+template <traits::c_hypergraph H, bool AsResult = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(
     std::vector<bool>& visited_v
 ) {
     using return_t = std::conditional_t<AsResult, decision, bool>;
-    return [&](const search_node<HypergraphType>& node) -> return_t {
+    return [&](const search_node<H>& node) -> return_t {
         return return_t(not visited_v[to_idx(node.vertex_id)]);
     };
 }
