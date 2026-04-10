@@ -3,6 +3,7 @@
 #include "testing/gl/functional.hpp"
 #include "testing/gl/types.hpp"
 
+#include <gl/attributes/diagnostics.hpp>
 #include <gl/directional_tags.hpp>
 #include <gl/graph.hpp>
 #include <gl/graph_traits.hpp>
@@ -327,6 +328,70 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
     SUBCASE("vertex_ids should return a correct view") {
         sut_type sut{constants::n_elements};
         CHECK(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
+    }
+
+    GL_SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+    SUBCASE("neighbor/predecessor/successor_ids should throw out_of_range if vertex does not exist"
+    ) {
+        sut_type sut{};
+        CHECK_THROWS_AS(
+            discard_result(sut.neighbor_ids(constants::out_of_rng_idx)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            discard_result(sut.predecessor_ids(constants::out_of_rng_idx)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            discard_result(sut.successor_ids(constants::out_of_rng_idx)), std::out_of_range
+        );
+    }
+    GL_SUPPRESS_WARNING_END;
+
+    SUBCASE("neighbor/predecessor/successor_ids should return valid ranges of ids") {
+        sut_type sut{constants::n_elements};
+        sut.add_edge(constants::v1_id, constants::v2_id);
+        sut.add_edge(constants::v3_id, constants::v1_id);
+
+        CHECK_FALSE(std::ranges::empty(sut.neighbor_ids(constants::v1_id)));
+        CHECK_FALSE(std::ranges::empty(sut.predecessor_ids(constants::v1_id)));
+        CHECK_FALSE(std::ranges::empty(sut.successor_ids(constants::v1_id)));
+    }
+
+    GL_SUPPRESS_WARNING_BEGIN("-Warray-bounds");
+    SUBCASE("neighbors/predecessors/successors should throw out_of_range if vertex does not exist"
+    ) {
+        sut_type sut{};
+        CHECK_THROWS_AS(
+            discard_result(sut.neighbors(constants::out_of_rng_idx)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            discard_result(sut.predecessors(constants::out_of_rng_idx)), std::out_of_range
+        );
+        CHECK_THROWS_AS(
+            discard_result(sut.successors(constants::out_of_rng_idx)), std::out_of_range
+        );
+    }
+    GL_SUPPRESS_WARNING_END;
+
+    SUBCASE("neighbor/predecessors/successors should return valid ranges of vertex descriptors") {
+        sut_type sut{constants::n_elements};
+        sut.add_edge(constants::v1_id, constants::v2_id);
+        sut.add_edge(constants::v3_id, constants::v1_id);
+
+        const auto neighbors = sut.neighbors(constants::v1_id) | std::ranges::to<std::vector>();
+        const auto predecessors =
+            sut.predecessors(constants::v1_id) | std::ranges::to<std::vector>();
+        const auto successors = sut.successors(constants::v1_id) | std::ranges::to<std::vector>();
+
+        CHECK_FALSE(neighbors.empty());
+        CHECK_FALSE(predecessors.empty());
+        CHECK_FALSE(successors.empty());
+
+        for (const auto& v : neighbors)
+            CHECK(v.is_valid());
+        for (const auto& v : predecessors)
+            CHECK(v.is_valid());
+        for (const auto& v : successors)
+            CHECK(v.is_valid());
     }
 
     SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
