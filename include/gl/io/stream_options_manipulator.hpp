@@ -7,6 +7,7 @@
 #include "gl/attributes/force_inline.hpp"
 
 #include <iostream>
+#include <utility>
 
 namespace gl::io {
 

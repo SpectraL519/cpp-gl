@@ -138,13 +138,13 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
         CHECK_EQ(sut.target(), fixture.v2);
     }
 
-    SUBCASE("incident_vertex should throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(discard_result(sut.incident_vertex(fixture.v3)), std::invalid_argument);
+    SUBCASE("other should throw if input vertex is not incident with the edge") {
+        CHECK_THROWS_AS(discard_result(sut.other(fixture.v3)), std::invalid_argument);
     }
 
-    SUBCASE("incident_vertex should return the vertex incident with the input vertex") {
-        CHECK_EQ(sut.incident_vertex(fixture.v1), fixture.v2);
-        CHECK_EQ(sut.incident_vertex(fixture.v2), fixture.v1);
+    SUBCASE("other should return the vertex adjacent with the input vertex") {
+        CHECK_EQ(sut.other(fixture.v1), fixture.v2);
+        CHECK_EQ(sut.other(fixture.v2), fixture.v1);
     }
 
     SUBCASE("is_incident_with should return true when the given vertex is one of the connected "

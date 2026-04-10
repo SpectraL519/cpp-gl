@@ -35,7 +35,7 @@ public:
 
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using item_type = specialized::adjacency_list_item<id_type>;
+    using item_type = specialized::incidence_item<id_type>;
     using adjacency_storage_type = typename specialized::adjacency_list_impl_traits<
         adjacency_list>::template storage_type<item_type>;
 
@@ -120,9 +120,9 @@ public:
     [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        const auto& adjacent_edges = this->_list[to_idx(source_id)];
-        const auto item_it = std::ranges::find(adjacent_edges, target_id, &item_type::vertex_id);
-        if (item_it == adjacent_edges.cend())
+        const auto& incident_edges = this->_list[to_idx(source_id)];
+        const auto item_it = std::ranges::find(incident_edges, target_id, &item_type::vertex_id);
+        if (item_it == incident_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);
     }
@@ -132,11 +132,11 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        const auto& adjacent_edges = this->_list[to_idx(source_id)];
-        const auto item_it = std::ranges::find(adjacent_edges, target_id, [](const auto& item) {
+        const auto& incident_edges = this->_list[to_idx(source_id)];
+        const auto item_it = std::ranges::find(incident_edges, target_id, [](const auto& item) {
             return item.vertex_id;
         });
-        if (item_it == adjacent_edges.cend())
+        if (item_it == incident_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(
             item_it->edge_id, source_id, target_id, *edge_properties_map[to_idx(item_it->edge_id)]
@@ -173,8 +173,8 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        for (auto&& adj : this->_list)
-            for (auto& item : adj)
+        for (auto&& inc : this->_list)
+            for (auto& item : inc)
                 item.edge_id -= static_cast<id_type>(item.edge_id > edge.id());
     }
 
@@ -188,13 +188,13 @@ public:
         return removed_edge_ids;
     }
 
-    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(id_type vertex_id) const
+    [[nodiscard]] gl_attr_force_inline auto incident_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
         return this->out_edges(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto adjacent_edges(
+    [[nodiscard]] gl_attr_force_inline auto incident_edges(
         id_type vertex_id, const auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
@@ -257,14 +257,14 @@ public:
     [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->adjacent_edges(vertex_id);
+        return this->incident_edges(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id, const auto& edge_properties_map)
         const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->adjacent_edges(vertex_id, edge_properties_map);
+        return this->incident_edges(vertex_id, edge_properties_map);
     }
 
     // --- comparison ---
@@ -290,8 +290,8 @@ private:
             std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
         );
 
-        for (auto&& adj : this->_list) {
-            for (auto& edge_item : adj) {
+        for (auto&& inc : this->_list) {
+            for (auto& edge_item : inc) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
                 if (it != removed_edge_ids.end() and *it == edge_item.edge_id)
                     edge_item.edge_id = invalid_id; // edge was removed

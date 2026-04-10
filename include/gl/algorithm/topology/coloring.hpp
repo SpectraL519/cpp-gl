@@ -38,7 +38,7 @@ template <
                 if (in_edge.is_loop())
                     return decision::abort; // graph is not bipartite
 
-                const auto pred_id = in_edge.incident_vertex(vertex_id);
+                const auto pred_id = in_edge.other(vertex_id);
 
                 auto& v_color = coloring[to_idx(vertex_id)];
                 auto p_color = coloring[to_idx(pred_id)];
