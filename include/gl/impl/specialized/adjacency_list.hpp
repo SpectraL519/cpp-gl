@@ -118,9 +118,9 @@ struct directed_adjacency_list {
 
     [[nodiscard]] static size_type in_degree(const impl_type& self, id_type vertex_id) {
         size_type in_deg = 0uz;
-        for (const auto& incident_edges : self._list)
+        for (const auto& out_edges : self._list)
             in_deg += static_cast<size_type>(
-                std::ranges::count(incident_edges, vertex_id, &item_type::vertex_id)
+                std::ranges::count(out_edges, vertex_id, &item_type::vertex_id)
             );
 
         return in_deg;
@@ -190,6 +190,21 @@ struct directed_adjacency_list {
     }
 
     // --- edge getters ---
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return util::concat(self.in_edges(vertex_id), self.out_edges(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return util::concat(
+            self.in_edges(vertex_id, edge_properties_map),
+            self.out_edges(vertex_id, edge_properties_map)
+        );
+    }
 
     [[nodiscard]] static auto in_edges(const impl_type& self, id_type vertex_id) {
         std::vector<item_type> in_edges;
@@ -336,6 +351,18 @@ struct undirected_adjacency_list {
     }
 
     // --- edge getters ---
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return self.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return self.out_edges(vertex_id, edge_properties_map);
+    }
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
         const impl_type& self, id_type vertex_id

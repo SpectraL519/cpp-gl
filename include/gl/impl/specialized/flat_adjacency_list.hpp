@@ -154,6 +154,21 @@ struct directed_flat_adjacency_list {
 
     // --- edge getters ---
 
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return util::concat(self.in_edges(vertex_id), self.out_edges(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return util::concat(
+            self.in_edges(vertex_id, edge_properties_map),
+            self.out_edges(vertex_id, edge_properties_map)
+        );
+    }
+
     [[nodiscard]] static auto in_edges(const impl_type& self, id_type vertex_id) {
         std::vector<item_type> in_edges;
         for (id_type src_id = initial_id; src_id < self._list.size(); ++src_id) {
@@ -317,6 +332,18 @@ struct undirected_flat_adjacency_list {
     }
 
     // --- edge getters ---
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return self.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return self.out_edges(vertex_id, edge_properties_map);
+    }
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
         const impl_type& self, id_type vertex_id

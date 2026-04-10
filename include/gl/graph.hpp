@@ -734,7 +734,7 @@ private:
 
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << "\n  incident edges:\n";
-            for (const auto& edge : this->incident_edges(vertex.id()))
+            for (const auto& edge : this->out_edges(vertex.id()))
                 os << "\t- " << edge << '\n';
         }
     }
@@ -744,7 +744,7 @@ private:
 
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << " :";
-            for (const auto& edge : this->incident_edges(vertex.id()))
+            for (const auto& edge : this->out_edges(vertex.id()))
                 os << ' ' << edge;
             os << '\n';
         }
@@ -773,8 +773,8 @@ private:
 
         if constexpr (traits::c_writable<typename edge_type::properties_type>) {
             if (with_edge_properties) {
-                const auto print_incident_edges = [this, &os](const id_type vertex_id) {
-                    for (const auto& edge : this->incident_edges(vertex_id)) {
+                const auto print_out_edges = [this, &os](const id_type vertex_id) {
+                    for (const auto& edge : this->out_edges(vertex_id)) {
                         if (edge.source() != vertex_id)
                             continue; // vertex is not the source
                         os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
@@ -783,14 +783,14 @@ private:
                 };
 
                 for (const auto vertex_id : this->vertex_ids())
-                    print_incident_edges(vertex_id);
+                    print_out_edges(vertex_id);
 
                 return;
             }
         }
 
-        const auto print_incident_edges = [this, &os](const id_type vertex_id) {
-            for (const auto& edge : this->incident_edges(vertex_id)) {
+        const auto print_out_edges = [this, &os](const id_type vertex_id) {
+            for (const auto& edge : this->out_edges(vertex_id)) {
                 if (edge.source() != vertex_id)
                     continue; // vertex is not the source
                 os << edge.source() << ' ' << edge.target() << '\n';
@@ -798,7 +798,7 @@ private:
         };
 
         for (const auto vertex_id : this->vertex_ids())
-            print_incident_edges(vertex_id);
+            print_out_edges(vertex_id);
     }
 
     void _gsf_read(std::istream& is) {

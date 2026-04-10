@@ -195,15 +195,15 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         // Check the structure of the graph considering the aligned IDs
         CHECK_EQ(size(sut), constants::n_elements - 1uz);
 
-        const auto inc_edges_1 = sut.incident_edges(constants::v1_id);
-        CHECK_EQ(inc_edges_1.size(), 1uz);
-        CHECK_EQ(inc_edges_1.front().id(), edge5.id() - n_removed_edges);
-        CHECK_EQ(inc_edges_1.front().target(), constants::v2_id);
+        const auto out_edges_1 = sut.out_edges(constants::v1_id);
+        CHECK_EQ(out_edges_1.size(), 1uz);
+        CHECK_EQ(out_edges_1.front().id(), edge5.id() - n_removed_edges);
+        CHECK_EQ(out_edges_1.front().target(), constants::v2_id);
 
-        const auto inc_edges_2 = sut.incident_edges(constants::v2_id);
-        CHECK_EQ(inc_edges_2.size(), 1uz);
-        CHECK_EQ(inc_edges_2.front().id(), edge6.id() - n_removed_edges);
-        CHECK_EQ(inc_edges_2.front().target(), constants::v1_id);
+        const auto out_edges_2 = sut.out_edges(constants::v2_id);
+        CHECK_EQ(out_edges_2.size(), 1uz);
+        CHECK_EQ(out_edges_2.front().id(), edge6.id() - n_removed_edges);
+        CHECK_EQ(out_edges_2.front().target(), constants::v1_id);
     }
 
     // --- vertex getters ---
@@ -290,11 +290,11 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         REQUIRE(new_edge.is_incident_from(constants::v1_id));
         REQUIRE(new_edge.is_incident_to(constants::v2_id));
 
-        const auto inc_edged_1 = sut.incident_edges(constants::v1_id);
-        CHECK_EQ(inc_edged_1.size(), 1uz);
-        CHECK_EQ(sut.incident_edges(constants::v2_id).size(), 0uz);
+        const auto out_edges_1 = sut.out_edges(constants::v1_id);
+        CHECK_EQ(out_edges_1.size(), 1uz);
+        CHECK_EQ(sut.out_edges(constants::v2_id).size(), 0uz);
 
-        const auto& new_edge_extracted = inc_edged_1[0uz];
+        const auto& new_edge_extracted = out_edges_1[0uz];
         CHECK_EQ(new_edge_extracted, new_edge);
     }
 
@@ -307,16 +307,16 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     SUBCASE("remove_edge should remove the edge from the source vertex's list") {
         fully_connect_vertex(constants::v1_id);
 
-        auto incident_edges = sut.incident_edges(constants::v1_id);
-        REQUIRE_EQ(incident_edges.size(), n_inc_edged_for_fully_connected_vertex);
+        auto out_edges = sut.out_edges(constants::v1_id);
+        REQUIRE_EQ(out_edges.size(), n_inc_edged_for_fully_connected_vertex);
 
-        const auto& edge_to_remove = incident_edges[0uz];
+        const auto& edge_to_remove = out_edges[0uz];
         sut.remove_edge(edge_to_remove);
 
-        incident_edges = sut.incident_edges(constants::v1_id);
-        REQUIRE_EQ(incident_edges.size(), n_inc_edged_for_fully_connected_vertex - 1uz);
+        out_edges = sut.out_edges(constants::v1_id);
+        REQUIRE_EQ(out_edges.size(), n_inc_edged_for_fully_connected_vertex - 1uz);
         // validate that the incident edges list has been properly aligned
-        CHECK_EQ(std::ranges::find(incident_edges, edge_to_remove), incident_edges.end());
+        CHECK_EQ(std::ranges::find(out_edges, edge_to_remove), out_edges.end());
     }
 
     // --- edge getters ---
@@ -381,6 +381,18 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         CHECK(sut.get_edges(constants::v2_id, constants::v2_id).empty());
     }
 
+    SUBCASE("incident_edges should return edges incident with the vertex") {
+        const auto edge1 = add_edge(constants::v1_id, constants::v2_id);
+        const auto edge2 = add_edge(constants::v3_id, constants::v1_id);
+
+        const auto inc_edges =
+            sut.incident_edges(constants::v1_id) | std::ranges::to<std::vector>();
+
+        REQUIRE_EQ(inc_edges.size(), 2uz);
+        CHECK(std::ranges::contains(inc_edges, edge1));
+        CHECK(std::ranges::contains(inc_edges, edge2));
+    }
+
     SUBCASE("in_edges should return edges where the vertex is the target") {
         const auto edge1 = add_edge(constants::v2_id, constants::v1_id);
         const auto edge2 = add_edge(constants::v3_id, constants::v1_id);
@@ -408,7 +420,7 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
     SUBCASE("at should return the incident edges of a vertex") {
         init_complete_graph();
         for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
-            CHECK(std::ranges::equal(sut.at(vertex_id), sut.incident_edges(vertex_id)));
+            CHECK(std::ranges::equal(sut.at(vertex_id), sut.out_edges(vertex_id)));
     }
 }
 
@@ -706,7 +718,9 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         ));
     }
 
-    SUBCASE("in_edges and out_edges should return the same edges for undirected graphs") {
+    // TODO: incident_edges
+
+    SUBCASE("incident/in/out_edges should return the same edge sets for undirected graphs") {
         add_edge(constants::v1_id, constants::v2_id);
         add_edge(constants::v1_id, constants::v3_id);
 

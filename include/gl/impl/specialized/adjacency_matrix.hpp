@@ -225,6 +225,23 @@ struct directed_adjacency_matrix {
     gl_attr_force_inline static void remove_edge(impl_type& self, const edge_type& edge) {
         detail::strict_get(self._matrix, edge) = invalid_id;
     }
+
+    // --- edge getters ---
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return util::concat(self.in_edges(vertex_id), self.out_edges(vertex_id));
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return util::concat(
+            self.in_edges(vertex_id, edge_properties_map),
+            self.out_edges(vertex_id, edge_properties_map)
+        );
+    }
 };
 
 template <traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
@@ -395,6 +412,20 @@ struct undirected_adjacency_matrix {
             // if the edge was found in the first matrix cell, it will also be present in the second matrix cell
             self._matrix[to_idx(edge.target())][to_idx(edge.source())] = invalid_id;
         }
+    }
+
+    // --- edge getters ---
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id
+    ) {
+        return self.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline static auto incident_edges(
+        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+    ) {
+        return self.out_edges(vertex_id, edge_properties_map);
     }
 };
 

@@ -13,7 +13,7 @@ void verify_graph_structure(const GraphType& actual, const GraphType& expected) 
 
     // verify that the edges of the in graph are equivalent to the edges of the out graph
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
-        return std::ranges::all_of(actual.incident_edges(v_actual), [&](const auto& edge) {
+        return std::ranges::all_of(actual.out_edges(v_actual), [&](const auto& edge) {
             return expected.has_edge(edge.source(), edge.target());
         });
     }));
@@ -35,7 +35,7 @@ void verify_vertex_properties(const GraphType& actual, const GraphType& expected
 template <gl::traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
-        return std::ranges::all_of(actual.incident_edges(v_actual), [&](const auto& edge) {
+        return std::ranges::all_of(actual.out_edges(v_actual), [&](const auto& edge) {
             return edge.properties()
                 == expected.get_edge(edge.source(), edge.target())->properties();
         });

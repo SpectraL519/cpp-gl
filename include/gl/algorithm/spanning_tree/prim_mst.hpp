@@ -51,7 +51,7 @@ template <traits::c_undirected_graph G>
     if (root_id == invalid_id)
         root_id = initial_id;
 
-    for (const auto& edge : graph.incident_edges(root_id))
+    for (const auto& edge : graph.out_edges(root_id))
         edge_queue.emplace(edge);
 
     // mark the root vertex as visited

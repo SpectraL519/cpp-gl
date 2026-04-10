@@ -200,7 +200,7 @@ public:
     [[nodiscard]] gl_attr_force_inline auto incident_edges(id_type vertex_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
-        return this->out_edges(vertex_id);
+        return specialized_impl::incident_edges(*this, vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto incident_edges(
@@ -208,7 +208,7 @@ public:
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
-        return this->out_edges(vertex_id, edge_properties_map);
+        return specialized_impl::incident_edges(*this, vertex_id, edge_properties_map);
     }
 
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id) const
