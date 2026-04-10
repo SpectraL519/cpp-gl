@@ -35,7 +35,7 @@ public:
 
     using vertex_type = typename GraphTraits::vertex_type;
     using edge_type = typename GraphTraits::edge_type;
-    using item_type = specialized::adjacency_list_item<id_type>;
+    using item_type = specialized::incidence_item<id_type>;
     using adjacency_storage_type = typename specialized::adjacency_list_impl_traits<
         adjacency_list>::template storage_type<item_type>;
 
@@ -173,8 +173,8 @@ public:
 
     gl_attr_force_inline void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
-        for (auto&& adj : this->_list)
-            for (auto& item : adj)
+        for (auto&& inc : this->_list)
+            for (auto& item : inc)
                 item.edge_id -= static_cast<id_type>(item.edge_id > edge.id());
     }
 
@@ -290,8 +290,8 @@ private:
             std::ranges::unique(removed_edge_ids).begin(), removed_edge_ids.end()
         );
 
-        for (auto&& adj : this->_list) {
-            for (auto& edge_item : adj) {
+        for (auto&& inc : this->_list) {
+            for (auto& edge_item : inc) {
                 auto it = std::ranges::lower_bound(removed_edge_ids, edge_item.edge_id);
                 if (it != removed_edge_ids.end() and *it == edge_item.edge_id)
                     edge_item.edge_id = invalid_id; // edge was removed

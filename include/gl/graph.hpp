@@ -693,7 +693,7 @@ private:
         );
 
         for (const auto& vertex : this->vertices()) {
-            os << "- " << vertex << "\n  adjacent edges:\n";
+            os << "- " << vertex << "\n  incident edges:\n";
             for (const auto& edge : this->incidenct_edges(vertex.id()))
                 os << "\t- " << edge << '\n';
         }

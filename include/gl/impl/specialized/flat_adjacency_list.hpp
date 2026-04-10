@@ -23,7 +23,7 @@ struct directed_flat_adjacency_list {
     using impl_type = AdjacencyList;
     using id_type = typename impl_type::id_type;
     using edge_type = typename impl_type::edge_type;
-    using item_type = adjacency_list_item<id_type>;
+    using item_type = incidence_item<id_type>;
 
     [[nodiscard]] static auto in_edges(const impl_type& self, id_type vertex_id) {
         std::vector<item_type> in_edges;
@@ -34,7 +34,7 @@ struct directed_flat_adjacency_list {
                       return item.vertex_id == tgt_id;
                   })
                 | std::views::transform([src_id](const auto& item) {
-                      return adjacency_list_item{src_id, item.edge_id};
+                      return incidence_item{src_id, item.edge_id};
                   });
             in_edges.insert(in_edges.end(), in_edges_view.begin(), in_edges_view.end());
         }
@@ -151,7 +151,7 @@ struct undirected_flat_adjacency_list {
     using impl_type = AdjacencyList;
     using id_type = typename impl_type::id_type;
     using edge_type = typename impl_type::edge_type;
-    using item_type = adjacency_list_item<id_type>;
+    using item_type = incidence_item<id_type>;
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
         const impl_type& self, id_type vertex_id
@@ -255,17 +255,17 @@ struct undirected_flat_adjacency_list {
 
         // remove from the source segment
         {
-            auto adj_edges = self._list[src_idx];
-            const auto it = detail::strict_find<item_type>(adj_edges, edge);
-            const auto pos = static_cast<size_type>(std::distance(adj_edges.begin(), it));
+            auto inc_edges = self._list[src_idx];
+            const auto it = detail::strict_find<item_type>(inc_edges, edge);
+            const auto pos = static_cast<size_type>(std::distance(inc_edges.begin(), it));
             self._list.erase(src_idx, pos);
         }
 
         // remove from the target segment (if edge not a self-loop)
         if (src_idx != tgt_idx) {
-            auto adj_edges = self._list[tgt_idx];
-            const auto it = detail::strict_find<item_type>(adj_edges, edge);
-            const auto pos = static_cast<size_type>(std::distance(adj_edges.begin(), it));
+            auto inc_edges = self._list[tgt_idx];
+            const auto it = detail::strict_find<item_type>(inc_edges, edge);
+            const auto pos = static_cast<size_type>(std::distance(inc_edges.begin(), it));
             self._list.erase(tgt_idx, pos);
         }
     }

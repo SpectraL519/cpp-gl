@@ -117,10 +117,8 @@ template <traits::c_id_type IdType, traits::c_random_access_range_of<IdType> IdR
     while (true) {
         path.push_front(current_vertex);
         IdType predecessor = predecessor_map[to_idx(current_vertex)];
-
         if (predecessor == current_vertex)
             break;
-
         current_vertex = predecessor;
     }
 

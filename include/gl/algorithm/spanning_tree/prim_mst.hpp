@@ -47,7 +47,7 @@ template <traits::c_undirected_graph G>
     std::vector<bool> visited(n_vertices, false);
     queue_type edge_queue;
 
-    // insert the edges adjacent to the root vertex to the queue
+    // insert the edges incident with the root vertex to the queue
     if (root_id == invalid_id)
         root_id = initial_id;
 
@@ -74,7 +74,7 @@ template <traits::c_undirected_graph G>
         visited[min_edge_tgt] = true;
         ++n_vertices_in_mst;
 
-        // enqueue all edges adjacent to the `target` vertex if they lead to unvisited verties
+        // enqueue all edges incident with the `target` vertex if they lead to unvisited verties
         for (const auto& edge : graph.incidenct_edges(min_edge.target()))
             if (not visited[to_idx(edge.incident_vertex(min_edge.target()))])
                 edge_queue.emplace(edge);
@@ -134,11 +134,11 @@ requires traits::c_has_numeric_limits_max<vertex_distance_type<G>>
         // Update adjacent vertices
         for (const auto& edge : graph.incidenct_edges(vertex_id)) {
             const auto edge_weight = get_weight<G>(edge);
-            const auto incident_vertex_idx = to_idx(edge.incident_vertex(vertex_id));
+            const auto target_vertex_idx = to_idx(edge.incident_vertex(vertex_id));
 
-            if (not in_mst[incident_vertex_idx] and edge_weight < min_cost[incident_vertex_idx]) {
-                min_cost[incident_vertex_idx] = edge_weight;
-                min_cost_edges[incident_vertex_idx].emplace(edge);
+            if (not in_mst[target_vertex_idx] and edge_weight < min_cost[target_vertex_idx]) {
+                min_cost[target_vertex_idx] = edge_weight;
+                min_cost_edges[target_vertex_idx].emplace(edge);
             }
         }
 

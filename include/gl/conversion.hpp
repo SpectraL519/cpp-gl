@@ -86,14 +86,14 @@ struct to_impl<impl::flat_list_t, impl::list_t> {
         auto& source_list = source._impl._list;
 
         std::size_t total_items = 0uz;
-        for (const auto& adj : source_list)
-            total_items += adj.size();
+        for (const auto& inc : source_list)
+            total_items += inc.size();
 
         target_list.reserve_segments(source_list.size());
         target_list.reserve_data(total_items);
 
-        for (auto& adj : source_list)
-            target_list.push_back(std::move(adj));
+        for (auto& inc : source_list)
+            target_list.push_back(std::move(inc));
     }
 };
 
@@ -106,8 +106,8 @@ struct to_impl<impl::list_t, impl::flat_list_t> {
         auto& source_list = source._impl._list;
 
         target_list.reserve(source_list.size());
-        for (auto adj : source_list)
-            target_list.emplace_back(adj.begin(), adj.end());
+        for (auto inc : source_list)
+            target_list.emplace_back(inc.begin(), inc.end());
     }
 };
 

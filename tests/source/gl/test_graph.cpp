@@ -499,7 +499,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }));
         }
 
-        SUBCASE("remove_edge should properly remove the edge for both incident vertices") {
+        SUBCASE("remove_edge should properly remove the edge for both of its incident vertices") {
             const auto added_edge = sut.add_edge(vertex_1, vertex_2);
 
             REQUIRE_EQ(sut.size(), 1uz);
@@ -632,7 +632,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
             }
         }
 
-        SUBCASE("remove_edge should properly remove the edge for both incident vertices") {
+        SUBCASE("remove_edge should properly remove the edge for both of its incident vertices") {
             const auto added_edge = sut.add_edge_with(vertex_1, vertex_2, constants::used);
 
             REQUIRE_EQ(sut.size(), 1uz);
@@ -730,14 +730,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
     }
 
-    SUBCASE("get_edge(vertex, vertex) should return nullopt if the given vertices are not incident"
+    SUBCASE("get_edge(vertex, vertex) should return nullopt if the given vertices are not adjacent"
     ) {
         sut_type sut{constants::n_elements};
         CHECK_FALSE(sut.get_edge(sut.get_vertex(constants::v1_id), sut.get_vertex(constants::v2_id))
         );
     }
 
-    SUBCASE("get_edge(vertex, vertex) should return a valid edge if the given vetices are incident"
+    SUBCASE("get_edge(vertex, vertex) should return a valid edge if the given vetices are adjacent"
     ) {
         sut_type sut{constants::n_elements};
         const auto vd_1 = sut.get_vertex(constants::v1_id);
@@ -772,14 +772,14 @@ TEST_CASE_TEMPLATE_DEFINE("graph structure tests", TraitsType, graph_traits_temp
         );
     }
 
-    SUBCASE("get_edges(id, id) should return an empty vector if the given vertices are not incident"
+    SUBCASE("get_edges(id, id) should return an empty vector if the given vertices are not adjacent"
     ) {
         sut_type sut{constants::n_elements};
         CHECK(sut.get_edges(constants::v1_id, constants::v2_id).empty());
     }
 
     SUBCASE("get_edges(id, id) should return a valid edge reference vector if the given vertices "
-            "are incident") {
+            "are adjacent") {
         sut_type sut{constants::n_elements};
         std::vector<edge_type> expected_edges;
 
