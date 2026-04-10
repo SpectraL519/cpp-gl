@@ -84,7 +84,7 @@ return_type<Result, search_tree<H>> forward_search(
 
     // clang-format off
 
-    bfs(
+    bfs<traversal_direction::backward>(
         hypergraph,
         root_queue,
         default_visit_vertex_predicate<H>(visited_vertices),

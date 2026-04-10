@@ -57,11 +57,13 @@ using search_tree = std::vector<search_node<H>>;
 
 // --- generic algorithm traits ---
 
-template <hgl::traits::c_hypergraph H>
+enum class traversal_direction : bool { forward, backward };
+
+template <hgl::traits::c_hypergraph H, traversal_direction Dir = traversal_direction::forward>
 struct traversal_policy;
 
-template <hgl::traits::c_undirected_hypergraph H>
-struct traversal_policy<H> {
+template <hgl::traits::c_undirected_hypergraph H, traversal_direction Dir>
+struct traversal_policy<H, Dir> {
     static auto target_hyperedges(const H& h, typename H::id_type v_id) {
         return h.incident_hyperedge_ids(v_id);
     }
@@ -72,13 +74,24 @@ struct traversal_policy<H> {
 };
 
 template <hgl::traits::c_bf_directed_hypergraph H>
-struct traversal_policy<H> {
+struct traversal_policy<H, traversal_direction::forward> {
     static auto target_hyperedges(const H& h, typename H::id_type v_id) {
-        return h.out_hyperedge_ids(v_id);
+        return h.out_hyperedge_ids(v_id); // forward star
     }
 
     static auto target_vertices(const H& h, typename H::id_type he_id) {
         return h.head_vertex_ids(he_id);
+    }
+};
+
+template <hgl::traits::c_bf_directed_hypergraph H>
+struct traversal_policy<H, traversal_direction::backward> {
+    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
+        return h.in_hyperedge_ids(v_id); // backward star
+    }
+
+    static auto target_vertices(const H& h, typename H::id_type he_id) {
+        return h.tail_vertex_ids(he_id);
     }
 };
 
