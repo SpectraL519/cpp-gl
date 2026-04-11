@@ -3,7 +3,7 @@
 #include "testing/gl/io_common.hpp"
 
 #include <gl/graph.hpp>
-#include <gl/graph_file_io.hpp>
+#include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
 
 #include <doctest.h>

@@ -6,7 +6,7 @@
 
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
-#include "gl/graph_io.hpp"
+#include "gl/io/graph_options.hpp"
 #include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/types/properties.hpp"

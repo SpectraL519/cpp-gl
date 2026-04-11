@@ -4,7 +4,7 @@
 #include "testing/gl/functional.hpp"
 
 #include <gl/algorithm.hpp>
-#include <gl/graph_file_io.hpp>
+#include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
 
 #include <doctest.h>
