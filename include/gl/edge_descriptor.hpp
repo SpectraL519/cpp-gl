@@ -12,6 +12,8 @@
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 
+#include <format>
+
 namespace gl {
 
 template <

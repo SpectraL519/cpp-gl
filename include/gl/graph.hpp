@@ -4,9 +4,11 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/impl_tags.hpp"
+#include "gl/io/graph_fmt_traits.hpp"
 #include "gl/io/options.hpp"
 #include "gl/io/stream_options_manipulator.hpp"
 #include "gl/util/ranges.hpp"
@@ -633,22 +635,17 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
         using io::detail::option_bit;
 
-        if (io::is_option_set(os, option_bit::specification_fmt)) {
-            g._gsf_write(os);
-            return os;
-        }
+        if (io::is_option_set(os, option_bit::specification_fmt))
+            return g._gsf_write(os);
 
         if (io::is_option_set(os, option_bit::verbose))
-            g._verbose_write(os);
+            return g._verbose_write(os);
         else
-            g._concise_write(os);
-
-        return os;
+            return g._concise_write(os);
     }
 
-    friend inline std::istream& operator>>(std::istream& is, graph& g) {
-        g._gsf_read(is);
-        return is;
+    friend gl_attr_force_inline std::istream& operator>>(std::istream& is, graph& g) {
+        return g._gsf_read(is);
     }
 
     // --- friend declarations ---
@@ -663,6 +660,8 @@ public:
     friend struct detail::to_impl;
 
 private:
+    using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
+
     graph(const graph& other)
     : _n_vertices{other._n_vertices}, _n_edges{other._n_edges}, _impl{other._impl} {
         // Deep copy vertex properties
@@ -682,11 +681,7 @@ private:
         }
     }
 
-    [[nodiscard]] static constexpr std::string _directed_type_str() {
-        return traits::c_directed_edge<edge_type> ? "directed" : "undirected";
-    }
-
-    // --- graph element verification methods ---
+    // --- element validation ---
 
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
@@ -704,7 +699,7 @@ private:
             ));
     }
 
-    // --- vertex methods ---
+    // --- vertex modifiers ---
 
     void _remove_vertex_impl(const id_type vertex_id) {
         const auto removed_edge_ids = this->_impl.remove_vertex(vertex_id);
@@ -721,35 +716,37 @@ private:
         }
     }
 
-    // --- io methods ---
+    // --- I/O utility ---
 
-    void _verbose_write(std::ostream& os) const {
-        os << std::format(
-            "type: {}\nnumber of vertices: {}\nnumber of edges: {}\nvertices:\n",
-            _directed_type_str(),
-            this->order(),
-            this->size()
-        );
-
+    std::ostream& _verbose_write(std::ostream& os) const {
+        os << "type: " << fmt_traits::type << ", |V| = " << this->order()
+           << ", |E| = " << this->size() << '\n';
         for (const auto& vertex : this->vertices()) {
-            os << "- " << vertex << "\n  incident edges:\n";
+            os << "- " << vertex << "\n  " << fmt_traits::out_edges << ":\n";
             for (const auto& edge : this->out_edges(vertex.id()))
                 os << "\t- " << edge << '\n';
         }
+        return os;
     }
 
-    void _concise_write(std::ostream& os) const {
-        os << std::format("{} {} {}\n", _directed_type_str(), this->order(), this->size());
+    std::ostream& _concise_write(std::ostream& os) const {
+        using io::detail::option_bit;
 
-        for (const auto& vertex : this->vertices()) {
-            os << "- " << vertex << " :";
-            for (const auto& edge : this->out_edges(vertex.id()))
-                os << ' ' << edge;
+        for (const auto& src : this->vertices()) {
+            os << src << " :";
+            for (const auto& edge : this->out_edges(src.id())) {
+                os << ' ' << edge.other(src.id());
+                if constexpr (traits::c_writable<edge_properties_type>)
+                    if (io::is_option_set(os, option_bit::with_connection_properties))
+                        os << '[' << edge.properties() << ']';
+            }
             os << '\n';
         }
+
+        return os;
     }
 
-    void _gsf_write(std::ostream& os) const {
+    std::ostream& _gsf_write(std::ostream& os) const {
         using io::detail::option_bit;
 
         const bool with_vertex_properties =
@@ -767,12 +764,12 @@ private:
             static_cast<int>(with_edge_properties)
         );
 
-        if constexpr (traits::c_writable<typename vertex_type::properties_type>)
+        if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_vertex_properties)
                 for (const auto& vertex : this->vertices())
                     os << vertex.properties() << '\n';
 
-        if constexpr (traits::c_writable<typename edge_type::properties_type>) {
+        if constexpr (traits::c_writable<edge_properties_type>) {
             if (with_edge_properties) {
                 const auto print_out_edges = [this, &os](const id_type vertex_id) {
                     for (const auto& edge : this->out_edges(vertex_id)) {
@@ -786,7 +783,7 @@ private:
                 for (const auto vertex_id : this->vertex_ids())
                     print_out_edges(vertex_id);
 
-                return;
+                return os;
             }
         }
 
@@ -800,16 +797,18 @@ private:
 
         for (const auto vertex_id : this->vertex_ids())
             print_out_edges(vertex_id);
+
+        return os;
     }
 
-    void _gsf_read(std::istream& is) {
+    std::istream& _gsf_read(std::istream& is) {
         bool directed;
         is >> directed;
 
         if (directed != traits::c_directed_edge<edge_type>)
             throw std::ios_base::failure(std::format(
                 "Invalid graph specification: directional tag does not match - should be {}",
-                _directed_type_str()
+                fmt_traits::type
             ));
 
         // read initial graph parameters
@@ -866,6 +865,8 @@ private:
                 this->add_edge(source_id, target_id);
             }
         }
+
+        return is;
     }
 
     size_type _n_vertices = 0uz;

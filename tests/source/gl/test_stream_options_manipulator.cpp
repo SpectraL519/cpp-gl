@@ -1,8 +1,7 @@
+#include "doctest.h"
 #include "testing/gl/constants.hpp"
 
 #include <gl/io/stream_options_manipulator.hpp>
-
-#include <doctest.h>
 
 #include <sstream>
 

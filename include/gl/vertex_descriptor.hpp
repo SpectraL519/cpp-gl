@@ -13,7 +13,6 @@
 #include "gl/types/properties.hpp"
 
 #include <compare>
-#include <format>
 
 namespace gl {
 
@@ -121,7 +120,7 @@ private:
         using io::detail::option_bit;
 
         if (io::is_option_set(os, option_bit::verbose))
-            return os << std::format("[id: {}]", this->_id);
+            return os << "[id: " << this->_id << ']';
         else
             return os << this->_id;
     }
