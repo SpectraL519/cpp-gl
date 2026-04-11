@@ -7,6 +7,7 @@
 #include "gl/constants.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/io/format.hpp"
+#include "gl/io/options.hpp"
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 
@@ -166,29 +167,33 @@ public:
 
 private:
     void _write(std::ostream& os) const {
+        using io::detail::option_bit;
+
         if constexpr (not traits::c_writable<properties_type>) {
             this->_write_no_properties(os);
             return;
         }
         else {
-            if (not io::is_option_set(os, io::graph_option::with_edge_properties)) {
+            if (not io::is_option_set(os, option_bit::with_connection_properties)) {
                 this->_write_no_properties(os);
                 return;
             }
 
-            if (io::is_option_set(os, io::graph_option::verbose)) {
+            // TODO: print ID
+            if (io::is_option_set(os, option_bit::verbose))
                 os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.second
                    << " | properties: " << this->_properties.get() << "]";
-            }
-            else {
+            else
                 os << "[" << this->_vertices.first << ", " << this->_vertices.second << " | "
                    << this->_properties.get() << "]";
-            }
         }
     }
 
     void _write_no_properties(std::ostream& os) const {
-        if (io::is_option_set(os, io::graph_option::verbose))
+        using io::detail::option_bit;
+
+        // TODO: print ID
+        if (io::is_option_set(os, option_bit::verbose))
             os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.first
                << "]";
         else

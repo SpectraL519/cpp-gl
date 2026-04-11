@@ -9,7 +9,7 @@
 #include "gl/io/format.hpp"
 #include "gl/io/stream_options_manipulator.hpp"
 
-#include "gl/io/graph_options.hpp"
+#include "gl/io/options.hpp"
 #include "gl/io/graph_fio.hpp"
 
 // clang-format on

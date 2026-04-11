@@ -7,6 +7,7 @@
 #include "gl/constants.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/impl_tags.hpp"
+#include "gl/io/options.hpp"
 #include "gl/io/stream_options_manipulator.hpp"
 #include "gl/util/ranges.hpp"
 
@@ -630,12 +631,14 @@ public:
     // --- stream operators ---
 
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
-        if (io::is_option_set(os, io::graph_option::gsf)) {
+        using io::detail::option_bit;
+
+        if (io::is_option_set(os, option_bit::specification_fmt)) {
             g._gsf_write(os);
             return os;
         }
 
-        if (io::is_option_set(os, io::graph_option::verbose))
+        if (io::is_option_set(os, option_bit::verbose))
             g._verbose_write(os);
         else
             g._concise_write(os);
@@ -747,10 +750,12 @@ private:
     }
 
     void _gsf_write(std::ostream& os) const {
+        using io::detail::option_bit;
+
         const bool with_vertex_properties =
-            io::is_option_set(os, io::graph_option::with_vertex_properties);
+            io::is_option_set(os, option_bit::with_vertex_properties);
         const bool with_edge_properties =
-            io::is_option_set(os, io::graph_option::with_edge_properties);
+            io::is_option_set(os, option_bit::with_connection_properties);
 
         // print graph size
         os << std::format(

@@ -6,7 +6,7 @@
 
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
-#include "gl/io/graph_options.hpp"
+#include "gl/io/options.hpp"
 #include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/types/properties.hpp"
@@ -99,32 +99,32 @@ public:
 
 private:
     void _write(std::ostream& os) const {
+        using io::detail::option_bit;
+
         if constexpr (not traits::c_writable<properties_type>) {
             this->_write_no_properties(os);
             return;
         }
         else {
-            if (not io::is_option_set(os, io::graph_option::with_vertex_properties)) {
+            if (not io::is_option_set(os, option_bit::with_vertex_properties)) {
                 this->_write_no_properties(os);
                 return;
             }
 
-            if (io::is_option_set(os, io::graph_option::verbose)) {
+            if (io::is_option_set(os, option_bit::verbose))
                 os << "[id: " << this->_id << " | properties: " << this->_properties.get() << "]";
-            }
-            else {
+            else
                 os << "[" << this->_id << " | " << this->_properties.get() << "]";
-            }
         }
     }
 
     void _write_no_properties(std::ostream& os) const {
-        if (io::is_option_set(os, io::graph_option::verbose)) {
+        using io::detail::option_bit;
+
+        if (io::is_option_set(os, option_bit::verbose))
             os << std::format("[id: {}]", this->_id);
-        }
-        else {
+        else
             os << this->_id;
-        }
     }
 
     id_type _id;
