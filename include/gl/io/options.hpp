@@ -11,10 +11,10 @@ namespace gl::io {
 namespace detail {
 
 enum class option_bit : bit_position_type {
-    verbose = 0ul,
-    with_vertex_properties = 1ul,
-    with_connection_properties = 2ul,
-    specification_fmt = 3ul
+    verbose = 0u,
+    with_vertex_properties = 1u,
+    with_connection_properties = 2u,
+    specification_fmt = 3u
 };
 
 } // namespace detail

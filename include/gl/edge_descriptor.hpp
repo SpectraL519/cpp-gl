@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/io/format.hpp"
@@ -160,44 +161,80 @@ public:
         return this->_properties.get();
     }
 
-    friend inline std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
-        edge._write(os);
-        return os;
+    friend gl_attr_force_inline std::ostream& operator<<(
+        std::ostream& os, const edge_descriptor& edge
+    ) {
+        return edge._write(os);
     }
 
 private:
-    void _write(std::ostream& os) const {
+    std::ostream& _write(std::ostream& os) const
+    requires std::same_as<directional_tag, undirected_t>
+    {
         using io::detail::option_bit;
 
         if constexpr (not traits::c_writable<properties_type>) {
-            this->_write_no_properties(os);
-            return;
+            return this->_write_no_properties(os);
         }
         else {
-            if (not io::is_option_set(os, option_bit::with_connection_properties)) {
-                this->_write_no_properties(os);
-                return;
-            }
+            if (not io::is_option_set(os, option_bit::with_connection_properties))
+                return this->_write_no_properties(os);
 
-            // TODO: print ID
             if (io::is_option_set(os, option_bit::verbose))
-                os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.second
-                   << " | properties: " << this->_properties.get() << "]";
+                return os
+                    << "[id: " << this->_id << " | endpoints: {" << this->_vertices.first << ", "
+                    << this->_vertices.second << "} | " << this->_properties.get() << ']';
             else
-                os << "[" << this->_vertices.first << ", " << this->_vertices.second << " | "
-                   << this->_properties.get() << "]";
+                return os << '{' << this->_vertices.first << ", " << this->_vertices.second << "}["
+                          << this->_properties.get() << ']';
         }
     }
 
-    void _write_no_properties(std::ostream& os) const {
+    std::ostream& _write_no_properties(std::ostream& os) const
+    requires std::same_as<directional_tag, undirected_t>
+    {
         using io::detail::option_bit;
 
-        // TODO: print ID
         if (io::is_option_set(os, option_bit::verbose))
-            os << "[source: " << this->_vertices.first << ", target: " << this->_vertices.first
-               << "]";
+            return os << "[id: " << this->_id << " | endpoints: {" << this->_vertices.first << ", "
+                      << this->_vertices.second << "}]";
         else
-            os << "[" << this->_vertices.first << ", " << this->_vertices.second << "]";
+            return os << '{' << this->_vertices.first << ", " << this->_vertices.second << '}';
+    }
+
+    std::ostream& _write(std::ostream& os) const
+    requires std::same_as<directional_tag, directed_t>
+    {
+        using io::detail::option_bit;
+
+        if constexpr (not traits::c_writable<properties_type>) {
+            return this->_write_no_properties(os);
+        }
+        else {
+            if (not io::is_option_set(os, option_bit::with_connection_properties))
+                return this->_write_no_properties(os);
+
+            if (io::is_option_set(os, option_bit::verbose))
+                return os
+                    << "[id: " << this->_id << " | source: " << this->_vertices.first
+                    << ", target: " << this->_vertices.second << " | " << this->_properties.get()
+                    << ']';
+            else
+                return os << '(' << this->_vertices.first << ", " << this->_vertices.second << ")["
+                          << this->_properties.get() << ']';
+        }
+    }
+
+    std::ostream& _write_no_properties(std::ostream& os) const
+    requires std::same_as<directional_tag, directed_t>
+    {
+        using io::detail::option_bit;
+
+        if (io::is_option_set(os, option_bit::verbose))
+            return os << "[id: " << this->_id << " | source: " << this->_vertices.first
+                      << ", target: " << this->_vertices.second << ']';
+        else
+            return os << '(' << this->_vertices.first << ", " << this->_vertices.second << ')';
     }
 
     id_type _id;

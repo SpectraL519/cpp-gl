@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
 #include "gl/io/options.hpp"
@@ -92,39 +93,37 @@ public:
         return this->_properties.get();
     }
 
-    friend inline std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
-        vertex._write(os);
-        return os;
+    friend gl_attr_force_inline std::ostream& operator<<(
+        std::ostream& os, const vertex_descriptor& vertex
+    ) {
+        return vertex._write(os);
     }
 
 private:
-    void _write(std::ostream& os) const {
+    std::ostream& _write(std::ostream& os) const {
         using io::detail::option_bit;
 
         if constexpr (not traits::c_writable<properties_type>) {
-            this->_write_no_properties(os);
-            return;
+            return this->_write_no_properties(os);
         }
         else {
-            if (not io::is_option_set(os, option_bit::with_vertex_properties)) {
-                this->_write_no_properties(os);
-                return;
-            }
+            if (not io::is_option_set(os, option_bit::with_vertex_properties))
+                return this->_write_no_properties(os);
 
             if (io::is_option_set(os, option_bit::verbose))
-                os << "[id: " << this->_id << " | properties: " << this->_properties.get() << "]";
+                return os << "[id: " << this->_id << " | " << this->_properties.get() << ']';
             else
-                os << "[" << this->_id << " | " << this->_properties.get() << "]";
+                return os << this->_id << '[' << this->_properties.get() << ']';
         }
     }
 
-    void _write_no_properties(std::ostream& os) const {
+    std::ostream& _write_no_properties(std::ostream& os) const {
         using io::detail::option_bit;
 
         if (io::is_option_set(os, option_bit::verbose))
-            os << std::format("[id: {}]", this->_id);
+            return os << std::format("[id: {}]", this->_id);
         else
-            os << this->_id;
+            return os << this->_id;
     }
 
     id_type _id;
