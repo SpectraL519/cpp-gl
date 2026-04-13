@@ -25,16 +25,9 @@ struct test_hypergraph_conversion {
     template <hgl::traits::c_undirected_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
         HypergraphType h(4uz, 3uz);
-
-        h.bind(0uz, 0uz);
-        h.bind(1uz, 0uz);
-        h.bind(2uz, 0uz);
-        h.bind(1uz, 1uz);
-        h.bind(2uz, 1uz);
-        h.bind(3uz, 1uz);
-        h.bind(0uz, 2uz);
-        h.bind(3uz, 2uz);
-
+        h.bind({0u, 1u, 2u}, 0u);
+        h.bind({1u, 2u, 3u}, 1u);
+        h.bind({0u, 3u}, 2u);
         this->set_properties(h);
         return h;
     }
@@ -42,16 +35,10 @@ struct test_hypergraph_conversion {
     template <hgl::traits::c_bf_directed_hypergraph HypergraphType>
     [[nodiscard]] HypergraphType create_test_hypergraph() {
         HypergraphType h(4uz, 2uz);
-
-        h.bind_tail(0uz, 0uz);
-        h.bind_tail(1uz, 0uz);
-        h.bind_head(2uz, 0uz);
-        h.bind_head(3uz, 0uz);
-
-        h.bind_tail(2uz, 1uz);
-        h.bind_head(0uz, 1uz);
-        h.bind_head(1uz, 1uz);
-
+        h.bind_tail({0u, 1u}, 0u);
+        h.bind_head({2u, 3u}, 0u);
+        h.bind_tail(2u, 1u);
+        h.bind_head({0u, 1u}, 1u);
         this->set_properties(h);
         return h;
     }
@@ -73,18 +60,18 @@ struct test_hypergraph_conversion {
     void validate_hypergraph(const hgl::traits::c_undirected_hypergraph auto& h) {
         REQUIRE_EQ(h.order(), 4uz);
         REQUIRE_EQ(h.size(), 3uz);
-        CHECK(h.are_incident(0uz, 0uz));
-        CHECK(h.are_incident(1uz, 0uz));
-        CHECK(h.are_incident(2uz, 0uz));
-        CHECK(h.are_incident(1uz, 1uz));
-        CHECK(h.are_incident(2uz, 1uz));
-        CHECK(h.are_incident(3uz, 1uz));
-        CHECK(h.are_incident(0uz, 2uz));
-        CHECK(h.are_incident(3uz, 2uz));
+        CHECK(h.are_incident(0u, 0u));
+        CHECK(h.are_incident(1u, 0u));
+        CHECK(h.are_incident(2u, 0u));
+        CHECK(h.are_incident(1u, 1u));
+        CHECK(h.are_incident(2u, 1u));
+        CHECK(h.are_incident(3u, 1u));
+        CHECK(h.are_incident(0u, 2u));
+        CHECK(h.are_incident(3u, 2u));
 
-        CHECK_FALSE(h.are_incident(3uz, 0uz));
-        CHECK_FALSE(h.are_incident(0uz, 1uz));
-        CHECK_FALSE(h.are_incident(1uz, 2uz));
+        CHECK_FALSE(h.are_incident(3u, 0u));
+        CHECK_FALSE(h.are_incident(0u, 1u));
+        CHECK_FALSE(h.are_incident(1u, 2u));
 
         this->validate_properties(h);
     }
@@ -93,19 +80,19 @@ struct test_hypergraph_conversion {
         REQUIRE_EQ(h.order(), 4uz);
         REQUIRE_EQ(h.size(), 2uz);
 
-        CHECK(h.is_tail(0uz, 0uz));
-        CHECK(h.is_tail(1uz, 0uz));
-        CHECK(h.is_head(2uz, 0uz));
-        CHECK(h.is_head(3uz, 0uz));
+        CHECK(h.is_tail(0u, 0u));
+        CHECK(h.is_tail(1u, 0u));
+        CHECK(h.is_head(2u, 0u));
+        CHECK(h.is_head(3u, 0u));
 
-        CHECK(h.is_tail(2uz, 1uz));
-        CHECK(h.is_head(0uz, 1uz));
-        CHECK(h.is_head(1uz, 1uz));
+        CHECK(h.is_tail(2u, 1u));
+        CHECK(h.is_head(0u, 1u));
+        CHECK(h.is_head(1u, 1u));
 
-        CHECK_FALSE(h.is_head(0uz, 0uz));
-        CHECK_FALSE(h.is_tail(3uz, 0uz));
-        CHECK_FALSE(h.is_tail(0uz, 1uz));
-        CHECK_FALSE(h.is_head(2uz, 1uz));
+        CHECK_FALSE(h.is_head(0u, 0u));
+        CHECK_FALSE(h.is_tail(3u, 0u));
+        CHECK_FALSE(h.is_tail(0u, 1u));
+        CHECK_FALSE(h.is_head(2u, 1u));
 
         this->validate_properties(h);
     }
@@ -308,24 +295,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     using flat_matrix_graph = gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>>;
 
     SUBCASE("projection should produce a clique for each hyperedge") {
-        sut_type sut{4ull, 4ull};
-
-        // e0 = {0,1,2}
-        sut.bind(0uz, 0uz);
-        sut.bind(1uz, 0uz);
-        sut.bind(2uz, 0uz);
-
-        // e1 = {1,2,3}
-        sut.bind(1uz, 1uz);
-        sut.bind(2uz, 1uz);
-        sut.bind(3uz, 1uz);
-
-        // e2 = {0,3}
-        sut.bind(0uz, 2uz);
-        sut.bind(3uz, 2uz);
-
-        // e3 = {0} (should not add any edge)
-        sut.bind(0uz, 3uz);
+        sut_type sut{4uz, 4uz};
+        sut.bind({0u, 1u, 2u}, 0u); // e0 = {0,1,2}
+        sut.bind({1u, 2u, 3u}, 1u); // e1 = {1,2,3}
+        sut.bind({0u, 3u}, 2u); // e2 = {0,3}
+        sut.bind(0u, 3u); // e3 = {0} (should not add any edge)
 
         const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0: (0,1), (0,2), (1,2)
@@ -357,40 +331,27 @@ TEST_CASE_TEMPLATE_DEFINE(
     }
 
     SUBCASE("incidence_graph should produce a bipartite graph connecting vertices to hyperedges") {
-        sut_type sut{4ull, 4ull};
-
-        // e0 = {0,1,2}
-        sut.bind(0uz, 0uz);
-        sut.bind(1uz, 0uz);
-        sut.bind(2uz, 0uz);
-
-        // e1 = {1,2,3}
-        sut.bind(1uz, 1uz);
-        sut.bind(2uz, 1uz);
-        sut.bind(3uz, 1uz);
-
-        // e2 = {0,3}
-        sut.bind(0uz, 2uz);
-        sut.bind(3uz, 2uz);
-
-        // e3 = {0}
-        sut.bind(0uz, 3uz);
+        sut_type sut{4uz, 4uz};
+        sut.bind({0u, 1u, 2u}, 0u); // e0 = {0,1,2}
+        sut.bind({1u, 2u, 3u}, 1u); // e1 = {1,2,3}
+        sut.bind({0u, 3u}, 2u); // e2 = {0,3}
+        sut.bind(0u, 3u); // e3 = {0}
 
         // Expected edges: vertices 0-3, hyperedges 4-7
         const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0 (4): {0,1,2}
-            {0uz, 4ull},
-            {1uz, 4ull},
-            {2uz, 4ull},
+            {0u, 4u},
+            {1u, 4u},
+            {2u, 4u},
             // e1 (5): {1,2,3}
-            {1uz, 5ull},
-            {2uz, 5ull},
-            {3uz, 5ull},
+            {1u, 5u},
+            {2u, 5u},
+            {3u, 5u},
             // e2 (6): {0,3}
-            {0uz, 6ull},
-            {3uz, 6ull},
+            {0u, 6u},
+            {3u, 6u},
             // e3 (7): {0}
-            {0uz, 7ull}
+            {0u, 7u}
         };
 
         auto test_conversion_for =
@@ -459,28 +420,25 @@ TEST_CASE_TEMPLATE_DEFINE(
         gl::impl::flat_matrix_t>>;
 
     SUBCASE("projection should produce directed edges from tails to heads for each hyperedge") {
-        sut_type sut{4ull, 2uz};
+        sut_type sut{4uz, 2uz};
 
         // e0: T={0,1} -> H={2,3}
-        sut.bind_tail(0uz, 0uz);
-        sut.bind_tail(1uz, 0uz);
-        sut.bind_head(2uz, 0uz);
-        sut.bind_head(3uz, 0uz);
+        sut.bind_tail({0u, 1u}, 0u);
+        sut.bind_head({2u, 3u}, 0u);
 
         // e1: T={2} -> H={0,1}
-        sut.bind_tail(2uz, 1uz);
-        sut.bind_head(0uz, 1uz);
-        sut.bind_head(1uz, 1uz);
+        sut.bind_tail(2u, 1u);
+        sut.bind_head({0u, 1u}, 1u);
 
         const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // e0: 0->2, 0->3, 1->2, 1->3
-            {0uz, 2uz},
-            {0uz, 3uz},
-            {1uz, 2uz},
-            {1uz, 3uz},
+            {0u, 2u},
+            {0u, 3u},
+            {1u, 2u},
+            {1u, 3u},
             // e1: 2->0, 2->1
-            {2uz, 0uz},
-            {2uz, 1uz}
+            {2u, 0u},
+            {2u, 1u}
         };
 
         auto test_conversion_for =
@@ -502,30 +460,27 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("incidence_graph should produce a directed bipartite graph connecting tails to "
             "hyperedges and hyperedges to heads") {
-        sut_type sut{4ull, 2uz};
+        sut_type sut{4uz, 2uz};
 
         // e0: T={0,1} -> H={2,3}
-        sut.bind_tail(0uz, 0uz);
-        sut.bind_tail(1uz, 0uz);
-        sut.bind_head(2uz, 0uz);
-        sut.bind_head(3uz, 0uz);
+        sut.bind_tail({0u, 1u}, 0u);
+        sut.bind_head({2u, 3u}, 0u);
 
         // e1: T={2} -> H={0,1}
-        sut.bind_tail(2uz, 1uz);
-        sut.bind_head(0uz, 1uz);
-        sut.bind_head(1uz, 1uz);
+        sut.bind_tail(2u, 1u);
+        sut.bind_head({0u, 1u}, 1u);
 
         // Expected directed edges: vertices 0-3, hyperedges 4-5
         const std::vector<hgl::homogeneous_pair<hgl::default_id_type>> expected_edges{
             // Tails to hyperedges: 0->4, 1->4, 2->5
-            { 0uz, 4ull},
-            { 1uz, 4ull},
-            { 2uz, 5ull},
+            {0u, 4u},
+            {1u, 4u},
+            {2u, 5u},
             // Hyperedges to heads: 4->2, 4->3, 5->0, 5->1
-            {4ull,  2uz},
-            {4ull,  3uz},
-            {5ull,  0uz},
-            {5ull,  1uz}
+            {4u, 2u},
+            {4u, 3u},
+            {5u, 0u},
+            {5u, 1u}
         };
 
         // Generic runner for the target models
