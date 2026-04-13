@@ -7,13 +7,48 @@
 #include "gl/attributes/force_inline.hpp"
 #include "gl/traits.hpp"
 
+#include <iostream>
+#include <ranges>
+
 namespace gl::io {
 
+// TODO: add tests
+template <std::ranges::range Range>
+struct range_formatter {
+    const Range& range;
+    std::string_view sep = ", ";
+    std::string_view open = "[";
+    std::string_view close = "]";
+
+    friend std::ostream& operator<<(std::ostream& os, const range_formatter& formatter) {
+        os << formatter.open;
+        bool first = true;
+        for (const auto& item : formatter.range) {
+            if (! first)
+                os << formatter.sep;
+            os << item;
+            first = false;
+        }
+        os << formatter.close;
+        return os;
+    }
+};
+
+template <std::ranges::range Range>
+range_formatter(const Range&) -> range_formatter<Range>;
+
+template <std::ranges::range Range>
+range_formatter<Range> set_formatter(const Range& range, std::string_view sep = ", ") {
+    return range_formatter<Range>{range, sep, "{", "}"};
+}
+
 /*
+Is it necessary
 Custom format functions (casts to types compatible with std::formatter)
 Not std::formatter overloads to avoid collision with
     user defined std::formatter overloads
 */
+
 
 template <typename T>
 [[nodiscard]] gl_attr_force_inline void* format(T* ptr) {

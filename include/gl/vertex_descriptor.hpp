@@ -116,6 +116,7 @@ private:
         }
     }
 
+    // TODO: rm
     std::ostream& _write_no_properties(std::ostream& os) const {
         using io::detail::option_bit;
 

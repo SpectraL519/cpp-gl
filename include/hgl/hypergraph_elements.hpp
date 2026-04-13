@@ -7,6 +7,7 @@
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
+#include "hgl/io.hpp"
 #include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
@@ -93,7 +94,40 @@ public:
         return this->_properties.get();
     }
 
+    friend gl_attr_force_inline std::ostream& operator<<(
+        std::ostream& os, const hyperedge_descriptor& hyperedge
+    ) {
+        return hyperedge._write(os);
+    }
+
 private:
+    std::ostream& _write(std::ostream& os) const {
+        using io::detail::option_bit;
+
+        if constexpr (not traits::c_writable<properties_type>) {
+            return this->_write_no_properties(os);
+        }
+        else {
+            if (not io::is_option_set(os, option_bit::with_connection_properties))
+                return this->_write_no_properties(os);
+
+            if (io::is_option_set(os, option_bit::verbose))
+                return os << "[id: " << this->_id << " | " << this->_properties.get() << "]";
+            else
+                return os << this->_id << "[" << this->_properties.get() << "]";
+        }
+    }
+
+    // TODO: rm
+    std::ostream& _write_no_properties(std::ostream& os) const {
+        using io::detail::option_bit;
+
+        if (io::is_option_set(os, option_bit::verbose))
+            return os << "[id: " << this->_id << "]";
+        else
+            return os << this->_id;
+    }
+
     id_type _id;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,

@@ -192,6 +192,7 @@ private:
         }
     }
 
+    // TODO: rm
     std::ostream& _write_no_properties(std::ostream& os) const
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -227,6 +228,7 @@ private:
         }
     }
 
+    // TODO: rm
     std::ostream& _write_no_properties(std::ostream& os) const
     requires std::same_as<directional_tag, directed_t>
     {

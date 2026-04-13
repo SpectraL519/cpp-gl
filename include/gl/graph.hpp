@@ -210,14 +210,14 @@ public:
 
     // --- vertex getters ---
 
-    [[nodiscard]] gl_attr_force_inline auto vertices() const
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return this->vertex_ids()
              | std::views::transform([](const id_type id) { return vertex_descriptor{id}; });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto vertices() const
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return this->_vertex_properties | std::views::enumerate
@@ -749,12 +749,13 @@ private:
     std::ostream& _gsf_write(std::ostream& os) const {
         using io::detail::option_bit;
 
+        // TODO: include c_writable + rename to _props
         const bool with_vertex_properties =
             io::is_option_set(os, option_bit::with_vertex_properties);
         const bool with_edge_properties =
             io::is_option_set(os, option_bit::with_connection_properties);
 
-        // print graph size
+        // print graph metadata
         os << std::format(
             "{} {} {} {} {}\n",
             static_cast<int>(traits::c_directed_edge<edge_type>),

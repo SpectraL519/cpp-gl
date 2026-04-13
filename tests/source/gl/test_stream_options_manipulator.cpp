@@ -64,11 +64,6 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(gl::io::is_option_set(ss2, bit_position_1));
 }
 
-enum class BitPositionEnum : gl::io::bit_position_type {
-    bit_position_1 = test_stream_options_manipulator::bit_position_1,
-    bit_position_2 = test_stream_options_manipulator::bit_position_2
-};
-
 TEST_CASE_FIXTURE(
     test_stream_options_manipulator,
     "should properly handle istream option operations for bit position lists"
@@ -115,6 +110,11 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(gl::io::are_options_set(ss1, options_bitmask));
 }
 
+enum class BitPositionEnum : gl::io::bit_position_type {
+    bit_position_1 = test_stream_options_manipulator::bit_position_1,
+    bit_position_2 = test_stream_options_manipulator::bit_position_2
+};
+
 TEST_CASE_FIXTURE(
     test_stream_options_manipulator,
     "should properly handle istream option operations for enum bit position lists"
@@ -160,6 +160,8 @@ TEST_CASE_FIXTURE(
     CHECK_FALSE(gl::io::are_options_set(ss1, bit_positions));
     CHECK_FALSE(gl::io::are_options_set(ss1, options_bitmask));
 }
+
+// TODO: default test
 
 TEST_SUITE_END(); // test_stream_options_manipulator
 
