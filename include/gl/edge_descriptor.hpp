@@ -163,82 +163,70 @@ public:
         return this->_properties.get();
     }
 
-    friend gl_attr_force_inline std::ostream& operator<<(
-        std::ostream& os, const edge_descriptor& edge
-    ) {
-        return edge._write(os);
+    friend std::ostream& operator<<(std::ostream& os, const edge_descriptor& edge) {
+        using enum io::detail::option_bit;
+
+        if (io::is_option_set(os, verbose))
+            return edge._verbose_write(os);
+        else
+            return edge._concise_write(os);
     }
 
 private:
-    std::ostream& _write(std::ostream& os) const
+    std::ostream& _verbose_write(std::ostream& os) const
     requires std::same_as<directional_tag, undirected_t>
     {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
-        if constexpr (not traits::c_writable<properties_type>) {
-            return this->_write_no_properties(os);
-        }
-        else {
-            if (not io::is_option_set(os, option_bit::with_connection_properties))
-                return this->_write_no_properties(os);
+        os << "[id: " << this->_id << " | endpoints: {" << this->_vertices.first << ", "
+           << this->_vertices.second << '}';
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_connection_properties))
+                os << " | " << this->_properties.get();
+        os << ']';
 
-            if (io::is_option_set(os, option_bit::verbose))
-                return os
-                    << "[id: " << this->_id << " | endpoints: {" << this->_vertices.first << ", "
-                    << this->_vertices.second << "} | " << this->_properties.get() << ']';
-            else
-                return os << '{' << this->_vertices.first << ", " << this->_vertices.second << "}["
-                          << this->_properties.get() << ']';
-        }
+        return os;
     }
 
-    // TODO: rm
-    std::ostream& _write_no_properties(std::ostream& os) const
+    std::ostream& _concise_write(std::ostream& os) const
     requires std::same_as<directional_tag, undirected_t>
     {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
-        if (io::is_option_set(os, option_bit::verbose))
-            return os << "[id: " << this->_id << " | endpoints: {" << this->_vertices.first << ", "
-                      << this->_vertices.second << "}]";
-        else
-            return os << '{' << this->_vertices.first << ", " << this->_vertices.second << '}';
+        os << '{' << this->_vertices.first << ", " << this->_vertices.second << '}';
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << '[' << this->_properties.get() << ']';
+
+        return os;
     }
 
-    std::ostream& _write(std::ostream& os) const
+    std::ostream& _verbose_write(std::ostream& os) const
     requires std::same_as<directional_tag, directed_t>
     {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
-        if constexpr (not traits::c_writable<properties_type>) {
-            return this->_write_no_properties(os);
-        }
-        else {
-            if (not io::is_option_set(os, option_bit::with_connection_properties))
-                return this->_write_no_properties(os);
+        os << "[id: " << this->_id << " | source: " << this->_vertices.first
+           << ", target: " << this->_vertices.second;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_connection_properties))
+                os << " | " << this->_properties.get();
+        os << ']';
 
-            if (io::is_option_set(os, option_bit::verbose))
-                return os
-                    << "[id: " << this->_id << " | source: " << this->_vertices.first
-                    << ", target: " << this->_vertices.second << " | " << this->_properties.get()
-                    << ']';
-            else
-                return os << '(' << this->_vertices.first << ", " << this->_vertices.second << ")["
-                          << this->_properties.get() << ']';
-        }
+        return os;
     }
 
-    // TODO: rm
-    std::ostream& _write_no_properties(std::ostream& os) const
+    std::ostream& _concise_write(std::ostream& os) const
     requires std::same_as<directional_tag, directed_t>
     {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
-        if (io::is_option_set(os, option_bit::verbose))
-            return os << "[id: " << this->_id << " | source: " << this->_vertices.first
-                      << ", target: " << this->_vertices.second << ']';
-        else
-            return os << '(' << this->_vertices.first << ", " << this->_vertices.second << ')';
+        os << '(' << this->_vertices.first << ", " << this->_vertices.second << ')';
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << '[' << this->_properties.get() << ']';
+
+        return os;
     }
 
     id_type _id;

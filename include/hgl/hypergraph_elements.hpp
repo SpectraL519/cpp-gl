@@ -94,38 +94,37 @@ public:
         return this->_properties.get();
     }
 
-    friend gl_attr_force_inline std::ostream& operator<<(
-        std::ostream& os, const hyperedge_descriptor& hyperedge
-    ) {
-        return hyperedge._write(os);
+    friend std::ostream& operator<<(std::ostream& os, const hyperedge_descriptor& hyperedge) {
+        using enum io::detail::option_bit;
+
+        if (io::is_option_set(os, verbose))
+            return hyperedge._verbose_write(os);
+        else
+            return hyperedge._concise_write(os);
     }
 
 private:
-    std::ostream& _write(std::ostream& os) const {
-        using io::detail::option_bit;
+    std::ostream& _verbose_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
 
-        if constexpr (not traits::c_writable<properties_type>) {
-            return this->_write_no_properties(os);
-        }
-        else {
-            if (not io::is_option_set(os, option_bit::with_connection_properties))
-                return this->_write_no_properties(os);
+        os << "[id: " << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << " | " << this->_properties.get();
+        os << ']';
 
-            if (io::is_option_set(os, option_bit::verbose))
-                return os << "[id: " << this->_id << " | " << this->_properties.get() << "]";
-            else
-                return os << this->_id << "[" << this->_properties.get() << "]";
-        }
+        return os;
     }
 
-    // TODO: rm
-    std::ostream& _write_no_properties(std::ostream& os) const {
-        using io::detail::option_bit;
+    std::ostream& _concise_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
 
-        if (io::is_option_set(os, option_bit::verbose))
-            return os << "[id: " << this->_id << "]";
-        else
-            return os << this->_id;
+        os << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << '[' << this->_properties.get() << ']';
+
+        return os;
     }
 
     id_type _id;

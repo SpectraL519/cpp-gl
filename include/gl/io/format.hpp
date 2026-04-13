@@ -15,16 +15,16 @@ namespace gl::io {
 // TODO: add tests
 template <std::ranges::range Range>
 struct range_formatter {
-    const Range& range;
+    Range range;
     std::string_view sep = ", ";
     std::string_view open = "[";
     std::string_view close = "]";
 
-    friend std::ostream& operator<<(std::ostream& os, const range_formatter& formatter) {
+    friend std::ostream& operator<<(std::ostream& os, range_formatter formatter) {
         os << formatter.open;
         bool first = true;
         for (const auto& item : formatter.range) {
-            if (! first)
+            if (not first)
                 os << formatter.sep;
             os << item;
             first = false;
@@ -34,42 +34,12 @@ struct range_formatter {
     }
 };
 
-template <std::ranges::range Range>
-range_formatter(const Range&) -> range_formatter<Range>;
+template <std::ranges::range R>
+range_formatter(R&& r) -> range_formatter<std::views::all_t<R>>;
 
-template <std::ranges::range Range>
-range_formatter<Range> set_formatter(const Range& range, std::string_view sep = ", ") {
-    return range_formatter<Range>{range, sep, "{", "}"};
-}
-
-/*
-Is it necessary
-Custom format functions (casts to types compatible with std::formatter)
-Not std::formatter overloads to avoid collision with
-    user defined std::formatter overloads
-*/
-
-
-template <typename T>
-[[nodiscard]] gl_attr_force_inline void* format(T* ptr) {
-    // std::format is not compatible with all types of ptrs
-    return static_cast<void*>(ptr);
-}
-
-// clang-format off
-// gl_attr_force_inline misplacement
-
-template <typename T>
-[[nodiscard]] gl_attr_force_inline const void* format(const T* ptr) {
-    // std::format is not compatible with all types format ptrs
-    return static_cast<const void*>(ptr);
-}
-
-// clang-format on
-
-template <traits::c_strong_smart_ptr PtrType>
-[[nodiscard]] gl_attr_force_inline void* format(const PtrType& ptr) {
-    return formatter(ptr.get());
+template <std::ranges::range R>
+auto set_formatter(R&& range, std::string_view sep = ", ") {
+    return range_formatter{std::forward<R>(range), sep, "{", "}"};
 }
 
 } // namespace gl::io

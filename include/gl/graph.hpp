@@ -11,6 +11,7 @@
 #include "gl/io/graph_fmt_traits.hpp"
 #include "gl/io/options.hpp"
 #include "gl/io/stream_options_manipulator.hpp"
+#include "gl/traits.hpp"
 #include "gl/util/ranges.hpp"
 
 #include <set>
@@ -718,6 +719,21 @@ private:
 
     // --- I/O utility ---
 
+    struct concise_target_formatter {
+        edge_type edge;
+        id_type src_id;
+        bool with_props;
+
+        friend std::ostream& operator<<(std::ostream& os, const concise_target_formatter& proxy) {
+            os << proxy.edge.other(proxy.src_id);
+            if constexpr (traits::c_writable<edge_properties_type>)
+                if (proxy.with_props)
+                    os << '[' << proxy.edge.properties() << ']';
+
+            return os;
+        }
+    };
+
     std::ostream& _verbose_write(std::ostream& os) const {
         os << "type: " << fmt_traits::type << ", |V| = " << this->order()
            << ", |E| = " << this->size() << '\n';
@@ -730,17 +746,17 @@ private:
     }
 
     std::ostream& _concise_write(std::ostream& os) const {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
         for (const auto& src : this->vertices()) {
-            os << src << " :";
-            for (const auto& edge : this->out_edges(src.id())) {
-                os << ' ' << edge.other(src.id());
-                if constexpr (traits::c_writable<edge_properties_type>)
-                    if (io::is_option_set(os, option_bit::with_connection_properties))
-                        os << '[' << edge.properties() << ']';
-            }
-            os << '\n';
+            auto tgts = std::views::transform(
+                this->out_edges(src.id()),
+                [src_id = src.id(),
+                 with_props = io::is_option_set(os, with_connection_properties)](const auto& edge) {
+                    return concise_target_formatter{edge, src_id, with_props};
+                }
+            );
+            os << src << " : " << io::range_formatter(tgts) << '\n';
         }
 
         return os;
@@ -749,7 +765,6 @@ private:
     std::ostream& _gsf_write(std::ostream& os) const {
         using io::detail::option_bit;
 
-        // TODO: include c_writable + rename to _props
         const bool with_vertex_properties =
             io::is_option_set(os, option_bit::with_vertex_properties);
         const bool with_edge_properties =
