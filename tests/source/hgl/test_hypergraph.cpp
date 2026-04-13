@@ -269,6 +269,97 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(hyperedge.properties(), constants::p_true);
     }
 
+    SUBCASE("add_hyperedge(<vertices>) should create a hyperedge and bind the given vertices") {
+        const auto n_vertices = 4uz;
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{n_vertices};
+            const std::vector<hgl::default_id_type> v_ids{
+                constants::id1, constants::id2, constants::id4
+            };
+
+            auto he1 = sut.add_hyperedge(v_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(he1.id()), v_ids));
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge(vertices);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(he2.id()), v_ids));
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{n_vertices};
+            const std::vector<hgl::default_id_type> t_ids{constants::id1, constants::id4};
+            const std::vector<hgl::default_id_type> h_ids{constants::id2, constants::id3};
+
+            auto he1 = sut.add_hyperedge(t_ids, h_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(he1.id()), t_ids));
+            CHECK(rng::is_permutation(sut.head_vertex_ids(he1.id()), h_ids));
+
+            auto h_vertices =
+                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto t_vertices =
+                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge(t_vertices, h_vertices);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(he2.id()), t_ids));
+            CHECK(rng::is_permutation(sut.head_vertex_ids(he2.id()), h_ids));
+        }
+    }
+
+    SUBCASE("add_hyperedge_with(<vertices>, properties) and variants (undirected) should create a "
+            "hyperedge, bind vertices, and set properties") {
+        const auto n_vertices = 4uz;
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+            hgl::hypergraph<properties_traits_type> sut{n_vertices};
+            const std::vector<hgl::default_id_type> v_ids{
+                constants::id1, constants::id2, constants::id4
+            };
+
+            auto he1 = sut.add_hyperedge_with(v_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(he1.id()), v_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge_with(vertices, constants::p_false);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(he2.id()), v_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+            hgl::hypergraph<properties_traits_type> sut{n_vertices};
+            const std::vector<hgl::default_id_type> t_ids{constants::id1, constants::id4};
+            const std::vector<hgl::default_id_type> h_ids{constants::id2, constants::id3};
+
+            auto he1 = sut.add_hyperedge_with(t_ids, h_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(he1.id()), t_ids));
+            CHECK(rng::is_permutation(sut.head_vertex_ids(he1.id()), h_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto t_vertices =
+                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto h_vertices =
+                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge_with(t_vertices, h_vertices, constants::p_false);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(he2.id()), t_ids));
+            CHECK(rng::is_permutation(sut.head_vertex_ids(he2.id()), h_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
+    }
+
     SUBCASE("add_hyperedges(n) should add n new hyperedges to the hypergraph") {
         sut_type sut{};
         sut.add_hyperedges(constants::n_hyperedges);
@@ -526,6 +617,90 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut.unbind(vertex_id, hyperedge_id);
         validate_incidence(false);
+    }
+
+    SUBCASE("bulk bind (undirected) should properly mark given sets as incident") {
+        const auto n_vertices = 4uz;
+        const auto n_hyperedges = 4uz;
+
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{n_vertices, n_hyperedges};
+            const std::vector<hgl::default_id_type> v_ids{constants::id1, constants::id2};
+            const std::vector<hgl::default_id_type> he_ids{constants::id3, constants::id4};
+
+            sut.bind(v_ids, constants::id1);
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(constants::id1), v_ids));
+
+            sut.bind(constants::id3, he_ids);
+            CHECK(rng::is_permutation(sut.incident_hyperedge_ids(constants::id3), he_ids));
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto hyperedges =
+                he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+
+            sut.bind(vertices, sut.get_hyperedge(constants::id2));
+            CHECK(rng::is_permutation(sut.incident_vertex_ids(constants::id2), v_ids));
+
+            sut.bind(sut.get_vertex(constants::id4), hyperedges);
+            CHECK(rng::is_permutation(sut.incident_hyperedge_ids(constants::id4), he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_tail (bf-directed) should properly mark given sets as incident") {
+        const auto n_vertices = 4uz;
+        const auto n_hyperedges = 4uz;
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{n_vertices, n_hyperedges};
+            const std::vector<hgl::default_id_type> v_ids{constants::id1, constants::id2};
+            const std::vector<hgl::default_id_type> he_ids{constants::id3, constants::id4};
+
+            sut.bind_tail(v_ids, constants::id1);
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(constants::id1), v_ids));
+
+            sut.bind_tail(constants::id3, he_ids);
+            CHECK(rng::is_permutation(sut.out_hyperedge_ids(constants::id3), he_ids));
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto hyperedges =
+                he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+
+            sut.bind_tail(vertices, sut.get_hyperedge(constants::id2));
+            CHECK(rng::is_permutation(sut.tail_vertex_ids(constants::id2), v_ids));
+
+            sut.bind_tail(sut.get_vertex(constants::id4), hyperedges);
+            CHECK(rng::is_permutation(sut.out_hyperedge_ids(constants::id4), he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_head ranges (bf-directed) should properly mark given sets as incident") {
+        const auto n_vertices = 4uz;
+        const auto n_hyperedges = 4uz;
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{n_vertices, n_hyperedges};
+            const std::vector<hgl::default_id_type> v_ids{constants::id1, constants::id2};
+            const std::vector<hgl::default_id_type> he_ids{constants::id3, constants::id4};
+
+            sut.bind_head(v_ids, constants::id1);
+            CHECK(rng::is_permutation(sut.head_vertex_ids(constants::id1), v_ids));
+
+            sut.bind_head(constants::id3, he_ids);
+            CHECK(rng::is_permutation(sut.in_hyperedge_ids(constants::id3), he_ids));
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto hyperedges =
+                he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+
+            sut.bind_head(vertices, sut.get_hyperedge(constants::id2));
+            CHECK(rng::is_permutation(sut.head_vertex_ids(constants::id2), v_ids));
+
+            sut.bind_head(sut.get_vertex(constants::id4), hyperedges);
+            CHECK(rng::is_permutation(sut.in_hyperedge_ids(constants::id4), he_ids));
+        }
     }
 
     SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {
