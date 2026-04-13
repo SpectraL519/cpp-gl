@@ -593,11 +593,11 @@ public:
     }
 
     gl_attr_force_inline void bind(
-        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
-        this->bind(std::views::all(vertices), hyperedge_id);
+        this->bind(std::views::all(vertices), hyperedge);
     }
 
     void bind(
@@ -630,11 +630,11 @@ public:
     }
 
     gl_attr_force_inline void bind(
-        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
     )
     requires std::same_as<directional_tag, undirected_t>
     {
-        this->bind(vertex_id, std::views::all(hyperedges));
+        this->bind(vertex, std::views::all(hyperedges));
     }
 
     void bind_tail(const id_type vertex_id, const id_type hyperedge_id)
@@ -681,11 +681,11 @@ public:
     }
 
     gl_attr_force_inline void bind_tail(
-        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->bind_tail(std::views::all(vertices), hyperedge_id);
+        this->bind_tail(std::views::all(vertices), hyperedge);
     }
 
     void bind_tail(
@@ -703,7 +703,7 @@ public:
     gl_attr_force_inline void bind_tail(
         const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
     )
-    requires std::same_as<directional_tag, undirected_t>
+    requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex_id, std::views::all(hyperedge_ids));
     }
@@ -718,11 +718,11 @@ public:
     }
 
     gl_attr_force_inline void bind_tail(
-        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
     )
-    requires std::same_as<directional_tag, undirected_t>
+    requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->bind_tail(vertex_id, std::views::all(hyperedges));
+        this->bind_tail(vertex, std::views::all(hyperedges));
     }
 
     void bind_head(const id_type vertex_id, const id_type hyperedge_id)
@@ -769,11 +769,11 @@ public:
     }
 
     gl_attr_force_inline void bind_head(
-        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->bind_head(std::views::all(vertices), hyperedge_id);
+        this->bind_head(std::views::all(vertices), hyperedge);
     }
 
     void bind_head(
@@ -791,7 +791,7 @@ public:
     gl_attr_force_inline void bind_head(
         const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
     )
-    requires std::same_as<directional_tag, undirected_t>
+    requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex_id, std::views::all(hyperedge_ids));
     }
@@ -806,11 +806,11 @@ public:
     }
 
     gl_attr_force_inline void bind_head(
-        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
     )
-    requires std::same_as<directional_tag, undirected_t>
+    requires std::same_as<directional_tag, bf_directed_t>
     {
-        this->bind_head(vertex_id, std::views::all(hyperedges));
+        this->bind_head(vertex, std::views::all(hyperedges));
     }
 
     void unbind(const id_type vertex_id, const id_type hyperedge_id) {
