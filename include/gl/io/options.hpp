@@ -22,8 +22,6 @@ inline constexpr iword_type layout_options_mask =
 
 } // namespace detail
 
-// TODO: add tests
-
 inline constexpr options_manip concise{0ul, detail::layout_options_mask};
 inline constexpr options_manip verbose{
     detail::build_mask(detail::option_bit::verbose), detail::layout_options_mask

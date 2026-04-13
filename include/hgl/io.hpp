@@ -5,3 +5,4 @@
 #pragma once
 
 #include "hgl/io/core.hpp"
+#include "hgl/io/hypergraph_fio.hpp"

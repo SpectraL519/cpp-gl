@@ -1,68 +1,58 @@
+#include "doctest.h"
+#include "testing/common/functional.hpp"
+#include "testing/common/io.hpp"
 #include "testing/gl/constants.hpp"
-#include "testing/gl/functional.hpp"
-#include "testing/gl/io_common.hpp"
+#include "testing/gl/io.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
 
-#include <doctest.h>
-
 #include <print>
-
-namespace fs = std::filesystem;
 
 namespace gl_testing {
 
-#define GL_REQUIRE_THROWS_FS_ERROR(expr, errc)                                                 \
-    try {                                                                                      \
-        expr;                                                                                  \
-        FAIL("Expected `std::filesystem::filesystem_error` but no exception was thrown");      \
-    }                                                                                          \
-    catch (const fs::filesystem_error& e) {                                                    \
-        const auto expected_code = std::make_error_code(errc);                                 \
-        if (e.code() != expected_code) {                                                       \
-            FAIL(std::format(                                                                  \
-                "Expected error code {}, but got {}.", expected_code.value(), e.code().value() \
-            ));                                                                                \
-        }                                                                                      \
-    }                                                                                          \
-    catch (...) {                                                                              \
-        FAIL("Expected `std::filesystem::filesystem_error` but caught a different exception"); \
-    }
-
 TEST_SUITE_BEGIN("test_graph_file_io");
 
-// Tests covering only the io functionality with the graph specification format enabled
+template <typename SutType>
+struct test_graph_file_io_fixture {
+    using sut_type = SutType;
+    using directional_tag = typename sut_type::directional_tag;
 
-struct test_graph_file_io {
-    using traits_type = gl::graph_traits<gl::directed_t, gl::name_property, gl::name_property>;
-    using sut_type = gl::graph<traits_type>;
-
-    test_graph_file_io() {
+    test_graph_file_io_fixture() {
         sut_out = gl::topology::clique<sut_type>(n_vertices);
 
         // prepare vertex and edge properties
         std::size_t v_idx = 0, e_idx = 0;
-        for (const auto& vertex : sut_out.vertices()) {
+
+        for (const auto& vertex : sut_out.vertices())
             vertex.properties() = std::format("vertex_{}", v_idx++);
-            for (const auto& edge : sut_out.out_edges(vertex))
-                edge.properties() = std::format("edge_{}", e_idx++);
+
+        for (const auto& vertex : sut_out.vertices()) {
+            for (const auto& edge : sut_out.out_edges(vertex)) {
+                if constexpr (std::same_as<directional_tag, gl::undirected_t>) {
+                    if (edge.source() == vertex.id())
+                        edge.properties() = std::format("edge_{}", e_idx++);
+                }
+                else {
+                    edge.properties() = std::format("edge_{}", e_idx++);
+                }
+            }
         }
     }
 
-    ~test_graph_file_io() {
+    ~test_graph_file_io_fixture() {
         fs::remove(path);
     }
 
     const gl::size_type n_vertices = 5ull;
     sut_type sut_out;
 
-    fs::path path{"test_directed_graph_file_io.gsf"};
+    fs::path path{"test_graph_file_io.gsf"};
 };
 
-TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_template) {
-    using fixture_type = test_graph_file_io;
+TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, graph_file_io_template) {
+    using fixture_type = test_graph_file_io_fixture<SutType>;
     using sut_type = typename fixture_type::sut_type;
 
     fixture_type fixture;
@@ -77,7 +67,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
         );
     }
 
-    SUBCASE("load shoul throw if a file does not exist") {
+    SUBCASE("load should throw if a file does not exist") {
         GL_REQUIRE_THROWS_FS_ERROR(
             discard_result(gl::io::load<SutType>(fixture.path)),
             std::errc::no_such_file_or_directory
@@ -119,17 +109,21 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, directional_tag_sut_te
     }
 }
 
+// clang-format off
+
 TEST_CASE_TEMPLATE_INSTANTIATE(
-    directional_tag_sut_template,
-    gl::graph<gl::list_graph_traits<gl::directed_t>>, // directed adj list
-    gl::graph<gl::list_graph_traits<gl::undirected_t>>, // undirected adj list
-    gl::graph<gl::flat_list_graph_traits<gl::directed_t>>, // directed flat adj list
-    gl::graph<gl::flat_list_graph_traits<gl::undirected_t>>, // undirected flat adj list
-    gl::graph<gl::matrix_graph_traits<gl::directed_t>>, // directed adj matrix
-    gl::graph<gl::matrix_graph_traits<gl::undirected_t>>, // undirected adj matrix
-    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t>>, // directed flat adj matrix
-    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t>> // undirected flat adj matrix
+    graph_file_io_template,
+    gl::graph<gl::list_graph_traits<gl::directed_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::list_graph_traits<gl::undirected_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::flat_list_graph_traits<gl::directed_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::flat_list_graph_traits<gl::undirected_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::matrix_graph_traits<gl::directed_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::matrix_graph_traits<gl::undirected_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::flat_matrix_graph_traits<gl::directed_t, gl::name_property, gl::name_property>>,
+    gl::graph<gl::flat_matrix_graph_traits<gl::undirected_t, gl::name_property, gl::name_property>>
 );
+
+// clang-format on
 
 TEST_SUITE_END(); // test_graph_file_io
 

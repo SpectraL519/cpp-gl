@@ -9,18 +9,26 @@
 #include <filesystem>
 #include <fstream>
 
-namespace gl::io {
+namespace gl {
+namespace io {
 
 struct write {};
 
 struct append {};
 
-namespace detail {
+} // namespace io
+
+namespace traits {
 
 template <typename T>
-concept c_io_save_mode = traits::c_one_of<T, write, append>;
+concept c_io_save_mode = traits::c_one_of<T, io::write, io::append>;
 
-template <c_io_save_mode Mode>
+} // namespace traits
+
+namespace io {
+namespace detail {
+
+template <traits::c_io_save_mode Mode>
 requires(std::same_as<Mode, write>)
 [[nodiscard]] std::ofstream open_outfile(const std::filesystem::path& path) {
     if (std::filesystem::exists(path))
@@ -37,7 +45,7 @@ requires(std::same_as<Mode, write>)
     return file;
 }
 
-template <c_io_save_mode Mode>
+template <traits::c_io_save_mode Mode>
 requires(std::same_as<Mode, append>)
 [[nodiscard]] std::ofstream open_outfile(const std::filesystem::path& path) {
     if (not std::filesystem::exists(path))
@@ -87,7 +95,7 @@ requires(std::same_as<Mode, append>)
 
 } // namespace detail
 
-template <traits::c_graph GraphType, detail::c_io_save_mode Mode = write>
+template <traits::c_graph GraphType, traits::c_io_save_mode Mode = write>
 void save(
     const GraphType& graph,
     const std::filesystem::path& path = "graph.gsf",
@@ -114,4 +122,5 @@ template <traits::c_graph GraphType>
     return graph;
 }
 
-} // namespace gl::io
+} // namespace io
+} // namespace gl

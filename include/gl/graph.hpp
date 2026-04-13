@@ -6,6 +6,7 @@
 
 #include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/impl_tags.hpp"
 #include "gl/io/graph_fmt_traits.hpp"
@@ -782,8 +783,9 @@ private:
             if (with_e_props) {
                 const auto print_out_edges = [this, &os](const id_type vertex_id) {
                     for (const auto& edge : this->out_edges(vertex_id)) {
-                        if (edge.source() != vertex_id)
-                            continue; // vertex is not the source
+                        if constexpr (std::same_as<directional_tag, undirected_t>)
+                            if (edge.other(vertex_id) > vertex_id)
+                                continue; // deduplicate edges
                         os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
                            << '\n';
                     }
@@ -798,8 +800,9 @@ private:
 
         const auto print_out_edges = [this, &os](const id_type vertex_id) {
             for (const auto& edge : this->out_edges(vertex_id)) {
-                if (edge.source() != vertex_id)
-                    continue; // vertex is not the source
+                if constexpr (std::same_as<directional_tag, undirected_t>)
+                    if (edge.other(vertex_id) > vertex_id)
+                        continue; // deduplicate edges
                 os << edge.source() << ' ' << edge.target() << '\n';
             }
         };

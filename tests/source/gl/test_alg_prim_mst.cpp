@@ -1,7 +1,7 @@
 #include "gl/impl/impl_tags.hpp"
+#include "testing/common/functional.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
-#include "testing/gl/functional.hpp"
 
 #include <gl/algorithm.hpp>
 #include <gl/io/graph_fio.hpp>

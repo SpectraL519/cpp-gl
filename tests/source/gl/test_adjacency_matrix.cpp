@@ -1,6 +1,6 @@
 #include "gl/types/core.hpp"
+#include "testing/common/functional.hpp"
 #include "testing/gl/constants.hpp"
-#include "testing/gl/functional.hpp"
 
 #include <gl/graph_traits.hpp>
 #include <gl/impl/adjacency_matrix.hpp>
