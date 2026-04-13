@@ -761,7 +761,7 @@ public:
     struct hyperedge_formatter {
     public:
         const hypergraph& hg;
-        const hyperedge_type& hyperedge;
+        const hyperedge_type hyperedge;
 
         friend std::ostream& operator<<(std::ostream& os, const hyperedge_formatter& proxy)
         requires std::same_as<directional_tag, undirected_t>
@@ -946,10 +946,18 @@ private:
             for (const auto& vertex : this->vertices())
                 os << "  - " << vertex << '\n';
         }
+        else {
+            this->_write_implicit_vset(os) << '\n';
+        }
 
-        os << "hyperedges:\n";
-        for (const auto& edge : this->hyperedges())
-            os << "  - " << this->display(edge) << '\n';
+        if (this->size() == 0uz) {
+            os << "hyperedges: {}";
+        }
+        else {
+            os << "hyperedges:\n";
+            for (const auto& edge : this->hyperedges())
+                os << "  - " << this->display(edge) << '\n';
+        }
 
         return os;
     }
@@ -960,20 +968,36 @@ private:
         const bool with_v_props =
             io::is_option_set(os, with_vertex_properties)
             and traits::c_writable<vertex_properties_type>;
-        if (with_v_props) {
-            os << "V :";
-            for (const auto& vertex : this->vertices())
-                os << " " << vertex;
+        if (with_v_props)
+            os << "V = " << io::multiline_set_formatter(this->vertices()) << '\n';
+        else
+            this->_write_implicit_vset(os) << '\n';
+
+        if (this->size() == 0uz) {
+            os << "E = {}\n";
         }
         else {
-            os << "|V| = " << this->order();
+            auto hyperedges = std::views::transform(this->hyperedges(), [this](auto hyperedge) {
+                return this->display(hyperedge);
+            });
+
+            // TODO: set/multiline_set
+            os << "E = " << io::multiline_set_formatter(hyperedges) << '\n';
         }
 
-        os << "\nE:\n";
-        for (const auto& edge : this->hyperedges())
-            os << this->display(edge) << '\n';
-
         return os;
+    }
+
+    std::ostream& _write_implicit_vset(std::ostream& os) const {
+        const auto n = this->order();
+        if (n == 0uz)
+            return os << "V = {}";
+        if (n == 1uz)
+            return os << "V = {0}";
+        if (n == 2uz)
+            return os << "V = {0, 1}";
+
+        return os << "V = {0, ..., " << n - 1 << '}';
     }
 
     // --- data members ---

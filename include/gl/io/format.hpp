@@ -39,7 +39,17 @@ range_formatter(R&& r) -> range_formatter<std::views::all_t<R>>;
 
 template <std::ranges::range R>
 auto set_formatter(R&& range, std::string_view sep = ", ") {
-    return range_formatter{std::forward<R>(range), sep, "{", "}"};
+    using view_type = std::views::all_t<R>;
+    return range_formatter<view_type>{std::views::all(std::forward<R>(range)), sep, "{", "}"};
+}
+
+/// @todo Add an indent_width parameter
+template <std::ranges::range R>
+auto multiline_set_formatter(R&& range) {
+    using view_type = std::views::all_t<R>;
+    return range_formatter<view_type>{
+        std::views::all(std::forward<R>(range)), ",\n  ", "{\n  ", "\n}"
+    };
 }
 
 } // namespace gl::io

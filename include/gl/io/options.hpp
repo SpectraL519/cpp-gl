@@ -39,6 +39,7 @@ inline const stream_options_manipulator without_properties = unset_options(
     {detail::option_bit::with_vertex_properties, detail::option_bit::with_connection_properties}
 );
 
+// TODO: rename to _spec_fmt
 inline const stream_options_manipulator enable_gsf =
     set_option(detail::option_bit::specification_fmt);
 inline const stream_options_manipulator disable_gsf =

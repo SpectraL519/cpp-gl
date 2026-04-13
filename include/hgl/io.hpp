@@ -13,6 +13,7 @@
 
 namespace hgl::io {
 
+using gl::io::multiline_set_formatter;
 using gl::io::range_formatter;
 using gl::io::set_formatter;
 
@@ -41,6 +42,8 @@ inline const stream_options_manipulator with_hyperedge_properties =
     set_option(detail::option_bit::with_connection_properties);
 inline const stream_options_manipulator without_hyperedge_properties =
     unset_option(detail::option_bit::with_connection_properties);
+
+// TODO: spec fmt
 
 using gl::io::with_properties;
 using gl::io::without_properties;
