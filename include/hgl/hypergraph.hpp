@@ -458,14 +458,14 @@ public:
     }
 
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
-        std::initializer_list<vertex_type> tail_verticess,
-        std::initializer_list<vertex_type> head_verticess,
+        std::initializer_list<vertex_type> tail_vertices,
+        std::initializer_list<vertex_type> head_vertices,
         hyperedge_properties_type properties
     )
     requires(std::same_as<directional_tag, bf_directed_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return this->add_hyperedge_with(
-            std::views::all(tail_verticess), std::views::all(head_verticess), std::move(properties)
+            std::views::all(tail_vertices), std::views::all(head_vertices), std::move(properties)
         );
     }
 
