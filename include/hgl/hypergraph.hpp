@@ -16,6 +16,7 @@
 #include "hgl/util.hpp"
 
 #include <algorithm>
+#include <initializer_list>
 #include <memory>
 #include <set>
 #include <type_traits>
@@ -320,11 +321,23 @@ public:
         return he;
     }
 
+    gl_attr_force_inline hyperedge_type add_hyperedge(std::initializer_list<id_type> vertex_ids)
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        return this->add_hyperedge(std::views::all(vertex_ids));
+    }
+
     gl_attr_force_inline hyperedge_type
     add_hyperedge(const traits::c_forward_range_of<vertex_type> auto& vertex_rng)
     requires std::same_as<directional_tag, undirected_t>
     {
         return this->add_hyperedge(vertex_rng | std::views::transform(&vertex_type::id));
+    }
+
+    gl_attr_force_inline hyperedge_type add_hyperedge(std::initializer_list<vertex_type> vertices)
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        return this->add_hyperedge(std::views::all(vertices));
     }
 
     hyperedge_type add_hyperedge_with(
@@ -338,6 +351,14 @@ public:
         return he;
     }
 
+    hyperedge_type add_hyperedge_with(
+        std::initializer_list<id_type> vertex_ids, hyperedge_properties_type properties
+    )
+    requires(std::same_as<directional_tag, undirected_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
+    {
+        return this->add_hyperedge_with(std::views::all(vertex_ids), std::move(properties));
+    }
+
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
         hyperedge_properties_type properties
@@ -347,6 +368,14 @@ public:
         return this->add_hyperedge_with(
             vertex_rng | std::views::transform(&vertex_type::id), std::move(properties)
         );
+    }
+
+    hyperedge_type add_hyperedge_with(
+        std::initializer_list<vertex_type> vertices, hyperedge_properties_type properties
+    )
+    requires(std::same_as<directional_tag, undirected_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
+    {
+        return this->add_hyperedge_with(std::views::all(vertices), std::move(properties));
     }
 
     hyperedge_type add_hyperedge(
@@ -361,6 +390,13 @@ public:
         return he;
     }
 
+    gl_attr_force_inline hyperedge_type
+    add_hyperedge(std::initializer_list<id_type> tail_ids, std::initializer_list<id_type> head_ids)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->add_hyperedge(std::views::all(tail_ids), std::views::all(head_ids));
+    }
+
     gl_attr_force_inline hyperedge_type add_hyperedge(
         const traits::c_forward_range_of<vertex_type> auto& tail_rng,
         const traits::c_forward_range_of<vertex_type> auto& head_rng
@@ -371,6 +407,15 @@ public:
             tail_rng | std::views::transform(&vertex_type::id),
             head_rng | std::views::transform(&vertex_type::id)
         );
+    }
+
+    gl_attr_force_inline hyperedge_type add_hyperedge(
+        std::initializer_list<vertex_type> tail_vertices,
+        std::initializer_list<vertex_type> head_vertices
+    )
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        return this->add_hyperedge(std::views::all(tail_vertices), std::views::all(head_vertices));
     }
 
     hyperedge_type add_hyperedge_with(
@@ -387,6 +432,18 @@ public:
     }
 
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
+        std::initializer_list<id_type> tail_ids,
+        std::initializer_list<id_type> head_ids,
+        hyperedge_properties_type properties
+    )
+    requires(std::same_as<directional_tag, bf_directed_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
+    {
+        return this->add_hyperedge_with(
+            std::views::all(tail_ids), std::views::all(head_ids), std::move(properties)
+        );
+    }
+
+    gl_attr_force_inline hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<vertex_type> auto& tail_rng,
         const traits::c_forward_range_of<vertex_type> auto& head_rng,
         hyperedge_properties_type properties
@@ -397,6 +454,18 @@ public:
             tail_rng | std::views::transform(&vertex_type::id),
             head_rng | std::views::transform(&vertex_type::id),
             std::move(properties)
+        );
+    }
+
+    gl_attr_force_inline hyperedge_type add_hyperedge_with(
+        std::initializer_list<vertex_type> tail_verticess,
+        std::initializer_list<vertex_type> head_verticess,
+        hyperedge_properties_type properties
+    )
+    requires(std::same_as<directional_tag, bf_directed_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
+    {
+        return this->add_hyperedge_with(
+            std::views::all(tail_verticess), std::views::all(head_verticess), std::move(properties)
         );
     }
 
@@ -507,12 +576,28 @@ public:
     }
 
     gl_attr_force_inline void bind(
+        std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind(std::views::all(vertex_ids), hyperedge_id);
+    }
+
+    gl_attr_force_inline void bind(
         const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
         const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
+    }
+
+    gl_attr_force_inline void bind(
+        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind(std::views::all(vertices), hyperedge_id);
     }
 
     void bind(
@@ -528,12 +613,28 @@ public:
     }
 
     gl_attr_force_inline void bind(
+        const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind(vertex_id, std::views::all(hyperedge_ids));
+    }
+
+    gl_attr_force_inline void bind(
         const vertex_type& vertex,
         const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
+    }
+
+    gl_attr_force_inline void bind(
+        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind(vertex_id, std::views::all(hyperedges));
     }
 
     void bind_tail(const id_type vertex_id, const id_type hyperedge_id)
@@ -563,12 +664,28 @@ public:
     }
 
     gl_attr_force_inline void bind_tail(
+        std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_tail(std::views::all(vertex_ids), hyperedge_id);
+    }
+
+    gl_attr_force_inline void bind_tail(
         const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
         const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
+    }
+
+    gl_attr_force_inline void bind_tail(
+        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_tail(std::views::all(vertices), hyperedge_id);
     }
 
     void bind_tail(
@@ -584,12 +701,28 @@ public:
     }
 
     gl_attr_force_inline void bind_tail(
+        const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind_tail(vertex_id, std::views::all(hyperedge_ids));
+    }
+
+    gl_attr_force_inline void bind_tail(
         const vertex_type& vertex,
         const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
+    }
+
+    gl_attr_force_inline void bind_tail(
+        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind_tail(vertex_id, std::views::all(hyperedges));
     }
 
     void bind_head(const id_type vertex_id, const id_type hyperedge_id)
@@ -619,12 +752,28 @@ public:
     }
 
     gl_attr_force_inline void bind_head(
+        std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_head(std::views::all(vertex_ids), hyperedge_id);
+    }
+
+    gl_attr_force_inline void bind_head(
         const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
         const hyperedge_type& hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
+    }
+
+    gl_attr_force_inline void bind_head(
+        std::initializer_list<vertex_type> vertices, const id_type hyperedge_id
+    )
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        this->bind_head(std::views::all(vertices), hyperedge_id);
     }
 
     void bind_head(
@@ -640,12 +789,28 @@ public:
     }
 
     gl_attr_force_inline void bind_head(
+        const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind_head(vertex_id, std::views::all(hyperedge_ids));
+    }
+
+    gl_attr_force_inline void bind_head(
         const vertex_type& vertex,
         const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
+    }
+
+    gl_attr_force_inline void bind_head(
+        const id_type vertex_id, std::initializer_list<hyperedge_type> hyperedges
+    )
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        this->bind_head(vertex_id, std::views::all(hyperedges));
     }
 
     void unbind(const id_type vertex_id, const id_type hyperedge_id) {
@@ -1324,18 +1489,15 @@ private:
                 if (with_he_props) {
                     hyperedge_properties_type props;
                     is >> props;
-                    new_he_id = this->add_hyperedge_with(std::move(props)).id();
+                    new_he_id = this->add_hyperedge_with(v_ids, std::move(props)).id();
                 }
                 else {
-                    new_he_id = this->add_hyperedge().id();
+                    new_he_id = this->add_hyperedge(v_ids).id();
                 }
             }
             else {
-                new_he_id = this->add_hyperedge().id();
+                new_he_id = this->add_hyperedge(v_ids).id();
             }
-
-            for (const auto v_id : v_ids)
-                this->bind(v_id, new_he_id);
         }
     }
 
@@ -1359,20 +1521,15 @@ private:
                 if (with_he_props) {
                     hyperedge_properties_type props;
                     is >> props;
-                    new_he_id = this->add_hyperedge_with(std::move(props)).id();
+                    new_he_id = this->add_hyperedge_with(tail_ids, head_ids, std::move(props)).id();
                 }
                 else {
-                    new_he_id = this->add_hyperedge().id();
+                    new_he_id = this->add_hyperedge(tail_ids, head_ids).id();
                 }
             }
             else {
-                new_he_id = this->add_hyperedge().id();
+                new_he_id = this->add_hyperedge(tail_ids, head_ids).id();
             }
-
-            for (const auto v_id : tail_ids)
-                this->bind_tail(v_id, new_he_id);
-            for (const auto v_id : head_ids)
-                this->bind_head(v_id, new_he_id);
         }
     }
 
