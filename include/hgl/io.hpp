@@ -4,5 +4,5 @@
 
 #pragma once
 
-#include "gl/io/graph_fio.hpp"
-#include "gl/io/options.hpp"
+#include "hgl/io/core.hpp"
+#include "hgl/io/hypergraph_fio.hpp"

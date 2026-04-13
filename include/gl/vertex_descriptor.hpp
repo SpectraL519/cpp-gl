@@ -4,15 +4,16 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
-#include "gl/graph_io.hpp"
+#include "gl/io/options.hpp"
+#include "gl/io/options_manip.hpp"
 #include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/types/properties.hpp"
 
 #include <compare>
-#include <format>
 
 namespace gl {
 
@@ -92,39 +93,37 @@ public:
         return this->_properties.get();
     }
 
-    friend inline std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
-        vertex._write(os);
-        return os;
+    friend std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex) {
+        using enum io::detail::option_bit;
+
+        if (io::is_option_set(os, verbose))
+            return vertex._verbose_write(os);
+        else
+            return vertex._concise_write(os);
     }
 
 private:
-    void _write(std::ostream& os) const {
-        if constexpr (not traits::c_writable<properties_type>) {
-            this->_write_no_properties(os);
-            return;
-        }
-        else {
-            if (not io::is_option_set(os, io::graph_option::with_vertex_properties)) {
-                this->_write_no_properties(os);
-                return;
-            }
+    std::ostream& _verbose_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
 
-            if (io::is_option_set(os, io::graph_option::verbose)) {
-                os << "[id: " << this->_id << " | properties: " << this->_properties.get() << "]";
-            }
-            else {
-                os << "[" << this->_id << " | " << this->_properties.get() << "]";
-            }
-        }
+        os << "[id: " << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << " | " << this->_properties.get();
+        os << ']';
+
+        return os;
     }
 
-    void _write_no_properties(std::ostream& os) const {
-        if (io::is_option_set(os, io::graph_option::verbose)) {
-            os << std::format("[id: {}]", this->_id);
-        }
-        else {
-            os << this->_id;
-        }
+    std::ostream& _concise_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
+
+        os << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << '[' << this->_properties.get() << ']';
+
+        return os;
     }
 
     id_type _id;

@@ -7,6 +7,7 @@
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
+#include "hgl/io/core.hpp"
 #include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
@@ -93,7 +94,39 @@ public:
         return this->_properties.get();
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const hyperedge_descriptor& hyperedge) {
+        using enum io::detail::option_bit;
+
+        if (io::is_option_set(os, verbose))
+            return hyperedge._verbose_write(os);
+        else
+            return hyperedge._concise_write(os);
+    }
+
 private:
+    std::ostream& _verbose_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
+
+        os << "[id: " << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << " | " << this->_properties.get();
+        os << ']';
+
+        return os;
+    }
+
+    std::ostream& _concise_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
+
+        os << this->_id;
+        if constexpr (traits::c_writable<properties_type>)
+            if (io::is_option_set(os, with_vertex_properties))
+                os << '[' << this->_properties.get() << ']';
+
+        return os;
+    }
+
     id_type _id;
     [[no_unique_address]] std::conditional_t<
         traits::c_empty_properties<properties_type>,

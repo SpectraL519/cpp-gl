@@ -6,7 +6,7 @@
 
 #include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
-#include <gl/graph_file_io.hpp>
+#include <gl/io/graph_fio.hpp>
 
 namespace fs = std::filesystem;
 
