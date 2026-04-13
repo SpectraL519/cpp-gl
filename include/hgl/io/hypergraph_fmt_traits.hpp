@@ -4,27 +4,25 @@
 
 #pragma once
 
-#include "gl/directional_tags.hpp"
+#include "hgl/directional_tags.hpp"
 
 #include <string_view>
 
-namespace gl::io::detail {
+namespace hgl::io::detail {
 
 template <typename DirectionalTag>
-struct graph_fmt_traits;
+struct hypergraph_fmt_traits;
 
 template <>
-struct graph_fmt_traits<undirected_t> {
+struct hypergraph_fmt_traits<undirected_t> {
     static constexpr int discriminator = 0;
     static constexpr std::string_view type = "undirected";
-    static constexpr std::string_view out_edges = "incident edges";
 };
 
 template <>
-struct graph_fmt_traits<directed_t> {
+struct hypergraph_fmt_traits<bf_directed_t> {
     static constexpr int discriminator = 1;
-    static constexpr std::string_view type = "directed";
-    static constexpr std::string_view out_edges = "outgoing edges";
+    static constexpr std::string_view type = "BF-directed";
 };
 
-} // namespace gl::io::detail
+} // namespace hgl::io::detail

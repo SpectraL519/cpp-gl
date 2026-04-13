@@ -763,30 +763,23 @@ private:
     }
 
     std::ostream& _gsf_write(std::ostream& os) const {
-        using io::detail::option_bit;
+        using enum io::detail::option_bit;
 
-        const bool with_vertex_properties =
-            io::is_option_set(os, option_bit::with_vertex_properties);
-        const bool with_edge_properties =
-            io::is_option_set(os, option_bit::with_connection_properties);
+        const bool with_v_props = io::is_option_set(os, with_vertex_properties);
+        const bool with_e_props = io::is_option_set(os, with_connection_properties);
 
         // print graph metadata
-        os << std::format(
-            "{} {} {} {} {}\n",
-            static_cast<int>(traits::c_directed_edge<edge_type>),
-            this->order(),
-            this->size(),
-            static_cast<int>(with_vertex_properties),
-            static_cast<int>(with_edge_properties)
-        );
+        os << traits::c_directed_edge<edge_type> << ' ' << this->order() << ' ' << this->size()
+           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_e_props)
+           << '\n';
 
         if constexpr (traits::c_writable<vertex_properties_type>)
-            if (with_vertex_properties)
+            if (with_v_props)
                 for (const auto& vertex : this->vertices())
                     os << vertex.properties() << '\n';
 
         if constexpr (traits::c_writable<edge_properties_type>) {
-            if (with_edge_properties) {
+            if (with_e_props) {
                 const auto print_out_edges = [this, &os](const id_type vertex_id) {
                     for (const auto& edge : this->out_edges(vertex_id)) {
                         if (edge.source() != vertex_id)
@@ -818,16 +811,20 @@ private:
     }
 
     std::istream& _gsf_read(std::istream& is) {
-        bool directed;
-        is >> directed;
+        using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
-        if (directed != traits::c_directed_edge<edge_type>)
+        int dir_discr;
+        is >> dir_discr;
+
+        if (dir_discr != fmt_traits::discriminator)
             throw std::ios_base::failure(std::format(
-                "Invalid graph specification: directional tag does not match - should be {}",
-                fmt_traits::type
+                "Invalid hypergraph specification: directional specifier {} does not match "
+                "expected {}",
+                dir_discr,
+                fmt_traits::discriminator
             ));
 
-        // read initial graph parameters
+        // read graph metadata
         id_type n_vertices, n_edges;
         is >> n_vertices >> n_edges;
 

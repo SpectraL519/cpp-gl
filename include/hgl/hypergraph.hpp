@@ -11,7 +11,8 @@
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
 #include "hgl/impl/impl_tags.hpp"
-#include "hgl/io.hpp"
+#include "hgl/io/core.hpp"
+#include "hgl/io/hypergraph_fmt_traits.hpp"
 #include "hgl/util.hpp"
 
 #include <algorithm>
@@ -819,13 +820,19 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const hypergraph& hg) {
-        // if (gl::io::is_option_set(os, gl::io::detail::option_bit::gsf))
-        //     return hg._gsf_write(os);
+        using enum io::detail::option_bit;
 
-        if (gl::io::is_option_set(os, gl::io::detail::option_bit::verbose))
+        if (gl::io::is_option_set(os, spec_fmt))
+            return hg._hgsf_write(os);
+
+        if (gl::io::is_option_set(os, verbose))
             return hg._verbose_write(os);
 
         return hg._concise_write(os);
+    }
+
+    friend gl_attr_force_inline std::istream& operator>>(std::istream& is, hypergraph& hg) {
+        return hg._hgsf_read(is);
     }
 
     // --- friend declarations ---
@@ -989,6 +996,170 @@ private:
         }
 
         return os;
+    }
+
+    std::ostream& _hgsf_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
+        using fmt_traits = io::detail::hypergraph_fmt_traits<directional_tag>;
+
+        const bool with_v_props = io::is_option_set(os, with_vertex_properties);
+        const bool with_he_props = io::is_option_set(os, with_connection_properties);
+
+        // print hypergraph metadata
+        os << fmt_traits::discriminator << ' ' << this->order() << ' ' << this->size() << ' '
+           << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props) << '\n';
+
+        if constexpr (traits::c_writable<vertex_properties_type>)
+            if (with_v_props)
+                for (const auto& vertex : this->vertices())
+                    os << vertex.properties() << '\n';
+
+        for (const auto& hyperedge : this->hyperedges()) {
+            const auto he_id = hyperedge.id();
+
+            if constexpr (std::same_as<directional_tag, undirected_t>) {
+                os << this->hyperedge_size(he_id);
+                for (const auto v : this->incident_vertex_ids(he_id))
+                    os << ' ' << v;
+            }
+            else if constexpr (std::same_as<directional_tag, bf_directed_t>) {
+                os << this->tail_size(he_id) << ' ' << this->head_size(he_id);
+                for (const auto v : this->tail_vertex_ids(he_id))
+                    os << ' ' << v;
+                for (const auto v : this->head_vertex_ids(he_id))
+                    os << ' ' << v;
+            }
+
+            if constexpr (traits::c_writable<hyperedge_properties_type>) {
+                if (with_he_props)
+                    os << ' ' << hyperedge.properties();
+            }
+
+            os << '\n';
+        }
+
+        return os;
+    }
+
+    std::istream& _hgsf_read(std::istream& is) {
+        using fmt_traits = io::detail::hypergraph_fmt_traits<directional_tag>;
+
+        int dir_discr;
+        is >> dir_discr;
+
+        if (dir_discr != fmt_traits::discriminator)
+            throw std::ios_base::failure(std::format(
+                "Invalid hypergraph specification: directional specifier {} does not match "
+                "expected {}",
+                dir_discr,
+                fmt_traits::discriminator
+            ));
+
+        // read hypergraph metadata
+        id_type n_vertices, n_hyperedges;
+        is >> n_vertices >> n_hyperedges;
+
+        bool with_v_props, with_he_props;
+        is >> with_v_props >> with_he_props;
+
+        if (with_v_props) {
+            if constexpr (not traits::c_readable<vertex_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid hypergraph specification: vertex_properties=true "
+                    "when vertex_properties_type is not readable"
+                );
+            }
+            else {
+                std::vector<vertex_properties_type> vertex_properties(n_vertices);
+                for (auto i = 0uz; i < n_vertices; ++i)
+                    is >> vertex_properties[i];
+                this->add_vertices_with(vertex_properties);
+            }
+        }
+        else {
+            this->add_vertices(n_vertices);
+        }
+
+        if (with_he_props) {
+            if constexpr (not traits::c_readable<hyperedge_properties_type>) {
+                throw std::ios_base::failure(
+                    "Invalid hypergraph specification: hyperedge_properties=true "
+                    "when hyperedge_properties_type is not readable"
+                );
+            }
+        }
+
+        this->_read_hyperedges(is, n_hyperedges, with_he_props);
+
+        return is;
+    }
+
+    void _read_hyperedges(std::istream& is, const size_type n_hyperedges, const bool with_he_props)
+    requires std::same_as<directional_tag, undirected_t>
+    {
+        for (auto _ = 0uz; _ < n_hyperedges; ++_) {
+            size_type size;
+            is >> size;
+
+            std::vector<id_type> v_ids(size);
+            for (auto i = 0uz; i < size; ++i)
+                is >> v_ids[i];
+
+            id_type new_he_id;
+            if constexpr (traits::c_readable<hyperedge_properties_type>) {
+                if (with_he_props) {
+                    hyperedge_properties_type props;
+                    is >> props;
+                    new_he_id = this->add_hyperedge_with(std::move(props)).id();
+                }
+                else {
+                    new_he_id = this->add_hyperedge().id();
+                }
+            }
+            else {
+                new_he_id = this->add_hyperedge().id();
+            }
+
+            for (const auto v_id : v_ids)
+                this->bind(v_id, new_he_id);
+        }
+    }
+
+    void _read_hyperedges(std::istream& is, const size_type n_hyperedges, const bool with_he_props)
+    requires std::same_as<directional_tag, bf_directed_t>
+    {
+        for (auto _ = 0uz; _ < n_hyperedges; ++_) {
+            size_type tail_size, head_size;
+            is >> tail_size >> head_size;
+
+            std::vector<id_type> tail_ids(tail_size);
+            for (auto i = 0uz; i < tail_size; ++i)
+                is >> tail_ids[i];
+
+            std::vector<id_type> head_ids(head_size);
+            for (auto i = 0uz; i < head_size; ++i)
+                is >> head_ids[i];
+
+            id_type new_he_id;
+            if constexpr (traits::c_readable<hyperedge_properties_type>) {
+                if (with_he_props) {
+                    hyperedge_properties_type props;
+                    is >> props;
+                    new_he_id = this->add_hyperedge_with(std::move(props)).id();
+                }
+                else {
+                    new_he_id = this->add_hyperedge().id();
+                }
+            }
+            else {
+                new_he_id = this->add_hyperedge().id();
+            }
+
+            for (const auto v_id : tail_ids)
+                this->bind_tail(v_id, new_he_id);
+            for (const auto v_id : head_ids)
+                this->bind_head(v_id, new_he_id);
+        }
     }
 
     // --- data members ---
