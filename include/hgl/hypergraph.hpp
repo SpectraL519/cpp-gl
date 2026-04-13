@@ -767,21 +767,20 @@ public:
         requires std::same_as<directional_tag, undirected_t>
         {
             using io::detail::option_bit;
-            const bool with_props =
-                io::is_option_set(os, option_bit::with_connection_properties)
-                and traits::c_writable<hyperedge_properties_type>;
 
             if (io::is_option_set(os, option_bit::verbose)) {
                 os << "[id: " << proxy.hyperedge.id() << " | vertices: "
                    << io::set_formatter(proxy.hg.incident_vertex_ids(proxy.hyperedge.id()));
-                if (with_props)
-                    os << " | " << proxy.hyperedge.properties();
+                if constexpr (traits::c_writable<hyperedge_properties_type>)
+                    if (io::is_option_set(os, option_bit::with_connection_properties))
+                        os << " | " << proxy.hyperedge.properties();
                 os << ']';
             }
             else { // concise
                 os << io::set_formatter(proxy.hg.incident_vertex_ids(proxy.hyperedge.id()));
-                if (with_props)
-                    os << '[' << proxy.hyperedge.properties() << ']';
+                if constexpr (traits::c_writable<hyperedge_properties_type>)
+                    if (io::is_option_set(os, option_bit::with_connection_properties))
+                        os << '[' << proxy.hyperedge.properties() << ']';
             }
 
             return os;
@@ -791,25 +790,24 @@ public:
         requires std::same_as<directional_tag, bf_directed_t>
         {
             using io::detail::option_bit;
-            const bool with_props =
-                io::is_option_set(os, option_bit::with_connection_properties)
-                and traits::c_writable<hyperedge_properties_type>;
 
             if (io::is_option_set(os, option_bit::verbose)) {
                 os << "[id: " << proxy.hyperedge.id() << " | tail: "
                    << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
                    << ", head: "
                    << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()));
-                if (with_props)
-                    os << " | " << proxy.hyperedge.properties();
+                if constexpr (traits::c_writable<hyperedge_properties_type>)
+                    if (io::is_option_set(os, option_bit::with_connection_properties))
+                        os << " | " << proxy.hyperedge.properties();
                 os << "]";
             }
             else { // concise
                 os << '(' << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
                    << " -> " << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()))
                    << ')';
-                if (with_props)
-                    os << '[' << proxy.hyperedge.properties() << ']';
+                if constexpr (traits::c_writable<hyperedge_properties_type>)
+                    if (io::is_option_set(os, option_bit::with_connection_properties))
+                        os << '[' << proxy.hyperedge.properties() << ']';
             }
 
             return os;
@@ -938,16 +936,19 @@ private:
         os << "type: " << fmt_traits::type << ", |V| = " << this->order()
            << ", |E| = " << this->size() << '\n';
 
-        const bool with_v_props =
-            io::is_option_set(os, with_vertex_properties)
-            and traits::c_writable<vertex_properties_type>;
-        if (with_v_props) {
-            os << "vertices:\n";
-            for (const auto& vertex : this->vertices())
-                os << "  - " << vertex << '\n';
+        os << "vertices: ";
+        if constexpr (traits::c_writable<vertex_properties_type>) {
+            if (io::is_option_set(os, with_vertex_properties)) {
+                os << '\n';
+                for (const auto& vertex : this->vertices())
+                    os << "  - " << vertex << '\n';
+            }
+            else {
+                os << io::implicit_range(this->order()) << '\n';
+            }
         }
         else {
-            this->_write_implicit_vset(os) << '\n';
+            os << io::implicit_range(this->order()) << '\n';
         }
 
         if (this->size() == 0uz) {
@@ -965,13 +966,16 @@ private:
     std::ostream& _concise_write(std::ostream& os) const {
         using enum io::detail::option_bit;
 
-        const bool with_v_props =
-            io::is_option_set(os, with_vertex_properties)
-            and traits::c_writable<vertex_properties_type>;
-        if (with_v_props)
-            os << "V = " << io::multiline_set_formatter(this->vertices()) << '\n';
-        else
-            this->_write_implicit_vset(os) << '\n';
+        os << "V = ";
+        if constexpr (traits::c_writable<vertex_properties_type>) {
+            if (io::is_option_set(os, with_vertex_properties))
+                os << io::multiline_set_formatter(this->vertices()) << '\n';
+            else
+                os << io::implicit_range(this->order()) << '\n';
+        }
+        else {
+            os << io::implicit_range(this->order()) << '\n';
+        }
 
         if (this->size() == 0uz) {
             os << "E = {}\n";
@@ -981,23 +985,10 @@ private:
                 return this->display(hyperedge);
             });
 
-            // TODO: set/multiline_set
             os << "E = " << io::multiline_set_formatter(hyperedges) << '\n';
         }
 
         return os;
-    }
-
-    std::ostream& _write_implicit_vset(std::ostream& os) const {
-        const auto n = this->order();
-        if (n == 0uz)
-            return os << "V = {}";
-        if (n == 1uz)
-            return os << "V = {0}";
-        if (n == 2uz)
-            return os << "V = {0, 1}";
-
-        return os << "V = {0, ..., " << n - 1 << '}';
     }
 
     // --- data members ---

@@ -4,15 +4,11 @@
 
 #pragma once
 
-#include "gl/attributes/force_inline.hpp"
-#include "gl/traits.hpp"
-
 #include <iostream>
 #include <ranges>
 
 namespace gl::io {
 
-// TODO: add tests
 template <std::ranges::range Range>
 struct range_formatter {
     Range range;
@@ -34,8 +30,20 @@ struct range_formatter {
     }
 };
 
+// CTAD helpers
+
 template <std::ranges::range R>
 range_formatter(R&& r) -> range_formatter<std::views::all_t<R>>;
+
+template <std::ranges::range R>
+range_formatter(R&& r, std::string_view) -> range_formatter<std::views::all_t<R>>;
+
+template <std::ranges::range R>
+range_formatter(R&& r, std::string_view, std::string_view) -> range_formatter<std::views::all_t<R>>;
+
+template <std::ranges::range R>
+range_formatter(R&& r, std::string_view, std::string_view, std::string_view)
+    -> range_formatter<std::views::all_t<R>>;
 
 template <std::ranges::range R>
 auto set_formatter(R&& range, std::string_view sep = ", ") {
@@ -50,6 +58,35 @@ auto multiline_set_formatter(R&& range) {
     return range_formatter<view_type>{
         std::views::all(std::forward<R>(range)), ",\n  ", "{\n  ", "\n}"
     };
+}
+
+template <std::integral T>
+struct implicit_range_formatter {
+    T first;
+    T last; // exclusive
+
+    friend std::ostream& operator<<(std::ostream& os, implicit_range_formatter proxy) {
+        if (proxy.first >= proxy.last)
+            return os << "{}";
+
+        const auto dist = proxy.last - proxy.first;
+        if (dist == 1)
+            return os << '{' << proxy.first << '}';
+        if (dist == 2)
+            return os << '{' << proxy.first << ", " << proxy.first + 1 << '}';
+
+        return os << '{' << proxy.first << ", ..., " << proxy.last - 1 << '}';
+    }
+};
+
+template <std::integral T>
+[[nodiscard]] constexpr auto implicit_range(T first, T last, bool inclusive = false) {
+    return implicit_range_formatter<T>{first, last + static_cast<T>(inclusive)};
+}
+
+template <std::integral T>
+[[nodiscard]] constexpr auto implicit_range(T last, bool inclusive = false) {
+    return implicit_range(static_cast<T>(0), last, inclusive);
 }
 
 } // namespace gl::io

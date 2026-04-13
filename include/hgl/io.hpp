@@ -4,46 +4,45 @@
 
 #pragma once
 
-#include "gl/io/format.hpp"
 #include "gl/io/options.hpp"
-#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/io/options_manip.hpp"
+#include "gl/io/ranges.hpp"
 #include "hgl/directional_tags.hpp"
 
 #include <string_view>
 
 namespace hgl::io {
 
+using gl::io::implicit_range;
+using gl::io::implicit_range_formatter;
 using gl::io::multiline_set_formatter;
 using gl::io::range_formatter;
 using gl::io::set_formatter;
 
 using gl::io::are_options_set;
+using gl::io::clear_options;
 using gl::io::is_option_set;
-using gl::io::set_option;
+using gl::io::options_manip;
 using gl::io::set_options;
-using gl::io::stream_options_manipulator;
-using gl::io::unset_option;
-using gl::io::unset_options;
 
 namespace detail {
 
-using gl::io::detail::get_options_bitmask;
+using gl::io::detail::build_mask;
 using gl::io::detail::option_bit;
 
 } // namespace detail
 
 using gl::io::concise;
+using gl::io::spec_fmt;
 using gl::io::verbose;
 
 using gl::io::with_vertex_properties;
 using gl::io::without_vertex_properties;
 
-inline const stream_options_manipulator with_hyperedge_properties =
-    set_option(detail::option_bit::with_connection_properties);
-inline const stream_options_manipulator without_hyperedge_properties =
-    unset_option(detail::option_bit::with_connection_properties);
-
-// TODO: spec fmt
+inline const options_manip with_hyperedge_properties =
+    set_options(detail::option_bit::with_connection_properties);
+inline const options_manip without_hyperedge_properties =
+    clear_options(detail::option_bit::with_connection_properties);
 
 using gl::io::with_properties;
 using gl::io::without_properties;

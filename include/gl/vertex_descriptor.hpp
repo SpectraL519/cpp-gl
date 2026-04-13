@@ -8,7 +8,7 @@
 #include "gl/constants.hpp"
 #include "gl/decl/graph_traits.hpp"
 #include "gl/io/options.hpp"
-#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/io/options_manip.hpp"
 #include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/types/properties.hpp"

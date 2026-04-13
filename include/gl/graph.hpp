@@ -10,7 +10,7 @@
 #include "gl/impl/impl_tags.hpp"
 #include "gl/io/graph_fmt_traits.hpp"
 #include "gl/io/options.hpp"
-#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/io/options_manip.hpp"
 #include "gl/traits.hpp"
 #include "gl/util/ranges.hpp"
 
@@ -636,7 +636,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
         using io::detail::option_bit;
 
-        if (io::is_option_set(os, option_bit::specification_fmt))
+        if (io::is_option_set(os, option_bit::spec_fmt))
             return g._gsf_write(os);
 
         if (io::is_option_set(os, option_bit::verbose))

@@ -80,13 +80,6 @@ concept c_const_range = requires(R& r) {
 };
 
 template <typename T>
-concept c_strong_smart_ptr =
-    c_instantiation_of<T, std::unique_ptr> or c_instantiation_of<T, std::shared_ptr>;
-
-template <typename T>
-concept c_strong_ptr = c_strong_smart_ptr<T> or std::is_pointer_v<T>;
-
-template <typename T>
 concept c_const_iterator = requires(T iter) {
     { *iter } -> std::same_as<const std::remove_cvref_t<decltype(*iter)>&>;
 };
@@ -110,5 +103,8 @@ concept c_readable = requires(T value, std::istream& is) { is >> value; };
 
 template <typename T>
 concept c_writable = requires(T value, std::ostream& os) { os << value; };
+
+template <typename T>
+concept c_enum = std::is_enum_v<T>;
 
 } // namespace gl::traits

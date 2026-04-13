@@ -91,11 +91,11 @@ template <traits::c_graph GraphType, detail::c_io_save_mode Mode = write>
 void save(
     const GraphType& graph,
     const std::filesystem::path& path = "graph.gsf",
-    const std::initializer_list<stream_options_manipulator>& options = {}
+    const std::initializer_list<options_manip>& options = {}
 ) {
     std::ofstream file = detail::open_outfile<Mode>(path);
 
-    file << enable_gsf;
+    file << spec_fmt;
     for (const auto& option : options)
         file << option;
 
@@ -106,7 +106,7 @@ template <traits::c_graph GraphType>
 [[nodiscard]] GraphType load(const std::filesystem::path& path = "graph.gsf") {
     std::ifstream file = detail::open_infile(path);
 
-    file >> enable_gsf;
+    file >> spec_fmt;
 
     GraphType graph;
     file >> graph;

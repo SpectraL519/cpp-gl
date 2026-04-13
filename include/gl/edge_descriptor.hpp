@@ -7,8 +7,8 @@
 #include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
 #include "gl/directional_tags.hpp"
-#include "gl/io/format.hpp"
 #include "gl/io/options.hpp"
+#include "gl/io/ranges.hpp"
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 

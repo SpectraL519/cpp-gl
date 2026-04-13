@@ -1,3 +1,4 @@
+#include "gl/io/options.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/io_common.hpp"
 
@@ -20,7 +21,7 @@ struct test_directed_graph_io {
     using sut_type = gl::graph<traits_type>;
 
     test_directed_graph_io() {
-        ss << gl::io::enable_gsf;
+        ss << gl::io::spec_fmt;
 
         sut_out = gl::topology::clique<sut_type>(n_vertices);
 
@@ -129,7 +130,7 @@ struct test_undirected_graph_io {
     using sut_type = gl::graph<traits_type>;
 
     test_undirected_graph_io() {
-        ss << gl::io::enable_gsf;
+        ss << gl::io::spec_fmt;
 
         sut_out = gl::topology::clique<sut_type>(n_vertices);
 
