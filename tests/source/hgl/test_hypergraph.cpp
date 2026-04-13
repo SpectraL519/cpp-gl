@@ -11,7 +11,9 @@
 
 #include <algorithm>
 #include <concepts>
+#include <initializer_list>
 #include <type_traits>
+#include <vector>
 
 namespace rng = std::ranges;
 namespace vw = std::views;
@@ -257,6 +259,79 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_EQ(sut.size(), constants::n_hyperedges);
     }
 
+    SUBCASE("add_hyperedge(<vertices>) should create a hyperedge and bind the given vertices") {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{3uz};
+            const std::vector<hgl::default_id_type> v_ids{0u, 1u, 2u};
+
+            auto he1 = sut.add_hyperedge(v_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge(vertices);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz};
+            const std::vector<hgl::default_id_type> t_ids{0u, 3u};
+            const std::vector<hgl::default_id_type> h_ids{1u, 2u};
+
+            auto he1 = sut.add_hyperedge(t_ids, h_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
+
+            auto h_vertices =
+                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto t_vertices =
+                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge(t_vertices, h_vertices);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
+        }
+    }
+
+    SUBCASE("add_hyperedge(initializer_list) variants should create a hyperedge and bind the given "
+            "vertices") {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{3uz};
+            const std::vector<hgl::default_id_type> v_ids{0u, 1u, 2u};
+
+            auto he1 = sut.add_hyperedge(v_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
+
+            auto he2 =
+                sut.add_hyperedge({sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(2u)});
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz};
+
+            std::initializer_list<hgl::default_id_type> t_ids = {0u, 1u};
+            std::initializer_list<hgl::default_id_type> h_ids = {2u, 3u};
+
+            auto he1 = sut.add_hyperedge(t_ids, h_ids);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
+
+            auto he2 = sut.add_hyperedge(
+                {sut.get_vertex(0u), sut.get_vertex(1u)}, {sut.get_vertex(2u), sut.get_vertex(3u)}
+            );
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
+        }
+    }
+
     SUBCASE("add_hyperedge_with should initialize a new hyperedge with the input properties "
             "structure") {
         using properties_traits_type = add_hyperedge_property<HypergraphTraits, boolean_property>;
@@ -267,6 +342,102 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         CHECK_EQ(hyperedge.id(), constants::id1);
         CHECK_EQ(hyperedge.properties(), constants::p_true);
+    }
+
+    SUBCASE("add_hyperedge_with(<vertices>, properties) variants should create a hyperedge, bind "
+            "vertices, and set properties") {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+
+            hgl::hypergraph<properties_traits_type> sut{4uz};
+            const std::vector<hgl::default_id_type> v_ids{0u, 1u, 3u};
+
+            auto he1 = sut.add_hyperedge_with(v_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto vertices =
+                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge_with(vertices, constants::p_false);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+
+            hgl::hypergraph<properties_traits_type> sut{4uz};
+            const std::vector<hgl::default_id_type> t_ids{0u, 1u};
+            const std::vector<hgl::default_id_type> h_ids{2u, 3u};
+
+            auto he1 = sut.add_hyperedge_with(t_ids, h_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto t_vertices =
+                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto h_vertices =
+                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto he2 = sut.add_hyperedge_with(t_vertices, h_vertices, constants::p_false);
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
+    }
+
+    SUBCASE("add_hyperedge_with(initializer_list, properties) variants should create a hyperedge, "
+            "bind vertices, and set properties") {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+
+            hgl::hypergraph<properties_traits_type> sut{4uz};
+            std::initializer_list<hgl::default_id_type> v_ids{0u, 1u, 3u};
+
+            auto he1 = sut.add_hyperedge_with(v_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto he2 = sut.add_hyperedge_with(
+                {sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(3u)}, constants::p_false
+            );
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
+
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            using properties_traits_type =
+                add_hyperedge_property<HypergraphTraits, boolean_property>;
+
+            hgl::hypergraph<properties_traits_type> sut{4uz};
+            std::initializer_list<hgl::default_id_type> t_ids{0u, 1u};
+            std::initializer_list<hgl::default_id_type> h_ids{2u, 3u};
+
+            auto he1 = sut.add_hyperedge_with(t_ids, h_ids, constants::p_true);
+            CHECK_EQ(sut.size(), 1uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
+            CHECK_EQ(he1.properties(), constants::p_true);
+
+            auto he2 = sut.add_hyperedge_with(
+                {sut.get_vertex(0u), sut.get_vertex(1u)},
+                {sut.get_vertex(2u), sut.get_vertex(3u)},
+                constants::p_false
+            );
+            CHECK_EQ(sut.size(), 2uz);
+            CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
+            CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
+            CHECK_EQ(he2.properties(), constants::p_false);
+        }
     }
 
     SUBCASE("add_hyperedges(n) should add n new hyperedges to the hypergraph") {
@@ -526,6 +697,141 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut.unbind(vertex_id, hyperedge_id);
         validate_incidence(false);
+    }
+
+    SUBCASE("bulk bind (undirected) should properly mark given sets as incident") {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::vector<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.incident_vertex_ids(0u), he1_v_ids));
+
+            auto he2_vertices =
+                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            sut.bind(he2_vertices, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.incident_vertex_ids(1u), he1_v_ids));
+
+            std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind(2u, v3_he_ids);
+            CHECK(rng::equal(sut.incident_hyperedge_ids(2u), v3_he_ids));
+
+            auto v4_hyperedges =
+                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+            sut.bind(sut.get_vertex(3u), v4_hyperedges);
+            CHECK(rng::equal(sut.incident_hyperedge_ids(3u), v3_he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind (initializer list, undirected) should properly mark given sets as incident"
+    ) {
+        if constexpr (std::same_as<directional_tag, hgl::undirected_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::initializer_list<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.incident_vertex_ids(0u), he1_v_ids));
+
+            sut.bind({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.incident_vertex_ids(1u), he1_v_ids));
+
+            std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind(2u, v3_he_ids);
+            CHECK(rng::equal(sut.incident_hyperedge_ids(2u), v3_he_ids));
+
+            sut.bind(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            CHECK(rng::equal(sut.incident_hyperedge_ids(3u), v3_he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_tail (bf-directed) should properly mark given sets as incident") {
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::vector<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind_tail(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.tail_vertex_ids(0u), he1_v_ids));
+
+            auto he2_vertices =
+                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            sut.bind_tail(he2_vertices, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.tail_vertex_ids(1u), he1_v_ids));
+
+            std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind_tail(2u, v3_he_ids);
+            CHECK(rng::equal(sut.out_hyperedge_ids(2u), v3_he_ids));
+
+            auto v4_hyperedges =
+                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+            sut.bind_tail(sut.get_vertex(3u), v4_hyperedges);
+            CHECK(rng::equal(sut.out_hyperedge_ids(3u), v3_he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_tail (initializer list, bf-directed) should properly mark given sets as "
+            "incident") {
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::initializer_list<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind_tail(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.tail_vertex_ids(0u), he1_v_ids));
+
+            sut.bind_tail({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.tail_vertex_ids(1u), he1_v_ids));
+
+            std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind_tail(2u, v3_he_ids);
+            CHECK(rng::equal(sut.out_hyperedge_ids(2u), v3_he_ids));
+
+            sut.bind_tail(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            CHECK(rng::equal(sut.out_hyperedge_ids(3u), v3_he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_head (bf-directed) should properly mark given sets as incident") {
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::vector<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind_head(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.head_vertex_ids(0u), he1_v_ids));
+
+            auto he2_vertices =
+                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            sut.bind_head(he2_vertices, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.head_vertex_ids(1u), he1_v_ids));
+
+            std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind_head(2u, v3_he_ids);
+            CHECK(rng::equal(sut.in_hyperedge_ids(2u), v3_he_ids));
+
+            auto v4_hyperedges =
+                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
+            sut.bind_head(sut.get_vertex(3u), v4_hyperedges);
+            CHECK(rng::equal(sut.in_hyperedge_ids(3u), v3_he_ids));
+        }
+    }
+
+    SUBCASE("bulk bind_head (initializer list, bf-directed) should properly mark given sets as "
+            "incident") {
+        if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
+            sut_type sut{4uz, 4uz};
+
+            std::initializer_list<hgl::default_id_type> he1_v_ids{0u, 1u};
+            sut.bind_head(he1_v_ids, 0u);
+            CHECK(rng::equal(sut.head_vertex_ids(0u), he1_v_ids));
+
+            sut.bind_head({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            CHECK(rng::equal(sut.head_vertex_ids(1u), he1_v_ids));
+
+            std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
+            sut.bind_head(2u, v3_he_ids);
+            CHECK(rng::equal(sut.in_hyperedge_ids(2u), v3_he_ids));
+
+            sut.bind_head(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            CHECK(rng::equal(sut.in_hyperedge_ids(3u), v3_he_ids));
+        }
     }
 
     SUBCASE("incident_hyperedges and degree should throw if the given vertex (id) is invalid") {

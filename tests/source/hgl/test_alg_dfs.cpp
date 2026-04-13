@@ -28,9 +28,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("hub (single hyperedge)") {
         hypergraph.add_vertices(4uz);
-        const auto e = hypergraph.add_hyperedge().id();
-        for (const auto v : hypergraph.vertex_ids())
-            hypergraph.bind(v, e);
+        const auto e = hypergraph.add_hyperedge(hypergraph.vertex_ids()).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -43,18 +41,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("chain") {
         // E(H) = {{0, 1}, {1, 2, 3}, {3, 4, 5}}
         hypergraph.add_vertices(6uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {0u, 1u})
-            hypergraph.bind(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {1u, 2u, 3u})
-            hypergraph.bind(v, e1);
-
-        const auto e2 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {3u, 4u, 5u})
-            hypergraph.bind(v, e2);
+        const auto e0 = hypergraph.add_hyperedge({0u, 1u}).id();
+        const auto e1 = hypergraph.add_hyperedge({1u, 2u, 3u}).id();
+        const auto e2 = hypergraph.add_hyperedge({3u, 4u, 5u}).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -68,22 +57,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("overlapping hyperedges (shortest path preference)") {
         // E(H) = {{0, 1}, {1, 2, 3}, {0, 3}, {3, 4}}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {0u, 1u})
-            hypergraph.bind(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {1u, 2u, 3u})
-            hypergraph.bind(v, e1);
-
-        const auto e2 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {0u, 3u})
-            hypergraph.bind(v, e2);
-
-        const auto e3 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {3u, 4u})
-            hypergraph.bind(v, e3);
+        hypergraph.add_hyperedge({0u, 1u});
+        const auto e1 = hypergraph.add_hyperedge({1u, 2u, 3u}).id();
+        const auto e2 = hypergraph.add_hyperedge({0u, 3u}).id();
+        const auto e3 = hypergraph.add_hyperedge({3u, 4u}).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -97,14 +74,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("disconnected components (targeted root)") {
         // E(H) = {{0, 1, 2}, {3, 4}}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {0u, 1u, 2u})
-            hypergraph.bind(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {3u, 4u})
-            hypergraph.bind(v, e1);
+        const auto e0 = hypergraph.add_hyperedge({0u, 1u, 2u}).id();
+        hypergraph.add_hyperedge({3u, 4u});
 
         root_vertex_id = hgl::initial_id;
 
@@ -118,14 +89,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("full graph traversal (no_root)") {
         // E(H) = {{0, 1, 2}, {3, 4}}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {0u, 1u, 2u})
-            hypergraph.bind(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        for (const id_type v : {3u, 4u})
-            hypergraph.bind(v, e1);
+        const auto e0 = hypergraph.add_hyperedge({0u, 1u, 2u}).id();
+        const auto e1 = hypergraph.add_hyperedge({3u, 4u}).id();
 
         root_vertex_id = hgl::algorithm::no_root;
 
@@ -242,11 +207,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("forward star (single hyperedge)") {
         // E(H) = {0->{1, 2, 3}}
         hypergraph.add_vertices(4uz);
-        const auto e = hypergraph.add_hyperedge().id();
-
-        hypergraph.bind_tail(0uz, e);
-        for (const id_type v : {1u, 2u, 3u})
-            hypergraph.bind_head(v, e);
+        const auto e = hypergraph.add_hyperedge({0u}, {1u, 2u, 3u}).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -259,20 +220,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("chain") {
         // E(H) = {0->1, 1->{2, 3}, 3->{4, 5}}
         hypergraph.add_vertices(6uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(0uz, e0);
-        hypergraph.bind_head(1uz, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(1uz, e1);
-        for (const id_type v : {2u, 3u})
-            hypergraph.bind_head(v, e1);
-
-        const auto e2 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(3uz, e2);
-        for (const id_type v : {4u, 5u})
-            hypergraph.bind_head(v, e2);
+        const auto e0 = hypergraph.add_hyperedge({0u}, {1u}).id();
+        const auto e1 = hypergraph.add_hyperedge({1u}, {2u, 3u}).id();
+        const auto e2 = hypergraph.add_hyperedge({3u}, {4u, 5u}).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -286,23 +236,10 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("overlapping hyperedges (shortest path preference)") {
         // E(H) = {0->1, 1->{2, 3}, 0->3 (shortcut!), 3->4}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(0uz, e0);
-        hypergraph.bind_head(1uz, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(1uz, e1);
-        for (const id_type v : {2u, 3u})
-            hypergraph.bind_head(v, e1);
-
-        const auto e2 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(0uz, e2);
-        hypergraph.bind_head(3uz, e2);
-
-        const auto e3 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(3uz, e3);
-        hypergraph.bind_head(4uz, e3);
+        const auto e0 = hypergraph.add_hyperedge({0u}, {1u}).id();
+        const auto e1 = hypergraph.add_hyperedge({1u}, {2u, 3u}).id();
+        const auto e2 = hypergraph.add_hyperedge({0u}, {3u}).id();
+        const auto e3 = hypergraph.add_hyperedge({3u}, {4u}).id();
 
         root_vertex_id = hgl::initial_id;
 
@@ -316,15 +253,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("disconnected components (targeted root)") {
         // E(H) = {0->{1, 2}, 3->4}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(0uz, e0);
-        for (const id_type v : {1u, 2u})
-            hypergraph.bind_head(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(3uz, e1);
-        hypergraph.bind_head(4uz, e1);
+        const auto e0 = hypergraph.add_hyperedge({0u}, {1u, 2u}).id();
+        hypergraph.add_hyperedge({3u}, {4u});
 
         root_vertex_id = hgl::initial_id;
 
@@ -338,15 +268,8 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("full graph traversal (no_root)") {
         // E(H) = {0->{1, 2}, 3->4}
         hypergraph.add_vertices(5uz);
-
-        const auto e0 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(0uz, e0);
-        for (const id_type v : {1u, 2u})
-            hypergraph.bind_head(v, e0);
-
-        const auto e1 = hypergraph.add_hyperedge().id();
-        hypergraph.bind_tail(3uz, e1);
-        hypergraph.bind_head(4uz, e1);
+        const auto e0 = hypergraph.add_hyperedge({0u}, {1u, 2u}).id();
+        const auto e1 = hypergraph.add_hyperedge({3u}, {4u}).id();
 
         root_vertex_id = hgl::algorithm::no_root;
 
