@@ -41,20 +41,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const auto order = 5uz;
     hypergraph.add_vertices(order);
-
-    const auto e0 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(0uz, e0);
-    hypergraph.bind_tail(1uz, e0);
-    hypergraph.bind_head(2uz, e0);
-
-    const auto e1 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(2uz, e1);
-    hypergraph.bind_head(3uz, e1);
-    hypergraph.bind_head(4uz, e1);
-
-    const auto e2 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(1uz, e2);
-    hypergraph.bind_head(4uz, e2);
+    const auto e0 = hypergraph.add_hyperedge({0u, 1u}, {2u}).id();
+    const auto e1 = hypergraph.add_hyperedge({2u}, {3u, 4u}).id();
+    const auto e2 = hypergraph.add_hyperedge({1u}, {4u}).id();
 
     SUBCASE("single root v4 (partial backward traversal)") {
         // Rooting at v4. e1 cannot be traversed backwards because it also requires v3.
@@ -224,20 +213,9 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     const auto order = 5uz;
     hypergraph.add_vertices(order);
-
-    const auto e0 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(0uz, e0);
-    hypergraph.bind_tail(1uz, e0);
-    hypergraph.bind_head(2uz, e0);
-
-    const auto e1 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(2uz, e1);
-    hypergraph.bind_head(3uz, e1);
-    hypergraph.bind_head(4uz, e1);
-
-    const auto e2 = hypergraph.add_hyperedge().id();
-    hypergraph.bind_tail(1uz, e2);
-    hypergraph.bind_head(4uz, e2);
+    const auto e0 = hypergraph.add_hyperedge({0u, 1u}, {2u}).id();
+    const auto e1 = hypergraph.add_hyperedge({2u}, {3u, 4u}).id();
+    const auto e2 = hypergraph.add_hyperedge({1u}, {4u}).id();
 
     SUBCASE("single root v4 (partial backward traversal)") {
         root_vertices = {4u};
