@@ -4,10 +4,15 @@
 
 #pragma once
 
+#include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
+#include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/impl_tags.hpp"
-#include "gl/io/stream_options_manipulator.hpp"
+#include "gl/io/graph_fmt_traits.hpp"
+#include "gl/io/options.hpp"
+#include "gl/io/options_manip.hpp"
+#include "gl/traits.hpp"
 #include "gl/util/ranges.hpp"
 
 #include <set>
@@ -207,14 +212,14 @@ public:
 
     // --- vertex getters ---
 
-    [[nodiscard]] gl_attr_force_inline auto vertices() const
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return this->vertex_ids()
              | std::views::transform([](const id_type id) { return vertex_descriptor{id}; });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto vertices() const
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return this->_vertex_properties | std::views::enumerate
@@ -630,22 +635,19 @@ public:
     // --- stream operators ---
 
     friend std::ostream& operator<<(std::ostream& os, const graph& g) {
-        if (io::is_option_set(os, io::graph_option::gsf)) {
-            g._gsf_write(os);
-            return os;
-        }
+        using io::detail::option_bit;
 
-        if (io::is_option_set(os, io::graph_option::verbose))
-            g._verbose_write(os);
+        if (io::is_option_set(os, option_bit::spec_fmt))
+            return g._gsf_write(os);
+
+        if (io::is_option_set(os, option_bit::verbose))
+            return g._verbose_write(os);
         else
-            g._concise_write(os);
-
-        return os;
+            return g._concise_write(os);
     }
 
-    friend inline std::istream& operator>>(std::istream& is, graph& g) {
-        g._gsf_read(is);
-        return is;
+    friend gl_attr_force_inline std::istream& operator>>(std::istream& is, graph& g) {
+        return g._gsf_read(is);
     }
 
     // --- friend declarations ---
@@ -660,6 +662,8 @@ public:
     friend struct detail::to_impl;
 
 private:
+    using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
+
     graph(const graph& other)
     : _n_vertices{other._n_vertices}, _n_edges{other._n_edges}, _impl{other._impl} {
         // Deep copy vertex properties
@@ -679,11 +683,7 @@ private:
         }
     }
 
-    [[nodiscard]] static constexpr std::string _directed_type_str() {
-        return traits::c_directed_edge<edge_type> ? "directed" : "undirected";
-    }
-
-    // --- graph element verification methods ---
+    // --- element validation ---
 
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
@@ -701,7 +701,7 @@ private:
             ));
     }
 
-    // --- vertex methods ---
+    // --- vertex modifiers ---
 
     void _remove_vertex_impl(const id_type vertex_id) {
         const auto removed_edge_ids = this->_impl.remove_vertex(vertex_id);
@@ -718,61 +718,74 @@ private:
         }
     }
 
-    // --- io methods ---
+    // --- I/O utility ---
 
-    void _verbose_write(std::ostream& os) const {
-        os << std::format(
-            "type: {}\nnumber of vertices: {}\nnumber of edges: {}\nvertices:\n",
-            _directed_type_str(),
-            this->order(),
-            this->size()
-        );
+    struct concise_target_formatter {
+        edge_type edge;
+        id_type src_id;
+        bool with_props;
 
+        friend std::ostream& operator<<(std::ostream& os, const concise_target_formatter& proxy) {
+            os << proxy.edge.other(proxy.src_id);
+            if constexpr (traits::c_writable<edge_properties_type>)
+                if (proxy.with_props)
+                    os << '[' << proxy.edge.properties() << ']';
+
+            return os;
+        }
+    };
+
+    std::ostream& _verbose_write(std::ostream& os) const {
+        os << "type: " << fmt_traits::type << ", |V| = " << this->order()
+           << ", |E| = " << this->size() << '\n';
         for (const auto& vertex : this->vertices()) {
-            os << "- " << vertex << "\n  incident edges:\n";
+            os << "- " << vertex << "\n  " << fmt_traits::out_edges << ":\n";
             for (const auto& edge : this->out_edges(vertex.id()))
                 os << "\t- " << edge << '\n';
         }
+        return os;
     }
 
-    void _concise_write(std::ostream& os) const {
-        os << std::format("{} {} {}\n", _directed_type_str(), this->order(), this->size());
+    std::ostream& _concise_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
 
-        for (const auto& vertex : this->vertices()) {
-            os << "- " << vertex << " :";
-            for (const auto& edge : this->out_edges(vertex.id()))
-                os << ' ' << edge;
-            os << '\n';
+        for (const auto& src : this->vertices()) {
+            auto tgts = std::views::transform(
+                this->out_edges(src.id()),
+                [src_id = src.id(),
+                 with_props = io::is_option_set(os, with_connection_properties)](const auto& edge) {
+                    return concise_target_formatter{edge, src_id, with_props};
+                }
+            );
+            os << src << " : " << io::range_formatter(tgts) << '\n';
         }
+
+        return os;
     }
 
-    void _gsf_write(std::ostream& os) const {
-        const bool with_vertex_properties =
-            io::is_option_set(os, io::graph_option::with_vertex_properties);
-        const bool with_edge_properties =
-            io::is_option_set(os, io::graph_option::with_edge_properties);
+    std::ostream& _gsf_write(std::ostream& os) const {
+        using enum io::detail::option_bit;
 
-        // print graph size
-        os << std::format(
-            "{} {} {} {} {}\n",
-            static_cast<int>(traits::c_directed_edge<edge_type>),
-            this->order(),
-            this->size(),
-            static_cast<int>(with_vertex_properties),
-            static_cast<int>(with_edge_properties)
-        );
+        const bool with_v_props = io::is_option_set(os, with_vertex_properties);
+        const bool with_e_props = io::is_option_set(os, with_connection_properties);
 
-        if constexpr (traits::c_writable<typename vertex_type::properties_type>)
-            if (with_vertex_properties)
+        // print graph metadata
+        os << traits::c_directed_edge<edge_type> << ' ' << this->order() << ' ' << this->size()
+           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_e_props)
+           << '\n';
+
+        if constexpr (traits::c_writable<vertex_properties_type>)
+            if (with_v_props)
                 for (const auto& vertex : this->vertices())
                     os << vertex.properties() << '\n';
 
-        if constexpr (traits::c_writable<typename edge_type::properties_type>) {
-            if (with_edge_properties) {
+        if constexpr (traits::c_writable<edge_properties_type>) {
+            if (with_e_props) {
                 const auto print_out_edges = [this, &os](const id_type vertex_id) {
                     for (const auto& edge : this->out_edges(vertex_id)) {
-                        if (edge.source() != vertex_id)
-                            continue; // vertex is not the source
+                        if constexpr (std::same_as<directional_tag, undirected_t>)
+                            if (edge.other(vertex_id) > vertex_id)
+                                continue; // deduplicate edges
                         os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
                            << '\n';
                     }
@@ -781,33 +794,40 @@ private:
                 for (const auto vertex_id : this->vertex_ids())
                     print_out_edges(vertex_id);
 
-                return;
+                return os;
             }
         }
 
         const auto print_out_edges = [this, &os](const id_type vertex_id) {
             for (const auto& edge : this->out_edges(vertex_id)) {
-                if (edge.source() != vertex_id)
-                    continue; // vertex is not the source
+                if constexpr (std::same_as<directional_tag, undirected_t>)
+                    if (edge.other(vertex_id) > vertex_id)
+                        continue; // deduplicate edges
                 os << edge.source() << ' ' << edge.target() << '\n';
             }
         };
 
         for (const auto vertex_id : this->vertex_ids())
             print_out_edges(vertex_id);
+
+        return os;
     }
 
-    void _gsf_read(std::istream& is) {
-        bool directed;
-        is >> directed;
+    std::istream& _gsf_read(std::istream& is) {
+        using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
-        if (directed != traits::c_directed_edge<edge_type>)
+        int dir_discr;
+        is >> dir_discr;
+
+        if (dir_discr != fmt_traits::discriminator)
             throw std::ios_base::failure(std::format(
-                "Invalid graph specification: directional tag does not match - should be {}",
-                _directed_type_str()
+                "Invalid hypergraph specification: directional specifier {} does not match "
+                "expected {}",
+                dir_discr,
+                fmt_traits::discriminator
             ));
 
-        // read initial graph parameters
+        // read graph metadata
         id_type n_vertices, n_edges;
         is >> n_vertices >> n_edges;
 
@@ -861,6 +881,8 @@ private:
                 this->add_edge(source_id, target_id);
             }
         }
+
+        return is;
     }
 
     size_type _n_vertices = 0uz;

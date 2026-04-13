@@ -1,4 +1,4 @@
-#include "testing/gl/functional.hpp"
+#include "testing/common/functional.hpp"
 
 #include <gl/types/properties.hpp>
 
