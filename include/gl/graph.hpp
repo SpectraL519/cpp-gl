@@ -897,6 +897,56 @@ template <traits::c_graph Graph>
     return Graph(source);
 }
 
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_graph_impl_tag ImplTag = impl::list_t,
+    traits::c_id_type IdType = default_id_type>
+using directed_graph =
+    graph<directed_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
+
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_graph_impl_tag ImplTag = impl::list_t,
+    traits::c_id_type IdType = default_id_type>
+using undirected_graph =
+    graph<undirected_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
+
+template <
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using list_graph =
+    graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+
+template <
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using matrix_graph =
+    graph<matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+
+template <
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_list_graph =
+    graph<flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+
+template <
+    traits::c_graph_directional_tag DirectionalTag = directed_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties EdgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_matrix_graph =
+    graph<flat_matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+
+// --- vertex distance utility ---
+
 using default_vertex_distance_type = std::int64_t;
 
 template <traits::c_graph GraphType>
