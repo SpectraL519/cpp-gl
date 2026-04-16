@@ -121,7 +121,7 @@ public:
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
-    gl_attr_force_inline void remove_edge(const edge_type& edge) {
+    void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
         for (auto&& inc : this->_list)
             for (auto& item : inc)
@@ -268,21 +268,6 @@ public:
                        *edge_properties_map[to_idx(item.edge_id)]
                    };
                });
-    }
-
-    // --- access operators ---
-
-    [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id) const
-    requires(traits::c_has_empty_properties<edge_type>)
-    {
-        return this->out_edges(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id, const auto& edge_properties_map)
-        const
-    requires(traits::c_has_non_empty_properties<edge_type>)
-    {
-        return this->out_edges(vertex_id, edge_properties_map);
     }
 
     // --- comparison ---

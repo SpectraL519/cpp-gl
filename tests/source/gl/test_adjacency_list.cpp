@@ -459,14 +459,6 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         CHECK(std::ranges::contains(out_edges, edge1));
         CHECK(std::ranges::contains(out_edges, edge2));
     }
-
-    // --- access operators ---
-
-    SUBCASE("at should return the incident edges of a vertex") {
-        init_complete_graph();
-        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
-            CHECK(std::ranges::equal(sut.at(vertex_id), sut.out_edges(vertex_id)));
-    }
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -790,14 +782,6 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         CHECK(std::ranges::equal(sut.incident_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.in_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.out_edges(constants::v1_id), expected_edges));
-    }
-
-    // --- access operators ---
-
-    SUBCASE("at should return the incident edges of a vertex") {
-        init_complete_graph();
-        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
-            CHECK(std::ranges::equal(sut.at(vertex_id), sut.incident_edges(vertex_id)));
     }
 }
 

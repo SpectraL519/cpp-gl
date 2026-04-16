@@ -123,7 +123,7 @@ public:
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
-    gl_attr_force_inline void remove_edge(const edge_type& edge) {
+    void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
         for (auto&& row : this->_matrix)
             for (auto& edge_id : row)
@@ -276,38 +276,6 @@ public:
                        static_cast<id_type>(target_id),
                        *edge_properties_map[to_idx(edge_id)]
                    };
-               });
-    }
-
-    // --- access operators ---
-
-    [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id) const
-    requires(traits::c_has_empty_properties<edge_type>)
-    {
-        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
-             | std::views::transform([vertex_id](const auto& edge_info) {
-                   const auto& [target_id, edge_id] = edge_info;
-                   return edge_id == invalid_id
-                            ? edge_type::invalid()
-                            : edge_type{edge_id, vertex_id, static_cast<id_type>(target_id)};
-               });
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto at(id_type vertex_id, const auto& edge_properties_map)
-        const
-    requires(traits::c_has_non_empty_properties<edge_type>)
-    {
-        return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
-             | std::views::transform([vertex_id, &edge_properties_map](const auto& edge_info) {
-                   const auto& [target_id, edge_id] = edge_info;
-                   return edge_id == invalid_id
-                            ? edge_type::invalid()
-                            : edge_type{
-                                  edge_id,
-                                  vertex_id,
-                                  static_cast<id_type>(target_id),
-                                  *edge_properties_map[to_idx(edge_id)]
-                              };
                });
     }
 

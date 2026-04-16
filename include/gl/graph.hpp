@@ -392,7 +392,7 @@ public:
         );
     }
 
-    gl_attr_force_inline void add_edges_from(
+    void add_edges_from(
         const vertex_type& source, const traits::c_sized_range_of<vertex_type> auto& target_rng
     ) {
         this->_verify_vertex_id(source.id());
@@ -473,9 +473,7 @@ public:
         return this->out_edges(vertex.id());
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_edge(
-        const id_type source_id, const id_type target_id
-    ) const {
+    [[nodiscard]] bool has_edge(const id_type source_id, const id_type target_id) const {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
         return this->_impl.has_edge(source_id, target_id);
@@ -491,7 +489,7 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
+    [[nodiscard]] std::optional<edge_type> get_edge(
         const id_type source_id, const id_type target_id
     ) const {
         this->_verify_vertex_id(source_id);
@@ -595,20 +593,6 @@ public:
             throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
 
         return *this->_edge_properties[id];
-    }
-
-    // --- access operators ---
-
-    [[nodiscard]] inline auto at(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.at(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.at(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto at(const vertex_type& vertex) const {
-        return this->at(vertex.id());
     }
 
     // --- comparison ---
