@@ -1,9 +1,8 @@
+#include "doctest.h"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/types.hpp"
 
 #include <gl/edge_descriptor.hpp>
-
-#include <doctest.h>
 
 namespace gl_testing {
 

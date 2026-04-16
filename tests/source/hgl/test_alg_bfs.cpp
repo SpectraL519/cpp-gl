@@ -1,9 +1,9 @@
 #include "doctest.h"
-#include "hgl/algorithm/util.hpp"
 #include "testing/common/io.hpp"
 #include "testing/hgl/constants.hpp"
 
 #include <hgl/algorithm/traversal/breadth_first_search.hpp>
+#include <hgl/algorithm/util.hpp>
 #include <hgl/constants.hpp>
 
 #include <algorithm>

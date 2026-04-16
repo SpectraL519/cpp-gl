@@ -1,9 +1,9 @@
-#include "hgl/types.hpp"
+#include "doctest.h"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
-#include <doctest.h>
 #include <hgl/hypergraph_elements.hpp>
+#include <hgl/types.hpp>
 
 namespace hgl_testing {
 

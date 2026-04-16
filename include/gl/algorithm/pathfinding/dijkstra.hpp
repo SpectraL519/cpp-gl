@@ -31,7 +31,7 @@ using paths_descriptor_type = paths_descriptor<G, vertex_distance_type<G>>;
 
 template <traits::c_graph G>
 [[nodiscard]] gl_attr_force_inline paths_descriptor_type<G> make_paths_descriptor(const G& graph) {
-    return paths_descriptor_type<G>{graph.order()};
+    return paths_descriptor_type<G>{graph.n_vertices()};
 }
 
 template <

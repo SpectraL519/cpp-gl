@@ -20,7 +20,7 @@ template <
 ) {
     using edge_type = typename G::edge_type;
 
-    bicoloring_type coloring(graph.order(), binary_color::value::unset);
+    bicoloring_type coloring(graph.n_vertices(), binary_color::value::unset);
     for (const auto root_id : graph.vertex_ids()) {
         if (coloring[root_id].is_set())
             continue;
@@ -71,7 +71,7 @@ template <
 template <traits::c_graph G, traits::c_sized_range_of<binary_color> ColorRange>
 requires(traits::c_binary_color_properties_type<typename G::vertex_properties_type>)
 bool apply_coloring(G& graph, const ColorRange& color_range) {
-    if (std::ranges::size(color_range) != graph.order())
+    if (std::ranges::size(color_range) != graph.n_vertices())
         return false;
 
     auto vertices = graph.vertices(); // store the view to extend its lifetime

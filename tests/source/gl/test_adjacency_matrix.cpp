@@ -1,3 +1,4 @@
+#include "doctest.h"
 #include "gl/types/core.hpp"
 #include "testing/common/functional.hpp"
 #include "testing/gl/constants.hpp"
@@ -5,8 +6,6 @@
 #include <gl/graph_traits.hpp>
 #include <gl/impl/adjacency_matrix.hpp>
 #include <gl/util/ranges.hpp>
-
-#include <doctest.h>
 
 #include <algorithm>
 #include <functional>
@@ -429,19 +428,19 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
         CHECK_FALSE(sut.has_edge(not_present_edge));
     }
 
-    SUBCASE("get_edge(id, id) should return nullopt if there is no edge connecting the given "
+    SUBCASE("edge(id, id) should return nullopt if there is no edge connecting the given "
             "vertices") {
-        CHECK_FALSE(sut.get_edge(constants::v1_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v1_id, constants::v2_id));
     }
 
-    SUBCASE("get_edge(id, id) should return a valid edge if the given vertices are connected") {
+    SUBCASE("edge(id, id) should return a valid edge if the given vertices are connected") {
         const auto edge_1 = add_edge(constants::v1_id, constants::v2_id);
 
-        const auto edge_opt = sut.get_edge(constants::v1_id, constants::v2_id);
+        const auto edge_opt = sut.edge(constants::v1_id, constants::v2_id);
         REQUIRE(edge_opt.has_value());
         CHECK_EQ(*edge_opt, edge_1);
 
-        CHECK_FALSE(sut.get_edge(constants::v2_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v2_id, constants::v2_id));
     }
 
     SUBCASE("incident_edges should return edges incident with the vertex") {
@@ -476,23 +475,6 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency matrix tests", SutType, directed_a
         REQUIRE_EQ(out_edges.size(), 2uz);
         CHECK(std::ranges::contains(out_edges, edge1));
         CHECK(std::ranges::contains(out_edges, edge2));
-    }
-
-    // --- access operators ---
-
-    SUBCASE("at should return a view equivalent to the matrix row of the given vertex") {
-        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements)) {
-            const auto target_id =
-                static_cast<gl::default_id_type>((vertex_id + 1u) % constants::n_elements);
-            const auto edge = add_edge(vertex_id, target_id);
-            auto row_view = sut.at(vertex_id);
-
-            REQUIRE_EQ(std::ranges::count_if(row_view, &edge_type::is_valid), 1uz);
-
-            const auto edge_it = std::ranges::find_if(row_view, &edge_type::is_valid);
-            REQUIRE_NE(edge_it, row_view.end());
-            REQUIRE_EQ(*edge_it, edge);
-        }
     }
 }
 
@@ -778,19 +760,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_FALSE(sut.has_edge(not_present_edge));
     }
 
-    SUBCASE("get_edge(id, id) should return nullopt if there is no edge connecting the given "
+    SUBCASE("edge(id, id) should return nullopt if there is no edge connecting the given "
             "vertices") {
-        CHECK_FALSE(sut.get_edge(constants::v1_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v1_id, constants::v2_id));
     }
 
-    SUBCASE("get_edge(id, id) should return a valid edge if the given vertices are connected") {
+    SUBCASE("edge(id, id) should return a valid edge if the given vertices are connected") {
         const auto edge_1 = add_edge(constants::v1_id, constants::v2_id);
 
-        const auto edge_opt_1 = sut.get_edge(constants::v1_id, constants::v2_id);
+        const auto edge_opt_1 = sut.edge(constants::v1_id, constants::v2_id);
         REQUIRE(edge_opt_1.has_value());
         CHECK_EQ(*edge_opt_1, edge_1);
 
-        const auto edge_opt_2 = sut.get_edge(constants::v2_id, constants::v1_id);
+        const auto edge_opt_2 = sut.edge(constants::v2_id, constants::v1_id);
         REQUIRE(edge_opt_2.has_value());
         CHECK_EQ(*edge_opt_2, edge_1);
     }
@@ -813,29 +795,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK(std::ranges::equal(sut.incident_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.in_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.out_edges(constants::v1_id), expected_edges));
-    }
-
-    // --- access operators ---
-
-    SUBCASE("at should return a view equivalent to the matrix row of the given vertex") {
-        const auto edge1 = add_edge(constants::v1_id, constants::v2_id);
-        const auto edge2 = add_edge(constants::v2_id, constants::v3_id);
-        const auto edge3 = add_edge(constants::v3_id, constants::v1_id);
-
-        auto v1_row_view = sut.at(constants::v1_id);
-        REQUIRE_EQ(std::ranges::count_if(v1_row_view, &edge_type::is_valid), 2uz);
-        CHECK_EQ(v1_row_view[constants::v2_id], edge1);
-        CHECK_EQ(v1_row_view[constants::v3_id], edge3);
-
-        auto v2_row_view = sut.at(constants::v2_id);
-        REQUIRE_EQ(std::ranges::count_if(v2_row_view, &edge_type::is_valid), 2uz);
-        CHECK_EQ(v2_row_view[constants::v1_id], edge1);
-        CHECK_EQ(v2_row_view[constants::v3_id], edge2);
-
-        auto v3_row_view = sut.at(constants::v3_id);
-        REQUIRE_EQ(std::ranges::count_if(v3_row_view, &edge_type::is_valid), 2uz);
-        CHECK_EQ(v3_row_view[constants::v1_id], edge3);
-        CHECK_EQ(v3_row_view[constants::v2_id], edge2);
     }
 }
 

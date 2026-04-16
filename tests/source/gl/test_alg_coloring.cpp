@@ -1,11 +1,10 @@
+#include "doctest.h"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
 #include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
 
 namespace gl_testing {
 
@@ -83,7 +82,8 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
             fs::path coloring_file_path = data_path / "bicoloring_bipartite_graph_coloring.txt";
 
-            const auto coloring_values = load_list<std::uint16_t>(sut.order(), coloring_file_path);
+            const auto coloring_values =
+                load_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
 
             std::transform(
                 coloring_values.begin(),

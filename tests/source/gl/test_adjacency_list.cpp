@@ -1,10 +1,9 @@
+#include "doctest.h"
 #include "testing/common/functional.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/graph_traits.hpp>
 #include <gl/impl/adjacency_list.hpp>
-
-#include <doctest.h>
 
 #include <algorithm>
 #include <functional>
@@ -388,42 +387,39 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         CHECK_FALSE(sut.has_edge(not_present_edge));
     }
 
-    SUBCASE("get_edge(id, id) should return nullopt if there is no edge connecting the given "
+    SUBCASE("edge(id, id) should return nullopt if there is no edge connecting the given "
             "vertices") {
-        CHECK_FALSE(sut.get_edge(constants::v1_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v1_id, constants::v2_id));
     }
 
-    SUBCASE("get_edge(id, id) should return the first valid edge if the given vertices are "
+    SUBCASE("edge(id, id) should return the first valid edge if the given vertices are "
             "connected") {
         const auto& edge_1 = add_edge(constants::v1_id, constants::v2_id);
         const auto& edge_2 = add_edge(constants::v1_id, constants::v2_id);
 
-        const auto edge_opt = sut.get_edge(constants::v1_id, constants::v2_id);
+        const auto edge_opt = sut.edge(constants::v1_id, constants::v2_id);
         REQUIRE(edge_opt.has_value());
         CHECK_EQ(*edge_opt, edge_1);
         CHECK_NE(*edge_opt, edge_2);
 
-        CHECK_FALSE(sut.get_edge(constants::v2_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v2_id, constants::v2_id));
     }
 
-    SUBCASE("get_edges(id, id) should return an empty if there is no edge connecting the given "
+    SUBCASE("edges(id, id) should return an empty if there is no edge connecting the given "
             "vertices") {
-        CHECK(sut.get_edges(constants::v1_id, constants::v2_id).empty());
+        CHECK(sut.edges(constants::v1_id, constants::v2_id).empty());
     }
 
-    SUBCASE("get_edges(id, id) should return a valid edge view if the given vertices are connected"
-    ) {
+    SUBCASE("edges(id, id) should return a valid edge view if the given vertices are connected") {
         std::vector<edge_type> expected_edges;
         for (auto _ = 0uz; _ < constants::n_elements; _++)
             expected_edges.push_back(add_edge(constants::v1_id, constants::v2_id));
 
         CHECK(std::ranges::equal(
-            sut.get_edges(constants::v1_id, constants::v2_id),
-            expected_edges,
-            std::ranges::equal_to{}
+            sut.edges(constants::v1_id, constants::v2_id), expected_edges, std::ranges::equal_to{}
         ));
 
-        CHECK(sut.get_edges(constants::v2_id, constants::v2_id).empty());
+        CHECK(sut.edges(constants::v2_id, constants::v2_id).empty());
     }
 
     SUBCASE("incident_edges should return edges incident with the vertex") {
@@ -458,14 +454,6 @@ TEST_CASE_TEMPLATE_DEFINE("directed adjacency list tests", SutType, directed_adj
         REQUIRE_EQ(out_edges.size(), 2uz);
         CHECK(std::ranges::contains(out_edges, edge1));
         CHECK(std::ranges::contains(out_edges, edge2));
-    }
-
-    // --- access operators ---
-
-    SUBCASE("at should return the incident edges of a vertex") {
-        init_complete_graph();
-        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
-            CHECK(std::ranges::equal(sut.at(vertex_id), sut.out_edges(vertex_id)));
     }
 }
 
@@ -737,48 +725,43 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         CHECK_FALSE(sut.has_edge(not_present_edge));
     }
 
-    SUBCASE("get_edge(id, id) should return nullopt if there is no edge connecting the given "
+    SUBCASE("edge(id, id) should return nullopt if there is no edge connecting the given "
             "vertices") {
-        CHECK_FALSE(sut.get_edge(constants::v1_id, constants::v2_id));
+        CHECK_FALSE(sut.edge(constants::v1_id, constants::v2_id));
     }
 
-    SUBCASE("get_edge(id, id) should return the first valid edge if the given vertices are "
+    SUBCASE("edge(id, id) should return the first valid edge if the given vertices are "
             "connected") {
         const auto edge_1 = add_edge(constants::v1_id, constants::v2_id);
         const auto edge_2 = add_edge(constants::v1_id, constants::v2_id);
 
-        const auto edge_opt_1 = sut.get_edge(constants::v1_id, constants::v2_id);
+        const auto edge_opt_1 = sut.edge(constants::v1_id, constants::v2_id);
         REQUIRE(edge_opt_1.has_value());
         CHECK_EQ(*edge_opt_1, edge_1);
         CHECK_NE(*edge_opt_1, edge_2);
 
-        const auto edge_opt_2 = sut.get_edge(constants::v2_id, constants::v1_id);
+        const auto edge_opt_2 = sut.edge(constants::v2_id, constants::v1_id);
         REQUIRE(edge_opt_2.has_value());
         CHECK_EQ(*edge_opt_2, edge_1);
         CHECK_NE(*edge_opt_2, edge_2);
     }
 
-    SUBCASE("get_edges(id, id) should return an empty if there is no edge connecting the given "
+    SUBCASE("edges(id, id) should return an empty if there is no edge connecting the given "
             "vertices") {
-        CHECK(sut.get_edges(constants::v1_id, constants::v2_id).empty());
+        CHECK(sut.edges(constants::v1_id, constants::v2_id).empty());
     }
 
-    SUBCASE("get_edges(id, id) should return a valid edge view if the given vertices are connected"
-    ) {
+    SUBCASE("edges(id, id) should return a valid edge view if the given vertices are connected") {
         std::vector<edge_type> expected_edges;
         for (auto _ = 0uz; _ < constants::n_elements; _++)
             expected_edges.push_back(add_edge(constants::v1_id, constants::v2_id));
 
         CHECK(std::ranges::equal(
-            sut.get_edges(constants::v1_id, constants::v2_id),
-            expected_edges,
-            std::ranges::equal_to{}
+            sut.edges(constants::v1_id, constants::v2_id), expected_edges, std::ranges::equal_to{}
         ));
 
         CHECK(std::ranges::equal(
-            sut.get_edges(constants::v2_id, constants::v1_id),
-            expected_edges,
-            std::ranges::equal_to{}
+            sut.edges(constants::v2_id, constants::v1_id), expected_edges, std::ranges::equal_to{}
         ));
     }
 
@@ -790,14 +773,6 @@ TEST_CASE_TEMPLATE_DEFINE("undirected adjacency list tests", SutType, undirected
         CHECK(std::ranges::equal(sut.incident_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.in_edges(constants::v1_id), expected_edges));
         CHECK(std::ranges::equal(sut.out_edges(constants::v1_id), expected_edges));
-    }
-
-    // --- access operators ---
-
-    SUBCASE("at should return the incident edges of a vertex") {
-        init_complete_graph();
-        for (const auto vertex_id : std::views::iota(constants::v1_id, constants::n_elements))
-            CHECK(std::ranges::equal(sut.at(vertex_id), sut.incident_edges(vertex_id)));
     }
 }
 

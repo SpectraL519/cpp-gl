@@ -1,10 +1,9 @@
+#include "doctest.h"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
 
 namespace gl_testing {
 
@@ -181,7 +180,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         gl::algorithm::breadth_first_search<gl::algorithm::ret, graph_type>(graph);
 
     // verify the predecessors of each vertex
-    REQUIRE_EQ(pred_map.size(), graph.order());
+    REQUIRE_EQ(pred_map.size(), graph.n_vertices());
     CHECK(std::ranges::all_of(graph.vertex_ids(), has_correct_bin_predecessor(pred_map)));
 }
 

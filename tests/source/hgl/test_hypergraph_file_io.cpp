@@ -81,8 +81,7 @@ TEST_CASE_TEMPLATE_DEFINE("hypergraph file io tests", SutType, hypergraph_file_i
 
     SUBCASE("load should throw if a file does not exist") {
         GL_REQUIRE_THROWS_FS_ERROR(
-            discard_result(hgl::io::load<SutType>(fixture.path)),
-            std::errc::no_such_file_or_directory
+            discard(hgl::io::load<SutType>(fixture.path)), std::errc::no_such_file_or_directory
         );
     }
 

@@ -65,7 +65,7 @@ public:
     }
 
     constexpr auto begin() const
-    requires std::ranges::range<const V1> && std::ranges::range<const V2>
+    requires std::ranges::range<const V1> and std::ranges::range<const V2>
     {
         return iterator<true>(
             std::ranges::begin(this->_v1),
@@ -79,7 +79,7 @@ public:
     }
 
     constexpr auto end() const
-    requires std::ranges::range<const V1> && std::ranges::range<const V2>
+    requires std::ranges::range<const V1> and std::ranges::range<const V2>
     {
         return sentinel<true>(std::ranges::end(this->_v2));
     }
@@ -137,11 +137,11 @@ private:
         }
 
         constexpr bool operator==(const iterator& other) const {
-            return this->_it1 == other._it1 && this->_it2 == other._it2;
+            return this->_it1 == other._it1 and this->_it2 == other._it2;
         }
 
         constexpr bool operator==(const sentinel<Const>& s) const {
-            return this->_it1 == this->_end1 && this->_it2 == s.end2();
+            return this->_it1 == this->_end1 and this->_it2 == s.end2();
         }
 
     private:
