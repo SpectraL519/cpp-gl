@@ -1,12 +1,13 @@
-#include "gl/directional_tags.hpp"
-#include "gl/graph_traits.hpp"
-#include "hgl/conversion.hpp"
-#include "hgl/hypergraph.hpp"
-#include "hgl/hypergraph_traits.hpp"
-#include "hgl/impl/layout_tags.hpp"
-#include "hgl/types.hpp"
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/directional_tags.hpp>
+#include <gl/graph_traits.hpp>
+
+#include <hgl/conversion.hpp>
+#include <hgl/hypergraph.hpp>
+#include <hgl/hypergraph_traits.hpp>
+#include <hgl/impl/layout_tags.hpp>
+#include <hgl/types.hpp>
 
 #include <algorithm>
 #include <concepts>

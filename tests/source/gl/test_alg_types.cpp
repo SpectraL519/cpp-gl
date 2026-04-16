@@ -1,10 +1,9 @@
+#include "doctest.h"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm/core.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
 
 using gl::algorithm::decision;
 

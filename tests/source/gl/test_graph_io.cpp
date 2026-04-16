@@ -1,10 +1,10 @@
 #include "doctest.h"
-#include "gl/io/options.hpp"
-#include "gl/io/options_manip.hpp"
 #include "testing/gl/io.hpp"
 
 #include <gl/graph.hpp>
 #include <gl/io.hpp>
+#include <gl/io/options.hpp>
+#include <gl/io/options_manip.hpp>
 #include <gl/topology.hpp>
 
 #include <sstream>

@@ -1,6 +1,6 @@
+#include "doctest.h"
 #include "testing/hgl/constants.hpp"
 
-#include <doctest.h>
 #include <hgl/directional_tags.hpp>
 #include <hgl/impl/flat_incidence_list.hpp>
 #include <hgl/impl/impl_tags.hpp>

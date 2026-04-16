@@ -1,14 +1,13 @@
-#include "gl/constants.hpp"
-#include "gl/types/core.hpp"
+#include "doctest.h"
 #include "testing/common/functional.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
+#include <gl/constants.hpp>
 #include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
+#include <gl/types/core.hpp>
 
 #include <cmath>
 

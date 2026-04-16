@@ -1,11 +1,10 @@
+#include "doctest.h"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
 #include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
 
 namespace gl_testing {
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <gl/graph.hpp>
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/graph.hpp>
 
 namespace gl_testing {
 

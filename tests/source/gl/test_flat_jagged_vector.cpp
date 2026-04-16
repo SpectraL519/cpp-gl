@@ -1,7 +1,7 @@
 #include "doctest.h"
-#include "gl/types/core.hpp"
 
 #include <gl/attributes/diagnostics.hpp>
+#include <gl/types/core.hpp>
 #include <gl/types/flat_jagged_vector.hpp>
 
 #include <algorithm>

@@ -1,8 +1,7 @@
+#include "doctest.h"
 #include "testing/gl/constants.hpp"
 
 #include <gl/topology.hpp>
-
-#include <doctest.h>
 
 #include <cstddef>
 

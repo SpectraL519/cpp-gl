@@ -1,8 +1,7 @@
+#include "doctest.h"
 #include "testing/common/functional.hpp"
 
 #include <gl/types/properties.hpp>
-
-#include <doctest.h>
 
 #include <algorithm>
 #include <sstream>

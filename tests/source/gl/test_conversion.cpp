@@ -1,10 +1,10 @@
-#include "gl/conversion.hpp"
-#include "gl/directional_tags.hpp"
-#include "gl/graph.hpp"
-#include "gl/impl/impl_tags.hpp"
+#include "doctest.h"
 #include "testing/gl/types.hpp"
 
-#include <doctest.h>
+#include <gl/conversion.hpp>
+#include <gl/directional_tags.hpp>
+#include <gl/graph.hpp>
+#include <gl/impl/impl_tags.hpp>
 
 #include <algorithm>
 #include <concepts>
