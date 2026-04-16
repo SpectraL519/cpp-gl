@@ -64,20 +64,16 @@ TEST_CASE("accessing properties should throw for an invalid vertex") {
     visited_property property{constants::visited};
 
     // .properties()
-    CHECK_THROWS_AS(discard_result(sut_type::invalid().properties()), std::logic_error);
-    CHECK_THROWS_AS(
-        discard_result(sut_type{gl::invalid_id, property}.properties()), std::logic_error
-    );
+    CHECK_THROWS_AS(discard(sut_type::invalid().properties()), std::logic_error);
+    CHECK_THROWS_AS(discard(sut_type{gl::invalid_id, property}.properties()), std::logic_error);
 
     // operator*
-    CHECK_THROWS_AS(discard_result(*sut_type::invalid()), std::logic_error);
-    CHECK_THROWS_AS(discard_result(*sut_type{gl::invalid_id, property}), std::logic_error);
+    CHECK_THROWS_AS(discard(*sut_type::invalid()), std::logic_error);
+    CHECK_THROWS_AS(discard(*sut_type{gl::invalid_id, property}), std::logic_error);
 
     // operator->
-    CHECK_THROWS_AS(discard_result(sut_type::invalid().operator->()), std::logic_error);
-    CHECK_THROWS_AS(
-        discard_result(sut_type{gl::invalid_id, property}.operator->()), std::logic_error
-    );
+    CHECK_THROWS_AS(discard(sut_type::invalid().operator->()), std::logic_error);
+    CHECK_THROWS_AS(discard(sut_type{gl::invalid_id, property}.operator->()), std::logic_error);
 }
 
 TEST_SUITE_END(); // test_vertex_descriptor

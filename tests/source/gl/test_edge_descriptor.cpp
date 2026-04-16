@@ -95,22 +95,22 @@ TEST_CASE_TEMPLATE_DEFINE(
         const EdgeType invalid_v2_edge{fixture.id1, fixture.v1, gl::invalid_id, property};
 
         // .properties()
-        CHECK_THROWS_AS(discard_result(invalid_edge.properties()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_id_edge.properties()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_v1_edge.properties()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_v2_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_id_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v1_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v2_edge.properties()), std::logic_error);
 
         // operator*
-        CHECK_THROWS_AS(discard_result(*invalid_edge), std::logic_error);
-        CHECK_THROWS_AS(discard_result(*invalid_id_edge), std::logic_error);
-        CHECK_THROWS_AS(discard_result(*invalid_v1_edge), std::logic_error);
-        CHECK_THROWS_AS(discard_result(*invalid_v2_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_id_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_v1_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_v2_edge), std::logic_error);
 
         // operator->
-        CHECK_THROWS_AS(discard_result(invalid_edge.operator->()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_id_edge.operator->()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_v1_edge.operator->()), std::logic_error);
-        CHECK_THROWS_AS(discard_result(invalid_v2_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_id_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v1_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v2_edge.operator->()), std::logic_error);
     }
 }
 
@@ -156,7 +156,7 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
     }
 
     SUBCASE("other should throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(discard_result(sut.other(fixture.v3)), std::invalid_argument);
+        CHECK_THROWS_AS(discard(sut.other(fixture.v3)), std::invalid_argument);
     }
 
     SUBCASE("other should return the vertex adjacent with the input vertex") {

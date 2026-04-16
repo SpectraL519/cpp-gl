@@ -69,8 +69,7 @@ TEST_CASE_TEMPLATE_DEFINE("graph file io tests", SutType, graph_file_io_template
 
     SUBCASE("load should throw if a file does not exist") {
         GL_REQUIRE_THROWS_FS_ERROR(
-            discard_result(gl::io::load<SutType>(fixture.path)),
-            std::errc::no_such_file_or_directory
+            discard(gl::io::load<SutType>(fixture.path)), std::errc::no_such_file_or_directory
         );
     }
 
