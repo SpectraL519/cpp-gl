@@ -77,7 +77,7 @@ struct directed_adjacency_list {
                 continue;
 
             const auto removed_subrng =
-                std::ranges::remove_if(inc_edges, [vertex_id, &removed_edges](const auto& item) {
+                std::ranges::remove_if(inc_edges, [vertex_id, &removed_edges](auto item) {
                     if (item.vertex_id == vertex_id) {
                         removed_edges.push_back(item.edge_id);
                         return true;
@@ -137,7 +137,7 @@ struct directed_adjacency_list {
 
         for (auto idx = 0uz; idx < self._list.size(); ++idx) {
             degree_map[idx] += self._list[idx].size();
-            std::ranges::for_each(self._list[idx], [&degree_map](const auto& item) {
+            std::ranges::for_each(self._list[idx], [&degree_map](auto item) {
                 ++degree_map[to_idx(item.vertex_id)];
             });
         }
@@ -149,7 +149,7 @@ struct directed_adjacency_list {
         std::vector<size_type> in_degree_map(self._list.size(), 0uz);
 
         for (const auto& inc_edges : self._list)
-            for (const auto& item : inc_edges)
+            for (auto item : inc_edges)
                 ++in_degree_map[to_idx(item.vertex_id)];
 
         return in_degree_map;
@@ -210,11 +210,10 @@ struct directed_adjacency_list {
         std::vector<item_type> in_edges;
         for (id_type src_id = initial_id; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
-                self._list[to_idx(src_id)]
-                | std::views::filter([tgt_id = vertex_id](const auto& item) {
-                      return item.vertex_id == tgt_id;
-                  })
-                | std::views::transform([src_id](const auto& item) {
+                self._list[to_idx(src_id)] | std::views::filter([tgt_id = vertex_id](auto item) {
+                    return item.vertex_id == tgt_id;
+                })
+                | std::views::transform([src_id](auto item) {
                       return incidence_item{src_id, item.edge_id};
                   });
             in_edges.insert(in_edges.end(), in_edges_view.begin(), in_edges_view.end());
@@ -237,14 +236,14 @@ struct undirected_adjacency_list {
         const auto vertex_idx = to_idx(vertex_id);
 
         // remove all edges incident with the vertex (scan only the selected vertices)
-        for (const auto& item : self._list[vertex_idx]) {
+        for (auto item : self._list[vertex_idx]) {
             if (item.vertex_id == vertex_id)
                 continue; // will be removed with the vertex's list
 
             auto& inc_edges = self._list[to_idx(item.vertex_id)];
-            const auto removed_subrng = std::ranges::remove_if(
-                inc_edges, [vertex_id](const auto& item) { return item.vertex_id == vertex_id; }
-            );
+            const auto removed_subrng = std::ranges::remove_if(inc_edges, [vertex_id](auto item) {
+                return item.vertex_id == vertex_id;
+            });
             inc_edges.erase(removed_subrng.begin(), removed_subrng.end());
         }
 
@@ -280,7 +279,7 @@ struct undirected_adjacency_list {
 
     [[nodiscard]] static size_type degree(const impl_type& self, id_type vertex_id) {
         size_type degree = 0uz;
-        for (const auto& item : self._list[to_idx(vertex_id)])
+        for (auto item : self._list[to_idx(vertex_id)])
             degree += 1uz + static_cast<size_type>(item.vertex_id == vertex_id);
         return degree;
     }

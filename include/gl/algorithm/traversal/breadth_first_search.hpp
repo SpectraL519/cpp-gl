@@ -22,8 +22,8 @@ return_type<Result, predecessors_map<G>> breadth_first_search(
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
-    std::vector<bool> visited(graph.order(), false);
-    std::vector<typename G::id_type> sources(graph.order());
+    std::vector<bool> visited(graph.n_vertices(), false);
+    std::vector<typename G::id_type> sources(graph.n_vertices());
 
     auto pred_map = init_predecessors_map<Result>(graph);
 

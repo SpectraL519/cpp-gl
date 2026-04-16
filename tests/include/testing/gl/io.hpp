@@ -1,15 +1,15 @@
 #pragma once
 
-#include <gl/graph.hpp>
+#include "doctest.h"
 
-#include <doctest.h>
+#include <gl/graph.hpp>
 
 namespace gl_testing {
 
 template <gl::traits::c_graph GraphType>
 void verify_graph_structure(const GraphType& actual, const GraphType& expected) {
-    REQUIRE_EQ(actual.order(), expected.order());
-    REQUIRE_EQ(actual.size(), expected.size());
+    REQUIRE_EQ(actual.n_vertices(), expected.n_vertices());
+    REQUIRE_EQ(actual.n_edges(), expected.n_edges());
 
     // verify that the edges of the in graph are equivalent to the edges of the out graph
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
@@ -36,8 +36,7 @@ template <gl::traits::c_graph GraphType>
 void verify_edge_properties(const GraphType& actual, const GraphType& expected) {
     CHECK(std::ranges::all_of(actual.vertices(), [&](const auto& v_actual) {
         return std::ranges::all_of(actual.out_edges(v_actual), [&](const auto& edge) {
-            return edge.properties()
-                == expected.get_edge(edge.source(), edge.target())->properties();
+            return edge.properties() == expected.edge(edge.source(), edge.target())->properties();
         });
     }));
 }

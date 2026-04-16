@@ -1,10 +1,10 @@
-#include "gl/conversion.hpp"
-#include "gl/directional_tags.hpp"
-#include "gl/graph.hpp"
-#include "gl/impl/impl_tags.hpp"
+#include "doctest.h"
 #include "testing/gl/types.hpp"
 
-#include <doctest.h>
+#include <gl/conversion.hpp>
+#include <gl/directional_tags.hpp>
+#include <gl/graph.hpp>
+#include <gl/impl/impl_tags.hpp>
 
 #include <algorithm>
 #include <concepts>
@@ -38,7 +38,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : graph.vertex_ids())
-                graph.get_vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
+                graph.vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::edge_properties_type,
@@ -48,8 +48,8 @@ struct test_conversion {
     }
 
     void validate_graph(const gl::traits::c_graph auto& graph) {
-        REQUIRE_EQ(graph.order(), this->test_order);
-        REQUIRE_EQ(graph.size(), this->test_edges.size());
+        REQUIRE_EQ(graph.n_vertices(), this->test_order);
+        REQUIRE_EQ(graph.n_edges(), this->test_edges.size());
         for (const auto& [source, target] : this->test_edges)
             CHECK(graph.has_edge(source, target));
 
@@ -61,7 +61,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : graph.vertex_ids())
-                CHECK_EQ(graph.get_vertex_properties(vid), "vertex_" + std::to_string(vid));
+                CHECK_EQ(graph.vertex_properties(vid), "vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::edge_properties_type,

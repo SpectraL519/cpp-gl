@@ -27,8 +27,8 @@ void bm_gl_is_bipartite(benchmark::State& state) {
         benchmark::DoNotOptimize(is_bip);
     }
 
-    state.counters["Vertices"] = static_cast<double>(graph.order());
-    state.counters["Edges"] = static_cast<double>(graph.size());
+    state.counters["Vertices"] = static_cast<double>(graph.n_vertices());
+    state.counters["Edges"] = static_cast<double>(graph.n_edges());
 }
 
 #ifdef GL_BENCH_INCLUDE_BGL

@@ -54,7 +54,7 @@ template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag Sourc
 struct to_impl {
     template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
-        target._impl.add_vertices(source.order());
+        target._impl.add_vertices(source.n_vertices());
 
         for (const auto u : source.vertex_ids()) {
             for (const auto& edge : source.out_edges(u)) {

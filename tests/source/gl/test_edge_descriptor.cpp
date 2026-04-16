@@ -1,10 +1,9 @@
+#include "doctest.h"
 #include "testing/common/functional.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/types.hpp"
 
 #include <gl/edge_descriptor.hpp>
-
-#include <doctest.h>
 
 namespace gl_testing {
 
@@ -70,30 +69,47 @@ TEST_CASE_TEMPLATE_DEFINE(
     "properties accessing tests", EdgeType, properties_directional_tag_template
 ) {
     test_edge_descriptor fixture;
-    used_property used{true};
+    used_property property{true};
 
     SUBCASE("properties should be properly initialized for valid edges") {
-        const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, used};
-        CHECK_EQ(sut.properties(), used);
+        const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, property};
+        CHECK_EQ(&sut.properties(), &property);
+    }
+
+    SUBCASE("operator* should return a reference to the properties") {
+        const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, property};
+        CHECK_EQ(&(*sut), &property);
+    }
+
+    SUBCASE("operator-> should return a pointer to the properties") {
+        const EdgeType sut{fixture.id1, fixture.v1, fixture.v2, property};
+        CHECK_EQ(sut.operator->(), &property);
+        CHECK_EQ(sut->used, property.used);
     }
 
     SUBCASE("accessing properties should throw for invalid edges") {
-        CHECK_THROWS_AS(
-            discard_result(EdgeType(gl::invalid_id, fixture.v1, fixture.v2, used).properties()),
-            std::logic_error
-        );
+        const auto invalid_edge = EdgeType::invalid();
+        const EdgeType invalid_id_edge{gl::invalid_id, fixture.v1, fixture.v2, property};
+        const EdgeType invalid_v1_edge{fixture.id1, gl::invalid_id, fixture.v2, property};
+        const EdgeType invalid_v2_edge{fixture.id1, fixture.v1, gl::invalid_id, property};
 
-        CHECK_THROWS_AS(
-            discard_result(EdgeType(fixture.id1, gl::invalid_id, fixture.v2, used).properties()),
-            std::logic_error
-        );
+        // .properties()
+        CHECK_THROWS_AS(discard(invalid_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_id_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v1_edge.properties()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v2_edge.properties()), std::logic_error);
 
-        CHECK_THROWS_AS(
-            discard_result(EdgeType(fixture.id1, fixture.v1, gl::invalid_id, used).properties()),
-            std::logic_error
-        );
+        // operator*
+        CHECK_THROWS_AS(discard(*invalid_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_id_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_v1_edge), std::logic_error);
+        CHECK_THROWS_AS(discard(*invalid_v2_edge), std::logic_error);
 
-        CHECK_THROWS_AS(discard_result(EdgeType::invalid().properties()), std::logic_error);
+        // operator->
+        CHECK_THROWS_AS(discard(invalid_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_id_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v1_edge.operator->()), std::logic_error);
+        CHECK_THROWS_AS(discard(invalid_v2_edge.operator->()), std::logic_error);
     }
 }
 
@@ -139,7 +155,7 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
     }
 
     SUBCASE("other should throw if input vertex is not incident with the edge") {
-        CHECK_THROWS_AS(discard_result(sut.other(fixture.v3)), std::invalid_argument);
+        CHECK_THROWS_AS(discard(sut.other(fixture.v3)), std::invalid_argument);
     }
 
     SUBCASE("other should return the vertex adjacent with the input vertex") {

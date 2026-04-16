@@ -29,11 +29,12 @@ struct directed_flat_adjacency_list {
 
     static std::vector<id_type> remove_vertex(impl_type& self, id_type vertex_id) {
         const auto vertex_idx = to_idx(vertex_id);
-        std::vector<id_type> removed_edges;
 
         // extract out-edges
-        for (const auto& item : self._list[vertex_idx])
-            removed_edges.push_back(item.edge_id);
+        using item_type = typename impl_type::item_type;
+        auto removed_edges =
+            self._list[vertex_idx] | std::views::transform(&item_type::edge_id)
+            | std::ranges::to<std::vector>();
 
         // rebuild the graph (faster then shifting the entire data block for each removed edge)
         typename impl_type::adjacency_storage_type new_list;
@@ -46,7 +47,7 @@ struct directed_flat_adjacency_list {
                 continue;
 
             buffer.clear();
-            for (const auto& item : self._list[idx]) {
+            for (auto item : self._list[idx]) {
                 if (item.vertex_id == vertex_id)
                     removed_edges.push_back(item.edge_id); // remove in-edge
                 else
@@ -102,7 +103,7 @@ struct directed_flat_adjacency_list {
 
         for (auto idx = 0uz; idx < self._list.size(); ++idx) {
             degree_map[idx] += self._list.segment_size(idx);
-            for (const auto& item : self._list[idx])
+            for (auto item : self._list[idx])
                 ++degree_map[item.vertex_id];
         }
 
@@ -111,7 +112,7 @@ struct directed_flat_adjacency_list {
 
     [[nodiscard]] static std::vector<size_type> in_degree_map(const impl_type& self) {
         std::vector<size_type> in_degree_map(self._list.size(), 0uz);
-        for (const auto& item : self._list.data_view())
+        for (auto item : self._list.data_view())
             ++in_degree_map[to_idx(item.vertex_id)];
         return in_degree_map;
     }
@@ -173,11 +174,10 @@ struct directed_flat_adjacency_list {
         std::vector<item_type> in_edges;
         for (id_type src_id = initial_id; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
-                self._list[to_idx(src_id)]
-                | std::views::filter([tgt_id = vertex_id](const auto& item) {
-                      return item.vertex_id == tgt_id;
-                  })
-                | std::views::transform([src_id](const auto& item) {
+                self._list[to_idx(src_id)] | std::views::filter([tgt_id = vertex_id](auto item) {
+                    return item.vertex_id == tgt_id;
+                })
+                | std::views::transform([src_id](auto item) {
                       return incidence_item{src_id, item.edge_id};
                   });
             in_edges.insert(in_edges.end(), in_edges_view.begin(), in_edges_view.end());
@@ -215,7 +215,7 @@ struct undirected_flat_adjacency_list {
                 continue;
 
             buffer.clear();
-            for (const auto& item : self._list[idx])
+            for (auto item : self._list[idx])
                 if (item.vertex_id != vertex_id)
                     buffer.push_back(item);
 
@@ -250,7 +250,7 @@ struct undirected_flat_adjacency_list {
 
     [[nodiscard]] static size_type degree(const impl_type& self, id_type vertex_id) {
         size_type degree = 0uz;
-        for (const auto& item : self._list[to_idx(vertex_id)])
+        for (auto item : self._list[to_idx(vertex_id)])
             degree += 1uz + static_cast<size_type>(item.vertex_id == vertex_id);
         return degree;
     }

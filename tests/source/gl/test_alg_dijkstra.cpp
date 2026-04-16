@@ -1,14 +1,13 @@
-#include "gl/constants.hpp"
-#include "gl/types/core.hpp"
+#include "doctest.h"
 #include "testing/common/functional.hpp"
 #include "testing/gl/alg_utils.hpp"
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
+#include <gl/constants.hpp>
 #include <gl/io/graph_fio.hpp>
 #include <gl/topology.hpp>
-
-#include <doctest.h>
+#include <gl/types/core.hpp>
 
 #include <cmath>
 
@@ -29,11 +28,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should throw if there is an edge with a negative weight") {
         const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-        sut.get_edge(constants::v1_id, constants::v2_id)->properties().weight =
+        sut.edge(constants::v1_id, constants::v2_id)->properties().weight =
             -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
-            discard_result(gl::algorithm::dijkstra_shortest_paths(sut, constants::v1_id)),
+            discard(gl::algorithm::dijkstra_shortest_paths(sut, constants::v1_id)),
             std::invalid_argument
         );
     }
@@ -56,7 +55,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
             for (auto id = constants::v2_id; id < constants::n_elements_alg; id++) {
-                sut.get_edge(constants::v1_id, id)->properties().weight = edge_weight;
+                sut.edge(constants::v1_id, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
         }
@@ -89,10 +88,10 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path predecessors_file_path =
                 data_path / (file_name_prefix + "predecessors.txt");
             expected_predecessors =
-                load_list<gl::default_id_type>(sut.order(), predecessors_file_path);
+                load_list<gl::default_id_type>(sut.n_vertices(), predecessors_file_path);
 
             const fs::path distances_file_path = data_path / (file_name_prefix + "distances.txt");
-            expected_distances = load_list<distance_type>(sut.order(), distances_file_path);
+            expected_distances = load_list<distance_type>(sut.n_vertices(), distances_file_path);
         }
 
         CAPTURE(sut);
@@ -224,8 +223,7 @@ TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
     const auto vertex_id = static_cast<gl::default_id_type>(predecessor_map.size() - 1uz);
 
     CHECK_THROWS_AS(
-        discard_result(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)),
-        std::invalid_argument
+        discard(gl::algorithm::reconstruct_path(predecessor_map, vertex_id)), std::invalid_argument
     );
 }
 

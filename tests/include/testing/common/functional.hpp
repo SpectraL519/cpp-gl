@@ -1,6 +1,3 @@
 #pragma once
 
-template <typename T>
-void discard_result(T&&) {
-    // do nothing
-}
+void discard(auto&&) { /* do nothing */ }
