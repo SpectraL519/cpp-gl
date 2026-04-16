@@ -212,6 +212,36 @@ public:
 
     // --- vertex getters ---
 
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
+        return vertex_id < this->_n_vertices;
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+        return this->has_vertex(vertex.id());
+    }
+
+    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->vertex_unchecked(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type at(const id_type vertex_id) const {
+        return this->vertex(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id
+    ) const noexcept {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
+            return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
+        else
+            return vertex_descriptor{vertex_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type operator[](const id_type vertex_id
+    ) const noexcept {
+        return this->vertex_unchecked(vertex_id);
+    }
+
     [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
@@ -261,22 +291,6 @@ public:
     [[nodiscard]] gl_attr_force_inline auto successor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.successor_ids(vertex_id);
-    }
-
-    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
-        else
-            return vertex_descriptor{vertex_id};
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
-        return vertex_id < this->_n_vertices;
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id());
     }
 
     // --- degree getters ---
@@ -437,40 +451,8 @@ public:
         return std::views::iota(initial_id_v<id_type>, this->_n_edges);
     }
 
-    [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.incident_edges(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.incident_edges(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto incident_edges(const vertex_type& vertex) const {
-        return this->incident_edges(vertex.id());
-    }
-
-    [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.in_edges(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.in_edges(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto in_edges(const vertex_type& vertex) const {
-        return this->in_edges(vertex.id());
-    }
-
-    [[nodiscard]] inline auto out_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.out_edges(vertex_id, this->_edge_properties);
-        else
-            return this->_impl.out_edges(vertex_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto out_edges(const vertex_type& vertex) const {
-        return this->out_edges(vertex.id());
+    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
+        return this->_impl.has_edge(edge);
     }
 
     [[nodiscard]] bool has_edge(const id_type source_id, const id_type target_id) const {
@@ -483,10 +465,6 @@ public:
         const vertex_type& source, const vertex_type& target
     ) const {
         return this->has_edge(source.id(), target.id());
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_edge(const edge_type& edge) const {
-        return this->_impl.has_edge(edge);
     }
 
     [[nodiscard]] std::optional<edge_type> edge(const id_type source_id, const id_type target_id)
@@ -522,6 +500,42 @@ public:
         const vertex_type& source, const vertex_type& target
     ) const {
         return this->edges(source.id(), target.id());
+    }
+
+    [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.incident_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.incident_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto incident_edges(const vertex_type& vertex) const {
+        return this->incident_edges(vertex.id());
+    }
+
+    [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.in_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.in_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto in_edges(const vertex_type& vertex) const {
+        return this->in_edges(vertex.id());
+    }
+
+    [[nodiscard]] inline auto out_edges(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.out_edges(vertex_id, this->_edge_properties);
+        else
+            return this->_impl.out_edges(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto out_edges(const vertex_type& vertex) const {
+        return this->out_edges(vertex.id());
     }
 
     // --- adjacency and incidence methods ---

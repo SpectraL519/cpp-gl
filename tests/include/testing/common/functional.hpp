@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: discard
 template <typename T>
 void discard_result(T&&) {
     // do nothing

@@ -85,7 +85,7 @@ template <gl::traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
         const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.n_vertices());
-        const auto next_vertex = graph.vertex(next_vertex_id);
+        const auto next_vertex = graph[next_vertex_id];
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == next_vertex) == graph.has_edge(source, vertex);
@@ -100,7 +100,7 @@ template <gl::traits::c_graph GraphType>
     return [&graph](const vertex_type& source) {
         const auto prev_vertex_id =
             static_cast<id_type>((source.id() + graph.n_vertices() - 1uz) % graph.n_vertices());
-        const auto prev_vertex = graph.vertex(prev_vertex_id);
+        const auto prev_vertex = graph[prev_vertex_id];
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex) == graph.has_edge(source, vertex);
@@ -114,11 +114,11 @@ template <gl::traits::c_graph GraphType>
     using vertex_type = typename GraphType::vertex_type;
     return [&graph](const vertex_type& source) {
         const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.n_vertices());
-        const auto next_vertex = graph.vertex(next_vertex_id);
+        const auto next_vertex = graph[next_vertex_id];
 
         const auto prev_vertex_id =
             static_cast<id_type>((source.id() + graph.n_vertices() - 1uz) % graph.n_vertices());
-        const auto prev_vertex = graph.vertex(prev_vertex_id);
+        const auto prev_vertex = graph[prev_vertex_id];
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             return (vertex == prev_vertex or vertex == next_vertex)
@@ -137,8 +137,8 @@ template <gl::traits::c_graph GraphType>
             // no need to check second as second = first + 1
             return gl::util::range_size(graph.out_edges(source)) == 0uz;
 
-        const auto target_1 = graph.vertex(target_ids.first);
-        const auto target_2 = graph.vertex(target_ids.second);
+        const auto target_1 = graph[target_ids.first];
+        const auto target_2 = graph[target_ids.second];
 
         return std::ranges::all_of(graph.vertices(), [&](const auto& vertex) {
             if (vertex == target_1 or vertex == target_2)
