@@ -46,13 +46,37 @@ TEST_CASE("properties should be properly initialized") {
     CHECK_EQ(&sut.properties(), &property);
 }
 
+TEST_CASE("operator* should return a reference to the properties") {
+    visited_property property{constants::visited};
+    const gl::vertex_descriptor<visited_property> sut{constants::v1_id, property};
+    CHECK_EQ(&(*sut), &property);
+}
+
+TEST_CASE("operator-> should return a pointer to the properties") {
+    visited_property property{constants::visited};
+    const gl::vertex_descriptor<visited_property> sut{constants::v1_id, property};
+    CHECK_EQ(sut.operator->(), &property);
+    CHECK_EQ(sut->visited, property.visited);
+}
+
 TEST_CASE("accessing properties should throw for an invalid vertex") {
     using sut_type = gl::vertex_descriptor<visited_property>;
     visited_property property{constants::visited};
 
+    // .properties()
     CHECK_THROWS_AS(discard_result(sut_type::invalid().properties()), std::logic_error);
     CHECK_THROWS_AS(
         discard_result(sut_type{gl::invalid_id, property}.properties()), std::logic_error
+    );
+
+    // operator*
+    CHECK_THROWS_AS(discard_result(*sut_type::invalid()), std::logic_error);
+    CHECK_THROWS_AS(discard_result(*sut_type{gl::invalid_id, property}), std::logic_error);
+
+    // operator->
+    CHECK_THROWS_AS(discard_result(sut_type::invalid().operator->()), std::logic_error);
+    CHECK_THROWS_AS(
+        discard_result(sut_type{gl::invalid_id, property}.operator->()), std::logic_error
     );
 }
 

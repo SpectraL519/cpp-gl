@@ -156,10 +156,24 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] properties_ref_type properties() const {
-        if (not this->is_valid())
-            throw std::logic_error("Cannot access properties of an invalid edge");
+    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return this->_properties.get();
+    }
 
+    [[nodiscard]] gl_attr_force_inline properties_type* operator->() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return &this->_properties.get();
+    }
+
+    [[nodiscard]] gl_attr_force_inline properties_type& operator*() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
         return this->_properties.get();
     }
 
@@ -173,6 +187,15 @@ public:
     }
 
 private:
+    [[noreturn]] void _throw_invalid_access() const {
+        throw std::logic_error("Cannot access properties of an invalid edge");
+    }
+
+    gl_attr_force_inline void _validate() const {
+        if (not this->is_valid())
+            this->_throw_invalid_access();
+    }
+
     std::ostream& _verbose_write(std::ostream& os) const
     requires std::same_as<directional_tag, undirected_t>
     {
