@@ -235,7 +235,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
         return this->neighbor_ids(vertex_id)
-             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+             | std::views::transform([this](const id_type id) { return this->vertex(id); });
     }
 
     [[nodiscard]] gl_attr_force_inline auto neighbor_ids(const id_type vertex_id) const {
@@ -245,7 +245,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
         return this->predecessor_ids(vertex_id)
-             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+             | std::views::transform([this](const id_type id) { return this->vertex(id); });
     }
 
     [[nodiscard]] gl_attr_force_inline auto predecessor_ids(const id_type vertex_id) const {
@@ -255,7 +255,7 @@ public:
 
     [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
         return this->successor_ids(vertex_id)
-             | std::views::transform([this](const id_type id) { return this->get_vertex(id); });
+             | std::views::transform([this](const id_type id) { return this->vertex(id); });
     }
 
     [[nodiscard]] gl_attr_force_inline auto successor_ids(const id_type vertex_id) const {
@@ -263,7 +263,7 @@ public:
         return this->_impl.successor_ids(vertex_id);
     }
 
-    [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
+    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_descriptor{vertex_id, *this->_vertex_properties[vertex_id]};
@@ -489,40 +489,39 @@ public:
         return this->_impl.has_edge(edge);
     }
 
-    [[nodiscard]] std::optional<edge_type> get_edge(
+    [[nodiscard]] std::optional<edge_type> edge(const id_type source_id, const id_type target_id)
+        const {
+        this->_verify_vertex_id(source_id);
+        this->_verify_vertex_id(target_id);
+
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            return this->_impl.edge(source_id, target_id, this->_edge_properties);
+        else
+            return this->_impl.edge(source_id, target_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> edge(
+        const vertex_type& source, const vertex_type& target
+    ) const {
+        return this->edge(source.id(), target.id());
+    }
+
+    [[nodiscard]] inline std::vector<edge_type> edges(
         const id_type source_id, const id_type target_id
     ) const {
         this->_verify_vertex_id(source_id);
         this->_verify_vertex_id(target_id);
 
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.get_edge(source_id, target_id, this->_edge_properties);
+            return this->_impl.edges(source_id, target_id, this->_edge_properties);
         else
-            return this->_impl.get_edge(source_id, target_id);
+            return this->_impl.edges(source_id, target_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> get_edge(
+    [[nodiscard]] gl_attr_force_inline std::vector<edge_type> edges(
         const vertex_type& source, const vertex_type& target
     ) const {
-        return this->get_edge(source.id(), target.id());
-    }
-
-    [[nodiscard]] inline std::vector<edge_type> get_edges(
-        const id_type source_id, const id_type target_id
-    ) const {
-        this->_verify_vertex_id(source_id);
-        this->_verify_vertex_id(target_id);
-
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.get_edges(source_id, target_id, this->_edge_properties);
-        else
-            return this->_impl.get_edges(source_id, target_id);
-    }
-
-    [[nodiscard]] gl_attr_force_inline std::vector<edge_type> get_edges(
-        const vertex_type& source, const vertex_type& target
-    ) const {
-        return this->get_edges(source.id(), target.id());
+        return this->edges(source.id(), target.id());
     }
 
     // --- adjacency and incidence methods ---
@@ -571,8 +570,7 @@ public:
         return util::deref_view(this->_vertex_properties);
     }
 
-    [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
-        const id_type id
+    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(const id_type id
     ) const
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {

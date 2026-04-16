@@ -151,7 +151,7 @@ public:
         return specialized_impl::get_entry(*this, edge.source(), edge.target()) == edge.id();
     }
 
-    [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
+    [[nodiscard]] std::optional<edge_type> edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
@@ -160,7 +160,7 @@ public:
         return std::make_optional<edge_type>(edge_id, source_id, target_id);
     }
 
-    [[nodiscard]] std::optional<edge_type> get_edge(
+    [[nodiscard]] std::optional<edge_type> edge(
         id_type source_id, id_type target_id, const auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
@@ -173,7 +173,7 @@ public:
         );
     }
 
-    [[nodiscard]] std::vector<edge_type> get_edges(id_type source_id, id_type target_id) const
+    [[nodiscard]] std::vector<edge_type> edges(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
@@ -184,7 +184,7 @@ public:
         };
     }
 
-    [[nodiscard]] std::vector<edge_type> get_edges(
+    [[nodiscard]] std::vector<edge_type> edges(
         id_type source_id, id_type target_id, const auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)

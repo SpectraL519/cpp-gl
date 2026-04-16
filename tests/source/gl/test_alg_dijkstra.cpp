@@ -29,7 +29,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("should throw if there is an edge with a negative weight") {
         const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
-        sut.get_edge(constants::v1_id, constants::v2_id)->properties().weight =
+        sut.edge(constants::v1_id, constants::v2_id)->properties().weight =
             -static_cast<weight_type>(constants::n_elements_alg);
 
         CHECK_THROWS_AS(
@@ -56,7 +56,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             expected_distances.push_back(source_distance);
             const auto edge_weight = static_cast<weight_type>(constants::n_elements_alg);
             for (auto id = constants::v2_id; id < constants::n_elements_alg; id++) {
-                sut.get_edge(constants::v1_id, id)->properties().weight = edge_weight;
+                sut.edge(constants::v1_id, id)->properties().weight = edge_weight;
                 expected_distances.push_back(edge_weight);
             }
         }

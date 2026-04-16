@@ -152,7 +152,7 @@ public:
         );
     }
 
-    [[nodiscard]] std::optional<edge_type> get_edge(id_type source_id, id_type target_id) const
+    [[nodiscard]] std::optional<edge_type> edge(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto& out_edges = this->_list[to_idx(source_id)];
@@ -162,7 +162,7 @@ public:
         return std::make_optional<edge_type>(item_it->edge_id, source_id, target_id);
     }
 
-    [[nodiscard]] std::optional<edge_type> get_edge(
+    [[nodiscard]] std::optional<edge_type> edge(
         id_type source_id, id_type target_id, const auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
@@ -178,7 +178,7 @@ public:
         );
     }
 
-    [[nodiscard]] std::vector<edge_type> get_edges(id_type source_id, id_type target_id) const
+    [[nodiscard]] std::vector<edge_type> edges(id_type source_id, id_type target_id) const
     requires(traits::c_has_empty_properties<edge_type>)
     {
         return this->_list[source_id] | std::views::filter([&target_id](const auto& item) {
@@ -190,7 +190,7 @@ public:
              | std::ranges::to<std::vector>();
     }
 
-    [[nodiscard]] std::vector<edge_type> get_edges(
+    [[nodiscard]] std::vector<edge_type> edges(
         id_type source_id, id_type target_id, const auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)

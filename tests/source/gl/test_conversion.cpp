@@ -38,7 +38,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : graph.vertex_ids())
-                graph.get_vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
+                graph.vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::edge_properties_type,
@@ -61,7 +61,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : graph.vertex_ids())
-                CHECK_EQ(graph.get_vertex_properties(vid), "vertex_" + std::to_string(vid));
+                CHECK_EQ(graph.vertex_properties(vid), "vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(graph)>::edge_properties_type,
