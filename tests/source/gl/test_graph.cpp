@@ -421,10 +421,6 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             CHECK(v.is_valid());
     }
 
-    // --- degree getters ---
-
-    // TODO
-
     // --- edge modifiers ---
 
     SUBCASE("edge modifiers tests for default properties type") {
