@@ -63,9 +63,9 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const gl::size_type n_unique_edges_in_full_graph =
-            n_out_edges_for_fully_connected_vertex(graph) * graph.order();
+            n_out_edges_for_fully_connected_vertex(graph) * graph.n_vertices();
 
-        REQUIRE_EQ(graph.size(), n_unique_edges_in_full_graph);
+        REQUIRE_EQ(graph.n_edges(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
     }
 
@@ -79,9 +79,9 @@ struct test_graph {
                     graph.add_edge(first, second);
 
         const gl::size_type n_unique_edges_in_full_graph =
-            (n_out_edges_for_fully_connected_vertex(graph) * graph.order()) / 2;
+            (n_out_edges_for_fully_connected_vertex(graph) * graph.n_vertices()) / 2;
 
-        REQUIRE_EQ(graph.size(), n_unique_edges_in_full_graph);
+        REQUIRE_EQ(graph.n_edges(), n_unique_edges_in_full_graph);
         validate_full_graph_edges(graph);
     }
 
@@ -104,7 +104,7 @@ struct test_graph {
 
     template <gl::traits::c_instantiation_of<gl::graph> GraphType>
     gl::size_type n_out_edges_for_fully_connected_vertex(const GraphType& graph) {
-        return graph.order() - 1uz;
+        return graph.n_vertices() - 1uz;
     }
 
     const vertex_type out_of_range_vertex{constants::out_of_rng_idx};
@@ -129,8 +129,8 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
     SUBCASE("graph should be initialized with no vertices and no edges by default") {
         sut_type sut;
 
-        CHECK_EQ(sut.order(), 0uz);
-        CHECK_EQ(sut.size(), 0uz);
+        CHECK_EQ(sut.n_vertices(), 0uz);
+        CHECK_EQ(sut.n_edges(), 0uz);
     }
 
     SUBCASE("graph constructed with n_vertices parameter should contain n_vertices vertices and no "
@@ -162,11 +162,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         for (auto v_id = 0u; v_id < target_n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
-            CHECK_EQ(sut.order(), v_id + 1u);
+            CHECK_EQ(sut.n_vertices(), v_id + 1u);
             CHECK(sut.out_edges(v_id).empty());
         }
 
-        CHECK_EQ(sut.order(), target_n_vertices);
+        CHECK_EQ(sut.n_vertices(), target_n_vertices);
     }
 
     SUBCASE("add_vertex_with should initialize a new vertex with the input properties structure") {
@@ -174,7 +174,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         gl::graph<properties_traits_type> sut;
 
         const auto vertex = sut.add_vertex_with(constants::visited);
-        REQUIRE_EQ(sut.order(), 1uz);
+        REQUIRE_EQ(sut.n_vertices(), 1uz);
 
         CHECK_EQ(vertex.id(), constants::v1_id);
         CHECK_EQ(vertex.properties(), constants::visited);
@@ -184,8 +184,8 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{};
         sut.add_vertices(constants::n_elements);
 
-        CHECK_EQ(sut.order(), constants::n_elements);
-        CHECK_EQ(sut.size(), 0uz);
+        CHECK_EQ(sut.n_vertices(), constants::n_elements);
+        CHECK_EQ(sut.n_edges(), 0uz);
     }
 
     SUBCASE("add_vertices_with should properly extend the current adjacency list with the given "
@@ -200,8 +200,8 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         sut.add_vertices_with(properties_list);
 
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
-        CHECK_EQ(sut.size(), 0uz);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        CHECK_EQ(sut.n_edges(), 0uz);
 
         CHECK(std::ranges::equal(
             sut.vertices(),
@@ -285,7 +285,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         );
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
 
         constexpr auto expected_n_out_edges = expected_n_vertices - 1uz;
         CHECK(std::ranges::all_of(sut.vertices(), [&sut, expected_n_out_edges](const auto& vertex) {
@@ -306,7 +306,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
 
         constexpr auto expected_n_out_edges = expected_n_vertices - 1uz;
         CHECK(std::ranges::all_of(sut.vertices(), [&sut, expected_n_out_edges](const auto& vertex) {
@@ -407,7 +407,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
     SUBCASE("get_vertex should throw if the given id is invalid") {
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(static_cast<gl::default_id_type>(sut.order()))),
+            static_cast<void>(sut.get_vertex(static_cast<gl::default_id_type>(sut.n_vertices()))),
             std::out_of_range
         );
     }
@@ -444,7 +444,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             REQUIRE(new_edge.is_incident_from(constants::v1_id));
             REQUIRE(new_edge.is_incident_to(constants::v2_id));
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             CHECK_EQ(gl::util::range_size(out_edges_1), 1uz);
@@ -472,7 +472,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             REQUIRE(new_edge.is_incident_from(vertex_1.id()));
             REQUIRE(new_edge.is_incident_to(vertex_2.id()));
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             CHECK_EQ(gl::util::range_size(out_edges_1), 1uz);
@@ -491,12 +491,12 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
 
         SUBCASE("add_edges_from(ids) should throw if any id is invalid and not extend the graph") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(constants::out_of_rng_idx, vertex_id_list{}), std::out_of_range
             );
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(
@@ -504,11 +504,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 ),
                 std::out_of_range
             );
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
         }
 
         SUBCASE("add_edges_from(ids) should properly extend the graph if all ids are valid") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             constexpr auto source_id = constants::v1_id;
             const std::vector<gl::default_id_type> target_id_list{
@@ -517,7 +517,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             sut.add_edges_from(source_id, target_id_list);
 
-            REQUIRE_EQ(sut.size(), constants::n_elements);
+            REQUIRE_EQ(sut.n_edges(), constants::n_elements);
             CHECK(std::ranges::all_of(target_id_list, [&sut, source_id](const auto vertex_id) {
                 return sut.has_edge(source_id, vertex_id);
             }));
@@ -525,13 +525,13 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         SUBCASE("add_edges_from(vertices) should throw if any vertex is invalid and not extend the "
                 "graph") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(fixture.out_of_range_vertex, std::vector<vertex_type>{}),
                 std::out_of_range
             );
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(
@@ -539,18 +539,18 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 ),
                 std::out_of_range
             );
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
         }
 
         SUBCASE("add_edges_from(vertices) should properly extend the graph if all ids are valid") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             const auto source = vertex_1;
             const std::vector<vertex_type> target_list{vertex_1, vertex_2, vertex_3};
 
             sut.add_edges_from(source, target_list);
 
-            REQUIRE_EQ(sut.size(), constants::n_elements);
+            REQUIRE_EQ(sut.n_edges(), constants::n_elements);
             CHECK(std::ranges::all_of(target_list, [&sut, &source](const auto& vertex) {
                 return sut.has_edge(source, vertex);
             }));
@@ -559,7 +559,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("remove_edge should properly remove the edge for both of its incident vertices") {
             const auto added_edge = sut.add_edge(vertex_1, vertex_2);
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             auto out_edges_2 = sut.out_edges(constants::v2_id);
@@ -569,7 +569,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 REQUIRE_EQ(gl::util::range_size(out_edges_2), 1uz);
 
             sut.remove_edge(added_edge);
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
 
             out_edges_1 = sut.out_edges(constants::v1_id);
             out_edges_2 = sut.out_edges(constants::v2_id);
@@ -579,7 +579,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
 
         SUBCASE("remove_edges should properly erase all given edges") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             const auto edge_1 = sut.add_edge(vertex_1, vertex_2);
             const auto edge_2 = sut.add_edge(vertex_2, vertex_3);
@@ -589,7 +589,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             const auto vertex_4 = sut.add_vertex();
             const auto edge_4 = sut.add_edge(vertex_1, vertex_4);
 
-            REQUIRE_EQ(sut.size(), constants::n_elements + 1uz);
+            REQUIRE_EQ(sut.n_edges(), constants::n_elements + 1uz);
 
             std::vector<edge_type> edges_to_remove{edge_1, edge_2, edge_3};
 
@@ -600,7 +600,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             sut.remove_edges(edges_to_remove);
 
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_edges(), 1uz);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
@@ -636,7 +636,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             REQUIRE(new_edge.is_incident_to(constants::v2_id));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             CHECK_EQ(gl::util::range_size(out_edges_1), 1uz);
@@ -671,7 +671,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             REQUIRE(new_edge.is_incident_to(vertex_2.id()));
             REQUIRE_EQ(new_edge.properties(), constants::used);
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             CHECK_EQ(gl::util::range_size(out_edges_1), 1uz);
@@ -692,7 +692,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("remove_edge should properly remove the edge for both of its incident vertices") {
             const auto added_edge = sut.add_edge_with(vertex_1, vertex_2, constants::used);
 
-            REQUIRE_EQ(sut.size(), 1uz);
+            REQUIRE_EQ(sut.n_edges(), 1uz);
 
             auto out_edges_1 = sut.out_edges(constants::v1_id);
             auto out_edges_2 = sut.out_edges(constants::v2_id);
@@ -702,7 +702,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 REQUIRE_EQ(gl::util::range_size(out_edges_2), 1uz);
 
             sut.remove_edge(added_edge);
-            CHECK_EQ(sut.size(), 0uz);
+            CHECK_EQ(sut.n_edges(), 0uz);
 
             out_edges_1 = sut.out_edges(constants::v1_id);
             out_edges_2 = sut.out_edges(constants::v2_id);
@@ -712,7 +712,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
 
         SUBCASE("remove_edges should properly erase all given edges") {
-            REQUIRE_EQ(sut.size(), 0uz);
+            REQUIRE_EQ(sut.n_edges(), 0uz);
 
             const auto edge_1 = sut.add_edge_with(vertex_1, vertex_2, constants::not_used);
             const auto edge_2 = sut.add_edge_with(vertex_2, vertex_3, constants::not_used);
@@ -722,7 +722,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             const auto vertex_4 = sut.add_vertex();
             const auto edge_4 = sut.add_edge_with(vertex_1, vertex_4, constants::used);
 
-            REQUIRE_EQ(sut.size(), constants::n_elements + 1uz);
+            REQUIRE_EQ(sut.n_edges(), constants::n_elements + 1uz);
 
             const std::vector<property_edge_type> edges_to_remove{edge_1, edge_2, edge_3};
 
@@ -733,7 +733,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             sut.remove_edges(edges_to_remove);
 
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_edges(), 1uz);
             CHECK_FALSE(sut.has_edge(vertex_1, vertex_2));
             CHECK_FALSE(sut.has_edge(vertex_2, vertex_3));
             CHECK_FALSE(sut.has_edge(vertex_3, vertex_1));
@@ -1080,7 +1080,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             CHECK_EQ(sut1, sut2);
         }
 
-        SUBCASE("graphs with different orders are not equal") {
+        SUBCASE("graphs with different numbers of vertices are not equal") {
             sut2.add_vertex();
             CHECK_NE(sut1, sut2);
         }

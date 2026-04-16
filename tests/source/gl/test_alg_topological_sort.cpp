@@ -56,7 +56,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path order_file_path =
                 data_path / "topological_sort_directed_acyclic_order.txt";
             expected_topological_order =
-                load_list<gl::default_id_type>(sut.order(), order_file_path);
+                load_list<gl::default_id_type>(sut.n_vertices(), order_file_path);
         }
 
         CAPTURE(sut);

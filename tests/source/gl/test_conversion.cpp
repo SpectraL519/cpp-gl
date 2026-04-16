@@ -48,8 +48,8 @@ struct test_conversion {
     }
 
     void validate_graph(const gl::traits::c_graph auto& graph) {
-        REQUIRE_EQ(graph.order(), this->test_order);
-        REQUIRE_EQ(graph.size(), this->test_edges.size());
+        REQUIRE_EQ(graph.n_vertices(), this->test_order);
+        REQUIRE_EQ(graph.n_edges(), this->test_edges.size());
         for (const auto& [source, target] : this->test_edges)
             CHECK(graph.has_edge(source, target));
 

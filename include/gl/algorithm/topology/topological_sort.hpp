@@ -24,13 +24,13 @@ template <
 
     // prepare the initial queue content (source vertices)
     std::vector<search_node<G>> source_vertex_list;
-    source_vertex_list.reserve(graph.order());
+    source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : graph.vertex_ids())
         if (in_degree_map[to_idx(id)] == 0uz)
             source_vertex_list.emplace_back(id);
 
     std::vector<id_type> topological_order{};
-    topological_order.reserve(graph.order());
+    topological_order.reserve(graph.n_vertices());
 
     bfs(
         graph,
@@ -50,7 +50,7 @@ template <
         post_visit
     );
 
-    if (topological_order.size() != graph.order())
+    if (topological_order.size() != graph.n_vertices())
         return std::nullopt;
 
     return topological_order;

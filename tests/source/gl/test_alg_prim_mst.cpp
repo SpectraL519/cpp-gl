@@ -46,7 +46,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 }
             }
 
-            expected_weight = edge_weight * static_cast<weight_type>(sut.order() - 1uz);
+            expected_weight = edge_weight * static_cast<weight_type>(sut.n_vertices() - 1uz);
         }
 
         SUBCASE("custom graph") {
@@ -56,7 +56,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             source_id = 0u;
 
             const fs::path edges_file_path = data_path / "mst_edges.txt";
-            const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
+            const auto n_vertex_ids = (sut.n_vertices() - 1uz) * 2uz;
             const auto vertex_id_list =
                 load_list<gl::default_id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
@@ -73,7 +73,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto mst = gl::algorithm::edge_heap_prim_mst(sut, source_id);
 
-        REQUIRE_EQ(mst.edges.size(), sut.order() - 1uz);
+        REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - 1uz);
         REQUIRE_EQ(mst.weight, expected_weight);
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
@@ -131,11 +131,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (const auto& edge : sut.incident_edges(vertex_id))
             expected_edges.emplace_back(edge.source(), edge.target());
 
-    const auto expected_weight = static_cast<weight_type>(sut.order() - 1uz);
+    const auto expected_weight = static_cast<weight_type>(sut.n_vertices() - 1uz);
 
     const auto mst = gl::algorithm::edge_heap_prim_mst(sut, source_id);
 
-    REQUIRE_EQ(mst.edges.size(), sut.order() - 1uz);
+    REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - 1uz);
     REQUIRE_EQ(mst.weight, expected_weight);
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
@@ -191,7 +191,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 }
             }
 
-            expected_weight = edge_weight * static_cast<weight_type>(sut.order() - 1uz);
+            expected_weight = edge_weight * static_cast<weight_type>(sut.n_vertices() - 1uz);
         }
 
         SUBCASE("custom graph") {
@@ -201,7 +201,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             source_id = 0u;
 
             const fs::path edges_file_path = data_path / "mst_edges.txt";
-            const auto n_vertex_ids = (sut.order() - 1uz) * 2uz;
+            const auto n_vertex_ids = (sut.n_vertices() - 1uz) * 2uz;
             const auto vertex_id_list =
                 load_list<gl::default_id_type>(n_vertex_ids, edges_file_path);
             for (auto i = 0uz; i < n_vertex_ids; i += 2uz)
@@ -218,7 +218,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         const auto mst = gl::algorithm::vertex_heap_prim_mst(sut, source_id);
 
-        REQUIRE_EQ(mst.edges.size(), sut.order() - 1uz);
+        REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - 1uz);
         REQUIRE_EQ(mst.weight, expected_weight);
 
         CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {
@@ -276,11 +276,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (const auto& edge : sut.incident_edges(vertex_id))
             expected_edges.emplace_back(edge.source(), edge.target());
 
-    const auto expected_weight = static_cast<weight_type>(sut.order() - 1uz);
+    const auto expected_weight = static_cast<weight_type>(sut.n_vertices() - 1uz);
 
     const auto mst = gl::algorithm::vertex_heap_prim_mst(sut, source_id);
 
-    REQUIRE_EQ(mst.edges.size(), sut.order() - 1uz);
+    REQUIRE_EQ(mst.edges.size(), sut.n_vertices() - 1uz);
     REQUIRE_EQ(mst.weight, expected_weight);
 
     CHECK(std::ranges::all_of(mst.edges, [&expected_edges](const auto& edge) {

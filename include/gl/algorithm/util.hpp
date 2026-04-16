@@ -16,7 +16,7 @@ template <result_discriminator Result, traits::c_graph G>
 init_predecessors_map(const G& graph) {
     using return_t = non_void_return_type<Result, predecessors_map<G>>;
     if constexpr (Result == ret)
-        return return_t(graph.order(), invalid_id);
+        return return_t(graph.n_vertices(), invalid_id);
     else
         return return_t();
 }

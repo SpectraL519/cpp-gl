@@ -89,10 +89,10 @@ TEST_CASE_TEMPLATE_DEFINE(
             const fs::path predecessors_file_path =
                 data_path / (file_name_prefix + "predecessors.txt");
             expected_predecessors =
-                load_list<gl::default_id_type>(sut.order(), predecessors_file_path);
+                load_list<gl::default_id_type>(sut.n_vertices(), predecessors_file_path);
 
             const fs::path distances_file_path = data_path / (file_name_prefix + "distances.txt");
-            expected_distances = load_list<distance_type>(sut.order(), distances_file_path);
+            expected_distances = load_list<distance_type>(sut.n_vertices(), distances_file_path);
         }
 
         CAPTURE(sut);

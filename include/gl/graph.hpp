@@ -114,11 +114,11 @@ public:
 
     // --- size methods ---
 
-    [[nodiscard]] gl_attr_force_inline size_type order() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type size() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_edges() const noexcept {
         return this->_n_edges;
     }
 
@@ -736,8 +736,8 @@ private:
     };
 
     std::ostream& _verbose_write(std::ostream& os) const {
-        os << "type: " << fmt_traits::type << ", |V| = " << this->order()
-           << ", |E| = " << this->size() << '\n';
+        os << "type: " << fmt_traits::type << ", |V| = " << this->_n_vertices
+           << ", |E| = " << this->_n_edges << '\n';
         for (const auto& vertex : this->vertices()) {
             os << "- " << vertex << "\n  " << fmt_traits::out_edges << ":\n";
             for (const auto& edge : this->out_edges(vertex.id()))
@@ -770,9 +770,9 @@ private:
         const bool with_e_props = io::is_option_set(os, with_connection_properties);
 
         // print graph metadata
-        os << traits::c_directed_edge<edge_type> << ' ' << this->order() << ' ' << this->size()
-           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_e_props)
-           << '\n';
+        os << traits::c_directed_edge<edge_type> << ' ' << this->_n_vertices << ' '
+           << this->_n_edges << ' ' << static_cast<int>(with_v_props) << ' '
+           << static_cast<int>(with_e_props) << '\n';
 
         if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_v_props)
