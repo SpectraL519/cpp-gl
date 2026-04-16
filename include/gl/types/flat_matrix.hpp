@@ -1140,7 +1140,7 @@ public:
     /// @warning This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
     /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
     void pop_col() {
-        if (this->empty() || this->_n_cols == 0uz)
+        if (this->empty() or this->_n_cols == 0uz)
             return;
 
         this->erase_col(this->_n_cols - 1uz);

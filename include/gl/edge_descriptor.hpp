@@ -238,12 +238,6 @@ private:
 };
 
 template <
-    traits::c_graph_directional_tag DirectionalTag = directed_t,
-    traits::c_properties Properties = empty_properties,
-    traits::c_id_type IdType = default_id_type>
-using edge = edge_descriptor<DirectionalTag, Properties, IdType>;
-
-template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
 using directed_edge = edge_descriptor<directed_t, Properties, IdType>;
