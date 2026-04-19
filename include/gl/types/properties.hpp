@@ -10,12 +10,12 @@
 #include <any>
 #include <iomanip>
 #include <unordered_map>
-#include <variant>
 
 namespace gl {
 
-using empty_properties = std::monostate;
-using empty_properties_map = std::monostate;
+struct empty_properties {};
+
+struct empty_properties_map {};
 
 struct name_property {
     using value_type = std::string;
