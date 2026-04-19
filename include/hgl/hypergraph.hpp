@@ -166,12 +166,11 @@ public:
         this->_n_vertices += n;
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            this->_vertex_properties.append_range(properties_rng);
-        // this->_vertex_properties.insert(
-        //     this->_vertex_properties.end(),
-        //     std::ranges::begin(properties_rng),
-        //     std::ranges::end(properties_rng)
-        // );
+            this->_vertex_properties.insert(
+                this->_vertex_properties.end(),
+                std::ranges::begin(properties_rng),
+                std::ranges::end(properties_rng)
+            );
     }
 
     gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
@@ -453,12 +452,11 @@ public:
         this->_n_hyperedges += n;
 
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
-            this->_hyperedge_properties.append_range(properties_rng);
-        // this->_hyperedge_properties.insert(
-        //     this->_hyperedge_properties.end(),
-        //     std::ranges::begin(properties_rng),
-        //     std::ranges::end(properties_rng)
-        // );
+            this->_hyperedge_properties.insert(
+                this->_hyperedge_properties.end(),
+                std::ranges::begin(properties_rng),
+                std::ranges::end(properties_rng)
+            );
     }
 
     gl_attr_force_inline void remove_hyperedge(const id_type hyperedge_id) {
