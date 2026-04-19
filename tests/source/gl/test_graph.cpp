@@ -1105,7 +1105,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
 
         SUBCASE("hypergraph with different hyperedge properties are not equal") {
-            sut2.get_edge_properties(0uz) = "dummy";
+            sut2.edge_properties(0uz) = "dummy";
             CHECK_NE(sut1, sut2);
         }
     }
@@ -1316,12 +1316,11 @@ TEST_CASE_TEMPLATE_DEFINE("property getter tests", TraitsType, property_graph_tr
         CHECK_EQ(property, std::format("edge_{}", id));
         CHECK_EQ(emap[id], std::format("edge_{}", id));
         CHECK_EQ(
-            sut.get_edge_properties(static_cast<gl::default_id_type>(id)),
-            std::format("edge_{}", id)
+            sut.edge_properties(static_cast<gl::default_id_type>(id)), std::format("edge_{}", id)
         );
     }
 
-    CHECK_THROWS_AS(discard(sut.get_edge_properties(constants::out_of_rng_idx)), std::out_of_range);
+    CHECK_THROWS_AS(discard(sut.edge_properties(constants::out_of_rng_idx)), std::out_of_range);
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

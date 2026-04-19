@@ -26,10 +26,6 @@ public:
     using id_type = IdType;
     using directional_tag = DirectionalTag;
     using properties_type = Properties;
-    using properties_ref_type = std::conditional_t<
-        traits::c_empty_properties<properties_type>,
-        empty_properties,
-        properties_type&>;
 
     friend directional_tag;
 
@@ -156,7 +152,7 @@ public:
         return this->_vertices.first == this->_vertices.second;
     }
 
-    [[nodiscard]] gl_attr_force_inline properties_ref_type properties() const
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const
     requires(traits::c_non_empty_properties<properties_type>)
     {
         this->_validate();

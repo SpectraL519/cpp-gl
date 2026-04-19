@@ -98,7 +98,7 @@ struct traversal_policy<H, traversal_direction::forward> {
     }
 
     static auto target_vertices(const H& h, typename H::id_type he_id) {
-        return h.head_vertex_ids(he_id);
+        return h.head_ids(he_id);
     }
 };
 
@@ -109,7 +109,7 @@ struct traversal_policy<H, traversal_direction::backward> {
     }
 
     static auto target_vertices(const H& h, typename H::id_type he_id) {
-        return h.tail_vertex_ids(he_id);
+        return h.tail_ids(he_id);
     }
 };
 

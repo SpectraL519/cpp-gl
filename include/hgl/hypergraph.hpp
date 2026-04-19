@@ -123,41 +123,17 @@ public:
 
     ~hypergraph() = default;
 
-    // --- general methods ---
+    // --- size methods ---
 
-    [[nodiscard]] gl_attr_force_inline size_type order() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type size() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_hyperedges() const noexcept {
         return this->_n_hyperedges;
     }
 
-    // --- vertex methods ---
-
-    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
-        return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
-    }
-
-    [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
-        else
-            return vertex_type{vertex_id};
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
-        return vertex_id < this->_n_vertices;
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id());
-    }
+    // --- vertex modifiers ---
 
     vertex_type add_vertex() {
         this->_impl.add_vertices(1uz);
@@ -224,7 +200,7 @@ public:
     }
 
     void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
-        // sorts ids in a descending order and removes duplicate ids
+        // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
@@ -235,7 +211,7 @@ public:
     }
 
     void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
-        // sort vertices in a descending order (by id) and removes duplicate ids
+        // sort vertices in a descending n_vertices (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
         );
@@ -245,13 +221,46 @@ public:
             this->_remove_vertex_impl(vertex.id());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
-    requires(traits::c_non_empty_properties<vertex_properties_type>)
-    {
-        return util::deref_view(this->_vertex_properties);
+    // --- vertex getters ---
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
+        return vertex_id < this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+        return this->has_vertex(vertex.id());
+    }
+
+    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        return this->vertex_unchecked(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type at(vertex_t, const id_type vertex_id) const {
+        return this->vertex(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id) const {
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
+            return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
+        else
+            return vertex_type{vertex_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type
+    operator[](vertex_t, const id_type vertex_id) const {
+        return this->vertex_unchecked(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
+        return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
+        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(
         const id_type vertex_id
     ) const
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -260,31 +269,13 @@ public:
         return *this->_vertex_properties[vertex_id];
     }
 
-    // --- hyperedge methods ---
-
-    [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
-        return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        return util::deref_view(this->_vertex_properties);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
-        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
-    }
-
-    [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
-        this->_verify_hyperedge_id(hyperedge_id);
-        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
-            return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
-        else
-            return hyperedge_type{hyperedge_id};
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
-        return hyperedge_id < this->_n_hyperedges;
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
-        return this->has_hyperedge(hyperedge.id());
-    }
+    // --- hyperedge modifiers ---
 
     hyperedge_type add_hyperedge() {
         this->_impl.add_hyperedges(1uz);
@@ -409,13 +400,11 @@ public:
         );
     }
 
-    gl_attr_force_inline hyperedge_type add_hyperedge(
-        std::initializer_list<vertex_type> tail_vertices,
-        std::initializer_list<vertex_type> head_vertices
-    )
+    gl_attr_force_inline hyperedge_type
+    add_hyperedge(std::initializer_list<vertex_type> tail, std::initializer_list<vertex_type> head)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->add_hyperedge(std::views::all(tail_vertices), std::views::all(head_vertices));
+        return this->add_hyperedge(std::views::all(tail), std::views::all(head));
     }
 
     hyperedge_type add_hyperedge_with(
@@ -458,14 +447,14 @@ public:
     }
 
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
-        std::initializer_list<vertex_type> tail_vertices,
-        std::initializer_list<vertex_type> head_vertices,
+        std::initializer_list<vertex_type> tail,
+        std::initializer_list<vertex_type> head,
         hyperedge_properties_type properties
     )
     requires(std::same_as<directional_tag, bf_directed_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return this->add_hyperedge_with(
-            std::views::all(tail_vertices), std::views::all(head_vertices), std::move(properties)
+            std::views::all(tail), std::views::all(head), std::move(properties)
         );
     }
 
@@ -510,7 +499,7 @@ public:
     }
 
     void remove_hyperedges_from(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
-        // sorts ids in a descending order and removes duplicate ids
+        // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> hyperedge_id_set(
             std::ranges::begin(hyperedge_id_rng), std::ranges::end(hyperedge_id_rng)
         );
@@ -522,7 +511,7 @@ public:
 
     void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_rng
     ) {
-        // sort hyperedges in a descending order (by id) and removes duplicate ids
+        // sort hyperedges in a descending n_vertices (by id) and removes duplicate ids
         std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
             std::ranges::begin(hyperedge_rng), std::ranges::end(hyperedge_rng)
         );
@@ -532,13 +521,48 @@ public:
             this->_remove_hyperedge_impl(hyperedge.id());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto hyperedge_properties_map() const noexcept
-    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
-    {
-        return util::deref_view(this->_hyperedge_properties);
+    // --- hyperedge getters ---
+
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
+        return hyperedge_id < this->_n_hyperedges;
     }
 
-    [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& get_hyperedge_properties(
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
+        return this->has_hyperedge(hyperedge.id());
+    }
+
+    [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->hyperedge_unchecked(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_type
+    at(hyperedge_t, const id_type hyperedge_id) const {
+        return this->hyperedge(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_type hyperedge_unchecked(const id_type hyperedge_id
+    ) const {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
+            return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
+        else
+            return hyperedge_type{hyperedge_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_type
+    operator[](hyperedge_t, const id_type hyperedge_id) const {
+        return this->hyperedge_unchecked(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
+        return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
+        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& hyperedge_properties(
         const id_type id
     ) const
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
@@ -547,7 +571,13 @@ public:
         return *this->_hyperedge_properties[id];
     }
 
-    // --- incidence methods ---
+    [[nodiscard]] gl_attr_force_inline auto hyperedge_properties_map() const noexcept
+    requires(traits::c_non_empty_properties<hyperedge_properties_type>)
+    {
+        return util::deref_view(this->_hyperedge_properties);
+    }
+
+    // --- incidence modifiers ---
 
     void bind(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, undirected_t>
@@ -823,6 +853,8 @@ public:
         this->unbind(vertex.id(), hyperedge.id());
     }
 
+    // --- incidence validators ---
+
     [[nodiscard]] bool are_incident(const id_type vertex_id, const id_type hyperedge_id) const {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
@@ -866,6 +898,8 @@ public:
     {
         return this->is_head(vertex.id(), hyperedge.id());
     }
+
+    // --- incidence getters ---
 
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const id_type vertex_id) {
         return this->incident_hyperedge_ids(vertex_id)
@@ -1023,30 +1057,30 @@ public:
         return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id) const
+    [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertex_ids(hyperedge_id)
+        return this->tail_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto tail(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertices(hyperedge.id());
+        return this->tail(hyperedge.id());
     }
 
-    [[nodiscard]] auto tail_vertex_ids(const id_type hyperedge_id) const
+    [[nodiscard]] auto tail_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.tail_vertices(hyperedge_id);
+        return this->_impl.tail(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertex_ids(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto tail_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertex_ids(hyperedge.id());
+        return this->tail_ids(hyperedge.id());
     }
 
     [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const
@@ -1068,30 +1102,30 @@ public:
         return this->_impl.tail_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id) const
+    [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertex_ids(hyperedge_id)
+        return this->head_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto head(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertices(hyperedge.id());
+        return this->head(hyperedge.id());
     }
 
-    [[nodiscard]] auto head_vertex_ids(const id_type hyperedge_id) const
+    [[nodiscard]] auto head_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.head_vertices(hyperedge_id);
+        return this->_impl.head(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertex_ids(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto head_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertex_ids(hyperedge.id());
+        return this->head_ids(hyperedge.id());
     }
 
     [[nodiscard]] size_type head_size(const id_type hyperedge_id) const
@@ -1172,19 +1206,17 @@ public:
             using io::detail::option_bit;
 
             if (io::is_option_set(os, option_bit::verbose)) {
-                os << "[id: " << proxy.hyperedge.id() << " | tail: "
-                   << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
-                   << ", head: "
-                   << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()));
+                os << "[id: " << proxy.hyperedge.id()
+                   << " | tail: " << io::set_formatter(proxy.hg.tail_ids(proxy.hyperedge.id()))
+                   << ", head: " << io::set_formatter(proxy.hg.head_ids(proxy.hyperedge.id()));
                 if constexpr (traits::c_writable<hyperedge_properties_type>)
                     if (io::is_option_set(os, option_bit::with_connection_properties))
                         os << " | " << proxy.hyperedge.properties();
                 os << "]";
             }
             else { // concise
-                os << '(' << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
-                   << " -> " << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()))
-                   << ')';
+                os << '(' << io::set_formatter(proxy.hg.tail_ids(proxy.hyperedge.id())) << " -> "
+                   << io::set_formatter(proxy.hg.head_ids(proxy.hyperedge.id())) << ')';
                 if constexpr (traits::c_writable<hyperedge_properties_type>)
                     if (io::is_option_set(os, option_bit::with_connection_properties))
                         os << '[' << proxy.hyperedge.properties() << ']';
@@ -1266,6 +1298,20 @@ private:
             this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
     }
 
+    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    requires(traits::c_empty_properties<vertex_properties_type>)
+    {
+        return [](const id_type id) { return vertex_type{id}; };
+    }
+
+    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        return [&pmap = this->_vertex_properties](const id_type id) {
+            return vertex_type{id, *pmap[to_idx(id)]};
+        };
+    }
+
     // --- hyperedge methods ---
 
     gl_attr_force_inline void _verify_hyperedge_id(const id_type hyperedge_id) const {
@@ -1281,22 +1327,6 @@ private:
         this->_n_hyperedges--;
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             this->_hyperedge_properties.erase(this->_hyperedge_properties.begin() + hyperedge_id);
-    }
-
-    // --- transformations ---
-
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
-    requires(traits::c_empty_properties<vertex_properties_type>)
-    {
-        return [](const id_type id) { return vertex_type{id}; };
-    }
-
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
-    requires(traits::c_non_empty_properties<vertex_properties_type>)
-    {
-        return [&pmap = this->_vertex_properties](const id_type id) {
-            return vertex_type{id, *pmap[to_idx(id)]};
-        };
     }
 
     gl_attr_force_inline auto _create_hyperedge_descriptor() const noexcept
@@ -1319,8 +1349,8 @@ private:
         using enum io::detail::option_bit;
         using fmt_traits = io::detail::hypergraph_fmt_traits<directional_tag>;
 
-        os << "type: " << fmt_traits::type << ", |V| = " << this->order()
-           << ", |E| = " << this->size() << '\n';
+        os << "type: " << fmt_traits::type << ", |V| = " << this->_n_vertices
+           << ", |E| = " << this->_n_hyperedges << '\n';
 
         os << "vertices: ";
         if constexpr (traits::c_writable<vertex_properties_type>) {
@@ -1330,14 +1360,14 @@ private:
                     os << "  - " << vertex << '\n';
             }
             else {
-                os << io::implicit_range(this->order()) << '\n';
+                os << io::implicit_range(this->_n_vertices) << '\n';
             }
         }
         else {
-            os << io::implicit_range(this->order()) << '\n';
+            os << io::implicit_range(this->_n_vertices) << '\n';
         }
 
-        if (this->size() == 0uz) {
+        if (this->_n_hyperedges == 0uz) {
             os << "hyperedges: {}";
         }
         else {
@@ -1357,13 +1387,13 @@ private:
             if (io::is_option_set(os, with_vertex_properties))
                 os << io::multiline_set_formatter(this->vertices()) << '\n';
             else
-                os << io::implicit_range(this->order()) << '\n';
+                os << io::implicit_range(this->_n_vertices) << '\n';
         }
         else {
-            os << io::implicit_range(this->order()) << '\n';
+            os << io::implicit_range(this->_n_vertices) << '\n';
         }
 
-        if (this->size() == 0uz) {
+        if (this->_n_hyperedges == 0uz) {
             os << "E = {}\n";
         }
         else {
@@ -1385,8 +1415,9 @@ private:
         const bool with_he_props = io::is_option_set(os, with_connection_properties);
 
         // print hypergraph metadata
-        os << fmt_traits::discriminator << ' ' << this->order() << ' ' << this->size() << ' '
-           << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props) << '\n';
+        os << fmt_traits::discriminator << ' ' << this->_n_vertices << ' ' << this->_n_hyperedges
+           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props)
+           << '\n';
 
         if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_v_props)
@@ -1403,9 +1434,9 @@ private:
             }
             else if constexpr (std::same_as<directional_tag, bf_directed_t>) {
                 os << this->tail_size(he_id) << ' ' << this->head_size(he_id);
-                for (const auto v : this->tail_vertex_ids(he_id))
+                for (const auto v : this->tail_ids(he_id))
                     os << ' ' << v;
-                for (const auto v : this->head_vertex_ids(he_id))
+                for (const auto v : this->head_ids(he_id))
                     os << ' ' << v;
             }
 
@@ -1550,6 +1581,64 @@ template <traits::c_hypergraph Hypergraph>
 [[nodiscard]] Hypergraph clone(const Hypergraph& source) {
     return Hypergraph(source);
 }
+
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+using undirected_hypergraph =
+    hypergraph<undirected_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+using bf_directed_hypergraph =
+    hypergraph<bf_directed_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using list_hypergraph = hypergraph<
+    list_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_list_hypergraph = hypergraph<flat_list_hypergraph_traits<
+    LayoutTag,
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using matrix_hypergraph = hypergraph<
+    matrix_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
+    LayoutTag,
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    IdType>>;
 
 // --- degree bounds ---
 

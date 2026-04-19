@@ -1,4 +1,5 @@
 #include "doctest.h"
+#include "testing/common/functional.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
@@ -49,14 +50,40 @@ TEST_CASE_FIXTURE(test_hyperedge_descriptor, "properties should be properly init
     CHECK_EQ(&sut.properties(), &property);
 }
 
-TEST_CASE("accessing properties should throw for an invalid hyperedge") {
+TEST_CASE_FIXTURE(
+    test_hyperedge_descriptor, "operator* should return a reference to the properties"
+) {
+    boolean_property property{constants::p_true};
+    const hgl::hyperedge_descriptor<boolean_property> sut{id1, property};
+    CHECK_EQ(&(*sut), &property);
+}
+
+TEST_CASE_FIXTURE(
+    test_hyperedge_descriptor, "operator-> should return a pointer to the properties"
+) {
+    boolean_property property{constants::p_true};
+    const hgl::hyperedge_descriptor<boolean_property> sut{id1, property};
+    CHECK_EQ(sut.operator->(), &property);
+    CHECK_EQ(sut->value, property.value);
+}
+
+TEST_CASE_FIXTURE(
+    test_hyperedge_descriptor, "accessing properties should throw for an invalid hyperedge"
+) {
     using sut_type = hgl::hyperedge_descriptor<boolean_property>;
     boolean_property property{constants::p_true};
 
-    CHECK_THROWS_AS(static_cast<void>(sut_type::invalid().properties()), std::logic_error);
-    CHECK_THROWS_AS(
-        static_cast<void>(sut_type{hgl::invalid_id, property}.properties()), std::logic_error
-    );
+    // .properties()
+    CHECK_THROWS_AS(discard(sut_type::invalid().properties()), std::logic_error);
+    CHECK_THROWS_AS(discard(sut_type{hgl::invalid_id, property}.properties()), std::logic_error);
+
+    // operator*
+    CHECK_THROWS_AS(discard(*sut_type::invalid()), std::logic_error);
+    CHECK_THROWS_AS(discard(*sut_type{hgl::invalid_id, property}), std::logic_error);
+
+    // operator->
+    CHECK_THROWS_AS(discard(sut_type::invalid().operator->()), std::logic_error);
+    CHECK_THROWS_AS(discard(sut_type{hgl::invalid_id, property}.operator->()), std::logic_error);
 }
 
 TEST_SUITE_END(); // test_hypergraph_elements

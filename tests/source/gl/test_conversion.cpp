@@ -44,7 +44,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::edge_properties_type,
                           property_type>)
             for (const auto& eid : graph.edge_ids())
-                graph.get_edge_properties(eid) = property_type("edge_" + std::to_string(eid));
+                graph.edge_properties(eid) = property_type("edge_" + std::to_string(eid));
     }
 
     void validate_graph(const gl::traits::c_graph auto& graph) {
@@ -67,7 +67,7 @@ struct test_conversion {
                           typename std::decay_t<decltype(graph)>::edge_properties_type,
                           property_type>)
             for (const auto& eid : graph.edge_ids())
-                CHECK_EQ(graph.get_edge_properties(eid), "edge_" + std::to_string(eid));
+                CHECK_EQ(graph.edge_properties(eid), "edge_" + std::to_string(eid));
     }
 
     gl::size_type test_order{5};
