@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
@@ -13,11 +14,9 @@
 
 namespace hgl {
 
-// hypergraph vertex descriptor
+// --- hypergraph elements ---
 
 using gl::vertex_descriptor;
-
-// hyperedge descriptor
 
 template <
     traits::c_properties Properties = empty_properties,
@@ -153,4 +152,19 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
+// --- hypergraph element tags ---
+
+struct vertex_t {};
+
+struct hyperedge_t {};
+
+inline constexpr vertex_t vertex{};
+inline constexpr hyperedge_t hyperedge{};
+
+namespace traits {
+
+template <typename T>
+concept c_hypergraph_element_tag = c_one_of<T, vertex_t, hyperedge_t>;
+
+} // namespace traits
 } // namespace hgl

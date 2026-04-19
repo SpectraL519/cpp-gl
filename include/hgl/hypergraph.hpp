@@ -236,11 +236,20 @@ public:
         return this->vertex_unchecked(vertex_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline vertex_type at(vertex_t, const id_type vertex_id) const {
+        return this->vertex(vertex_id);
+    }
+
     [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id) const {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
         else
             return vertex_type{vertex_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type
+    operator[](vertex_t, const id_type vertex_id) const {
+        return this->vertex_unchecked(vertex_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
@@ -527,12 +536,22 @@ public:
         return this->hyperedge_unchecked(hyperedge_id);
     }
 
+    [[nodiscard]] gl_attr_force_inline hyperedge_type
+    at(hyperedge_t, const id_type hyperedge_id) const {
+        return this->hyperedge(hyperedge_id);
+    }
+
     [[nodiscard]] gl_attr_force_inline hyperedge_type hyperedge_unchecked(const id_type hyperedge_id
     ) const {
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
         else
             return hyperedge_type{hyperedge_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_type
+    operator[](hyperedge_t, const id_type hyperedge_id) const {
+        return this->hyperedge_unchecked(hyperedge_id);
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {

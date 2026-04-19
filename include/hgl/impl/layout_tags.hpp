@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "hgl/hypergraph_elements.hpp"
 #include "hgl/traits.hpp"
 #include "hgl/types.hpp"
 
@@ -13,11 +14,9 @@ namespace hgl {
 
 namespace impl {
 
-enum class element_type : bool { vertex, hyperedge };
-
 struct vertex_major_t {
-    static constexpr element_type major_element = element_type::vertex;
-    static constexpr element_type minor_element = element_type::hyperedge;
+    using major_element = vertex_t;
+    using minor_element = hyperedge_t;
 
     template <std::regular T>
     [[nodiscard]] static constexpr T major(
@@ -42,8 +41,8 @@ struct vertex_major_t {
 };
 
 struct hyperedge_major_t {
-    static constexpr element_type major_element = element_type::hyperedge;
-    static constexpr element_type minor_element = element_type::vertex;
+    using major_element = hyperedge_t;
+    using minor_element = vertex_t;
 
     template <std::regular T>
     [[nodiscard]] static constexpr T major(
@@ -82,5 +81,11 @@ concept c_hypergraph_asymmetric_layout_tag =
     c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
 
 } // namespace traits
+
+template <traits::c_hypergraph_asymmetric_layout_tag LT>
+using major_element_t = typename LT::major_element;
+
+template <traits::c_hypergraph_asymmetric_layout_tag LT>
+using minor_element_t = typename LT::minor_element;
 
 } // namespace hgl

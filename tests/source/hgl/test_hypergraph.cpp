@@ -1,4 +1,5 @@
 #include "doctest.h"
+#include "hgl/hypergraph_elements.hpp"
 #include "testing/common/functional.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
@@ -223,26 +224,30 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_FALSE(sut.has_vertex(constants::out_of_rng_vid));
     }
 
-    SUBCASE("vertex should throw if the given id is invalid") {
+    SUBCASE("vertex/at should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices};
         CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.at(hgl::vertex, constants::out_of_rng_vid)), std::out_of_range);
     }
 
-    SUBCASE("vertex should return a vertex with the given id") {
+    SUBCASE("vertex/at should return a vertex with the given id") {
         sut_type sut;
         const auto added_vertex = sut.add_vertex();
         CHECK_EQ(sut.vertex(added_vertex.id()), added_vertex);
+        CHECK_EQ(sut.at(hgl::vertex, added_vertex.id()), added_vertex);
     }
 
-    SUBCASE("vertex_uncheckekd should not throw if the given id is invalid (UB)") {
+    SUBCASE("vertex_uncheckekd/operator[] should not throw if the given id is invalid (UB)") {
         sut_type sut{constants::n_vertices};
         CHECK_NOTHROW(discard(sut.vertex_unchecked(constants::out_of_rng_vid)));
+        CHECK_NOTHROW(discard(sut[hgl::vertex, constants::out_of_rng_vid]));
     }
 
-    SUBCASE("vertex_uncheckekd should return a vertex with the given id") {
+    SUBCASE("vertex_uncheckekd/operator[] should return a vertex with the given id") {
         sut_type sut;
         const auto added_vertex = sut.add_vertex();
         CHECK_EQ(sut.vertex_unchecked(added_vertex.id()), added_vertex);
+        CHECK_EQ(sut[hgl::vertex, added_vertex.id()], added_vertex);
     }
 
     // --- hyperedge modifers ---
@@ -536,26 +541,32 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_FALSE(sut.has_hyperedge(constants::out_of_rng_eid));
     }
 
-    SUBCASE("hyperedge should throw if the given id is invalid") {
+    SUBCASE("hyperedge/at should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(discard(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range);
+        CHECK_THROWS_AS(
+            discard(sut.at(hgl::hyperedge, constants::out_of_rng_eid)), std::out_of_range
+        );
     }
 
-    SUBCASE("hyperedge should return a hyperedge with the given id") {
+    SUBCASE("hyperedge/at should return a hyperedge with the given id") {
         sut_type sut;
         const auto added_hyperedge = sut.add_hyperedge();
         CHECK_EQ(sut.hyperedge(added_hyperedge.id()), added_hyperedge);
+        CHECK_EQ(sut.at(hgl::hyperedge, added_hyperedge.id()), added_hyperedge);
     }
 
-    SUBCASE("hyperedge_unchecked should not throw if the given id is invalid (UB)") {
+    SUBCASE("hyperedge_unchecked/operator[] should not throw if the given id is invalid (UB)") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_NOTHROW(discard(sut.hyperedge_unchecked(constants::out_of_rng_eid)));
+        CHECK_NOTHROW(discard(sut[hgl::hyperedge, constants::out_of_rng_eid]));
     }
 
-    SUBCASE("hyperedge_unchecked should return a hyperedge with the given id") {
+    SUBCASE("hyperedge_unchecked/operator[] should return a hyperedge with the given id") {
         sut_type sut;
         const auto added_hyperedge = sut.add_hyperedge();
         CHECK_EQ(sut.hyperedge_unchecked(added_hyperedge.id()), added_hyperedge);
+        CHECK_EQ(sut[hgl::hyperedge, added_hyperedge.id()], added_hyperedge);
     }
 
     // --- incidence method tests ---
