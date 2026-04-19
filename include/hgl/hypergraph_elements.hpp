@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/vertex_descriptor.hpp"
 #include "hgl/constants.hpp"
@@ -13,11 +14,9 @@
 
 namespace hgl {
 
-// hypergraph vertex descriptor
+// --- hypergraph elements ---
 
 using gl::vertex_descriptor;
-
-// hyperedge descriptor
 
 template <
     traits::c_properties Properties = empty_properties,
@@ -27,10 +26,6 @@ public:
     using type = hyperedge_descriptor<Properties>;
     using id_type = IdType;
     using properties_type = Properties;
-    using properties_ref_type = std::conditional_t<
-        traits::c_empty_properties<properties_type>,
-        empty_properties,
-        properties_type&>;
 
     hyperedge_descriptor() {
         *this = hyperedge_descriptor::invalid();
@@ -87,10 +82,24 @@ public:
         return this->_id;
     }
 
-    [[nodiscard]] properties_ref_type properties() const {
-        if (not this->is_valid())
-            throw std::logic_error("Cannot access properties of an invalid hyperedge");
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return this->_properties.get();
+    }
 
+    [[nodiscard]] gl_attr_force_inline properties_type* operator->() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return &this->_properties.get();
+    }
+
+    [[nodiscard]] gl_attr_force_inline properties_type& operator*() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
         return this->_properties.get();
     }
 
@@ -104,6 +113,15 @@ public:
     }
 
 private:
+    [[noreturn]] void _throw_invalid_access() const {
+        throw std::logic_error("Cannot access properties of an invalid hyperedge");
+    }
+
+    gl_attr_force_inline void _validate() const {
+        if (not this->is_valid())
+            this->_throw_invalid_access();
+    }
+
     std::ostream& _verbose_write(std::ostream& os) const {
         using enum io::detail::option_bit;
 
@@ -134,4 +152,19 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
+// --- hypergraph element tags ---
+
+struct vertex_t {};
+
+struct hyperedge_t {};
+
+inline constexpr vertex_t vertex{};
+inline constexpr hyperedge_t hyperedge{};
+
+namespace traits {
+
+template <typename T>
+concept c_hypergraph_element_tag = c_one_of<T, vertex_t, hyperedge_t>;
+
+} // namespace traits
 } // namespace hgl

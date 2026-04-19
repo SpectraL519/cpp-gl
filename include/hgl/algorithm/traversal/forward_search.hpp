@@ -26,7 +26,7 @@ return_type<Result, search_tree<H>> forward_bfs(
 ) {
     using id_type = typename H::id_type;
 
-    std::vector<bool> visited_vertices(hypergraph.order(), false);
+    std::vector<bool> visited_vertices(hypergraph.n_vertices(), false);
     auto head_unvisited = hypergraph.head_size_map() | std::ranges::to<std::vector>();
 
     auto stree = init_search_tree<Result>(hypergraph);
@@ -67,7 +67,7 @@ return_type<Result, search_tree<H>> forward_dfs(
 ) {
     using id_type = typename H::id_type;
 
-    std::vector<bool> visited_vertices(hypergraph.order(), false);
+    std::vector<bool> visited_vertices(hypergraph.n_vertices(), false);
     auto head_unvisited = hypergraph.head_size_map() | std::ranges::to<std::vector>();
 
     auto stree = init_search_tree<Result>(hypergraph);

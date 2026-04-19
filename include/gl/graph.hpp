@@ -316,6 +316,20 @@ public:
         return this->successor_ids(vertex.id());
     }
 
+    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(const id_type id
+    ) const
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        this->_verify_vertex_id(id);
+        return *this->_vertex_properties[id];
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        return util::deref_view(this->_vertex_properties);
+    }
+
     // --- degree getters ---
 
     [[nodiscard]] gl_attr_force_inline size_type degree(const id_type vertex_id) const {
@@ -559,6 +573,21 @@ public:
         return this->out_edges(vertex.id());
     }
 
+    [[nodiscard]] edge_properties_type& edge_properties(const id_type id) const
+    requires(traits::c_non_empty_properties<edge_properties_type>)
+    {
+        if (id >= this->_n_edges)
+            throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
+
+        return *this->_edge_properties[id];
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto edge_properties_map() const noexcept
+    requires(traits::c_non_empty_properties<edge_properties_type>)
+    {
+        return util::deref_view(this->_edge_properties);
+    }
+
     // --- adjacency and incidence methods ---
 
     [[nodiscard]] gl_attr_force_inline bool are_adjacent(
@@ -593,37 +622,6 @@ public:
     [[nodiscard]] gl_attr_force_inline bool are_incident(const edge_type& edge, vertex_type vertex)
         const {
         return this->are_incident(vertex, edge);
-    }
-
-    // --- property getters ---
-
-    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
-    requires(traits::c_non_empty_properties<vertex_properties_type>)
-    {
-        return util::deref_view(this->_vertex_properties);
-    }
-
-    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(const id_type id
-    ) const
-    requires(traits::c_non_empty_properties<vertex_properties_type>)
-    {
-        this->_verify_vertex_id(id);
-        return *this->_vertex_properties[id];
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto edge_properties_map() const noexcept
-    requires(traits::c_non_empty_properties<edge_properties_type>)
-    {
-        return util::deref_view(this->_edge_properties);
-    }
-
-    [[nodiscard]] edge_properties_type& get_edge_properties(const id_type id) const
-    requires(traits::c_non_empty_properties<edge_properties_type>)
-    {
-        if (id >= this->_n_edges)
-            throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
-
-        return *this->_edge_properties[id];
     }
 
     // --- comparison ---

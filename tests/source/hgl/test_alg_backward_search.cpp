@@ -39,8 +39,8 @@ TEST_CASE_TEMPLATE_DEFINE(
        v1 ------->------ v4
     */
 
-    const auto order = 5uz;
-    hypergraph.add_vertices(order);
+    const auto n_vertices = 5uz;
+    hypergraph.add_vertices(n_vertices);
     const auto e0 = hypergraph.add_hyperedge({0u, 1u}, {2u}).id();
     const auto e1 = hypergraph.add_hyperedge({2u}, {3u, 4u}).id();
     const auto e2 = hypergraph.add_hyperedge({1u}, {4u}).id();
@@ -48,9 +48,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("single root v0 (immediate halt)") {
         root_vertices = {0u};
         expected_visit_order = {0u};
-        expected_pred_map.resize(order, hgl::invalid_id);
+        expected_pred_map.resize(n_vertices, hgl::invalid_id);
         expected_pred_map[0uz] = 0u;
-        expected_in_hyperedges.resize(order, hgl::invalid_id);
+        expected_in_hyperedges.resize(n_vertices, hgl::invalid_id);
         unreachable_vertices = {1u, 2u, 3u, 4u};
     }
 
@@ -74,8 +74,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     std::vector<id_type> previsit_order;
     std::vector<id_type> postvisit_order;
-    std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
-    std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
+    std::vector<id_type> noret_pred_map(hypergraph.n_vertices(), hgl::invalid_id);
+    std::vector<id_type> noret_in_hyperedges(hypergraph.n_vertices(), hgl::invalid_id);
 
     hgl::algorithm::backward_bfs<hgl::algorithm::noret>(
         hypergraph,
@@ -178,8 +178,8 @@ TEST_CASE_TEMPLATE_DEFINE(
        v1 ------->------ v4
     */
 
-    const auto order = 5uz;
-    hypergraph.add_vertices(order);
+    const auto n_vertices = 5uz;
+    hypergraph.add_vertices(n_vertices);
     const auto e0 = hypergraph.add_hyperedge({0u, 1u}, {2u}).id();
     const auto e1 = hypergraph.add_hyperedge({2u}, {3u, 4u}).id();
     const auto e2 = hypergraph.add_hyperedge({1u}, {4u}).id();
@@ -187,9 +187,9 @@ TEST_CASE_TEMPLATE_DEFINE(
     SUBCASE("single root v0 (immediate halt)") {
         root_vertices = {0u};
         expected_visit_order = {0u};
-        expected_pred_map.resize(order, hgl::invalid_id);
+        expected_pred_map.resize(n_vertices, hgl::invalid_id);
         expected_pred_map[0uz] = 0u;
-        expected_in_hyperedges.resize(order, hgl::invalid_id);
+        expected_in_hyperedges.resize(n_vertices, hgl::invalid_id);
         unreachable_vertices = {1u, 2u, 3u, 4u};
     }
 
@@ -223,8 +223,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     std::vector<id_type> previsit_order;
     std::vector<id_type> postvisit_order;
-    std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
-    std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
+    std::vector<id_type> noret_pred_map(hypergraph.n_vertices(), hgl::invalid_id);
+    std::vector<id_type> noret_in_hyperedges(hypergraph.n_vertices(), hgl::invalid_id);
 
     hgl::algorithm::backward_dfs<hgl::algorithm::noret>(
         hypergraph,

@@ -937,8 +937,8 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_matrix,
     "incident_vertices should return a view of the hyperedge's incident vertex ids, "
-    "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
-    "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
+    "tail should return a view of the hyperedge's tail vertex ids: T(e), "
+    "head should return a view of the hyperedge's head vertex ids: H(e)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -949,8 +949,8 @@ TEST_CASE_FIXTURE(
         altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
 
     CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view));
-    CHECK(std::ranges::equal(sut.tail_vertices(hyperedge_id), tail_bound_vertices));
-    CHECK(std::ranges::equal(sut.head_vertices(hyperedge_id), head_bound_vertices));
+    CHECK(std::ranges::equal(sut.tail(hyperedge_id), tail_bound_vertices));
+    CHECK(std::ranges::equal(sut.head(hyperedge_id), head_bound_vertices));
 }
 
 TEST_CASE_FIXTURE(
@@ -983,7 +983,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::backward);
 
-    const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
+    const auto vertices = sut.tail(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.tail_size(constants::id1), 1uz);
     CHECK_EQ(std::ranges::size(vertices), 1uz);
     CHECK(std::ranges::contains(vertices, constants::id1));
@@ -1000,7 +1000,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::forward);
 
-    const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
+    const auto vertices = sut.head(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.head_size(constants::id1), 1uz);
     CHECK_EQ(std::ranges::size(vertices), 1uz);
     CHECK(std::ranges::contains(vertices, constants::id1));
@@ -1391,8 +1391,8 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_matrix,
     "incident_vertices should return a view of the hyperedge's incident vertex ids, "
-    "tail_vertices should return a view of the hyperedge's tail vertex ids: T(e), "
-    "head_vertices should return a view of the hyperedge's head vertex ids: H(e)"
+    "tail should return a view of the hyperedge's tail vertex ids: T(e), "
+    "head should return a view of the hyperedge's head vertex ids: H(e)"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
@@ -1403,8 +1403,8 @@ TEST_CASE_FIXTURE(
         altbind_to_hyperedge(sut, hyperedge_id, constants::n_vertices);
 
     CHECK(std::ranges::equal(sut.incident_vertices(hyperedge_id), constants::vertex_ids_view));
-    CHECK(std::ranges::equal(sut.tail_vertices(hyperedge_id), tail_bound_vertices));
-    CHECK(std::ranges::equal(sut.head_vertices(hyperedge_id), head_bound_vertices));
+    CHECK(std::ranges::equal(sut.tail(hyperedge_id), tail_bound_vertices));
+    CHECK(std::ranges::equal(sut.head(hyperedge_id), head_bound_vertices));
 }
 
 TEST_CASE_FIXTURE(
@@ -1437,7 +1437,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::backward);
 
-    const auto vertices = sut.tail_vertices(constants::id1) | std::ranges::to<std::vector>();
+    const auto vertices = sut.tail(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.tail_size(constants::id1), 1uz);
     CHECK_EQ(std::ranges::size(vertices), 1uz);
     CHECK(std::ranges::contains(vertices, constants::id1));
@@ -1454,7 +1454,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(matrix(sut)[constants::id1][constants::id1], incidence_type::forward);
 
-    const auto vertices = sut.head_vertices(constants::id1) | std::ranges::to<std::vector>();
+    const auto vertices = sut.head(constants::id1) | std::ranges::to<std::vector>();
     CHECK_EQ(sut.head_size(constants::id1), 1uz);
     CHECK_EQ(std::ranges::size(vertices), 1uz);
     CHECK(std::ranges::contains(vertices, constants::id1));

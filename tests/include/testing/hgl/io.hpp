@@ -10,8 +10,8 @@ namespace hgl_testing {
 
 template <hgl::traits::c_hypergraph HypergraphType>
 void verify_hypergraph_structure(const HypergraphType& actual, const HypergraphType& expected) {
-    REQUIRE_EQ(actual.order(), expected.order());
-    REQUIRE_EQ(actual.size(), expected.size());
+    REQUIRE_EQ(actual.n_vertices(), expected.n_vertices());
+    REQUIRE_EQ(actual.n_hyperedges(), expected.n_hyperedges());
 
     for (const auto& he_actual : actual.hyperedges()) {
         const auto id = he_actual.id();
@@ -25,12 +25,12 @@ void verify_hypergraph_structure(const HypergraphType& actual, const HypergraphT
         else if constexpr (std::same_as<
                                typename HypergraphType::directional_tag,
                                hgl::bf_directed_t>) {
-            auto actual_tail = actual.tail_vertex_ids(id) | std::ranges::to<std::vector>();
-            auto expected_tail = expected.tail_vertex_ids(id) | std::ranges::to<std::vector>();
+            auto actual_tail = actual.tail_ids(id) | std::ranges::to<std::vector>();
+            auto expected_tail = expected.tail_ids(id) | std::ranges::to<std::vector>();
             CHECK(std::ranges::is_permutation(actual_tail, expected_tail));
 
-            auto actual_head = actual.head_vertex_ids(id) | std::ranges::to<std::vector>();
-            auto expected_head = expected.head_vertex_ids(id) | std::ranges::to<std::vector>();
+            auto actual_head = actual.head_ids(id) | std::ranges::to<std::vector>();
+            auto expected_head = expected.head_ids(id) | std::ranges::to<std::vector>();
             CHECK(std::ranges::is_permutation(actual_head, expected_head));
         }
     }

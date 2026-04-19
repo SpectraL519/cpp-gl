@@ -21,8 +21,8 @@ return_type<Result, search_tree<H>> depth_first_search(
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    std::vector<bool> visited_vertices(hypergraph.order(), false);
-    std::vector<bool> visited_hyperedges(hypergraph.size(), false);
+    std::vector<bool> visited_vertices(hypergraph.n_vertices(), false);
+    std::vector<bool> visited_hyperedges(hypergraph.n_hyperedges(), false);
 
     auto stree = init_search_tree<Result>(hypergraph);
 

@@ -15,7 +15,7 @@ template <result_discriminator Result, traits::c_hypergraph H>
 ) {
     using return_t = non_void_return_type<Result, search_tree<H>>;
     if constexpr (Result == ret)
-        return return_t(hypergraph.order());
+        return return_t(hypergraph.n_vertices());
     else
         return return_t();
 }
