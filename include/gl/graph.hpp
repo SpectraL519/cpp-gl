@@ -596,6 +596,7 @@ public:
     }
 
     // --- property getters ---
+    // TODO: move to vertex/edge getters
 
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)

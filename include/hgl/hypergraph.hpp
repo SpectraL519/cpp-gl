@@ -123,7 +123,7 @@ public:
 
     ~hypergraph() = default;
 
-    // --- general methods ---
+    // --- size methods ---
 
     [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
@@ -133,31 +133,7 @@ public:
         return this->_n_hyperedges;
     }
 
-    // --- vertex methods ---
-
-    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
-        return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
-        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
-    }
-
-    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
-        else
-            return vertex_type{vertex_id};
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
-        return vertex_id < this->_n_vertices;
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
-        return this->has_vertex(vertex.id());
-    }
+    // --- vertex modifiers ---
 
     vertex_type add_vertex() {
         this->_impl.add_vertices(1uz);
@@ -243,6 +219,32 @@ public:
         // TODO: optimize
         for (const auto& vertex : vertex_set)
             this->_remove_vertex_impl(vertex.id());
+    }
+
+    // --- vertex getters ---
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
+        return vertex_id < this->_n_vertices;
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+        return this->has_vertex(vertex.id());
+    }
+
+    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
+        this->_verify_vertex_id(vertex_id);
+        if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
+            return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
+        else
+            return vertex_type{vertex_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
+        return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
+        return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
@@ -547,7 +549,7 @@ public:
         return *this->_hyperedge_properties[id];
     }
 
-    // --- incidence methods ---
+    // --- incidence modifiers ---
 
     void bind(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, undirected_t>
@@ -823,6 +825,8 @@ public:
         this->unbind(vertex.id(), hyperedge.id());
     }
 
+    // --- incidence validators ---
+
     [[nodiscard]] bool are_incident(const id_type vertex_id, const id_type hyperedge_id) const {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
@@ -866,6 +870,8 @@ public:
     {
         return this->is_head(vertex.id(), hyperedge.id());
     }
+
+    // --- incidence getters ---
 
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const id_type vertex_id) {
         return this->incident_hyperedge_ids(vertex_id)
@@ -1266,6 +1272,20 @@ private:
             this->_vertex_properties.erase(this->_vertex_properties.begin() + vertex_id);
     }
 
+    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    requires(traits::c_empty_properties<vertex_properties_type>)
+    {
+        return [](const id_type id) { return vertex_type{id}; };
+    }
+
+    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    requires(traits::c_non_empty_properties<vertex_properties_type>)
+    {
+        return [&pmap = this->_vertex_properties](const id_type id) {
+            return vertex_type{id, *pmap[to_idx(id)]};
+        };
+    }
+
     // --- hyperedge methods ---
 
     gl_attr_force_inline void _verify_hyperedge_id(const id_type hyperedge_id) const {
@@ -1281,22 +1301,6 @@ private:
         this->_n_hyperedges--;
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             this->_hyperedge_properties.erase(this->_hyperedge_properties.begin() + hyperedge_id);
-    }
-
-    // --- transformations ---
-
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
-    requires(traits::c_empty_properties<vertex_properties_type>)
-    {
-        return [](const id_type id) { return vertex_type{id}; };
-    }
-
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
-    requires(traits::c_non_empty_properties<vertex_properties_type>)
-    {
-        return [&pmap = this->_vertex_properties](const id_type id) {
-            return vertex_type{id, *pmap[to_idx(id)]};
-        };
     }
 
     gl_attr_force_inline auto _create_hyperedge_descriptor() const noexcept

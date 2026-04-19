@@ -59,8 +59,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename sut_type::vertex_type;
     using hyperedge_type = typename sut_type::hyperedge_type;
 
-    // --- general tests ---
-
     SUBCASE("a hypergraph should be initialized with no vertices and no hyperedges by default") {
         sut_type sut{};
         CHECK_EQ(sut.n_vertices(), 0uz);
@@ -103,7 +101,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    // --- vertex method tests ---
+    // --- vertex modifiers ---
 
     SUBCASE("add_vertex should return a vertex_descriptor with an incremented id") {
         sut_type sut;
@@ -156,29 +154,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK(rng::equal(sut.vertices(), properties_list, rng::equal_to{}, [](const auto vertex) {
             return vertex.properties();
         }));
-    }
-
-    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
-            "the graph") {
-        sut_type sut{constants::n_vertices};
-
-        CHECK(rng::all_of(constants::vertex_ids_view, [&sut](const auto vertex_id) {
-            return sut.has_vertex(vertex_id);
-        }));
-        CHECK_FALSE(sut.has_vertex(constants::out_of_rng_vid));
-    }
-
-    SUBCASE("vertex should throw if the given id is invalid") {
-        sut_type sut{constants::n_vertices};
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
-        );
-    }
-
-    SUBCASE("vertex should return a vertex with the given id") {
-        sut_type sut;
-        const auto added_vertex = sut.add_vertex();
-        CHECK_EQ(sut.vertex(added_vertex.id()), added_vertex);
     }
 
     SUBCASE("remove_vertex(vertex) should do nothing if the given vertex is invalid") {
@@ -245,7 +220,32 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
-    // --- hyperedge method tests ---
+    // --- vertex getters ---
+
+    SUBCASE("has_vertex(id) should return true when a vertex with the given id is present in "
+            "the graph") {
+        sut_type sut{constants::n_vertices};
+
+        CHECK(rng::all_of(constants::vertex_ids_view, [&sut](const auto vertex_id) {
+            return sut.has_vertex(vertex_id);
+        }));
+        CHECK_FALSE(sut.has_vertex(constants::out_of_rng_vid));
+    }
+
+    SUBCASE("vertex should throw if the given id is invalid") {
+        sut_type sut{constants::n_vertices};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
+        );
+    }
+
+    SUBCASE("vertex should return a vertex with the given id") {
+        sut_type sut;
+        const auto added_vertex = sut.add_vertex();
+        CHECK_EQ(sut.vertex(added_vertex.id()), added_vertex);
+    }
+
+    // --- hyperedge modifers ---
 
     SUBCASE("add_hyperedge should return a hyperedge_descriptor with an incremented id") {
         sut_type sut;
@@ -464,29 +464,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         ));
     }
 
-    SUBCASE("has_hyperedge(id) should return true when a hyperedge with the given id is present in "
-            "the graph") {
-        sut_type sut{constants::n_vertices, constants::n_hyperedges};
-
-        CHECK(rng::all_of(constants::hyperedge_ids_view, [&sut](const auto hyperedge_id) {
-            return sut.has_hyperedge(hyperedge_id);
-        }));
-        CHECK_FALSE(sut.has_hyperedge(constants::out_of_rng_eid));
-    }
-
-    SUBCASE("hyperedge should throw if the given id is invalid") {
-        sut_type sut{constants::n_vertices, constants::n_hyperedges};
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
-        );
-    }
-
-    SUBCASE("hyperedge should return a hyperedge with the given id") {
-        sut_type sut;
-        const auto added_hyperedge = sut.add_hyperedge();
-        CHECK_EQ(sut.hyperedge(added_hyperedge.id()), added_hyperedge);
-    }
-
     SUBCASE("remove_hyperedge(hyperedge) should do nothing if the given hyperedge is invalid") {
         sut_type sut{0uz, constants::n_hyperedges};
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
@@ -549,6 +526,31 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
+    }
+
+    // --- hyperedge getters ---
+
+    SUBCASE("has_hyperedge(id) should return true when a hyperedge with the given id is present in "
+            "the graph") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+
+        CHECK(rng::all_of(constants::hyperedge_ids_view, [&sut](const auto hyperedge_id) {
+            return sut.has_hyperedge(hyperedge_id);
+        }));
+        CHECK_FALSE(sut.has_hyperedge(constants::out_of_rng_eid));
+    }
+
+    SUBCASE("hyperedge should throw if the given id is invalid") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK_THROWS_AS(
+            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
+        );
+    }
+
+    SUBCASE("hyperedge should return a hyperedge with the given id") {
+        sut_type sut;
+        const auto added_hyperedge = sut.add_hyperedge();
+        CHECK_EQ(sut.hyperedge(added_hyperedge.id()), added_hyperedge);
     }
 
     // --- incidence method tests ---
