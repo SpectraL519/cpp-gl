@@ -244,7 +244,6 @@ TEST_CASE_TEMPLATE_DEFINE(
         // Pop v0 -> no incoming edges.
         expected_visit_order = {4u, 1u, 3u, 2u, 0u};
 
-        // Notice v2's pred is v3 now! (v3 was popped after v4, unlocking e1)
         expected_pred_map = {
             2u, // v0 reached backward from v2 via e0
             4u, // v1 reached backward from v4 via e2

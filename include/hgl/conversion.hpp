@@ -68,9 +68,9 @@ struct to_impl {
         }
         else {
             for (const auto eid : source.hyperedge_ids()) {
-                for (const auto vid : source.tail_vertex_ids(eid))
+                for (const auto vid : source.tail_ids(eid))
                     target._impl.bind_tail(vid, eid);
-                for (const auto vid : source.head_vertex_ids(eid))
+                for (const auto vid : source.head_ids(eid))
                     target._impl.bind_head(vid, eid);
             }
         }
@@ -267,8 +267,8 @@ template <gl::traits::c_directed_graph G>
     std::vector<edge_vertices> edges;
 
     for (const auto eid : h.hyperedge_ids()) {
-        auto sources = h.tail_vertex_ids(eid);
-        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector>();
+        auto sources = h.tail_ids(eid);
+        const auto targets = h.head_ids(eid) | std::ranges::to<std::vector>();
         for (const auto u : sources)
             for (const auto v : targets)
                 edges.emplace_back(u, v);
@@ -336,7 +336,7 @@ template <gl::traits::c_directed_graph G>
         g.add_edges_from(vid, targets);
     }
     for (const auto eid : h.hyperedge_ids()) {
-        const auto targets = h.head_vertex_ids(eid) | std::ranges::to<std::vector<g_id_type>>();
+        const auto targets = h.head_ids(eid) | std::ranges::to<std::vector<g_id_type>>();
         g.add_edges_from(align_edge_id(eid), targets);
     }
 

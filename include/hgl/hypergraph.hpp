@@ -391,13 +391,11 @@ public:
         );
     }
 
-    gl_attr_force_inline hyperedge_type add_hyperedge(
-        std::initializer_list<vertex_type> tail_vertices,
-        std::initializer_list<vertex_type> head_vertices
-    )
+    gl_attr_force_inline hyperedge_type
+    add_hyperedge(std::initializer_list<vertex_type> tail, std::initializer_list<vertex_type> head)
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->add_hyperedge(std::views::all(tail_vertices), std::views::all(head_vertices));
+        return this->add_hyperedge(std::views::all(tail), std::views::all(head));
     }
 
     hyperedge_type add_hyperedge_with(
@@ -440,14 +438,14 @@ public:
     }
 
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
-        std::initializer_list<vertex_type> tail_vertices,
-        std::initializer_list<vertex_type> head_vertices,
+        std::initializer_list<vertex_type> tail,
+        std::initializer_list<vertex_type> head,
         hyperedge_properties_type properties
     )
     requires(std::same_as<directional_tag, bf_directed_t> and traits::c_non_empty_properties<hyperedge_properties_type>)
     {
         return this->add_hyperedge_with(
-            std::views::all(tail_vertices), std::views::all(head_vertices), std::move(properties)
+            std::views::all(tail), std::views::all(head), std::move(properties)
         );
     }
 
@@ -1040,30 +1038,30 @@ public:
         return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id) const
+    [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertex_ids(hyperedge_id)
+        return this->tail_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto tail(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertices(hyperedge.id());
+        return this->tail(hyperedge.id());
     }
 
-    [[nodiscard]] auto tail_vertex_ids(const id_type hyperedge_id) const
+    [[nodiscard]] auto tail_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.tail_vertices(hyperedge_id);
+        return this->_impl.tail(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertex_ids(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto tail_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->tail_vertex_ids(hyperedge.id());
+        return this->tail_ids(hyperedge.id());
     }
 
     [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const
@@ -1085,30 +1083,30 @@ public:
         return this->_impl.tail_size_map(this->_n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id) const
+    [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertex_ids(hyperedge_id)
+        return this->head_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto head(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertices(hyperedge.id());
+        return this->head(hyperedge.id());
     }
 
-    [[nodiscard]] auto head_vertex_ids(const id_type hyperedge_id) const
+    [[nodiscard]] auto head_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->_verify_hyperedge_id(hyperedge_id);
-        return this->_impl.head_vertices(hyperedge_id);
+        return this->_impl.head(hyperedge_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertex_ids(const hyperedge_type& hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto head_ids(const hyperedge_type& hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
-        return this->head_vertex_ids(hyperedge.id());
+        return this->head_ids(hyperedge.id());
     }
 
     [[nodiscard]] size_type head_size(const id_type hyperedge_id) const
@@ -1189,19 +1187,17 @@ public:
             using io::detail::option_bit;
 
             if (io::is_option_set(os, option_bit::verbose)) {
-                os << "[id: " << proxy.hyperedge.id() << " | tail: "
-                   << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
-                   << ", head: "
-                   << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()));
+                os << "[id: " << proxy.hyperedge.id()
+                   << " | tail: " << io::set_formatter(proxy.hg.tail_ids(proxy.hyperedge.id()))
+                   << ", head: " << io::set_formatter(proxy.hg.head_ids(proxy.hyperedge.id()));
                 if constexpr (traits::c_writable<hyperedge_properties_type>)
                     if (io::is_option_set(os, option_bit::with_connection_properties))
                         os << " | " << proxy.hyperedge.properties();
                 os << "]";
             }
             else { // concise
-                os << '(' << io::set_formatter(proxy.hg.tail_vertex_ids(proxy.hyperedge.id()))
-                   << " -> " << io::set_formatter(proxy.hg.head_vertex_ids(proxy.hyperedge.id()))
-                   << ')';
+                os << '(' << io::set_formatter(proxy.hg.tail_ids(proxy.hyperedge.id())) << " -> "
+                   << io::set_formatter(proxy.hg.head_ids(proxy.hyperedge.id())) << ')';
                 if constexpr (traits::c_writable<hyperedge_properties_type>)
                     if (io::is_option_set(os, option_bit::with_connection_properties))
                         os << '[' << proxy.hyperedge.properties() << ']';
@@ -1419,9 +1415,9 @@ private:
             }
             else if constexpr (std::same_as<directional_tag, bf_directed_t>) {
                 os << this->tail_size(he_id) << ' ' << this->head_size(he_id);
-                for (const auto v : this->tail_vertex_ids(he_id))
+                for (const auto v : this->tail_ids(he_id))
                     os << ' ' << v;
-                for (const auto v : this->head_vertex_ids(he_id))
+                for (const auto v : this->head_ids(he_id))
                     os << ' ' << v;
             }
 

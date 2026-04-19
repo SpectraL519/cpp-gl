@@ -334,8 +334,7 @@ public:
         return this->_size_map<element_type::hyperedge>(n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const noexcept {
         return this->_get<element_type::hyperedge>(hyperedge_id, &incidence_list::_tail_storage);
     }
 
@@ -350,8 +349,7 @@ public:
         );
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const noexcept {
         return this->_get<element_type::hyperedge>(hyperedge_id, &incidence_list::_head_storage);
     }
 
@@ -710,10 +708,10 @@ public:
         return this->_e_list.hyperedge_size_map(n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id) const noexcept
+    [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const noexcept
     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
     {
-        return this->_e_list.tail_vertices(hyperedge_id);
+        return this->_e_list.tail(hyperedge_id);
     }
 
     [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const noexcept
@@ -728,10 +726,10 @@ public:
         return this->_e_list.tail_size_map(n_hyperedges);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id) const noexcept
+    [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const noexcept
     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
     {
-        return this->_e_list.head_vertices(hyperedge_id);
+        return this->_e_list.head(hyperedge_id);
     }
 
     [[nodiscard]] size_type head_size(const id_type hyperedge_id) const noexcept

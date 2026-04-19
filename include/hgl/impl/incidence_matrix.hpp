@@ -337,8 +337,7 @@ public:
         return this->_count_map<element_type::hyperedge>(n_hyperedges, bf_is_incident);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto tail_vertices(const id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const noexcept {
         return this->_query<element_type::hyperedge>(hyperedge_id, bf_is_tail);
     }
 
@@ -351,8 +350,7 @@ public:
         return this->_count_map<element_type::hyperedge>(n_hyperedges, bf_is_tail);
     }
 
-    [[nodiscard]] gl_attr_force_inline auto head_vertices(const id_type hyperedge_id
-    ) const noexcept {
+    [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const noexcept {
         return this->_query<element_type::hyperedge>(hyperedge_id, bf_is_head);
     }
 
