@@ -198,7 +198,7 @@ struct directed_adjacency_list {
     }
 
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
-        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+        const impl_type& self, id_type vertex_id, auto& edge_properties_map
     ) {
         return util::concat(
             self.in_edges(vertex_id, edge_properties_map),
@@ -358,7 +358,7 @@ struct undirected_adjacency_list {
     }
 
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
-        const impl_type& self, id_type vertex_id, const auto& edge_properties_map
+        const impl_type& self, id_type vertex_id, auto& edge_properties_map
     ) {
         return self.out_edges(vertex_id, edge_properties_map);
     }
