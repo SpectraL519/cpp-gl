@@ -93,7 +93,7 @@ public:
     using edge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<edge_properties_type>,
         empty_properties_map,
-        std::vector<std::unique_ptr<edge_properties_type>>>;
+        std::vector<edge_properties_type>>;
 
     graph& operator=(const graph&) = delete;
 
@@ -355,18 +355,16 @@ public:
         const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
-            const auto& p =
-                this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
-            return edge_type{new_edge_id, source_id, target_id, *p};
-        }
-        else {
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            return edge_type{
+                new_edge_id, source_id, target_id, this->_edge_properties.emplace_back()
+            };
+        else
             return edge_type{new_edge_id, source_id, target_id};
-        }
     }
 
     edge_type add_edge_with(
-        const id_type source_id, const id_type target_id, const edge_properties_type& properties
+        const id_type source_id, const id_type target_id, edge_properties_type properties
     )
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
@@ -376,9 +374,12 @@ public:
         const auto new_edge_id = static_cast<id_type>(this->_n_edges++);
         this->_impl.add_edge(new_edge_id, source_id, target_id);
 
-        auto& p =
-            this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>(properties));
-        return edge_type{new_edge_id, source_id, target_id, *p};
+        return edge_type{
+            new_edge_id,
+            source_id,
+            target_id,
+            this->_edge_properties.emplace_back(std::move(properties))
+        };
     }
 
     // clang-format off
@@ -402,12 +403,8 @@ public:
         const id_type source_id, const traits::c_sized_range_of<id_type> auto& target_id_rng
     ) {
         this->_verify_vertex_id(source_id);
-
-        for (auto target_id : target_id_rng) {
+        for (auto target_id : target_id_rng)
             this->_verify_vertex_id(target_id);
-            if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-                this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
-        }
 
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_id_rng);
@@ -416,18 +413,17 @@ public:
             source_id,
             target_id_rng
         );
+
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            this->_edge_properties.resize(this->_n_edges);
     }
 
     void add_edges_from(
         vertex_type source, const traits::c_sized_range_of<vertex_type> auto& target_rng
     ) {
         this->_verify_vertex_id(source.id());
-
-        for (auto target : target_rng) {
+        for (auto target : target_rng)
             this->_verify_vertex_id(target.id());
-            if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-                this->_edge_properties.emplace_back(std::make_unique<edge_properties_type>());
-        }
 
         const auto prev_n_edges = this->_n_edges;
         this->_n_edges += std::ranges::size(target_rng);
@@ -436,6 +432,10 @@ public:
             source.id(),
             target_rng | std::views::transform(&vertex_type::id)
         );
+
+
+        if constexpr (traits::c_non_empty_properties<edge_properties_type>)
+            this->_edge_properties.resize(this->_n_edges);
     }
 
     void remove_edge(const edge_type& edge) {
@@ -554,13 +554,13 @@ public:
         if (id >= this->_n_edges)
             throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
 
-        return *this->_edge_properties[id];
+        return this->_edge_properties[id];
     }
 
     [[nodiscard]] gl_attr_force_inline auto edge_properties_map() const noexcept
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
-        return util::deref_view(this->_edge_properties);
+        return std::views::all(this->_edge_properties);
     }
 
     // --- adjacency and incidence methods ---
@@ -602,10 +602,6 @@ public:
     // --- comparison ---
 
     [[nodiscard]] friend bool operator==(const graph& lhs, const graph& rhs) noexcept {
-        constexpr auto val_eq = [](const auto& ptr_a, const auto& ptr_b) {
-            return *ptr_a == *ptr_b;
-        };
-
         if (lhs._n_vertices != rhs._n_vertices or lhs._n_edges != rhs._n_edges)
             return false;
 
@@ -614,7 +610,7 @@ public:
                 return false;
 
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            if (not std::ranges::equal(lhs._edge_properties, rhs._edge_properties, val_eq))
+            if (lhs._edge_properties != rhs._edge_properties)
                 return false;
 
         return lhs._impl == rhs._impl;
@@ -656,14 +652,8 @@ private:
     : _n_vertices{other._n_vertices},
       _n_edges{other._n_edges},
       _impl{other._impl},
-      _vertex_properties{other._vertex_properties} {
-        // Deep copy edge properties
-        if constexpr (traits::c_non_empty_properties<edge_properties_type>) {
-            this->_edge_properties.reserve(other._edge_properties.size());
-            for (const auto& property : other._edge_properties)
-                this->_edge_properties.push_back(std::make_unique<edge_properties_type>(*property));
-        }
-    }
+      _vertex_properties{other._vertex_properties},
+      _edge_properties{other._edge_properties} {}
 
     // --- element validation ---
 
@@ -892,7 +882,9 @@ private:
 
     /// @todo Replace mutability with proper const-correct getter overloads to ensure thread safety guarantees associated with the const qualifier
     [[no_unique_address]] mutable vertex_properties_map_type _vertex_properties{};
-    [[no_unique_address]] edge_properties_map_type _edge_properties{};
+
+    /// @todo Replace mutability with proper const-correct getter overloads to ensure thread safety guarantees associated with the const qualifier
+    [[no_unique_address]] mutable edge_properties_map_type _edge_properties{};
 };
 
 // --- general graph utility ---
