@@ -27,10 +27,6 @@ public:
     using type = hyperedge_descriptor<Properties>;
     using id_type = IdType;
     using properties_type = Properties;
-    using properties_ref_type = std::conditional_t<
-        traits::c_empty_properties<properties_type>,
-        empty_properties,
-        properties_type&>;
 
     hyperedge_descriptor() {
         *this = hyperedge_descriptor::invalid();
@@ -87,10 +83,24 @@ public:
         return this->_id;
     }
 
-    [[nodiscard]] properties_ref_type properties() const {
-        if (not this->is_valid())
-            throw std::logic_error("Cannot access properties of an invalid hyperedge");
+    [[nodiscard]] gl_attr_force_inline properties_type& properties() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return this->_properties.get();
+    }
 
+    [[nodiscard]] gl_attr_force_inline properties_type* operator->() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
+        return &this->_properties.get();
+    }
+
+    [[nodiscard]] gl_attr_force_inline properties_type& operator*() const
+    requires(traits::c_non_empty_properties<properties_type>)
+    {
+        this->_validate();
         return this->_properties.get();
     }
 
@@ -104,6 +114,15 @@ public:
     }
 
 private:
+    [[noreturn]] void _throw_invalid_access() const {
+        throw std::logic_error("Cannot access properties of an invalid hyperedge");
+    }
+
+    gl_attr_force_inline void _validate() const {
+        if (not this->is_valid())
+            this->_throw_invalid_access();
+    }
+
     std::ostream& _verbose_write(std::ostream& os) const {
         using enum io::detail::option_bit;
 

@@ -1567,6 +1567,64 @@ template <traits::c_hypergraph Hypergraph>
     return Hypergraph(source);
 }
 
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+using undirected_hypergraph =
+    hypergraph<undirected_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+
+template <
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+using bf_directed_hypergraph =
+    hypergraph<bf_directed_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using list_hypergraph = hypergraph<
+    list_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_list_hypergraph = hypergraph<flat_list_hypergraph_traits<
+    LayoutTag,
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using matrix_hypergraph = hypergraph<
+    matrix_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
+
+template <
+    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
+    traits::c_properties VertexProperties = empty_properties,
+    traits::c_properties HyperedgeProperties = empty_properties,
+    traits::c_id_type IdType = default_id_type>
+using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
+    LayoutTag,
+    DirectionalTag,
+    VertexProperties,
+    HyperedgeProperties,
+    IdType>>;
+
 // --- degree bounds ---
 
 [[nodiscard]] size_type max_degree(const traits::c_hypergraph auto& hypergraph) noexcept {
