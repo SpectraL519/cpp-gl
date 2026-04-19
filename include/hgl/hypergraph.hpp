@@ -143,7 +143,7 @@ public:
         return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
-    [[nodiscard]] vertex_type get_vertex(const id_type vertex_id) const {
+    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
@@ -251,7 +251,7 @@ public:
         return util::deref_view(this->_vertex_properties);
     }
 
-    [[nodiscard]] gl_attr_force_inline vertex_properties_type& get_vertex_properties(
+    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(
         const id_type vertex_id
     ) const
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -270,7 +270,7 @@ public:
         return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
     }
 
-    [[nodiscard]] hyperedge_type get_hyperedge(const id_type hyperedge_id) const {
+    [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
             return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
@@ -538,7 +538,7 @@ public:
         return util::deref_view(this->_hyperedge_properties);
     }
 
-    [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& get_hyperedge_properties(
+    [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& hyperedge_properties(
         const id_type id
     ) const
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)

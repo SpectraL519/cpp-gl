@@ -49,13 +49,13 @@ struct test_hypergraph_conversion {
                           typename std::decay_t<decltype(h)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : h.vertex_ids())
-                h.get_vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
+                h.vertex_properties(vid) = property_type("vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(h)>::hyperedge_properties_type,
                           property_type>)
             for (const auto& eid : h.hyperedge_ids())
-                h.get_hyperedge_properties(eid) = property_type("hyperedge_" + std::to_string(eid));
+                h.hyperedge_properties(eid) = property_type("hyperedge_" + std::to_string(eid));
     }
 
     void validate_hypergraph(const hgl::traits::c_undirected_hypergraph auto& h) {
@@ -103,13 +103,13 @@ struct test_hypergraph_conversion {
                           typename std::decay_t<decltype(h)>::vertex_properties_type,
                           property_type>)
             for (const auto& vid : h.vertex_ids())
-                CHECK_EQ(h.get_vertex_properties(vid), "vertex_" + std::to_string(vid));
+                CHECK_EQ(h.vertex_properties(vid), "vertex_" + std::to_string(vid));
 
         if constexpr (std::same_as<
                           typename std::decay_t<decltype(h)>::hyperedge_properties_type,
                           property_type>)
             for (const auto& eid : h.hyperedge_ids())
-                CHECK_EQ(h.get_hyperedge_properties(eid), "hyperedge_" + std::to_string(eid));
+                CHECK_EQ(h.hyperedge_properties(eid), "hyperedge_" + std::to_string(eid));
     }
 };
 

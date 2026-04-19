@@ -78,7 +78,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
 
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
+            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
@@ -92,14 +92,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
+            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
         );
 
         REQUIRE(rng::equal(sut.hyperedges() | vw::transform(get_id), constants::hyperedge_ids_view)
         );
         REQUIRE(rng::equal(sut.hyperedge_ids(), constants::hyperedge_ids_view));
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge(constants::out_of_rng_eid)), std::out_of_range
+            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
         );
     }
 
@@ -168,17 +168,17 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_FALSE(sut.has_vertex(constants::out_of_rng_vid));
     }
 
-    SUBCASE("get_vertex should throw if the given id is invalid") {
+    SUBCASE("vertex should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices};
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(constants::out_of_rng_vid)), std::out_of_range
+            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
-    SUBCASE("get_vertex should return a vertex with the given id") {
+    SUBCASE("vertex should return a vertex with the given id") {
         sut_type sut;
         const auto added_vertex = sut.add_vertex();
-        CHECK_EQ(sut.get_vertex(added_vertex.id()), added_vertex);
+        CHECK_EQ(sut.vertex(added_vertex.id()), added_vertex);
     }
 
     SUBCASE("remove_vertex(vertex) should do nothing if the given vertex is invalid") {
@@ -196,7 +196,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
+            static_cast<void>(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range
         );
     }
 
@@ -215,7 +215,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
+            static_cast<void>(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range
         );
     }
 
@@ -237,8 +237,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
         sut_type sut{n_vertices};
-        const auto v1 = sut.get_vertex(constants::id1);
-        const auto v3 = sut.get_vertex(constants::id3);
+        const auto v1 = sut.vertex(constants::id1);
+        const auto v3 = sut.vertex(constants::id3);
         sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
@@ -268,8 +268,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
 
-            auto vertices =
-                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto vertices = v_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
             auto he2 = sut.add_hyperedge(vertices);
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
@@ -285,10 +284,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
 
-            auto h_vertices =
-                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
-            auto t_vertices =
-                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto h_vertices = h_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
+            auto t_vertices = t_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
             auto he2 = sut.add_hyperedge(t_vertices, h_vertices);
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
@@ -306,8 +303,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
 
-            auto he2 =
-                sut.add_hyperedge({sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(2u)});
+            auto he2 = sut.add_hyperedge({sut.vertex(0u), sut.vertex(1u), sut.vertex(2u)});
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
         }
@@ -324,7 +320,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
 
             auto he2 = sut.add_hyperedge(
-                {sut.get_vertex(0u), sut.get_vertex(1u)}, {sut.get_vertex(2u), sut.get_vertex(3u)}
+                {sut.vertex(0u), sut.vertex(1u)}, {sut.vertex(2u), sut.vertex(3u)}
             );
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
@@ -358,8 +354,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
 
-            auto vertices =
-                v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto vertices = v_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
             auto he2 = sut.add_hyperedge_with(vertices, constants::p_false);
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
@@ -380,10 +375,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
 
-            auto t_vertices =
-                t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
-            auto h_vertices =
-                h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
+            auto t_vertices = t_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
+            auto h_vertices = h_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
             auto he2 = sut.add_hyperedge_with(t_vertices, h_vertices, constants::p_false);
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
@@ -407,7 +400,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(he1.properties(), constants::p_true);
 
             auto he2 = sut.add_hyperedge_with(
-                {sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(3u)}, constants::p_false
+                {sut.vertex(0u), sut.vertex(1u), sut.vertex(3u)}, constants::p_false
             );
             CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
@@ -429,8 +422,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(he1.properties(), constants::p_true);
 
             auto he2 = sut.add_hyperedge_with(
-                {sut.get_vertex(0u), sut.get_vertex(1u)},
-                {sut.get_vertex(2u), sut.get_vertex(3u)},
+                {sut.vertex(0u), sut.vertex(1u)},
+                {sut.vertex(2u), sut.vertex(3u)},
                 constants::p_false
             );
             CHECK_EQ(sut.n_hyperedges(), 2uz);
@@ -481,17 +474,17 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_FALSE(sut.has_hyperedge(constants::out_of_rng_eid));
     }
 
-    SUBCASE("get_hyperedge should throw if the given id is invalid") {
+    SUBCASE("hyperedge should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge(constants::out_of_rng_eid)), std::out_of_range
+            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
         );
     }
 
-    SUBCASE("get_hyperedge should return a hyperedge with the given id") {
+    SUBCASE("hyperedge should return a hyperedge with the given id") {
         sut_type sut;
         const auto added_hyperedge = sut.add_hyperedge();
-        CHECK_EQ(sut.get_hyperedge(added_hyperedge.id()), added_hyperedge);
+        CHECK_EQ(sut.hyperedge(added_hyperedge.id()), added_hyperedge);
     }
 
     SUBCASE("remove_hyperedge(hyperedge) should do nothing if the given hyperedge is invalid") {
@@ -509,7 +502,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
+            static_cast<void>(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
         );
     }
 
@@ -528,7 +521,7 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
+            static_cast<void>(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
         );
     }
 
@@ -550,8 +543,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
-        const auto he1 = sut.get_hyperedge(constants::id1);
-        const auto he3 = sut.get_hyperedge(constants::id3);
+        const auto he1 = sut.hyperedge(constants::id1);
+        const auto he3 = sut.hyperedge(constants::id3);
         sut.remove_hyperedges_from(std::vector<hyperedge_type>{he1, he3, he1});
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
@@ -708,8 +701,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.incident_vertex_ids(0u), he1_v_ids));
 
             auto he2_vertices =
-                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
-            sut.bind(he2_vertices, sut.get_hyperedge(1u));
+                he1_v_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
+            sut.bind(he2_vertices, sut.hyperedge(1u));
             CHECK(rng::equal(sut.incident_vertex_ids(1u), he1_v_ids));
 
             std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
@@ -717,8 +710,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.incident_hyperedge_ids(2u), v3_he_ids));
 
             auto v4_hyperedges =
-                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
-            sut.bind(sut.get_vertex(3u), v4_hyperedges);
+                v3_he_ids | vw::transform([&](const auto id) { return sut.hyperedge(id); });
+            sut.bind(sut.vertex(3u), v4_hyperedges);
             CHECK(rng::equal(sut.incident_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -732,14 +725,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut.bind(he1_v_ids, 0u);
             CHECK(rng::equal(sut.incident_vertex_ids(0u), he1_v_ids));
 
-            sut.bind({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            sut.bind({sut.vertex(0u), sut.vertex(1u)}, sut.hyperedge(1u));
             CHECK(rng::equal(sut.incident_vertex_ids(1u), he1_v_ids));
 
             std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
             sut.bind(2u, v3_he_ids);
             CHECK(rng::equal(sut.incident_hyperedge_ids(2u), v3_he_ids));
 
-            sut.bind(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            sut.bind(sut.vertex(3u), {sut.hyperedge(2u), sut.hyperedge(3u)});
             CHECK(rng::equal(sut.incident_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -753,8 +746,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.tail_vertex_ids(0u), he1_v_ids));
 
             auto he2_vertices =
-                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
-            sut.bind_tail(he2_vertices, sut.get_hyperedge(1u));
+                he1_v_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
+            sut.bind_tail(he2_vertices, sut.hyperedge(1u));
             CHECK(rng::equal(sut.tail_vertex_ids(1u), he1_v_ids));
 
             std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
@@ -762,8 +755,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.out_hyperedge_ids(2u), v3_he_ids));
 
             auto v4_hyperedges =
-                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
-            sut.bind_tail(sut.get_vertex(3u), v4_hyperedges);
+                v3_he_ids | vw::transform([&](const auto id) { return sut.hyperedge(id); });
+            sut.bind_tail(sut.vertex(3u), v4_hyperedges);
             CHECK(rng::equal(sut.out_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -777,14 +770,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut.bind_tail(he1_v_ids, 0u);
             CHECK(rng::equal(sut.tail_vertex_ids(0u), he1_v_ids));
 
-            sut.bind_tail({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            sut.bind_tail({sut.vertex(0u), sut.vertex(1u)}, sut.hyperedge(1u));
             CHECK(rng::equal(sut.tail_vertex_ids(1u), he1_v_ids));
 
             std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
             sut.bind_tail(2u, v3_he_ids);
             CHECK(rng::equal(sut.out_hyperedge_ids(2u), v3_he_ids));
 
-            sut.bind_tail(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            sut.bind_tail(sut.vertex(3u), {sut.hyperedge(2u), sut.hyperedge(3u)});
             CHECK(rng::equal(sut.out_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -798,8 +791,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.head_vertex_ids(0u), he1_v_ids));
 
             auto he2_vertices =
-                he1_v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
-            sut.bind_head(he2_vertices, sut.get_hyperedge(1u));
+                he1_v_ids | vw::transform([&](const auto id) { return sut.vertex(id); });
+            sut.bind_head(he2_vertices, sut.hyperedge(1u));
             CHECK(rng::equal(sut.head_vertex_ids(1u), he1_v_ids));
 
             std::vector<hgl::default_id_type> v3_he_ids{2u, 3u};
@@ -807,8 +800,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(rng::equal(sut.in_hyperedge_ids(2u), v3_he_ids));
 
             auto v4_hyperedges =
-                v3_he_ids | vw::transform([&](const auto id) { return sut.get_hyperedge(id); });
-            sut.bind_head(sut.get_vertex(3u), v4_hyperedges);
+                v3_he_ids | vw::transform([&](const auto id) { return sut.hyperedge(id); });
+            sut.bind_head(sut.vertex(3u), v4_hyperedges);
             CHECK(rng::equal(sut.in_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -822,14 +815,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             sut.bind_head(he1_v_ids, 0u);
             CHECK(rng::equal(sut.head_vertex_ids(0u), he1_v_ids));
 
-            sut.bind_head({sut.get_vertex(0u), sut.get_vertex(1u)}, sut.get_hyperedge(1u));
+            sut.bind_head({sut.vertex(0u), sut.vertex(1u)}, sut.hyperedge(1u));
             CHECK(rng::equal(sut.head_vertex_ids(1u), he1_v_ids));
 
             std::initializer_list<hgl::default_id_type> v3_he_ids{2u, 3u};
             sut.bind_head(2u, v3_he_ids);
             CHECK(rng::equal(sut.in_hyperedge_ids(2u), v3_he_ids));
 
-            sut.bind_head(sut.get_vertex(3u), {sut.get_hyperedge(2u), sut.get_hyperedge(3u)});
+            sut.bind_head(sut.vertex(3u), {sut.hyperedge(2u), sut.hyperedge(3u)});
             CHECK(rng::equal(sut.in_hyperedge_ids(3u), v3_he_ids));
         }
     }
@@ -1211,12 +1204,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         }
 
         SUBCASE("hypergraphs with different vertex properties are not equal") {
-            sut2.get_vertex_properties(0uz) = "dummy";
+            sut2.vertex_properties(0uz) = "dummy";
             CHECK_NE(sut1, sut2);
         }
 
         SUBCASE("hypergraphs with different hyperedge properties are not equal") {
-            sut2.get_hyperedge_properties(0uz) = "dummy";
+            sut2.hyperedge_properties(0uz) = "dummy";
             CHECK_NE(sut1, sut2);
         }
     }
@@ -1313,11 +1306,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto [id, property] : vw::zip(sut.vertex_ids(), vmap)) {
             CHECK_EQ(property, std::format("vertex_{}", id));
             CHECK_EQ(vmap[id], std::format("vertex_{}", id));
-            CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
+            CHECK_EQ(sut.vertex_properties(id), std::format("vertex_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)),
-            std::out_of_range
+            static_cast<void>(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
@@ -1327,10 +1319,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto [id, property] : vw::zip(sut.hyperedge_ids(), emap)) {
             CHECK_EQ(property, std::format("hyperedge_{}", id));
             CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
-            CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
+            CHECK_EQ(sut.hyperedge_properties(id), std::format("hyperedge_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_eid)),
+            static_cast<void>(sut.hyperedge_properties(constants::out_of_rng_eid)),
             std::out_of_range
         );
     }
@@ -1347,7 +1339,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::vector<hyperedge_properties_type*> expected_properties{};
             for (const auto hyperedge_id : sut.hyperedge_ids()) {
                 sut.bind(vertex_id, hyperedge_id);
-                expected_properties.push_back(&sut.get_hyperedge_properties(hyperedge_id));
+                expected_properties.push_back(&sut.hyperedge_properties(hyperedge_id));
 
                 CHECK(std::ranges::equal(
                     sut.incident_hyperedges(vertex_id),
@@ -1365,8 +1357,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(std::ranges::equal(
                 sut.incident_hyperedges(vertex_id),
                 std::vector<hyperedge_properties_type*>{
-                    &sut.get_hyperedge_properties(constants::id2),
-                    &sut.get_hyperedge_properties(constants::id4)
+                    &sut.hyperedge_properties(constants::id2),
+                    &sut.hyperedge_properties(constants::id4)
                 },
                 std::equal_to{},
                 get_property_addr
@@ -1382,7 +1374,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::vector<vertex_properties_type*> expected_properties{};
             for (const auto vertex_id : sut.vertex_ids()) {
                 sut.bind(vertex_id, hyperedge_id);
-                expected_properties.push_back(&sut.get_vertex_properties(vertex_id));
+                expected_properties.push_back(&sut.vertex_properties(vertex_id));
 
                 CHECK(std::ranges::equal(
                     sut.incident_vertices(hyperedge_id),
@@ -1400,8 +1392,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(std::ranges::equal(
                 sut.incident_vertices(hyperedge_id),
                 std::vector<vertex_properties_type*>{
-                    &sut.get_vertex_properties(constants::id1),
-                    &sut.get_vertex_properties(constants::id3)
+                    &sut.vertex_properties(constants::id1), &sut.vertex_properties(constants::id3)
                 },
                 std::equal_to{},
                 get_property_addr
@@ -1485,11 +1476,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto [id, property] : vw::zip(sut.vertex_ids(), vmap)) {
             CHECK_EQ(property, std::format("vertex_{}", id));
             CHECK_EQ(vmap[id], std::format("vertex_{}", id));
-            CHECK_EQ(sut.get_vertex_properties(id), std::format("vertex_{}", id));
+            CHECK_EQ(sut.vertex_properties(id), std::format("vertex_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_vertex_properties(constants::out_of_rng_vid)),
-            std::out_of_range
+            static_cast<void>(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
@@ -1499,10 +1489,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto [id, property] : vw::zip(sut.hyperedge_ids(), emap)) {
             CHECK_EQ(property, std::format("hyperedge_{}", id));
             CHECK_EQ(emap[id], std::format("hyperedge_{}", id));
-            CHECK_EQ(sut.get_hyperedge_properties(id), std::format("hyperedge_{}", id));
+            CHECK_EQ(sut.hyperedge_properties(id), std::format("hyperedge_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.get_hyperedge_properties(constants::out_of_rng_eid)),
+            static_cast<void>(sut.hyperedge_properties(constants::out_of_rng_eid)),
             std::out_of_range
         );
     }
@@ -1521,13 +1511,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto eid : sut.hyperedge_ids()) {
                 if (eid % 2 == 0) {
                     sut.bind_head(vertex_id, eid);
-                    expected_in_properties.push_back(&sut.get_hyperedge_properties(eid));
+                    expected_in_properties.push_back(&sut.hyperedge_properties(eid));
                 }
                 else {
                     sut.bind_tail(vertex_id, eid);
-                    expected_out_properties.push_back(&sut.get_hyperedge_properties(eid));
+                    expected_out_properties.push_back(&sut.hyperedge_properties(eid));
                 }
-                expected_properties.push_back(&sut.get_hyperedge_properties(eid));
+                expected_properties.push_back(&sut.hyperedge_properties(eid));
 
                 CHECK(std::ranges::is_permutation(
                     sut.incident_hyperedges(vertex_id),
@@ -1559,8 +1549,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(std::ranges::is_permutation(
                 sut.incident_hyperedges(vertex_id),
                 std::vector<hyperedge_properties_type*>{
-                    &sut.get_hyperedge_properties(constants::id2),
-                    &sut.get_hyperedge_properties(constants::id4)
+                    &sut.hyperedge_properties(constants::id2),
+                    &sut.hyperedge_properties(constants::id4)
                 },
                 std::equal_to{},
                 get_property_addr
@@ -1568,16 +1558,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             CHECK(std::ranges::equal(
                 sut.in_hyperedges(vertex_id),
-                std::vector<hyperedge_properties_type*>{&sut.get_hyperedge_properties(constants::id2
-                )},
+                std::vector<hyperedge_properties_type*>{&sut.hyperedge_properties(constants::id2)},
                 std::equal_to{},
                 get_property_addr
             ));
 
             CHECK(std::ranges::equal(
                 sut.out_hyperedges(vertex_id),
-                std::vector<hyperedge_properties_type*>{&sut.get_hyperedge_properties(constants::id4
-                )},
+                std::vector<hyperedge_properties_type*>{&sut.hyperedge_properties(constants::id4)},
                 std::equal_to{},
                 get_property_addr
             ));
@@ -1594,13 +1582,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             for (const auto vid : sut.vertex_ids()) {
                 if (vid % 2 == 0) {
                     sut.bind_head(vid, hyperedge_id);
-                    expected_head_properties.push_back(&sut.get_vertex_properties(vid));
+                    expected_head_properties.push_back(&sut.vertex_properties(vid));
                 }
                 else {
                     sut.bind_tail(vid, hyperedge_id);
-                    expected_tail_properties.push_back(&sut.get_vertex_properties(vid));
+                    expected_tail_properties.push_back(&sut.vertex_properties(vid));
                 }
-                expected_properties.push_back(&sut.get_vertex_properties(vid));
+                expected_properties.push_back(&sut.vertex_properties(vid));
 
                 CHECK(std::ranges::is_permutation(
                     sut.incident_vertices(hyperedge_id),
@@ -1632,8 +1620,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK(std::ranges::is_permutation(
                 sut.incident_vertices(hyperedge_id),
                 std::vector<vertex_properties_type*>{
-                    &sut.get_vertex_properties(constants::id1),
-                    &sut.get_vertex_properties(constants::id3)
+                    &sut.vertex_properties(constants::id1), &sut.vertex_properties(constants::id3)
                 },
                 std::equal_to{},
                 get_property_addr
@@ -1641,14 +1628,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 
             CHECK(std::ranges::equal(
                 sut.head_vertices(hyperedge_id),
-                std::vector<vertex_properties_type*>{&sut.get_vertex_properties(constants::id1)},
+                std::vector<vertex_properties_type*>{&sut.vertex_properties(constants::id1)},
                 std::equal_to{},
                 get_property_addr
             ));
 
             CHECK(std::ranges::equal(
                 sut.tail_vertices(hyperedge_id),
-                std::vector<vertex_properties_type*>{&sut.get_vertex_properties(constants::id3)},
+                std::vector<vertex_properties_type*>{&sut.vertex_properties(constants::id3)},
                 std::equal_to{},
                 get_property_addr
             ));
