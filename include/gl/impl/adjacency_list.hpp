@@ -163,7 +163,7 @@ public:
     }
 
     [[nodiscard]] std::optional<edge_type> edge(
-        id_type source_id, id_type target_id, const auto& edge_properties_map
+        id_type source_id, id_type target_id, auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
@@ -173,7 +173,7 @@ public:
         if (item_it == out_edges.cend())
             return std::nullopt;
         return std::make_optional<edge_type>(
-            item_it->edge_id, source_id, target_id, *edge_properties_map[to_idx(item_it->edge_id)]
+            item_it->edge_id, source_id, target_id, edge_properties_map[to_idx(item_it->edge_id)]
         );
     }
 
@@ -189,7 +189,7 @@ public:
     }
 
     [[nodiscard]] std::vector<edge_type> edges(
-        id_type source_id, id_type target_id, const auto& edge_properties_map
+        id_type source_id, id_type target_id, auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
@@ -197,7 +197,7 @@ public:
              | std::views::filter([&target_id](auto item) { return item.vertex_id == target_id; })
              | std::views::transform([source_id, &edge_properties_map](auto item) {
                    return edge_type{
-                       item.edge_id, source_id, item.vertex_id, *edge_properties_map[item.edge_id]
+                       item.edge_id, source_id, item.vertex_id, edge_properties_map[item.edge_id]
                    };
                })
              | std::ranges::to<std::vector>();
@@ -210,7 +210,7 @@ public:
     }
 
     [[nodiscard]] gl_attr_force_inline auto incident_edges(
-        id_type vertex_id, const auto& edge_properties_map
+        id_type vertex_id, auto& edge_properties_map
     ) const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
@@ -226,9 +226,8 @@ public:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto in_edges(
-        id_type vertex_id, const auto& edge_properties_map
-    ) const
+    [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id, auto& edge_properties_map)
+        const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
         return specialized_impl::in_edges(*this, vertex_id)
@@ -237,7 +236,7 @@ public:
                        item.edge_id,
                        item.vertex_id,
                        vertex_id,
-                       *edge_properties_map[to_idx(item.edge_id)]
+                       edge_properties_map[to_idx(item.edge_id)]
                    };
                });
     }
@@ -250,9 +249,8 @@ public:
                });
     }
 
-    [[nodiscard]] gl_attr_force_inline auto out_edges(
-        id_type vertex_id, const auto& edge_properties_map
-    ) const
+    [[nodiscard]] gl_attr_force_inline auto out_edges(id_type vertex_id, auto& edge_properties_map)
+        const
     requires(traits::c_has_non_empty_properties<edge_type>)
     {
         return this->_list[to_idx(vertex_id)]
@@ -261,7 +259,7 @@ public:
                        item.edge_id,
                        vertex_id,
                        item.vertex_id,
-                       *edge_properties_map[to_idx(item.edge_id)]
+                       edge_properties_map[to_idx(item.edge_id)]
                    };
                });
     }

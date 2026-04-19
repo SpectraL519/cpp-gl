@@ -7,8 +7,8 @@ set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Test target generation
-function(add_test_target BASE_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
-    set(TARGET_NAME "cpp-gl-tests-${BASE_NAME}")
+function(add_test_target MODULE_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
+    set(TARGET_NAME "cpp-${MODULE_NAME}-tests")
 
     set(TARGET_SOURCES "")
     foreach(SOURCE_DIR ${SOURCE_DIRS})
@@ -19,7 +19,7 @@ function(add_test_target BASE_NAME SOURCE_DIRS DATA_DIR TESTING_DEF)
     add_executable(${TARGET_NAME} ${TARGET_SOURCES})
 
     set_target_properties(${TARGET_NAME} PROPERTIES
-        OUTPUT_NAME "${BASE_NAME}"
+        OUTPUT_NAME "${MODULE_NAME}"
         RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
         CXX_STANDARD ${CMAKE_CXX_STANDARD}
         CXX_STANDARD_REQUIRED YES
