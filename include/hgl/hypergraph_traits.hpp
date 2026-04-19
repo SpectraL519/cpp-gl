@@ -94,6 +94,7 @@ using bf_directed_hypergraph_traits =
 
 namespace traits {
 
+
 template <typename TraitsType>
 concept c_list_hypergraph_traits =
     c_instantiation_of<TraitsType, hypergraph_traits>
