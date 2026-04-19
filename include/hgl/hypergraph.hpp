@@ -233,6 +233,10 @@ public:
 
     [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
+        return this->vertex_unchecked(vertex_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id) const {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, *this->_vertex_properties[vertex_id]};
         else
@@ -262,31 +266,7 @@ public:
         return *this->_vertex_properties[vertex_id];
     }
 
-    // --- hyperedge methods ---
-
-    [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
-        return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
-    }
-
-    [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
-        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
-    }
-
-    [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
-        this->_verify_hyperedge_id(hyperedge_id);
-        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
-            return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
-        else
-            return hyperedge_type{hyperedge_id};
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
-        return hyperedge_id < this->_n_hyperedges;
-    }
-
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
-        return this->has_hyperedge(hyperedge.id());
-    }
+    // --- hyperedge modifiers ---
 
     hyperedge_type add_hyperedge() {
         this->_impl.add_hyperedges(1uz);
@@ -532,6 +512,37 @@ public:
         // TODO: optimize
         for (const auto& hyperedge : hyperedge_set)
             this->_remove_hyperedge_impl(hyperedge.id());
+    }
+
+    // --- hyperedge getters ---
+
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
+        return hyperedge_id < this->_n_hyperedges;
+    }
+
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
+        return this->has_hyperedge(hyperedge.id());
+    }
+
+    [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->hyperedge_unchecked(hyperedge_id);
+    }
+
+    [[nodiscard]] gl_attr_force_inline hyperedge_type hyperedge_unchecked(const id_type hyperedge_id
+    ) const {
+        if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
+            return hyperedge_type{hyperedge_id, *this->_hyperedge_properties[hyperedge_id]};
+        else
+            return hyperedge_type{hyperedge_id};
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
+        return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
+    }
+
+    [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
+        return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
     }
 
     [[nodiscard]] gl_attr_force_inline auto hyperedge_properties_map() const noexcept

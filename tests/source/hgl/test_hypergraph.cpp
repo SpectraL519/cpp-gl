@@ -1,4 +1,5 @@
 #include "doctest.h"
+#include "testing/common/functional.hpp"
 #include "testing/hgl/constants.hpp"
 #include "testing/hgl/types.hpp"
 
@@ -75,9 +76,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
 
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::out_of_range);
     }
 
     SUBCASE("a hypergraph constructed with n_vertices and n_hyperedges parameters should contain "
@@ -89,16 +88,12 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::out_of_range);
 
         REQUIRE(rng::equal(sut.hyperedges() | vw::transform(get_id), constants::hyperedge_ids_view)
         );
         REQUIRE(rng::equal(sut.hyperedge_ids(), constants::hyperedge_ids_view));
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range);
     }
 
     // --- vertex modifiers ---
@@ -170,9 +165,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_vertex(constants::id1);
 
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range);
     }
 
     SUBCASE("remove_vertex(id) should do nothing if the given id is invalid") {
@@ -189,9 +182,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_vertex(constants::id1);
 
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range);
     }
 
     SUBCASE("remove_vertices_from(ids) should properly remove elements at given indices (ignoring "
@@ -234,15 +225,24 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("vertex should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices};
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex(constants::out_of_rng_vid)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::out_of_range);
     }
 
     SUBCASE("vertex should return a vertex with the given id") {
         sut_type sut;
         const auto added_vertex = sut.add_vertex();
         CHECK_EQ(sut.vertex(added_vertex.id()), added_vertex);
+    }
+
+    SUBCASE("vertex_uncheckekd should not throw if the given id is invalid (UB)") {
+        sut_type sut{constants::n_vertices};
+        CHECK_NOTHROW(discard(sut.vertex_unchecked(constants::out_of_rng_vid)));
+    }
+
+    SUBCASE("vertex_uncheckekd should return a vertex with the given id") {
+        sut_type sut;
+        const auto added_vertex = sut.add_vertex();
+        CHECK_EQ(sut.vertex_unchecked(added_vertex.id()), added_vertex);
     }
 
     // --- hyperedge modifers ---
@@ -478,9 +478,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_hyperedge(constants::id1);
 
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range);
     }
 
     SUBCASE("remove_hyperedge(id) should do nothing if the given id is invalid") {
@@ -497,9 +495,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_hyperedge(constants::id1);
 
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range);
     }
 
     SUBCASE("remove_hyperedges_from(ids) should properly remove elements at given indices "
@@ -542,15 +538,24 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("hyperedge should throw if the given id is invalid") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
-        CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range
-        );
+        CHECK_THROWS_AS(discard(sut.hyperedge(constants::out_of_rng_eid)), std::out_of_range);
     }
 
     SUBCASE("hyperedge should return a hyperedge with the given id") {
         sut_type sut;
         const auto added_hyperedge = sut.add_hyperedge();
         CHECK_EQ(sut.hyperedge(added_hyperedge.id()), added_hyperedge);
+    }
+
+    SUBCASE("hyperedge_unchecked should not throw if the given id is invalid (UB)") {
+        sut_type sut{constants::n_vertices, constants::n_hyperedges};
+        CHECK_NOTHROW(discard(sut.hyperedge_unchecked(constants::out_of_rng_eid)));
+    }
+
+    SUBCASE("hyperedge_unchecked should return a hyperedge with the given id") {
+        sut_type sut;
+        const auto added_hyperedge = sut.add_hyperedge();
+        CHECK_EQ(sut.hyperedge_unchecked(added_hyperedge.id()), added_hyperedge);
     }
 
     // --- incidence method tests ---
@@ -600,46 +605,37 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_THROWS_AS(sut.unbind(constants::out_of_rng_vid, constants::id1), std::out_of_range);
 
         CHECK_THROWS_AS(
-            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::out_of_rng_eid)
-            ),
+            discard(sut.are_incident(constants::out_of_rng_vid, constants::out_of_rng_eid)),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            static_cast<void>(sut.are_incident(constants::id1, constants::out_of_rng_eid)),
-            std::out_of_range
+            discard(sut.are_incident(constants::id1, constants::out_of_rng_eid)), std::out_of_range
         );
         CHECK_THROWS_AS(
-            static_cast<void>(sut.are_incident(constants::out_of_rng_vid, constants::id1)),
-            std::out_of_range
+            discard(sut.are_incident(constants::out_of_rng_vid, constants::id1)), std::out_of_range
         );
 
         if constexpr (std::same_as<directional_tag, hgl::bf_directed_t>) {
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_tail(constants::out_of_rng_vid, constants::out_of_rng_eid)
-                ),
+                discard(sut.is_tail(constants::out_of_rng_vid, constants::out_of_rng_eid)),
                 std::out_of_range
             );
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_tail(constants::id1, constants::out_of_rng_eid)),
-                std::out_of_range
+                discard(sut.is_tail(constants::id1, constants::out_of_rng_eid)), std::out_of_range
             );
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_tail(constants::out_of_rng_vid, constants::id1)),
-                std::out_of_range
+                discard(sut.is_tail(constants::out_of_rng_vid, constants::id1)), std::out_of_range
             );
 
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_head(constants::out_of_rng_vid, constants::out_of_rng_eid)
-                ),
+                discard(sut.is_head(constants::out_of_rng_vid, constants::out_of_rng_eid)),
                 std::out_of_range
             );
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_head(constants::id1, constants::out_of_rng_eid)),
-                std::out_of_range
+                discard(sut.is_head(constants::id1, constants::out_of_rng_eid)), std::out_of_range
             );
             CHECK_THROWS_AS(
-                static_cast<void>(sut.is_head(constants::out_of_rng_vid, constants::id1)),
-                std::out_of_range
+                discard(sut.is_head(constants::out_of_rng_vid, constants::id1)), std::out_of_range
             );
         }
 
@@ -834,11 +830,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
-            static_cast<void>(sut.incident_hyperedges(vertex_type{constants::out_of_rng_vid})),
+            discard(sut.incident_hyperedges(vertex_type{constants::out_of_rng_vid})),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            static_cast<void>(sut.degree(vertex_type{constants::out_of_rng_vid})), std::out_of_range
+            discard(sut.degree(vertex_type{constants::out_of_rng_vid})), std::out_of_range
         );
 
         GL_SUPPRESS_WARNING_END;
@@ -966,11 +962,11 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
         CHECK_THROWS_AS(
-            static_cast<void>(sut.incident_vertices(hyperedge_type{constants::out_of_rng_eid})),
+            discard(sut.incident_vertices(hyperedge_type{constants::out_of_rng_eid})),
             std::out_of_range
         );
         CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge_size(hyperedge_type{constants::out_of_rng_eid})),
+            discard(sut.hyperedge_size(hyperedge_type{constants::out_of_rng_eid})),
             std::out_of_range
         );
 
@@ -1311,7 +1307,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.vertex_properties(id), std::format("vertex_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
+            discard(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
@@ -1324,8 +1320,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.hyperedge_properties(id), std::format("hyperedge_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge_properties(constants::out_of_rng_eid)),
-            std::out_of_range
+            discard(sut.hyperedge_properties(constants::out_of_rng_eid)), std::out_of_range
         );
     }
 
@@ -1481,7 +1476,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.vertex_properties(id), std::format("vertex_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
+            discard(sut.vertex_properties(constants::out_of_rng_vid)), std::out_of_range
         );
     }
 
@@ -1494,8 +1489,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             CHECK_EQ(sut.hyperedge_properties(id), std::format("hyperedge_{}", id));
         }
         CHECK_THROWS_AS(
-            static_cast<void>(sut.hyperedge_properties(constants::out_of_rng_eid)),
-            std::out_of_range
+            discard(sut.hyperedge_properties(constants::out_of_rng_eid)), std::out_of_range
         );
     }
 
