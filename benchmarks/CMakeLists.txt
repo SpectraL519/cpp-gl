@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(gl_benchmarks LANGUAGES CXX)
+project(cpp-gl-bench LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -30,13 +30,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cpp-argon)
 
 # Define the benchmarks target
-add_executable(gl_benchmarks
+add_executable(cpp-gl-bench
     source/main.cpp
     source/runner.cpp
     suites/is_bipartite.cpp
 )
 
-target_compile_options(gl_benchmarks PRIVATE
+target_compile_options(cpp-gl-bench PRIVATE
     -Werror
     -Wall
     -Wextra
@@ -50,8 +50,8 @@ target_compile_options(gl_benchmarks PRIVATE
     -O${BENCH_OPT_MODE}
 )
 
-target_include_directories(gl_benchmarks PRIVATE include)
-target_link_libraries(gl_benchmarks PRIVATE
+target_include_directories(cpp-gl-bench PRIVATE include)
+target_link_libraries(cpp-gl-bench PRIVATE
     benchmark::benchmark
     cpp-argon
     cpp-gl
@@ -59,12 +59,12 @@ target_link_libraries(gl_benchmarks PRIVATE
 
 if(BENCH_GL_DEFS)
     separate_arguments(BENCH_GL_DEFS_LIST NATIVE_COMMAND "${BENCH_GL_DEFS}")
-    target_compile_definitions(gl_benchmarks PRIVATE ${BENCH_GL_DEFS_LIST})
+    target_compile_definitions(cpp-gl-bench PRIVATE ${BENCH_GL_DEFS_LIST})
 endif()
 
 # Include Boost Graph Library
 if(BENCH_INCLUDE_BGL)
     find_package(Boost CONFIG REQUIRED)
-    target_link_libraries(gl_benchmarks PRIVATE Boost::headers)
-    target_compile_definitions(gl_benchmarks PRIVATE GL_BENCH_INCLUDE_BGL)
+    target_link_libraries(cpp-gl-bench PRIVATE Boost::headers)
+    target_compile_definitions(cpp-gl-bench PRIVATE GL_BENCH_INCLUDE_BGL)
 endif()
