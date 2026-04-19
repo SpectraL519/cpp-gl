@@ -10,7 +10,7 @@ namespace vw = std::views;
 
 namespace gl_bench {
 
-runner::runner() : _parser("gl_benchmarks") {
+runner::runner() : _parser("cpp-gl-bench") {
     auto& glob_args = this->_parser.add_group("Global Benchmark Options");
     this->_glob_args = &glob_args;
 
