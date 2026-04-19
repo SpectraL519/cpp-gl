@@ -10,8 +10,8 @@ namespace hgl_testing {
 
 template <hgl::traits::c_hypergraph HypergraphType>
 void verify_hypergraph_structure(const HypergraphType& actual, const HypergraphType& expected) {
-    REQUIRE_EQ(actual.order(), expected.order());
-    REQUIRE_EQ(actual.size(), expected.size());
+    REQUIRE_EQ(actual.n_vertices(), expected.n_vertices());
+    REQUIRE_EQ(actual.n_hyperedges(), expected.n_hyperedges());
 
     for (const auto& he_actual : actual.hyperedges()) {
         const auto id = he_actual.id();

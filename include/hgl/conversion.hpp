@@ -58,8 +58,8 @@ template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl
 struct to_impl {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
-        target._impl.add_vertices(source.order());
-        target._impl.add_hyperedges(source.size());
+        target._impl.add_vertices(source.n_vertices());
+        target._impl.add_hyperedges(source.n_hyperedges());
 
         if constexpr (traits::c_undirected_hypergraph<TargetHypergraph>) {
             for (const auto eid : source.hyperedge_ids())
@@ -248,7 +248,7 @@ template <gl::traits::c_undirected_graph G>
     const auto rem = std::ranges::unique(edges);
     edges.erase(rem.begin(), rem.end());
 
-    G g{h.order()};
+    G g{h.n_vertices()};
     for (const auto& edge : edges)
         g.add_edge(edge.first, edge.second);
     return g;
@@ -278,7 +278,7 @@ template <gl::traits::c_directed_graph G>
     const auto rem = std::ranges::unique(edges);
     edges.erase(rem.begin(), rem.end());
 
-    G g{h.order()};
+    G g{h.n_vertices()};
     for (const auto& [u, v] : edges)
         g.add_edge(u, v);
 
@@ -296,9 +296,9 @@ template <gl::traits::c_undirected_graph G>
 [[nodiscard]] G incidence_graph(const traits::c_undirected_hypergraph auto& h) {
     using g_id_type = typename G::id_type;
 
-    G g{h.order() + h.size()};
+    G g{h.n_vertices() + h.n_hyperedges()};
     const auto align_edge_id =
-        [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
+        [shift = static_cast<g_id_type>(h.n_vertices())](const auto eid) -> g_id_type {
         return eid + shift;
     };
 
@@ -323,9 +323,9 @@ template <gl::traits::c_directed_graph G>
 [[nodiscard]] G incidence_graph(const traits::c_bf_directed_hypergraph auto& h) {
     using g_id_type = typename G::id_type;
 
-    G g{h.order() + h.size()};
+    G g{h.n_vertices() + h.n_hyperedges()};
     const auto align_edge_id =
-        [shift = static_cast<g_id_type>(h.order())](const auto eid) -> g_id_type {
+        [shift = static_cast<g_id_type>(h.n_vertices())](const auto eid) -> g_id_type {
         return eid + shift;
     };
 

@@ -63,16 +63,16 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("a hypergraph should be initialized with no vertices and no hyperedges by default") {
         sut_type sut{};
-        CHECK_EQ(sut.order(), 0uz);
-        CHECK_EQ(sut.size(), 0uz);
+        CHECK_EQ(sut.n_vertices(), 0uz);
+        CHECK_EQ(sut.n_hyperedges(), 0uz);
     }
 
     SUBCASE("a hypergraph constructed with n_vertices parameter should contain n_vertices vertices "
             "and no hyperedges") {
         sut_type sut{constants::n_vertices};
 
-        REQUIRE_EQ(sut.order(), constants::n_vertices);
-        REQUIRE_EQ(sut.size(), 0uz);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
+        REQUIRE_EQ(sut.n_hyperedges(), 0uz);
 
         REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
@@ -86,8 +86,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             "n_vertices vertices and n_hyperedges hyperedges") {
         sut_type sut{constants::n_vertices, constants::n_hyperedges};
 
-        REQUIRE_EQ(sut.order(), constants::n_vertices);
-        REQUIRE_EQ(sut.size(), constants::n_hyperedges);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
 
         REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
@@ -111,11 +111,11 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto v_id = 0u; v_id < constants::n_vertices; v_id++) {
             const auto vertex = sut.add_vertex();
             CHECK_EQ(vertex.id(), v_id);
-            CHECK_EQ(sut.order(), v_id + 1uz);
+            CHECK_EQ(sut.n_vertices(), v_id + 1uz);
             CHECK_EQ(sut.degree(v_id), 0uz);
         }
 
-        CHECK_EQ(sut.order(), constants::n_vertices);
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
     }
 
     SUBCASE("add_vertex_with should initialize a new vertex with the input properties structure") {
@@ -123,7 +123,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         hgl::hypergraph<properties_traits_type> sut;
 
         const auto vertex = sut.add_vertex_with(constants::p_true);
-        REQUIRE_EQ(sut.order(), 1uz);
+        REQUIRE_EQ(sut.n_vertices(), 1uz);
 
         CHECK_EQ(vertex.id(), constants::id1);
         CHECK_EQ(vertex.properties(), constants::p_true);
@@ -134,8 +134,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{};
         sut.add_vertices(constants::n_vertices);
 
-        CHECK_EQ(sut.order(), constants::n_vertices);
-        CHECK_EQ(sut.size(), 0uz);
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
+        CHECK_EQ(sut.n_hyperedges(), 0uz);
     }
 
     SUBCASE("add_vertices_with should add new vertices to the hypergraph with the given properties"
@@ -150,8 +150,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut.add_vertices_with(properties_list);
 
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
-        CHECK_EQ(sut.size(), 0uz);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
+        CHECK_EQ(sut.n_hyperedges(), 0uz);
 
         CHECK(rng::equal(sut.vertices(), properties_list, rng::equal_to{}, [](const auto vertex) {
             return vertex.properties();
@@ -183,10 +183,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vertex(vertex) should do nothing if the given vertex is invalid") {
         sut_type sut{constants::n_vertices};
-        REQUIRE_EQ(sut.order(), constants::n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
 
         CHECK_NOTHROW(sut.remove_vertex(vertex_type{constants::out_of_rng_vid}));
-        CHECK_EQ(sut.order(), constants::n_vertices);
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
     }
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
@@ -194,7 +194,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{constants::n_vertices};
         sut.remove_vertex(constants::id1);
 
-        REQUIRE_EQ(sut.order(), constants::n_vertices - 1uz);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
         );
@@ -202,10 +202,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_vertex(id) should do nothing if the given id is invalid") {
         sut_type sut{constants::n_vertices};
-        REQUIRE_EQ(sut.order(), constants::n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
 
         CHECK_NOTHROW(sut.remove_vertex(constants::out_of_rng_vid));
-        CHECK_EQ(sut.order(), constants::n_vertices);
+        CHECK_EQ(sut.n_vertices(), constants::n_vertices);
     }
 
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
@@ -213,7 +213,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{constants::n_vertices};
         sut.remove_vertex(constants::id1);
 
-        REQUIRE_EQ(sut.order(), constants::n_vertices - 1uz);
+        REQUIRE_EQ(sut.n_vertices(), constants::n_vertices - 1uz);
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_vertex(constants::n_vertices - 1uz)), std::out_of_range
         );
@@ -229,7 +229,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
     SUBCASE("remove_vertices_from(vertices) should properly remove elements at given indices "
@@ -242,7 +242,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
-        REQUIRE_EQ(sut.order(), expected_n_vertices);
+        REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
     // --- hyperedge method tests ---
@@ -253,10 +253,10 @@ TEST_CASE_TEMPLATE_DEFINE(
         for (auto e_id = 0u; e_id < constants::n_hyperedges; e_id++) {
             const auto hyperedge = sut.add_hyperedge();
             CHECK_EQ(hyperedge.id(), e_id);
-            CHECK_EQ(sut.size(), e_id + 1uz);
+            CHECK_EQ(sut.n_hyperedges(), e_id + 1uz);
         }
 
-        CHECK_EQ(sut.size(), constants::n_hyperedges);
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("add_hyperedge(<vertices>) should create a hyperedge and bind the given vertices") {
@@ -265,13 +265,13 @@ TEST_CASE_TEMPLATE_DEFINE(
             const std::vector<hgl::default_id_type> v_ids{0u, 1u, 2u};
 
             auto he1 = sut.add_hyperedge(v_ids);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
 
             auto vertices =
                 v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
             auto he2 = sut.add_hyperedge(vertices);
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
         }
 
@@ -281,7 +281,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const std::vector<hgl::default_id_type> h_ids{1u, 2u};
 
             auto he1 = sut.add_hyperedge(t_ids, h_ids);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
 
@@ -290,7 +290,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             auto t_vertices =
                 t_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
             auto he2 = sut.add_hyperedge(t_vertices, h_vertices);
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
         }
@@ -303,12 +303,12 @@ TEST_CASE_TEMPLATE_DEFINE(
             const std::vector<hgl::default_id_type> v_ids{0u, 1u, 2u};
 
             auto he1 = sut.add_hyperedge(v_ids);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
 
             auto he2 =
                 sut.add_hyperedge({sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(2u)});
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
         }
 
@@ -319,14 +319,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::initializer_list<hgl::default_id_type> h_ids = {2u, 3u};
 
             auto he1 = sut.add_hyperedge(t_ids, h_ids);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
 
             auto he2 = sut.add_hyperedge(
                 {sut.get_vertex(0u), sut.get_vertex(1u)}, {sut.get_vertex(2u), sut.get_vertex(3u)}
             );
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
         }
@@ -338,7 +338,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         hgl::hypergraph<properties_traits_type> sut;
 
         const auto hyperedge = sut.add_hyperedge_with(constants::p_true);
-        REQUIRE_EQ(sut.size(), 1uz);
+        REQUIRE_EQ(sut.n_hyperedges(), 1uz);
 
         CHECK_EQ(hyperedge.id(), constants::id1);
         CHECK_EQ(hyperedge.properties(), constants::p_true);
@@ -354,14 +354,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             const std::vector<hgl::default_id_type> v_ids{0u, 1u, 3u};
 
             auto he1 = sut.add_hyperedge_with(v_ids, constants::p_true);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
 
             auto vertices =
                 v_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
             auto he2 = sut.add_hyperedge_with(vertices, constants::p_false);
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
             CHECK_EQ(he2.properties(), constants::p_false);
         }
@@ -375,7 +375,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             const std::vector<hgl::default_id_type> h_ids{2u, 3u};
 
             auto he1 = sut.add_hyperedge_with(t_ids, h_ids, constants::p_true);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
@@ -385,7 +385,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             auto h_vertices =
                 h_ids | vw::transform([&](const auto id) { return sut.get_vertex(id); });
             auto he2 = sut.add_hyperedge_with(t_vertices, h_vertices, constants::p_false);
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
             CHECK_EQ(he2.properties(), constants::p_false);
@@ -402,14 +402,14 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::initializer_list<hgl::default_id_type> v_ids{0u, 1u, 3u};
 
             auto he1 = sut.add_hyperedge_with(v_ids, constants::p_true);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he1), v_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
 
             auto he2 = sut.add_hyperedge_with(
                 {sut.get_vertex(0u), sut.get_vertex(1u), sut.get_vertex(3u)}, constants::p_false
             );
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.incident_vertex_ids(he2), v_ids));
             CHECK_EQ(he2.properties(), constants::p_false);
         }
@@ -423,7 +423,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             std::initializer_list<hgl::default_id_type> h_ids{2u, 3u};
 
             auto he1 = sut.add_hyperedge_with(t_ids, h_ids, constants::p_true);
-            CHECK_EQ(sut.size(), 1uz);
+            CHECK_EQ(sut.n_hyperedges(), 1uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he1), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he1), h_ids));
             CHECK_EQ(he1.properties(), constants::p_true);
@@ -433,7 +433,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                 {sut.get_vertex(2u), sut.get_vertex(3u)},
                 constants::p_false
             );
-            CHECK_EQ(sut.size(), 2uz);
+            CHECK_EQ(sut.n_hyperedges(), 2uz);
             CHECK(rng::equal(sut.tail_vertex_ids(he2), t_ids));
             CHECK(rng::equal(sut.head_vertex_ids(he2), h_ids));
             CHECK_EQ(he2.properties(), constants::p_false);
@@ -444,8 +444,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{};
         sut.add_hyperedges(constants::n_hyperedges);
 
-        CHECK_EQ(sut.order(), 0uz);
-        CHECK_EQ(sut.size(), constants::n_hyperedges);
+        CHECK_EQ(sut.n_vertices(), 0uz);
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("add_hyperedges_with should add new hyperedges to the hypergraph with the given "
@@ -460,8 +460,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
         sut.add_hyperedges_with(properties_list);
 
-        REQUIRE_EQ(sut.order(), 0uz);
-        CHECK_EQ(sut.size(), expected_n_hyperedges);
+        REQUIRE_EQ(sut.n_vertices(), 0uz);
+        CHECK_EQ(sut.n_hyperedges(), expected_n_hyperedges);
 
         CHECK(rng::equal(
             sut.hyperedges(),
@@ -496,10 +496,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_hyperedge(hyperedge) should do nothing if the given hyperedge is invalid") {
         sut_type sut{0uz, constants::n_hyperedges};
-        REQUIRE_EQ(sut.size(), constants::n_hyperedges);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
 
         CHECK_NOTHROW(sut.remove_hyperedge(hyperedge_type{constants::out_of_rng_eid}));
-        CHECK_EQ(sut.size(), constants::n_hyperedges);
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("remove_hyperedge(hyperedge) should remove the given hyperedge and align ids of "
@@ -507,7 +507,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{0uz, constants::n_hyperedges};
         sut.remove_hyperedge(constants::id1);
 
-        REQUIRE_EQ(sut.size(), constants::n_hyperedges - 1uz);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
         );
@@ -515,10 +515,10 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("remove_hyperedge(id) should do nothing if the given id is invalid") {
         sut_type sut{0uz, constants::n_hyperedges};
-        REQUIRE_EQ(sut.size(), constants::n_hyperedges);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
 
         CHECK_NOTHROW(sut.remove_hyperedge(constants::out_of_rng_eid));
-        CHECK_EQ(sut.size(), constants::n_hyperedges);
+        CHECK_EQ(sut.n_hyperedges(), constants::n_hyperedges);
     }
 
     SUBCASE("remove_hyperedge(id) should remove the given hyperedge and align ids of remaining "
@@ -526,7 +526,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut_type sut{0uz, constants::n_hyperedges};
         sut.remove_hyperedge(constants::id1);
 
-        REQUIRE_EQ(sut.size(), constants::n_hyperedges - 1uz);
+        REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges - 1uz);
         CHECK_THROWS_AS(
             static_cast<void>(sut.get_hyperedge(constants::n_hyperedges - 1uz)), std::out_of_range
         );
@@ -542,7 +542,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
-        REQUIRE_EQ(sut.size(), expected_n_hyperedges);
+        REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
     }
 
     SUBCASE("remove_hyperedges_from(hyperedges) should properly remove elements at given indices "
@@ -555,7 +555,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         sut.remove_hyperedges_from(std::vector<hyperedge_type>{he1, he3, he1});
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
-        REQUIRE_EQ(sut.size(), expected_n_hyperedges);
+        REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
     }
 
     // --- incidence method tests ---

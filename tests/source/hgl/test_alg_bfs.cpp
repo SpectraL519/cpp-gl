@@ -112,8 +112,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     std::vector<id_type> previsit_order;
     std::vector<id_type> postvisit_order;
-    std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
-    std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
+    std::vector<id_type> noret_pred_map(hypergraph.n_vertices(), hgl::invalid_id);
+    std::vector<id_type> noret_in_hyperedges(hypergraph.n_vertices(), hgl::invalid_id);
 
     hgl::algorithm::breadth_first_search<hgl::algorithm::noret>(
         hypergraph,
@@ -288,8 +288,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     std::vector<id_type> previsit_order;
     std::vector<id_type> postvisit_order;
-    std::vector<id_type> noret_pred_map(hypergraph.order(), hgl::invalid_id);
-    std::vector<id_type> noret_in_hyperedges(hypergraph.order(), hgl::invalid_id);
+    std::vector<id_type> noret_pred_map(hypergraph.n_vertices(), hgl::invalid_id);
+    std::vector<id_type> noret_in_hyperedges(hypergraph.n_vertices(), hgl::invalid_id);
 
     hgl::algorithm::breadth_first_search<hgl::algorithm::noret>(
         hypergraph,

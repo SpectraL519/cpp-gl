@@ -125,11 +125,11 @@ public:
 
     // --- general methods ---
 
-    [[nodiscard]] gl_attr_force_inline size_type order() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type size() const noexcept {
+    [[nodiscard]] gl_attr_force_inline size_type n_hyperedges() const noexcept {
         return this->_n_hyperedges;
     }
 
@@ -224,7 +224,7 @@ public:
     }
 
     void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
-        // sorts ids in a descending order and removes duplicate ids
+        // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
@@ -235,7 +235,7 @@ public:
     }
 
     void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
-        // sort vertices in a descending order (by id) and removes duplicate ids
+        // sort vertices in a descending n_vertices (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
         );
@@ -510,7 +510,7 @@ public:
     }
 
     void remove_hyperedges_from(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
-        // sorts ids in a descending order and removes duplicate ids
+        // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> hyperedge_id_set(
             std::ranges::begin(hyperedge_id_rng), std::ranges::end(hyperedge_id_rng)
         );
@@ -522,7 +522,7 @@ public:
 
     void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_rng
     ) {
-        // sort hyperedges in a descending order (by id) and removes duplicate ids
+        // sort hyperedges in a descending n_vertices (by id) and removes duplicate ids
         std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
             std::ranges::begin(hyperedge_rng), std::ranges::end(hyperedge_rng)
         );
@@ -1319,8 +1319,8 @@ private:
         using enum io::detail::option_bit;
         using fmt_traits = io::detail::hypergraph_fmt_traits<directional_tag>;
 
-        os << "type: " << fmt_traits::type << ", |V| = " << this->order()
-           << ", |E| = " << this->size() << '\n';
+        os << "type: " << fmt_traits::type << ", |V| = " << this->_n_vertices
+           << ", |E| = " << this->_n_hyperedges << '\n';
 
         os << "vertices: ";
         if constexpr (traits::c_writable<vertex_properties_type>) {
@@ -1330,14 +1330,14 @@ private:
                     os << "  - " << vertex << '\n';
             }
             else {
-                os << io::implicit_range(this->order()) << '\n';
+                os << io::implicit_range(this->_n_vertices) << '\n';
             }
         }
         else {
-            os << io::implicit_range(this->order()) << '\n';
+            os << io::implicit_range(this->_n_vertices) << '\n';
         }
 
-        if (this->size() == 0uz) {
+        if (this->_n_hyperedges == 0uz) {
             os << "hyperedges: {}";
         }
         else {
@@ -1357,13 +1357,13 @@ private:
             if (io::is_option_set(os, with_vertex_properties))
                 os << io::multiline_set_formatter(this->vertices()) << '\n';
             else
-                os << io::implicit_range(this->order()) << '\n';
+                os << io::implicit_range(this->_n_vertices) << '\n';
         }
         else {
-            os << io::implicit_range(this->order()) << '\n';
+            os << io::implicit_range(this->_n_vertices) << '\n';
         }
 
-        if (this->size() == 0uz) {
+        if (this->_n_hyperedges == 0uz) {
             os << "E = {}\n";
         }
         else {
@@ -1385,8 +1385,9 @@ private:
         const bool with_he_props = io::is_option_set(os, with_connection_properties);
 
         // print hypergraph metadata
-        os << fmt_traits::discriminator << ' ' << this->order() << ' ' << this->size() << ' '
-           << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props) << '\n';
+        os << fmt_traits::discriminator << ' ' << this->_n_vertices << ' ' << this->_n_hyperedges
+           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props)
+           << '\n';
 
         if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_v_props)

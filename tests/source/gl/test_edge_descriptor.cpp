@@ -140,7 +140,7 @@ TEST_CASE_TEMPLATE_DEFINE("directional_tag-independent tests", EdgeType, directi
     }
 
     SUBCASE("incident_vertices_r should return the pair of vertex IDS the edge was initialized "
-            "with but with switched order") {
+            "with but with switched n_vertices") {
         const auto& vertices = sut.incident_vertices_r();
         CHECK_EQ(vertices.first, fixture.v2);
         CHECK_EQ(vertices.second, fixture.v1);

@@ -3453,20 +3453,20 @@ using ticks_t = timer_large_integer::type;
 
         T operator++(int) DOCTEST_NOEXCEPT { return fetch_add(1); }
 
-        T fetch_add(T arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
-            return myAtomic().fetch_add(arg, order);
+        T fetch_add(T arg, std::memory_order n_vertices = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+            return myAtomic().fetch_add(arg, n_vertices);
         }
 
-        T fetch_sub(T arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
-            return myAtomic().fetch_sub(arg, order);
+        T fetch_sub(T arg, std::memory_order n_vertices = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+            return myAtomic().fetch_sub(arg, n_vertices);
         }
 
         operator T() const DOCTEST_NOEXCEPT { return load(); }
 
-        T load(std::memory_order order = std::memory_order_seq_cst) const DOCTEST_NOEXCEPT {
+        T load(std::memory_order n_vertices = std::memory_order_seq_cst) const DOCTEST_NOEXCEPT {
             auto result = T();
             for(auto const& c : m_atomics) {
-                result += c.atomic.load(order);
+                result += c.atomic.load(n_vertices);
             }
             return result;
         }
@@ -3476,10 +3476,10 @@ using ticks_t = timer_large_integer::type;
             return desired;
         }
 
-        void store(T desired, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+        void store(T desired, std::memory_order n_vertices = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
             // first value becomes desired", all others become 0.
             for(auto& c : m_atomics) {
-                c.atomic.store(desired, order);
+                c.atomic.store(desired, n_vertices);
                 desired = {};
             }
         }
@@ -6130,7 +6130,7 @@ namespace {
               << Whitespace(sizePrefixDisplay*1) << "reporters to use (console is default)\n";
             s << " -" DOCTEST_OPTIONS_PREFIX_DISPLAY "o,   --" DOCTEST_OPTIONS_PREFIX_DISPLAY "out=<string>                  "
               << Whitespace(sizePrefixDisplay*1) << "output filename\n";
-            s << " -" DOCTEST_OPTIONS_PREFIX_DISPLAY "ob,  --" DOCTEST_OPTIONS_PREFIX_DISPLAY "order-by=<string>             "
+            s << " -" DOCTEST_OPTIONS_PREFIX_DISPLAY "ob,  --" DOCTEST_OPTIONS_PREFIX_DISPLAY "n_vertices-by=<string>             "
               << Whitespace(sizePrefixDisplay*1) << "how the tests should be ordered\n";
             s << Whitespace(sizePrefixDisplay*3) << "                                       <string> - [file/suite/name/rand/none]\n";
             s << " -" DOCTEST_OPTIONS_PREFIX_DISPLAY "rs,  --" DOCTEST_OPTIONS_PREFIX_DISPLAY "rand-seed=<int>               "
@@ -6659,7 +6659,7 @@ void Context::parseArgs(int argc, const char* const* argv, bool withDefaults) {
 
     // clang-format off
     DOCTEST_PARSE_STR_OPTION("out", "o", out, "");
-    DOCTEST_PARSE_STR_OPTION("order-by", "ob", order_by, "file");
+    DOCTEST_PARSE_STR_OPTION("n_vertices-by", "ob", order_by, "file");
     DOCTEST_PARSE_INT_OPTION("rand-seed", "rs", rand_seed, 0);
 
     DOCTEST_PARSE_INT_OPTION("first", "f", first, 0);

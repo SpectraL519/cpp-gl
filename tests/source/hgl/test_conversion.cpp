@@ -59,8 +59,8 @@ struct test_hypergraph_conversion {
     }
 
     void validate_hypergraph(const hgl::traits::c_undirected_hypergraph auto& h) {
-        REQUIRE_EQ(h.order(), 4uz);
-        REQUIRE_EQ(h.size(), 3uz);
+        REQUIRE_EQ(h.n_vertices(), 4uz);
+        REQUIRE_EQ(h.n_hyperedges(), 3uz);
         CHECK(h.are_incident(0u, 0u));
         CHECK(h.are_incident(1u, 0u));
         CHECK(h.are_incident(2u, 0u));
@@ -78,8 +78,8 @@ struct test_hypergraph_conversion {
     }
 
     void validate_hypergraph(const hgl::traits::c_bf_directed_hypergraph auto& h) {
-        REQUIRE_EQ(h.order(), 4uz);
-        REQUIRE_EQ(h.size(), 2uz);
+        REQUIRE_EQ(h.n_vertices(), 4uz);
+        REQUIRE_EQ(h.n_hyperedges(), 2uz);
 
         CHECK(h.is_tail(0u, 0u));
         CHECK(h.is_tail(1u, 0u));
@@ -318,7 +318,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
                 SUBCASE(target_name) {
                     const auto clique = hgl::projection<TargetGraph>(sut);
-                    CHECK_EQ(clique.n_vertices(), sut.order());
+                    CHECK_EQ(clique.n_vertices(), sut.n_vertices());
                     CHECK_EQ(clique.n_edges(), expected_edges.size());
                     for (const auto& [u, v] : expected_edges)
                         CHECK(clique.has_edge(u, v));
@@ -359,7 +359,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
                 SUBCASE(target_name) {
                     const auto incidence = hgl::incidence_graph<TargetGraph>(sut);
-                    CHECK_EQ(incidence.n_vertices(), sut.order() + sut.size());
+                    CHECK_EQ(incidence.n_vertices(), sut.n_vertices() + sut.n_hyperedges());
                     CHECK_EQ(incidence.n_edges(), expected_edges.size());
                     for (const auto& [u, v] : expected_edges)
                         CHECK(incidence.has_edge(u, v));
@@ -446,7 +446,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
                 SUBCASE(target_name) {
                     const auto proj = hgl::projection<TargetGraph>(sut);
-                    CHECK_EQ(proj.n_vertices(), sut.order());
+                    CHECK_EQ(proj.n_vertices(), sut.n_vertices());
                     CHECK_EQ(proj.n_edges(), expected_edges.size());
                     for (const auto& [u, v] : expected_edges)
                         CHECK(proj.has_edge(u, v));
@@ -489,7 +489,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             [&]<typename TargetGraph>(std::type_identity<TargetGraph>, const char* target_name) {
                 SUBCASE(target_name) {
                     const auto incidence = hgl::incidence_graph<TargetGraph>(sut);
-                    CHECK_EQ(incidence.n_vertices(), sut.order() + sut.size());
+                    CHECK_EQ(incidence.n_vertices(), sut.n_vertices() + sut.n_hyperedges());
                     CHECK_EQ(incidence.n_edges(), expected_edges.size());
                     for (const auto& [u, v] : expected_edges)
                         CHECK(incidence.has_edge(u, v));

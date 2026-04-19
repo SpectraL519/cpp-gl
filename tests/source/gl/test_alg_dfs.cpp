@@ -257,7 +257,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(expected_previsit_order);
 
     /*
-    post visit order should be reverse of pre visit order
+    post visit n_vertices should be reverse of pre visit n_vertices
     because the algorithm will search the graph recursively and call
     post visit after return from the recursive call
     */
@@ -344,7 +344,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     CAPTURE(expected_previsit_order);
 
     /*
-    post visit order should be reverse of pre visit order
+    post visit n_vertices should be reverse of pre visit n_vertices
     because the algorithm will search the graph recursively and call
     post visit after return from the recursive call
     */
