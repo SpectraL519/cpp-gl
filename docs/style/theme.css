@@ -1,30 +1,75 @@
 :root {
     /* -----------------------------------------
-       LIGHT MODE - Clean, Crisp, Professional
+       LIGHT MODE - Crisp, Framed, Accessible
        ----------------------------------------- */
-    /* Deep "Midnight Navy" for the top bar and primary elements */
-    --md-primary-fg-color: #1E3A8A;
+    /* Deeper off-white/gray background so white cards pop */
+    --md-default-bg-color: #F1F5F9;
+    --md-default-bg-color--light: #FFFFFF;
+    --md-default-bg-color--lighter: #E2E8F0;
 
-    /* Sharp "Crimson/Rose" for links, hovers, and selections */
-    --md-accent-fg-color: #E11D48;
+    /* Dark Header in Light Mode (Fixes GitHub stats visibility!) */
+    --md-primary-fg-color: #0F172A; /* Deep Navy Header */
+    --md-primary-bg-color: #FFFFFF; /* Forces icons/text on header to be white */
+
+    --md-accent-fg-color: #E11D48;  /* Crimson Accent */
 }
 
 [data-md-color-scheme="slate"] {
     /* -----------------------------------------
-       DARK MODE - Sleek, Modern (hdoc/doxide vibe)
+       DARK MODE - Rich Midnight & Vibrant Accents
        ----------------------------------------- */
-    /* Vibrant "Electric Blue" for primary buttons/active states */
-    --md-primary-fg-color: #3B82F6;
+    /* Shifted from dead black to a rich, dark navy */
+    --md-default-bg-color: #0F172A;
+    --md-default-bg-color--light: #1E293B;
+    --md-default-bg-color--lighter: #334155;
 
-    /* Glowing "Soft Crimson" for high-contrast readability */
-    --md-accent-fg-color: #FB7185;
+    --md-primary-fg-color: #020617; /* Almost-black deep blue for the header */
+    --md-primary-bg-color: #FFFFFF;
 
-    /* Modernize the background:
-       Shift from flat gray to a rich, deep midnight-blue/gray */
-    --md-default-bg-color: #0F172A;        /* Main background */
-    --md-default-bg-color--light: #1E293B; /* Surface elements (cards, tabs) */
-    --md-default-bg-color--lighter: #334155; /* Hover states on surfaces */
+    --md-accent-fg-color: #FB7185;  /* Glowing Crimson Accent */
+    --md-code-bg-color: #090E1A;    /* Extra dark code blocks for contrast */
+}
 
-    /* Soften the text color slightly to reduce eye strain on dark backgrounds */
-    --md-text-color: #E2E8F0;
+/* -----------------------------------------
+   MODERN "WEB-SLINGER" REFINEMENTS
+   ----------------------------------------- */
+
+/* 1. The Dynamic Header */
+.md-header {
+    background-color: var(--md-primary-fg-color) !important;
+    box-shadow: none !important;
+    border-bottom: 0px !important; /* Connect header to tabs */
+}
+
+/* 2. The Signature Gradient Border */
+.md-tabs {
+    background-color: var(--md-primary-fg-color) !important;
+    /* This creates a sharp Blue-to-Red line across the screen matching your logo */
+    border-bottom: 2px solid transparent !important;
+    border-image: linear-gradient(to right, #3B82F6, #E30022) 1 !important;
+}
+
+/* 3. Sleeker Search Bar (Ensures visibility on dark header) */
+.md-search__input {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #FFFFFF !important;
+    border-radius: 6px !important;
+}
+.md-search__input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 4. Modern Code Blocks */
+.md-typeset pre > code {
+    border-radius: 0.5rem;
+    border: 1px solid var(--md-default-bg-color--lighter);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 5. Smooth Admonitions */
+.md-typeset .admonition, .md-typeset details {
+    border-radius: 0.5rem;
+    border-width: 1px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    background-color: var(--md-default-bg-color--light);
 }
