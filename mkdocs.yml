@@ -7,20 +7,18 @@ theme:
   logo: docs/img/cpp-gl-hex.png
   favicon: docs/img/cpp-gl-hex.png
   features:
-    - navigation.tabs # Top-level navigation tabs
-    - navigation.sections # Collapsible side-menu sections
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
     - search.suggest
-    - search.highlight
-    - content.code.copy # Copy buttons on code blocks
+    - content.code.copy
   palette:
-    # Light Mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    # Dark Mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
@@ -31,28 +29,32 @@ theme:
 markdown_extensions:
   - admonition
   - tables
-  - md_in_html          # <-- FIX FOR BADGES
+  - md_in_html
+  - attr_list
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
-  - pymdownx.snippets:  # <-- FIX FOR README DUPLICATION
+  - pymdownx.superfences:
+      custom_fences:
+        - name: math
+          class: arithmatex
+          format: !!python/name:pymdownx.arithmatex.fence_mathjax_format
+  - pymdownx.snippets:
       base_path: "."
-      check_paths: true # Attempts to fix image paths when injecting
+      check_paths: true
 
 plugins:
   - search
+  - include-markdown
+  - callouts
   - mkdoxy:
       projects:
         cpp-gl:
-          src-dirs: include # The directory to scan
+          src-dirs: include
           full-doc: True
           doxy-cfg:
-            # You can override Doxyfile settings here if needed,
-            # or MkDoxy will just use your existing Doxyfile.
             PROJECT_NAME: "CPP-GL"
 
-# Inject MathJax for LaTeX rendering
 extra_javascript:
   - scripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -60,8 +62,7 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - CPP-GL API: # <-- FIXES THE TAB NAME
+  - CPP-GL API:
     - Namespaces: cpp-gl/namespaces.md
     - Classes & Structs: cpp-gl/annotated.md
     - Files: cpp-gl/files.md
-    # You can omit macros, modules, etc., if you don't want them cluttering the menu

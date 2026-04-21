@@ -76,19 +76,17 @@ struct to_impl;
 ///
 /// ### Mathematics
 /// Inline math: \f$V = E - F + 2\f$
-/// Big-O: \f$\mathcal{O}(\vert V \vert + \vert E \vert)\f$
+/// Big-O: \f$\mathcal{O}(|V| + |E|)\f$
 ///
 /// Display math:
-///
-/// $$
-/// \sum_{v \in V} \text{deg}(v) = 2 \vert E \vert
-/// $$
+/// ```math
+/// \sum_{v \in V} \text{deg}(v) = 2 |E|
+/// ```
 ///
 /// Complex environment:
-///
-/// $$
-/// A_{i,j} = \begin{cases} 1 & \text{if } (i,j) \in E \\\\ 0 & \text{otherwise} \end{cases}
-/// $$
+/// ```math
+/// A_{i,j} = \begin{cases} 1 & \text{if } (i,j) \in E \\ 0 & \text{otherwise} \end{cases}
+/// ```
 ///
 /// ### Code Example
 /// ```cpp
@@ -105,9 +103,9 @@ struct to_impl;
 /// ```
 ///
 /// ### References
-/// For a general overview and integration instructions, see the [Project Overview](README.md#overview)
-/// or the [Installation Guide](README.md#installing-the-library).
-/// A simple reference [MAIN PAGE](README.md)
+/// For a general overview and integration instructions, see the [Project Overview](/#overview)
+/// or the [Installation Guide](/#installing-the-library).
+/// A simple reference [MAIN PAGE](/)
 ///
 /// > [!WARNING]
 /// > This class relies on its internal implementation tag to correctly define its layout. Modifying
