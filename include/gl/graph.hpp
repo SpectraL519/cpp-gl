@@ -67,6 +67,49 @@ struct to_impl;
 
 } // namespace detail
 
+/// @brief A general-purpose graph container.
+///
+/// This class represents a highly customizable graph data structure configured by the provided
+/// `GraphTraits`. It serves as the primary interface for managing vertices, edges, and their properties.
+///
+/// @tparam GraphTraits An instantiation of @ref gl::graph_traits
+///
+/// ### Mathematics
+/// Inline math: \f$V = E - F + 2\f$
+/// Big-O: \f$\mathcal{O}(\vert V \vert + \vert E \vert)\f$
+///
+/// Display math:
+/// $$
+/// \sum_{v \in V} \text{deg}(v) = 2 \vert E \vert
+/// $$
+///
+/// Complex environment:
+/// $$
+/// A_{i,j} = \begin{cases} 1 & \text{if } (i,j) \in E \\\\ 0 & \text{otherwise} \end{cases}
+/// $$
+///
+/// ### Code Example
+/// ```cpp
+/// gl::directed_graph<> g;
+/// auto v1 = g.add_vertex();
+/// auto v2 = g.add_vertex();
+/// g.add_edge(v1, v2);
+/// for (const auto v : graph.vertices()) {
+///     std::cout << v << ": ";
+///     for (const auto u : graph.neighbors(v)) {
+///         std::cout << u << " ";
+///     }
+/// }
+/// ```
+///
+/// ### References
+/// For a general overview and integration instructions, see the [Project Overview](/#overview)
+/// or the [Installation Guide](/#installing-the-library).
+/// A simple reference [MAIN PAGE](/)
+///
+/// > [!WARNING]
+/// > This class relies on its internal implementation tag to correctly define its layout. Modifying
+/// > the underlying structure bypassing the API can lead to undefined behavior.
 template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
