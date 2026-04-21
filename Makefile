@@ -1,13 +1,17 @@
-.PHONY: doxy clean-doxy clean
+.PHONY: docs serve-docs clean-docs clean
 
-doxy:
-	@echo "==> Building Doxygen documentation..."
-	doxygen Doxyfile
-	uv run python scripts/postprocess_doxyhtml.py documentation/ --img-rules docs/style/img_style_rules.json
-	@echo "==> Doxygen build complete."
+docs:
+	@echo "==> Building MkDocs documentation..."
+	uv run mkdocs build
+	@echo "==> Documentation build complete. Output is in site/"
 
-clean-doxy:
-	@echo "==> Cleaning Doxygen build directory..."
-	rm -rf documentation/
+serve-docs:
+	@echo "==> Serving MkDocs documentation locally..."
+	uv run mkdocs serve
 
-clean: clean-doxy
+clean-docs:
+	@echo "==> Cleaning documentation build directories..."
+	rm -rf site/
+	rm -rf xml/
+
+clean: clean-docs

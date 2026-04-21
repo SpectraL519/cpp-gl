@@ -79,11 +79,13 @@ struct to_impl;
 /// Big-O: \f$\mathcal{O}(\vert V \vert + \vert E \vert)\f$
 ///
 /// Display math:
+///
 /// $$
 /// \sum_{v \in V} \text{deg}(v) = 2 \vert E \vert
 /// $$
 ///
 /// Complex environment:
+///
 /// $$
 /// A_{i,j} = \begin{cases} 1 & \text{if } (i,j) \in E \\\\ 0 & \text{otherwise} \end{cases}
 /// $$
