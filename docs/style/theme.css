@@ -2,23 +2,23 @@
     /* -----------------------------------------
        LIGHT MODE - Crisp, Framed, Accessible
        ----------------------------------------- */
-    /* Deeper off-white/gray background so white cards pop */
     --md-default-bg-color: #F1F5F9;
     --md-default-bg-color--light: #FFFFFF;
     --md-default-bg-color--lighter: #E2E8F0;
 
-    /* Dark Header in Light Mode (Fixes GitHub stats visibility!) */
     --md-primary-fg-color: #0F172A; /* Deep Navy Header */
     --md-primary-bg-color: #FFFFFF; /* Forces icons/text on header to be white */
 
     --md-accent-fg-color: #E11D48;  /* Crimson Accent */
+
+    /* Make references/links use the red accent */
+    --md-typeset-a-color: var(--md-accent-fg-color);
 }
 
 [data-md-color-scheme="slate"] {
     /* -----------------------------------------
        DARK MODE - Rich Midnight & Vibrant Accents
        ----------------------------------------- */
-    /* Shifted from dead black to a rich, dark navy */
     --md-default-bg-color: #0F172A;
     --md-default-bg-color--light: #1E293B;
     --md-default-bg-color--lighter: #334155;
@@ -28,6 +28,13 @@
 
     --md-accent-fg-color: #FB7185;  /* Glowing Crimson Accent */
     --md-code-bg-color: #090E1A;    /* Extra dark code blocks for contrast */
+
+    /* Enhance readability of standard text against the midnight background */
+    --md-text-color: #E2E8F0;
+    --md-typeset-color: #F8FAFC;
+
+    /* Make references/links use the glowing red accent */
+    --md-typeset-a-color: var(--md-accent-fg-color);
 }
 
 /* -----------------------------------------
@@ -72,4 +79,18 @@
     border-width: 1px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     background-color: var(--md-default-bg-color--light);
+}
+
+/* 6. Enforce Red Accent on API References & Links */
+.md-typeset a,
+.md-typeset a.el {
+    color: var(--md-typeset-a-color) !important;
+    text-decoration: none;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Slight fade on hover so it feels interactive */
+.md-typeset a:hover,
+.md-typeset a.el:hover {
+    opacity: 0.75;
 }
