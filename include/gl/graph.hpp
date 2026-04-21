@@ -103,9 +103,9 @@ struct to_impl;
 /// ```
 ///
 /// ### References
-/// For a general overview and integration instructions, see the [Project Overview](/#overview)
-/// or the [Installation Guide](/#installing-the-library).
-/// A simple reference [MAIN PAGE](/)
+/// For a general overview and integration instructions, see the [Project Overview](README.md#overview)
+/// or the [Installation Guide](README.md#installing-the-library).
+/// A simple reference [MAIN PAGE](README.md)
 ///
 /// > [!WARNING]
 /// > This class relies on its internal implementation tag to correctly define its layout. Modifying

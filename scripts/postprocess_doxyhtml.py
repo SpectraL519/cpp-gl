@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Optional
 from bs4 import BeautifulSoup
 
+ImgRules = list[dict]
+
 
 def encode_md_link(path_str: str) -> str:
     """
@@ -24,6 +26,10 @@ def encode_md_link(path_str: str) -> str:
     filepath = filepath.removeprefix('/')
     if not filepath.endswith('.md'):
         return path_str  # Not a .md file
+
+    if filepath == "README.md":
+        return f"index.html{anchor}"
+
     filepath = filepath.removesuffix('.md')
 
     # Encode path separators and underscores
@@ -72,49 +78,56 @@ def process_gfm(content: str) -> str:
     return content
 
 
-# def remove_mainpage_title(content: str, filename: str) -> str:
-#     if filename != "index.html":
-#         return content
-
-#     soup = BeautifulSoup(content, 'html.parser')
-#     header_div = soup.find("div", class_="header")
-#     if header_div:
-#         header_div.decompose()
-#     return str(soup)
+def process_heading_code_blocks(content: str) -> str:
+    content = content.replace("&lt;tt&gt;", "<code>")
+    content = content.replace("&lt;/tt&gt;", "</code>")
+    return content
 
 
-# ImgRules = list[dict]
+def remove_mainpage_title(content: str, filename: str) -> str:
+    if filename != "index.html":
+        return content
 
-# def process_images(content: str, html_path: Path, rules: ImgRules) -> str:
-#     soup = BeautifulSoup(content, 'html.parser')
+    return re.sub(r'<div class="header">\s*<div class="headertitle">.*?</div>\s*</div>', '', content, flags=re.DOTALL)
 
-#     for img in soup.find_all('img'):
-#         src = img.get('src')
-#         if not src:
-#             continue
 
-#         if src.startswith(('http://', 'https://', 'data:')):
-#             continue
+def process_images(content: str, html_path: Path, rules: list[dict]) -> str:
+    def replacer(match):
+        img_tag = match.group(0)
+        src = match.group(1)
+        filename = Path(src).name
 
-#         filename = Path(src).name
-#         if (html_path.parent / filename).exists():
-#             img['src'] = filename  # Align the file path
+        # Skip external or missing files
+        if src.startswith(('http', 'data:')) or not (html_path.parent / filename).exists():
+            return img_tag
 
-#             alt = img.get('alt', '')
-#             for rule in rules: # Apply image style rules
-#                 if ("filaneme" in rule and filename == rule["filename"]) or ("alt" in rule and alt == rule["alt"]):
-#                     img['style'] = f"{img.get('style', '')}; {rule.get('style', '')}".strip('; ')
+        # Fix the src path
+        img_tag = img_tag.replace(f'src="{src}"', f'src="{filename}"')
 
-#     return str(soup)
+        # Apply style rules
+        for rule in rules:
+            if rule.get("filename") == filename or f'alt="{rule.get("alt")}"' in img_tag:
+                style = rule.get("style", "").strip('; ')
+
+                if 'style="' in img_tag: # Append to existing style
+                    img_tag = re.sub(r'style="([^"]*)"', lambda m: f'style="{m.group(1).strip("; ")}; {style}"', img_tag)
+                else: # Inject new style
+                    img_tag = img_tag.replace('/>', f' style="{style}" />').replace('">', f' style="{style}">')
+
+        return img_tag
+
+    # Match <img> tags and capture their src attribute
+    return re.sub(r'<img[^>]*src="([^"]+)"[^>]*>', replacer, content, flags=re.IGNORECASE)
 
 
 def process_file(f: Path, img_rules: Optional[ImgRules] = None):
     content = f.read_text(encoding='utf-8')
     content = process_md_refs(content)
     content = process_gfm(content)
-    # content = remove_mainpage_title(content, f.name)
-    # if img_rules:
-    #     content = process_images(content, f, img_rules)
+    content = process_heading_code_blocks(content)
+    content = remove_mainpage_title(content, f.name)
+    if img_rules:
+        content = process_images(content, f, img_rules)
 
     f.write_text(content, encoding='utf-8')
 
