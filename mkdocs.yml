@@ -2,10 +2,17 @@ site_name: CPP-GL
 site_description: "General-purpose Template Graph and Hypergraph Library for Modern C++"
 repo_url: "https://github.com/SpectraL519/cpp-gl"
 
+nav:
+  - Home: index.md
+  - CPP-GL API:
+    - Namespaces: cpp-gl/namespaces.md
+    - Classes & Structs: cpp-gl/annotated.md
+    - Files: cpp-gl/files.md
+
 theme:
   name: material
-  logo: docs/img/cpp-gl-hex.png
-  favicon: docs/img/cpp-gl-hex.png
+  logo: img/cpp-gl-hex.png
+  favicon: img/cpp-gl-hex.png
   features:
     - navigation.tabs
     - navigation.sections
@@ -60,9 +67,5 @@ extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
-nav:
-  - Home: index.md
-  - CPP-GL API:
-    - Namespaces: cpp-gl/namespaces.md
-    - Classes & Structs: cpp-gl/annotated.md
-    - Files: cpp-gl/files.md
+# extra_css:
+#   - style/logo.css

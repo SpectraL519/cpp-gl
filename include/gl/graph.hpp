@@ -79,14 +79,16 @@ struct to_impl;
 /// Big-O: \f$\mathcal{O}(|V| + |E|)\f$
 ///
 /// Display math:
-/// ```math
+///
+/// \f$
 /// \sum_{v \in V} \text{deg}(v) = 2 |E|
-/// ```
+/// \f$
 ///
 /// Complex environment:
-/// ```math
+///
+/// \f$
 /// A_{i,j} = \begin{cases} 1 & \text{if } (i,j) \in E \\ 0 & \text{otherwise} \end{cases}
-/// ```
+/// \f$
 ///
 /// ### Code Example
 /// ```cpp
