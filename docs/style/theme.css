@@ -1,0 +1,30 @@
+:root {
+    /* -----------------------------------------
+       LIGHT MODE - Clean, Crisp, Professional
+       ----------------------------------------- */
+    /* Deep "Midnight Navy" for the top bar and primary elements */
+    --md-primary-fg-color: #1E3A8A;
+
+    /* Sharp "Crimson/Rose" for links, hovers, and selections */
+    --md-accent-fg-color: #E11D48;
+}
+
+[data-md-color-scheme="slate"] {
+    /* -----------------------------------------
+       DARK MODE - Sleek, Modern (hdoc/doxide vibe)
+       ----------------------------------------- */
+    /* Vibrant "Electric Blue" for primary buttons/active states */
+    --md-primary-fg-color: #3B82F6;
+
+    /* Glowing "Soft Crimson" for high-contrast readability */
+    --md-accent-fg-color: #FB7185;
+
+    /* Modernize the background:
+       Shift from flat gray to a rich, deep midnight-blue/gray */
+    --md-default-bg-color: #0F172A;        /* Main background */
+    --md-default-bg-color--light: #1E293B; /* Surface elements (cards, tabs) */
+    --md-default-bg-color--lighter: #334155; /* Hover states on surfaces */
+
+    /* Soften the text color slightly to reduce eye strain on dark backgrounds */
+    --md-text-color: #E2E8F0;
+}

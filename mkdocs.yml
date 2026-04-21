@@ -13,6 +13,8 @@ theme:
   name: material
   logo: img/cpp-gl-hex.png
   favicon: img/cpp-gl-hex.png
+  # icon:
+  #   logo: material/graph
   features:
     - navigation.tabs
     - navigation.sections
@@ -22,13 +24,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -39,6 +43,12 @@ markdown_extensions:
   - md_in_html
   - attr_list
   - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.snippets:
@@ -64,3 +74,4 @@ extra_javascript:
 
 extra_css:
   - style/logo.css
+  - style/theme.css
