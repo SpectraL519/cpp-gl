@@ -88,3 +88,45 @@
 .md-typeset .el:hover {
     opacity: 0.75;
 }
+
+/* -----------------------------------------
+   CUSTOM CALLOUTS (Important & Caution)
+   ----------------------------------------- */
+/* Custom Callouts */
+:root {
+    /* Reuse standard Material icons for the new categories */
+    --md-admonition-icon--important: var(--md-admonition-icon--info);
+    --md-admonition-icon--caution: var(--md-admonition-icon--danger);
+}
+
+/* IMPORTANT (Purple) */
+.md-typeset .admonition.important,
+.md-typeset details.important {
+    border-color: #8B5CF6 !important;
+}
+.md-typeset .important > .admonition-title,
+.md-typeset .important > summary {
+    background-color: rgba(139, 92, 246, 0.1) !important;
+}
+.md-typeset .important > .admonition-title::before,
+.md-typeset .important > summary::before {
+    background-color: #8B5CF6 !important;
+    mask-image: var(--md-admonition-icon--important) !important;
+    -webkit-mask-image: var(--md-admonition-icon--important) !important;
+}
+
+/* CAUTION (Red) */
+.md-typeset .admonition.caution,
+.md-typeset details.caution {
+    border-color: #EF4444 !important;
+}
+.md-typeset .caution > .admonition-title,
+.md-typeset .caution > summary {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+}
+.md-typeset .caution > .admonition-title::before,
+.md-typeset .caution > summary::before {
+    background-color: #EF4444 !important;
+    mask-image: var(--md-admonition-icon--caution) !important;
+    -webkit-mask-image: var(--md-admonition-icon--caution) !important;
+}

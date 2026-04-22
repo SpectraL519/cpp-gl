@@ -12,6 +12,6 @@ serve-docs:
 clean-docs:
 	@echo "==> Cleaning documentation build directories..."
 	rm -rf site/
-	rm -rf xml/
+	rm -rf documentation/
 
 clean: clean-docs

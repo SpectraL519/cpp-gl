@@ -58,7 +58,8 @@ markdown_extensions:
 plugins:
   - search
   - include-markdown
-  - callouts
+  - callouts:
+      aliases: false
   - mkdoxy:
       projects:
         cpp-gl:
