@@ -52,8 +52,8 @@ namespace gl {
 /// ### Template Parameters
 /// | Parameter  | Description | Default | Constraint |
 /// | :--------- | :--- | :--- | :--- |
-/// | Properties | The type of property data attached to the vertex. | @ref gl::empty_properties "empty_properties" | @ref gl::traits::c_properties "c_properties" |
-/// | IdType     | The underlying integer type used for the vertex ID. | @ref gl::default_id_type "default_id_type" | [c_id_type](gl_traits.md#gl-traits-c-id-type) |
+/// | Properties | The type of property data attached to the vertex. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
+/// | IdType     | The underlying integer type used for the vertex ID. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
