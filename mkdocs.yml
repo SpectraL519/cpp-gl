@@ -89,3 +89,8 @@ extra_javascript:
 extra_css:
   - style/logo.css
   - style/theme.css
+
+extra:
+  version:
+    provider: mike
+    default: "latest"

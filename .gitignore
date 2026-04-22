@@ -9,6 +9,7 @@
 
 # documentation files
 documentation/
+site/
 
 # python temporary files
 **/__pycache__/
