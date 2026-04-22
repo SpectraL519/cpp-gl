@@ -62,7 +62,6 @@ template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 
 namespace detail {
 
-/// @internal
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
 struct to_impl;
 

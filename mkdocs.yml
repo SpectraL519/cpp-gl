@@ -70,13 +70,16 @@ plugins:
       projects:
         cpp-gl:
           src-dirs: "include docs/groups.dox"
-          full-doc: True
+          full-doc: true
           doxy-cfg:
             PROJECT_NAME: "CPP-GL"
-            EXTRACT_ALL: False
-            HIDE_UNDOC_MEMBERS: True
-            HIDE_UNDOC_CLASSES: True
-            EXTRACT_STATIC: False
+            EXTRACT_ALL: "NO"
+            HIDE_UNDOC_MEMBERS: "YES"
+            HIDE_UNDOC_CLASSES: "YES"
+            EXTRACT_STATIC: "NO"
+            EXTRACT_PRIVATE: "NO"
+            INTERNAL_DOCS: "NO"
+            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
 
 extra_javascript:
   - scripts/mathjax.js
