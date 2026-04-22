@@ -1,29 +1,22 @@
-/* Change :root to target the default color scheme directly */
+/* Light Mode */
 [data-md-color-scheme="default"] {
-    /* -----------------------------------------
-       LIGHT MODE - Crisp, Framed, Accessible
-       ----------------------------------------- */
     --md-default-bg-color: #F1F5F9;
     --md-default-bg-color--light: #FFFFFF;
     --md-default-bg-color--lighter: #E2E8F0;
 
-    --md-primary-fg-color: #0F172A; /* Deep Navy Header */
+    --md-primary-fg-color: #0F172A;
     --md-primary-bg-color: #FFFFFF;
 
-    --md-accent-fg-color: #E11D48;  /* Crimson Accent */
+    --md-accent-fg-color: #E11D48;
 
-    /* Dedicated Blue for links/references in Light Mode */
-    --md-typeset-a-color: #0284C7;  /* Deep Sky Blue */
+    --md-typeset-a-color: #0284C7;
 
-    /* Soften the harsh blacks in light mode */
-    --md-text-color: #334155;       /* Readable Slate Gray for body text */
-    --md-typeset-color: #0F172A;    /* Deep Navy for Headings and Bold text */
+    --md-text-color: #334155;
+    --md-typeset-color: #0F172A;
 }
 
+/* Dark Mode */
 [data-md-color-scheme="slate"] {
-    /* -----------------------------------------
-       DARK MODE - Rich Midnight & Vibrant Accents
-       ----------------------------------------- */
     --md-default-bg-color: #0F172A;
     --md-default-bg-color--light: #1E293B;
     --md-default-bg-color--lighter: #334155;
@@ -37,29 +30,24 @@
     --md-text-color: #E2E8F0;
     --md-typeset-color: #F8FAFC;
 
-    /* Links/references use the glowing red accent in Dark Mode */
     --md-typeset-a-color: var(--md-accent-fg-color);
 }
 
-/* -----------------------------------------
-   MODERN "WEB-SLINGER" REFINEMENTS
-   ----------------------------------------- */
-
-/* 1. The Dynamic Header */
+/* Dynamic Header */
 .md-header {
     background-color: var(--md-primary-fg-color) !important;
     box-shadow: none !important;
     border-bottom: 0px !important;
 }
 
-/* 2. The Signature Gradient Border */
+/* Gradient Border */
 .md-tabs {
     background-color: var(--md-primary-fg-color) !important;
     border-bottom: 2px solid transparent !important;
     border-image: linear-gradient(to right, #3B82F6, #E30022) 1 !important;
 }
 
-/* 3. Sleeker Search Bar */
+/* Search Bar */
 .md-search__input {
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: #FFFFFF !important;
@@ -69,14 +57,15 @@
     color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* 4. Modern Code Blocks (Fixed Corner Radius) */
+/* Code Blocks */
 .md-typeset pre {
-    border-radius: 0.25rem !important; /* Matches the copy button corners */
+    border-radius: 0.25rem !important;
+    overflow: hidden !important;
     border: 1px solid var(--md-default-bg-color--lighter);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* 5. Smooth Admonitions */
+/* Smooth Admonitions */
 .md-typeset .admonition, .md-typeset details {
     border-radius: 0.5rem;
     border-width: 1px;
@@ -84,12 +73,12 @@
     background-color: var(--md-default-bg-color--light);
 }
 
-/* 6. Enforce Accent Colors on API References & Links */
+/* Enforce Accent Colors on API References & Links */
 .md-typeset a,
 .md-typeset .el,
 .md-typeset a.el,
 .md-typeset strong .el,
-.md-typeset code a /* Added this just in case mkdoxy nests links inside code blocks */ {
+.md-typeset code a {
     color: var(--md-typeset-a-color) !important;
     text-decoration: none;
     transition: opacity 0.2s ease-in-out;

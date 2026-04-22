@@ -109,9 +109,20 @@ struct to_impl;
 /// or the [Installation Guide](/#installing-the-library).
 /// A simple reference [MAIN PAGE](/)
 ///
+/// > [!NOTE]
+/// > Highlights information that users should take into account, even when skimming.
+///
+/// > [!TIP]
+/// > Optional information to help a user be more successful.
+///
+/// > [!IMPORTANT]
+/// > Crucial information necessary for users to succeed.
+///
 /// > [!WARNING]
-/// > This class relies on its internal implementation tag to correctly define its layout. Modifying
-/// > the underlying structure bypassing the API can lead to undefined behavior.
+/// > Critical content demanding immediate user attention due to potential risks.
+///
+/// > [!CAUTION]
+/// > Negative potential consequences of an action.
 template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:

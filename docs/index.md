@@ -1,3 +1,7 @@
+<style>
+  .md-typeset h1 { display: none !important; }
+</style>
+
 <div align="center" markdown="1">
   <img src="img/cpp-gl-hex.png" alt="CPP-GL" width="360" />
 </div>
