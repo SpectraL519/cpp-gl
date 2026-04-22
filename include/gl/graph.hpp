@@ -442,11 +442,11 @@ public:
     // clang-format off
     // gl_attr_force_inline misplacement
 
-    gl_attr_force_inline const edge_type add_edge(vertex_type source, vertex_type target) {
+    gl_attr_force_inline edge_type add_edge(vertex_type source, vertex_type target) {
         return this->add_edge(source.id(), target.id());
     }
 
-    gl_attr_force_inline const edge_type add_edge_with(
+    gl_attr_force_inline edge_type add_edge_with(
         vertex_type source, vertex_type target, const edge_properties_type& properties
     )
     requires(traits::c_non_empty_properties<edge_properties_type>)
@@ -705,12 +705,7 @@ public:
 private:
     using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
-    graph(const graph& other)
-    : _n_vertices{other._n_vertices},
-      _n_edges{other._n_edges},
-      _impl{other._impl},
-      _vertex_properties{other._vertex_properties},
-      _edge_properties{other._edge_properties} {}
+    graph(const graph& other) = default;
 
     // --- element validation ---
 
