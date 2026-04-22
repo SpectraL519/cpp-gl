@@ -35,23 +35,24 @@ namespace gl {
 /// > Instead, `vertex_descriptor` objects should be retrieved from the @ref gl::graph class instance that owns the given vertex.
 ///
 /// ### Example Usage
-/// The following example demonstrates how to iterate over vertices in a graph,
-/// accessing both their structural IDs and their underlying custom properties:
 /// ```cpp
 /// for (auto v : graph.vertices()) {
-///     // Access the underlying structural ID
-///     std::cout << "Node ID: " << v.id() << " | ";
-///
-///     // Use the arrow operator to access/modify custom property fields
-///     if (v->parent == gl::invalid_id)
+///     std::cout << "Node ID: " << v.id() << " | "; // (1)!
+///     if (v->parent == gl::invalid_id) // (2)!
 ///         std::cout << "ROOT | Level: " << v->level << "\n";
 ///     else
 ///         std::cout << "Parent: " << v->parent << " | Level: " << v->level << "\n";
 /// }
 /// ```
 ///
+/// 1\. Access the underlying structural ID
+///
+/// 2\. Use the arrow operator to access/modify custom property fields
+///
 /// @tparam Properties The type of property data attached to the vertex. Defaults to `empty_properties`.
+///         Must satisfy the @ref gl::traits::c_properites "c_properties" trait.
 /// @tparam IdType The underlying integer type used for the vertex ID. Defaults to `default_id_type`.
+///         Must satisfy the @ref gl::traits::c_id_type "c_id_type" trait.
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
@@ -59,7 +60,7 @@ class vertex_descriptor final {
 public:
     /// @brief Type alias for the vertex_descriptor itself.
     using type = std::type_identity_t<vertex_descriptor<Properties, IdType>>;
-    /// @brief The type used for vertex identifiers.
+    /// @brief The vertex identifier type
     using id_type = IdType;
     /// @brief The type of properties associated with the vertex.
     using properties_type = Properties;

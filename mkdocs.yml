@@ -38,8 +38,8 @@ theme:
     - navigation.expand
     - search.suggest
     - content.code.copy
-    - content.code.select   # TODO: use in example
-    - content.code.annotate # TODO: use in example
+    - content.code.select
+    - content.code.annotate
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -86,6 +86,7 @@ plugins:
           full-doc: true
           doxy-cfg:
             PROJECT_NAME: "CPP-GL"
+            MARKDOWN_SUPPORT: "YES"
             EXTRACT_ALL: "NO"
             HIDE_UNDOC_MEMBERS: "YES"
             HIDE_UNDOC_CLASSES: "YES"
