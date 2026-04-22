@@ -16,6 +16,7 @@
 /// @defgroup GL-Algorithm Graph Algorithms
 /// @ingroup GL
 /// @brief Common graph algorithms and algorithm-related utility.
+/// @todo Refine description
 ///
 /// Provides generic, highly customizable implementations of classic graph algorithms.
 /// This includes standard search templates (BFS, DFS, PFS), shortest path finders
@@ -44,6 +45,10 @@
 /// Encapsulates the `gl::traits` namespace. These components are used extensively throughout the
 /// library to constrain template parameters and interrogate types at compile time (e.g., deducing
 /// underlying vertex/edge types, querying graph directedness, or enforcing structural constraints).
+///
+/// @section concepts_link Detailed Concept Specifications
+/// For a detailed list of all GL module's concepts and their formal requirements, please refer to
+/// the [GL Traits & Concepts Documentation](gl_traits.md#gl-traits-concepts-documentation ) page.
 
 /// @defgroup GL-Types Generic Types
 /// @ingroup GL

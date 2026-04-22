@@ -2,7 +2,7 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file vertex_descriptor.hpp
+/// @file gl/vertex_descriptor.hpp
 /// @brief Defines the vertex_descriptor class, a lightweight wrapper for vertex representations in graphs.
 
 #pragma once
@@ -49,17 +49,16 @@ namespace gl {
 ///
 /// 2\. Use the arrow operator to access/modify custom property fields
 ///
-/// @tparam Properties The type of property data attached to the vertex. Defaults to `empty_properties`.
-///         Must satisfy the @ref gl::traits::c_properites "c_properties" trait.
-/// @tparam IdType The underlying integer type used for the vertex ID. Defaults to `default_id_type`.
-///         Must satisfy the @ref gl::traits::c_id_type "c_id_type" trait.
+/// ### Template Parameters
+/// | Parameter  | Description | Default | Constraint |
+/// | :--------- | :--- | :--- | :--- |
+/// | Properties | The type of property data attached to the vertex. | @ref gl::empty_properties "empty_properties" | @ref gl::traits::c_properties "c_properties" |
+/// | IdType     | The underlying integer type used for the vertex ID. | @ref gl::default_id_type "default_id_type" | [c_id_type](gl_traits.md#gl-traits-c-id-type) |
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
 class vertex_descriptor final {
 public:
-    /// @brief Type alias for the vertex_descriptor itself.
-    using type = std::type_identity_t<vertex_descriptor<Properties, IdType>>;
     /// @brief The vertex identifier type
     using id_type = IdType;
     /// @brief The type of properties associated with the vertex.

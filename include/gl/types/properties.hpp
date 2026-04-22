@@ -13,6 +13,7 @@
 
 namespace gl {
 
+/// @brief An empty properties type.
 struct empty_properties {};
 
 struct empty_properties_map {};
