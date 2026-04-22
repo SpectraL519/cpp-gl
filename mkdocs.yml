@@ -4,10 +4,16 @@ repo_url: "https://github.com/SpectraL519/cpp-gl"
 
 nav:
   - Home: index.md
-  - CPP-GL API:
-    - Namespaces: cpp-gl/namespaces.md
-    - Classes & Structs: cpp-gl/annotated.md
-    - Files: cpp-gl/files.md
+  - GL:
+      - Overview: cpp-gl/group__gl.md
+      - Algorithms: cpp-gl/group__gl__alg.md
+  - HGL:
+      - Overview: cpp-gl/group__hgl.md
+      - Algorithms: cpp-gl/group__hgl__alg.md
+  - Full API Index:
+      - Namespaces: cpp-gl/namespaces.md
+      - Classes & Structs: cpp-gl/annotated.md
+      - Files: cpp-gl/files.md
 
 theme:
   name: material
@@ -63,10 +69,14 @@ plugins:
   - mkdoxy:
       projects:
         cpp-gl:
-          src-dirs: include
+          src-dirs: "include docs/groups.dox"
           full-doc: True
           doxy-cfg:
             PROJECT_NAME: "CPP-GL"
+            EXTRACT_ALL: False
+            HIDE_UNDOC_MEMBERS: True
+            HIDE_UNDOC_CLASSES: True
+            EXTRACT_STATIC: False
 
 extra_javascript:
   - scripts/mathjax.js

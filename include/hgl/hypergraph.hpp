@@ -75,6 +75,7 @@ struct to_impl;
 
 } // namespace detail
 
+/// @ingroup hgl
 template <traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
 class hypergraph final {
 public:

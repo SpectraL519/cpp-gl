@@ -1,0 +1,13 @@
+/// @defgroup gl Graph Library (GL)
+/// @brief Core graph models, structures, and utilities.
+///
+/// @defgroup hgl Hypergraph Library (HGL)
+/// @brief Core hypergraph models, structures, and utilities.
+///
+/// @defgroup gl_alg GL Algorithms
+/// @ingroup gl
+/// @brief Algorithms for standard graphs.
+///
+/// @defgroup hgl_alg HGL Algorithms
+/// @ingroup hgl
+/// @brief Algorithms for hypergraphs.

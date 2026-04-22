@@ -62,12 +62,14 @@ template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 
 namespace detail {
 
+/// @internal
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
 
 /// @brief A general-purpose graph container.
+/// @ingroup gl
 ///
 /// This class represents a highly customizable graph data structure configured by the provided
 /// `GraphTraits`. It serves as the primary interface for managing vertices, edges, and their properties.

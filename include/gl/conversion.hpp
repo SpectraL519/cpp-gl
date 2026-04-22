@@ -48,8 +48,10 @@ using swap_impl_tag_t = typename swap_impl_tag<GT, NewImplTag>::type;
 
 } // namespace traits
 
+/// @internal
 namespace detail {
 
+/// @internal
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
 struct to_impl {
     template <typename TargetGraph, typename SourceGraph>
