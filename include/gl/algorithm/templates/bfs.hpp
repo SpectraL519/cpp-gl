@@ -12,7 +12,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup gl_alg
+/// @ingroup GL-Algorithm
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,

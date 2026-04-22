@@ -1,20 +1,20 @@
-/// @defgroup gl Graph Library (GL)
+/// @defgroup GL Graph Library (GL)
 /// @brief The main module containing the general-purpose template graph library implementation.
 ///
 /// This module encapsulates all standard graph representations, traversal algorithms, topology
 /// generators, and I/O utilities. It is heavily reliant on modern C++ paradigms, leveraging
 /// templates and concepts to provide a fast, generic, and type-safe graph API.
 
-/// @defgroup gl_core Core Graph Components
-/// @ingroup gl
+/// @defgroup GL-Core Core Graph Components
+/// @ingroup GL
 /// @brief Fundamental graph data structures, descriptors, and configuration tags.
 ///
 /// This group contains the primary building blocks of the library, including the main `gl::graph` class,
 /// graph element descriptors and the structural tags (i.e., directed vs. undirected and backend
 /// implementation tags) used to dictate graph behavior and memory layout.
 
-/// @defgroup gl_alg Graph Algorithms
-/// @ingroup gl
+/// @defgroup GL-Algorithm Graph Algorithms
+/// @ingroup GL
 /// @brief Common graph algorithms and algorithm-related utility.
 ///
 /// Provides generic, highly customizable implementations of classic graph algorithms.
@@ -22,39 +22,39 @@
 /// (Dijkstra), minimum spanning trees (Prim), and topological sorting. Algorithms
 /// are designed to operate seamlessly via callbacks and property maps.
 
-/// @defgroup gl_topo Graph Topology Generators
-/// @ingroup gl
+/// @defgroup GL-Topology Graph Topologies
+/// @ingroup GL
 /// @brief Generators and evaluators for standard graph topologies.
 ///
 /// A collection of utilities for quickly generating commong graph topologies.
 /// This includes cliques (complete graphs), bipartite graphs, binary trees, paths, and cycles.
 
-/// @defgroup gl_io Input/Output Utility
-/// @ingroup gl
+/// @defgroup GL-IO I/O Utility
+/// @ingroup GL
 /// @brief I/O stream support, parsing, and range-based formatting.
 ///
 /// Facilities for reading, writing, and formatting graph data. This group provides the stream
 /// manipulators, configuration options, and format traits necessary to seamlessly serialize and
 /// visualize graph structures, and parse data from standard streams or files.
 
-/// @defgroup gl_traits Traits & Concepts
-/// @ingroup gl
+/// @defgroup GL-Traits Traits & Concepts
+/// @ingroup GL
 /// @brief Type traits, constraints, and metaprogramming utilities.
 ///
 /// Encapsulates the `gl::traits` namespace. These components are used extensively throughout the
 /// library to constrain template parameters and interrogate types at compile time (e.g., deducing
 /// underlying vertex/edge types, querying graph directedness, or enforcing structural constraints).
 
-/// @defgroup gl_types Generic Data Types
-/// @ingroup gl
+/// @defgroup GL-Types Generic Types
+/// @ingroup GL
 /// @brief Independent, reusable structures and containers.
 ///
 /// Contains highly generic data structures like `flat_matrix` and `flat_jagged_vector`.
 /// While these form the memory backbone of the graph implementations, they are completely
 /// decoupled from the graph logic and can be safely utilized in general-purpose programming contexts.
 
-/// @defgroup gl_util General Utilities
-/// @ingroup gl
+/// @defgroup GL-Util General Utilities
+/// @ingroup GL
 /// @brief Practical, domain-agnostic C++ helpers and polyfills.
 ///
 /// While these utilities were built to facilitate the library's internal graph modeling

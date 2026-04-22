@@ -68,7 +68,7 @@ struct to_impl;
 } // namespace detail
 
 /// @brief A general-purpose graph container.
-/// @ingroup gl
+/// @ingroup GL
 ///
 /// This class represents a highly customizable graph data structure configured by the provided
 /// `GraphTraits`. It serves as the primary interface for managing vertices, edges, and their properties.
@@ -106,9 +106,9 @@ struct to_impl;
 /// ```
 ///
 /// ### References
-/// For a general overview and integration instructions, see the [Project Overview](/#overview)
-/// or the [Installation Guide](/#installing-the-library).
-/// A simple reference [MAIN PAGE](/)
+/// For a general overview and integration instructions, see the [Project Overview](../index.md#overview)
+/// or the [Installation Guide](../index.md#installing-the-library).
+/// A simple reference [MAIN PAGE](../index.md#)
 ///
 /// > [!NOTE]
 /// > Highlights information that users should take into account, even when skimming.
