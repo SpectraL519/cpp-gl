@@ -18,10 +18,15 @@ nav:
   #     - Overview: cpp-gl/group__hgl.md
   #     - Algorithms: cpp-gl/group__hgl__alg.md
   - API Index:
+      - Modules: cpp-gl/modules.md
       - Namespaces: cpp-gl/namespaces.md
       - Classes & Structs: cpp-gl/annotated.md
+      - Class Hierarchy: cpp-gl/hierarchy.md
+      # - Concepts: cpp-gl/concepts.md
       - Files: cpp-gl/files.md
-      # TODO: Other sections (constants, functions, modules, etc...)
+      - Todo List: cpp-gl/todo.md
+      # - Bug List: cpp-gl/bug.md
+      # - Deprecated: cpp-gl/deprecated.md
 
 theme:
   name: material
@@ -33,6 +38,8 @@ theme:
     - navigation.expand
     - search.suggest
     - content.code.copy
+    - content.code.select   # TODO: use in example
+    - content.code.annotate # TODO: use in example
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
