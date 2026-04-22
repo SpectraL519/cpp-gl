@@ -89,14 +89,11 @@
     opacity: 0.75;
 }
 
-/* -----------------------------------------
-   CUSTOM CALLOUTS (Important & Caution)
-   ----------------------------------------- */
 /* Custom Callouts */
 :root {
-    /* Reuse standard Material icons for the new categories */
     --md-admonition-icon--important: var(--md-admonition-icon--info);
-    --md-admonition-icon--caution: var(--md-admonition-icon--danger);
+    --md-admonition-icon--tip: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1z"/></svg>');
+    --md-admonition-icon--caution: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4m-1 6h2v4h-2V7m0 6h2v2h-2v-2z"/></svg>');
 }
 
 /* IMPORTANT (Purple) */
