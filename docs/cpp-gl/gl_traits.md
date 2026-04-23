@@ -70,8 +70,14 @@ Requirements for properties that support binary coloring algorithms.
 
 Requires a property type that:
 Satisfies c_properties.
+
+
 Has a nested `color_type`.
+
+
 Has a public `color` member of the `color_type` type.
+
+
 Supports construction and comparison with `[`gl::binary_color`](classgl_1_1binary__color.md)`.
 
 ### Template Parameters
@@ -490,6 +496,25 @@ Validates if a property type contains actual user-defined data.
 
 Requires that the type satisfies [`gl::traits::c_properties`](gl_traits.md#gl-traits-c-properties) and is not the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
 
+
+> [!NOTE] Highlights information that users should take into account, even when skimming.
+
+
+
+> [!TIP] Optional information to help a user be more successful.
+
+
+
+> [!IMPORTANT] Crucial information necessary for users to succeed.
+
+
+
+> [!WARNING] Critical content demanding immediate user attention due to potential risks.
+
+
+
+> [!CAUTION] Negative potential consequences of an action.
+
 ### Template Parameters
 
 | Parameter | Description |
@@ -736,7 +761,11 @@ Requirements for properties that support arithmetic weight values.
 
 Requires a property type that:
 Satisfies c_properties.
+
+
 Has a nested `weight_type` that satisfies c_arithmetic.
+
+
 Has a public `weight` member of the `weight_type` type.
 
 ### Template Parameters

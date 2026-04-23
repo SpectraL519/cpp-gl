@@ -40,6 +40,10 @@ def xml_to_md(elem):
     if elem is None:
         return ""
 
+    # Ignore template parameter lists (they are handled separately for the table)
+    if elem.tag == 'parameterlist':
+        return ""
+
     res = elem.text or ""
     for child in elem:
         if child.tag == 'ref':
@@ -49,17 +53,14 @@ def xml_to_md(elem):
             # 1. Known Concepts: Link exactly to their file and anchor
             if refid in GLOBAL_CONCEPT_LINKS:
                 res += f"[`{ref_text}`]({GLOBAL_CONCEPT_LINKS[refid]})"
-
-            # 2. External/Unknown Concepts (Fallback)
+            # 2. External/Unknown Concepts
             elif refid.startswith('concept'):
                 ref_anchor = ref_text.replace("::", "-").replace("_", "-")
                 res += f"[`{ref_text}`](#{ref_anchor})"
-
-            # 3. Classes, Structs, Namespaces (Fix: MkDoxy generates flat files!)
+            # 3. Classes, Structs, Namespaces (Matches MkDoxy's flat file structure)
             elif refid.startswith('class') or refid.startswith('struct') or refid.startswith('namespace'):
                 res += f"[`{ref_text}`]({refid}.md)"
-
-            # 4. Unknown type (Degrade gracefully to code font)
+            # 4. Unknown
             else:
                 res += f"`{ref_text}`"
 
@@ -70,10 +71,23 @@ def xml_to_md(elem):
         elif child.tag == 'emphasis':
             res += f"*{xml_to_md(child)}*"
         elif child.tag == 'itemizedlist':
-            res += "\n"
+            res += "\n\n"
             for item in child.findall('listitem'):
                 res += f"- {xml_to_md(item).strip()}\n"
-            res += "\n"
+            res += "\n\n"
+        elif child.tag == 'blockquote':
+            # Restores Markdown blockquotes (> [!NOTE]) from Doxygen XML
+            bq_text = xml_to_md(child).strip()
+            res += "\n\n" + "\n".join(f"> {line}" for line in bq_text.splitlines()) + "\n\n"
+        elif child.tag == 'simplesect':
+            # Converts native Doxygen @note, @warning into MkDocs Admonitions
+            kind = child.get('kind', 'note').upper()
+            sect_text = xml_to_md(child).strip()
+            res += f"\n\n> [!{kind}]\n" + "\n".join(f"> {line}" for line in sect_text.splitlines()) + "\n\n"
+        elif child.tag == 'para':
+            res += xml_to_md(child).strip() + "\n\n"
+        elif child.tag == 'title':
+            res += f"### {xml_to_md(child).strip()}\n\n"
         else:
             res += xml_to_md(child)
 
@@ -92,40 +106,32 @@ def parse_concept_xml(xml_path):
     name = root.findtext('compoundname')
     anchor = name.replace("::", "-").replace("_", "-")
 
-    # Extract descriptions using the Markdown-aware parser
     brief = xml_to_md(root.find('briefdescription')).strip()
 
-    details = ""
     params = []
-
     detailed_desc = root.find('detaileddescription')
     if detailed_desc is not None:
-        for para in detailed_desc.findall('para'):
-            param_list = para.find('.//parameterlist[@kind="templateparam"]')
-            if param_list is not None:
-                for item in param_list.findall('parameteritem'):
-                    p_name = xml_to_md(item.find('.//parametername')).strip()
-                    p_desc = xml_to_md(item.find('.//parameterdescription')).strip()
-                    params.append({"name": p_name, "desc": p_desc})
-                para.remove(param_list) # Remove so it isn't rendered twice
+        # Extract template parameters safely to build the Markdown Table
+        for param_list in detailed_desc.findall('.//parameterlist[@kind="templateparam"]'):
+            for item in param_list.findall('parameteritem'):
+                p_name = xml_to_md(item.find('.//parametername')).strip()
+                p_desc = xml_to_md(item.find('.//parameterdescription')).strip()
+                params.append({"name": p_name, "desc": p_desc})
+            # Clear the XML node so it isn't rendered twice in the main details block
+            param_list.clear()
 
-            para_text = xml_to_md(para).strip()
-            if para_text:
-                details += para_text + "\n\n"
+    # Process the entire remaining detailed description (including blockquotes)
+    details = xml_to_md(detailed_desc).strip()
 
-    # Safely extract definition using strict get_text (NO Markdown allowed)
+    # Extract C++ definition (No Markdown allowed here!)
     constraint = get_text(root.find('initializer')).strip()
+    constraint = re.sub(r'=\s+', '= ', constraint) # Clean Doxygen spacing
 
-    # Fix Doxygen's weird spacing injections (e.g. '=  c_properties')
-    constraint = re.sub(r'=\s+', '= ', constraint)
-
-    # Check if Doxygen already included the 'template <...>' keyword
     if constraint.startswith("template"):
         definition = constraint
         if not definition.endswith(";"):
             definition += ";"
     else:
-        # Fallback for older Doxygen versions
         template_decl = "template <"
         tpl_nodes = root.findall('.//templateparamlist/param')
         tpl_strings = [get_text(p.find('type')).strip() for p in tpl_nodes]
@@ -136,7 +142,7 @@ def parse_concept_xml(xml_path):
         "name": name,
         "anchor": anchor,
         "brief": brief,
-        "details": details.strip(),
+        "details": details,
         "params": params,
         "definition": definition
     }

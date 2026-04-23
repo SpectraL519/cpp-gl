@@ -260,6 +260,21 @@ concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_prope
 /// Requires that the type satisfies @ref gl::traits::c_properties and is not the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
+///
+/// > [!NOTE]
+/// > Highlights information that users should take into account, even when skimming.
+///
+/// > [!TIP]
+/// > Optional information to help a user be more successful.
+///
+/// > [!IMPORTANT]
+/// > Crucial information necessary for users to succeed.
+///
+/// > [!WARNING]
+/// > Critical content demanding immediate user attention due to potential risks.
+///
+/// > [!CAUTION]
+/// > Negative potential consequences of an action.
 template <typename T>
 concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
 
