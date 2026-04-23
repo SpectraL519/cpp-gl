@@ -5,10 +5,12 @@ import json
 from pathlib import Path
 from dataclasses import dataclass
 
+
 @dataclass
 class TParamDescriptor:
     name: str
     desc: str
+
 
 @dataclass
 class ConceptDescriptor:
@@ -19,11 +21,21 @@ class ConceptDescriptor:
     params: list[TParamDescriptor]
     definition: str
 
+
 class ConceptParser:
-    def __init__(self, xml_dir: Path, out_dir: Path, groups: dict):
+    def __init__(self, xml_dir: Path, out_dir: Path, config: dict):
         self.xml_dir = xml_dir
         self.out_dir = out_dir
-        self.groups = groups
+
+        # Extract the index configuration
+        self.index_config = config.get("index")
+        if not self.index_config:
+            raise ValueError(
+                "Configuration must include an 'index' block with title, anchor, and description."
+            )
+
+        self.groups = config.get("groups", {})
+
         self.concept_links = {}  # Registry mapping refid -> file#anchor
         self.categorized_concepts = {key: [] for key in self.groups.keys()}
 
@@ -72,7 +84,7 @@ class ConceptParser:
                 # SMART LINK MERGE:
                 # Prevents wrapping a Markdown link in backticks, which breaks the link.
                 # Instead, it places backticks INSIDE the brackets.
-                match = re.fullmatch(r'\[(`?)(.*?)\1\]\((.*?)\)', inner.strip())
+                match = re.fullmatch(r"\[(`?)(.*?)\1\]\((.*?)\)", inner.strip())
                 if match:
                     res += f"[`{match.group(2)}`]({match.group(3)})"
                 elif "](" in inner:
@@ -144,10 +156,14 @@ class ConceptParser:
 
         detailed_desc = root.find("detaileddescription")
         if detailed_desc is not None:
-            for param_list in detailed_desc.findall('.//parameterlist[@kind="templateparam"]'):
+            for param_list in detailed_desc.findall(
+                './/parameterlist[@kind="templateparam"]'
+            ):
                 for item in param_list.findall("parameteritem"):
                     p_name = self._xml_to_md(item.find(".//parametername")).strip()
-                    p_desc = self._xml_to_md(item.find(".//parameterdescription")).strip()
+                    p_desc = self._xml_to_md(
+                        item.find(".//parameterdescription")
+                    ).strip()
                     params.append(TParamDescriptor(name=p_name, desc=p_desc))
                 param_list.clear()
 
@@ -165,7 +181,9 @@ class ConceptParser:
             tpl_nodes = root.findall(".//templateparamlist/param")
             tpl_strings = [self._get_text(p).strip() for p in tpl_nodes]
             template_decl += ", ".join(tpl_strings) + ">\n"
-            definition = f"{template_decl}concept {name.split('::')[-1]} = {constraint};"
+            definition = (
+                f"{template_decl}concept {name.split('::')[-1]} = {constraint};"
+            )
 
         return ConceptDescriptor(
             name=name,
@@ -180,7 +198,9 @@ class ConceptParser:
         """Main execution flow: builds registry, parses data, and generates markdown."""
         index_xml = self.xml_dir / "index.xml"
         if not index_xml.exists():
-            print(f"Error: Could not find Doxygen index at {index_xml}. Run Doxygen first.")
+            print(
+                f"Error: Could not find Doxygen index at {index_xml}. Run Doxygen first."
+            )
             return
 
         tree = ET.parse(index_xml)
@@ -246,8 +266,8 @@ class ConceptParser:
 
     def _generate_index_file(self):
         """Generates the central API index mapping to all grouped concepts."""
-        md = "# Concepts API Reference {: #concepts-api-reference }\n\n"
-        md += "This page serves as the central index for all C++20 concepts used across the library to enforce type safety and template constraints.\n\n---\n\n"
+        md = f"# {self.index_config['title']} {{: #{self.index_config['anchor']} }}\n\n"
+        md += f"{self.index_config['description']}\n\n---\n\n"
 
         for group_key, group_info in self.groups.items():
             md += f"## {group_key} Concepts\n\n"
@@ -266,11 +286,14 @@ class ConceptParser:
         index_path.write_text(md, encoding="utf-8")
         print(f"Generated {index_path} (API Index)")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--xml", default="xml", type=Path, help="Path to Doxygen XML output")
-    parser.add_argument("--out", default="docs/cpp-gl", type=Path, help="Path to MkDocs output folder")
-    parser.add_argument("--config", default="groups.json", type=Path, help="Path to the groups JSON configuration file")
+    parser.add_argument("--xml", type=Path, help="Path to Doxygen XML output")
+    parser.add_argument("--out", type=Path, help="Path to MkDocs output folder")
+    parser.add_argument(
+        "--config", type=Path, help="Path to the groups JSON configuration file"
+    )
     args = parser.parse_args()
 
     # Load configuration from JSON
@@ -279,7 +302,7 @@ if __name__ == "__main__":
         exit(1)
 
     with open(args.config, "r", encoding="utf-8") as f:
-        groups_config = json.load(f)
+        config = json.load(f)
 
-    app = ConceptParser(args.xml, args.out, groups=groups_config)
+    app = ConceptParser(args.xml, args.out, config=config)
     app.process()
