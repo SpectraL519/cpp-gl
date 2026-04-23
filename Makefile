@@ -3,13 +3,15 @@ TAGS ?= dev
 
 .PHONY: docs serve-docs clean-docs clean
 
+# Example usage: `make docs TAGS="v2.0.0 latest --update-aliases"`
 docs:
 	@echo "==> Deploying MkDocs documentation locally via mike (Tags: $(TAGS))..."
+	doxygen Doxyfile
+	uv run python scripts/gen_concept_docs.py --xml documentation/xml --out docs/cpp-gl
 	uv run mike deploy $(TAGS)
 	@echo "==> Documentation deployed to local gh-pages branch."
-# Example usage: `make docs TAGS="v2.0.0 latest --update-aliases"`
 
-serve-docs:
+serve-docs: docs
 	@echo "==> Serving versioned MkDocs documentation locally via mike..."
 	uv run mike serve
 

@@ -244,7 +244,7 @@ template <typename T>
 concept c_properties = std::semiregular<T>;
 
 /// @ingroup GL GL-Traits
-/// @brief Validates if a type is specifically the `gl::empty_properties` tag.
+/// @brief Validates if a type is specifically the @ref gl::empty_properties tag.
 ///
 /// This concept is used to specialize behavior for graph components that
 /// do not carry any user-defined data.
@@ -256,8 +256,7 @@ concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_prope
 /// @ingroup GL GL-Traits
 /// @brief Validates if a property type contains actual user-defined data.
 ///
-/// Requires that the type satisfies @ref c_properties and is not the
-/// @ref gl::empty_properties tag.
+/// Requires that the type satisfies @ref gl::c_properties and is not the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>

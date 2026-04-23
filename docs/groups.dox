@@ -48,7 +48,7 @@
 ///
 /// @section concepts_link Detailed Concept Specifications
 /// For a detailed list of all GL module's concepts and their formal requirements, please refer to
-/// the [GL Traits & Concepts Documentation](gl_traits.md#gl-traits-concepts-documentation ) page.
+/// the [GL Traits & Concepts Documentation](gl_traits.md#gl-traits) page.
 
 /// @defgroup GL-Types Generic Types
 /// @ingroup GL
