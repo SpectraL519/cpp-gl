@@ -77,7 +77,7 @@ struct to_impl;
 ///
 /// ### Mathematics
 /// Inline math: \f$V = E - F + 2\f$
-/// Big-O: \f$\mathcal{O}(|V| + |E|)\f$
+/// Big-O: \f$O(|V| + |E|)\f$
 ///
 /// Display math:
 ///

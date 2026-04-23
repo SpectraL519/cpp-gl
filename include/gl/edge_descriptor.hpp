@@ -202,28 +202,23 @@ public:
         return std::make_pair(this->_vertices.second, this->_vertices.first);
     }
 
-    // clang-format off
-    // gl_attr_force_inline misplacement
-
     /// @brief Returns the source vertex ID.
     /// @return The underlying integer ID of the source vertex.
-    [[nodiscard]] gl_attr_force_inline const id_type source() const noexcept {
+    [[nodiscard]] gl_attr_force_inline id_type source() const noexcept {
         return this->_vertices.first;
     }
 
     /// @brief Returns the target vertex ID.
     /// @return The underlying integer ID of the target vertex.
-    [[nodiscard]] gl_attr_force_inline const id_type target() const noexcept {
+    [[nodiscard]] gl_attr_force_inline id_type target() const noexcept {
         return this->_vertices.second;
     }
-
-    // clang-format on
 
     /// @brief Gets the other endpoint of the edge given one of its incident vertices.
     /// @param vertex_id The ID of one incident vertex.
     /// @return The ID of the opposite vertex.
     /// @throws std::invalid_argument If the provided `vertex_id` is not incident to this edge.
-    [[nodiscard]] const id_type other(const id_type vertex_id) const {
+    [[nodiscard]] id_type other(const id_type vertex_id) const {
         if (vertex_id == this->_vertices.first)
             return this->_vertices.second;
 
