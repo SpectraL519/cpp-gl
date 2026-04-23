@@ -17,12 +17,17 @@ namespace gl {
 /// @brief A tag struct representing no user-defined properties.
 ///
 /// > [!IMPORTANT]
-/// > - This type is used as a default `properties_type` for graph components that do not require any user-defined data.
-/// > - It serves as a marker to indicate that the component is "property-less" and can be optimized accordingly.
+/// >
+/// > This type is used as a default `properties_type` for graph components that do not require any user-defined data.
+/// > It serves as a marker to indicate that the component is "property-less" and can be optimized accordingly.
 struct empty_properties {};
 
 /// @ingroup GL GL-Core
 /// @brief A tag struct representing an empty property map.
+///
+/// > [!NOTE]
+/// >
+/// > This type is used internally by the library to optimize storage for graph components that have no properties.
 struct empty_properties_map {};
 
 /// @ingroup GL GL-Types
@@ -67,13 +72,17 @@ struct name_property {
 /// @ingroup GL GL-Types
 /// @brief A type-safe container for heterogeneous properties stored by string keys.
 ///
-/// Uses `std::any` and `std::unordered_map` to allow runtime attachment of
-/// arbitrary data types to graph elements.
+/// Stores an arbitrary number of properties identified by string keys, where each
+/// property can be of any type. This allows for dynamic attachment of properties to
+/// graph elements at runtime without requiring compile-time knowledge of the property types.
+///
+/// The underlying container that is used to store the properties is `std::unordered_map<std::string, std::any>`.
 class dynamic_properties final {
 public:
-    using key_type = std::string;
-    using value_type = std::any;
-    using property_map_type = std::unordered_map<key_type, value_type>;
+    using key_type = std::string; ///< The type used for property keys (string identifiers).
+    using value_type = std::any; ///< The type used for property values (type-erased storage).
+    using property_map_type =
+        std::unordered_map<key_type, value_type>; ///< The underlying map type for storing properties.
 
     dynamic_properties() = default;
 
@@ -214,7 +223,7 @@ struct binary_color_property {
 /// ### Template Parameters
 /// | Parameter | Description | Default | Constraint |
 /// | :--- | :--- | :--- | :--- |
-/// | `WeightType` | The numeric type used to store the weight value. | `double` | [c_arithmetic](gl_traits.md#gl-traits-c-arithmetic) |
+/// | `WeightType` | The numeric type used to store the weight value. | `double` | [**c_arithmetic**](gl_traits.md#gl-traits-c-arithmetic) |
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
