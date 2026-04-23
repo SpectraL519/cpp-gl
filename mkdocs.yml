@@ -73,6 +73,8 @@ markdown_extensions:
   - pymdownx.snippets:
       base_path: "."
       check_paths: true
+  - toc:
+      toc_depth: 2
 
 plugins:
   - search
