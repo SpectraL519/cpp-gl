@@ -11,6 +11,7 @@
 documentation/
 site/
 mike-*.yml
+docs/cpp-gl/
 
 # python temporary files
 **/__pycache__/
