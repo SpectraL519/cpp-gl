@@ -27,6 +27,7 @@ nav:
       - Todo List: cpp-gl/todo.md
       # - Bug List: cpp-gl/bug.md
       # - Deprecated: cpp-gl/deprecated.md
+  - License: license.md
 
 theme:
   name: material

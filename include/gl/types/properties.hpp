@@ -15,6 +15,10 @@ namespace gl {
 
 /// @ingroup GL GL-Core
 /// @brief A tag struct representing no user-defined properties.
+///
+/// > [!IMPORTANT]
+/// > - This type is used as a default `properties_type` for graph components that do not require any user-defined data.
+/// > - It serves as a marker to indicate that the component is "property-less" and can be optimized accordingly.
 struct empty_properties {};
 
 /// @ingroup GL GL-Core

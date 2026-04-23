@@ -108,4 +108,4 @@ target_link_libraries(my_project PRIVATE cpp-gl)
 
 ## Licence
 
-The `CPP-GL` project uses the [MIT Licence](https://mit-license.org/) which can be found in the [LICENCE](/LICENSE) file
+The `CPP-GL` project uses the [MIT Licence](https://mit-license.org/) which can be found in the [LICENCE](/LICENSE.md#mit-licence) file
