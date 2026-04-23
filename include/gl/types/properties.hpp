@@ -284,10 +284,10 @@ concept c_has_non_empty_properties = requires {
 /// @brief Requirements for properties that support binary coloring algorithms.
 ///
 /// Requires a property type that:
-/// 1. Satisfies @ref c_properties.
+/// 1. Satisfies @ref gl::traits::c_properties.
 /// 2. Has a nested `color_type`.
 /// 3. Has a public `color` member of the `color_type` type.
-/// 4. Supports construction and comparison with `gl::binary_color`.
+/// 4. Supports construction and comparison with @ref gl::binary_color.
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename Properties>
@@ -302,8 +302,8 @@ concept c_binary_color_properties_type = c_properties<Properties> and requires(P
 /// @brief Requirements for properties that support arithmetic weight values.
 ///
 /// Requires a property type that:
-/// 1. Satisfies @ref c_properties.
-/// 2. Has a nested `weight_type` that satisfies @ref c_arithmetic.
+/// 1. Satisfies @ref gl::traits::c_properties.
+/// 2. Has a nested `weight_type` that satisfies @ref gl::traits::c_arithmetic.
 /// 3. Has a public `weight` member of the `weight_type` type.
 ///
 /// @tparam T The type to evaluate against the concept.

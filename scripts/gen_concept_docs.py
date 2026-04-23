@@ -1,26 +1,9 @@
 import xml.etree.ElementTree as ET
 import argparse
 import re
+import json
 from pathlib import Path
 from dataclasses import dataclass
-
-GROUPS = {
-    "GL": {
-        "prefix": "gl::",
-        "filename": "gl_traits.md",
-        "anchor": "gl-traits-concepts-documentation",
-        "title": "GL Traits & Concepts",
-        "description": "This page documents the C++20 concepts and type traits used to constrain templates across the GL library.",
-    },
-    "HGL": {
-        "prefix": "hgl::",
-        "filename": "hgl_traits.md",
-        "anchor": "hgl-traits-concepts-documentation",
-        "title": "HGL Traits & Concepts",
-        "description": "This page documents the C++20 concepts and type traits used to constrain templates across the HGL library.",
-    },
-}
-
 
 @dataclass
 class TParamDescriptor:
@@ -36,9 +19,8 @@ class ConceptDescriptor:
     params: list[TParamDescriptor]
     definition: str
 
-
 class ConceptParser:
-    def __init__(self, xml_dir: Path, out_dir: Path, groups: dict = GROUPS):
+    def __init__(self, xml_dir: Path, out_dir: Path, groups: dict):
         self.xml_dir = xml_dir
         self.out_dir = out_dir
         self.groups = groups
@@ -85,16 +67,38 @@ class ConceptParser:
                     res += f"`{ref_text}`"
 
             elif child.tag in ["computeroutput", "preformatted"]:
-                res += f"`{self._xml_to_md(child)}`"
+                inner = self._xml_to_md(child)
+
+                # SMART LINK MERGE:
+                # Prevents wrapping a Markdown link in backticks, which breaks the link.
+                # Instead, it places backticks INSIDE the brackets.
+                match = re.fullmatch(r'\[(`?)(.*?)\1\]\((.*?)\)', inner.strip())
+                if match:
+                    res += f"[`{match.group(2)}`]({match.group(3)})"
+                elif "](" in inner:
+                    # Failsafe for complex strings containing links
+                    res += inner
+                else:
+                    res += f"`{inner}`"
+
             elif child.tag == "bold":
                 res += f"**{self._xml_to_md(child)}**"
+
             elif child.tag == "emphasis":
                 res += f"*{self._xml_to_md(child)}*"
+
             elif child.tag == "itemizedlist":
                 res += "\n\n"
                 for item in child.findall("listitem"):
                     res += f"- {self._xml_to_md(item).strip()}\n"
                 res += "\n\n"
+
+            elif child.tag == "orderedlist":
+                res += "\n\n"
+                for i, item in enumerate(child.findall("listitem"), start=1):
+                    res += f"{i}. {self._xml_to_md(item).strip()}\n"
+                res += "\n\n"
+
             elif child.tag == "blockquote":
                 bq_text = self._xml_to_md(child).strip()
                 res += (
@@ -102,6 +106,7 @@ class ConceptParser:
                     + "\n".join(f"> {line}" for line in bq_text.splitlines())
                     + "\n\n"
                 )
+
             elif child.tag == "simplesect":
                 kind = child.get("kind", "note").upper()
                 sect_text = self._xml_to_md(child).strip()
@@ -110,10 +115,13 @@ class ConceptParser:
                     + "\n".join(f"> {line}" for line in sect_text.splitlines())
                     + "\n\n"
                 )
+
             elif child.tag == "para":
                 res += self._xml_to_md(child).strip() + "\n\n"
+
             elif child.tag == "title":
                 res += f"### {self._xml_to_md(child).strip()}\n\n"
+
             else:
                 res += self._xml_to_md(child)
 
@@ -136,14 +144,10 @@ class ConceptParser:
 
         detailed_desc = root.find("detaileddescription")
         if detailed_desc is not None:
-            for param_list in detailed_desc.findall(
-                './/parameterlist[@kind="templateparam"]'
-            ):
+            for param_list in detailed_desc.findall('.//parameterlist[@kind="templateparam"]'):
                 for item in param_list.findall("parameteritem"):
                     p_name = self._xml_to_md(item.find(".//parametername")).strip()
-                    p_desc = self._xml_to_md(
-                        item.find(".//parameterdescription")
-                    ).strip()
+                    p_desc = self._xml_to_md(item.find(".//parameterdescription")).strip()
                     params.append(TParamDescriptor(name=p_name, desc=p_desc))
                 param_list.clear()
 
@@ -161,9 +165,7 @@ class ConceptParser:
             tpl_nodes = root.findall(".//templateparamlist/param")
             tpl_strings = [self._get_text(p).strip() for p in tpl_nodes]
             template_decl += ", ".join(tpl_strings) + ">\n"
-            definition = (
-                f"{template_decl}concept {name.split('::')[-1]} = {constraint};"
-            )
+            definition = f"{template_decl}concept {name.split('::')[-1]} = {constraint};"
 
         return ConceptDescriptor(
             name=name,
@@ -178,9 +180,7 @@ class ConceptParser:
         """Main execution flow: builds registry, parses data, and generates markdown."""
         index_xml = self.xml_dir / "index.xml"
         if not index_xml.exists():
-            print(
-                f"Error: Could not find Doxygen index at {index_xml}. Run Doxygen first."
-            )
+            print(f"Error: Could not find Doxygen index at {index_xml}. Run Doxygen first.")
             return
 
         tree = ET.parse(index_xml)
@@ -266,16 +266,20 @@ class ConceptParser:
         index_path.write_text(md, encoding="utf-8")
         print(f"Generated {index_path} (API Index)")
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--xml", default="xml", type=Path, help="Path to Doxygen XML output"
-    )
-    parser.add_argument(
-        "--out", default="docs/cpp-gl", type=Path, help="Path to MkDocs output folder"
-    )
+    parser.add_argument("--xml", default="xml", type=Path, help="Path to Doxygen XML output")
+    parser.add_argument("--out", default="docs/cpp-gl", type=Path, help="Path to MkDocs output folder")
+    parser.add_argument("--config", default="groups.json", type=Path, help="Path to the groups JSON configuration file")
     args = parser.parse_args()
 
-    app = ConceptParser(args.xml, args.out)
+    # Load configuration from JSON
+    if not args.config.exists():
+        print(f"Error: Configuration file '{args.config}' not found.")
+        exit(1)
+
+    with open(args.config, "r", encoding="utf-8") as f:
+        groups_config = json.load(f)
+
+    app = ConceptParser(args.xml, args.out, groups=groups_config)
     app.process()
