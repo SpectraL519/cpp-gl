@@ -1,4 +1,4 @@
-# HGL Traits & Concepts {: #hgl-traits }
+# HGL Traits & Concepts {: #hgl-traits-concepts-documentation }
 
 This page documents the C++20 concepts and type traits used to constrain templates across the HGL library.
 
@@ -12,10 +12,8 @@ This page documents the C++20 concepts and type traits used to constrain templat
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_bf_directed_hypergraph = template<typename H>
-concept hgl::traits::c_bf_directed_hypergraph = 
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
+template<typename H>
+concept hgl::traits::c_bf_directed_hypergraph = c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
 ```
 
 ---
@@ -25,10 +23,8 @@ concept hgl::traits::c_bf_directed_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_bf_directed_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_bf_directed_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_bf_directed_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and std::same_as<typename TraitsType::directional_tag, bf_directed_t>;
 ```
 
@@ -39,10 +35,8 @@ concept hgl::traits::c_bf_directed_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_flat_list_hypergraph = template<typename H>
-concept hgl::traits::c_flat_list_hypergraph = 
-    c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
+template<typename H>
+concept hgl::traits::c_flat_list_hypergraph = c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
 ```
 
 ---
@@ -52,10 +46,8 @@ concept hgl::traits::c_flat_list_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_flat_list_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_flat_list_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_flat_list_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_flat_list_impl<typename TraitsType::implementation_tag>;
 ```
 
@@ -66,10 +58,8 @@ concept hgl::traits::c_flat_list_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_flat_matrix_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_flat_matrix_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_flat_matrix_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_flat_matrix_impl<typename TraitsType::implementation_tag>;
 ```
 
@@ -80,9 +70,8 @@ concept hgl::traits::c_flat_matrix_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_hypergraph = template<typename H>
-concept hgl::traits::c_hypergraph =  c_instantiation_of<H, hypergraph>;
+template<typename H>
+concept hgl::traits::c_hypergraph = c_instantiation_of<H, hypergraph>;
 ```
 
 ---
@@ -92,10 +81,8 @@ concept hgl::traits::c_hypergraph =  c_instantiation_of<H, hypergraph>;
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_asymmetric_layout_tag = template<typename T>
-concept hgl::traits::c_hypergraph_asymmetric_layout_tag = 
-    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_asymmetric_layout_tag = c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
 ```
 
 ---
@@ -105,9 +92,8 @@ concept hgl::traits::c_hypergraph_asymmetric_layout_tag =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_directional_tag = template<typename T>
-concept hgl::traits::c_hypergraph_directional_tag =  c_one_of<T, undirected_t, bf_directed_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_directional_tag = c_one_of<T, undirected_t, bf_directed_t>;
 ```
 
 ---
@@ -117,9 +103,8 @@ concept hgl::traits::c_hypergraph_directional_tag =  c_one_of<T, undirected_t, b
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_element_tag = template<typename T>
-concept hgl::traits::c_hypergraph_element_tag =  c_one_of<T, vertex_t, hyperedge_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_element_tag = c_one_of<T, vertex_t, hyperedge_t>;
 ```
 
 ---
@@ -129,9 +114,8 @@ concept hgl::traits::c_hypergraph_element_tag =  c_one_of<T, vertex_t, hyperedge
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_flat_list_impl = template<typename T>
-concept hgl::traits::c_hypergraph_flat_list_impl =  c_instantiation_of<T, impl::flat_list_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_flat_list_impl = c_instantiation_of<T, impl::flat_list_t>;
 ```
 
 ---
@@ -141,9 +125,8 @@ concept hgl::traits::c_hypergraph_flat_list_impl =  c_instantiation_of<T, impl::
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_flat_matrix_impl = template<typename T>
-concept hgl::traits::c_hypergraph_flat_matrix_impl =  c_instantiation_of<T, impl::flat_matrix_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_flat_matrix_impl = c_instantiation_of<T, impl::flat_matrix_t>;
 ```
 
 ---
@@ -153,10 +136,8 @@ concept hgl::traits::c_hypergraph_flat_matrix_impl =  c_instantiation_of<T, impl
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_impl_tag = template<typename T>
-concept hgl::traits::c_hypergraph_impl_tag = 
-    c_hypergraph_incidence_list_impl<T> or c_hypergraph_incidence_matrix_impl<T>;
+template<typename T>
+concept hgl::traits::c_hypergraph_impl_tag = c_hypergraph_incidence_list_impl<T> or c_hypergraph_incidence_matrix_impl<T>;
 ```
 
 ---
@@ -166,10 +147,8 @@ concept hgl::traits::c_hypergraph_impl_tag =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_incidence_list_impl = template<typename T>
-concept hgl::traits::c_hypergraph_incidence_list_impl = 
-    c_hypergraph_list_impl<T> or c_hypergraph_flat_list_impl<T>;
+template<typename T>
+concept hgl::traits::c_hypergraph_incidence_list_impl = c_hypergraph_list_impl<T> or c_hypergraph_flat_list_impl<T>;
 ```
 
 ---
@@ -179,10 +158,8 @@ concept hgl::traits::c_hypergraph_incidence_list_impl =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_incidence_matrix_impl = template<typename T>
-concept hgl::traits::c_hypergraph_incidence_matrix_impl = 
-    c_hypergraph_matrix_impl<T> or c_hypergraph_flat_matrix_impl<T>;
+template<typename T>
+concept hgl::traits::c_hypergraph_incidence_matrix_impl = c_hypergraph_matrix_impl<T> or c_hypergraph_flat_matrix_impl<T>;
 ```
 
 ---
@@ -192,10 +169,8 @@ concept hgl::traits::c_hypergraph_incidence_matrix_impl =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_layout_tag = template<typename T>
-concept hgl::traits::c_hypergraph_layout_tag = 
-    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t, impl::bidirectional_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_layout_tag = c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t, impl::bidirectional_t>;
 ```
 
 ---
@@ -205,9 +180,8 @@ concept hgl::traits::c_hypergraph_layout_tag =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_list_impl = template<typename T>
-concept hgl::traits::c_hypergraph_list_impl =  c_instantiation_of<T, impl::list_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_list_impl = c_instantiation_of<T, impl::list_t>;
 ```
 
 ---
@@ -217,9 +191,8 @@ concept hgl::traits::c_hypergraph_list_impl =  c_instantiation_of<T, impl::list_
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_hypergraph_matrix_impl = template<typename T>
-concept hgl::traits::c_hypergraph_matrix_impl =  c_instantiation_of<T, impl::matrix_t>;
+template<typename T>
+concept hgl::traits::c_hypergraph_matrix_impl = c_instantiation_of<T, impl::matrix_t>;
 ```
 
 ---
@@ -229,10 +202,8 @@ concept hgl::traits::c_hypergraph_matrix_impl =  c_instantiation_of<T, impl::mat
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_incidence_list_hypergraph = template<typename H>
-concept hgl::traits::c_incidence_list_hypergraph = 
-    c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
+template<typename H>
+concept hgl::traits::c_incidence_list_hypergraph = c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
 ```
 
 ---
@@ -242,10 +213,8 @@ concept hgl::traits::c_incidence_list_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_incidence_list_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_incidence_list_hypergraph_traits = 
-    c_list_hypergraph_traits<TraitsType> or c_flat_list_hypergraph_traits<TraitsType>;
+template<typename TraitsType>
+concept hgl::traits::c_incidence_list_hypergraph_traits = c_list_hypergraph_traits<TraitsType> or c_flat_list_hypergraph_traits<TraitsType>;
 ```
 
 ---
@@ -255,10 +224,8 @@ concept hgl::traits::c_incidence_list_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_incidence_matrix_hypergraph = template<typename H>
-concept hgl::traits::c_incidence_matrix_hypergraph = 
-    c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
+template<typename H>
+concept hgl::traits::c_incidence_matrix_hypergraph = c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
 ```
 
 ---
@@ -268,10 +235,8 @@ concept hgl::traits::c_incidence_matrix_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_incidence_matrix_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_incidence_matrix_hypergraph_traits = 
-    c_matrix_hypergraph_traits<TraitsType> or c_flat_matrix_hypergraph_traits<TraitsType>;
+template<typename TraitsType>
+concept hgl::traits::c_incidence_matrix_hypergraph_traits = c_matrix_hypergraph_traits<TraitsType> or c_flat_matrix_hypergraph_traits<TraitsType>;
 ```
 
 ---
@@ -281,10 +246,8 @@ concept hgl::traits::c_incidence_matrix_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_list_hypergraph = template<typename H>
-concept hgl::traits::c_list_hypergraph = 
-    c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
+template<typename H>
+concept hgl::traits::c_list_hypergraph = c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
 ```
 
 ---
@@ -294,10 +257,8 @@ concept hgl::traits::c_list_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_list_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_list_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_list_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_list_impl<typename TraitsType::implementation_tag>;
 ```
 
@@ -308,10 +269,8 @@ concept hgl::traits::c_list_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_matrix_hypergraph = template<typename H>
-concept hgl::traits::c_matrix_hypergraph = 
-    c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
+template<typename H>
+concept hgl::traits::c_matrix_hypergraph = c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
 ```
 
 ---
@@ -321,10 +280,8 @@ concept hgl::traits::c_matrix_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_matrix_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_matrix_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_matrix_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and c_hypergraph_matrix_impl<typename TraitsType::implementation_tag>;
 ```
 
@@ -335,10 +292,8 @@ concept hgl::traits::c_matrix_hypergraph_traits =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_search_tree = template<typename T>
-concept hgl::traits::c_search_tree = 
-    c_random_access_range<T>
+template<typename T>
+concept hgl::traits::c_search_tree = c_random_access_range<T>
     and c_instantiation_of<std::ranges::range_value_t<T>, algorithm::search_node>;
 ```
 
@@ -349,10 +304,8 @@ concept hgl::traits::c_search_tree =
 ### Definition
 
 ```cpp
-template <typename H>
-concept c_undirected_hypergraph = template<typename H>
-concept hgl::traits::c_undirected_hypergraph = 
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
+template<typename H>
+concept hgl::traits::c_undirected_hypergraph = c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
 ```
 
 ---
@@ -362,10 +315,8 @@ concept hgl::traits::c_undirected_hypergraph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_undirected_hypergraph_traits = template<typename TraitsType>
-concept hgl::traits::c_undirected_hypergraph_traits = 
-    c_instantiation_of<TraitsType, hypergraph_traits>
+template<typename TraitsType>
+concept hgl::traits::c_undirected_hypergraph_traits = c_instantiation_of<TraitsType, hypergraph_traits>
     and std::same_as<typename TraitsType::directional_tag, undirected_t>;
 ```
 

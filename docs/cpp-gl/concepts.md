@@ -25,7 +25,7 @@ This page serves as the central index for all C++20 concepts used across the lib
     - [`gl::traits::c_directed_graph`](gl_traits.md#gl-traits-c-directed-graph)
     - [`gl::traits::c_directed_graph_traits`](gl_traits.md#gl-traits-c-directed-graph-traits)
     - [`gl::traits::c_empty_callback`](gl_traits.md#gl-traits-c-empty-callback)
-    - [`gl::traits::c_empty_properties`](gl_traits.md#gl-traits-c-empty-properties): Validates if a type is specifically the gl::empty_properties tag.
+    - [`gl::traits::c_empty_properties`](gl_traits.md#gl-traits-c-empty-properties): Validates if a type is specifically the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
     - [`gl::traits::c_enum`](gl_traits.md#gl-traits-c-enum)
     - [`gl::traits::c_flat_list_graph`](gl_traits.md#gl-traits-c-flat-list-graph)
     - [`gl::traits::c_flat_list_graph_traits`](gl_traits.md#gl-traits-c-flat-list-graph-traits)
@@ -36,8 +36,8 @@ This page serves as the central index for all C++20 concepts used across the lib
     - [`gl::traits::c_graph`](gl_traits.md#gl-traits-c-graph)
     - [`gl::traits::c_graph_directional_tag`](gl_traits.md#gl-traits-c-graph-directional-tag)
     - [`gl::traits::c_graph_impl_tag`](gl_traits.md#gl-traits-c-graph-impl-tag)
-    - [`gl::traits::c_has_empty_properties`](gl_traits.md#gl-traits-c-has-empty-properties): Checks if a type/component has a nested properties_type that is the gl::empty_properties tag.
-    - [`gl::traits::c_has_non_empty_properties`](gl_traits.md#gl-traits-c-has-non-empty-properties): Checks if a type/component has a nested properties_type that is not the gl::empty_properties tag.
+    - [`gl::traits::c_has_empty_properties`](gl_traits.md#gl-traits-c-has-empty-properties): Checks if a type/component has a nested `properties_type` that is the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
+    - [`gl::traits::c_has_non_empty_properties`](gl_traits.md#gl-traits-c-has-non-empty-properties): Checks if a type/component has a nested `properties_type` that is not the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
     - [`gl::traits::c_has_numeric_limits_max`](gl_traits.md#gl-traits-c-has-numeric-limits-max)
     - [`gl::traits::c_id_type`](gl_traits.md#gl-traits-c-id-type): Concept defining the requirements for an identifier type.
     - [`gl::traits::c_instantiation_of`](gl_traits.md#gl-traits-c-instantiation-of)

@@ -1,4 +1,4 @@
-# GL Traits & Concepts {: #gl-traits }
+# GL Traits & Concepts {: #gl-traits-concepts-documentation }
 
 This page documents the C++20 concepts and type traits used to constrain templates across the GL library.
 
@@ -12,9 +12,8 @@ This page documents the C++20 concepts and type traits used to constrain templat
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_adjacency_list_graph = template<typename G>
-concept gl::traits::c_adjacency_list_graph =  c_list_graph<G> or c_flat_list_graph<G>;
+template<typename G>
+concept gl::traits::c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
 ```
 
 ---
@@ -24,10 +23,8 @@ concept gl::traits::c_adjacency_list_graph =  c_list_graph<G> or c_flat_list_gra
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_adjacency_list_graph_traits = template<typename TraitsType>
-concept gl::traits::c_adjacency_list_graph_traits =
-    c_list_graph_traits<TraitsType> or c_flat_list_graph_traits<TraitsType>;
+template<typename TraitsType>
+concept gl::traits::c_adjacency_list_graph_traits = c_list_graph_traits<TraitsType> or c_flat_list_graph_traits<TraitsType>;
 ```
 
 ---
@@ -37,9 +34,8 @@ concept gl::traits::c_adjacency_list_graph_traits =
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_adjacency_matrix_graph = template<typename G>
-concept gl::traits::c_adjacency_matrix_graph =  c_matrix_graph<G>;
+template<typename G>
+concept gl::traits::c_adjacency_matrix_graph = c_matrix_graph<G>;
 ```
 
 ---
@@ -49,10 +45,8 @@ concept gl::traits::c_adjacency_matrix_graph =  c_matrix_graph<G>;
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_adjacency_matrix_graph_traits = template<typename TraitsType>
-concept gl::traits::c_adjacency_matrix_graph_traits =
-    c_matrix_graph_traits<TraitsType> or c_flat_matrix_graph_traits<TraitsType>;
+template<typename TraitsType>
+concept gl::traits::c_adjacency_matrix_graph_traits = c_matrix_graph_traits<TraitsType> or c_flat_matrix_graph_traits<TraitsType>;
 ```
 
 ---
@@ -62,9 +56,8 @@ concept gl::traits::c_adjacency_matrix_graph_traits =
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_arithmetic = template<typename T>
-concept gl::traits::c_arithmetic =  std::is_arithmetic_v<T>;
+template<typename T>
+concept gl::traits::c_arithmetic = std::is_arithmetic_v<T>;
 ```
 
 ---
@@ -77,9 +70,9 @@ Requirements for properties that support binary coloring algorithms.
 
 Requires a property type that:
 Satisfies c_properties.
-Has a nested color_type.
-Has a public color member of the color_type type.
-Supports construction and comparison with gl::binary_color.
+Has a nested `color_type`.
+Has a public `color` member of the `color_type` type.
+Supports construction and comparison with `[`gl::binary_color`](classgl_1_1binary__color.md)`.
 
 ### Template Parameters
 
@@ -90,9 +83,8 @@ Supports construction and comparison with gl::binary_color.
 ### Definition
 
 ```cpp
-template <typename Properties>
-concept c_binary_color_properties_type = template<typename Properties>
-concept gl::traits::c_binary_color_properties_type =  c_properties<Properties> and requires(Properties p) {
+template<typename Properties>
+concept gl::traits::c_binary_color_properties_type = c_properties<Properties> and requires(Properties p) {
     typename Properties::color_type;
     { p.color } -> std::same_as<typename Properties::color_type&>;
     { p.color == binary_color{} } -> std::convertible_to<bool>;
@@ -107,9 +99,8 @@ concept gl::traits::c_binary_color_properties_type =  c_properties<Properties> a
 ### Definition
 
 ```cpp
-template <typename F, typename ReturnType, typename...>
-concept c_callback = template<typename F, typename ReturnType, typename... Args>
-concept gl::traits::c_callback =  std::is_invocable_r_v<ReturnType, F, Args...>;
+template<typename F, typename ReturnType, typename... Args>
+concept gl::traits::c_callback = std::is_invocable_r_v<ReturnType, F, Args...>;
 ```
 
 ---
@@ -119,9 +110,8 @@ concept gl::traits::c_callback =  std::is_invocable_r_v<ReturnType, F, Args...>;
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_comparable = template<typename T>
-concept gl::traits::c_comparable =  requires(const T lhs, const T rhs) {
+template<typename T>
+concept gl::traits::c_comparable = requires(const T lhs, const T rhs) {
     { lhs <=> rhs } -> std::convertible_to<std::partial_ordering>;
     { lhs == rhs } -> std::convertible_to<bool>;
 };
@@ -134,9 +124,8 @@ concept gl::traits::c_comparable =  requires(const T lhs, const T rhs) {
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_const_iterator = template<typename T>
-concept gl::traits::c_const_iterator =  requires(T iter) {
+template<typename T>
+concept gl::traits::c_const_iterator = requires(T iter) {
     { *iter } -> std::same_as<const std::remove_cvref_t<decltype(*iter)>&>;
 };
 ```
@@ -148,9 +137,8 @@ concept gl::traits::c_const_iterator =  requires(T iter) {
 ### Definition
 
 ```cpp
-template <typename R>
-concept c_const_range = template<typename R>
-concept gl::traits::c_const_range =  requires(R& r) {
+template<typename R>
+concept gl::traits::c_const_range = requires(R& r) {
     std::ranges::cbegin(r);
     std::ranges::cend(r);
 };
@@ -163,9 +151,8 @@ concept gl::traits::c_const_range =  requires(R& r) {
 ### Definition
 
 ```cpp
-template <typename F, typename...>
-concept c_decision_predicate = template<typename F, typename... Args>
-concept gl::traits::c_decision_predicate =  std::is_invocable_r_v<algorithm::decision, F, Args...>;
+template<typename F, typename... Args>
+concept gl::traits::c_decision_predicate = std::is_invocable_r_v<algorithm::decision, F, Args...>;
 ```
 
 ---
@@ -175,10 +162,8 @@ concept gl::traits::c_decision_predicate =  std::is_invocable_r_v<algorithm::dec
 ### Definition
 
 ```cpp
-template <typename E>
-concept c_directed_edge = template<typename E>
-concept gl::traits::c_directed_edge =
-    c_instantiation_of<E, edge_descriptor>
+template<typename E>
+concept gl::traits::c_directed_edge = c_instantiation_of<E, edge_descriptor>
     and std::same_as<typename E::directional_tag, directed_t>;
 ```
 
@@ -189,9 +174,8 @@ concept gl::traits::c_directed_edge =
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_directed_graph = template<typename G>
-concept gl::traits::c_directed_graph =  c_graph<G> and c_directed_edge<typename G::edge_type>;
+template<typename G>
+concept gl::traits::c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
 ```
 
 ---
@@ -201,10 +185,8 @@ concept gl::traits::c_directed_graph =  c_graph<G> and c_directed_edge<typename 
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_directed_graph_traits = template<typename TraitsType>
-concept gl::traits::c_directed_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_directed_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::directional_tag, directed_t>;
 ```
 
@@ -215,16 +197,15 @@ concept gl::traits::c_directed_graph_traits =
 ### Definition
 
 ```cpp
-template <typename F>
-concept c_empty_callback = template<typename F>
-concept gl::traits::c_empty_callback =  std::same_as<F, algorithm::empty_callback>;
+template<typename F>
+concept gl::traits::c_empty_callback = std::same_as<F, algorithm::empty_callback>;
 ```
 
 ---
 
 ## `gl::traits::c_empty_properties` {: #gl-traits-c-empty-properties }
 
-Validates if a type is specifically the gl::empty_properties tag.
+Validates if a type is specifically the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
 
 ### Detailed Description
 
@@ -239,9 +220,8 @@ This concept is used to specialize behavior for graph components that do not car
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_empty_properties = template<typename T>
-concept gl::traits::c_empty_properties =  c_properties<T> and std::same_as<T, gl::empty_properties>;
+template<typename T>
+concept gl::traits::c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
 ```
 
 ---
@@ -251,9 +231,8 @@ concept gl::traits::c_empty_properties =  c_properties<T> and std::same_as<T, gl
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_enum = template<typename T>
-concept gl::traits::c_enum =  std::is_enum_v<T>;
+template<typename T>
+concept gl::traits::c_enum = std::is_enum_v<T>;
 ```
 
 ---
@@ -263,10 +242,8 @@ concept gl::traits::c_enum =  std::is_enum_v<T>;
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_flat_list_graph = template<typename G>
-concept gl::traits::c_flat_list_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
+template<typename G>
+concept gl::traits::c_flat_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
 ```
 
 ---
@@ -276,10 +253,8 @@ concept gl::traits::c_flat_list_graph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_flat_list_graph_traits = template<typename TraitsType>
-concept gl::traits::c_flat_list_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_flat_list_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::flat_list_t>;
 ```
 
@@ -290,10 +265,8 @@ concept gl::traits::c_flat_list_graph_traits =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_flat_matrix_graph_traits = template<typename TraitsType>
-concept gl::traits::c_flat_matrix_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_flat_matrix_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::flat_matrix_t>;
 ```
 
@@ -304,9 +277,8 @@ concept gl::traits::c_flat_matrix_graph_traits =
 ### Definition
 
 ```cpp
-template <typename R>
-concept c_forward_range = template<typename R>
-concept gl::traits::c_forward_range =  std::ranges::forward_range<R>;
+template<typename R>
+concept gl::traits::c_forward_range = std::ranges::forward_range<R>;
 ```
 
 ---
@@ -316,10 +288,8 @@ concept gl::traits::c_forward_range =  std::ranges::forward_range<R>;
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_forward_range_of = template<typename R, typename T>
-concept gl::traits::c_forward_range_of =
-    c_forward_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
+template<typename R, typename T>
+concept gl::traits::c_forward_range_of = c_forward_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
 ```
 
 ---
@@ -329,10 +299,8 @@ concept gl::traits::c_forward_range_of =
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_forward_range_of_cv = template<typename R, typename T>
-concept gl::traits::c_forward_range_of_cv =
-    c_forward_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
+template<typename R, typename T>
+concept gl::traits::c_forward_range_of_cv = c_forward_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 ```
 
 ---
@@ -342,9 +310,8 @@ concept gl::traits::c_forward_range_of_cv =
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_graph = template<typename G>
-concept gl::traits::c_graph =  c_instantiation_of<G, graph>;
+template<typename G>
+concept gl::traits::c_graph = c_instantiation_of<G, graph>;
 ```
 
 ---
@@ -354,9 +321,8 @@ concept gl::traits::c_graph =  c_instantiation_of<G, graph>;
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_graph_directional_tag = template<typename T>
-concept gl::traits::c_graph_directional_tag =  c_one_of<T, directed_t, undirected_t>;
+template<typename T>
+concept gl::traits::c_graph_directional_tag = c_one_of<T, directed_t, undirected_t>;
 ```
 
 ---
@@ -366,17 +332,15 @@ concept gl::traits::c_graph_directional_tag =  c_one_of<T, directed_t, undirecte
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_graph_impl_tag = template<typename T>
-concept gl::traits::c_graph_impl_tag =
-    c_one_of<T, impl::list_t, impl::flat_list_t, impl::matrix_t, impl::flat_matrix_t>;
+template<typename T>
+concept gl::traits::c_graph_impl_tag = c_one_of<T, impl::list_t, impl::flat_list_t, impl::matrix_t, impl::flat_matrix_t>;
 ```
 
 ---
 
 ## `gl::traits::c_has_empty_properties` {: #gl-traits-c-has-empty-properties }
 
-Checks if a type/component has a nested properties_type that is the gl::empty_properties tag.
+Checks if a type/component has a nested `properties_type` that is the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
 
 ### Template Parameters
 
@@ -387,17 +351,15 @@ Checks if a type/component has a nested properties_type that is the gl::empty_pr
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_has_empty_properties = template<typename T>
-concept gl::traits::c_has_empty_properties =
-    requires { typename T::properties_type; } and c_empty_properties<typename T::properties_type>;
+template<typename T>
+concept gl::traits::c_has_empty_properties = requires { typename T::properties_type; } and c_empty_properties<typename T::properties_type>;
 ```
 
 ---
 
 ## `gl::traits::c_has_non_empty_properties` {: #gl-traits-c-has-non-empty-properties }
 
-Checks if a type/component has a nested properties_type that is not the gl::empty_properties tag.
+Checks if a type/component has a nested `properties_type` that is not the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
 
 ### Template Parameters
 
@@ -408,9 +370,8 @@ Checks if a type/component has a nested properties_type that is not the gl::empt
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_has_non_empty_properties = template<typename T>
-concept gl::traits::c_has_non_empty_properties =  requires {
+template<typename T>
+concept gl::traits::c_has_non_empty_properties = requires {
     typename T::properties_type;
 } and not c_empty_properties<typename T::properties_type>;
 ```
@@ -422,9 +383,8 @@ concept gl::traits::c_has_non_empty_properties =  requires {
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_has_numeric_limits_max = template<typename T>
-concept gl::traits::c_has_numeric_limits_max =  requires {
+template<typename T>
+concept gl::traits::c_has_numeric_limits_max = requires {
     { std::numeric_limits<T>::max() } -> std::same_as<T>;
 };
 ```
@@ -448,9 +408,8 @@ Ensures that any custom ID type provided to the graph library is an unsigned int
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_id_type = template<typename T>
-concept gl::traits::c_id_type =  std::unsigned_integral<T>;
+template<typename T>
+concept gl::traits::c_id_type = std::unsigned_integral<T>;
 ```
 
 ---
@@ -460,9 +419,8 @@ concept gl::traits::c_id_type =  std::unsigned_integral<T>;
 ### Definition
 
 ```cpp
-template <typename T, template< typename... > typename>
-concept c_instantiation_of = template<typename T, template< typename... > typename Template>
-concept gl::traits::c_instantiation_of =  is_instantiation_of_v<T, Template>;
+template<typename T, template< typename... > typename Template>
+concept gl::traits::c_instantiation_of = is_instantiation_of_v<T, Template>;
 ```
 
 ---
@@ -472,9 +430,8 @@ concept gl::traits::c_instantiation_of =  is_instantiation_of_v<T, Template>;
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_io_save_mode = template<typename T>
-concept gl::traits::c_io_save_mode =  traits::c_one_of<T, io::write, io::append>;
+template<typename T>
+concept gl::traits::c_io_save_mode = traits::c_one_of<T, io::write, io::append>;
 ```
 
 ---
@@ -484,9 +441,8 @@ concept gl::traits::c_io_save_mode =  traits::c_one_of<T, io::write, io::append>
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_list_graph = template<typename G>
-concept gl::traits::c_list_graph =  c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
+template<typename G>
+concept gl::traits::c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
 ```
 
 ---
@@ -496,10 +452,8 @@ concept gl::traits::c_list_graph =  c_graph<G> and std::same_as<typename G::impl
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_list_graph_traits = template<typename TraitsType>
-concept gl::traits::c_list_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_list_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::list_t>;
 ```
 
@@ -510,10 +464,8 @@ concept gl::traits::c_list_graph_traits =
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_matrix_graph = template<typename G>
-concept gl::traits::c_matrix_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
+template<typename G>
+concept gl::traits::c_matrix_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
 ```
 
 ---
@@ -523,10 +475,8 @@ concept gl::traits::c_matrix_graph =
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_matrix_graph_traits = template<typename TraitsType>
-concept gl::traits::c_matrix_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_matrix_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::matrix_t>;
 ```
 
@@ -538,7 +488,7 @@ Validates if a property type contains actual user-defined data.
 
 ### Detailed Description
 
-Requires that the type satisfies gl::c_properties and is not the gl::empty_properties tag.
+Requires that the type satisfies [`gl::traits::c_properties`](gl_traits.md#gl-traits-c-properties) and is not the [`gl::empty_properties`](structgl_1_1empty__properties.md) tag.
 
 ### Template Parameters
 
@@ -549,9 +499,8 @@ Requires that the type satisfies gl::c_properties and is not the gl::empty_prope
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_non_empty_properties = template<typename T>
-concept gl::traits::c_non_empty_properties =  c_properties<T> and not c_empty_properties<T>;
+template<typename T>
+concept gl::traits::c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
 ```
 
 ---
@@ -561,9 +510,8 @@ concept gl::traits::c_non_empty_properties =  c_properties<T> and not c_empty_pr
 ### Definition
 
 ```cpp
-template <typename T, typename...>
-concept c_one_of = template<typename T, typename... Types>
-concept gl::traits::c_one_of =  std::disjunction_v<std::is_same<T, Types>...>;
+template<typename T, typename... Types>
+concept gl::traits::c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
 ```
 
 ---
@@ -573,9 +521,8 @@ concept gl::traits::c_one_of =  std::disjunction_v<std::is_same<T, Types>...>;
 ### Definition
 
 ```cpp
-template <typename F, typename ReturnType, typename...>
-concept c_optional_callback = template<typename F, typename ReturnType, typename... Args>
-concept gl::traits::c_optional_callback =  c_empty_callback<F> or c_callback<F, ReturnType, Args...>;
+template<typename F, typename ReturnType, typename... Args>
+concept gl::traits::c_optional_callback = c_empty_callback<F> or c_callback<F, ReturnType, Args...>;
 ```
 
 ---
@@ -585,9 +532,8 @@ concept gl::traits::c_optional_callback =  c_empty_callback<F> or c_callback<F, 
 ### Definition
 
 ```cpp
-template <typename F, typename...>
-concept c_optional_decision_predicate = template<typename F, typename... Args>
-concept gl::traits::c_optional_decision_predicate =  c_empty_callback<F> or c_decision_predicate<F, Args...>;
+template<typename F, typename... Args>
+concept gl::traits::c_optional_decision_predicate = c_empty_callback<F> or c_decision_predicate<F, Args...>;
 ```
 
 ---
@@ -597,9 +543,8 @@ concept gl::traits::c_optional_decision_predicate =  c_empty_callback<F> or c_de
 ### Definition
 
 ```cpp
-template <typename F, typename...>
-concept c_optional_predicate = template<typename F, typename... Args>
-concept gl::traits::c_optional_predicate =  c_empty_callback<F> or c_predicate<F, Args...>;
+template<typename F, typename... Args>
+concept gl::traits::c_optional_predicate = c_empty_callback<F> or c_predicate<F, Args...>;
 ```
 
 ---
@@ -609,9 +554,8 @@ concept gl::traits::c_optional_predicate =  c_empty_callback<F> or c_predicate<F
 ### Definition
 
 ```cpp
-template <typename F, typename...>
-concept c_predicate = template<typename F, typename... Args>
-concept gl::traits::c_predicate =  std::predicate<F, Args...>;
+template<typename F, typename... Args>
+concept gl::traits::c_predicate = std::predicate<F, Args...>;
 ```
 
 ---
@@ -622,7 +566,7 @@ Defines the minimal requirements for a type to be used as a property.
 
 ### Detailed Description
 
-A valid property type must be semiregular (default constructible and copyable).
+A valid property type must be **semiregular** (default constructible and copyable).
 
 ### Template Parameters
 
@@ -633,9 +577,8 @@ A valid property type must be semiregular (default constructible and copyable).
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_properties = template<typename T>
-concept gl::traits::c_properties =  std::semiregular<T>;
+template<typename T>
+concept gl::traits::c_properties = std::semiregular<T>;
 ```
 
 ---
@@ -645,9 +588,8 @@ concept gl::traits::c_properties =  std::semiregular<T>;
 ### Definition
 
 ```cpp
-template <typename R>
-concept c_random_access_range = template<typename R>
-concept gl::traits::c_random_access_range =  std::ranges::random_access_range<R>;
+template<typename R>
+concept gl::traits::c_random_access_range = std::ranges::random_access_range<R>;
 ```
 
 ---
@@ -657,10 +599,8 @@ concept gl::traits::c_random_access_range =  std::ranges::random_access_range<R>
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_random_access_range_of = template<typename R, typename T>
-concept gl::traits::c_random_access_range_of =
-    c_random_access_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
+template<typename R, typename T>
+concept gl::traits::c_random_access_range_of = c_random_access_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
 ```
 
 ---
@@ -670,10 +610,8 @@ concept gl::traits::c_random_access_range_of =
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_random_access_range_of_cv = template<typename R, typename T>
-concept gl::traits::c_random_access_range_of_cv =
-    c_random_access_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
+template<typename R, typename T>
+concept gl::traits::c_random_access_range_of_cv = c_random_access_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 ```
 
 ---
@@ -683,9 +621,8 @@ concept gl::traits::c_random_access_range_of_cv =
 ### Definition
 
 ```cpp
-template <typename R>
-concept c_range = template<typename R>
-concept gl::traits::c_range =  std::ranges::range<R>;
+template<typename R>
+concept gl::traits::c_range = std::ranges::range<R>;
 ```
 
 ---
@@ -695,10 +632,8 @@ concept gl::traits::c_range =  std::ranges::range<R>;
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_range_of = template<typename R, typename T>
-concept gl::traits::c_range_of =
-    c_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
+template<typename R, typename T>
+concept gl::traits::c_range_of = c_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
 ```
 
 ---
@@ -708,9 +643,8 @@ concept gl::traits::c_range_of =
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_range_of_cv = template<typename R, typename T>
-concept gl::traits::c_range_of_cv =  c_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
+template<typename R, typename T>
+concept gl::traits::c_range_of_cv = c_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 ```
 
 ---
@@ -720,9 +654,8 @@ concept gl::traits::c_range_of_cv =  c_range<R> and std::same_as<T, std::ranges:
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_readable = template<typename T>
-concept gl::traits::c_readable =  requires(T value, std::istream& is) { is >> value; };
+template<typename T>
+concept gl::traits::c_readable = requires(T value, std::istream& is) { is >> value; };
 ```
 
 ---
@@ -732,9 +665,8 @@ concept gl::traits::c_readable =  requires(T value, std::istream& is) { is >> va
 ### Definition
 
 ```cpp
-template <typename R>
-concept c_sized_range = template<typename R>
-concept gl::traits::c_sized_range =  std::ranges::sized_range<R>;
+template<typename R>
+concept gl::traits::c_sized_range = std::ranges::sized_range<R>;
 ```
 
 ---
@@ -744,10 +676,8 @@ concept gl::traits::c_sized_range =  std::ranges::sized_range<R>;
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_sized_range_of = template<typename R, typename T>
-concept gl::traits::c_sized_range_of =
-    c_sized_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
+template<typename R, typename T>
+concept gl::traits::c_sized_range_of = c_sized_range<R> and std::same_as<T, std::remove_cv_t<std::ranges::range_value_t<R>>>;
 ```
 
 ---
@@ -757,9 +687,8 @@ concept gl::traits::c_sized_range_of =
 ### Definition
 
 ```cpp
-template <typename R, typename T>
-concept c_sized_range_of_cv = template<typename R, typename T>
-concept gl::traits::c_sized_range_of_cv =  c_sized_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
+template<typename R, typename T>
+concept gl::traits::c_sized_range_of_cv = c_sized_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 ```
 
 ---
@@ -769,10 +698,8 @@ concept gl::traits::c_sized_range_of_cv =  c_sized_range<R> and std::same_as<T, 
 ### Definition
 
 ```cpp
-template <typename E>
-concept c_undirected_edge = template<typename E>
-concept gl::traits::c_undirected_edge =
-    c_instantiation_of<E, edge_descriptor>
+template<typename E>
+concept gl::traits::c_undirected_edge = c_instantiation_of<E, edge_descriptor>
     and std::same_as<typename E::directional_tag, undirected_t>;
 ```
 
@@ -783,9 +710,8 @@ concept gl::traits::c_undirected_edge =
 ### Definition
 
 ```cpp
-template <typename G>
-concept c_undirected_graph = template<typename G>
-concept gl::traits::c_undirected_graph =  c_graph<G> and c_undirected_edge<typename G::edge_type>;
+template<typename G>
+concept gl::traits::c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
 ```
 
 ---
@@ -795,10 +721,8 @@ concept gl::traits::c_undirected_graph =  c_graph<G> and c_undirected_edge<typen
 ### Definition
 
 ```cpp
-template <typename TraitsType>
-concept c_undirected_graph_traits = template<typename TraitsType>
-concept gl::traits::c_undirected_graph_traits =
-    c_instantiation_of<TraitsType, graph_traits>
+template<typename TraitsType>
+concept gl::traits::c_undirected_graph_traits = c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::directional_tag, undirected_t>;
 ```
 
@@ -812,8 +736,8 @@ Requirements for properties that support arithmetic weight values.
 
 Requires a property type that:
 Satisfies c_properties.
-Has a nested weight_type that satisfies c_arithmetic.
-Has a public weight member of the weight_type type.
+Has a nested `weight_type` that satisfies c_arithmetic.
+Has a public `weight` member of the `weight_type` type.
 
 ### Template Parameters
 
@@ -824,9 +748,8 @@ Has a public weight member of the weight_type type.
 ### Definition
 
 ```cpp
-template <typename Properties>
-concept c_weight_properties_type = template<typename Properties>
-concept gl::traits::c_weight_properties_type =  c_properties<Properties> and requires(Properties p) {
+template<typename Properties>
+concept gl::traits::c_weight_properties_type = c_properties<Properties> and requires(Properties p) {
     typename Properties::weight_type;
     { p.weight } -> std::same_as<typename Properties::weight_type&>;
     requires c_arithmetic<typename Properties::weight_type>;
@@ -840,9 +763,9 @@ concept gl::traits::c_weight_properties_type =  c_properties<Properties> and req
 ### Definition
 
 ```cpp
-template <typename T>
-concept c_writable = template<typename T>
-concept gl::traits::c_writable =  requires(T value, std::ostream& os) { os << value; };
+template<typename T>
+concept gl::traits::c_writable = requires(T value, std::ostream& os) { os << value; };
 ```
 
 ---
+

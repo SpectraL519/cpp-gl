@@ -200,7 +200,8 @@ using bin_color_value = typename binary_color::value;
 /// @ingroup GL GL-Types
 /// @brief A property struct wrapping a `binary_color`.
 struct binary_color_property {
-    binary_color color;
+    using color_type = binary_color;
+    color_type color;
 };
 
 /// @ingroup GL GL-Types
@@ -256,7 +257,7 @@ concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_prope
 /// @ingroup GL GL-Traits
 /// @brief Validates if a property type contains actual user-defined data.
 ///
-/// Requires that the type satisfies @ref gl::c_properties and is not the @ref gl::empty_properties tag.
+/// Requires that the type satisfies @ref gl::traits::c_properties and is not the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
