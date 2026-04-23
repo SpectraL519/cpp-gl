@@ -33,6 +33,8 @@ theme:
   name: material
   logo: img/cpp-gl-hex.png
   favicon: img/cpp-gl-hex.png
+  icon:
+    annotation: material/chevron-right-circle
   features:
     - navigation.tabs
     - navigation.sections

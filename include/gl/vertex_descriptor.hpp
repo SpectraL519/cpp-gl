@@ -36,24 +36,35 @@ namespace gl {
 ///
 /// ### Example Usage
 /// ```cpp
+/// std::cout << gl::io::with_vertex_properties; // (1)!
 /// for (auto v : graph.vertices()) {
-///     std::cout << "Node ID: " << v.id() << " | "; // (1)!
 ///     if (v->parent == gl::invalid_id) // (2)!
-///         std::cout << "ROOT | Level: " << v->level << "\n";
+///         v->level = 0;
 ///     else
-///         std::cout << "Parent: " << v->parent << " | Level: " << v->level << "\n";
+///         v->level = graph.vertex(v->parent)->level + 1; // (3)!
+///
+///     std::cout << v << "\n"; // (4)!
 /// }
 /// ```
 ///
-/// 1\. Access the underlying structural ID
+/// 1\. Apply the stream manipulator to ensure custom property data is included in the output.
 ///
-/// 2\. Use the arrow operator to access/modify custom property fields
+/// 2\. Use the arrow operator `->` to read custom properties attached to the vertex.
+///
+/// 3\. Access another vertex via the `graph` using its ID, and modify the current vertex's properties.
+///
+/// 4\. Idiomatic output formatting.
+///     *Example output:* `5[parent: 0, level: 1]`
 ///
 /// ### Template Parameters
 /// | Parameter  | Description | Default | Constraint |
 /// | :--------- | :--- | :--- | :--- |
 /// | Properties | The type of property data attached to the vertex. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
 /// | IdType     | The underlying integer type used for the vertex ID. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
+///
+/// ### See Also
+/// * @ref gl::edge_descriptor : For the corresponding edge wrapper class.
+/// * @ref gl::graph : For the owning graph class that manages vertex descriptors.
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
