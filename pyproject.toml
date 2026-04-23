@@ -11,4 +11,5 @@ dependencies = [
     "mkdocs-include-markdown-plugin>=7.2.2",
     "mkdocs-material>=9.7.6",
     "mkdoxy>=1.2.8",
+    "ruff>=0.15.11",
 ]
