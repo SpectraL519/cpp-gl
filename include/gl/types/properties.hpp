@@ -221,9 +221,9 @@ struct binary_color_property {
 /// @brief A property struct providing arithmetic weight for edges or vertices.
 ///
 /// ### Template Parameters
-/// | Parameter | Description | Default | Constraint |
-/// | :--- | :--- | :--- | :--- |
-/// | `WeightType` | The numeric type used to store the weight value. | `double` | [**c_arithmetic**](gl_traits.md#gl-traits-c-arithmetic) |
+/// | Parameter  | Description | Default | Constraint |
+/// | :--------- | :--- | :--- | :--- |
+/// | WeightType | The numeric type used to store the weight value. | `double` | [**c_arithmetic**](gl_traits.md#gl-traits-c-arithmetic) |
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;

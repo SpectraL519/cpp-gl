@@ -15,8 +15,6 @@ nav:
       - Generic Types: cpp-gl/group__GL-Types.md
       - General Utilities: cpp-gl/group__GL-Util.md
   # - HGL:
-  #     - Overview: cpp-gl/group__hgl.md
-  #     - Algorithms: cpp-gl/group__hgl__alg.md
   - API Index:
       - Modules: cpp-gl/modules.md
       - Namespaces: cpp-gl/namespaces.md
@@ -24,9 +22,7 @@ nav:
       - Class Hierarchy: cpp-gl/hierarchy.md
       - Traits & Concepts: cpp-gl/concepts.md
       - Files: cpp-gl/files.md
-      - Todo List: cpp-gl/todo.md
-      # - Bug List: cpp-gl/bug.md
-      # - Deprecated: cpp-gl/deprecated.md
+      # TODO: functions, macros, constants
   - License: license.md
 
 theme:
@@ -89,20 +85,26 @@ plugins:
         cpp-gl:
           src-dirs: "include docs/groups.dox"
           full-doc: true
+          sorting:
+            classes: false
           doxy-cfg:
-            PROJECT_NAME: "CPP-GL"
-            MARKDOWN_SUPPORT: "YES"
-            EXTRACT_ALL: "NO"
-            HIDE_UNDOC_MEMBERS: "YES"
-            HIDE_UNDOC_CLASSES: "YES"
-            EXTRACT_STATIC: "NO"
-            EXTRACT_PRIVATE: "NO"
-            INTERNAL_DOCS: "NO"
-            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
-            ENABLE_PREPROCESSING: "YES"
-            MACRO_EXPANSION: "YES"
-            EXPAND_ONLY_PREDEF: "YES"
-            PREDEFINED: "gl_attr_force_inline="
+            PROJECT_NAME: CPP-GL
+            MARKDOWN_SUPPORT: YES
+            EXTRACT_ALL: NO
+            EXTRACT_STATIC: NO
+            EXTRACT_PRIVATE: NO
+            INTERNAL_DOCS: NO
+            HIDE_UNDOC_MEMBERS: YES
+            HIDE_UNDOC_CLASSES: YES
+            SORT_MEMBER_DOCS: NO
+            SORT_BRIEF_DOCS: NO
+            SORT_MEMBERS_CTORS_1ST: YES
+            SORT_BY_SCOPE_NAME: NO
+            SORT_GROUP_NAMES: NO
+            ENABLE_PREPROCESSING: YES
+            MACRO_EXPANSION: YES
+            EXPAND_ONLY_PREDEF: YES
+            PREDEFINED: gl_attr_force_inline=
 
 extra_javascript:
   - scripts/mathjax.js
