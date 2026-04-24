@@ -29,6 +29,11 @@ clean-docs:
 	rm -rf docs/cpp-gl/
 	rm -rf site/
 	rm -rf documentation/xml/
+	rm -rf .cache/
+
+nuke-version: clean-docs
+	@echo "==> Deleting version $(TAGS) from mike tracking..."
+	uv run mike delete $(TAGS)
 
 clean: clean-docs clean-doxy
 
