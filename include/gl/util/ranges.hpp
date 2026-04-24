@@ -25,7 +25,7 @@ namespace gl::util {
 /// @param r The range to measure.
 /// @return The size of the range if it is a sized range, otherwise the distance between the beginning and end of the range.
 ///
-/// > [!INFO] Time complexity
+/// > [!INFO] Time Complexity
 /// >
 /// > $O(1)$ if the range is a sized range, otherwise $O(N)$ where $N$ is the number of elements in the range.
 template <std::ranges::range R>
@@ -43,7 +43,7 @@ constexpr auto range_size(R&& r) {
 /// @param range The range to check.
 /// @return `true` if all elements in the range are equal or the range is empty, otherwise `false`.
 ///
-/// > [!INFO] Time complexity
+/// > [!INFO] Time Complexity
 /// >
 /// > $O(N)$ where $N$ is the number of elements in the range.
 template <std::ranges::forward_range R>
@@ -63,7 +63,7 @@ template <std::ranges::forward_range R>
 /// @param value The value to compare against.
 /// @return `true` if all elements in the range are equal to the given value or the range is empty, otherwise `false`.
 ///
-/// > [!INFO] Time complexity
+/// > [!INFO] Time Complexity
 /// >
 /// > $O(N)$ where $N$ is the number of elements in the range.
 template <std::ranges::forward_range R>
@@ -89,7 +89,7 @@ template <std::ranges::forward_range R>
 /// @tparam V1 First view type.
 /// @tparam V2 Second view type.
 /// @todo Replace with `std::views::concat` (C++26).
-/// ### See also
+/// ### See Also
 /// - @ref gl::util::concat_fn "concat_fn": A helper compile-time constant function object for creating `concat_view` instances.
 /// - @ref gl::util::concat "concat": A compile-time constant instantiation of this function object for convenient use.
 template <std::ranges::view V1, std::ranges::view V2>
@@ -232,7 +232,7 @@ private:
 
 /// @ingroup GL GL-Util
 /// @brief A function object for concatenating two viewable ranges into a `concat_view`.
-/// ### See also
+/// ### See Also
 /// - @ref gl::util::concat_view "concat_view": The view type that represents the concatenation of two ranges.
 /// - @ref gl::util::concat "concat": A compile-time constant instantiation of this function object for convenient use.
 struct concat_fn {
@@ -265,7 +265,7 @@ struct concat_fn {
 /// @param r1 First range to concatenate.
 /// @param r2 Second range to concatenate.
 /// @todo Replace with `std::views::concat` (C++26).
-/// ### See also
+/// ### See Also
 /// - @ref gl::util::concat_view "concat_view": The view type that represents the concatenation of two ranges.
 /// - @ref gl::util::concat_fn "concat_fn": A helper compile-time constant function object for creating `concat_view` instances.
 inline constexpr concat_fn concat{};

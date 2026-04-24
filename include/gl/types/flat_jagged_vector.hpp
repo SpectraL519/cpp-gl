@@ -74,7 +74,7 @@ namespace gl {
 /// >
 /// > Behavior is similar to `std::vector<std::vector<T>>` but with flattened memory layout.
 ///
-/// > [!IMPORTANT] Iterator invalidation policy
+/// > [!IMPORTANT] Iterator Invalidation Policy
 /// >
 /// > Iterator invalidation follows `std::vector` semantics: modifying the structure or elements
 /// > invalidates all iterators, pointers, and references to the container's elements.
@@ -476,12 +476,12 @@ public:
     /// @param n The new number of segments.
     /// @post `size() == n`.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation invalidates all iterators, pointers, and references to elements if reallocation
     /// > occurs, or if the container shrinks (invalidating removed segments).
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E)$ when shrinking (where $E$ is the total number of elements in the removed segments),
     /// > or amortized $O(S)$ when growing (where $S$ is the number of new empty segments).
@@ -507,12 +507,12 @@ public:
     /// @post `size() == n`
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation invalidates all iterators, pointers, and references to elements if reallocation
     /// > occurs, or if the container shrinks (invalidating removed segments).
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E)$ when shrinking (where $E$ is the total number of elements in the removed segments),
     /// > or amortized \f$O(S \cdot E_r)\f$ when growing (where $S$ is the number of new empty segments
@@ -974,7 +974,7 @@ public:
     /// 2. `data_size()` increases by the range size.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(N)$ where $N$ is the size of the pushed range.
     ///
@@ -1018,7 +1018,7 @@ public:
     /// @post If container was not empty, `size()` is decremented by 1 and `data_size()` decreases
     ///       by the size of the removed segment. If empty, this function has no effect.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(1)$ amortized for the container overhead, plus $O(N)$ to truncate
     /// > the underlying *data* vector where N is the size of the removed segment.
@@ -1049,7 +1049,7 @@ public:
     /// 2. Segments at and after `pos` are shifted and offsets are updated.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(N + M)$ where $N$ is the total number of elements from `pos` onward and $M$ is the size of the
     /// > inserted range, due to element shifting and offset updates. Insertion at the end is amortized $O(M)$.
@@ -1109,7 +1109,7 @@ public:
     /// 1. The segment at `pos` is removed.
     /// 2. `size()` is decremented by 1.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + S + L)$ where $E$ is the number of elements after the erased segment in the underlying
     /// > vector, $S$ is the number of segments after `pos`, and $L$ is the size of the erased segment.
@@ -1137,13 +1137,13 @@ public:
     /// 2. `data_size()` increases by 1.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(E + S)$ where $E$ is the number of elements after the insertion point
     /// > in the underlying vector, and $S$ is the number of segments after `seg`. Appending
     /// > to the **last** segment is amortized $O(1)$.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > If reallocation occurs, all iterators, pointers, and references are invalidated.
     /// > Otherwise, only those pointing to elements at or after the insertion point are invalidated.
@@ -1160,13 +1160,13 @@ public:
     /// 2. `data_size()` increases by 1.
     /// @throws Any exception thrown by the `T` constructor, or std::bad_alloc.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(E + S)$ where $E$ is the number of elements after the insertion point
     /// > in the underlying vector, and $S$ is the number of segments after `seg`. Appending
     /// > to the **last** segment is amortized $O(1)$.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > If reallocation occurs, all iterators, pointers, and references are invalidated.
     /// > Otherwise, only those pointing to elements at or after the insertion point are invalidated.
@@ -1182,7 +1182,7 @@ public:
     /// @post If the segment was not empty, its size decreases by 1 and `data_size()` decreases by 1.
     ///       If empty, this function has no effect.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + S)$ where $E$ is the number of elements after the removed element in the underlying
     /// > vector, and $S$ is the number of segments after `seg`. Popping from the **last** segment is $O(1)$.
@@ -1204,12 +1204,12 @@ public:
     /// 2. `data_size()` increases by 1.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(E + S)$ where $E$ is the number of elements after the insertion point
     /// > in the underlying vector, and $S$ is the number of segments after `seg`.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > If reallocation occurs, all iterators, pointers, and references are invalidated.
     /// > Otherwise, only those pointing to elements at or after the insertion point are invalidated.
@@ -1230,12 +1230,12 @@ public:
     /// 2. `data_size()` increases by 1.
     /// @throws Any exception thrown by the `T` constructor, or std::bad_alloc.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(E + S)$ where $E$ is the number of elements after the insertion point
     /// > in the underlying vector, and $S$ is the number of segments after `seg`.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > If reallocation occurs, all iterators, pointers, and references are invalidated.
     /// > Otherwise, only those pointing to elements at or after the insertion point are invalidated.
@@ -1252,7 +1252,7 @@ public:
     /// @param pos The position within the segment of the element to remove.
     /// @post The segment size decreases by 1; `data_size()` decreases by 1; offsets updated.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + S)$ where $E$ is the number of elements after the erased position in the
     /// > underlying vector, and $S$ is the number of segments after `seg`.
@@ -1295,7 +1295,7 @@ public:
     /// @pre `seg < size()`
     /// @throws std::bad_alloc If memory allocation fails during growth.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(E + S + K)$ where $E$ is the number of elements after the modification
     /// > point in the underlying vector, $S$ is the number of segments after `seg`, and $K$
@@ -1303,7 +1303,7 @@ public:
     ///
     /// > [!WARNING] No bounds checking. Results in Undefined Behavior if segment index is out of bounds.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > If reallocation occurs, all iterators, pointers, and references are invalidated.
     /// > Otherwise, only those pointing to elements at or after the insertion point are invalidated.

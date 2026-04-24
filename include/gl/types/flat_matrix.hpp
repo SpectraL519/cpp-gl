@@ -71,7 +71,7 @@ namespace gl {
 /// 7    8    9    12
 /// ```
 ///
-/// > [!IMPORTANT] Iterator invalidation policy
+/// > [!IMPORTANT] Iterator Invalidation Policy
 /// >
 /// > Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural
 /// > capacity of the matrix invalidates all iterators, pointers, and references to its elements.
@@ -517,7 +517,7 @@ public:
     /// @param value The value to initialize any newly exposed slots with.
     /// @post `n_rows() == new_rows` and `n_cols() == new_cols`.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are the new dimensions, due to remapping
     /// > elements in 2D space. If only the row count changes, it is $O(E)$ where $E$ is
@@ -888,7 +888,7 @@ public:
     /// @throws std::invalid_argument If the row size does not match `n_cols()` (for non-empty matrices).
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(C)$ where $C$ is the number of columns.
     ///
@@ -905,7 +905,7 @@ public:
     /// @throws std::invalid_argument If the list size does not match `n_cols()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(C)$ where $C$ is the number of columns.
     ///
@@ -923,7 +923,7 @@ public:
     /// @post `n_rows()` increases by 1.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > Amortized $O(C)$ where $C$ is the number of columns.
     ///
@@ -943,7 +943,7 @@ public:
     /// @throws std::invalid_argument If the range size does not match `n_cols()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
     /// > and $C$ is the size of the inserted row.
@@ -1026,7 +1026,7 @@ public:
     /// @throws std::invalid_argument If the list size does not match `n_cols()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
     /// > and $C$ is the size of the inserted row.
@@ -1049,7 +1049,7 @@ public:
     /// @throws std::out_of_range If `pos > n_rows()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
     /// > and $C$ is the size of the inserted row.
@@ -1072,7 +1072,7 @@ public:
     /// @brief Removes the last row from the matrix.
     /// @post If not empty, `n_rows()` decreases by 1.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(C)$ to truncate the underlying *data* vector.
     ///
@@ -1099,7 +1099,7 @@ public:
     /// 2. `n_rows()` decreases by 1.
     /// @throws std::out_of_range If `pos >= n_rows()`.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(E + C)$ where $E$ is the number of elements after the erased row
     /// > and $C$ is the number of columns (the size of the erased row).
@@ -1126,11 +1126,11 @@ public:
     /// @throws std::invalid_argument If the column size does not match `n_rows()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1146,11 +1146,11 @@ public:
     /// @throws std::invalid_argument If the list size does not match `n_rows()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1167,11 +1167,11 @@ public:
     /// @post `n_cols()` increases by 1.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1188,11 +1188,11 @@ public:
     /// @throws std::invalid_argument If the range size does not match `n_rows()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1265,11 +1265,11 @@ public:
     /// @throws std::invalid_argument If the list size does not match `n_rows()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1288,11 +1288,11 @@ public:
     /// @throws std::out_of_range If `pos > n_cols()`.
     /// @throws std::bad_alloc If memory allocation fails.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
     /// > All iterators, pointers, and references are invalidated.
@@ -1334,7 +1334,7 @@ public:
     /// @brief Removes the last column from the matrix.
     /// @post If not empty, `n_cols()` decreases by 1.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
@@ -1342,7 +1342,7 @@ public:
     /// >
     /// > Safe to call on an empty matrix (no-op).
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
     void pop_col() {
@@ -1359,11 +1359,11 @@ public:
     /// 2. `n_cols()` decreases by 1.
     /// @throws std::out_of_range If `pos >= n_cols()`.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
     ///
-    /// > [!WARNING] Iterator invalidation
+    /// > [!WARNING] Iterator Invalidation
     /// >
     /// > This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
     void erase_col(size_type pos) {
@@ -1490,7 +1490,7 @@ public:
     /// @brief Transposes the matrix mathematically (rows become columns, columns become rows).
     /// @return A new `flat_matrix` instance containing the transposed data.
     ///
-    /// > [!INFO] Time complexity
+    /// > [!INFO] Time Complexity
     /// >
     /// > $O(R \cdot C)$ to generate and fill the new matrix.
     [[nodiscard]] flat_matrix transpose() const {

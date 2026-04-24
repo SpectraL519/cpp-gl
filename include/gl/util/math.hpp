@@ -20,7 +20,7 @@ namespace gl::util {
 /// @param exp The exponent to which the base is raised.
 /// @return The result of `base` raised to the power of `exp`.
 ///
-/// > [!INFO] Time complexity
+/// > [!INFO] Time Complexity
 /// >
 /// > $O(\log(\text{exp}))$ due to halving the exponent at each step.
 [[nodiscard]] inline constexpr size_type upow(size_type base, size_type exp) {
@@ -42,7 +42,7 @@ namespace gl::util {
 /// @param i_end The ending exponent (inclusive).
 /// @return The sum of `base^i` for all `i` in the range `[i_begin, i_end]`.
 ///
-/// > [!INFO] Time complexity
+/// > [!INFO] Time Complexity
 /// >
 /// > $O(\log(\text{max}(\text{i\_begin}, \text{i\_end})))$ due to the use of the closed-form formula for geometric series.
 [[nodiscard]] inline constexpr size_type upow_sum(

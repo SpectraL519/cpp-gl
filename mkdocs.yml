@@ -101,6 +101,8 @@ plugins:
             SORT_MEMBERS_CTORS_1ST: YES
             SORT_BY_SCOPE_NAME: NO
             SORT_GROUP_NAMES: NO
+            FULL_PATH_NAMES: YES
+            STRIP_FROM_INC_PATH: include/
             ENABLE_PREPROCESSING: YES
             MACRO_EXPANSION: YES
             EXPAND_ONLY_PREDEF: YES
