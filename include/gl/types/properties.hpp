@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/types/properties.hpp
+/// @brief Defines property types and utilities for graph components.
+
 #pragma once
 
 #include "gl/attributes/force_inline.hpp"
