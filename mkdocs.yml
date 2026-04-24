@@ -107,6 +107,7 @@ plugins:
             MACRO_EXPANSION: YES
             EXPAND_ONLY_PREDEF: YES
             PREDEFINED: gl_attr_force_inline=
+            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
 
 extra_javascript:
   - scripts/mathjax.js
