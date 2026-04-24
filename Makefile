@@ -28,12 +28,7 @@ clean-docs:
 	@echo "==> Cleaning documentation build directories..."
 	rm -rf docs/cpp-gl/
 	rm -rf site/
-	rm -rf documentation/xml/
-	rm -rf .cache/
-
-nuke-version: clean-docs
-	@echo "==> Deleting version $(TAGS) from mike tracking..."
-	uv run mike delete $(TAGS)
+	rm -rf documentation/
 
 clean: clean-docs clean-doxy
 
