@@ -27,8 +27,6 @@ using size_type = std::size_t;
 /// @brief The default unsigned integer type used for vertex and edge identifiers.
 using default_id_type = std::uint32_t;
 
-/// @namespace gl::traits
-/// @brief Contains C++20 concepts and type traits used to constrain library templates.
 namespace traits {
 
 /// @ingroup GL GL-Traits

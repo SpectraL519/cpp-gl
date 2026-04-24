@@ -126,7 +126,7 @@ requires-dist = [
     { name = "mkdocs-callouts", specifier = ">=1.16.0" },
     { name = "mkdocs-include-markdown-plugin", specifier = ">=7.2.2" },
     { name = "mkdocs-material", specifier = ">=9.7.6" },
-    { name = "mkdoxy", git = "https://github.com/SpectraL519/MkDoxy.git" },
+    { name = "mkdoxy", git = "https://github.com/SpectraL519/MkDoxy.git?rev=cpp20-concepts" },
     { name = "ruff", specifier = ">=0.15.11" },
 ]
 
@@ -325,7 +325,7 @@ wheels = [
 [[package]]
 name = "mkdoxy"
 version = "1.2.8"
-source = { git = "https://github.com/SpectraL519/MkDoxy.git#71730509412be46b9622678940bc13a31daacd9b" }
+source = { git = "https://github.com/SpectraL519/MkDoxy.git?rev=cpp20-concepts#08dac435fc014a90a17a6cf07f3160e93d5862dd" }
 dependencies = [
     { name = "mkdocs" },
 ]

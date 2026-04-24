@@ -44,7 +44,7 @@ namespace gl::util {
 ///
 /// > [!INFO] Time Complexity
 /// >
-/// > $O(\log(\text{max}(\text{i\_begin}, \text{i\_end})))$ due to the use of the closed-form formula for geometric series.
+/// > \f$O(\log(\text{max}(\text{i_begin}, \text{i_end})))\f$ due to the use of the closed-form formula for geometric series.
 [[nodiscard]] inline constexpr size_type upow_sum(
     const size_type base, size_type i_begin, size_type i_end
 ) {
