@@ -2,22 +2,22 @@
     "index": {
         "title": "Concepts API Reference",
         "anchor": "concepts-api-reference",
-        "description": "This page serves as the central index for all C++20 concepts used across the library to enforce type safety and template constraints."
+        "description": "This page serves as the central index for all C++20 concepts defined within the library."
     },
     "groups": {
         "GL": {
             "prefix": "gl::",
             "filename": "gl_traits.md",
             "anchor": "gl-traits-concepts-documentation",
-            "title": "GL Traits & Concepts",
-            "description": "This page documents the C++20 concepts and type traits used to constrain templates across the GL library."
+            "title": "GL Concepts",
+            "description": "This page documents the C++20 concepts defined within the GL module of the library."
         },
         "HGL": {
             "prefix": "hgl::",
             "filename": "hgl_traits.md",
             "anchor": "hgl-traits-concepts-documentation",
-            "title": "HGL Traits & Concepts",
-            "description": "This page documents the C++20 concepts and type traits used to constrain templates across the HGL library."
+            "title": "HGL Concepts",
+            "description": "This page documents the C++20 concepts defined within the HGL module of the library."
         }
     }
 }

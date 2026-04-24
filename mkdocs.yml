@@ -20,7 +20,7 @@ nav:
       - Namespaces: cpp-gl/namespaces.md
       - Classes & Structs: cpp-gl/annotated.md
       - Class Hierarchy: cpp-gl/hierarchy.md
-      - Traits & Concepts: cpp-gl/concepts.md
+      - Concepts: cpp-gl/concepts.md
       - Files: cpp-gl/files.md
       # TODO: functions, macros, constants
   - License: license.md
