@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/types/flat_matrix.hpp
+/// @brief Contains the implementation of a generic @ref gl::flat_matrix "flat_matrix" data structure.
+
 #pragma once
 
 #include "gl/types/core.hpp"
@@ -21,31 +24,38 @@ namespace gl {
 /// @ingroup GL GL-Types
 /// @brief A flattened 2D matrix providing efficient storage and uniform access for a rectangular grid of elements.
 ///
-/// This container stores all elements in a single contiguous memory block (`_data`) of size `n_rows * n_cols`
+/// This container stores all elements in a single contiguous memory block (*data*) of size `n_rows * n_cols`
 /// using row-major ordering. Row accesses are contiguous in memory, while column accesses are resolved mathematically
 /// via strided views. Both provide $O(1)$ random access and native compatibility with C++20/23 ranges.
 ///
-/// @tparam T A semiregular type to be stored in the matrix. Must be copy-constructible and assignable.
+/// > [!IMPORTANT] Iterator invalidation policy
+/// >
+/// > Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural
+/// > capacity of the matrix invalidates all iterators, pointers, and references to its elements.
 ///
-/// @warning Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural
-///          capacity of the matrix invalidates all iterators, pointers, and references to its elements.
-/// @todo Implement the row_unchecked and col_unchecked methods.
+/// ### Template Parameters
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | T         | The type of the elements | Must be **semiregular** (copy-constructible and assignable) |
+///
+/// ### TODO
+/// - Implement the row_unchecked and col_unchecked methods.
 template <std::semiregular T>
 class flat_matrix {
 public:
-    /// @brief Type of elements stored in the matrix
+    /// @brief Type of elements stored in the matrix.
     using value_type = T;
-    /// @brief Unsigned integral type used for sizes and indices
+    /// @brief Unsigned integral type used for sizes and indices.
     using size_type = std::size_t;
-    /// @brief The underlying contiguous storage container
+    /// @brief The underlying contiguous storage container.
     using container_type = std::vector<value_type>;
-    /// @brief Reference to an element
+    /// @brief Reference to an element.
     using reference = typename container_type::reference;
-    /// @brief Const reference to an element
+    /// @brief Const reference to an element.
     using const_reference = typename container_type::const_reference;
-    /// @brief Subrange type representing a non-owning uniform row of elements
+    /// @brief Subrange type representing a non-owning uniform row of elements.
     using row_type = std::ranges::subrange<typename container_type::iterator>;
-    /// @brief Const subrange type representing a non-owning uniform const row of elements
+    /// @brief Const subrange type representing a non-owning uniform const row of elements.
     using const_row_type = std::ranges::subrange<typename container_type::const_iterator>;
 
     // --- iterators ---
@@ -56,9 +66,20 @@ public:
     /// allowing efficient iteration and random access. It calculates the memory offsets mathematically
     /// based on the column dimension.
     ///
-    /// @tparam Const If `true`, produces const iterators; if `false`, produces mutable iterators.
-    /// @note Provides random access semantics: `O(1)` for all operations except construction.
-    /// @warning Invalidated when the `flat_matrix` structural dimensions are modified or memory is reallocated.
+    /// ### Template Parameters
+    /// | Parameter | Type | Description |
+    /// | :-------- | :--- | :--- |
+    /// | Const     | `bool` | If `true`, produces const iterators; if `false`, produces mutable iterators. |
+    ///
+    /// > [!NOTE] Complexity
+    /// >
+    /// > Provides random access semantics: $O(1)$ for all operations except construction.
+    ///
+    /// > [!CAUTION] Invalidation
+    /// >
+    /// > Invalidated when the `flat_matrix` structural dimensions are modified or memory is reallocated.
+    ///
+    /// @see gl::flat_matrix
     template <bool Const>
     class row_iterator {
         using data_iter_type = std::conditional_t<
@@ -67,31 +88,31 @@ public:
             typename container_type::iterator>;
 
     public:
-        /// @brief Satisfies random access iterator concept
+        /// @brief Satisfies random access iterator concept.
         using iterator_concept = std::random_access_iterator_tag;
-        /// @brief Legacy iterator category (random access)
+        /// @brief Legacy iterator category (random access).
         using iterator_category = std::random_access_iterator_tag;
-        /// @brief Type of row this iterator dereferences to (subrange or const subrange)
+        /// @brief Type of row this iterator dereferences to (subrange or const subrange).
         using value_type = std::conditional_t<Const, const_row_type, row_type>;
-        /// @brief Signed integral difference type
+        /// @brief Signed integral difference type.
         using difference_type = std::ptrdiff_t;
-        /// @brief Pointer type (void because iterators dereference to spans)
+        /// @brief Pointer type (void because iterators dereference to spans).
         using pointer = void;
-        /// @brief Reference type (subrange of elements)
+        /// @brief Reference type (subrange of elements).
         using reference = value_type;
 
-        /// @brief Default constructor creates a null iterator
+        /// @brief Default constructor creates a null iterator.
         row_iterator() = default;
 
         /// @brief Constructs an iterator pointing to a specific row.
-        /// @param data_iter Iterator to the underlying flat element data
-        /// @param n_cols The number of columns in the matrix
-        /// @param row_idx The index of the row this iterator currently points to
+        /// @param data_iter Iterator to the underlying flat element data.
+        /// @param n_cols The number of columns in the matrix.
+        /// @param row_idx The index of the row this iterator currently points to.
         row_iterator(data_iter_type data_iter, size_type n_cols, size_type row_idx) noexcept
         : _data_iter(data_iter), _row_size(n_cols), _row_idx(row_idx) {}
 
-        /// @brief Implicit conversion from mutable to const iterator
-        /// @return A const iterator pointing to the same row
+        /// @brief Implicit conversion from mutable to const iterator.
+        /// @return A const iterator pointing to the same row.
         operator row_iterator<true>() const noexcept
         requires(not Const)
         {
@@ -99,29 +120,30 @@ public:
         }
 
         /// @brief Dereferences the iterator to the current row.
-        /// @return A subrange representing the row at the current position
+        /// @return A subrange representing the row at the current position.
         [[nodiscard]] reference operator*() const noexcept {
             const auto row_beg = this->_data_iter + to_diff(this->_row_idx * this->_row_size);
             return reference(row_beg, row_beg + to_diff(this->_row_size));
         }
 
         /// @brief Random access to a row at an offset from the current position.
-        /// @param n Offset (can be negative)
-        /// @return Row at offset n from the current position
-        /// @pre `0 <= current_position + n < n_rows()`; otherwise Undefined Behavior
+        /// @param n Offset (can be negative).
+        /// @return Row at offset n from the current position.
+        /// @pre `0 <= current_position + n < n_rows()`
+        /// > [!WARNING] The operation results in Undefined Behavior if the precondition is not satisfied.
         [[nodiscard]] reference operator[](difference_type n) const noexcept {
             return *(*this + n);
         }
 
         /// @brief Pre-increment operator.
-        /// @return Reference to this iterator after advancing to the next row
+        /// @return Reference to this iterator after advancing to the next row.
         row_iterator& operator++() noexcept {
             ++this->_row_idx;
             return *this;
         }
 
         /// @brief Post-increment operator.
-        /// @return A copy of this iterator before the increment
+        /// @return A copy of this iterator before the increment.
         row_iterator operator++(int) noexcept {
             auto tmp = *this;
             ++this->_row_idx;
@@ -129,14 +151,14 @@ public:
         }
 
         /// @brief Pre-decrement operator.
-        /// @return Reference to this iterator after moving to the previous row
+        /// @return Reference to this iterator after moving to the previous row.
         row_iterator& operator--() noexcept {
             --this->_row_idx;
             return *this;
         }
 
         /// @brief Post-decrement operator.
-        /// @return A copy of this iterator before the decrement
+        /// @return A copy of this iterator before the decrement.
         row_iterator operator--(int) noexcept {
             auto tmp = *this;
             --this->_row_idx;
@@ -144,49 +166,49 @@ public:
         }
 
         /// @brief Advances the iterator by n rows.
-        /// @param n Number of rows to advance (can be negative)
-        /// @return Reference to this iterator
+        /// @param n Number of rows to advance (can be negative).
+        /// @return Reference to this iterator.
         row_iterator& operator+=(difference_type n) noexcept {
             this->_row_idx += static_cast<size_type>(n);
             return *this;
         }
 
         /// @brief Moves the iterator backward by n rows.
-        /// @param n Number of rows to move backward (can be negative)
-        /// @return Reference to this iterator
+        /// @param n Number of rows to move backward (can be negative).
+        /// @return Reference to this iterator.
         row_iterator& operator-=(difference_type n) noexcept {
             this->_row_idx -= static_cast<size_type>(n);
             return *this;
         }
 
         /// @brief Creates a new iterator advanced by n rows from the given iterator.
-        /// @param it Iterator to advance from
-        /// @param n Number of rows to advance
-        /// @return New iterator at the advanced position
+        /// @param it Iterator to advance from.
+        /// @param n Number of rows to advance.
+        /// @return New iterator at the advanced position.
         [[nodiscard]] friend row_iterator operator+(row_iterator it, difference_type n) noexcept {
             return it += n;
         }
 
         /// @brief Creates a new iterator advanced by n rows (commutative form).
-        /// @param n Number of rows to advance
-        /// @param it Iterator to advance from
-        /// @return New iterator at the advanced position
+        /// @param n Number of rows to advance.
+        /// @param it Iterator to advance from.
+        /// @return New iterator at the advanced position.
         [[nodiscard]] friend row_iterator operator+(difference_type n, row_iterator it) noexcept {
             return it += n;
         }
 
         /// @brief Creates a new iterator moved backward by n rows.
-        /// @param it Iterator to move backward from
-        /// @param n Number of rows to move backward
-        /// @return New iterator at the moved position
+        /// @param it Iterator to move backward from.
+        /// @param n Number of rows to move backward.
+        /// @return New iterator at the moved position.
         [[nodiscard]] friend row_iterator operator-(row_iterator it, difference_type n) noexcept {
             return it -= n;
         }
 
         /// @brief Computes the distance between two iterators.
-        /// @param lhs The later iterator
-        /// @param rhs The earlier iterator
-        /// @return Number of rows between the iterators; negative if lhs < rhs
+        /// @param lhs The later iterator.
+        /// @param rhs The earlier iterator.
+        /// @return Number of rows between the iterators; negative if lhs < rhs.
         [[nodiscard]] friend difference_type operator-(
             const row_iterator& lhs, const row_iterator& rhs
         ) noexcept {
@@ -194,9 +216,9 @@ public:
         }
 
         /// @brief Tests equality of two iterators.
-        /// @param lhs Left iterator
-        /// @param rhs Right iterator
-        /// @return `true` if both iterators point to the same row index
+        /// @param lhs Left iterator.
+        /// @param rhs Right iterator.
+        /// @return `true` if both iterators point to the same row index.
         [[nodiscard]] friend bool operator==(
             const row_iterator& lhs, const row_iterator& rhs
         ) noexcept {
@@ -204,9 +226,9 @@ public:
         }
 
         /// @brief Three-way comparison of two iterators.
-        /// @param lhs Left iterator
-        /// @param rhs Right iterator
-        /// @return Comparison result indicating iterator ordering
+        /// @param lhs Left iterator.
+        /// @param rhs Right iterator.
+        /// @return Comparison result indicating iterator ordering.
         [[nodiscard]] friend auto operator<=>(
             const row_iterator& lhs, const row_iterator& rhs
         ) noexcept {
@@ -219,47 +241,56 @@ public:
         size_type _row_idx{0uz};
     };
 
-    /// @brief Mutable random access iterator over rows
+    /// @brief Mutable random access iterator over rows.
     using iterator = row_iterator<false>;
-    /// @brief Const random access iterator over rows
+    /// @brief Const random access iterator over rows.
     using const_iterator = row_iterator<true>;
-    /// @brief Reverse mutable iterator over rows
+    /// @brief Reverse mutable iterator over rows.
     using reverse_iterator = std::reverse_iterator<iterator>;
-    /// @brief Reverse const iterator over rows
+    /// @brief Reverse const iterator over rows.
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     // --- constructors and assignment ---
 
     /// @brief Default constructor creates an empty `flat_matrix`.
-    /// @post `empty() == true`, `n_rows() == 0`, `n_cols() == 0`, `data_size() == 0`
+    /// @post `empty() == true`, `n_rows() == 0`, `n_cols() == 0`, `data_size() == 0`.
     flat_matrix() = default;
 
     /// @brief Copy constructor creates a deep copy of another `flat_matrix`.
-    /// @param other The `flat_matrix` to copy
+    /// @param other The `flat_matrix` to copy.
     /// @post `*this == other`
     flat_matrix(const flat_matrix&) = default;
 
     /// @brief Copy assignment creates a deep copy of another `flat_matrix`.
-    /// @param other The source `flat_matrix`
-    /// @return Reference to `*this`
+    /// @param other The source `flat_matrix`.
+    /// @return Reference to `*this`.
     /// @post `*this == other`
     flat_matrix& operator=(const flat_matrix&) = default;
 
     /// @brief Move constructor transfers ownership of data from another `flat_matrix`.
-    /// @param other The source `flat_matrix` (left in an empty state)
-    /// @post `other.empty() == true`; all data is transferred to `*this`
-    /// @warning Invalidates all iterators, pointers, and references to `other`'s elements.
+    /// @param other The source `flat_matrix` (left in an empty state).
+    /// ### Postconditions:
+    /// 1. `other.empty() == true`
+    /// 2. All data is transferred to `*this`
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references to other instance's elements.
     flat_matrix(flat_matrix&& other) noexcept
     : _n_rows(std::exchange(other._n_rows, 0uz)),
       _n_cols(std::exchange(other._n_cols, 0uz)),
       _data(std::move(other._data)) {}
 
     /// @brief Move assignment transfers ownership of data from another `flat_matrix`.
-    /// @param other The source `flat_matrix`
-    /// @return Reference to `*this`
-    /// @post `other.empty() == true`; all data from `other` is transferred to `*this`
-    /// @warning Invalidates all iterators, pointers, and references to this container's elements.
-    /// @note This operator safely handles self-assignment.
+    /// @param other The source `flat_matrix`.
+    /// @return Reference to `*this`.
+    /// ### Postconditions:
+    /// 1. `other.empty() == true`
+    /// 2. All data from `other` is transferred to `*this`
+    ///
+    /// > [!INFO] Safety
+    /// >
+    /// > This operator safely handles self-assignment.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references to this container's elements.
     flat_matrix& operator=(flat_matrix&& other) noexcept {
         if (this != &other) {
             this->_n_rows = std::exchange(other._n_rows, 0uz);
@@ -269,24 +300,25 @@ public:
         return *this;
     }
 
-    /// @brief Destructor cleans up all managed memory.
-    ~flat_matrix() = default;
-
     /// @brief Constructs a `flat_matrix` with specified dimensions.
-    /// @param n_rows The number of rows
-    /// @param n_cols The number of columns
-    /// @param value The value to initialize all elements with (default constructed if omitted)
-    /// @post `n_rows() == n_rows`, `n_cols() == n_cols`, and elements equal `value`
-    /// @exception std::bad_alloc May throw if memory allocation fails
+    /// @param n_rows The number of rows.
+    /// @param n_cols The number of columns.
+    /// @param value The value to initialize all elements with (default constructed if omitted).
+    /// ### Postconditions
+    /// 1. `n_rows() == n_rows`
+    /// 2. `n_cols() == n_cols`
+    /// 3. All elements equal to `value`
+    /// @throws std::bad_alloc May throw if memory allocation fails.
     flat_matrix(size_type n_rows, size_type n_cols, const value_type& value = value_type{})
     : _n_rows(n_rows), _n_cols(n_cols), _data(n_rows * n_cols, value) {}
 
     /// @brief Constructs a `flat_matrix` from an initializer list of rows.
-    /// @param ilist Initializer list of initializer lists, each representing a row
-    /// @post Dimensions are established based on the list geometry
-    /// @exception std::invalid_argument If the rows in the list do not have identical lengths
-    /// @exception std::bad_alloc May throw if memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references after construction
+    /// @param ilist Initializer list of initializer lists, each representing a row.
+    /// @post Dimensions are established based on the list geometry.
+    /// @throws std::invalid_argument If the rows in the list do not have identical lengths.
+    /// @throws std::bad_alloc May throw if memory allocation fails.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references after construction.
     flat_matrix(std::initializer_list<std::initializer_list<value_type>> ilist) {
         this->_n_rows = ilist.size();
         if (this->_n_rows == 0uz)
@@ -310,19 +342,19 @@ public:
     /// @brief Constructs a `flat_matrix` from a 2D range of ranges.
     ///
     /// The matrix establishes its column count from the size of the first extracted row.
-    /// All subsequent rows must perfectly match this dimension. Provides a strong exception guarantee
-    /// if the source is an unsized pure `input_range` and fails validation mid-extraction.
+    /// All subsequent rows must perfectly match this dimension.
     ///
-    /// @tparam R A range type whose elements are input ranges of `value_type`
-    /// @param r The 2D range to initialize from
-    /// @post Dimensions match the structure of `r`
-    /// @exception std::invalid_argument If any extracted row size mismatches the first row's size
-    /// @exception std::bad_alloc May throw if memory allocation fails
+    /// @tparam R A range type whose elements are input ranges of `value_type`.
+    /// @param r The 2D range to initialize from.
+    /// @post Dimensions match the structure of `r`.
+    /// @throws std::invalid_argument If any extracted row size mismatches the first row's size.
+    /// @throws std::bad_alloc May throw if memory allocation fails.
+    ///
+    /// > [!NOTE] Exception safety
+    /// >
+    /// > Provides strong exception guarantee if the source is an unsized pure `input_range` and fails validation mid-extraction.
     template <std::ranges::input_range R>
-    requires std::ranges::input_range<std::ranges::range_reference_t<R>>
-         and std::convertible_to<
-                 std::ranges::range_reference_t<std::ranges::range_reference_t<R>>,
-                 value_type>
+    requires(std::ranges::input_range<std::ranges::range_reference_t<R>> and std::convertible_to<std::ranges::range_reference_t<std::ranges::range_reference_t<R>>, value_type>)
     explicit flat_matrix(R&& r) {
         if constexpr (std::ranges::sized_range<R>)
             this->_n_rows = std::ranges::size(r);
@@ -368,58 +400,66 @@ public:
             this->_n_rows = this->_data.size() / (this->_n_cols > 0uz ? this->_n_cols : 1uz);
     }
 
+    /// @brief Destructor cleans up all managed memory.
+    ~flat_matrix() = default;
+
     // --- comparison ---
 
     /// @brief Tests equality of two `flat_matrix` instances.
-    /// @param lhs Left operand
-    /// @param rhs Right operand
-    /// @return `true` if dimensions and all elements match
+    /// @param lhs Left operand.
+    /// @param rhs Right operand.
+    /// @return `true` if dimensions and all elements match.
     friend bool operator==(const flat_matrix&, const flat_matrix&) = default;
 
     // --- size and capacity ---
 
     /// @brief Returns the number of rows in the matrix.
-    /// @return The count of rows
-    /// @note Required to idiomaticaly satisfy `std::ranges::sized_range`.
+    /// @return The count of rows.
+    ///
+    /// > [!NOTE] Implementation
+    /// >
+    /// > Equivalent to `n_rows()`. Required to idiomaticaly satisfy `std::ranges::sized_range`.
     [[nodiscard]] size_type size() const noexcept {
         return this->_n_rows;
     }
 
     /// @brief Returns the number of rows in the matrix.
-    /// @return The count of rows
+    /// @return The count of rows.
     [[nodiscard]] size_type n_rows() const noexcept {
         return this->_n_rows;
     }
 
     /// @brief Returns the number of columns in the matrix.
-    /// @return The count of columns
+    /// @return The count of columns.
     [[nodiscard]] size_type n_cols() const noexcept {
         return this->_n_cols;
     }
 
     /// @brief Checks if the container is entirely empty.
-    /// @return `true` if `data_size() == 0`, `false` otherwise
+    /// @return `true` if `data_size() == 0`, `false` otherwise.
     [[nodiscard]] bool empty() const noexcept {
         return this->_data.empty();
     }
 
     /// @brief Returns the current capacity for data elements.
-    /// @return The number of total elements that can be stored in `_data` without reallocation
+    /// @return The number of total elements that can be stored in *data* without reallocation.
     [[nodiscard]] size_type data_capacity() const noexcept {
         return this->_data.capacity();
     }
 
     /// @brief Reserves space for at least n total elements without changing the dimensions.
-    /// @param n The total number of matrix elements to reserve space for
+    /// @param n The total number of matrix elements to reserve space for.
     /// @post `data_capacity() >= n`
-    /// @warning Invalidates all iterators and pointers to elements if reallocation occurs
+    ///
+    /// > [!WARNING] Invalidates all iterators and pointers to elements if reallocation occurs.
     void reserve_data(size_type n) {
         this->_data.reserve(n);
     }
 
     /// @brief Reduces capacity of the internal array to match the current data size.
     /// @post `data_capacity() == data_size()`
-    /// @warning Invalidates all iterators, pointers, and references to elements if reallocation occures
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references to elements if reallocation occures.
     void shrink_to_fit() {
         this->_data.shrink_to_fit();
     }
@@ -429,14 +469,18 @@ public:
     /// If the new dimensions require structural changes (e.g. changing the number of columns),
     /// the mathematical grid is rebuilt and existing items are relocated to their new coordinate slots.
     ///
-    /// @param new_rows The new number of rows
-    /// @param new_cols The new number of columns
-    /// @param value The value to initialize any newly exposed slots with
-    /// @post `n_rows() == new_rows` and `n_cols() == new_cols`
-    /// @warning Invalidates all iterators, pointers, and references.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are the new dimensions, due to remapping
-    ///       elements in 2D space. If only the row count changes, it is $O(K)$ where $K$ is the number of
-    ///       inserted or removed trailing elements.
+    /// @param new_rows The new number of rows.
+    /// @param new_cols The new number of columns.
+    /// @param value The value to initialize any newly exposed slots with.
+    /// @post `n_rows() == new_rows` and `n_cols() == new_cols`.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are the new dimensions, due to remapping
+    /// > elements in 2D space. If only the row count changes, it is $O(E)$ where $E$ is
+    /// > the number of inserted or removed trailing elements.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references.
     void resize(size_type new_rows, size_type new_cols, const value_type& value = value_type{}) {
         if (new_rows == this->_n_rows and new_cols == this->_n_cols)
             return;
@@ -462,7 +506,8 @@ public:
 
     /// @brief Removes all dimensions and elements, leaving the matrix empty.
     /// @post `n_rows() == 0`, `n_cols() == 0`, `data_size() == 0`
-    /// @warning Invalidates all iterators, pointers, and references to elements
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references to elements.
     void clear() {
         this->_data.clear();
         this->_n_rows = 0uz;
@@ -472,77 +517,94 @@ public:
     // --- accessors ---
 
     /// @brief Computes the underlying flattened 1D index for a 2D coordinate.
-    /// @param r The row index
-    /// @param c The column index
-    /// @return The 1D index mapping for `_data`
-    /// @note Provides $O(1)$ constant time lookup calculation
+    /// @param r The row index.
+    /// @param c The column index.
+    /// @return The 1D index mapping for *data*.
+    ///
+    /// > [!INFO] Provides $O(1)$ constant time lookup calculation.
     [[nodiscard]] constexpr size_type index(size_type r, size_type c) const noexcept {
         return r * this->_n_cols + c;
     }
 
     /// @brief Returns the row at the given index without bounds checking.
-    /// @param r The index of the row to access
-    /// @return A subrange representing the row at index r
-    /// @pre `r < n_rows()`; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed for performance.
+    /// @param r The index of the row to access.
+    /// @return A subrange representing the row at index r.
+    /// @pre `r < n_rows()`
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed for performance. Use `at(r)` for bounds-checked access.
+    /// > Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] row_type operator[](size_type r) {
         const auto row_beg = this->_data.begin() + to_diff(r * this->_n_cols);
         return row_type(row_beg, row_beg + to_diff(this->_n_cols));
     }
 
     /// @brief Returns a const row at the given index without bounds checking.
-    /// @param r The index of the row to access
-    /// @return A const subrange representing the row at index r
-    /// @pre `r < n_rows()`; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @param r The index of the row to access.
+    /// @return A const subrange representing the row at index r.
+    /// @pre `r < n_rows()`
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed for performance. Use `at(r)` for bounds-checked access.
+    /// > Calling on an out-of-bounds index results in Undefined Behavior.
     [[nodiscard]] const_row_type operator[](size_type r) const {
         const auto row_beg = this->_data.begin() + to_diff(r * this->_n_cols);
         return const_row_type(row_beg, row_beg + to_diff(this->_n_cols));
     }
 
     /// @brief Returns a reference to an element without bounds checking.
-    /// @param r The row index
-    /// @param c The column index
-    /// @return Reference to the element at the given coordinates
-    /// @pre `r < n_rows()` and `c < n_cols()`; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @param r The row index.
+    /// @param c The column index.
+    /// @return Reference to the element at the given coordinates.
+    /// @pre `r < n_rows()` and `c < n_cols()`
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed for performance. Use `at(r, c)` for bounds-checked access.
+    /// > Out-of-bounds access results in Undefined Behavior.
     [[nodiscard]] reference operator[](size_type r, size_type c) {
         return this->_data[this->index(r, c)];
     }
 
     /// @brief Returns a const reference to an element without bounds checking.
-    /// @param r The row index
-    /// @param c The column index
-    /// @return Const reference to the element at the given coordinates
-    /// @pre `r < n_rows()` and `c < n_cols()`; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @param r The row index.
+    /// @param c The column index.
+    /// @return Const reference to the element at the given coordinates.
+    /// @pre `r < n_rows()` and `c < n_cols()`
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed for performance. Use `at(r, c)` for bounds-checked access.
+    /// > Out-of-bounds access results in Undefined Behavior.
     [[nodiscard]] const_reference operator[](size_type r, size_type c) const {
         return this->_data[this->index(r, c)];
     }
 
     /// @brief Returns the row at the given index with bounds checking.
-    /// @param r The index of the row
-    /// @return A subrange representing the row at index r
-    /// @exception std::out_of_range If `r >= n_rows()`
+    /// @param r The index of the row.
+    /// @return A subrange representing the row at index r.
+    /// @throws std::out_of_range If `r >= n_rows()`.
     [[nodiscard]] row_type at(size_type r) {
         this->_check_row(r);
         return (*this)[r];
     }
 
     /// @brief Returns a const row at the given index with bounds checking.
-    /// @param r The index of the row
-    /// @return A const subrange representing the row at index r
-    /// @exception std::out_of_range If `r >= n_rows()`
+    /// @param r The index of the row.
+    /// @return A const subrange representing the row at index r.
+    /// @throws std::out_of_range If `r >= n_rows()`.
     [[nodiscard]] const_row_type at(size_type r) const {
         this->_check_row(r);
         return (*this)[r];
     }
 
     /// @brief Returns a reference to an element with bounds checking.
-    /// @param r The row index
-    /// @param c The column index
-    /// @return Reference to the element
-    /// @exception std::out_of_range If `r >= n_rows()` or `c >= n_cols()`
+    /// @param r The row index.
+    /// @param c The column index.
+    /// @return Reference to the element.
+    /// @throws std::out_of_range If `r >= n_rows()` or `c >= n_cols()`.
     [[nodiscard]] reference at(size_type r, size_type c) {
         this->_check_row(r);
         this->_check_col(c);
@@ -550,10 +612,10 @@ public:
     }
 
     /// @brief Returns a const reference to an element with bounds checking.
-    /// @param r The row index
-    /// @param c The column index
-    /// @return Const reference to the element
-    /// @exception std::out_of_range If `r >= n_rows()` or `c >= n_cols()`
+    /// @param r The row index.
+    /// @param c The column index.
+    /// @return Const reference to the element.
+    /// @throws std::out_of_range If `r >= n_rows()` or `c >= n_cols()`.
     [[nodiscard]] const_reference at(size_type r, size_type c) const {
         this->_check_row(r);
         this->_check_col(c);
@@ -561,154 +623,158 @@ public:
     }
 
     /// @brief Returns the first row without bounds checking.
-    /// @return A subrange representing the first row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A subrange representing the first row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] row_type front() noexcept {
         return (*this)[0uz];
     }
 
     /// @brief Returns a const reference to the first row without bounds checking.
-    /// @return A const subrange representing the first row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A const subrange representing the first row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] const_row_type front() const noexcept {
         return (*this)[0uz];
     }
 
     /// @brief Returns the last row without bounds checking.
-    /// @return A subrange representing the last row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A subrange representing the last row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] row_type back() noexcept {
         return (*this)[this->_n_rows - 1uz];
     }
 
     /// @brief Returns a const reference to the last row without bounds checking.
-    /// @return A const subrange representing the last row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A const subrange representing the last row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] const_row_type back() const noexcept {
         return (*this)[this->_n_rows - 1uz];
     }
 
     /// @brief Explicitly named alias for `front()` yielding the first row.
-    /// @return A subrange representing the first row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
+    /// @return A subrange representing the first row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] row_type front_row() noexcept {
         return this->front();
     }
 
     /// @brief Explicitly named alias for `front()` yielding the first const row.
-    /// @return A const subrange representing the first row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
+    /// @return A const subrange representing the first row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] const_row_type front_row() const noexcept {
         return this->front();
     }
 
     /// @brief Explicitly named alias for `back()` yielding the last row.
-    /// @return A subrange representing the last row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
+    /// @return A subrange representing the last row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] row_type back_row() noexcept {
         return this->back();
     }
 
     /// @brief Explicitly named alias for `back()` yielding the last const row.
-    /// @return A const subrange representing the last row
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
+    /// @return A const subrange representing the last row.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] const_row_type back_row() const noexcept {
         return this->back();
     }
 
     /// @brief Returns an unchecked $O(1)$ random-access view over the first column.
-    /// @return A strided view representing the first column
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A strided view representing the first column.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] auto front_col() noexcept {
         return this->_col_impl(0uz);
     }
 
     /// @brief Returns an unchecked $O(1)$ random-access const view over the first column.
-    /// @return A strided view representing the const first column
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A strided view representing the const first column.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] auto front_col() const noexcept {
         return this->_col_impl(0uz);
     }
 
     /// @brief Returns an unchecked $O(1)$ random-access view over the last column.
-    /// @return A strided view representing the last column
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A strided view representing the last column.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] auto back_col() noexcept {
         return this->_col_impl(this->_n_cols - 1uz);
     }
 
     /// @brief Returns an unchecked $O(1)$ random-access const view over the last column.
-    /// @return A strided view representing the const last column
-    /// @pre Matrix must not be empty; otherwise Undefined Behavior
-    /// @warning No bounds checking is performed.
+    /// @return A strided view representing the const last column.
+    /// @pre Matrix must not be empty.
+    /// > [!WARNING] No bounds checking. Results in Undefined Behavior if matrix is empty.
     [[nodiscard]] auto back_col() const noexcept {
         return this->_col_impl(this->_n_cols - 1uz);
     }
 
     /// @brief Semantically symmetric alias for `at(r)` returning a bounds-checked row.
-    /// @param r The row index
-    /// @return A subrange representing the row
-    /// @exception std::out_of_range If `r >= n_rows()`
+    /// @param r The row index.
+    /// @return A subrange representing the row.
+    /// @throws std::out_of_range If `r >= n_rows()`.
     [[nodiscard]] row_type row(size_type r) {
         return this->at(r);
     }
 
     /// @brief Semantically symmetric alias for `at(r)` returning a bounds-checked const row.
-    /// @param r The row index
-    /// @return A const subrange representing the row
-    /// @exception std::out_of_range If `r >= n_rows()`
+    /// @param r The row index.
+    /// @return A const subrange representing the row.
+    /// @throws std::out_of_range If `r >= n_rows()`.
     [[nodiscard]] const_row_type row(size_type r) const {
         return this->at(r);
     }
 
     /// @brief Returns a bounds-checked $O(1)$ random-access view over a specific column.
-    /// @param c The column index
-    /// @return A strided view representing the column
-    /// @exception std::out_of_range If `c >= n_cols()`
+    /// @param c The column index.
+    /// @return A strided view representing the column.
+    /// @throws std::out_of_range If `c >= n_cols()`.
     [[nodiscard]] auto col(size_type c) {
         this->_check_col(c);
         return this->_col_impl(c);
     }
 
     /// @brief Returns a bounds-checked $O(1)$ random-access const view over a specific column.
-    /// @param c The column index
-    /// @return A strided view representing the const column
-    /// @exception std::out_of_range If `c >= n_cols()`
+    /// @param c The column index.
+    /// @return A strided view representing the const column.
+    /// @throws std::out_of_range If `c >= n_cols()`.
     [[nodiscard]] auto col(size_type c) const {
         this->_check_col(c);
         return this->_col_impl(c);
     }
 
     /// @brief Returns a view of all rows for iteration.
-    /// @return A random-access view of all row spans
+    /// @return A random-access view of all row spans.
     [[nodiscard]] auto rows() noexcept {
         return std::views::iota(size_type{0}, this->_n_rows)
              | std::views::transform([this](size_type i) -> row_type { return (*this)[i]; });
     }
 
     /// @brief Returns a const view of all rows for iteration.
-    /// @return A random-access const view of all row const spans
+    /// @return A random-access const view of all row const spans.
     [[nodiscard]] auto rows() const noexcept {
         return std::views::iota(size_type{0}, this->_n_rows)
              | std::views::transform([this](size_type i) -> const_row_type { return (*this)[i]; });
     }
 
     /// @brief Returns a view of all columns for iteration.
-    /// @return A random-access view of all column strided-views
+    /// @return A random-access view of all column strided-views.
     [[nodiscard]] auto cols() noexcept {
         return std::views::iota(size_type{0}, this->_n_cols)
              | std::views::transform([this](size_type c) { return this->_col_impl(c); });
     }
 
     /// @brief Returns a const view of all columns for iteration.
-    /// @return A random-access view of all const column strided-views
+    /// @return A random-access view of all const column strided-views.
     [[nodiscard]] auto cols() const noexcept {
         return std::views::iota(size_type{0}, this->_n_cols)
              | std::views::transform([this](size_type c) { return this->_col_impl(c); });
@@ -717,39 +783,44 @@ public:
     // --- accessors (data) ---
 
     /// @brief Returns the total number of elements structurally stored in the matrix.
-    /// @return The result of `n_rows() * n_cols()`
+    /// @return The result of `n_rows() * n_cols()`.
     [[nodiscard]] size_type data_size() const noexcept {
         return this->_data.size();
     }
 
     /// @brief Returns a subrange of all element data in flattened 1D form.
-    /// @return A subrange of all elements in the underlying `_data` array.
+    /// @return A subrange of all elements in the underlying *data* array.
+    /// > [!NOTE] Allows direct access to the flattened data representation.
     [[nodiscard]] row_type data_view() noexcept {
         return row_type(this->_data);
     }
 
     /// @brief Returns a const subrange of all element data in flattened 1D form.
-    /// @return A const subrange of all elements in the underlying `_data` array.
+    /// @return A const subrange of all elements in the underlying *data* array.
+    /// > [!NOTE] Allows direct access to the flattened data representation.
     [[nodiscard]] const_row_type data_view() const noexcept {
         return const_row_type(this->_data);
     }
 
     /// @brief Returns a reference to the underlying flat data container.
-    /// @return A mutable reference to the underlying `_data` array.
-    /// @warning Modifying this vector directly can fatally corrupt the matrix structure. Use for advanced operations only.
+    /// @return A mutable reference to the underlying *data* array.
+    ///
+    /// > [!CAUTION] Use with extreme caution
+    /// >
+    /// > Modifying this vector directly can fatally corrupt the matrix structure. Use for advanced operations only.
     [[nodiscard]] container_type& data_storage() noexcept {
         return this->_data;
     }
 
     /// @brief Returns a const reference to the underlying flat data container.
-    /// @return A const reference to the underlying `_data` array.
+    /// @return A const reference to the underlying *data* array.
     [[nodiscard]] const container_type& data_storage() const noexcept {
         return this->_data;
     }
 
     /// @brief Returns a raw pointer to the underlying flat data array.
-    /// @return A raw pointer to the first element in the `_data` array.
-    /// @warning Not available for boolean matrices.
+    /// @return A raw pointer to the first element in the *data* array.
+    /// > [!IMPORTANT] Not available for boolean matrices.
     [[nodiscard]] value_type* data_ptr() noexcept
     requires(not std::same_as<value_type, bool>)
     {
@@ -757,8 +828,8 @@ public:
     }
 
     /// @brief Returns a const raw pointer to the underlying flat data array.
-    /// @return A const raw pointer to the first element in the `_data` array.
-    /// @warning Not available for boolean matrices.
+    /// @return A const raw pointer to the first element in the *data* array.
+    /// > [!IMPORTANT] Not available for boolean matrices.
     [[nodiscard]] const value_type* data_ptr() const noexcept
     requires(not std::same_as<value_type, bool>)
     {
@@ -768,13 +839,17 @@ public:
     // --- modifiers (rows) ---
 
     /// @brief Appends a range as a new row at the bottom of the matrix.
-    /// @tparam R An input range of elements convertible to `value_type`
-    /// @param r The range to append
-    /// @post `n_rows()` increases by 1
-    /// @exception std::invalid_argument If the row size does not match `n_cols()` (for non-empty matrices)
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references if reallocation occurs.
-    /// @note **Time Complexity:** Amortized $O(C)$ where $C$ is the number of columns.
+    /// @tparam R An input range of elements convertible to `value_type`.
+    /// @param r The range to append.
+    /// @post `n_rows()` increases by 1.
+    /// @throws std::invalid_argument If the row size does not match `n_cols()` (for non-empty matrices).
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > Amortized $O(C)$ where $C$ is the number of columns.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references if reallocation occurs.
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void push_row(R&& r) {
@@ -782,12 +857,16 @@ public:
     }
 
     /// @brief Appends an initializer list as a new row at the bottom of the matrix.
-    /// @param ilist The list to append
-    /// @post `n_rows()` increases by 1
-    /// @exception std::invalid_argument If the list size does not match `n_cols()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references if reallocation occurs.
-    /// @note **Time Complexity:** Amortized $O(C)$ where $C$ is the number of columns.
+    /// @param ilist The list to append.
+    /// @post `n_rows()` increases by 1.
+    /// @throws std::invalid_argument If the list size does not match `n_cols()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > Amortized $O(C)$ where $C$ is the number of columns.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references if reallocation occurs.
     void push_row(std::initializer_list<value_type> ilist) {
         this->insert_row(this->_n_rows, std::span<const value_type>{ilist});
     }
@@ -797,27 +876,40 @@ public:
     /// If the matrix is empty (has no columns), this operation has no effect,
     /// as the size of the new row will be determined as 0.
     ///
-    /// @param value The value to fill the new row with
-    /// @post `n_rows()` increases by 1
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references if reallocation occurs.
-    /// @note **Time Complexity:** Amortized $O(C)$ where $C$ is the number of columns.
+    /// @param value The value to fill the new row with.
+    /// @post `n_rows()` increases by 1.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > Amortized $O(C)$ where $C$ is the number of columns.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references if reallocation occurs.
     void push_row(const value_type& value) {
         this->insert_row(this->_n_rows, value);
     }
 
     /// @brief Inserts a new row at the specified position from a range.
-    /// @tparam R An input range of elements convertible to `value_type`
-    /// @param pos The row position where the elements will be inserted
-    /// @param r The range to insert
-    /// @post `n_rows()` increases by 1; rows at and after `pos` are shifted down
-    /// @exception std::out_of_range If `pos > n_rows()`
-    /// @exception std::invalid_argument If the range size does not match `n_cols()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @note Provides strong exception guarantee if size validation fails for unsized ranges.
-    /// @warning Invalidates all iterators, pointers, and references after the insertion point.
-    /// @note **Time Complexity:** $O(E + C)$ where $E$ is the number of total elements from `pos` onward
-    ///       and $C$ is the size of the inserted row.
+    /// @tparam R An input range of elements convertible to `value_type`.
+    /// @param pos The row position where the elements will be inserted.
+    /// @param r The range to insert.
+    /// ### Postconditions
+    /// 1. `n_rows()` increases by 1.
+    /// 2. Rows at and after `pos` are shifted down.
+    /// @throws std::out_of_range If `pos > n_rows()`.
+    /// @throws std::invalid_argument If the range size does not match `n_cols()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
+    /// > and $C$ is the size of the inserted row.
+    ///
+    /// > [!NOTE] Exception safety
+    /// >
+    /// > Provides strong exception guarantee if size validation fails for unsized ranges.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references after the insertion point.
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void insert_row(size_type pos, R&& r) {
@@ -882,15 +974,21 @@ public:
     }
 
     /// @brief Inserts a new row at the specified position from an initializer list.
-    /// @param pos The row position where the elements will be inserted
-    /// @param ilist The list to insert
-    /// @post `n_rows()` increases by 1; rows at and after `pos` are shifted down
-    /// @exception std::out_of_range If `pos > n_rows()`
-    /// @exception std::invalid_argument If the list size does not match `n_cols()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references after the insertion point.
-    /// @note **Time Complexity:** $O(E + C)$ where $E$ is the number of total elements from `pos` onward
-    ///       and $C$ is the size of the inserted row.
+    /// @param pos The row position where the elements will be inserted.
+    /// @param ilist The list to insert.
+    /// ### Postconditions
+    /// 1. `n_rows()` increases by 1.
+    /// 2. Rows at and after `pos` are shifted down.
+    /// @throws std::out_of_range If `pos > n_rows()`.
+    /// @throws std::invalid_argument If the list size does not match `n_cols()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
+    /// > and $C$ is the size of the inserted row.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references after the insertion point.
     void insert_row(size_type pos, std::initializer_list<value_type> ilist) {
         this->insert_row(pos, std::span<const value_type>{ilist});
     }
@@ -900,14 +998,20 @@ public:
     /// If the matrix is empty (has no columns), this operation has no effect,
     /// as the size of the new row will be determined as 0.
     ///
-    /// @param pos The row position where the elements will be inserted
-    /// @param value The value to fill the new row with
-    /// @post `n_rows()` increases by 1; rows at and after `pos` are shifted down
-    /// @exception std::out_of_range If `pos > n_rows()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning Invalidates all iterators, pointers, and references after the insertion point.
-    /// @note **Time Complexity:** $O(E + C)$ where $E$ is the number of total elements from `pos` onward
-    ///       and $C$ is the size of the inserted row.
+    /// @param pos The row position where the elements will be inserted.
+    /// @param value The value to fill the new row with.
+    /// ### Postconditions
+    /// 1. `n_rows()` increases by 1.
+    /// 2. Rows at and after `pos` are shifted down.
+    /// @throws std::out_of_range If `pos > n_rows()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(E + C)$ where $E$ is the number of total elements from `pos` onward
+    /// > and $C$ is the size of the inserted row.
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references after the insertion point.
     void insert_row(size_type pos, const value_type& value) {
         if (pos > this->_n_rows) {
             throw std::out_of_range(std::format(
@@ -923,10 +1027,17 @@ public:
     }
 
     /// @brief Removes the last row from the matrix.
-    /// @post If not empty, `n_rows()` decreases by 1
-    /// @note Safe to call on an empty matrix (no-op).
-    /// @warning Invalidates all iterators, pointers, and references to elements in the last row.
-    /// @note **Time Complexity:** $O(C)$ to truncate the underlying `_data` vector.
+    /// @post If not empty, `n_rows()` decreases by 1.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(C)$ to truncate the underlying *data* vector.
+    ///
+    /// > [!NOTE] Safety
+    /// >
+    /// > Safe to call on an empty matrix (no-op).
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references to elements in the last row.
     void pop_row() {
         if (this->empty())
             return;
@@ -939,12 +1050,18 @@ public:
     }
 
     /// @brief Erases the row at the specified position.
-    /// @param pos The position of the row to erase
-    /// @post The row is removed; subsequent rows are shifted up; `n_rows()` decreases by 1
-    /// @exception std::out_of_range If `pos >= n_rows()`
-    /// @warning Invalidates all iterators, pointers, and references at or after the erased position.
-    /// @note **Time Complexity:** $O(E + C)$ where $E$ is the number of elements after the erased row
-    ///       and $C$ is the number of columns (the size of the erased row).
+    /// @param pos The position of the row to erase.
+    /// ### Postconditions
+    /// 1. The row is removed; subsequent rows are shifted up.
+    /// 2. `n_rows()` decreases by 1.
+    /// @throws std::out_of_range If `pos >= n_rows()`.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(E + C)$ where $E$ is the number of elements after the erased row
+    /// > and $C$ is the number of columns (the size of the erased row).
+    ///
+    /// > [!WARNING] Invalidates all iterators, pointers, and references at or after the erased position.
     void erase_row(size_type pos) {
         this->_check_row(pos);
         if (this->_n_rows == 1uz) {
@@ -960,14 +1077,20 @@ public:
     // --- modifiers (columns) ---
 
     /// @brief Appends a range as a new column at the right edge of the matrix.
-    /// @tparam R An input range of elements convertible to `value_type`
-    /// @param r The range to append
-    /// @post `n_cols()` increases by 1
-    /// @exception std::invalid_argument If the column size does not match `n_rows()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @tparam R An input range of elements convertible to `value_type`.
+    /// @param r The range to append.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::invalid_argument If the column size does not match `n_rows()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void push_col(R&& r) {
@@ -975,13 +1098,19 @@ public:
     }
 
     /// @brief Appends an initializer list as a new column at the right edge of the matrix.
-    /// @param ilist The list to append
-    /// @post `n_cols()` increases by 1
-    /// @exception std::invalid_argument If the list size does not match `n_rows()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @param ilist The list to append.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::invalid_argument If the list size does not match `n_rows()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     void push_col(std::initializer_list<value_type> ilist) {
         this->insert_col(this->_n_cols, std::span<const value_type>{ilist});
     }
@@ -991,27 +1120,39 @@ public:
     /// If the matrix is empty (has no rows), this operation has no effect,
     /// as the size of the new column will be determined as 0.
     ///
-    /// @param value The value to fill the new column with
-    /// @post `n_cols()` increases by 1
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @param value The value to fill the new column with.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     void push_col(const value_type& value) {
         this->insert_col(this->_n_cols, value);
     }
 
     /// @brief Inserts a new column at the specified position from a range.
-    /// @tparam R An input range of elements convertible to `value_type`
-    /// @param pos The column position where elements will be inserted
-    /// @param r The range to insert
-    /// @post `n_cols()` increases by 1
-    /// @exception std::out_of_range If `pos > n_cols()`
-    /// @exception std::invalid_argument If the range size does not match `n_rows()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @tparam R An input range of elements convertible to `value_type`.
+    /// @param pos The column position where elements will be inserted.
+    /// @param r The range to insert.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::out_of_range If `pos > n_cols()`.
+    /// @throws std::invalid_argument If the range size does not match `n_rows()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, value_type>
     void insert_col(size_type pos, R&& r) {
@@ -1074,15 +1215,21 @@ public:
     }
 
     /// @brief Inserts a new column at the specified position from an initializer list.
-    /// @param pos The column position where elements will be inserted
-    /// @param ilist The list to insert
-    /// @post `n_cols()` increases by 1
-    /// @exception std::out_of_range If `pos > n_cols()`
-    /// @exception std::invalid_argument If the list size does not match `n_rows()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @param pos The column position where elements will be inserted.
+    /// @param ilist The list to insert.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::out_of_range If `pos > n_cols()`.
+    /// @throws std::invalid_argument If the list size does not match `n_rows()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     void insert_col(size_type pos, std::initializer_list<value_type> ilist) {
         this->insert_col(pos, std::span<const value_type>{ilist});
     }
@@ -1092,14 +1239,20 @@ public:
     /// If the matrix is empty (has no rows), this operation has no effect,
     /// as the size of the new column will be determined as 0.
     ///
-    /// @param pos The column position where elements will be inserted
-    /// @param value The value to fill the new column with
-    /// @post `n_cols()` increases by 1
-    /// @exception std::out_of_range If `pos > n_cols()`
-    /// @exception std::bad_alloc If memory allocation fails
-    /// @warning This operation forces a full reallocation and architectural shift of the mathematical grid.
-    ///          All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @param pos The column position where elements will be inserted.
+    /// @param value The value to fill the new column with.
+    /// @post `n_cols()` increases by 1.
+    /// @throws std::out_of_range If `pos > n_cols()`.
+    /// @throws std::bad_alloc If memory allocation fails.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a full reallocation and architectural shift of the mathematical grid.
+    /// > All iterators, pointers, and references are invalidated.
     void insert_col(size_type pos, const value_type& value) {
         if (pos > this->_n_cols) {
             throw std::out_of_range(std::format(
@@ -1136,10 +1289,19 @@ public:
     }
 
     /// @brief Removes the last column from the matrix.
-    /// @post If not empty, `n_cols()` decreases by 1
-    /// @note Safe to call on an empty matrix (no-op).
-    /// @warning This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @post If not empty, `n_cols()` decreases by 1.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!NOTE] Safety
+    /// >
+    /// > Safe to call on an empty matrix (no-op).
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
     void pop_col() {
         if (this->empty() or this->_n_cols == 0uz)
             return;
@@ -1148,11 +1310,19 @@ public:
     }
 
     /// @brief Erases the column at the specified position.
-    /// @param pos The position of the column to erase
-    /// @post The column is removed; subsequent columns are mathematically shifted left; `n_cols()` decreases by 1
-    /// @exception std::out_of_range If `pos >= n_cols()`
-    /// @warning This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
-    /// @note **Time Complexity:** $O(R \times C)$ where $R$ and $C$ are dimensions of the matrix.
+    /// @param pos The position of the column to erase.
+    /// ### Postconditions
+    /// 1. The column is removed; subsequent columns are mathematically shifted left.
+    /// 2. `n_cols()` decreases by 1.
+    /// @throws std::out_of_range If `pos >= n_cols()`.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ where $R$ and $C$ are dimensions of the matrix.
+    ///
+    /// > [!WARNING] Iterator invalidation
+    /// >
+    /// > This operation forces a reallocation and structural shift. All iterators, pointers, and references are invalidated.
     void erase_col(size_type pos) {
         this->_check_col(pos);
 
@@ -1189,85 +1359,85 @@ public:
     // --- iterators ---
 
     /// @brief Returns a mutable iterator to the first row.
-    /// @return Iterator to the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Iterator to the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] iterator begin() noexcept {
         return iterator(this->_data.begin(), this->_n_cols, 0uz);
     }
 
     /// @brief Returns a mutable iterator past the last row (end sentinel).
-    /// @return Iterator one position past the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Iterator one position past the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] iterator end() noexcept {
         return iterator(this->_data.begin(), this->_n_cols, this->_n_rows);
     }
 
     /// @brief Returns a const iterator to the first row.
-    /// @return Const iterator to the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const iterator to the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_iterator begin() const noexcept {
         return const_iterator(this->_data.begin(), this->_n_cols, 0uz);
     }
 
     /// @brief Returns a const iterator past the last row (end sentinel).
-    /// @return Const iterator one position past the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const iterator one position past the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_iterator end() const noexcept {
         return const_iterator(this->_data.begin(), this->_n_cols, this->_n_rows);
     }
 
     /// @brief Returns a const iterator to the first row (explicit const form).
-    /// @return Const iterator to the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const iterator to the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_iterator cbegin() const noexcept {
         return this->begin();
     }
 
     /// @brief Returns a const iterator past the last row (explicit const form).
-    /// @return Const iterator one past the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const iterator one past the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_iterator cend() const noexcept {
         return this->end();
     }
 
     /// @brief Returns a reverse iterator to the last row.
-    /// @return Reverse iterator starting at the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Reverse iterator starting at the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] reverse_iterator rbegin() noexcept {
         return reverse_iterator(this->end());
     }
 
     /// @brief Returns a reverse iterator before the first row (end sentinel).
-    /// @return Reverse iterator one position before the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Reverse iterator one position before the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] reverse_iterator rend() noexcept {
         return reverse_iterator(this->begin());
     }
 
     /// @brief Returns a const reverse iterator to the last row.
-    /// @return Const reverse iterator starting at the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const reverse iterator starting at the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_reverse_iterator rbegin() const noexcept {
         return const_reverse_iterator(this->end());
     }
 
     /// @brief Returns a const reverse iterator before the first row (end sentinel).
-    /// @return Const reverse iterator one position before the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const reverse iterator one position before the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_reverse_iterator rend() const noexcept {
         return const_reverse_iterator(this->begin());
     }
 
     /// @brief Returns a const reverse iterator to the last row (explicit const form).
-    /// @return Const reverse iterator starting at the last row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const reverse iterator starting at the last row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_reverse_iterator crbegin() const noexcept {
         return this->rbegin();
     }
 
     /// @brief Returns a const reverse iterator before the first row (explicit const form).
-    /// @return Const reverse iterator one position before the first row
-    /// @note Iterator invalidated by structural modifications
+    /// @return Const reverse iterator one position before the first row.
+    /// > [!NOTE] Iterator invalidated by structural modifications.
     [[nodiscard]] const_reverse_iterator crend() const noexcept {
         return this->rend();
     }
@@ -1275,8 +1445,11 @@ public:
     // --- transformations ---
 
     /// @brief Transposes the matrix mathematically (rows become columns, columns become rows).
-    /// @return A new `flat_matrix` instance containing the transposed data
-    /// @note **Time Complexity:** $O(R \times C)$ to generate and fill the new matrix.
+    /// @return A new `flat_matrix` instance containing the transposed data.
+    ///
+    /// > [!INFO] Time complexity
+    /// >
+    /// > $O(R \cdot C)$ to generate and fill the new matrix.
     [[nodiscard]] flat_matrix transpose() const {
         flat_matrix result(this->_n_cols, this->_n_rows);
         for (size_type r = 0uz; r < this->_n_rows; ++r)
@@ -1286,10 +1459,6 @@ public:
     }
 
 private:
-    /// @brief Validates that the row index is within mathematical bounds.
-    /// @param r The row index to check
-    /// @exception std::out_of_range If `r >= n_rows()`
-    /// @note Used internally by checked accessors
     void _check_row(size_type r) const {
         if (r >= this->_n_rows) {
             throw std::out_of_range(std::format(
@@ -1300,10 +1469,6 @@ private:
         }
     }
 
-    /// @brief Validates that the column index is within mathematical bounds.
-    /// @param c The column index to check
-    /// @exception std::out_of_range If `c >= n_cols()`
-    /// @note Used internally by checked accessors
     void _check_col(size_type c) const {
         if (c >= this->_n_cols) {
             throw std::out_of_range(std::format(
@@ -1314,16 +1479,10 @@ private:
         }
     }
 
-    /// @brief Internal non-throwing helper generating a mutable strided view over a column.
-    /// @param c The column index (assumed valid)
-    /// @return A zero-overhead `std::views::stride` representing the column elements
     [[nodiscard]] auto _col_impl(size_type c) noexcept {
         return std::views::drop(this->_data, to_diff(c)) | std::views::stride(this->_n_cols);
     }
 
-    /// @brief Internal non-throwing helper generating a const strided view over a column.
-    /// @param c The column index (assumed valid)
-    /// @return A zero-overhead `std::views::stride` representing the const column elements
     [[nodiscard]] auto _col_impl(size_type c) const noexcept {
         return std::views::drop(this->_data, to_diff(c)) | std::views::stride(this->_n_cols);
     }

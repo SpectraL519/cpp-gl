@@ -319,7 +319,7 @@ public:
     /// @param n_segments The number of segments to create.
     /// @param segment_size The initial size of each segment (default is 0).
     /// @post `size() == n_segments` and each segment is initialized with `segment_size` default-constructed elements.
-    /// @exception std::bad_alloc May throw if memory allocation fails.
+    /// @throws std::bad_alloc May throw if memory allocation fails.
     flat_jagged_vector(size_type n_segments, size_type segment_size = 0uz)
     : _data(n_segments * segment_size), _offsets(n_segments + 1uz) {
         for (size_type i = 0uz; i <= n_segments; i++)
@@ -329,7 +329,7 @@ public:
     /// @brief Constructs a `flat_jagged_vector` from an initializer list of segments.
     /// @param ilist Initializer list of initializer lists, each representing a segment.
     /// @post `size() == ilist.size()` and `data_size()` equals the sum of all segment sizes.
-    /// @exception std::bad_alloc May throw if memory allocation fails.
+    /// @throws std::bad_alloc May throw if memory allocation fails.
     flat_jagged_vector(std::initializer_list<std::initializer_list<value_type>> ilist) {
         this->reserve_segments(ilist.size());
 
@@ -350,7 +350,7 @@ public:
     /// @tparam R A range type whose elements are input ranges of `value_type`.
     /// @param  r The range of ranges to initialize from.
     /// @post `size()` equals the number of outer range elements; `data_size()` is the sum of all element counts.
-    /// @exception std::bad_alloc May throw if memory allocation fails.
+    /// @throws std::bad_alloc May throw if memory allocation fails.
     template <std::ranges::input_range R>
     requires(std::ranges::input_range<std::ranges::range_reference_t<R>> and std::convertible_to<std::ranges::range_reference_t<std::ranges::range_reference_t<R>>, value_type>)
     explicit flat_jagged_vector(R&& r) {
@@ -462,7 +462,7 @@ public:
     /// @param n The new number of segments.
     /// @param r The range to initialize any newly appended segments with.
     /// @post `size() == n`
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!WARNING] Iterator invalidation
     /// >
@@ -587,7 +587,7 @@ public:
     /// @brief Returns the segment at the given index with bounds checking.
     /// @param seg The index of the segment.
     /// @return A subrange representing the segment at index `seg`.
-    /// @exception std::out_of_range If `seg >= size()`.
+    /// @throws std::out_of_range If `seg >= size()`.
     [[nodiscard]] segment_type at(size_type seg) {
         this->_check_range(seg);
         return (*this)[seg];
@@ -596,7 +596,7 @@ public:
     /// @brief Returns a const segment at the given index with bounds checking.
     /// @param seg The index of the segment.
     /// @return A const subrange representing the segment at index `seg`.
-    /// @exception std::out_of_range If `seg >= size()`.
+    /// @throws std::out_of_range If `seg >= size()`.
     [[nodiscard]] const_segment_type at(size_type seg) const {
         this->_check_range(seg);
         return (*this)[seg];
@@ -606,7 +606,7 @@ public:
     /// @param seg The segment number.
     /// @param pos The position within the segment.
     /// @return Reference to the element at the given segment and position.
-    /// @exception std::out_of_range If `seg >= size()` or `pos >= segment_size(seg)`.
+    /// @throws std::out_of_range If `seg >= size()` or `pos >= segment_size(seg)`.
     [[nodiscard]] reference at(size_type seg, size_type pos) {
         this->_check_range(seg);
         this->_check_segment_range(seg, pos);
@@ -617,7 +617,7 @@ public:
     /// @param seg The segment number.
     /// @param pos The position within the segment.
     /// @return Const reference to the element at the given segment and position.
-    /// @exception std::out_of_range If `seg >= size()` or `pos >= segment_size(seg)`.
+    /// @throws std::out_of_range If `seg >= size()` or `pos >= segment_size(seg)`.
     [[nodiscard]] const_reference at(size_type seg, size_type pos) const {
         this->_check_range(seg);
         this->_check_segment_range(seg, pos);
@@ -929,7 +929,7 @@ public:
     /// ### Postconditions
     /// 1. `size()` is incremented by 1
     /// 2. `data_size()` increases by the range size.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -962,7 +962,7 @@ public:
     /// @brief Appends a segment from an initializer list.
     /// @param ilist The initializer list to append as a segment.
     /// @post `size()` is incremented by 1; `data_size()` increases by the list size.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Implementation
     /// >
@@ -1004,7 +1004,7 @@ public:
     /// ### Postconditions
     /// 1. `size()` is incremented by 1
     /// 2. Segments at and after `pos` are shifted and offsets are updated.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -1047,7 +1047,7 @@ public:
     /// @brief Inserts a segment from an initializer list at the specified position.
     /// @param pos The position where the segment will be inserted (must satisfy `pos <= size()`).
     /// @param ilist The initializer list to insert as a segment.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Implementation
     /// >
@@ -1092,7 +1092,7 @@ public:
     /// ### Postconditions
     /// 1. The segment size increases by 1.
     /// 2. `data_size()` increases by 1.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -1115,7 +1115,7 @@ public:
     /// ### Postconditions
     /// 1. The segment size increases by 1.
     /// 2. `data_size()` increases by 1.
-    /// @exception Any exception thrown by the `T` constructor, or std::bad_alloc.
+    /// @throws Any exception thrown by the `T` constructor, or std::bad_alloc.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -1159,7 +1159,7 @@ public:
     /// ### Postconditions
     /// 1. The segment size increases by 1.
     /// 2. `data_size()` increases by 1.
-    /// @exception std::bad_alloc If memory allocation fails.
+    /// @throws std::bad_alloc If memory allocation fails.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -1185,7 +1185,7 @@ public:
     /// ### Postconditions
     /// 1. The segment size increases by 1.
     /// 2. `data_size()` increases by 1.
-    /// @exception Any exception thrown by the `T` constructor, or std::bad_alloc.
+    /// @throws Any exception thrown by the `T` constructor, or std::bad_alloc.
     ///
     /// > [!INFO] Time complexity
     /// >
@@ -1231,7 +1231,7 @@ public:
     /// @param seg The segment number to resize.
     /// @param n The new size for the segment.
     /// @pre `seg < size()`
-    /// @exception  std::bad_alloc If memory allocation fails during growth.
+    /// @throws  std::bad_alloc If memory allocation fails during growth.
     ///
     /// > [!INFO] Implementation
     /// >
@@ -1250,7 +1250,7 @@ public:
     /// @param n The new size for the segment.
     /// @param value The value to initialize new elements with.
     /// @pre `seg < size()`
-    /// @exception std::bad_alloc If memory allocation fails during growth.
+    /// @throws std::bad_alloc If memory allocation fails during growth.
     ///
     /// > [!INFO] Time complexity
     /// >
