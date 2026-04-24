@@ -20,12 +20,15 @@ class ConceptDescriptor:
     details: str
     params: list[TParamDescriptor]
     definition: str
+    filename: str
+    line: int
 
 
 class ConceptParser:
-    def __init__(self, xml_dir: Path, out_dir: Path, config: dict):
+    def __init__(self, xml_dir: Path, out_dir: Path, config: dict, sort_method: str):
         self.xml_dir = xml_dir
         self.out_dir = out_dir
+        self.sort_method = sort_method
 
         # Extract the index configuration
         self.index_config = config.get("index")
@@ -185,6 +188,15 @@ class ConceptParser:
                 f"{template_decl}concept {name.split('::')[-1]} = {constraint};"
             )
 
+        # Extract location data to allow sorting by declaration order
+        location_node = root.find("location")
+        if location_node is not None:
+            file_path = location_node.get("file", "")
+            line_num = int(location_node.get("line", "0"))
+        else:
+            file_path = ""
+            line_num = 0
+
         return ConceptDescriptor(
             name=name,
             anchor=anchor,
@@ -192,6 +204,8 @@ class ConceptParser:
             details=details,
             params=params,
             definition=definition,
+            filename=file_path,
+            line=line_num,
         )
 
     def process(self):
@@ -238,7 +252,13 @@ class ConceptParser:
     def _generate_group_files(self):
         """Generates the specific group documentation files (e.g., gl_traits.md)."""
         for group_key, group_info in self.groups.items():
-            self.categorized_concepts[group_key].sort(key=lambda x: x.name)
+            if self.sort_method == "source":
+                self.categorized_concepts[group_key].sort(
+                    key=lambda x: (x.filename, x.line)
+                )
+            elif self.sort_method == "alpha":
+                self.categorized_concepts[group_key].sort(key=lambda x: x.name)
+
             concepts = self.categorized_concepts[group_key]
 
             md = f"# {group_info['title']} {{: #{group_info['anchor']} }}\n\n"
@@ -294,6 +314,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config", type=Path, help="Path to the groups JSON configuration file"
     )
+    parser.add_argument(
+        "--sort",
+        type=str,
+        choices=["source", "alpha", "none"],
+        default="source",
+        help="How to sort the concepts: 'source' (by filename and line), 'alpha' (alphabetically by name), or 'none' (parse order).",
+    )
     args = parser.parse_args()
 
     # Load configuration from JSON
@@ -304,5 +331,5 @@ if __name__ == "__main__":
     with open(args.config, "r", encoding="utf-8") as f:
         config = json.load(f)
 
-    app = ConceptParser(args.xml, args.out, config=config)
+    app = ConceptParser(args.xml, args.out, config=config, sort_method=args.sort)
     app.process()
