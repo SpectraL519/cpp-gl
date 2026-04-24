@@ -28,6 +28,49 @@ namespace gl {
 /// using row-major ordering. Row accesses are contiguous in memory, while column accesses are resolved mathematically
 /// via strided views. Both provide $O(1)$ random access and native compatibility with C++20/23 ranges.
 ///
+/// ### Example Usage
+/// ```cpp
+/// #include <gl/types/flat_matrix.hpp>
+///
+/// #include <iostream>
+///
+/// int main() {
+///     gl::flat_matrix<int> mat = { // (1)!
+///         {1, 2, 3},
+///         {4, 5, 6}
+///     };
+///
+///     mat[1uz, 2uz] = 99; // (2)!
+///     mat.push_row({7, 8, 9}); // (3)!
+///     mat.push_col({10, 11, 12}); // (4)!
+///
+///     for (const auto row : mat) { // (5)!
+///         for (const auto element : row)
+///             std::cout << element << "\t";
+///         std::cout << '\n';
+///     }
+///
+///     return 0;
+/// }
+/// ```
+///
+/// 1\. Initialize the `flat_matrix` with an initializer list of rows, where each row is a list of elements.
+///
+/// 2\. Modify an element using 2D coordinates (row 1, col 2).
+///
+/// 3\. Append a new row to the bottom.
+///
+/// 4\. Append a new column to the right.
+///
+/// 5\. Iterate over the matrix.
+///
+/// **Output:**
+/// ```text
+/// 1    2    3    10
+/// 4    5    99   11
+/// 7    8    9    12
+/// ```
+///
 /// > [!IMPORTANT] Iterator invalidation policy
 /// >
 /// > Iterator invalidation follows `std::vector` semantics: modifying the dimensions or structural

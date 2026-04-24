@@ -27,6 +27,49 @@ namespace gl {
 /// an offsets array (*offsets*) to track segment boundaries. This design provides excellent cache locality
 /// and efficient iteration over individual segments.
 ///
+/// ### Example Usage
+/// ```cpp
+/// #include <gl/types/flat_jagged_vector.hpp>
+///
+/// #include <iostream>
+///
+/// int main() {
+///     gl::flat_jagged_vector<int> vec = { // (1)!
+///         {1, 2, 3},
+///         {4, 5},
+///         {6, 7, 8, 9}
+///     };
+///
+///     vec.push_back({10, 11}); // (2)!
+///     vec.push_back(1uz, 99); // (3)!
+///
+///     for (const auto [i, segment] : vec) { // (4)!
+///         std::cout << "Segment " << i << ": ";
+///         for (int value : segment)
+///             std::cout << value << " ";
+///         std::cout << '\n';
+///     }
+///
+///     return 0;
+/// }
+/// ```
+///
+/// 1\. Initialize the `flat_jagged_vector` with an initializer list of segments, where each segment can have a different length.
+///
+/// 2\. Append a new segment to the end of the container using `push_back()`.
+///
+/// 3\. Append an element to the second segment (index 1).
+///
+/// 4\. Iterate over the segments and their elements using the `operator[]` to access each segment as a range.
+///
+/// **Output:**
+/// ```text
+/// Segment 0: 1 2 3
+/// Segment 1: 4 5 99
+/// Segment 2: 6 7 8 9
+/// Segment 3: 10 11
+/// ```
+///
 /// > [!NOTE] Container behaviour
 /// >
 /// > Behavior is similar to `std::vector<std::vector<T>>` but with flattened memory layout.
