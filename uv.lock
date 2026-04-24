@@ -325,7 +325,7 @@ wheels = [
 [[package]]
 name = "mkdoxy"
 version = "1.2.8"
-source = { git = "https://github.com/SpectraL519/MkDoxy.git#26421c34ac7d90d1a81020569d3c61943d36abd9" }
+source = { git = "https://github.com/SpectraL519/MkDoxy.git#71730509412be46b9622678940bc13a31daacd9b" }
 dependencies = [
     { name = "mkdocs" },
 ]
