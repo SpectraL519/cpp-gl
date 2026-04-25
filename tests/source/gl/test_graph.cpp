@@ -791,14 +791,14 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         CHECK_FALSE(sut.has_edge(invalid_v2_edge));
     }
 
-    SUBCASE("has_edge(vertex, vertex) should throw if one of the vertices is invalid") {
+    SUBCASE("has_edge(vertex, vertex) should return false if one of the vertices is invalid") {
         sut_type sut{constants::n_elements};
 
         const auto v1 = sut[constants::v1_id];
         const auto v2 = sut[constants::v2_id];
 
-        CHECK_THROWS_AS(discard(sut.has_edge(fixture.out_of_range_vertex, v2)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.has_edge(v1, fixture.out_of_range_vertex)), std::out_of_range);
+        CHECK_FALSE(sut.has_edge(fixture.out_of_range_vertex, v2));
+        CHECK_FALSE(sut.has_edge(v1, fixture.out_of_range_vertex));
     }
 
     SUBCASE("has_edge(vertex, vertex) should return true if there is an edge connecting the given "
@@ -816,16 +816,14 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         CHECK_FALSE(sut.has_edge(v2, v3));
     }
 
-    SUBCASE("edge(vertex, vertex) should throw if either vertex is invalid") {
+    SUBCASE("edge(vertex, vertex) should return nullopt if either vertex is invalid") {
         sut_type sut{constants::n_elements};
         const auto valid_vertex = sut[constants::v1_id];
 
         const vertex_type out_of_range_vertex{constants::out_of_rng_idx};
-        CHECK_THROWS_AS(discard(sut.edge(valid_vertex, out_of_range_vertex)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.edge(out_of_range_vertex, valid_vertex)), std::out_of_range);
-        CHECK_THROWS_AS(
-            discard(sut.edge(out_of_range_vertex, out_of_range_vertex)), std::out_of_range
-        );
+        CHECK_FALSE(sut.edge(valid_vertex, out_of_range_vertex));
+        CHECK_FALSE(sut.edge(out_of_range_vertex, valid_vertex));
+        CHECK_FALSE(sut.edge(out_of_range_vertex, out_of_range_vertex));
     }
 
     SUBCASE("edge(vertex, vertex) should return nullopt if the given vertices are not adjacent") {
@@ -854,15 +852,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
     }
 
-    SUBCASE("edges(id, id) should return an empty list if either id is invalid") {
+    SUBCASE("edges(id, id) should return an empty vector if either id is invalid") {
         sut_type sut{constants::n_elements};
 
-        CHECK_THROWS_AS(
-            discard(sut.edges(constants::out_of_rng_idx, constants::v2_id)), std::out_of_range
-        );
-        CHECK_THROWS_AS(
-            discard(sut.edges(constants::v1_id, constants::out_of_rng_idx)), std::out_of_range
-        );
+        CHECK(sut.edges(constants::out_of_rng_idx, constants::v2_id).empty());
+        CHECK(sut.edges(constants::v1_id, constants::out_of_rng_idx).empty());
     }
 
     SUBCASE("edges(id, id) should return an empty vector if the given vertices are not adjacent") {
@@ -885,23 +879,20 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         CHECK(std::ranges::equal(sut.edges(constants::v1_id, constants::v2_id), expected_edges));
 
-        if constexpr (gl::traits::c_directed_edge<edge_type>) {
+        if constexpr (gl::traits::c_directed_edge<edge_type>)
             CHECK(sut.edges(constants::v2_id, constants::v2_id).empty());
-        }
-        else {
-            CHECK(std::ranges::equal(sut.edges(constants::v2_id, constants::v1_id), expected_edges)
-            );
-        }
+        else
+            CHECK_EQ(sut.edges(constants::v2_id, constants::v1_id), expected_edges);
     }
 
-    SUBCASE("edges(vertex, vertex) should throw if either vertex is invalid") {
+    SUBCASE("edges(vertex, vertex) should return an empty vector if either vertex is invalid") {
         sut_type sut{constants::n_elements};
 
         const auto v1 = sut[constants::v1_id];
         const auto v2 = sut[constants::v2_id];
 
-        CHECK_THROWS_AS(discard(sut.edges(fixture.out_of_range_vertex, v2)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.edges(v1, fixture.out_of_range_vertex)), std::out_of_range);
+        CHECK(sut.edges(fixture.out_of_range_vertex, v2).empty());
+        CHECK(sut.edges(v1, fixture.out_of_range_vertex).empty());
     }
 
     SUBCASE("incident_edges(id) should throw if the vertex_id is invalid") {
@@ -940,15 +931,10 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto v2 = sut[constants::v2_id];
         const auto v3 = sut[constants::v3_id];
 
-        SUBCASE("are_adjacent(vertex_id, vertex_id) should throw for out of range vertex ids") {
-            CHECK_THROWS_AS(
-                discard(sut.are_adjacent(constants::out_of_rng_idx, constants::v2_id)),
-                std::out_of_range
-            );
-            CHECK_THROWS_AS(
-                discard(sut.are_adjacent(constants::v1_id, constants::out_of_rng_idx)),
-                std::out_of_range
-            );
+        SUBCASE("are_adjacent(vertex_id, vertex_id) should return false for out of range vertex ids"
+        ) {
+            CHECK_FALSE(sut.are_adjacent(constants::out_of_rng_idx, constants::v2_id));
+            CHECK_FALSE(sut.are_adjacent(constants::v1_id, constants::out_of_rng_idx));
         }
 
         SUBCASE("are_adjacent(vertex_id, vertex_id) should return true if there is an edge "
@@ -967,18 +953,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             CHECK(sut.are_adjacent(constants::v1_id, constants::v1_id));
         }
 
-        SUBCASE("are_adjacent(vertex, vertex) should throw if at least one of the vertices is "
-                "invalid") {
-            CHECK_THROWS_AS(
-                discard(sut.are_adjacent(fixture.out_of_range_vertex, fixture.out_of_range_vertex)),
-                std::out_of_range
-            );
-            CHECK_THROWS_AS(
-                discard(sut.are_adjacent(fixture.out_of_range_vertex, v2)), std::out_of_range
-            );
-            CHECK_THROWS_AS(
-                discard(sut.are_adjacent(v1, fixture.out_of_range_vertex)), std::out_of_range
-            );
+        SUBCASE("are_adjacent(vertex, vertex) should return false if at least one of the vertices "
+                "is invalid") {
+            CHECK_FALSE(sut.are_adjacent(fixture.out_of_range_vertex, fixture.out_of_range_vertex));
+            CHECK_FALSE(sut.are_adjacent(fixture.out_of_range_vertex, v2));
+            CHECK_FALSE(sut.are_adjacent(v1, fixture.out_of_range_vertex));
         }
 
         SUBCASE("are_adjacent(vertex, vertex) should return true if there is an edge connecting "
@@ -997,12 +976,12 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             CHECK(sut.are_adjacent(v1, v1));
         }
 
-        SUBCASE("are_adjacent(edge, edge) should throw if either edge is invalid") {
+        SUBCASE("are_adjacent(edge, edge) should return false if either edge is invalid") {
             const auto edge = sut.add_edge(v1, v2);
             const edge_type invalid_edge{gl::invalid_id, v1.id(), v2.id()};
 
-            CHECK_THROWS_AS(discard(sut.are_adjacent(edge, invalid_edge)), std::invalid_argument);
-            CHECK_THROWS_AS(discard(sut.are_adjacent(invalid_edge, edge)), std::invalid_argument);
+            CHECK_FALSE(sut.are_adjacent(edge, invalid_edge));
+            CHECK_FALSE(sut.are_adjacent(invalid_edge, edge));
         }
 
         SUBCASE("are_adjacent(edge, edge) should return true only when the edges are distinct and "
@@ -1021,29 +1000,21 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("are_incident(vertex and edge pair) should throw if the vertex is invalid") {
             const auto edge = sut.add_edge(v1, v2);
 
-            CHECK_THROWS_AS(
-                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::out_of_range
-            );
-            CHECK_THROWS_AS(
-                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::out_of_range
-            );
+            CHECK_FALSE(sut.are_incident(fixture.out_of_range_vertex, edge));
+            CHECK_FALSE(sut.are_incident(fixture.out_of_range_vertex, edge));
 
-            CHECK_THROWS_AS(
-                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::out_of_range
-            );
-            CHECK_THROWS_AS(
-                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::out_of_range
-            );
+            CHECK_FALSE(sut.are_incident(edge, fixture.out_of_range_vertex));
+            CHECK_FALSE(sut.are_incident(edge, fixture.out_of_range_vertex));
         }
 
-        SUBCASE("are_incident(vertex and edge pair) should throw if the edge is invalid") {
+        SUBCASE("are_incident(vertex and edge pair) should return false if the edge is invalid") {
             const edge_type invalid_edge{gl::invalid_id, v1.id(), v2.id()};
 
-            CHECK_THROWS_AS(discard(sut.are_incident(v1, invalid_edge)), std::invalid_argument);
-            CHECK_THROWS_AS(discard(sut.are_incident(v1, invalid_edge)), std::invalid_argument);
+            CHECK_FALSE(sut.are_incident(v1, invalid_edge));
+            CHECK_FALSE(sut.are_incident(v1, invalid_edge));
 
-            CHECK_THROWS_AS(discard(sut.are_incident(invalid_edge, v2)), std::invalid_argument);
-            CHECK_THROWS_AS(discard(sut.are_incident(invalid_edge, v2)), std::invalid_argument);
+            CHECK_FALSE(sut.are_incident(invalid_edge, v2));
+            CHECK_FALSE(sut.are_incident(invalid_edge, v2));
         }
 
         SUBCASE("are_incident(vertex and edge pair) should return true only when the edge and the "
