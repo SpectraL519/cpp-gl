@@ -36,57 +36,64 @@ concept c_graph = c_instantiation_of<G, graph>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph is directed.
+/// @see gl::directed_t "directed_t" : For the directional tag used to specify directed graph configuration.
 template <typename G>
 concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph is undirected.
+/// @see gl::undirected_t "undirected_t" : For the directional tag used to specify undirected graph configuration.
 template <typename G>
 concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph utilizes the standard adjacency list implementation.
+/// @see gl::impl::list_t "list_t" : For the implementation tag used to specify the standard adjacency list representation.
 template <typename G>
 concept c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph utilizes the flattened adjacency list implementation.
+/// @see gl::impl::flat_list_t "flat_list_t" : For the implementation tag used to specify the flattened adjacency list representation.
 template <typename G>
 concept c_flat_list_graph =
     c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph utilizes any list-based adjacency implementation.
+/// ### See Also
+/// - @ref gl::impl::list_t "list_t" : For the implementation tag used to specify the standard adjacency list representation.
+/// - @ref gl::impl::flat_list_t "flat_list_t" : For the implementation tag used to specify the flattened adjacency list representation.
 template <typename G>
 concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
 
 /// @ingroup GL GL-Traits
 /// @brief Concept checking if a graph utilizes the standard adjacency matrix implementation.
+/// @see gl::impl::matrix_t "matrix_t" : For the implementation tag used to specify the standard adjacency matrix representation.
 template <typename G>
 concept c_matrix_graph =
     c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
 
 /// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes any matrix-based adjacency implementation.
+/// @brief Concept checking if a graph utilizes the flattened adjacency matrix implementation.
+/// @see gl::impl::flat_matrix_t "flat_matrix_t" : For the implementation tag used to specify the flattened adjacency matrix representation.
 template <typename G>
-concept c_adjacency_matrix_graph = c_matrix_graph<G>;
+concept c_flat_matrix_graph =
+    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_matrix_t>;
+
+/// @ingroup GL GL-Traits
+/// @brief Concept checking if a graph utilizes any matrix-based adjacency implementation.
+/// ### See Also
+/// - @ref gl::impl::matrix_t "matrix_t" : For the implementation tag used to specify the standard adjacency matrix representation.
+/// - @ref gl::impl::flat_matrix_t "flat_matrix_t" : For the implementation tag used to specify the flattened adjacency matrix representation.
+template <typename G>
+concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 
 } // namespace traits
 
-/// @ingroup GL GL-Core
-/// @brief Creates a deep copy of the given graph.
-/// @tparam Graph The type of the graph.
-/// @param source The graph instance to clone.
-/// @return A newly constructed graph containing identical vertices and edges.
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
 
-/// @ingroup GL GL-Core
-/// @brief Converts a graph to a different implementation type defined by `TargetImplTag`.
-/// @tparam TargetImplTag The implementation tag of the desired target representation.
-/// @tparam Graph The type of the source graph.
-/// @param source The source graph to convert.
-/// @return A new graph instance utilizing the target implementation.
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source);
 
@@ -1184,6 +1191,11 @@ private:
 
 // --- general graph utility ---
 
+/// @ingroup GL GL-Core
+/// @brief Creates a deep copy of the given graph.
+/// @tparam Graph The type of the graph.
+/// @param source The graph instance to clone.
+/// @return A newly constructed graph containing identical vertices, edges and properties (if applicable).
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source) {
     return Graph(source);

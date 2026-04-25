@@ -144,9 +144,14 @@ struct to_impl<impl::matrix_t, impl::flat_matrix_t> {
 
 } // namespace detail
 
+/// @ingroup GL GL-Core
+/// @headerfile gl/conversion.hpp
 /// @brief Converts a graph from one implementation model to another.
-/// @tparam TargetImplTag The desired implementation tag (e.g., gl::impl::flat_list_t)
-/// @tparam Graph The automatically deduced type of the source graph
+/// ### Template Parameters
+/// | Parameter     | Description | Constraints |
+/// | :------------ | :---------- | :---------- |
+/// | TargetImplTag | The implementation tag of the desired target representation (e.g., `gl::impl::flat_list_t`) | [**c_graph_impl_tag**](gl_concepts.md#gl-traits-c-graph-impl-tag) |
+/// | Graph         | The type of the source graph, which will be automatically deduced from the function argument. | [**c_graph**](gl_concepts.md#gl-traits-c-graph) |
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new graph containing the moved data, structured according to TargetImplTag.
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
