@@ -266,13 +266,13 @@ public:
     // --- size methods ---
 
     /// @brief Returns the total number of vertices in the graph.
-    /// @return The vertex count.
+    /// @return The vertex count: $|V|$.
     [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
     /// @brief Returns the total number of edges in the graph.
-    /// @return The edge count.
+    /// @return The edge count: $|E|$.
     [[nodiscard]] gl_attr_force_inline size_type n_edges() const noexcept {
         return this->_n_edges;
     }
@@ -281,10 +281,7 @@ public:
 
     /// @brief Adds a new, default-initialized vertex to the graph.
     /// @return A descriptor for the newly created vertex.
-    ///
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
+    /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     vertex_type add_vertex() {
         this->_impl.add_vertex();
         const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
@@ -298,7 +295,7 @@ public:
     /// @brief Adds a new vertex with specific properties.
     /// @param properties The property payload for the new vertex.
     /// @return A descriptor for the newly created vertex.
-    /// @copydetails add_vertex()
+    /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     vertex_type add_vertex_with(vertex_properties_type properties)
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -311,7 +308,7 @@ public:
 
     /// @brief Adds a specified number of default-initialized vertices to the graph en masse.
     /// @param n The number of vertices to add.
-    /// @copydetails add_vertex()
+    /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     void add_vertices(const size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
@@ -322,7 +319,7 @@ public:
 
     /// @brief Adds multiple vertices based on a range of property payloads.
     /// @param properties_rng A range of properties to initialize the new vertices with.
-    /// @copydetails add_vertex()
+    /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     void add_vertices_with(
         const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
@@ -344,17 +341,8 @@ public:
     /// @brief Removes a vertex by its ID, removing all associated incident edges.
     /// @param vertex_id The ID of the vertex to remove.
     /// @throws std::out_of_range If the ID is invalid.
-    ///
-    /// > [!WARNING] Descriptor and ID Invalidation
-    /// >
-    /// > Removing a vertex invalidates:
-    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
-    /// > - All edge descriptors and IDs for edges incident to this vertex.
-    /// > - All references to vertex and edge properties obtained from the property maps.
-    /// > - References to vertex properties obtained via `vertex_properties()`.
-    /// >
-    /// > Proceed with caution when maintaining external vertex IDs or edge descriptors.
-    gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
+    /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
+    void remove_vertex(const id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
         this->_remove_vertex_impl(vertex_id);
     }
@@ -362,7 +350,7 @@ public:
     /// @brief Removes a vertex using its descriptor.
     /// @param vertex The descriptor of the vertex to remove.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
-    /// @copydetails remove_vertex(const id_type)
+    /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertex(vertex_type vertex) {
         this->remove_vertex(vertex.id());
     }
@@ -370,7 +358,7 @@ public:
     /// @brief Removes a range of vertices using their IDs.
     /// @param vertex_id_rng A forward range containing the IDs of vertices to remove.
     /// @throws std::out_of_range If any vertex ID in the range is invalid.
-    /// @copydetails remove_vertex(const id_type)
+    /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // TODO: optimize
         // sorts the ids in a descending order and removes duplicate ids
@@ -387,10 +375,13 @@ public:
     /// @brief Removes a range of vertices using their descriptors.
     /// @param vertex_rng A sized range containing the descriptors of vertices to remove.
     /// @throws std::out_of_range If any vertex descriptor is invalid.
-    /// @copydetails remove_vertex(const id_type)
-    void remove_vertices(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
-        auto id_view = vertex_rng | std::views::transform([](const auto& v) { return v.id(); });
-        this->remove_vertices(id_view);
+    /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
+    gl_attr_force_inline void remove_vertices(
+        const traits::c_sized_range_of<vertex_type> auto& vertex_rng
+    ) {
+        this->remove_vertices(
+            vertex_rng | std::views::transform([](const auto& v) { return v.id(); })
+        );
     }
 
     // --- vertex getters ---
@@ -462,20 +453,9 @@ public:
     }
 
     /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
-    ///
-    /// ### Formal Definition
-    /// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
-    ///
-    /// \f$
-    /// N(v) =
-    /// \begin{cases}
-    /// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V : (u, v) \in E(G) \lor (v, u) \in E(G)\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
-    /// @return A view of all adjacent vertex IDs.
+    /// @return A view of all adjacent vertex descriptors.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
         return this->neighbor_ids(vertex_id)
@@ -483,7 +463,7 @@ public:
     }
 
     /// @brief Retrieves the neighbor vertex descriptors for a specific vertex.
-    /// @copydetails neighbors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -492,7 +472,7 @@ public:
     }
 
     /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
-    /// @copydetails neighbors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -502,7 +482,7 @@ public:
     }
 
     /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
-    /// @copydetails neighbors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex IDs.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -511,20 +491,9 @@ public:
     }
 
     /// @brief Retrieves the predecessor vertex IDs for a vertex.
-    ///
-    /// ### Formal Definition
-    /// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
-    ///
-    /// \f$
-    /// N_{in}(v) =
-    /// \begin{cases}
-    /// N(v) & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V(G) : (u, v) \in E(G)\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
-    /// @return A view of all predecessor vertex IDs.
+    /// @return A view of all predecessor vertex descriptors.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
         return this->predecessor_ids(vertex_id)
@@ -532,7 +501,7 @@ public:
     }
 
     /// @brief Retrieves the predecessor vertex descriptors (incoming edges) for a vertex.
-    /// @copydetails predecessors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex descriptors.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -541,7 +510,7 @@ public:
     }
 
     /// @brief Retrieves the predecessor vertex IDs for a vertex.
-    /// @copydetails predecessors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -551,7 +520,7 @@ public:
     }
 
     /// @brief Retrieves the predecessor vertex IDs for a vertex.
-    /// @copydetails predecessors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex IDs.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -560,20 +529,9 @@ public:
     }
 
     /// @brief Retrieves the successor vertex IDs for a vertex.
-    ///
-    /// ### Formal Definition
-    /// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
-    ///
-    /// \f$
-    /// N_{out}(v) =
-    /// \begin{cases}
-    /// N(v) & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V(G) : (v, u) \in E(G)\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
-    /// @return A view of all successor vertex IDs.
+    /// @return A view of all successor vertex descriptors.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
         return this->successor_ids(vertex_id)
@@ -581,7 +539,7 @@ public:
     }
 
     /// @brief Retrieves the successor vertex descriptors (outgoing edges) for a vertex.
-    /// @copydetails successors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex descriptors.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -590,7 +548,7 @@ public:
     }
 
     /// @brief Retrieves the successor vertex IDs for a vertex.
-    /// @copydetails successors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -600,7 +558,7 @@ public:
     }
 
     /// @brief Retrieves the successor vertex IDs for a vertex.
-    /// @copydetails successors(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex IDs.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -631,21 +589,7 @@ public:
     // --- degree getters ---
 
     /// @brief Calculates the total degree of a vertex.
-    ///
-    /// The degree is the total number of edge endpoints connected to the vertex.
-    /// For both directed and undirected graphs, a self-loop contributes **2** to the total degree.
-    ///
-    /// ### Formal Definition
-    /// The formal calculation, accounting for the set of loops \f$L(v)\f$, is defined as:
-    ///
-    /// \f$
-    /// deg(v) =
-    /// \begin{cases}
-    /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
-    /// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The total degree.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -655,7 +599,7 @@ public:
     }
 
     /// @brief Calculates the total degree of a vertex.
-    /// @copydetails degree(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex The vertex descriptor.
     /// @return The total degree.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -670,19 +614,7 @@ public:
     }
 
     /// @brief Calculates the in-degree (incoming edges) for a vertex.
-    ///
-    /// The in-degree is the number of edges directed into the vertex.
-    ///
-    /// ### Formal Definition
-    ///
-    /// \f$
-    /// deg_{in}(v) =
-    /// \begin{cases}
-    /// deg(v) & \text{if } G \text{ is undirected}
-    /// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The in-degree.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -692,7 +624,7 @@ public:
     }
 
     /// @brief Calculates the in-degree (incoming edges) for a vertex.
-    /// @copydetails in_degree(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex The vertex descriptor.
     /// @return The in-degree.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -707,19 +639,7 @@ public:
     }
 
     /// @brief Calculates the out-degree (outgoing edges) for a vertex.
-    ///
-    /// The out-degree is the number of edges directed out of the vertex.
-    ///
-    /// ### Formal Definition
-    ///
-    /// \f$
-    /// deg_{out}(v) =
-    /// \begin{cases}
-    /// deg(v) & \text{if } G \text{ is undirected}
-    /// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f$
-    ///
+    /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The out-degree.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -729,7 +649,7 @@ public:
     }
 
     /// @brief Calculates the out-degree (outgoing edges) for a vertex.
-    /// @copydetails out_degree(const id_type) const
+    /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex The vertex descriptor.
     /// @return The out-degree.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -750,10 +670,7 @@ public:
     /// @param target_id The ID of the target vertex.
     /// @return A descriptor representing the newly created edge.
     /// @throws std::out_of_range If either vertex ID is invalid.
-    ///
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding edges does **not** invalidate vertex or edge IDs. **However**, property references stored in edge descriptors may be invalidated.
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge(const id_type source_id, const id_type target_id) {
         this->_verify_vertex_ids(source_id, target_id);
 
@@ -774,7 +691,7 @@ public:
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
     /// @throws std::out_of_range If either vertex ID is invalid.
-    /// @copydetails add_edge(const id_type, const id_type)
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge_with(
         const id_type source_id, const id_type target_id, edge_properties_type properties
     )
@@ -801,7 +718,7 @@ public:
     /// @param target The target vertex descriptor.
     /// @return A descriptor representing the newly created edge.
     /// @throws std::out_of_range If either vertex descriptor is invalid.
-    /// @copydetails add_edge(const id_type, const id_type)
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge(vertex_type source, vertex_type target) {
         return this->add_edge(source.id(), target.id());
     }
@@ -812,7 +729,7 @@ public:
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
     /// @throws std::out_of_range If either vertex descriptor is invalid.
-    /// @copydetails add_edge(const id_type, const id_type)
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge_with(
         vertex_type source, vertex_type target, const edge_properties_type& properties
     )
@@ -827,7 +744,7 @@ public:
     /// @param source_id The ID of the source vertex.
     /// @param target_id_rng A sized range of target vertex IDs.
     /// @throws std::out_of_range If any vertex ID is invalid.
-    /// @copydetails add_edge(const id_type, const id_type)
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     void add_edges_from(
         const id_type source_id, const traits::c_sized_range_of<id_type> auto& target_id_rng
     ) {
@@ -851,7 +768,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target_rng A sized range of target vertex descriptors.
     /// @throws std::out_of_range If any vertex ID is invalid.
-    /// @copydetails add_edge(const id_type, const id_type)
+    /// @copydetails detail::graph_doc_anchors::add_edge_note()
     void add_edges_from(
         vertex_type source, const traits::c_sized_range_of<vertex_type> auto& target_rng
     ) {
@@ -874,17 +791,8 @@ public:
 
     /// @brief Removes a specific edge from the graph.
     /// @param edge The descriptor of the edge to remove.
-    ///
-    /// > [!WARNING] Edge Descriptor Invalidation
-    /// >
-    /// > Removing an edge invalidates:
-    /// > - All edge descriptors and IDs for edges with higher IDs (they shift down).
-    /// > - References to edge properties obtained via `edge_properties()`.
-    /// > - References to edge properties obtained from `edge_properties_map()`.
-    /// >
-    /// > Vertex descriptors and IDs remain valid.
-    ///
     /// @throws std::invalid_argument If the edge descriptor is invalid;
+    /// @copydetails detail::graph_doc_anchors::remove_edge_wrn()
     void remove_edge(const edge_type& edge) {
         this->_verify_edge(edge);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -896,12 +804,12 @@ public:
     /// @brief Removes a range of edges from the graph.
     /// @param edges A range containing descriptors of the edges to remove.
     ///
-    /// @copydetails remove_edge(const edge_type&)
-    ///
     /// > [!NOTE] Operation Safety
     /// >
     /// > If the edges list is empty or contains no valid (in the context of the graph instance),
     /// > the operation has no effect on the graph's structure.
+    ///
+    /// @copydetails detail::graph_doc_anchors::remove_edge_wrn()
     void remove_edges(const traits::c_range_of<edge_type> auto& edges) {
         const auto removed_edge_ids = this->_impl.remove_edges(edges);
         this->_n_edges -= removed_edge_ids.size();
@@ -1623,4 +1531,122 @@ template <traits::c_graph GraphType>
         return static_cast<default_vertex_distance_type>(1ll);
 }
 
+namespace detail {
+
+struct graph_doc_anchors {
+    // --- callouts ---
+
+    /// > [!IMPORTANT] ID Stability
+    /// >
+    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
+    void add_vertex_note();
+
+    /// > [!WARNING] Descriptor and ID Invalidation
+    /// >
+    /// > Removing a vertex invalidates:
+    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
+    /// > - All edge descriptors and IDs for edges incident to this vertex.
+    /// > - All references to vertex and edge properties obtained from the property maps.
+    /// > - References to vertex properties obtained via `vertex_properties()`.
+    /// >
+    /// > Proceed with caution when maintaining external vertex IDs or edge descriptors.
+    void remove_vertex_wrn();
+
+    /// > [!IMPORTANT] ID Stability
+    /// >
+    /// > Adding edges does **not** invalidate vertex or edge IDs. **However**, property references stored in edge descriptors may be invalidated.
+    void add_edge_note();
+
+    /// > [!WARNING] Edge Descriptor Invalidation
+    /// >
+    /// > Removing an edge invalidates:
+    /// > - All edge descriptors and IDs for edges with higher IDs (they shift down).
+    /// > - References to edge properties obtained via `edge_properties()`.
+    /// > - References to edge properties obtained from `edge_properties_map()`.
+    /// >
+    /// > Vertex descriptors and IDs remain valid.
+    void remove_edge_wrn();
+
+    // --- definitions ---
+
+    /// ### Formal Definition
+    ///
+    /// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
+    ///
+    /// \f$
+    /// N(v) =
+    /// \begin{cases}
+    /// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V : (u, v) \in E \lor (v, u) \in E\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    void neighbors();
+
+    /// ### Formal Definition
+    /// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
+    ///
+    /// \f$
+    /// N_{in}(v) =
+    /// \begin{cases}
+    /// N(v) & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V : (u, v) \in E\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    void predecessors();
+
+    /// ### Formal Definition
+    /// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
+    ///
+    /// \f$
+    /// N_{out}(v) =
+    /// \begin{cases}
+    /// N(v) & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V : (v, u) \in E\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    void successors();
+
+    /// The degree is the total number of edge endpoints connected to the vertex.
+    /// For both directed and undirected graphs, a self-loop contributes **2** to the total degree.
+    ///
+    /// ### Formal Definition
+    /// The formal calculation, accounting for the set of loops \f$L(v)\f$, is defined as:
+    ///
+    /// \f$
+    /// deg(v) =
+    /// \begin{cases}
+    /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
+    /// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
+    /// \end{cases}
+    /// \f$
+    void degree();
+
+    /// The in-degree is the number of edges directed into the vertex.
+    ///
+    /// ### Formal Definition
+    ///
+    /// \f$
+    /// deg_{in}(v) =
+    /// \begin{cases}
+    /// deg(v) & \text{if } G \text{ is undirected}
+    /// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    void in_degree();
+
+    /// The out-degree is the number of edges directed out of the vertex.
+    ///
+    /// ### Formal Definition
+    ///
+    /// \f$
+    /// deg_{out}(v) =
+    /// \begin{cases}
+    /// deg(v) & \text{if } G \text{ is undirected}
+    /// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    void out_degree();
+};
+
+} // namespace detail
 } // namespace gl
