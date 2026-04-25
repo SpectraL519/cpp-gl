@@ -35,6 +35,7 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.expand
+    - navigation.top
     - search.suggest
     - content.code.copy
     - content.code.select
@@ -73,6 +74,7 @@ markdown_extensions:
       base_path: "."
       check_paths: true
   - toc:
+      baselevel: 1
       toc_depth: 2
 
 plugins:
