@@ -57,6 +57,10 @@ concept c_matrix_hypergraph =
     c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
 
 template <typename H>
+concept c_flat_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_flat_matrix_impl<typename H::implementation_tag>;
+
+template <typename H>
 concept c_incidence_matrix_hypergraph =
     c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
 

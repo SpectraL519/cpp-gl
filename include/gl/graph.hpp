@@ -114,46 +114,64 @@ struct to_impl;
 /// ### Key Features
 /// - **Policy-based design**: Behavior and representation are determined by `GraphTraits`.
 /// - **Flexible directionality**: Support for both directed and undirected graphs.
-/// - **Multiple implementations**: Choose between adjacency list, flattened adjacency list, adjacency matrix, or flattened adjacency matrix representations.
+/// - **Multiple representations**: Choose the underlying memory model that best suits your algorithmic and cache-locality needs:
+///   - @ref gl::impl::list_t "list_t": Standard adjacency list.
+///   - @ref gl::impl::flat_list_t "flat_list_t": Flattened adjacency list.
+///   - @ref gl::impl::matrix_t "matrix_t": Standard adjacency matrix.
+///   - @ref gl::impl::flat_matrix_t "flat_matrix_t": Flattened adjacency matrix.
 /// - **Property support**: Vertices and edges can carry arbitrary properties.
 /// - **Unified API**: Consistent interface regardless of the underlying implementation.
 ///
-/// ### Mathematical Definitions
+/// ### Basic Definitions
 /// A graph \f$G = (V, E)\f$ consists of a set of vertices \f$V\f$ and a set of edges \f$E\f$.
-/// - For undirected graphs, edges are unordered pairs \f$\{u, v\}\f$.
-/// - For directed graphs, edges are ordered pairs \f$(u, v)\f$.
+///
+/// - For undirected graphs, edges are unordered pairs \f$\{u, v\}\f$ where \f$u, v \in V\f$.
+/// - For directed graphs, edges are ordered pairs \f$(u, v)\f$ where \f$u, v \in V\f$.
 ///
 /// ### Example Usage
 /// ```cpp
 /// #include <gl/graph.hpp>
+///
 /// #include <iostream>
 ///
 /// int main() {
-///     // Create a directed graph with no properties
-///     gl::directed_graph<> g;
+///     gl::directed_graph<> g; // (1)!
 ///
-///     // Add vertices
-///     auto v0 = g.add_vertex();
+///     auto v0 = g.add_vertex(); // (2)!
 ///     auto v1 = g.add_vertex();
 ///     auto v2 = g.add_vertex();
 ///
-///     // Add edges
-///     auto e01 = g.add_edge(v0, v1);
+///     auto e01 = g.add_edge(v0, v1); // (3)!
 ///     auto e12 = g.add_edge(v1, v2);
 ///     auto e20 = g.add_edge(v2, v0);
 ///
-///     // Query graph properties
+///     // (4)!
 ///     std::cout << "Vertices: " << g.n_vertices() << '\n';
 ///     std::cout << "Edges: " << g.n_edges() << '\n';
 ///
-///     // Iterate over neighbors
-///     for (auto neighbor : g.neighbors(v0.id())) {
-///         std::cout << "Neighbor of v0: " << neighbor.id() << '\n';
-///     }
+///     for (auto neighbor : g.neighbors(v0)) // (5)!
+///         process(neighbor);
 ///
 ///     return 0;
 /// }
 /// ```
+///
+/// 1\. Create a directed graph with no properties.
+///
+/// 2\. Add vertices to the graph. **NOTE:** This is safe because the graph has no vertex properties and the `add_vertex` operation does not invalidate IDs.
+///
+/// 3\. Add edges to the graph. **NOTE:** This is safe because the graph has no edge properties and the `add_edge` operation does not invalidate IDs.
+///
+/// 4\. Query the graph's properties.
+///
+/// 5\. Iterate over neighbors of `v0`.
+///
+/// ### API Design: IDs vs. Descriptors
+/// The graph exposes a dual API to accommodate different performance and ergonomic needs:
+///
+/// - **Inputs**: Most query methods are overloaded to accept either a raw `id_type` or a `vertex_type`/`edge_type` descriptor. They are functionally identical.
+/// - **Outputs**: Methods ending in `_ids` (e.g., `neighbor_ids`) return views of raw integral IDs. Methods without this suffix (e.g., `neighbors`) automatically map those IDs to the proper descriptor objects.
+/// - **Performance**: Descriptor-returning methods incur a slight overhead if the graph utilizes rich properties, as the descriptor must fetch the property payload. If you only need topology, prefer the `_ids` variants.
 ///
 /// ### Descriptor Invalidation Behavior
 ///
@@ -468,9 +486,21 @@ public:
         return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
-    /// @brief Retrieves the neighbor vertex descriptors for a specific vertex.
+    /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
+    ///
+    /// ### Formal Definition
+    /// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
+    ///
+    /// \f$
+    /// N(v) =
+    /// \begin{cases}
+    /// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V : (u, v) \in E(G) \lor (v, u) \in E(G)\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    ///
     /// @param vertex_id The ID of the source vertex.
-    /// @return A view of all adjacent vertex descriptors.
+    /// @return A view of all adjacent vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
         return this->neighbor_ids(vertex_id)
@@ -478,6 +508,7 @@ public:
     }
 
     /// @brief Retrieves the neighbor vertex descriptors for a specific vertex.
+    /// @copydetails neighbors(const id_type) const
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
@@ -502,9 +533,21 @@ public:
         return this->neighbor_ids(vertex.id());
     }
 
-    /// @brief Retrieves the predecessor vertex descriptors (incoming edges) for a vertex.
+    /// @brief Retrieves the predecessor vertex IDs for a vertex.
+    ///
+    /// ### Formal Definition
+    /// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
+    ///
+    /// \f$
+    /// N_{in}(v) =
+    /// \begin{cases}
+    /// N(v) & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V(G) : (u, v) \in E(G)\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    ///
     /// @param vertex_id The ID of the target vertex.
-    /// @return A view of all predecessor vertex descriptors.
+    /// @return A view of all predecessor vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
         return this->predecessor_ids(vertex_id)
@@ -536,9 +579,21 @@ public:
         return this->predecessor_ids(vertex.id());
     }
 
-    /// @brief Retrieves the successor vertex descriptors (outgoing edges) for a vertex.
+    /// @brief Retrieves the successor vertex IDs for a vertex.
+    ///
+    /// ### Formal Definition
+    /// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
+    ///
+    /// \f$
+    /// N_{out}(v) =
+    /// \begin{cases}
+    /// N(v) & \text{if } G \text{ is undirected}
+    /// \\\\ \{u \in V(G) : (v, u) \in E(G)\} & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    ///
     /// @param vertex_id The ID of the source vertex.
-    /// @return A view of all successor vertex descriptors.
+    /// @return A view of all successor vertex IDs.
     /// @throws std::out_of_range If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
         return this->successor_ids(vertex_id)
@@ -631,6 +686,19 @@ public:
     }
 
     /// @brief Calculates the in-degree (incoming edges) for a vertex.
+    ///
+    /// The in-degree is the number of edges directed into the vertex.
+    ///
+    /// ### Formal Definition
+    ///
+    /// \f$
+    /// deg_{in}(v) =
+    /// \begin{cases}
+    /// deg(v) & \text{if } G \text{ is undirected}
+    /// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    ///
     /// @param vertex_id The ID of the vertex.
     /// @return The in-degree.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -654,6 +722,19 @@ public:
     }
 
     /// @brief Calculates the out-degree (outgoing edges) for a vertex.
+    ///
+    /// The out-degree is the number of edges directed out of the vertex.
+    ///
+    /// ### Formal Definition
+    ///
+    /// \f$
+    /// deg_{out}(v) =
+    /// \begin{cases}
+    /// deg(v) & \text{if } G \text{ is undirected}
+    /// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
+    /// \end{cases}
+    /// \f$
+    ///
     /// @param vertex_id The ID of the vertex.
     /// @return The out-degree.
     /// @throws std::out_of_range If the vertex ID is invalid.
@@ -823,6 +904,8 @@ public:
     /// > - References to edge properties obtained from `edge_properties_map()`.
     /// >
     /// > Vertex descriptors and IDs remain valid.
+    ///
+    /// @throws std::invalid_argument If the edge descriptor is invalid;
     void remove_edge(const edge_type& edge) {
         this->_verify_edge(edge);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -842,6 +925,11 @@ public:
     /// > - References to edge properties obtained from `edge_properties_map()`.
     /// >
     /// > Vertex descriptors and IDs remain valid.
+    ///
+    /// > [!NOTE] Operation Safety
+    /// >
+    /// > If the edges list is empty or contains no valid (in the context of the graph instance),
+    /// > the operation has no effect on the graph's structure.
     void remove_edges(const traits::c_range_of<edge_type> auto& edges) {
         const auto removed_edge_ids = this->_impl.remove_edges(edges);
         this->_n_edges -= removed_edge_ids.size();
@@ -1030,7 +1118,14 @@ public:
     ///
     /// This method checks for a connection between the given vertices in either direction:
     /// - For undirected graphs this is equivalent to `has_edge(first_id, second_id)`
-    /// - For directed graphs the result is true if \f$ TODO\f$
+    /// - For directed graphs the result is true if either `has_edge(first_id, second_id)` or
+    ///   `has_edge(second_id, first_id)` is true.
+    ///
+    /// ### Formal definition
+    /// Vertices $u$ and $v$ are adjacent if there exists an edge connecting them in the graph:
+    ///
+    /// - For undirected graphs: $\{u, v\} in E$
+    /// - For directed graphs: $(u, v) \in E \lor (v, u) \in E$
     ///
     /// @param first_id The ID of the first vertex.
     /// @param second_id The ID of the second vertex.
@@ -1054,6 +1149,10 @@ public:
     }
 
     /// @brief Checks if two distinct edges share at least one incident vertex.
+    ///
+    /// ### Formal definition
+    /// Edges $e$ and $f$ are adjacent if they share at least one endpoint: \f$e \cap f \ne \emptyset\f$.
+    ///
     /// @param edge_1 The first edge descriptor.
     /// @param edge_2 The second edge descriptor.
     /// @return `true` if they are adjacent (share a vertex), `false` otherwise.
@@ -1067,9 +1166,16 @@ public:
     }
 
     /// @brief Checks if a vertex forms one of the endpoints of an edge.
+    ///
+    /// ### Formal Definition
+    /// A vertex \f$v\f$ is incident to an edge \f$e\f$ if \f$v\f$ is an element of the endpoint set of \f$e\f$ (\f$v \in e\f$).
+    /// Assuming \f$e\f$ connects vertices \f$u\f$ and \f$w\f$: \f$v = u \lor v = w\f$
+    ///
     /// @param vertex The vertex descriptor.
     /// @param edge The edge descriptor.
     /// @return `true` if the vertex is incident to the edge, `false` otherwise.
+    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the edge descriptor is invalid.
     [[nodiscard]] bool are_incident(vertex_type vertex, const edge_type& edge) const {
         this->_verify_vertex_id(vertex.id());
         this->_verify_edge(edge);
@@ -1077,9 +1183,14 @@ public:
     }
 
     /// @brief Checks if a vertex forms one of the endpoints of an edge.
+    ///
+    /// A convenience overload of the `are_adjacent` method. It is equivalent to `are_incident(vertex, edge)`
+    ///
     /// @param edge The edge descriptor.
     /// @param vertex The vertex descriptor.
     /// @return `true` if the vertex is incident to the edge, `false` otherwise.
+    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the edge descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline bool are_incident(const edge_type& edge, vertex_type vertex)
         const {
         return this->are_incident(vertex, edge);
