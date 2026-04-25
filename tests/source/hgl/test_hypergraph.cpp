@@ -186,12 +186,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         CHECK_THROWS_AS(discard(sut.vertex(constants::n_vertices - 1uz)), std::out_of_range);
     }
 
-    SUBCASE("remove_vertices_from(ids) should properly remove elements at given indices (ignoring "
+    SUBCASE("remove_vertices(ids) should properly remove elements at given indices (ignoring "
             "duplicate indices)") {
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
         sut_type sut{n_vertices};
-        sut.remove_vertices_from(
+        sut.remove_vertices(
             std::vector<hgl::default_id_type>{constants::id1, constants::id3, constants::id1}
         );
 
@@ -199,14 +199,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
     }
 
-    SUBCASE("remove_vertices_from(vertices) should properly remove elements at given indices "
+    SUBCASE("remove_vertices(vertices) should properly remove elements at given indices "
             "(ignoring duplicate vertices)") {
         constexpr auto n_vertices = constants::n_vertices + 1uz;
 
         sut_type sut{n_vertices};
         const auto v1 = sut.vertex(constants::id1);
         const auto v3 = sut.vertex(constants::id3);
-        sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
+        sut.remove_vertices(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);

@@ -186,7 +186,7 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
+    void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
@@ -197,7 +197,7 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
+    void remove_vertices(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
         // sort vertices in a descending n_vertices (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)

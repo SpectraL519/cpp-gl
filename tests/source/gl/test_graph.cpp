@@ -277,9 +277,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{n_vertices};
         fixture.init_complete_graph(sut);
 
-        sut.remove_vertices_from(
-            vertex_id_list{constants::v1_id, constants::v3_id, constants::v1_id}
-        );
+        sut.remove_vertices(vertex_id_list{constants::v1_id, constants::v3_id, constants::v1_id});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
@@ -300,7 +298,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto v1 = sut[constants::v1_id];
         const auto v3 = sut[constants::v3_id];
 
-        sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
+        sut.remove_vertices(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);

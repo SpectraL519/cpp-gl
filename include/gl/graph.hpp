@@ -145,8 +145,7 @@ struct to_impl;
 ///     auto e12 = g.add_edge(v1, v2);
 ///     auto e20 = g.add_edge(v2, v0);
 ///
-///     // (4)!
-///     std::cout << "Vertices: " << g.n_vertices() << '\n';
+///     std::cout << "Vertices: " << g.n_vertices() << '\n'; // (4)!
 ///     std::cout << "Edges: " << g.n_edges() << '\n';
 ///
 ///     for (auto neighbor : g.neighbors(v0)) // (5)!
@@ -174,8 +173,8 @@ struct to_impl;
 /// - **Performance**: Descriptor-returning methods incur a slight overhead if the graph utilizes rich properties, as the descriptor must fetch the property payload. If you only need topology, prefer the `_ids` variants.
 ///
 /// ### Descriptor Invalidation Behavior
-///
 /// The graph maintains the following invalidation semantics:
+///
 /// - **Vertex addition**: Does not invalidate vertex IDs. However, property references stored in vertex descriptors may be invalidated.
 /// - **Vertex removal**: Invalidates vertex descriptors, IDs, and property references. Subsequent vertex IDs may shift depending on the implementation.
 /// - **Edge addition**: Does not invalidate vertex or edge IDs. However, property references stored in edge descriptors may be invalidated.
@@ -193,10 +192,17 @@ struct to_impl;
 /// - @ref gl::clone "clone" : Create a deep copy of a graph.
 /// - @ref gl::to "to" : Convert a graph to a different implementation.
 ///
-/// > [!IMPORTANT] Const Correctness
+/// > [!IMPORTANT] Copy Semantics
 /// >
 /// > `graph` supports move semantics but disables copy assignment to prevent accidental expensive copies.
 /// > Use @ref gl::clone "clone" to explicitly copy a graph.
+///
+/// > [!WARNING] Const Correctness & Properties (API Note)
+/// >
+/// > Currently, a `const` graph guarantees **structural immutability** (vertices and edges cannot be added or removed).
+/// > However, vertex and edge property maps are internally treated as `mutable`. This means that property payloads
+/// > can still be modified through a `const graph&`. Strict const-correct overloads for property access are planned
+/// > for a future release. Proceed with caution in multi-threaded contexts.
 template <traits::c_instantiation_of<graph_traits> GraphTraits>
 class graph final {
 public:
@@ -292,10 +298,7 @@ public:
     /// @brief Adds a new vertex with specific properties.
     /// @param properties The property payload for the new vertex.
     /// @return A descriptor for the newly created vertex.
-    ///
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
+    /// @copydetails add_vertex()
     vertex_type add_vertex_with(vertex_properties_type properties)
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -308,10 +311,7 @@ public:
 
     /// @brief Adds a specified number of default-initialized vertices to the graph en masse.
     /// @param n The number of vertices to add.
-    ///
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
+    /// @copydetails add_vertex()
     void add_vertices(const size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
@@ -322,10 +322,7 @@ public:
 
     /// @brief Adds multiple vertices based on a range of property payloads.
     /// @param properties_rng A range of properties to initialize the new vertices with.
-    ///
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
+    /// @copydetails add_vertex()
     void add_vertices_with(
         const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
@@ -365,14 +362,7 @@ public:
     /// @brief Removes a vertex using its descriptor.
     /// @param vertex The descriptor of the vertex to remove.
     /// @throws std::out_of_range If the vertex descriptor is invalid.
-    ///
-    /// > [!WARNING] Descriptor and ID Invalidation
-    /// >
-    /// > Removing a vertex invalidates:
-    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
-    /// > - All edge descriptors and IDs for edges incident to this vertex.
-    /// > - All references to vertex and edge properties obtained from the property maps.
-    /// > - References to vertex properties obtained via `vertex_properties()`.
+    /// @copydetails remove_vertex(const id_type)
     gl_attr_force_inline void remove_vertex(vertex_type vertex) {
         this->remove_vertex(vertex.id());
     }
@@ -380,20 +370,16 @@ public:
     /// @brief Removes a range of vertices using their IDs.
     /// @param vertex_id_rng A forward range containing the IDs of vertices to remove.
     /// @throws std::out_of_range If any vertex ID in the range is invalid.
-    ///
-    /// > [!WARNING] Descriptor and ID Invalidation
-    /// >
-    /// > Removing vertices invalidates:
-    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
-    /// > - All edge descriptors and IDs for edges incident to removed vertices.
-    /// > - All references to vertex and edge properties obtained from the property maps.
-    void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
+    /// @copydetails remove_vertex(const id_type)
+    void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
+        // TODO: optimize
         // sorts the ids in a descending order and removes duplicate ids
         std::set<id_type, std::greater<>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
         );
+        if (not vertex_id_set.empty())
+            this->_verify_vertex_id(*vertex_id_set.begin());
 
-        // TODO: optimize
         for (auto vertex_id : vertex_id_set)
             this->_remove_vertex_impl(vertex_id);
     }
@@ -401,21 +387,10 @@ public:
     /// @brief Removes a range of vertices using their descriptors.
     /// @param vertex_rng A sized range containing the descriptors of vertices to remove.
     /// @throws std::out_of_range If any vertex descriptor is invalid.
-    ///
-    /// > [!WARNING] Descriptor and ID Invalidation
-    /// >
-    /// > Removing vertices invalidates:
-    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
-    /// > - All edge descriptors and IDs for edges incident to removed vertices.
-    /// > - All references to vertex and edge properties obtained from the property maps.
-    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
-        // TODO: optimize
-        // sort the ids in a descending order and removes duplicate ids
-        std::set<vertex_type, std::greater<vertex_type>> vertex_set(
-            std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
-        );
-        for (auto vertex : vertex_set)
-            this->_remove_vertex_impl(vertex.id());
+    /// @copydetails remove_vertex(const id_type)
+    void remove_vertices(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
+        auto id_view = vertex_rng | std::views::transform([](const auto& v) { return v.id(); });
+        this->remove_vertices(id_view);
     }
 
     // --- vertex getters ---
@@ -658,8 +633,8 @@ public:
     /// \f$
     /// deg(v) =
     /// \begin{cases}
-    /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed} \\
-    /// 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
+    /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
+    /// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
     /// \end{cases}
     /// \f$
     ///
