@@ -17,7 +17,6 @@ nav:
   # - HGL:
   - API Index:
       - Modules: cpp-gl/modules.md
-      - Namespaces: cpp-gl/namespaces.md
       - Classes & Structs: cpp-gl/annotated.md
       - Class Hierarchy: cpp-gl/hierarchy.md
       - Concepts: cpp-gl/concepts.md
