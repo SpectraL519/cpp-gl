@@ -25,11 +25,11 @@ namespace gl {
 /// ### Template Parameters
 /// | Parameter        | Description | Default value | Constraints |
 /// | :--------------- | :---------- | :------------ | :---------- |
-/// | DirectionalTag   | Specifies whether the graph is directed or undirected. | @ref gl::directed_t "directed_t" | [**c_graph_directional_tag**](gl_traits.md#gl-traits-c-graph-directional-tag) |
-/// | VertexProperties | A type representing the properties associated with vertices in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
-/// | EdgeProperties   | A type representing the properties associated with edges in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
-/// | ImplTag          | Specifies the graph implementation type (e.g., adjacency list, adjacency matrix). | @ref gl::impl::list_t "impl::list_t" | [**c_graph_impl_tag**](gl_traits.md#gl-traits-c-graph-impl-tag) |
-/// | IdType           | The type used for vertex and edge identifiers. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
+/// | DirectionalTag   | Specifies whether the graph is directed or undirected. | @ref gl::directed_t "directed_t" | [**c_graph_directional_tag**](gl_concepts.md#gl-traits-c-graph-directional-tag) |
+/// | VertexProperties | A type representing the properties associated with vertices in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
+/// | EdgeProperties   | A type representing the properties associated with edges in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
+/// | ImplTag          | Specifies the graph implementation type (e.g., adjacency list, adjacency matrix). | @ref gl::impl::list_t "impl::list_t" | [**c_graph_impl_tag**](gl_concepts.md#gl-traits-c-graph-impl-tag) |
+/// | IdType           | The type used for vertex and edge identifiers. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 ///
 /// ### See Also
 /// - Available implementation tags:

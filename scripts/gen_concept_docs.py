@@ -40,6 +40,7 @@ class ConceptParser:
         self.groups = config.get("groups", {})
 
         self.concept_links = {}  # Registry mapping refid -> file#anchor
+        self.namespace_links = {}  # Registry mapping full namespace name -> file.md
         self.categorized_concepts = {key: [] for key in self.groups.keys()}
 
     @staticmethod
@@ -84,7 +85,6 @@ class ConceptParser:
             elif child.tag in ["computeroutput", "preformatted"]:
                 inner = self._xml_to_md(child)
 
-                # SMART LINK MERGE:
                 # Prevents wrapping a Markdown link in backticks, which breaks the link.
                 # Instead, it places backticks INSIDE the brackets.
                 match = re.fullmatch(r"\[(`?)(.*?)\1\]\((.*?)\)", inner.strip())
@@ -233,6 +233,13 @@ class ConceptParser:
                     self.concept_links[refid] = f"{group_info['filename']}#{anchor}"
                     break
 
+        # Build the namespace registry for cross-linking
+        for compound in tree.findall("compound[@kind='namespace']"):
+            name = compound.findtext("name")
+            refid = compound.get("refid")
+            if name and refid:
+                self.namespace_links[name] = f"{refid}.md"
+
         # PASS 2: Parse and format the XML
         for compound in tree.findall("compound[@kind='concept']"):
             xml_path = self.xml_dir / f"{compound.get('refid')}.xml"
@@ -250,7 +257,7 @@ class ConceptParser:
         self._generate_index_file()
 
     def _generate_group_files(self):
-        """Generates the specific group documentation files (e.g., gl_traits.md)."""
+        """Generates the specific group documentation files (e.g., gl_concepts.md)."""
         for group_key, group_info in self.groups.items():
             if self.sort_method == "source":
                 self.categorized_concepts[group_key].sort(
@@ -285,26 +292,80 @@ class ConceptParser:
             print(f"Generated {out_path} ({len(concepts)} concepts)")
 
     def _generate_index_file(self):
-        """Generates the central API index mapping to all grouped concepts."""
+        """Generates the central API index mapping to all grouped concepts, nested by namespace."""
         md = f"# {self.index_config['title']} {{: #{self.index_config['anchor']} }}\n\n"
-        md += f"{self.index_config['description']}\n\n---\n\n"
+
+        if self.index_config.get("description"):
+            md += f"{self.index_config['description']}\n\n"
+
+        md += "Here are the concepts with brief descriptions:\n\n"
+
+        # Build a global tree of all concepts across all groups
+        root_node = {"_concepts": [], "_namespaces": {}}
 
         for group_key, group_info in self.groups.items():
-            md += f"## {group_key} Concepts\n\n"
-            md += f"- **[{group_info['title']}]({group_info['filename']})**: Full API reference.\n"
-
             concepts = self.categorized_concepts.get(group_key, [])
-            if not concepts:
-                md += f"    - *(Documentation coming soon)*\n"
-            else:
-                for c in concepts:
-                    desc_text = f": {c.brief}" if c.brief else ""
-                    md += f"    - [`{c.name}`]({group_info['filename']}#{c.anchor}){desc_text}\n"
-            md += "\n---\n\n"
+            for c in concepts:
+                c_url = f"{group_info['filename']}#{c.anchor}"
+                parts = c.name.split("::")
+                ns_parts = parts[:-1]
+                short_name = parts[-1]
+
+                # Traverse / Build the tree structure
+                curr = root_node
+                current_ns_path = ""
+                for ns in ns_parts:
+                    if current_ns_path:
+                        current_ns_path += f"::{ns}"
+                    else:
+                        current_ns_path = ns
+
+                    if ns not in curr["_namespaces"]:
+                        curr["_namespaces"][ns] = {
+                            "_concepts": [],
+                            "_namespaces": {},
+                            "_full_name": current_ns_path,
+                        }
+                    curr = curr["_namespaces"][ns]
+
+                curr["_concepts"].append(
+                    {"short_name": short_name, "url": c_url, "brief": c.brief}
+                )
+
+        # Recursive function to render the tree into Markdown
+        def _render_tree(node, indent_level):
+            tree_md = ""
+            indent = "    " * indent_level
+
+            for ns_name, ns_node in sorted(node["_namespaces"].items()):
+                full_ns_name = ns_node["_full_name"]
+                ns_url = self.namespace_links.get(full_ns_name)
+                if ns_url:
+                    tree_md += f"{indent}- **namespace** [**{ns_name}**]({ns_url})\n"
+                else:
+                    tree_md += f"{indent}- **namespace** **{ns_name}**\n"
+
+                tree_md += _render_tree(ns_node, indent_level + 1)
+
+            for c_dict in sorted(node["_concepts"], key=lambda x: x["short_name"]):
+                desc_text = f" {c_dict['brief']}" if c_dict["brief"] else ""
+                tree_md += f"{indent}- **concept** [**{c_dict['short_name']}**]({c_dict['url']}){desc_text}\n"
+
+            return tree_md
+
+        # 3. Render the tree and append to the document
+        rendered_tree = _render_tree(root_node, 0)
+
+        if not rendered_tree.strip():
+            md += "*No concepts found.*\n"
+        else:
+            md += rendered_tree
+
+        md += "\n---\n\n"
 
         index_path = self.out_dir / "concepts.md"
         index_path.write_text(md, encoding="utf-8")
-        print(f"Generated {index_path} (API Index)")
+        print(f"Generated {index_path} (API Index, Nested with Links)")
 
 
 if __name__ == "__main__":

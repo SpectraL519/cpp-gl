@@ -59,9 +59,9 @@ namespace gl {
 /// ### Template Parameters
 /// | Parameter      | Description | Default | Constraint |
 /// | :------------- | :--- | :--- | :--- |
-/// | DirectionalTag | Tag specifying if the edge is directed or undirected. | @ref gl::directed_t "directed_t" | [**c_graph_directional_tag**](gl_traits.md#gl-traits-c-graph-directional-tag) |
-/// | Properties     | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
-/// | IdType         | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
+/// | DirectionalTag | Tag specifying if the edge is directed or undirected. | @ref gl::directed_t "directed_t" | [**c_graph_directional_tag**](gl_concepts.md#gl-traits-c-graph-directional-tag) |
+/// | Properties     | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
+/// | IdType         | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 ///
 /// ### See Also
 /// * @ref gl::vertex_descriptor : For the corresponding vertex wrapper class.
@@ -382,8 +382,8 @@ private:
 /// ### Template Parameters
 /// | Parameter  | Description | Default | Constraint |
 /// | :--------- | :--- | :--- | :--- |
-/// | Properties | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
-/// | IdType     | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
+/// | Properties | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
+/// | IdType     | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
@@ -397,8 +397,8 @@ using directed_edge = edge_descriptor<directed_t, Properties, IdType>;
 /// ### Template Parameters
 /// | Parameter  | Description | Default | Constraint |
 /// | :--------- | :--- | :--- | :--- |
-/// | Properties | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_traits.md#gl-traits-c-properties) |
-/// | IdType     | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_traits.md#gl-traits-c-id-type) |
+/// | Properties | The type of property data attached to the edge. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
+/// | IdType     | The underlying integer type used for the IDs. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>

@@ -23,7 +23,7 @@ namespace gl::traits {
 /// @tparam T The type to check.
 /// @tparam Template The class template to match against.
 /// ### See Also
-/// - [**c_instantiation_of**](gl_traits.md#gl-traits-c-instantiation-of) concept
+/// - [**c_instantiation_of**](gl_concepts.md#gl-traits-c-instantiation-of) concept
 template <typename T, template <typename...> typename Template>
 struct is_instantiation_of : std::false_type {};
 

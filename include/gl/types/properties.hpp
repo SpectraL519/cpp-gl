@@ -226,7 +226,7 @@ struct binary_color_property {
 /// ### Template Parameters
 /// | Parameter  | Description | Default | Constraint |
 /// | :--------- | :--- | :--- | :--- |
-/// | WeightType | The numeric type used to store the weight value. | `double` | [**c_arithmetic**](gl_traits.md#gl-traits-c-arithmetic) |
+/// | WeightType | The numeric type used to store the weight value. | `double` | [**c_arithmetic**](gl_concepts.md#gl-traits-c-arithmetic) |
 template <traits::c_arithmetic WeightType = double>
 struct weight_property {
     using weight_type = WeightType;
@@ -273,7 +273,7 @@ concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_prope
 /// @ingroup GL GL-Traits
 /// @brief Validates if a property type contains actual user-defined data.
 ///
-/// Requires that the type satisfies [**c_properties**](gl_traits.md#gl-traits-c-properties) and is not the @ref gl::empty_properties tag.
+/// Requires that the type satisfies [**c_properties**](gl_concepts.md#gl-traits-c-properties) and is not the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
@@ -300,7 +300,7 @@ concept c_has_non_empty_properties = requires {
 /// @brief Requirements for properties that support binary coloring algorithms.
 ///
 /// Requires a property type that:
-/// 1. Satisfies [**c_properties**](gl_traits.md#gl-traits-c-properties).
+/// 1. Satisfies [**c_properties**](gl_concepts.md#gl-traits-c-properties).
 /// 2. Has a nested `color_type`.
 /// 3. Has a public `color` member of the `color_type` type.
 /// 4. Supports construction and comparison with @ref gl::binary_color.
@@ -318,8 +318,8 @@ concept c_binary_color_properties_type = c_properties<Properties> and requires(P
 /// @brief Requirements for properties that support arithmetic weight values.
 ///
 /// Requires a property type that:
-/// 1. Satisfies [**c_properties**](gl_traits.md#gl-traits-c-properties).
-/// 2. Has a nested `weight_type` that satisfies [**c_arithmetic**](gl_traits.md#gl-traits-c-arithmetic).
+/// 1. Satisfies [**c_properties**](gl_concepts.md#gl-traits-c-properties).
+/// 2. Has a nested `weight_type` that satisfies [**c_arithmetic**](gl_concepts.md#gl-traits-c-arithmetic).
 /// 3. Has a public `weight` member of the `weight_type` type.
 ///
 /// @tparam T The type to evaluate against the concept.

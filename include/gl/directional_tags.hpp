@@ -67,7 +67,7 @@ concept c_undirected_edge =
 ///
 /// ### See Also
 /// - @ref gl::undirected_t "undirected_t" : For the tag representing an undirected graph configuration.
-/// - [**c_graph_directional_tag**](gl_traits.md#gl-traits-c-graph-directional-tag) : For the concept used to validate graph directional tags.
+/// - [**c_graph_directional_tag**](gl_concepts.md#gl-traits-c-graph-directional-tag) : For the concept used to validate graph directional tags.
 /// - @ref gl::edge_descriptor "edge_descriptor" : For the edge descriptor type defined based on the graph traits, which includes the directional tag as part of its definition.
 struct directed_t {
     /// @brief A type identity alias for the directed_t tag, allowing for easier type comparisons and trait evaluations.
@@ -109,7 +109,7 @@ struct directed_t {
 ///
 /// ### See Also
 /// - @ref gl::directed_t "directed_t" : For the tag representing a directed graph configuration.
-/// - [**c_graph_directional_tag**](gl_traits.md#gl-traits-c-graph-directional-tag) : For the concept used to validate graph directional tags.
+/// - [**c_graph_directional_tag**](gl_concepts.md#gl-traits-c-graph-directional-tag) : For the concept used to validate graph directional tags.
 /// - @ref gl::edge_descriptor "edge_descriptor" : For the edge descriptor type defined based on the graph traits, which includes the directional tag as part of its definition.
 struct undirected_t {
     /// @brief A type identity alias for the undirected_t tag, allowing for easier type comparisons and trait evaluations.

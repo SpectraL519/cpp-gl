@@ -7,14 +7,14 @@
     "groups": {
         "GL": {
             "prefix": "gl::",
-            "filename": "gl_traits.md",
+            "filename": "gl_concepts.md",
             "anchor": "gl-traits-concepts-documentation",
             "title": "GL Concepts",
             "description": "This page documents the C++20 concepts defined within the GL module of the library."
         },
         "HGL": {
             "prefix": "hgl::",
-            "filename": "hgl_traits.md",
+            "filename": "hgl_concepts.md",
             "anchor": "hgl-traits-concepts-documentation",
             "title": "HGL Concepts",
             "description": "This page documents the C++20 concepts defined within the HGL module of the library."
