@@ -214,7 +214,7 @@ public:
         return vertex_id < this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(vertex_type vertex) const {
         return this->has_vertex(vertex.id());
     }
 
@@ -501,7 +501,7 @@ public:
         return hyperedge_id < this->_n_hyperedges;
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(hyperedge_type hyperedge) const {
         return this->has_hyperedge(hyperedge.id());
     }
 

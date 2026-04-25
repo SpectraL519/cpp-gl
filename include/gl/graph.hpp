@@ -19,6 +19,7 @@
 #include "gl/util/ranges.hpp"
 
 #include <set>
+#include <stdexcept>
 
 namespace gl {
 
@@ -340,7 +341,7 @@ public:
 
     /// @brief Removes a vertex by its ID, removing all associated incident edges.
     /// @param vertex_id The ID of the vertex to remove.
-    /// @throws std::out_of_range If the ID is invalid.
+    /// @throws std::invalid_argument If the ID is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertex(const id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
@@ -349,7 +350,7 @@ public:
 
     /// @brief Removes a vertex using its descriptor.
     /// @param vertex The descriptor of the vertex to remove.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertex(vertex_type vertex) {
         this->remove_vertex(vertex.id());
@@ -357,7 +358,7 @@ public:
 
     /// @brief Removes a range of vertices using their IDs.
     /// @param vertex_id_rng A forward range containing the IDs of vertices to remove.
-    /// @throws std::out_of_range If any vertex ID in the range is invalid.
+    /// @throws std::invalid_argument If any vertex ID in the range is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // TODO: optimize
@@ -374,7 +375,7 @@ public:
 
     /// @brief Removes a range of vertices using their descriptors.
     /// @param vertex_rng A sized range containing the descriptors of vertices to remove.
-    /// @throws std::out_of_range If any vertex descriptor is invalid.
+    /// @throws std::invalid_argument If any vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertices(
         const traits::c_sized_range_of<vertex_type> auto& vertex_rng
@@ -403,7 +404,7 @@ public:
     /// @brief Returns a vertex descriptor bounds-checked by ID.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
-    /// @throws std::out_of_range If the ID is invalid.
+    /// @throws std::invalid_argument If the ID is invalid.
     [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->vertex_unchecked(vertex_id);
@@ -412,7 +413,7 @@ public:
     /// @brief Returns a vertex descriptor bounds-checked by ID (alias for `vertex`).
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
-    /// @throws std::out_of_range If the ID is invalid.
+    /// @throws std::invalid_argument If the ID is invalid.
     [[nodiscard]] gl_attr_force_inline vertex_type at(const id_type vertex_id) const {
         return this->vertex(vertex_id);
     }
@@ -456,7 +457,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex descriptors.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
         return this->neighbor_ids(vertex_id)
              | std::views::transform(this->_create_vertex_descriptor());
@@ -466,7 +467,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex descriptors.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbors(vertex_type vertex) const {
         return this->neighbors(vertex.id());
     }
@@ -475,7 +476,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex IDs.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.neighbor_ids(vertex_id);
@@ -485,7 +486,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex IDs.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbor_ids(vertex_type vertex) const {
         return this->neighbor_ids(vertex.id());
     }
@@ -494,7 +495,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex descriptors.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
         return this->predecessor_ids(vertex_id)
              | std::views::transform(this->_create_vertex_descriptor());
@@ -504,7 +505,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex descriptors.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessors(vertex_type vertex) const {
         return this->predecessors(vertex.id());
     }
@@ -513,7 +514,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex IDs.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.predecessor_ids(vertex_id);
@@ -523,7 +524,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex IDs.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessor_ids(vertex_type vertex) const {
         return this->predecessor_ids(vertex.id());
     }
@@ -532,7 +533,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex descriptors.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
         return this->successor_ids(vertex_id)
              | std::views::transform(this->_create_vertex_descriptor());
@@ -542,7 +543,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex descriptors.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto successors(vertex_type vertex) const {
         return this->successors(vertex.id());
     }
@@ -551,7 +552,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex IDs.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto successor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.successor_ids(vertex_id);
@@ -561,7 +562,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex IDs.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto successor_ids(vertex_type vertex) const {
         return this->successor_ids(vertex.id());
     }
@@ -569,7 +570,7 @@ public:
     /// @brief Retrieves a mutable reference to a vertex's properties.
     /// @param id The ID of the vertex.
     /// @return A reference to the properties attached to the vertex.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(const id_type id
     ) const
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -592,7 +593,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The total degree.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline size_type degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.degree(vertex_id);
@@ -602,7 +603,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex The vertex descriptor.
     /// @return The total degree.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline size_type degree(vertex_type vertex) const {
         return this->degree(vertex.id());
     }
@@ -617,7 +618,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The in-degree.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline size_type in_degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.in_degree(vertex_id);
@@ -627,7 +628,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex The vertex descriptor.
     /// @return The in-degree.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline size_type in_degree(vertex_type vertex) const {
         return this->in_degree(vertex.id());
     }
@@ -642,7 +643,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The out-degree.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline size_type out_degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.out_degree(vertex_id);
@@ -652,7 +653,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex The vertex descriptor.
     /// @return The out-degree.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline size_type out_degree(vertex_type vertex) const {
         return this->out_degree(vertex.id());
     }
@@ -669,7 +670,7 @@ public:
     /// @param source_id The ID of the source vertex.
     /// @param target_id The ID of the target vertex.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::out_of_range If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge(const id_type source_id, const id_type target_id) {
         this->_verify_vertex_ids(source_id, target_id);
@@ -690,7 +691,7 @@ public:
     /// @param target_id The ID of the target vertex.
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::out_of_range If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge_with(
         const id_type source_id, const id_type target_id, edge_properties_type properties
@@ -717,7 +718,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::out_of_range If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge(vertex_type source, vertex_type target) {
         return this->add_edge(source.id(), target.id());
@@ -728,7 +729,7 @@ public:
     /// @param target The target vertex descriptor.
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::out_of_range If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge_with(
         vertex_type source, vertex_type target, const edge_properties_type& properties
@@ -743,7 +744,7 @@ public:
     /// @brief Dispatches multiple edge insertions connecting one source to many targets.
     /// @param source_id The ID of the source vertex.
     /// @param target_id_rng A sized range of target vertex IDs.
-    /// @throws std::out_of_range If any vertex ID is invalid.
+    /// @throws std::invalid_argument If any vertex ID is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     void add_edges_from(
         const id_type source_id, const traits::c_sized_range_of<id_type> auto& target_id_rng
@@ -767,7 +768,7 @@ public:
     /// @brief Dispatches multiple edge insertions connecting one source to many targets.
     /// @param source The source vertex descriptor.
     /// @param target_rng A sized range of target vertex descriptors.
-    /// @throws std::out_of_range If any vertex ID is invalid.
+    /// @throws std::invalid_argument If any vertex ID is invalid.
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     void add_edges_from(
         vertex_type source, const traits::c_sized_range_of<vertex_type> auto& target_rng
@@ -842,21 +843,18 @@ public:
     /// @brief Checks if there is any connecting edge from source to target.
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
-    /// @return
-    /// - `true` if a valid edge connects the given vertices.
-    /// - `false` otherwise, or if either vertex ID is invalid.
+    /// @return `true` if an edge exists, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
     [[nodiscard]] bool has_edge(const id_type source_id, const id_type target_id) const {
-        if (not this->has_vertex(source_id) or not this->has_vertex(target_id))
-            return false;
+        this->_verify_vertex_ids(source_id, target_id);
         return this->_impl.has_edge(source_id, target_id);
     }
 
     /// @brief Checks if there is any connecting edge from source to target.
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
-    /// @return
-    /// - `true` if a valid edge connects the given vertices.
-    /// - `false` otherwise, or if either vertex descriptor is invalid.
+    /// @return `true` if an edge exists, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline bool has_edge(vertex_type source, vertex_type target) const {
         return this->has_edge(source.id(), target.id());
     }
@@ -864,14 +862,11 @@ public:
     /// @brief Retrieves an edge (if it exists) connecting the source to the target.
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
-    /// @return
-    /// - An `std::optional` containing the edge descriptor, if found.
-    /// - `false` otherwise, or if either vertex ID is invalid.
+    /// @return `true` if an edge exists, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
     [[nodiscard]] std::optional<edge_type> edge(const id_type source_id, const id_type target_id)
         const {
-        if (not this->has_vertex(source_id) or not this->has_vertex(target_id))
-            return std::nullopt;
-
+        this->_verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.edge(source_id, target_id, this->_edge_properties);
         else
@@ -881,9 +876,8 @@ public:
     /// @brief Retrieves an edge (if it exists) connecting the source to the target.
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
-    /// @return
-    /// - An `std::optional` containing the edge descriptor, if found.
-    /// - `false` otherwise, or if either vertex descriptor is invalid.
+    /// @return `true` if an edge exists, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline std::optional<edge_type> edge(
         vertex_type source, vertex_type target
     ) const {
@@ -893,15 +887,12 @@ public:
     /// @brief Retrieves all parallel edges connecting the source to the target.
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
-    /// @return
-    /// - A vector populated with the descriptors of all edges linking the two vertices if both are valid.
-    /// - An empty vector if either vertex ID is invalid.
+    /// @return A vector populated with the descriptors of all edges linking the two vertices.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
     [[nodiscard]] inline std::vector<edge_type> edges(
         const id_type source_id, const id_type target_id
     ) const {
-        if (not this->has_vertex(source_id) or not this->has_vertex(target_id))
-            return {};
-
+        this->_verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return this->_impl.edges(source_id, target_id, this->_edge_properties);
         else
@@ -911,9 +902,8 @@ public:
     /// @brief Retrieves all parallel edges connecting the source to the target.
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
-    /// @return
-    /// - A vector populated with the descriptors of all edges linking the two vertices if both are valid.
-    /// - An empty vector if either vertex descriptor is invalid.
+    /// @return A vector populated with the descriptors of all edges linking the two vertices.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline std::vector<edge_type> edges(
         vertex_type source, vertex_type target
     ) const {
@@ -923,7 +913,7 @@ public:
     /// @brief Retrieves all incident edges attached to a vertex.
     /// @param vertex_id The vertex ID.
     /// @return A view or container representing the incident edges.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -935,7 +925,7 @@ public:
     /// @brief Retrieves all incident edges attached to a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view or container representing the incident edges.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto incident_edges(vertex_type vertex) const {
         return this->incident_edges(vertex.id());
     }
@@ -943,7 +933,7 @@ public:
     /// @brief Retrieves all incoming edges entering a vertex.
     /// @param vertex_id The vertex ID.
     /// @return A view or container representing the incoming edges.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -955,7 +945,7 @@ public:
     /// @brief Retrieves all incoming edges entering a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view or container representing the incoming edges.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto in_edges(vertex_type vertex) const {
         return this->in_edges(vertex.id());
     }
@@ -963,7 +953,7 @@ public:
     /// @brief Retrieves all outgoing edges leaving a vertex.
     /// @param vertex_id The vertex ID.
     /// @return A view or container representing the outgoing edges.
-    /// @throws std::out_of_range If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto out_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
@@ -975,7 +965,7 @@ public:
     /// @brief Retrieves all outgoing edges leaving a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view or container representing the outgoing edges.
-    /// @throws std::out_of_range If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto out_edges(vertex_type vertex) const {
         return this->out_edges(vertex.id());
     }
@@ -983,12 +973,12 @@ public:
     /// @brief Retrieves a mutable reference to an edge's properties.
     /// @param id The ID of the edge.
     /// @return A reference to the properties attached to the edge.
-    /// @throws std::out_of_range If the edge ID is invalid.
+    /// @throws std::invalid_argument If the edge ID is invalid.
     [[nodiscard]] edge_properties_type& edge_properties(const id_type id) const
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         if (id >= this->_n_edges)
-            throw std::out_of_range(std::format("Got invalid edge id [{}]", id));
+            throw std::invalid_argument(std::format("Got invalid edge id [{}]", id));
 
         return this->_edge_properties[id];
     }
@@ -1016,19 +1006,16 @@ public:
     /// - For undirected graphs: $\{u, v\} in E$
     /// - For directed graphs: $(u, v) \in E \lor (v, u) \in E$
     ///
-    /// @param first_id The ID of the first vertex.
-    /// @param second_id The ID of the second vertex.
-    /// @return
-    /// - `true` if the given vertices are adjacent.
-    /// - `false` otherwise, or if either vertex ID is invalid.
-    [[nodiscard]] bool are_adjacent(const id_type first_id, const id_type second_id) const {
-        if (not this->has_vertex(first_id) or not this->has_vertex(second_id))
-            return false;
-
+    /// @param source_id The ID of the source vertex.
+    /// @param target_id The ID of the target vertex.
+    /// @return `true` if the given vertices are adjacent, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex ID is invalid.
+    [[nodiscard]] bool are_adjacent(const id_type source_id, const id_type target_id) const {
+        this->_verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_undirected_graph<graph>)
-            return this->has_edge(first_id, second_id);
+            return this->has_edge(source_id, target_id);
         else
-            return this->has_edge(first_id, second_id) or this->has_edge(second_id, first_id);
+            return this->has_edge(source_id, target_id) or this->has_edge(target_id, source_id);
     }
 
     /// @brief Checks if two vertices are strictly adjacent.
@@ -1044,14 +1031,13 @@ public:
     /// - For undirected graphs: $\{u, v\} in E$
     /// - For directed graphs: $(u, v) \in E \lor (v, u) \in E$
     ///
-    /// @param first The first vertex descriptor.
-    /// @param second The second vertex descriptor.
-    /// @return
-    /// - `true` if the given vertices are adjacent.
-    /// - `false` otherwise, or if either vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline bool are_adjacent(vertex_type first, vertex_type second)
+    /// @param source The source vertex descriptor.
+    /// @param target The target vertex descriptor.
+    /// @return `true` if the given vertices are adjacent, `false` otherwise.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline bool are_adjacent(vertex_type source, vertex_type target)
         const {
-        return this->are_adjacent(first.id(), second.id());
+        return this->are_adjacent(source.id(), target.id());
     }
 
     /// @brief Checks if two distinct edges share at least one incident vertex.
@@ -1061,12 +1047,11 @@ public:
     ///
     /// @param edge_1 The first edge descriptor.
     /// @param edge_2 The second edge descriptor.
-    /// @return
-    /// - `true` if the given edges are adjacent (share a vertex).
-    /// - `false` otherwise, or if either edge descriptor is invalid.
+    /// @return `true` if the given edges are adjacent, `false` otherwise.
+    /// @throws std::invalid_argument If either edge descriptor is invalid.
     [[nodiscard]] bool are_adjacent(const edge_type& edge_1, const edge_type& edge_2) const {
-        if (not this->_is_valid_edge(edge_1) or not this->_is_valid_edge(edge_2))
-            return false;
+        this->_verify_edge(edge_1);
+        this->_verify_edge(edge_2);
 
         if (edge_1.id() == edge_2.id())
             return false;
@@ -1081,12 +1066,11 @@ public:
     ///
     /// @param vertex The vertex descriptor.
     /// @param edge The edge descriptor.
-    /// @return
-    /// - `true` if the vertex is incident to the edge.
-    /// - `false` otherwise, or if either descriptor is invalid.
+    /// @return `true` if the vertex is incident to the edge, `false` otherwise.
+    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid.
     [[nodiscard]] bool are_incident(vertex_type vertex, const edge_type& edge) const {
-        if (not this->has_vertex(vertex.id()) or not this->_is_valid_edge(edge))
-            return false;
+        this->_verify_vertex_id(vertex.id());
+        this->_verify_edge(edge);
         return edge.is_incident_with(vertex.id());
     }
 
@@ -1096,9 +1080,8 @@ public:
     ///
     /// @param edge The edge descriptor.
     /// @param vertex The vertex descriptor.
-    /// @return
-    /// - `true` if the vertex is incident to the edge.
-    /// - `false` otherwise, or if either descriptor is invalid.
+    /// @return `true` if the vertex is incident to the edge, `false` otherwise.
+    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline bool are_incident(const edge_type& edge, vertex_type vertex)
         const {
         return this->are_incident(vertex, edge);
@@ -1177,7 +1160,7 @@ private:
 
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
-            throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
+            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
     gl_attr_force_inline void _verify_vertex_ids(const std::same_as<id_type> auto... vertex_ids
@@ -1573,37 +1556,37 @@ struct graph_doc_anchors {
     ///
     /// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
     ///
-    /// \f$
+    /// \f[
     /// N(v) =
     /// \begin{cases}
     /// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
     /// \\\\ \{u \in V : (u, v) \in E \lor (v, u) \in E\} & \text{if } G \text{ is directed}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void neighbors();
 
     /// ### Formal Definition
     /// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
     ///
-    /// \f$
+    /// \f[
     /// N_{in}(v) =
     /// \begin{cases}
     /// N(v) & \text{if } G \text{ is undirected}
     /// \\\\ \{u \in V : (u, v) \in E\} & \text{if } G \text{ is directed}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void predecessors();
 
     /// ### Formal Definition
     /// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
     ///
-    /// \f$
+    /// \f[
     /// N_{out}(v) =
     /// \begin{cases}
     /// N(v) & \text{if } G \text{ is undirected}
     /// \\\\ \{u \in V : (v, u) \in E\} & \text{if } G \text{ is directed}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void successors();
 
     /// The degree is the total number of edge endpoints connected to the vertex.
@@ -1612,39 +1595,39 @@ struct graph_doc_anchors {
     /// ### Formal Definition
     /// The formal calculation, accounting for the set of loops \f$L(v)\f$, is defined as:
     ///
-    /// \f$
+    /// \f[
     /// deg(v) =
     /// \begin{cases}
     /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
     /// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void degree();
 
     /// The in-degree is the number of edges directed into the vertex.
     ///
     /// ### Formal Definition
     ///
-    /// \f$
+    /// \f[
     /// deg_{in}(v) =
     /// \begin{cases}
     /// deg(v) & \text{if } G \text{ is undirected}
     /// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void in_degree();
 
     /// The out-degree is the number of edges directed out of the vertex.
     ///
     /// ### Formal Definition
     ///
-    /// \f$
+    /// \f[
     /// deg_{out}(v) =
     /// \begin{cases}
     /// deg(v) & \text{if } G \text{ is undirected}
     /// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
     /// \end{cases}
-    /// \f$
+    /// \f]
     void out_degree();
 };
 
