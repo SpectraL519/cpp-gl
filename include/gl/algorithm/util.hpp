@@ -88,13 +88,13 @@ template <traits::c_graph G, result_discriminator Result>
 /// @ingroup GL GL-Algorithm
 /// @brief Generates a default lambda predicate that checks if an adjacent vertex should be enqueued into the search frontier.
 /// @tparam G The type of the graph.
-/// @tparam AsResult If `true`, the generated predicate returns a @ref decision instead of a raw boolean.
+/// @tparam AsDecision If `true`, the generated predicate returns a @ref gl::algorithm::decision "decision" instead of a raw boolean.
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @return A callable predicate that returns `true` (or `decision::accept`) if the adjacent vertex has not been visited.
-template <traits::c_graph G, bool AsResult = false>
+template <traits::c_graph G, bool AsDecision = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
 ) {
-    using return_t = std::conditional_t<AsResult, decision, bool>;
+    using return_t = std::conditional_t<AsDecision, decision, bool>;
     return [&](typename G::id_type vertex_id, const typename G::edge_type&) -> return_t {
         return not visited[to_idx(vertex_id)];
     };

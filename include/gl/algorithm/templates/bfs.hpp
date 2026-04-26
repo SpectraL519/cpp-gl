@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/algorithm/templates/bfs.hpp
+/// @brief Generic Breadth-First Search (BFS) template algorithm engine.
+
 #pragma once
 
 #include "gl/algorithm/core.hpp"
@@ -12,7 +15,62 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL-Algorithm
+/// @ingroup GL GL-Algorithm
+/// @brief A highly customizable, generic Breadth-First Search (BFS) algorithm engine.
+///
+/// This template does not implement a specific algorithm (like finding a shortest path).
+/// Instead, it provides the strict structural execution of a queue-based Breadth-First Search.
+/// Concrete algorithms are constructed by injecting logic into the provided callback and
+/// predicate hooks.
+///
+/// ### Example Usage
+/// ```cpp
+/// std::vector<bool> visited(graph.n_vertices(), false); // (1)!
+///
+/// bool completed = gl::algorithm::bfs(
+///     graph,
+///     gl::algorithm::init_range<graph_type>(start_id),        // (2)!
+///     gl::algorithm::default_visit_vertex_predicate(visited), // (3)!
+///     [&](auto v, auto p) {                                   // (4)!
+///         std::cout << "Visited vertex " << v << '\n';
+///         return true; // Continue search
+///     },
+///     gl::algorithm::default_enqueue_vertex_predicate<graph_type, true>(visited) // (5)!
+/// );
+/// ```
+///
+/// 1\. Tracks discovered vertices.
+///
+/// 2\. Initializes the search queue with the starting vertex.
+///
+/// 3\. Predicate ensuring we don't process a vertex if it was already marked visited.
+///
+/// 4\. The main visit callback. Here we just print the ID. Returning `false` would abort the search.
+///
+/// 5\. Predicate ensuring we only enqueue adjacent vertices that haven't been visited yet, returning a @ref gl::algorithm::decision "decision".
+///
+/// ### Template Parameters
+/// | Parameter | Description |
+/// | :-------- | :--- |
+/// | G | The type of the graph being traversed. |
+/// | InitQueueRangeType | The type of the container providing the initial roots to enqueue. |
+/// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. |
+/// | VisitCallback | Type of the callable executed when a vertex is officially visited. |
+/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be pushed to the queue. |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. |
+///
+/// @param graph The graph to traverse.
+/// @param initial_queue_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the BFS queue.
+/// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
+/// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire BFS immediately aborts.
+/// @param enqueue_vertex_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
+/// - `accept` to enqueue,
+/// - `reject` to skip,
+/// - `abort` to terminate the BFS entirely.
+/// @param pre_visit Hook executed immediately before the `visit` callback.
+/// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated.
+/// @return `true` if the queue was exhausted naturally, `false` if the search was aborted early by a callback or predicate.
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,
