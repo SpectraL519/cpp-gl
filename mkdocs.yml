@@ -84,7 +84,7 @@ plugins:
   - mkdoxy:
       projects:
         cpp-gl:
-          src-dirs: "include docs/groups.dox"
+          src-dirs: "include docs/config/groups.dox"
           full-doc: true
           sorting:
             classes: false
