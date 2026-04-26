@@ -17,7 +17,7 @@ namespace gl::algorithm {
 /// @ingroup GL GL-Algorithm
 /// @brief Executes a concrete iterative Depth-First Search (DFS) traversal over the graph.
 ///
-/// This function utilizes the generic @ref gl::algorithm::dfs "dfs" engine to perform a standard, stack-based traversal.
+/// This function utilizes the generic @ref gl::algorithm::dfs "dfs" template to perform a standard, stack-based traversal.
 /// It automatically manages the visited states and predecessor tracking.
 ///
 /// If a specific `root_vertex_id` is provided, the algorithm explores only the connected component
@@ -124,7 +124,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 /// @ingroup GL GL-Algorithm
 /// @brief Executes a concrete recursive Depth-First Search (DFS) traversal over the graph.
 ///
-/// This function relies on the generic @ref gl::algorithm::r_dfs "r_dfs" engine. Instead of a
+/// This function relies on the generic @ref gl::algorithm::r_dfs "r_dfs" template. Instead of a
 /// heap-allocated stack, it utilizes the C++ call stack to navigate the graph.
 ///
 /// > [!WARNING] Call Stack Depth
