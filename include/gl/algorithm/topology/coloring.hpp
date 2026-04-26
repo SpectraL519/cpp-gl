@@ -41,7 +41,7 @@ using bicoloring_type = std::vector<binary_color>;
 /// > The time complexity depends entirely on the underlying representation of `GraphType`:
 /// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
 /// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
-/// > - **Dense Adjacency Matrix Representations**: \f$O(|V|^2)\f$
+/// > - **Adjacency Matrix Representations**: \f$O(|V|^2)\f$
 /// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///

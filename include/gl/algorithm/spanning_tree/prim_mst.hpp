@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/algorithm/spanning_tree/prim_mst.hpp
+/// @brief Concrete implementations of Prim's Minimum Spanning Tree (MST) algorithm.
+
 #pragma once
 
 #include "gl/algorithm/util.hpp"
@@ -12,20 +15,66 @@
 
 namespace gl::algorithm {
 
+/// @ingroup GL GL-Algorithm
+/// @brief A descriptor structure holding the results of a Minimum Spanning Tree (MST) execution.
+///
+/// @tparam G The type of the undirected graph. Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept.
 template <traits::c_undirected_graph G>
 struct mst_descriptor {
+    /// @brief The type of the graph.
     using graph_type = G;
+    /// @brief The type of the edges stored in the graph.
     using edge_type = typename graph_type::edge_type;
+    /// @brief The numeric type used to represent accumulated tree weights.
     using weight_type = vertex_distance_type<graph_type>;
 
+    /// @brief Constructs a descriptor sized to hold the resulting tree edges.
+    /// @param n_vertices The total number of vertices in the graph.
     mst_descriptor(const size_type n_vertices) {
         edges.reserve(n_vertices - 1uz);
     }
 
+    /// @brief The sequence of edges that form the Minimum Spanning Tree.
     std::vector<edge_type> edges;
+    /// @brief The accumulated minimum weight/cost of the entire spanning tree.
     weight_type weight = static_cast<weight_type>(0);
 };
 
+/// @ingroup GL GL-Algorithm
+/// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with an edge-based priority queue.
+///
+/// This implementation uses a standard binary heap (`std::priority_queue`) to store and sort edges based on their weight.
+/// It pushes newly discovered adjacent edges into the queue and safely ignores those that lead to already-visited vertices.
+///
+/// ### Example Usage
+/// ```cpp
+/// auto mst = gl::algorithm::edge_heap_prim_mst(graph, start_id); // (1)!
+/// std::cout << "Total MST Weight: " << mst.weight
+///           << "\nMST Edges: " << gl::io::set_formatter(mst.edges) << '\n';
+/// ```
+///
+/// 1\. Computes the MST starting from the given `start_id`. If `invalid_id` is passed, it defaults to the graph's `initial_id`.
+///
+/// > [!INFO] Algorithmic Complexity
+/// >
+/// > The time complexity depends on the underlying representation of `GraphType` and the queue overhead:
+/// > - **Adjacency List Representations**: \f$O(|E| \log |E|)\f$
+/// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
+/// >   - *Note:* In simple graphs, this simplifies to \f$O(|E| \log |V|)\f$. However, because list models allow multigraphs, the queue size and operations scale strictly with \f$|E|\f$.
+/// > - **Adjacency Matrix Representations**: \f$O(|V|^2 + |E| \log |V|)\f$
+/// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
+/// >   - *Note:* Iterating over incident edges requires scanning the entire \f$|V|\f$-length matrix row. Since matrices represent simple graphs, the heap operations safely simplify to \f$O(\log |V|)\f$.
+///
+/// ### Template Parameters
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the undirected graph being traversed. | Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept. |
+///
+/// @param graph The undirected graph to evaluate.
+/// @param root_id The starting vertex ID for the MST calculation. Defaults to the graph's `initial_id` if `invalid_id` is passed.
+/// @return A @ref gl::algorithm::mst_descriptor "mst_descriptor" containing the accumulated minimum weight and the sequence of edges forming the tree.
+/// @see @ref gl::algorithm::vertex_heap_prim_mst "vertex_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
+/// @hideparams
 template <traits::c_undirected_graph G>
 [[nodiscard]] mst_descriptor<G> edge_heap_prim_mst(const G& graph, typename G::id_type root_id) {
     // type definitions
@@ -83,8 +132,42 @@ template <traits::c_undirected_graph G>
     return mst;
 }
 
+/// @ingroup GL GL-Algorithm
+/// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with a vertex-based array heap.
+///
+/// This variation maintains a heap of vertex IDs based on their minimum known connection cost.
+/// Because standard C++ heaps do not support a `decrease_key` operation, this implementation
+/// dynamically rebuilds the heap (`std::make_heap`) at the end of each iteration to reflect updated distances.
+///
+/// ### Example Usage
+/// ```cpp
+/// auto mst = gl::algorithm::vertex_heap_prim_mst(graph, start_id); // (1)!
+/// std::cout << "Total MST Weight: " << mst.weight
+///           << "\nMST Edges: " << gl::io::set_formatter(mst.edges) << '\n';
+/// ```
+///
+/// 1\. Computes the MST starting from the given `start_id`. Highly optimal for dense matrix graphs.
+///
+/// > [!INFO] Algorithmic Complexity
+/// >
+/// > Due to rebuilding the heap (\f$O(|V|)\f$) up to \f$|V|\f$ times, combined with evaluating every edge, the strict time complexity is \f$O(|V|^2 + |E|)\f$:
+/// > - **Adjacency Matrix Representations**: \f$O(|V|^2)\f$
+/// >   - *Note:* Since matrix models inherently represent simple graphs (where \f$|E| \le |V|^2\f$), the complexity strictly simplifies to \f$O(|V|^2)\f$. This makes the vertex heap approach highly suitable for dense graphs.
+/// > - **Adjacency List Representations**: \f$O(|V|^2 + |E|)\f$
+/// >   - *Note:* For multigraphs, the edge count \f$|E|\f$ can exceed \f$|V|^2\f$, meaning the edge traversal phase will dictate the overall performance.
+///
+/// ### Template Parameters
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the undirected graph being traversed. | Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept and its @ref gl::vertex_distance_type "distance type" must satisfy [**c_has_numeric_limits_max**](gl_concepts.md#gl-traits-c-has-numeric-limits-max).
+///
+/// @param graph The undirected graph to evaluate.
+/// @param root_id The starting vertex ID for the MST calculation. Defaults to the graph's `initial_id` if `invalid_id` is passed.
+/// @return A @ref gl::algorithm::mst_descriptor "mst_descriptor" containing the accumulated minimum weight and the sequence of edges forming the tree.
+/// @see @ref gl::algorithm::edge_heap_prim_mst "edge_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
+/// @hideparams
 template <traits::c_undirected_graph G>
-requires traits::c_has_numeric_limits_max<vertex_distance_type<G>>
+requires(traits::c_has_numeric_limits_max<vertex_distance_type<G>>)
 [[nodiscard]] mst_descriptor<G> vertex_heap_prim_mst(const G& graph, typename G::id_type root_id) {
     // type definitions
     using id_type = typename G::id_type;
