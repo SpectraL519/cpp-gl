@@ -61,18 +61,19 @@ namespace gl::algorithm {
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | `Result` | Discriminator dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). |
-/// | `G` | The type of the graph being traversed. |
-/// | `PreVisitCallback` | Type of the callable executed immediately before a vertex is officially visited. |
-/// | `PostVisitCallback` | Type of the callable executed after all adjacent edges of a vertex are evaluated. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | Result | @ref gl::algorithm::result_discriminator "Discriminator" dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). | Must be a valid @ref gl::algorithm::result_discriminator "result_discriminator" enum value. |
+/// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
 /// @param root_vertex_id The starting vertex for the search. Defaults to @ref gl::algorithm::no_root "no_root" to traverse the entire graph.
 /// @param pre_visit Hook executed immediately before the internal visit logic.
 /// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated.
 /// @return A @ref gl::algorithm::predecessors_map "predecessors_map" mapping each visited vertex to its parent if `Result == ret`. Returns `void` otherwise.
+/// @hideparams
 template <
     result_discriminator Result = ret,
     traits::c_graph G,
@@ -161,18 +162,19 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | `Result` | Discriminator dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). |
-/// | `G` | The type of the graph being traversed. |
-/// | `PreVisitCallback` | Type of the callable executed immediately before a vertex is officially visited. |
-/// | `PostVisitCallback` | Type of the callable executed after all adjacent edges of a vertex are evaluated. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | Result | @ref gl::algorithm::result_discriminator "Discriminator" dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). | Must be a valid @ref gl::algorithm::result_discriminator "result_discriminator" enum value. |
+/// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
 /// @param root_vertex_id The starting vertex for the search. Defaults to @ref gl::algorithm::no_root "no_root" to traverse the entire graph.
 /// @param pre_visit Hook executed immediately before the internal visit logic.
 /// @param post_visit Hook executed after returning from all recursive calls for the current vertex.
 /// @return A @ref gl::algorithm::predecessors_map "predecessors_map" mapping each visited vertex to its parent if `Result == ret`. Returns `void` otherwise.
+/// @hideparams
 template <
     result_discriminator Result = ret,
     traits::c_graph G,

@@ -36,6 +36,7 @@ init_predecessors_map(const G& graph) {
 /// @param pred_map The predecessor map populated by the traversal.
 /// @param vertex_id The vertex ID to query.
 /// @return `true` if the vertex has a valid assigned predecessor, `false` otherwise.
+/// @hideparams
 template <traits::c_id_type IdType>
 [[nodiscard]] gl_attr_force_inline bool is_reachable(
     const traits::c_random_access_range_of<IdType> auto& pred_map, IdType vertex_id
@@ -71,6 +72,7 @@ template <
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @param pred_map A reference to the active predecessor map.
 /// @return A callable callback that executes state updates upon visiting a vertex.
+/// @hideparams
 template <traits::c_graph G, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited, non_void_result_type<Result, predecessors_map<G>>& pred_map

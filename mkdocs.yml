@@ -88,7 +88,8 @@ plugins:
           full-doc: true
           sorting:
             classes: false
-          doxy-cfg:
+          hideparams: true
+          doxy-cfg: # TODO: use doxy-cfg-file
             PROJECT_NAME: CPP-GL
             MARKDOWN_SUPPORT: YES
             EXTRACT_ALL: NO
@@ -97,6 +98,7 @@ plugins:
             INTERNAL_DOCS: NO
             HIDE_UNDOC_MEMBERS: YES
             HIDE_UNDOC_CLASSES: YES
+            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
             SORT_MEMBER_DOCS: NO
             SORT_BRIEF_DOCS: NO
             SORT_MEMBERS_CTORS_1ST: YES
@@ -108,7 +110,6 @@ plugins:
             MACRO_EXPANSION: YES
             EXPAND_ONLY_PREDEF: YES
             PREDEFINED: gl_attr_force_inline=
-            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
 
 extra_javascript:
   - scripts/mathjax.js

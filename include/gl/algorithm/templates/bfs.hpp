@@ -29,9 +29,9 @@ namespace gl::algorithm {
 ///
 /// bool completed = gl::algorithm::bfs(
 ///     graph,
-///     gl::algorithm::init_range<graph_type>(start_id),        // (2)!
+///     gl::algorithm::init_range<graph_type>(start_id), // (2)!
 ///     gl::algorithm::default_visit_vertex_predicate(visited), // (3)!
-///     [&](auto v, auto p) {                                   // (4)!
+///     [&](auto v, auto p) { // (4)!
 ///         std::cout << "Visited vertex " << v << '\n';
 ///         return true; // Continue search
 ///     },
@@ -50,15 +50,15 @@ namespace gl::algorithm {
 /// 5\. Predicate ensuring we only enqueue adjacent vertices that haven't been visited yet, returning a @ref gl::algorithm::decision "decision".
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | G | The type of the graph being traversed. |
-/// | InitQueueRangeType | The type of the container providing the initial roots to enqueue. |
-/// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. |
-/// | VisitCallback | Type of the callable executed when a vertex is officially visited. |
-/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be pushed to the queue. |
-/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
+/// | InitQueueRangeType | The type of the container providing the initial roots to enqueue. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
+/// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
 /// @param initial_queue_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the BFS queue.
@@ -71,6 +71,7 @@ namespace gl::algorithm {
 /// @param pre_visit Hook executed immediately before the `visit` callback.
 /// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated.
 /// @return `true` if the queue was exhausted naturally, `false` if the search was aborted early by a callback or predicate.
+/// @hideparams
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,

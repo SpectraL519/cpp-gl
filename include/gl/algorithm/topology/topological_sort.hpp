@@ -41,25 +41,24 @@ namespace gl::algorithm {
 /// > [!INFO] Algorithmic Complexity
 /// >
 /// > The time complexity depends entirely on the underlying representation of `GraphType`:
-/// >
 /// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
 /// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
-/// >
 /// > - **Dense Adjacency Matrix Representations**: \f$O(|V|^2)\f$
 /// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | `G` | The type of the directed graph being traversed. Must satisfy [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph) |
-/// | `PreVisitCallback` | Type of the callable executed immediately before a vertex is pushed into the sort order. |
-/// | `PostVisitCallback` | Type of the callable executed after all adjacent edges of a vertex are evaluated. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the directed graph being traversed. | Must satisfy the [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before a vertex is pushed into the sort order. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The directed graph to evaluate.
 /// @param pre_visit Hook executed immediately before the internal sort logic processes a vertex.
 /// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated and their in-degrees decremented.
 /// @return An `std::optional` containing a vector of vertex IDs in topological order or `std::nullopt` if the graph is not a DAG.
+/// @hideparams
 template <
     traits::c_directed_graph G,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,

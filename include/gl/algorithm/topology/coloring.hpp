@@ -39,20 +39,18 @@ using bicoloring_type = std::vector<binary_color>;
 /// > [!INFO] Algorithmic Complexity
 /// >
 /// > The time complexity depends entirely on the underlying representation of `GraphType`:
-/// >
 /// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
 /// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
-/// >
 /// > - **Dense Adjacency Matrix Representations**: \f$O(|V|^2)\f$
 /// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | G | The type of the graph being traversed. |
-/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to evaluate.
 /// @param pre_visit Hook executed immediately before the internal visit logic.
@@ -61,6 +59,7 @@ using bicoloring_type = std::vector<binary_color>;
 /// ### See Also
 /// - @ref gl::algorithm::is_bipartite "is_bipartite"
 /// - @ref gl::algorithm::apply_coloring "apply_coloring"
+/// @hideparams
 template <
     traits::c_graph G,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
@@ -127,10 +126,10 @@ template <
 /// @brief Applies a computed range of binary colors to the property payload of each vertex in the graph.
 ///
 /// ### Template Parameters
-/// | Parameter | Description |
-/// | :-------- | :--- |
-/// | `G` | The type of the graph to modify. Must have compatible color properties. |
-/// | `ColorRange` | The type of the range containing the computed colors. |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the graph to modify. Must have compatible color properties. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept, and its properties must satisfy [**c_binary_color_properties_type**](gl_concepts.md#gl-traits-c-binary-color-properties-type). |
+/// | ColorRange | The type of the range containing the computed colors. | Must satisfy the [**c_sized_range_of**](gl_concepts.md#gl-traits-c-sized-range-of) concept for `binary_color`. |
 ///
 /// @param graph The mutable graph instance whose properties will be updated.
 /// @param color_range A sized range (e.g., @ref gl::algorithm::bicoloring_type "bicoloring_type") matching the vertex count.

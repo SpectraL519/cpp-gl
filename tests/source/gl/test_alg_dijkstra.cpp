@@ -218,7 +218,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::flat_matrix_graph_traits<gl::undirected_t> // undirected flat adjacency matrix
 );
 
-TEST_CASE("reconstruct_path should thow if the vertex is not reachable") {
+TEST_CASE("reconstruct_path should throw if the vertex is not reachable") {
     const std::vector<gl::default_id_type> predecessor_map = {0, 3, 1, gl::invalid_id};
     const auto vertex_id = static_cast<gl::default_id_type>(predecessor_map.size() - 1uz);
 
