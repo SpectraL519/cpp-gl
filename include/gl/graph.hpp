@@ -1409,7 +1409,7 @@ template <traits::c_graph Graph>
     return Graph(source);
 }
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a standard directed graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
@@ -1419,7 +1419,7 @@ template <
 using directed_graph =
     graph<directed_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a standard undirected graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
@@ -1429,7 +1429,7 @@ template <
 using undirected_graph =
     graph<undirected_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a graph utilizing an adjacency list.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
@@ -1439,7 +1439,7 @@ template <
 using list_graph =
     graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a graph utilizing an adjacency matrix.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
@@ -1449,7 +1449,7 @@ template <
 using matrix_graph =
     graph<matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a graph utilizing a flattened adjacency list.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
@@ -1459,7 +1459,7 @@ template <
 using flat_list_graph =
     graph<flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,

@@ -5,15 +5,20 @@ repo_url: "https://github.com/SpectraL519/cpp-gl"
 nav:
   - Home: index.md
   - GL:
-      # TODO: Tutorial page
-      - Overview: cpp-gl/group__GL.md
-      - Core Graph Components: cpp-gl/group__GL-Core.md
-      - Graph Algorithms: cpp-gl/group__GL-Algorithm.md
-      - Graph Topologies: cpp-gl/group__GL-Topology.md
-      - I/O Utility: cpp-gl/group__GL-IO.md
-      - Traits & Concepts: cpp-gl/group__GL-Traits.md
-      - Generic Types: cpp-gl/group__GL-Types.md
-      - General Utilities: cpp-gl/group__GL-Util.md
+      - Quick Start: gl/quick_start.md
+      # - Architecture & Basics: gl/architecture.md
+      # - Algorithms: gl/algorithms.md
+      # - Input & Output: gl/io.md
+      # - Advanced Configuration: gl/configuration.md
+      - API Reference:
+          - Overview: cpp-gl/group__GL.md
+          - Core Components: cpp-gl/group__GL-Core.md
+          - Algorithms: cpp-gl/group__GL-Algorithm.md
+          - Topologies: cpp-gl/group__GL-Topology.md
+          - I/O Utility: cpp-gl/group__GL-IO.md
+          - Traits & Concepts: cpp-gl/group__GL-Traits.md
+          - Generic Types: cpp-gl/group__GL-Types.md
+          - General Utilities: cpp-gl/group__GL-Util.md
   # - HGL:
   - API Index:
       - Modules: cpp-gl/modules.md
