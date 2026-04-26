@@ -27,8 +27,8 @@ using gl::algorithm::decision;
 using gl::algorithm::result_discriminator;
 using enum result_discriminator;
 
-using gl::algorithm::non_void_return_type;
-using gl::algorithm::return_type;
+using gl::algorithm::non_void_result_type;
+using gl::algorithm::result_type;
 
 using gl::algorithm::no_root;
 using gl::algorithm::no_root_t;

@@ -18,7 +18,7 @@ template <
     traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
     traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
-return_type<Result, search_tree<H>> backward_bfs(
+result_type<Result, search_tree<H>> backward_bfs(
     const H& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},
@@ -59,7 +59,7 @@ template <
     traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
     traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
-return_type<Result, search_tree<H>> backward_dfs(
+result_type<Result, search_tree<H>> backward_dfs(
     const H& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},

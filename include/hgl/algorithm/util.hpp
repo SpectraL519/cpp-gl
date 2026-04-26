@@ -10,10 +10,10 @@
 namespace hgl::algorithm {
 
 template <result_discriminator Result, traits::c_hypergraph H>
-[[nodiscard]] gl_attr_force_inline non_void_return_type<Result, search_tree<H>> init_search_tree(
+[[nodiscard]] gl_attr_force_inline non_void_result_type<Result, search_tree<H>> init_search_tree(
     const H& hypergraph
 ) {
-    using return_t = non_void_return_type<Result, search_tree<H>>;
+    using return_t = non_void_result_type<Result, search_tree<H>>;
     if constexpr (Result == ret)
         return return_t(hypergraph.n_vertices());
     else
@@ -43,7 +43,7 @@ template <traits::c_hypergraph H>
 
 template <traits::c_hypergraph H, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited_v, non_void_return_type<Result, search_tree<H>>& pred_map
+    std::vector<bool>& visited_v, non_void_result_type<Result, search_tree<H>>& pred_map
 ) {
     return [&](const search_node<H>& node) {
         const auto vertex_idx = to_idx(node.vertex_id);

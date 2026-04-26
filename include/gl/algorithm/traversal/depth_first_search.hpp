@@ -16,7 +16,7 @@ template <
     traits::c_graph G,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
-return_type<Result, predecessors_map<G>> depth_first_search(
+result_type<Result, predecessors_map<G>> depth_first_search(
     const G& graph,
     const typename G::id_type root_vertex_id = no_root,
     PreVisitCallback pre_visit = {},
@@ -64,7 +64,7 @@ template <
     traits::c_graph G,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
-return_type<Result, predecessors_map<G>> recursive_depth_first_search(
+result_type<Result, predecessors_map<G>> recursive_depth_first_search(
     const G& graph,
     const typename G::id_type root_vertex_id = no_root,
     PreVisitCallback pre_visit = {},
