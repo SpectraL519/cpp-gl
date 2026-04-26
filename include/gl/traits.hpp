@@ -14,8 +14,6 @@
 #include <ranges>
 #include <type_traits>
 
-/// @namespace gl::traits
-/// @brief Contains C++20 concepts and type traits used to constrain library templates.
 namespace gl::traits {
 
 /// @ingroup GL GL-Traits

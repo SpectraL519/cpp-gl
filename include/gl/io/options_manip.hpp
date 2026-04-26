@@ -28,7 +28,7 @@ using iword_type = long;
 using bit_position_type = unsigned;
 
 /// @ingroup GL GL-IO
-/// @brief Base bit representing the first position in an `iword` flag map.
+/// @brief Base bit representing the a single position in an `iword` flag map.
 inline constexpr iword_type iword_bit = 1ul;
 
 /// @ingroup GL GL-IO
