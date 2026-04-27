@@ -161,6 +161,8 @@ Consider the following graph:
 
 CPP-GL currently categorizes its memory layouts into two primary families based on their underlying memory allocation strategy.
 
+> [!NOTE] All representation model tag types are defined in the `gl::impl` namespace.
+
 #### Standard Models
 
 Heap-allocated, nested structures that prioritize flexibility and dynamic structural modification.
@@ -228,7 +230,7 @@ By keeping all vertex and edge data in adjacent memory blocks, these models prov
 
 > [!NOTE] Flat List Model Performance
 >
-> While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to construct element-by-element. The most efficient approach for utilizing flat list graphs is to construct your graph using the standard list model first, and then convert it into the flat list model using the generic [**to**](../cpp-gl/group__GL-Core.md#function-to) conversion function. This exact methodology is utilized internally by the [**graph topology generators**](topologies.md) defined within the library.
+> While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to construct element-by-element. The most efficient approach for utilizing flat list graphs is to construct your graph using the standard list model first, and then convert it into the flat list model using the generic [**gl::to**](../cpp-gl/group__GL-Core.md#function-to) conversion function. This exact methodology is utilized internally by the [**graph topology generators**](topologies.md) defined within the library.
 
 ### Operation Complexity
 
