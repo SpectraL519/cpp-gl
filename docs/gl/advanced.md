@@ -1,1 +1,1 @@
-# GL: Advanced Features
+# Advanced Features

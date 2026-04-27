@@ -1,1 +1,1 @@
-# GL: I/O Utility
+# I/O Utility

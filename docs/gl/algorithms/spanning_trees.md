@@ -8,8 +8,8 @@ In an edge-weighted graph, multiple spanning trees can exist. A **Minimum Spanni
 
 <div align="center" markdown="1">
 
-![MST Concept Light](../../img/doc/light/mst-example.svg#only-light){: width="700" }
-![MST Concept Dark](../../img/doc/dark/mst-example.svg#only-dark){: width="700" }
+![MST Example Light](../../img/doc/light/mst-example.svg#only-light){: width="700" }
+![MST Example Dark](../../img/doc/dark/mst-example.svg#only-dark){: width="700" }
 
 </div>
 
