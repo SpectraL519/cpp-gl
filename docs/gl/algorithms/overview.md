@@ -8,7 +8,13 @@ This separation ensures maximum code reuse, provides strict zero-cost abstractio
 
 ### 1. The Generic Templates (Engines)
 
-Located at the lowest level, the generic templates (`bfs`, `dfs`, `r_dfs`, `pfs`) define the strict structural execution of a search. They know nothing about "shortest paths", "spanning trees", or "cycle detection". Their only responsibility is to manage the search frontier (a queue, stack, or priority queue) and invoke a series of user-provided callback hooks at specific moments during the traversal.
+Located at the lowest level, the generic templates define the strict structural execution of a search. They know nothing about *shortest paths*, *spanning trees*, or *cycle detection*. Their only responsibility is to manage the pending elements (a queue, stack, or priority queue) and invoke a series of user-provided callback hooks at specific moments during the traversal.
+
+The core generic templates include:
+- [**`bfs`**](templates.md#breadth-first-search-bfs): A queue-based Breadth-First Search engine.
+- [**`dfs`**](templates.md#depth-first-search-dfs): A stack-based, iterative Depth-First Search engine.
+- [**`r_dfs`**](templates.md#recursive-depth-first-search-r_dfs): A recursive Depth-First Search engine utilizing the call stack.
+- [**`pfs`**](templates.md#priority-first-search-pfs): A priority-queue-based Priority-First Search engine for custom heuristics.
 
 ### 2. The Concrete Algorithms
 
@@ -17,7 +23,7 @@ Concrete algorithms (like `dijkstra_shortest_paths`, `topological_sort`, or `bre
 - Defining the specific logic inside the lambda callbacks and predicates.
 - Managing the final return types and structures.
 
-By separating these layers, CPP-GL guarantees that all algorithms inherently benefit from the exact same optimized design and frontier management.
+By separating these layers, CPP-GL guarantees that all algorithms inherently benefit from the exact same optimized design and element management.
 
 ## Core Algorithm Elements
 
@@ -27,7 +33,7 @@ To interact with the generic templates or understand the concrete algorithms, yo
 
 The generic engines accept up to 5 or 6 different callbacks per invocation. However, forcing the compiler to execute or optimize away empty lambdas (e.g., `[]{}`) can add overhead in debug builds and slow down compilation.
 
-To solve this, CPP-GL uses the [**gl::algorithm::empty_callback**](../../cpp-gl/structgl_1_1algorithm_1_1empty__callback.md) tag. If a hook is not needed, the engine receives this tag, and template metaprogramming (`if constexpr`) physically eliminates that branch of execution at compile time.
+To solve this, CPP-GL uses the [**gl::algorithm::empty_callback**](../../cpp-gl/structgl_1_1algorithm_1_1empty__callback.md) tag. If a hook is not needed, the engine receives this tag, and compile-time evaluation (`if constexpr`) completely optimizes away that branch of execution.
 
 ### Tri-State Control Flow
 
@@ -37,11 +43,11 @@ When evaluating adjacent edges during a search, algorithms often need more contr
 - `decision::reject`: Skip this specific element, but continue the search.
 - `decision::abort`: Instantly terminate the entire algorithm.
 
-For convenience, `decision` implicitly constructs from a boolean, where `true` maps to `accept` and `false` maps to `reject`.
+For convenience, `decision` implicitly constructs from a boolean, where `true` maps to `accept` and `false` maps to `reject`. Furthermore, `decision` provides a boolean conversion operator, allowing it to be seamlessly evaluated in standard conditional statements (`if (enqueue_decision) { ... }`).
 
 ### The Search Node
 
-By default, the active frontier of a search engine stores [**gl::algorithm::search_node<G>**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md) structures. This is a lightweight pair containing:
+By default, the active container of a search engine stores [**gl::algorithm::search_node<G>**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md) structures. This is a lightweight pair containing:
 
 1. `vertex_id`: The vertex currently being visited.
 2. `pred_id`: The vertex from which this current vertex was reached (its parent in the traversal tree).
@@ -56,12 +62,12 @@ CPP-GL manages this via the [**gl::algorithm::result_discriminator**](../../cpp-
 - `ret`: The algorithm will allocate memory and return a stateful object (e.g., `predecessors_map<G>`).
 - `noret`: The algorithm will execute purely for side-effects and return `void` (or a simple success boolean).
 
-## Algorithm Categories
+## Available Concrete Algorithms
 
 Explore the specific layers of the algorithm module below:
 
-- [**The Generic Templates**](templates.md): Deep dive into the callback architecture of `bfs`, `dfs`, `r_dfs`, and `pfs`.
+- [**The Generic Templates**](templates.md): A detailed explanation of the core traversal engines and their execution sequence.
 - [**Concrete Traversals**](traversal.md): Standard wrappers for basic component discovery and state-tracked searching.
 - [**Pathfinding**](pathfinding.md): Algorithms for finding the shortest path between nodes (e.g., Dijkstra).
-- [**Spanning Trees**](spanning_trees.md): Algorithms for calculating Minimum Spanning Trees (e.g., Prim's).
-- [**Topology Solvers**](topology_solvers.md): Graph analysis tools like topological sorting and bipartite coloring.
+- [**Spanning Trees**](spanning_trees.md): Algorithms for finding Minimum Spanning Trees (e.g., Prim's).
+- [**Topology Solvers**](topology_solvers.md): Structural algorithms like topological sorting and bipartite coloring.
