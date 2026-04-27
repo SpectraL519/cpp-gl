@@ -234,13 +234,17 @@ By keeping all vertex and edge data in adjacent memory blocks, these models prov
 
 Depending on the chosen representation model, the computational complexity of standard graph operations will differ. The table below outlines these complexities.
 
-| Operation         | Standard List                      | Flat List                        | Standard Matrix      | Flat Matrix          |
-| :---------------- | :--------------------------------- | :------------------------------- | :------------------- | :------------------- |
-| Add Vertex        | $O(1)$ amortized                   | $O(1)$ amortized                 | $O(\vert V \vert)$   | $O(\vert V \vert^2)$ |
-| Add Edge          | $O(1)$ amortized                   | $O(1)$ amortized                 | $O(1)$               | $O(1)$               |
-| Check Edge Exists | $O(deg(v))$                        | $O(deg(v))$                      | $O(1)$               | $O(1)$               |
-| Iterate Out-Edges | $O(deg(v))$                        | $O(deg(v))$                      | $O(\vert V \vert)$   | $O(\vert V \vert)$   |
-| Iterate All Edges | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert+\vert E \vert)$ | $O(\vert V \vert^2)$ | $O(\vert V \vert^2)$ |
+| Operation                                  | Standard List                      | Flat List                          | Standard Matrix      | Flat Matrix          |
+| :----------------------------------------- | :--------------------------------- | :--------------------------------- | :------------------- | :------------------- |
+| Add Vertex                                 | $O(1)$ amortized                   | $O(1)$ amortized                   | $O(\vert V \vert)$   | $O(\vert V \vert^2)$ |
+| Remove Vertex                              | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert^2)$ | $O(\vert V \vert^2)$ |
+| Add Edge                                   | $O(1)$ amortized                   | $O(\vert E \vert)$                 | $O(1)$               | $O(1)$               |
+| Remove Edge                                | $O(deg(v))$                        | $O(\vert E \vert)$                 | $O(1)$               | $O(1)$               |
+| Check Edge Exists                          | $O(deg(v))$                        | $O(deg(v))$                        | $O(1)$               | $O(1)$               |
+| Iterate Out-Edges                          | $O(deg(v))$                        | $O(deg(v))$                        | $O(\vert V \vert)$   | $O(\vert V \vert)$   |
+| Iterate In-Edges <br/> (Undirected Graphs) | $O(deg(v))$                        | $O(deg(v))$                        | $O(\vert V \vert)$   | $O(\vert V \vert)$   |
+| Iterate In-Edges <br/> (Directed Graphs)   | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert)$   | $O(\vert V \vert)$   |
+| Iterate All Edges                          | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert^2)$ | $O(\vert V \vert^2)$ |
 
 ### Choosing the Layout
 
