@@ -10,6 +10,7 @@
 
 namespace hgl::algorithm {
 
+/// @ingroup hgl_alg
 template <
     traversal_direction Dir = traversal_direction::forward,
     traits::c_hypergraph H,

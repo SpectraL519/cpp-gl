@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <deque>
 #include <ranges>
+#include <stdexcept>
 
 namespace gl_testing {
 
@@ -143,7 +144,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         REQUIRE(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
 
-        CHECK_THROWS_AS(discard(sut.at(constants::out_of_rng_idx)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.at(constants::out_of_rng_idx)), std::invalid_argument);
         CHECK(std::ranges::all_of(
             constants::vertex_id_view,
             [&sut](const gl::default_id_type vertex_id) { return sut.out_edges(vertex_id).empty(); }
@@ -210,7 +211,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
     SUBCASE("remove_vertex(vertex) should throw if the id of the given is invalid") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(sut.remove_vertex(fixture.out_of_range_vertex), std::out_of_range);
+        CHECK_THROWS_AS(sut.remove_vertex(fixture.out_of_range_vertex), std::invalid_argument);
     }
 
     SUBCASE("remove_vertex(vertex) should remove the given vertex and align ids of remaining "
@@ -236,12 +237,12 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             }
         ));
 
-        CHECK_THROWS_AS(discard(sut.at(n_vertices_after_remove)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.at(n_vertices_after_remove)), std::invalid_argument);
     }
 
     SUBCASE("remove_vertex(id) should throw if the given id is invalid") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_rng_idx), std::out_of_range);
+        CHECK_THROWS_AS(sut.remove_vertex(constants::out_of_rng_idx), std::invalid_argument);
     }
 
     SUBCASE("remove_vertex(id) should remove the given vertex and align ids of remaining vertices"
@@ -267,7 +268,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             }
         ));
 
-        CHECK_THROWS_AS(discard(sut.at(n_vertices_after_remove)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.at(n_vertices_after_remove)), std::invalid_argument);
     }
 
     SUBCASE("remove_vetices_from(ids) should properly remove elements at given indices (ignoring "
@@ -277,9 +278,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{n_vertices};
         fixture.init_complete_graph(sut);
 
-        sut.remove_vertices_from(
-            vertex_id_list{constants::v1_id, constants::v3_id, constants::v1_id}
-        );
+        sut.remove_vertices(vertex_id_list{constants::v1_id, constants::v3_id, constants::v1_id});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
@@ -300,7 +299,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto v1 = sut[constants::v1_id];
         const auto v3 = sut[constants::v3_id];
 
-        sut.remove_vertices_from(std::vector<vertex_type>{v1, v3, v1});
+        sut.remove_vertices(std::vector<vertex_type>{v1, v3, v1});
 
         constexpr auto expected_n_vertices = n_vertices - 2uz;
         REQUIRE_EQ(sut.n_vertices(), expected_n_vertices);
@@ -328,10 +327,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{constants::n_elements};
         CHECK_THROWS_AS(
             discard(sut.vertex(static_cast<gl::default_id_type>(sut.n_vertices()))),
-            std::out_of_range
+            std::invalid_argument
         );
         CHECK_THROWS_AS(
-            discard(sut.at(static_cast<gl::default_id_type>(sut.n_vertices()))), std::out_of_range
+            discard(sut.at(static_cast<gl::default_id_type>(sut.n_vertices()))),
+            std::invalid_argument
         );
     }
 
@@ -374,13 +374,21 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
     ) {
         sut_type sut{};
 
-        CHECK_THROWS_AS(discard(sut.neighbor_ids(constants::out_of_rng_idx)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.predecessor_ids(constants::out_of_rng_idx)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.successor_ids(constants::out_of_rng_idx)), std::out_of_range);
+        CHECK_THROWS_AS(
+            discard(sut.neighbor_ids(constants::out_of_rng_idx)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            discard(sut.predecessor_ids(constants::out_of_rng_idx)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            discard(sut.successor_ids(constants::out_of_rng_idx)), std::invalid_argument
+        );
 
-        CHECK_THROWS_AS(discard(sut.neighbor_ids(vertex_type::invalid())), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.predecessor_ids(vertex_type::invalid())), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.successor_ids(vertex_type::invalid())), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.neighbor_ids(vertex_type::invalid())), std::invalid_argument);
+        CHECK_THROWS_AS(
+            discard(sut.predecessor_ids(vertex_type::invalid())), std::invalid_argument
+        );
+        CHECK_THROWS_AS(discard(sut.successor_ids(vertex_type::invalid())), std::invalid_argument);
     }
     GL_SUPPRESS_WARNING_END;
 
@@ -405,13 +413,15 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
     ) {
         sut_type sut{};
 
-        CHECK_THROWS_AS(discard(sut.neighbors(constants::out_of_rng_idx)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.predecessors(constants::out_of_rng_idx)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.successors(constants::out_of_rng_idx)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.neighbors(constants::out_of_rng_idx)), std::invalid_argument);
+        CHECK_THROWS_AS(
+            discard(sut.predecessors(constants::out_of_rng_idx)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(discard(sut.successors(constants::out_of_rng_idx)), std::invalid_argument);
 
-        CHECK_THROWS_AS(discard(sut.neighbors(vertex_type::invalid())), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.predecessors(vertex_type::invalid())), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.successors(vertex_type::invalid())), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.neighbors(vertex_type::invalid())), std::invalid_argument);
+        CHECK_THROWS_AS(discard(sut.predecessors(vertex_type::invalid())), std::invalid_argument);
+        CHECK_THROWS_AS(discard(sut.successors(vertex_type::invalid())), std::invalid_argument);
     }
     GL_SUPPRESS_WARNING_END;
 
@@ -464,10 +474,10 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         SUBCASE("add_edge(ids) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
-                sut.add_edge(constants::out_of_rng_idx, constants::v2_id), std::out_of_range
+                sut.add_edge(constants::out_of_rng_idx, constants::v2_id), std::invalid_argument
             );
             CHECK_THROWS_AS(
-                sut.add_edge(constants::v1_id, constants::out_of_rng_idx), std::out_of_range
+                sut.add_edge(constants::v1_id, constants::out_of_rng_idx), std::invalid_argument
             );
         }
 
@@ -495,8 +505,12 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
 
         SUBCASE("add_edge(vertices) should throw if either vertex is invalid") {
-            CHECK_THROWS_AS(sut.add_edge(fixture.out_of_range_vertex, vertex_2), std::out_of_range);
-            CHECK_THROWS_AS(sut.add_edge(vertex_1, fixture.out_of_range_vertex), std::out_of_range);
+            CHECK_THROWS_AS(
+                sut.add_edge(fixture.out_of_range_vertex, vertex_2), std::invalid_argument
+            );
+            CHECK_THROWS_AS(
+                sut.add_edge(vertex_1, fixture.out_of_range_vertex), std::invalid_argument
+            );
         }
 
         SUBCASE("add_edge(vertices) should properly add the new edge") {
@@ -526,7 +540,8 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             REQUIRE_EQ(sut.n_edges(), 0uz);
 
             CHECK_THROWS_AS(
-                sut.add_edges_from(constants::out_of_rng_idx, vertex_id_list{}), std::out_of_range
+                sut.add_edges_from(constants::out_of_rng_idx, vertex_id_list{}),
+                std::invalid_argument
             );
             CHECK_EQ(sut.n_edges(), 0uz);
 
@@ -534,7 +549,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 sut.add_edges_from(
                     constants::v1_id, vertex_id_list{constants::v2_id, constants::out_of_rng_idx}
                 ),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_EQ(sut.n_edges(), 0uz);
         }
@@ -561,7 +576,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
             CHECK_THROWS_AS(
                 sut.add_edges_from(fixture.out_of_range_vertex, std::vector<vertex_type>{}),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_EQ(sut.n_edges(), 0uz);
 
@@ -569,7 +584,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 sut.add_edges_from(
                     vertex_1, std::vector<vertex_type>{vertex_2, fixture.out_of_range_vertex}
                 ),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_EQ(sut.n_edges(), 0uz);
         }
@@ -653,11 +668,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("add_edge_with(ids, property) should throw if either vertex id is invalid") {
             CHECK_THROWS_AS(
                 sut.add_edge_with(constants::out_of_rng_idx, constants::v2_id, constants::used),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
                 sut.add_edge_with(constants::v1_id, constants::out_of_rng_idx, constants::used),
-                std::out_of_range
+                std::invalid_argument
             );
         }
 
@@ -689,11 +704,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("add_edge_with(vertices, property) should throw if either vertex is invalid") {
             CHECK_THROWS_AS(
                 sut.add_edge_with(fixture.out_of_range_vertex, vertex_2, constants::used),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
                 sut.add_edge_with(vertex_1, fixture.out_of_range_vertex, constants::used),
-                std::out_of_range
+                std::invalid_argument
             );
         }
 
@@ -793,14 +808,18 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         CHECK_FALSE(sut.has_edge(invalid_v2_edge));
     }
 
-    SUBCASE("has_edge(vertex, vertex) should throw if one of the vertices is invalid") {
+    SUBCASE("has_edge(vertex, vertex) should throw if either of the vertices is invalid") {
         sut_type sut{constants::n_elements};
 
         const auto v1 = sut[constants::v1_id];
         const auto v2 = sut[constants::v2_id];
 
-        CHECK_THROWS_AS(discard(sut.has_edge(fixture.out_of_range_vertex, v2)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.has_edge(v1, fixture.out_of_range_vertex)), std::out_of_range);
+        CHECK_THROWS_AS(
+            discard(sut.has_edge(fixture.out_of_range_vertex, v2)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            discard(sut.has_edge(v1, fixture.out_of_range_vertex)), std::invalid_argument
+        );
     }
 
     SUBCASE("has_edge(vertex, vertex) should return true if there is an edge connecting the given "
@@ -823,10 +842,14 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto valid_vertex = sut[constants::v1_id];
 
         const vertex_type out_of_range_vertex{constants::out_of_rng_idx};
-        CHECK_THROWS_AS(discard(sut.edge(valid_vertex, out_of_range_vertex)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.edge(out_of_range_vertex, valid_vertex)), std::out_of_range);
         CHECK_THROWS_AS(
-            discard(sut.edge(out_of_range_vertex, out_of_range_vertex)), std::out_of_range
+            discard(sut.edge(valid_vertex, out_of_range_vertex)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            discard(sut.edge(out_of_range_vertex, valid_vertex)), std::invalid_argument
+        );
+        CHECK_THROWS_AS(
+            discard(sut.edge(out_of_range_vertex, out_of_range_vertex)), std::invalid_argument
         );
     }
 
@@ -856,14 +879,14 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         }
     }
 
-    SUBCASE("edges(id, id) should return an empty list if either id is invalid") {
+    SUBCASE("edges(id, id) should throw if either id is invalid") {
         sut_type sut{constants::n_elements};
 
         CHECK_THROWS_AS(
-            discard(sut.edges(constants::out_of_rng_idx, constants::v2_id)), std::out_of_range
+            discard(sut.edges(constants::out_of_rng_idx, constants::v2_id)), std::invalid_argument
         );
         CHECK_THROWS_AS(
-            discard(sut.edges(constants::v1_id, constants::out_of_rng_idx)), std::out_of_range
+            discard(sut.edges(constants::v1_id, constants::out_of_rng_idx)), std::invalid_argument
         );
     }
 
@@ -887,13 +910,10 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
 
         CHECK(std::ranges::equal(sut.edges(constants::v1_id, constants::v2_id), expected_edges));
 
-        if constexpr (gl::traits::c_directed_edge<edge_type>) {
+        if constexpr (gl::traits::c_directed_edge<edge_type>)
             CHECK(sut.edges(constants::v2_id, constants::v2_id).empty());
-        }
-        else {
-            CHECK(std::ranges::equal(sut.edges(constants::v2_id, constants::v1_id), expected_edges)
-            );
-        }
+        else
+            CHECK_EQ(sut.edges(constants::v2_id, constants::v1_id), expected_edges);
     }
 
     SUBCASE("edges(vertex, vertex) should throw if either vertex is invalid") {
@@ -902,13 +922,15 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         const auto v1 = sut[constants::v1_id];
         const auto v2 = sut[constants::v2_id];
 
-        CHECK_THROWS_AS(discard(sut.edges(fixture.out_of_range_vertex, v2)), std::out_of_range);
-        CHECK_THROWS_AS(discard(sut.edges(v1, fixture.out_of_range_vertex)), std::out_of_range);
+        CHECK_THROWS_AS(discard(sut.edges(fixture.out_of_range_vertex, v2)), std::invalid_argument);
+        CHECK_THROWS_AS(discard(sut.edges(v1, fixture.out_of_range_vertex)), std::invalid_argument);
     }
 
     SUBCASE("incident_edges(id) should throw if the vertex_id is invalid") {
         sut_type sut{constants::n_elements};
-        CHECK_THROWS_AS(discard(sut.incident_edges(constants::out_of_rng_idx)), std::out_of_range);
+        CHECK_THROWS_AS(
+            discard(sut.incident_edges(constants::out_of_rng_idx)), std::invalid_argument
+        );
     }
 
     SUBCASE("incident_edges(id) should return a proper iterator range for a valid vertex") {
@@ -921,7 +943,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{constants::n_elements};
 
         CHECK_THROWS_AS(
-            discard(sut.incident_edges(fixture.out_of_range_vertex)), std::out_of_range
+            discard(sut.incident_edges(fixture.out_of_range_vertex)), std::invalid_argument
         );
     }
 
@@ -945,11 +967,11 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         SUBCASE("are_adjacent(vertex_id, vertex_id) should throw for out of range vertex ids") {
             CHECK_THROWS_AS(
                 discard(sut.are_adjacent(constants::out_of_rng_idx, constants::v2_id)),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
                 discard(sut.are_adjacent(constants::v1_id, constants::out_of_rng_idx)),
-                std::out_of_range
+                std::invalid_argument
             );
         }
 
@@ -973,13 +995,13 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
                 "invalid") {
             CHECK_THROWS_AS(
                 discard(sut.are_adjacent(fixture.out_of_range_vertex, fixture.out_of_range_vertex)),
-                std::out_of_range
+                std::invalid_argument
             );
             CHECK_THROWS_AS(
-                discard(sut.are_adjacent(fixture.out_of_range_vertex, v2)), std::out_of_range
+                discard(sut.are_adjacent(fixture.out_of_range_vertex, v2)), std::invalid_argument
             );
             CHECK_THROWS_AS(
-                discard(sut.are_adjacent(v1, fixture.out_of_range_vertex)), std::out_of_range
+                discard(sut.are_adjacent(v1, fixture.out_of_range_vertex)), std::invalid_argument
             );
         }
 
@@ -1024,17 +1046,17 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
             const auto edge = sut.add_edge(v1, v2);
 
             CHECK_THROWS_AS(
-                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::out_of_range
+                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::invalid_argument
             );
             CHECK_THROWS_AS(
-                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::out_of_range
+                discard(sut.are_incident(fixture.out_of_range_vertex, edge)), std::invalid_argument
             );
 
             CHECK_THROWS_AS(
-                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::out_of_range
+                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::invalid_argument
             );
             CHECK_THROWS_AS(
-                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::out_of_range
+                discard(sut.are_incident(edge, fixture.out_of_range_vertex)), std::invalid_argument
             );
         }
 
@@ -1308,7 +1330,9 @@ TEST_CASE_TEMPLATE_DEFINE("property getter tests", TraitsType, property_graph_tr
         CHECK_EQ(sut.vertex_properties(id), std::format("vertex_{}", id));
     }
 
-    CHECK_THROWS_AS(discard(sut.vertex_properties(constants::out_of_rng_idx)), std::out_of_range);
+    CHECK_THROWS_AS(
+        discard(sut.vertex_properties(constants::out_of_rng_idx)), std::invalid_argument
+    );
 
     auto emap = sut.edge_properties_map();
     CHECK(emap.size() == constants::n_elements);
@@ -1320,7 +1344,7 @@ TEST_CASE_TEMPLATE_DEFINE("property getter tests", TraitsType, property_graph_tr
         );
     }
 
-    CHECK_THROWS_AS(discard(sut.edge_properties(constants::out_of_rng_idx)), std::out_of_range);
+    CHECK_THROWS_AS(discard(sut.edge_properties(constants::out_of_rng_idx)), std::invalid_argument);
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(

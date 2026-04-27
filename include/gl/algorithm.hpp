@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/algorithm.hpp
+/// @brief Includes all algorithm-related headers, providing a comprehensive set of graph algorithms for various graph types and configurations.
+
 #pragma once
 
 // clang-format off

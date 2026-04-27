@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/conversion.hpp
+/// @brief Defines the graph representation model conversion utility.
+
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
@@ -16,10 +19,16 @@ namespace gl {
 
 namespace traits {
 
+/// @ingroup GL GL-Traits
+/// @brief Utility trait type used to swap the implementation tag of a graph traits or graph type.
+/// ### See Also:
+/// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different implementations.
 template <typename GT, traits::c_graph_impl_tag NewImplTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 struct swap_impl_tag;
 
+/// @ingroup GL GL-Traits
+/// @brief Specialization of @ref gl::traits::swap_impl_tag "swap_impl_tag" for the @ref gl::graph_traits "graph_traits" type.
 template <
     traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
@@ -31,6 +40,8 @@ struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag, IdType>, NewImplTag> 
     using type = graph_traits<Dir, VP, EP, NewImplTag, IdType>;
 };
 
+/// @ingroup GL GL-Traits
+/// @brief Specialization of @ref gl::traits::swap_impl_tag "swap_impl_tag" for the @ref gl::graph "graph" class.
 template <
     traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
@@ -42,6 +53,10 @@ struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag, IdType>>, NewIm
     using type = graph<graph_traits<Dir, VP, EP, NewImplTag, IdType>>;
 };
 
+/// @ingroup GL GL-Traits
+/// @brief Alias template for easier usage of the `swap_impl_tag` trait to resolve the swapped type directly.
+/// ### See Also:
+/// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different implementations.
 template <typename GT, traits::c_graph_impl_tag NewImplTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 using swap_impl_tag_t = typename swap_impl_tag<GT, NewImplTag>::type;
@@ -144,11 +159,18 @@ struct to_impl<impl::matrix_t, impl::flat_matrix_t> {
 
 } // namespace detail
 
+/// @ingroup GL GL-Core
+/// @headerfile gl/conversion.hpp
 /// @brief Converts a graph from one implementation model to another.
-/// @tparam TargetImplTag The desired implementation tag (e.g., gl::impl::flat_list_t)
-/// @tparam Graph The automatically deduced type of the source graph
+/// ### Template Parameters
+/// | Parameter     | Description | Constraints |
+/// | :------------ | :---------- | :---------- |
+/// | TargetImplTag | The implementation tag of the desired target representation (e.g., `gl::impl::flat_list_t`) | [**c_graph_impl_tag**](gl_concepts.md#gl-traits-c-graph-impl-tag) |
+/// | Graph         | The type of the source graph, which will be automatically deduced from the function argument. | [**c_graph**](gl_concepts.md#gl-traits-c-graph) |
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new graph containing the moved data, structured according to TargetImplTag.
+/// ### See Also
+/// - @ref gl::traits::swap_impl_tag "swap_impl_tag" : For the trait used to resolve the target graph type with the swapped implementation tag.
 template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source) {
     using source_traits = typename Graph::traits_type;

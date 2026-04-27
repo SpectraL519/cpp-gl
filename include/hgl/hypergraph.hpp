@@ -57,6 +57,10 @@ concept c_matrix_hypergraph =
     c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
 
 template <typename H>
+concept c_flat_matrix_hypergraph =
+    c_hypergraph<H> and c_hypergraph_flat_matrix_impl<typename H::implementation_tag>;
+
+template <typename H>
 concept c_incidence_matrix_hypergraph =
     c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
 
@@ -75,6 +79,7 @@ struct to_impl;
 
 } // namespace detail
 
+/// @ingroup hgl
 template <traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
 class hypergraph final {
 public:
@@ -181,7 +186,7 @@ public:
         this->remove_vertex(vertex.id());
     }
 
-    void remove_vertices_from(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
+    void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> vertex_id_set(
             std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
@@ -192,7 +197,7 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    void remove_vertices_from(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
+    void remove_vertices(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
         // sort vertices in a descending n_vertices (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
@@ -209,7 +214,7 @@ public:
         return vertex_id < this->_n_vertices;
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_vertex(const vertex_type& vertex) const {
+    [[nodiscard]] gl_attr_force_inline bool has_vertex(vertex_type vertex) const {
         return this->has_vertex(vertex.id());
     }
 
@@ -496,7 +501,7 @@ public:
         return hyperedge_id < this->_n_hyperedges;
     }
 
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const hyperedge_type& hyperedge) const {
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(hyperedge_type hyperedge) const {
         return this->has_hyperedge(hyperedge.id());
     }
 

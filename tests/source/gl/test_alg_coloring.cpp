@@ -82,6 +82,8 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
 
             fs::path coloring_file_path = data_path / "bicoloring_bipartite_graph_coloring.txt";
 
+            // Using uint8_t results in invalid value interpretation when reading from file
+            // Solution: the data is read as uint16_t and cast to uint8_t
             const auto coloring_values =
                 load_list<std::uint16_t>(sut.n_vertices(), coloring_file_path);
 
@@ -89,7 +91,9 @@ TEST_CASE_TEMPLATE_DEFINE("bipartite coloring tests", TraitsType, traits_type_te
                 coloring_values.begin(),
                 coloring_values.end(),
                 std::back_inserter(expected_coloring),
-                [](const std::uint16_t value) { return gl::bin_color_value{value}; }
+                [](const std::uint16_t value) {
+                    return gl::bin_color_value{static_cast<std::uint8_t>(value)};
+                }
             );
         }
 
