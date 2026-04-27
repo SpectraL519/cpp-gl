@@ -6,7 +6,7 @@
 
 <br />
 
-<div align="center" markdown="1">
+<div align="center">
 
 [![G++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml)
 [![Clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml)

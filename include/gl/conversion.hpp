@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/conversion.hpp
+/// @brief Defines the graph representation model conversion utility.
+
 #pragma once
 
 #include "gl/decl/impl_tags.hpp"
