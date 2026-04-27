@@ -16,4 +16,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-mkdoxy = { path = "../../MkDoxy", editable = true }
+mkdoxy = { git = "https://github.com/SpectraL519/MkDoxy.git" }
