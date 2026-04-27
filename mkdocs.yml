@@ -6,10 +6,11 @@ nav:
   - Home: index.md
   - GL:
       - Quick Start: gl/quick_start.md
-      # - Architecture & Basics: gl/architecture.md
-      # - Algorithms: gl/algorithms.md
-      # - Input & Output: gl/io.md
-      # - Advanced Configuration: gl/configuration.md
+      - Architecture & Basics: gl/architecture.md
+      - Topologies: gl/topologies.md
+      - Algorithms: gl/algorithms.md
+      - I/O Utility: gl/io.md
+      - Advanced Features: gl/advanced.md
       - API Reference:
           - Overview: cpp-gl/group__GL.md
           - Core Components: cpp-gl/group__GL-Core.md
@@ -70,7 +71,11 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.inlinehilite
   - pymdownx.arithmatex:
       generic: true
@@ -83,6 +88,9 @@ markdown_extensions:
 
 plugins:
   - search
+  - exclude-search:
+      exclude:
+        - "cpp-gl/*_source.md"
   - include-markdown
   - callouts:
       aliases: false

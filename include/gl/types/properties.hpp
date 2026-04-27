@@ -33,7 +33,7 @@ struct empty_properties {};
 /// > This type is used internally by the library to optimize storage for graph components that have no properties.
 struct empty_properties_map {};
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief A property struct providing a basic string-based naming facility.
 struct name_property {
     /// @brief The underlying string type used for the name.
@@ -72,7 +72,7 @@ struct name_property {
     }
 };
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief A type-safe container for heterogeneous properties stored by string keys.
 ///
 /// Stores an arbitrary number of properties identified by string keys, where each
@@ -148,9 +148,7 @@ private:
     property_map_type _property_map;
 };
 
-// --- vertex properties ---
-
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief A specialized color property for algorithms requiring binary states (e.g., bipartition).
 class binary_color final {
 public:
@@ -209,18 +207,18 @@ private:
     value _value{value::unset};
 };
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief Alias for the underlying `binary_color::value` enum.
 using bin_color_value = typename binary_color::value;
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief A property struct wrapping a `binary_color`.
 struct binary_color_property {
     using color_type = binary_color;
     color_type color;
 };
 
-/// @ingroup GL GL-Types
+/// @ingroup GL GL-Core
 /// @brief A property struct providing arithmetic weight for edges or vertices.
 ///
 /// ### Template Parameters

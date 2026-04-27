@@ -63,8 +63,8 @@ namespace gl {
 /// | IdType     | The underlying integer type used for the vertex ID. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 ///
 /// ### See Also
-/// * @ref gl::edge_descriptor : For the corresponding edge wrapper class.
-/// * @ref gl::graph : For the owning graph class that manages vertex descriptors.
+/// * @ref gl::edge_descriptor "edge_descriptor" : For the corresponding edge wrapper class.
+/// * @ref gl::graph "graph" : For the owning graph class that manages vertex descriptors.
 template <
     traits::c_properties Properties = empty_properties,
     traits::c_id_type IdType = default_id_type>
