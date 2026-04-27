@@ -11,10 +11,11 @@ This separation ensures maximum code reuse, provides strict zero-cost abstractio
 Located at the lowest level, the generic templates define the strict structural execution of a search. They know nothing about *shortest paths*, *spanning trees*, or *cycle detection*. Their only responsibility is to manage the pending elements (a queue, stack, or priority queue) and invoke a series of user-provided callback hooks at specific moments during the traversal.
 
 The core generic templates include:
-- [**`bfs`**](templates.md#breadth-first-search-bfs): A queue-based Breadth-First Search engine.
-- [**`dfs`**](templates.md#depth-first-search-dfs): A stack-based, iterative Depth-First Search engine.
-- [**`r_dfs`**](templates.md#recursive-depth-first-search-r_dfs): A recursive Depth-First Search engine utilizing the call stack.
-- [**`pfs`**](templates.md#priority-first-search-pfs): A priority-queue-based Priority-First Search engine for custom heuristics.
+
+- [**`bfs`**](templates.md#the-core-engines): A queue-based Breadth-First Search engine.
+- [**`dfs`**](templates.md#the-core-engines): A stack-based, iterative Depth-First Search engine.
+- [**`r_dfs`**](templates.md#the-core-engines): A recursive Depth-First Search engine utilizing the call stack.
+- [**`pfs`**](templates.md#the-core-engines): A priority-queue-based Priority-First Search engine for custom heuristics.
 
 ### 2. The Concrete Algorithms
 
