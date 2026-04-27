@@ -149,8 +149,8 @@ Consider the following graph:
 
 <div align="center" markdown="1">
 
-![Graph G1 Light](../img/doc/undir-graph-light.svg#only-light){: width="400" }
-![Graph G1 Dark](../img/doc/undir-graph-dark.svg#only-dark){: width="400" }
+![Undirected Graph Light](../img/doc/light/undir-graph.svg#only-light){: width="400" }
+![Undirected Graph Dark](../img/doc/dark/undir-graph.svg#only-dark){: width="400" }
 
 </div>
 
@@ -208,7 +208,8 @@ These models are highly flexible. Because the inner containers can grow independ
 
 <div align="center" markdown="1">
 
-![Standard Models Layout Placeholder](../img/doc/placeholder-standard-layout.png){: width="600" }
+![Undirected Graph Standard Representation](../img/doc/light/undir-graph-repr-std.svg#only-light){: width="700" }
+![Undirected Graph Standard Representation](../img/doc/dark/undir-graph-repr-std.svg#only-dark){: width="700" }
 
 </div>
 
@@ -220,7 +221,8 @@ By keeping all vertex and edge data in adjacent memory blocks, these models prov
 
 <div align="center" markdown="1">
 
-![Flat Models Layout Placeholder](../img/doc/placeholder-flat-layout.png){: width="600" }
+![Undirected Graph Flat Representation](../img/doc/light/undir-graph-repr-flat.svg#only-light){: width="700" }
+![Undirected Graph Flat Representation](../img/doc/dark/undir-graph-repr-flat.svg#only-dark){: width="700" }
 
 </div>
 
