@@ -149,8 +149,8 @@ Consider the following graph:
 
 <div align="center" markdown="1">
 
-![Undirected Graph Light](../img/doc/light/undir-graph.svg#only-light){: width="400" }
-![Undirected Graph Dark](../img/doc/dark/undir-graph.svg#only-dark){: width="400" }
+![Undirected Graph Light](../img/doc/light/undir-graph.svg#only-light){: width="300" }
+![Undirected Graph Dark](../img/doc/dark/undir-graph.svg#only-dark){: width="300" }
 
 </div>
 

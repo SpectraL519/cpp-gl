@@ -71,4 +71,4 @@ Explore the specific layers of the algorithm module below:
 - [**Concrete Traversals**](traversal.md): Standard wrappers for basic component discovery and state-tracked searching.
 - [**Pathfinding**](pathfinding.md): Algorithms for finding the shortest path between nodes (e.g., Dijkstra).
 - [**Spanning Trees**](spanning_trees.md): Algorithms for finding Minimum Spanning Trees (e.g., Prim's).
-- [**Topology Solvers**](topology_solvers.md): Structural algorithms like topological sorting and bipartite coloring.
+- [**Topological Algorithms**](topological_algs.md): Structural algorithms like topological sorting and bipartite coloring.

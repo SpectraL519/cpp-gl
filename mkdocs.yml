@@ -14,7 +14,7 @@ nav:
           - Concrete Traversals: gl/algorithms/traversal.md
           - Pathfinding: gl/algorithms/pathfinding.md
           - Spanning Trees: gl/algorithms/spanning_trees.md
-          - Topology Solvers: gl/algorithms/topology_solvers.md
+          - Topological Algorithms: gl/algorithms/topological_algs.md
       - I/O Utility: gl/io.md
       - Advanced Features: gl/advanced.md
       - API Reference:
