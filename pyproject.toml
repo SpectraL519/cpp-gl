@@ -1,0 +1,19 @@
+[project]
+name = "cpp-gl"
+version = "2.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mike>=2.2.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-callouts>=1.16.0",
+    "mkdocs-exclude-search>=0.6.6",
+    "mkdocs-include-markdown-plugin>=7.2.2",
+    "mkdocs-material>=9.7.6",
+    "mkdoxy",
+    "ruff>=0.15.11",
+]
+
+[tool.uv.sources]
+mkdoxy = { git = "https://github.com/SpectraL519/MkDoxy.git" }

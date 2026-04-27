@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/util/math.hpp
+/// @brief Defines utility mathematical functions.
+
 #pragma once
 
 #include "gl/types/core.hpp"
@@ -11,7 +14,15 @@
 
 namespace gl::util {
 
-// exponentation function for u64 integral type
+/// @ingroup GL GL-Util
+/// @brief Computes the value of `base` raised to the power of `exp` using exponentiation by squaring.
+/// @param base The base value to be raised to a power.
+/// @param exp The exponent to which the base is raised.
+/// @return The result of `base` raised to the power of `exp`.
+///
+/// > [!INFO] Time Complexity
+/// >
+/// > $O(\log(\text{exp}))$ due to halving the exponent at each step.
 [[nodiscard]] inline constexpr size_type upow(size_type base, size_type exp) {
     size_type result = 1uz;
     while (exp) {
@@ -24,8 +35,19 @@ namespace gl::util {
     return result;
 }
 
-// sum of exponents: base ^ i_begin + base ^ (i_begin + 1) + ... + base ^ (i_end)
-[[nodiscard]] inline size_type upow_sum(const size_type base, size_type i_begin, size_type i_end) {
+/// @ingroup GL GL-Util
+/// @brief Computes the sum of powers of `base` from `base^i_begin` to `base^i_end` inclusive.
+/// @param base The base value for the powers.
+/// @param i_begin The starting exponent (inclusive).
+/// @param i_end The ending exponent (inclusive).
+/// @return The sum of `base^i` for all `i` in the range `[i_begin, i_end]`.
+///
+/// > [!INFO] Time Complexity
+/// >
+/// > \f$O(\log(\text{max}(\text{i_begin}, \text{i_end})))\f$ due to the use of the closed-form formula for geometric series.
+[[nodiscard]] inline constexpr size_type upow_sum(
+    const size_type base, size_type i_begin, size_type i_end
+) {
     std::tie(i_begin, i_end) = std::minmax(i_begin, i_end);
 
     if (base == 0uz)

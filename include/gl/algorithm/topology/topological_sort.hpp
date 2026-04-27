@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file gl/algorithm/topology/topological_sort.hpp
+/// @brief Algorithms for computing the topological ordering of directed acyclic graphs.
+
 #pragma once
 
 #include "gl/algorithm/core.hpp"
@@ -9,6 +12,53 @@
 
 namespace gl::algorithm {
 
+/// @ingroup GL GL-Algorithm
+/// @brief Computes a topological ordering of the vertices in a Directed Acyclic Graph (DAG).
+///
+/// This implementation relies on Kahn's Algorithm. It utilizes the generic @ref gl::algorithm::bfs "bfs"
+/// template, seeding the queue with all vertices that have an in-degree of 0. As vertices are processed,
+/// the in-degrees of adjacent vertices are iteratively decremented.
+///
+/// If the final sorted order does not contain all vertices in the graph, it indicates the presence
+/// of a cycle, meaning the graph is not a DAG.
+///
+/// ### Example Usage
+/// ```cpp
+/// if (auto top_order = gl::algorithm::topological_sort(graph)) { // (1)!
+///     std::cout << "Topological Order: "
+///               << gl::io::range_formatter(top_order.value()) // (2)!
+///               << '\n';
+/// }
+/// else {
+///     std::cout << "Graph contains a cycle!\n";
+/// }
+/// ```
+///
+/// 1\. Attempts to compute the ordering. Fails and returns `std::nullopt` if a cycle is detected.
+///
+/// 2\. Prints the topologically sorted vector of vertex IDs using the @ref gl::io::range_formatter "range_formatter" helper.
+///
+/// > [!INFO] Algorithmic Complexity
+/// >
+/// > The time complexity depends entirely on the underlying representation of `GraphType`:
+/// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
+/// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
+/// > - **Adjacency Matrix Representations**: \f$O(|V|^2)\f$
+/// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
+/// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
+///
+/// ### Template Parameters
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | G | The type of the directed graph being traversed. | Must satisfy the [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before a vertex is pushed into the sort order. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+///
+/// @param graph The directed graph to evaluate.
+/// @param pre_visit Hook executed immediately before the internal sort logic processes a vertex.
+/// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated and their in-degrees decremented.
+/// @return An `std::optional` containing a vector of vertex IDs in topological order or `std::nullopt` if the graph is not a DAG.
+/// @hideparams
 template <
     traits::c_directed_graph G,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,

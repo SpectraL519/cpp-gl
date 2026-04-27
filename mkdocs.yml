@@ -1,0 +1,145 @@
+site_name: CPP-GL Documentation
+site_description: "General-purpose Template Graph and Hypergraph Library for Modern C++"
+repo_url: "https://github.com/SpectraL519/cpp-gl"
+
+nav:
+  - Home: index.md
+  - GL:
+      - Quick Start: gl/quick_start.md
+      - Architecture & Basics: gl/architecture.md
+      - Topologies: gl/topologies.md
+      - Algorithms:
+          - Overview: gl/algorithms/overview.md
+          - Generic Templates: gl/algorithms/templates.md
+          - Concrete Traversals: gl/algorithms/traversal.md
+          - Pathfinding: gl/algorithms/pathfinding.md
+          - Spanning Trees: gl/algorithms/spanning_trees.md
+          - Topological Algorithms: gl/algorithms/topological_algs.md
+      - I/O Utility: gl/io.md
+      - Advanced Features: gl/advanced.md
+      - API Reference:
+          - Overview: cpp-gl/group__GL.md
+          - Core Components: cpp-gl/group__GL-Core.md
+          - Algorithms: cpp-gl/group__GL-Algorithm.md
+          - Topologies: cpp-gl/group__GL-Topology.md
+          - I/O Utility: cpp-gl/group__GL-IO.md
+          - Traits & Concepts: cpp-gl/group__GL-Traits.md
+          - Generic Types: cpp-gl/group__GL-Types.md
+          - General Utilities: cpp-gl/group__GL-Util.md
+  # - HGL:
+  - API Index:
+      - Modules: cpp-gl/modules.md
+      - Classes & Structs: cpp-gl/annotated.md
+      - Class Hierarchy: cpp-gl/hierarchy.md
+      - Concepts: cpp-gl/concepts.md
+      - Files: cpp-gl/files.md
+      # TODO: functions, macros, constants
+  - License: license.md
+
+theme:
+  name: material
+  logo: img/cpp-gl-hex.png
+  favicon: img/cpp-gl-hex.png
+  icon:
+    annotation: material/chevron-right-circle
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-5
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-3
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - tables
+  - md_in_html
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.snippets:
+      base_path: "."
+      check_paths: true
+  - toc:
+      baselevel: 1
+      toc_depth: 2
+
+plugins:
+  - search
+  - exclude-search:
+      exclude:
+        - "cpp-gl/*_source.md"
+  - include-markdown
+  - callouts:
+      aliases: false
+  - mkdoxy:
+      projects:
+        cpp-gl:
+          src-dirs: "include docs/config/groups.dox"
+          full-doc: true
+          sorting:
+            classes: false
+          hideparams: true
+          doxy-cfg: # TODO: use doxy-cfg-file
+            PROJECT_NAME: CPP-GL
+            MARKDOWN_SUPPORT: YES
+            EXTRACT_ALL: NO
+            EXTRACT_STATIC: NO
+            EXTRACT_PRIVATE: NO
+            INTERNAL_DOCS: NO
+            HIDE_UNDOC_MEMBERS: YES
+            HIDE_UNDOC_CLASSES: YES
+            EXCLUDE_SYMBOLS: "std doctest doctest_detail_test_suite_ns detail *::detail"
+            SORT_MEMBER_DOCS: NO
+            SORT_BRIEF_DOCS: NO
+            SORT_MEMBERS_CTORS_1ST: YES
+            SORT_BY_SCOPE_NAME: NO
+            SORT_GROUP_NAMES: NO
+            FULL_PATH_NAMES: YES
+            STRIP_FROM_INC_PATH: include/
+            ENABLE_PREPROCESSING: YES
+            MACRO_EXPANSION: YES
+            EXPAND_ONLY_PREDEF: YES
+            PREDEFINED: gl_attr_force_inline=
+
+extra_javascript:
+  - scripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - style/logo.css
+  - style/theme.css
+
+extra:
+  version:
+    provider: mike
+    default: "latest"

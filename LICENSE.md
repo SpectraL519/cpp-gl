@@ -1,8 +1,8 @@
-MIT License
+#### MIT License
 
-Copyright (c) 2024 Jakub Musiał
-Project: "CPP-GL: General purpose header-only template graph library for C++23 and newer standards."
-https://github.com/SpectraL519/cpp-gl
+Copyright (c) 2024-2026 Jakub Musiał  
+Project: "CPP-GL: General-purpose Template Graph and Hypergraph Library for Modern C++"  
+URL: https://github.com/SpectraL519/cpp-gl
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -9,9 +9,14 @@
 
 # documentation files
 documentation/
+site/
+mike-*.yml
+docs/cpp-gl/
 
 # python temporary files
 **/__pycache__/
+.ruff_cache/
+.venv/
 
 # other
 *tmp*/
