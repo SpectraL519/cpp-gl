@@ -45,9 +45,9 @@ template <traits::c_id_type IdType>
 }
 
 /// @ingroup GL GL-Algorithm
-/// @brief Initializes a search frontier (queue or stack) with the starting root vertex.
+/// @brief Initializes a search container (queue or stack) with the starting root vertex.
 /// @tparam G The type of the graph.
-/// @tparam InitRangeType The underlying container type for the frontier.
+/// @tparam InitRangeType The underlying container type for the container.
 /// @param root_vertex_id The ID of the starting vertex.
 /// @return A container initialized with a single @ref search_node for the root vertex.
 template <
@@ -88,14 +88,13 @@ template <traits::c_graph G, result_discriminator Result>
 }
 
 /// @ingroup GL GL-Algorithm
-/// @brief Generates a default lambda predicate that checks if an adjacent vertex should be enqueued into the search frontier.
+/// @brief Generates a default lambda predicate that checks if a node corresponding to an adjacent vertex should be enqueued into the search container.
 /// @tparam G The type of the graph.
 /// @tparam AsDecision If `true`, the generated predicate returns a @ref gl::algorithm::decision "decision" instead of a raw boolean.
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @return A callable predicate that returns `true` (or `decision::accept`) if the adjacent vertex has not been visited.
 template <traits::c_graph G, bool AsDecision = false>
-[[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(std::vector<bool>& visited
-) {
+[[nodiscard]] gl_attr_force_inline auto default_enqueue_node_predicate(std::vector<bool>& visited) {
     using return_t = std::conditional_t<AsDecision, decision, bool>;
     return [&](typename G::id_type vertex_id, const typename G::edge_type&) -> return_t {
         return not visited[to_idx(vertex_id)];

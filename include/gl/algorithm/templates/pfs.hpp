@@ -40,7 +40,7 @@ namespace gl::algorithm {
 ///         std::cout << "Priority visited vertex " << v << '\n';
 ///         return true; // Continue search
 ///     },
-///     gl::algorithm::default_enqueue_vertex_predicate<graph_type, true>(visited) // (6)!
+///     gl::algorithm::default_enqueue_node_predicate<graph_type, true>(visited) // (6)!
 /// );
 /// ```
 ///
@@ -65,7 +65,7 @@ namespace gl::algorithm {
 /// | NodeType | The type of the node stored in the priority queue. | Extracted implicitly. Must be constructible from `(id_type, id_type)` unless `MakeNodeCallback` is provided. |
 /// | VisitVertexPredicate | Decides if a popped node should be processed. | Must be one of:<br/>- `(NodeType) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Executed when a vertex is officially visited. | Must be one of:<br/>- `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | EnqueueVertexPred | Decides if an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueueNodePred | Decides if a node corresponding to an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | MakeNodeCallback | Constructs a custom `NodeType` before pushing to the queue. | Must be one of:<br/>- `(id_type, id_type, const edge_type&) -> NodeType` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PreVisitCallback | Executed immediately before `VisitCallback`. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Executed after all adjacent edges are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
@@ -75,7 +75,7 @@ namespace gl::algorithm {
 /// @param initial_queue_content A range of initial nodes to seed the priority queue.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a node. If it returns `false`, the node is skipped (often used for late-rejection in Dijkstra).
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire PFS immediately aborts.
-/// @param enqueue_vertex_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
+/// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
 /// - `accept` to enqueue,
 /// - `reject` to skip,
 /// - `abort` to terminate the PFS entirely.
@@ -93,7 +93,7 @@ template <
     traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
         empty_callback,
     traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueVertexPred = empty_callback,
+        EnqueueNodePred = empty_callback,
     traits::c_optional_callback<
         NodeType,
         typename G::id_type,
@@ -108,7 +108,7 @@ bool pfs(
     const InitQueueRangeType& initial_queue_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
-    EnqueueVertexPred enqueue_vertex_pred = {},
+    EnqueueNodePred enqueue_node_pred = {},
     MakeNodeCallback make_node = {},
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
@@ -141,7 +141,7 @@ bool pfs(
 
         for (const auto& edge : graph.out_edges(node.vertex_id)) {
             const auto target_vertex_id = edge.other(node.vertex_id);
-            const auto enqueue = enqueue_vertex_pred(target_vertex_id, edge);
+            const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
 
             if (enqueue == decision::abort)
                 return false;

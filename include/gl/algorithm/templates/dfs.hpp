@@ -34,7 +34,7 @@ namespace gl::algorithm {
 ///         std::cout << "Visited vertex " << v << '\n';
 ///         return true; // Continue search
 ///     },
-///     gl::algorithm::default_enqueue_vertex_predicate<graph_type, true>(visited) // (5)!
+///     gl::algorithm::default_enqueue_node_predicate<graph_type, true>(visited) // (5)!
 /// );
 /// ```
 ///
@@ -55,7 +55,7 @@ namespace gl::algorithm {
 /// | InitStackRangeType | The type of the container providing the initial roots to push to the stack. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
 /// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be pushed to the stack. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the stack. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
@@ -63,7 +63,7 @@ namespace gl::algorithm {
 /// @param initial_stack_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the DFS stack.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire DFS immediately aborts.
-/// @param enqueue_vertex_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
+/// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
 /// - `accept` to enqueue,
 /// - `reject` to skip,
 /// - `abort` to terminate the DFS entirely.
@@ -78,7 +78,7 @@ template <
     traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
         empty_callback,
     traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueVertexPred = empty_callback,
+        EnqueueNodePred = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 bool dfs(
@@ -86,7 +86,7 @@ bool dfs(
     const InitStackRangeType& initial_stack_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
-    EnqueueVertexPred enqueue_vertex_pred = {},
+    EnqueueNodePred enqueue_node_pred = {},
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
@@ -116,7 +116,7 @@ bool dfs(
 
         for (const auto& edge : graph.out_edges(node.vertex_id)) {
             const auto target_vertex_id = edge.other(node.vertex_id);
-            const auto enqueue = enqueue_vertex_pred(target_vertex_id, edge);
+            const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
             if (enqueue == decision::abort)
                 return false;
             if (enqueue)
@@ -150,7 +150,7 @@ bool dfs(
 ///         std::cout << "Recursively visiting vertex " << v << '\n';
 ///         return true;
 ///     },
-///     gl::algorithm::default_enqueue_vertex_predicate<graph_type, false>(visited) // (6)!
+///     gl::algorithm::default_enqueue_node_predicate<graph_type, false>(visited) // (6)!
 /// );
 /// ```
 ///
@@ -172,7 +172,7 @@ bool dfs(
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | VisitVertexPredicate | Type of the callable deciding if the current vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when the vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be recursed into. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be recursed into. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
@@ -181,7 +181,7 @@ bool dfs(
 /// @param pred_id The ID of the predecessor vertex.
 /// @param visit_vertex_pred Predicate evaluated immediately upon entry. If it returns `false`, recursion returns early.
 /// @param visit Callback invoked when a vertex is officially visited.
-/// @param enqueue_vertex_pred Predicate evaluated for each outgoing edge. If `true`, the target is recursed into.
+/// @param enqueue_node_pred Predicate evaluated for each outgoing edge. If `true`, the target is recursed into.
 /// @param pre_visit Hook executed immediately before the `visit` callback.
 /// @param post_visit Hook executed after returning from all adjacent recursive calls.
 /// @hideparams
@@ -189,8 +189,7 @@ template <
     traits::c_graph G,
     traits::c_optional_predicate<typename G::id_type> VisitVertexPredicate,
     traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback,
-    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueVertexPred,
+    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&> EnqueueNodePred,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 void r_dfs(
@@ -199,7 +198,7 @@ void r_dfs(
     const typename G::id_type pred_id,
     VisitVertexPredicate visit_vertex_pred,
     VisitCallback visit,
-    EnqueueVertexPred enqueue_vertex_pred,
+    EnqueueNodePred enqueue_node_pred,
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
@@ -215,14 +214,14 @@ void r_dfs(
     // recursively search vertices adjacent to the current vertex
     for (const auto& edge : graph.out_edges(vertex_id)) {
         const auto target_vertex_id = edge.other(vertex_id);
-        if (enqueue_vertex_pred(target_vertex_id, edge))
+        if (enqueue_node_pred(target_vertex_id, edge))
             r_dfs(
                 graph,
                 target_vertex_id,
                 vertex_id,
                 visit_vertex_pred,
                 visit,
-                enqueue_vertex_pred,
+                enqueue_node_pred,
                 pre_visit,
                 post_visit
             );

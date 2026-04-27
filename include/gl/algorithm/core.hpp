@@ -126,7 +126,7 @@ template <traits::c_graph GraphType>
 using predecessors_map = std::vector<typename GraphType::id_type>;
 
 /// @ingroup GL GL-Algorithm
-/// @brief Represents an active node in a search frontier (e.g., a BFS queue or DFS stack).
+/// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
 /// @tparam GraphType The type of the graph being searched.
 template <traits::c_graph GraphType>
 struct search_node {

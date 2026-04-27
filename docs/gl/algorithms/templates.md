@@ -11,7 +11,7 @@ The library provides four primary traversal engines.
 - [**`bfs` (Breadth-First Search)**](../../cpp-gl/group__GL-Algorithm.md#function-bfs): Uses a `std::queue`. Explores the graph level by level, expanding uniformly outward from the initial range.
 - [**`dfs` (Depth-First Search)**](../../cpp-gl/group__GL-Algorithm.md#function-dfs): Uses a `std::stack`. Dives as deeply as possible along a branch before backtracking.
 - [**`r_dfs` (Recursive DFS)**](../../cpp-gl/group__GL-Algorithm.md#function-r_dfs): Uses the C++ call stack. Instead of an initial range, it is initiated with a specific starting vertex ID. It operates identically to `dfs` but requires external logic to manage abort signals, as returning from the recursion only unwinds one level.
-- [**`pfs` (Priority-First Search)**](../../cpp-gl/group__GL-Algorithm.md#function-pfs): Uses a `std::priority_queue`. Requires a custom comparator (`PQCmp`) to mathematically order the frontier. This is the underlying engine for algorithms like Dijkstra and Prim.
+- [**`pfs` (Priority-First Search)**](../../cpp-gl/group__GL-Algorithm.md#function-pfs): Uses a `std::priority_queue`. Requires a custom comparator (`PQCmp`) to mathematically order the frontier. This is the underlying engine for algorithms like Dijkstra's shortest paths algorithm.
 
 ## The Callback Sequence
 

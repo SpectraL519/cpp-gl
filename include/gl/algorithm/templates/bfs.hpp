@@ -35,7 +35,7 @@ namespace gl::algorithm {
 ///         std::cout << "Visited vertex " << v << '\n';
 ///         return true; // Continue search
 ///     },
-///     gl::algorithm::default_enqueue_vertex_predicate<graph_type, true>(visited) // (5)!
+///     gl::algorithm::default_enqueue_node_predicate<graph_type, true>(visited) // (5)!
 /// );
 /// ```
 ///
@@ -56,7 +56,7 @@ namespace gl::algorithm {
 /// | InitQueueRangeType | The type of the container providing the initial roots to enqueue. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
 /// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | EnqueueVertexPred | Type of the callable deciding if an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
@@ -64,7 +64,7 @@ namespace gl::algorithm {
 /// @param initial_queue_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the BFS queue.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire BFS immediately aborts.
-/// @param enqueue_vertex_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
+/// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
 /// - `accept` to enqueue,
 /// - `reject` to skip,
 /// - `abort` to terminate the BFS entirely.
@@ -79,7 +79,7 @@ template <
     traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
         empty_callback,
     traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueVertexPred = empty_callback,
+        EnqueueNodePred = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
 bool bfs(
@@ -87,7 +87,7 @@ bool bfs(
     const InitQueueRangeType& initial_queue_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
-    EnqueueVertexPred enqueue_vertex_pred = {},
+    EnqueueNodePred enqueue_node_pred = {},
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
@@ -117,7 +117,7 @@ bool bfs(
 
         for (const auto& edge : graph.out_edges(node.vertex_id)) {
             const auto target_vertex_id = edge.other(node.vertex_id);
-            const auto enqueue = enqueue_vertex_pred(target_vertex_id, edge);
+            const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
             if (enqueue == decision::abort)
                 return false;
             if (enqueue)
