@@ -8,7 +8,13 @@ nav:
       - Quick Start: gl/quick_start.md
       - Architecture & Basics: gl/architecture.md
       - Topologies: gl/topologies.md
-      - Algorithms: gl/algorithms.md
+      - Algorithms:
+          - Overview: gl/algorithms/overview.md
+          - Generic Templates: gl/algorithms/templates.md
+          - Concrete Traversals: gl/algorithms/traversal.md
+          - Pathfinding: gl/algorithms/pathfinding.md
+          - Spanning Trees: gl/algorithms/spanning_trees.md
+          - Topology Solvers: gl/algorithms/topology_solvers.md
       - I/O Utility: gl/io.md
       - Advanced Features: gl/advanced.md
       - API Reference:
