@@ -7,7 +7,7 @@ The **GL (Graph Library)** module is engineered around a singular philosophy: pr
 This section explores the core architectural decisions of the GL module:
 
 - [Core Concepts](#core-concepts): Learn how the gl::graph template operates, the difference between IDs and descriptors, and how to navigate topologies.
-- [Graph Representations](#graph-representations-memory-models): Understand the diverse memory models available and their performance characteristics.
+- [Graph Representation Models](#graph-representation-models): Understand the diverse memory models available and their performance characteristics.
 - [Properties & Custom Data](#properties-custom-data): Discover how to inject arbitrary data directly into your graph elements with strict type safety.
 
 ---
@@ -137,13 +137,15 @@ for (auto neighbor_id : graph.neighbor_ids(source_id)) { // (3)!
 
 ---
 
-## Graph Representations (Memory Models)
+## Graph Representation Models
 
 Choosing the correct memory layout is critical for algorithmic performance. CPP-GL abstracts this choice entirely behind the `ImplTag`, allowing you to swap layouts without altering a single line of traversal code.
 
-### Adjacency List vs. Adjacency Matrix
+### Fundamental Representations
 
-Consider the follosing graph:
+At their core, graph data structures differ in how they map vertices to their connections. While the library may expand to include other formats (such as CSR, Edge Lists, or Incidence Matrices), the primary models are based on the following architectures:
+
+Consider the following graph:
 
 <div align="center" markdown="1">
 
@@ -152,49 +154,99 @@ Consider the follosing graph:
 
 </div>
 
-**Adjacency Lists** store only the vertices and edges that actively exist in the graph. They are highly space-efficient for sparse graphs and allow rapid iteration over a vertex's immediate neighbors.
+- **Adjacency Lists**: This model stores only the vertices and the edges that actively exist in the graph. By mapping each vertex to a dynamic list of its immediate neighbors, this approach is highly space-efficient for sparse graphs and allows rapid iteration over local neighborhoods.
+- **Adjacency Matrices**: This model allocates a full $\vert V \vert \times \vert V \vert$ grid, where each cell represents a potential connection. While they consume significantly more memory ($O(\vert V \vert^2)$), they provide instant $O(1)$ edge-existence lookups, making them ideal for dense networks.
 
-**Adjacency Matrices** allocate a full $\vert V \vert \times \vert V \vert$ grid, where each cell represents a potential edge. While they consume significantly more memory, they provide instant $O(1)$ edge-existence lookups, making them ideal for dense graphs.
+### Available Representation Models
 
-### Simple Graphs vs. Multigraphs
+CPP-GL currently categorizes its memory layouts into two primary families based on their underlying memory allocation strategy.
 
-The chosen memory layout strictly dictates the graph's capability to store multiple edges between the exact same pair of vertices:
+#### Standard Models
 
-- Adjacency Lists (Multigraphs): Lists append edges sequentially. They fully support multigraphs, allowing parallel edges (multiple connections between $u$ and $v$).
+Heap-allocated, nested structures that prioritize flexibility and dynamic structural modification.
 
-- Adjacency Matrices (Simple Graphs): Because a matrix uses a single cell to represent the connection between $u$ and $v$, it can only store a single edge per pair. It strictly enforces a simple graph topology.
+- [**list_t**](../cpp-gl/structgl_1_1impl_1_1list__t.md): A standard Adjacency List model implemented using traditional nested containers (e.g., `std::vector<std::vector<T>>`).
+- [**matrix_t**](../cpp-gl/structgl_1_1impl_1_1matrix__t.md): A standard Adjacency Matrix model implemented using traditional nested containers.
 
-### Standard vs. Flat Representations
+### Flat Models
 
-CPP-GL offers two variations for both Lists and Matrices to optimize cache locality:
+Contiguous 1D memory blocks that prioritize cache locality and maximum traversal speed over modification speed.
 
-- Standard (list_t, matrix_t): Implemented as nested containers (e.g., std::vector<std::vector<T>>). They handle vertex additions gracefully but suffer from memory fragmentation across the heap.
+- [**flat_list_t**](../cpp-gl/structgl_1_1impl_1_1flat__list__t.md): A flattened Adjacency List model implemented using the generic [**flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
+- [**flat_matrix_t**](../cpp-gl/structgl_1_1impl_1_1flat__matrix__t.md): A flattened Adjacency Matrix model implemented using the generic [**flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
 
-- Flat (flat_list_t, flat_matrix_t): Implemented as a single, contiguous 1D array mapped to 2D space. They provide maximum cache-friendliness and traversal speed, but structural modifications (like adding vertices) require expensive real-allocations of the entire memory block.
+### Topology Support: Simple Graphs and Multigraphs
+
+The chosen representation model strictly dictates the graph's capability to store multiple edges between the exact same pair of vertices:
+
+- **Simple Graphs** allow at most one edge between any distinct pair of vertices.
+- **Multigraphs** allow multiedges (multiple connections between a given pair of vertices $(u, v)$).
+
+Adjacency Matrix models use a single, distinct cell for any given $(u, v)$ pair. Because of this, they inherently enforce a **simple graph** topology.
+
+Adjacency List models append edges sequentially, inherently supporting **multigraphs**.
+
+> [!NOTE] Adjacency Lists and Simple Graphs
+>
+> It is entirely possible to represent a simple graph using a list-based model. However, the data structure itself will not prevent the insertion of duplicate edges. Hence, when using a model capable of representing multigraphs to represent a simple graph, the responsibility of ensuring no multiedges are added to the graph falls entirely on the user.
+
+### Edge-Aware Representations
+
+Traditional graph data structures often store only boolean values or raw weights. However, the core models currently implemented in CPP-GL are explicitly **edge-aware**.
+
+Being "edge-aware" means that the internal representation stores the specific `edge_id` alongside the topological connection. This architecture guarantees that the set of edge IDs remains a tightly packed, contiguous sequence (from $0$ to $\vert E \vert - 1$). This allows users to store custom edge properties in standard, flat `std::vector`s and access them with instant $O(1)$ performance directly using the `edge_id`, eliminating the need for expensive secondary map lookups.
+
+> [!Note] Edge-Unaware Representations
+>
+> Future iterations of the library may introduce **edge-unaware** representations for maximum memory efficiency, such as a packed boolean adjacency matrices where the edge ID is calculated mathematically as $u \times \vert V \vert + v$, rather than explicitly stored in memory.
+
+#### Standard Memory Models
+
+The standard implementations utilize traditional, nested 2D containers (e.g., `std::vector<std::vector<T>>`).
+
+These models are highly flexible. Because the inner containers can grow independently, they handle structural modifications, like adding vertices or edges, gracefully. The trade-off is that the memory is fragmented across the heap, which can lead to cache misses during heavy graph traversals.
+
+<div align="center" markdown="1">
+
+![Standard Models Layout Placeholder](../img/doc/placeholder-standard-layout.png){: width="600" }
+
+</div>
+
+#### Flat Memory Models
+
+To maximize cache locality, the flat representations map the logical 2D structures into contiguous 1D memory blocks.
+
+By keeping all vertex and edge data in adjacent memory blocks, these models provide the absolute maximum traversal speed. However, this cache-friendliness comes at a structural cost: because all data is packed tightly, modifying an inner segment (such as adding a new edge to a vertex's list) requires shifting the entire remainder of the flat container in memory - unlike standard models, which only shift the localized inner container. Furthermore, modifications that exceed the pre-allocated contiguous capacity (like adding vertices) often require an expensive reallocation of the entire underlying memory block.
+
+<div align="center" markdown="1">
+
+![Flat Models Layout Placeholder](../img/doc/placeholder-flat-layout.png){: width="600" }
+
+</div>
+
+> [!NOTE] Flat List Model Performance
+>
+> While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to construct element-by-element. The most efficient approach for utilizing flat list graphs is to construct your graph using the standard list model first, and then convert it into the flat list model using the generic [**to**](../cpp-gl/group__GL-Core.md#function-to) conversion function. This exact methodology is utilized internally by the [**graph topology generators**](topologies.md) defined within the library.
 
 ### Operation Complexity
 
-Depending on the chosen representation model, the computational complexity of some graph operations may differ. The table below describes the complexities of such operations.
+Depending on the chosen representation model, the computational complexity of standard graph operations will differ. The table below outlines these complexities.
 
 | Operation         | Standard List                      | Flat List                        | Standard Matrix      | Flat Matrix          |
 | :---------------- | :--------------------------------- | :------------------------------- | :------------------- | :------------------- |
 | Add Vertex        | $O(1)$ amortized                   | $O(1)$ amortized                 | $O(\vert V \vert)$   | $O(\vert V \vert^2)$ |
 | Add Edge          | $O(1)$ amortized                   | $O(1)$ amortized                 | $O(1)$               | $O(1)$               |
 | Check Edge Exists | $O(deg(v))$                        | $O(deg(v))$                      | $O(1)$               | $O(1)$               |
-| Iterate Out-Edges | $O(deg(v))$                        | $O(deg(v))$                      | $O(V)$               | $O(V)$               |
+| Iterate Out-Edges | $O(deg(v))$                        | $O(deg(v))$                      | $O(\vert V \vert)$   | $O(\vert V \vert)$   |
 | Iterate All Edges | $O(\vert V \vert + \vert E \vert)$ | $O(\vert V \vert+\vert E \vert)$ | $O(\vert V \vert^2)$ | $O(\vert V \vert^2)$ |
 
-<!-- TODO: validate which operations should be added here -->
+### Choosing the Layout
 
-> [!TIP] Choosing a Layout
->
-> - Use list_t for highly dynamic, sparse graphs where structure changes frequently.
-> - Use flat_list_t for static, sparse graphs where traversal speed is paramount.
-> - Use flat_matrix_t for highly dense, static graphs (where $\vert E \vert \approx \vert V \vert^2$) and fast $O(1)$ edge lookups are required.
+Selecting the right `ImplTag` is a balance of your specific operational needs - use:
 
-> [!NOTE] Flat List Model Performance
->
-> While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to create one element at a time. The best and most efficient approach for using the flat list graphs is to create a graph using the standard list model and convert it into the flat list model using the generic [**to**](../cpp-gl/group__GL-Core.md#function-to) conversion function. This exact method is used in the [**graph topology generators**](topologies.md) defined within the library.
+- [**list_t**](../cpp-gl/structgl_1_1impl_1_1list__t.md) for highly dynamic, sparse graphs where the topology changes frequently.
+- [**flat_list_t**](../cpp-gl/structgl_1_1impl_1_1flat__list__t.md) for static, sparse graphs where traversal speed and cache locality are paramount.
+- [**matrix_t**](../cpp-gl/structgl_1_1impl_1_1matrix__t.md) (or [**flat_matrix_t**](../cpp-gl/structgl_1_1impl_1_1flat__matrix__t.md) if structure is entirely static) for highly dense graphs (where $\vert E \vert \approx \vert V \vert^2$) when instant $O(1)$ edge lookups are strictly required and memory footprint is not a bottleneck.
 
 ---
 
