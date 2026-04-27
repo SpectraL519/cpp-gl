@@ -1,4 +1,4 @@
-# GL: Architecture & Basics
+# Architecture & Basics
 
 ## GL Module Overview
 

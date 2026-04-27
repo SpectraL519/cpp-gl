@@ -1,6 +1,30 @@
 # Spanning Trees
 
-A Minimum Spanning Tree (MST) is a subset of the edges of a connected, edge-weighted undirected graph that connects all the vertices together without any cycles, while minimizing the total possible edge weight.
+## What is a Minimum Spanning Tree?
+
+A **Spanning Tree** is a subset of a graph that is a tree containing all vertices of the original graph. Because it has no cycles and connects every vertex, a spanning tree of a connected graph with $|V|$ vertices will always contain exactly $|V| - 1$ edges.
+
+In an edge-weighted graph, multiple spanning trees can exist. A **Minimum Spanning Tree (MST)** is the specific spanning tree that minimizes the total sum of its edge weights.
+
+<div align="center" markdown="1">
+
+![MST Concept Light](../../img/doc/light/mst-example.svg#only-light){: width="700" }
+![MST Concept Dark](../../img/doc/dark/mst-example.svg#only-dark){: width="700" }
+
+</div>
+
+## Prim's Algorithm Overview
+
+Prim's algorithm is a highly efficient, "greedy" algorithm used to find the Minimum Spanning Tree of a connected, undirected graph.
+
+The algorithm builds the tree one vertex at a time, operating on the following core principle:
+
+1. **Initialize:** Start at any arbitrary "root" vertex. Mark it as visited.
+2. **Evaluate:** Look at all edges connecting the currently visited vertices to the unvisited vertices.
+3. **Expand:** Select the edge with the lowest weight among edges that connect an already visited vertex to a yet unvisited vertex. Add that edge (and the unvisited vertex it leads to) to the MST.
+4. **Repeat:** Continue this process until all vertices in the graph have been visited.
+
+By always making the locally optimal choice (picking the cheapest available edge out of the growing tree), Prim's algorithm is mathematically guaranteed to find the globally optimal Minimum Spanning Tree.
 
 Because graph representations can vary drastically in density (sparse lists vs. dense matrices), a single algorithmic approach cannot guarantee optimal performance across all topologies. To uphold its zero-cost philosophy, CPP-GL provides two highly optimized, standalone implementations of Prim's algorithm tailored for specific memory models.
 

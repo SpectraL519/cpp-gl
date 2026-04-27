@@ -1,4 +1,4 @@
-# GL: Quick Start
+# Quick Start
 
 This guide provides a rapid introduction to the **GL** module. In just a few minutes, you will define a graph, populate it with vertices and weighted edges, and run Dijkstra's shortest path algorithm.
 
