@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file hgl/io.hpp
+/// @brief Includes all I/O-related headers for hypergraph file operations.
+
 #pragma once
 
 #include "hgl/io/core.hpp"

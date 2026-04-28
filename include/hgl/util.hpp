@@ -9,36 +9,54 @@
 
 #include "gl/util/ranges.hpp"
 
-namespace hgl::util {
+namespace hgl {
 
 /// @ingroup HGL-Util
-/// @brief @copybrief gl::util::range_size
-/// @see gl::util::range_size
+/// @brief General utilities, ranges, and helpers for the HGL module (originating in the GL module).
+///
+/// This namespace pulls in practical, domain-agnostic C++ **range** utilities from `gl::util`.
+/// Because hypergraphs share the same underlying memory models and algorithmic requirements as
+/// standard graphs, they seamlessly reuse the same fundamental C++20 range utilities and helpers.
+///
+/// > [!NOTE]
+/// >
+/// > To get a detailed overview of these shared utilities, please refer to the GL module's @ref GL-Util documentation page.
+namespace util {
+
+using gl::util::all_equal;
+using gl::util::is_constant;
 using gl::util::range_size;
 
 /// @ingroup HGL-Util
-/// @brief @copybrief gl::util::is_constant
-/// @see gl::util::is_constant
-using gl::util::is_constant;
-
-/// @ingroup HGL-Util
-/// @brief @copybrief gl::util::all_equal
-/// @see gl::util::all_equal
-using gl::util::all_equal;
-
-/// @ingroup HGL-Util
 /// @brief @copybrief gl::util::concat_view
-/// @see gl::util::concat_view
-using gl::util::concat_view;
+/// @see gl::util::concat_view for the full type definition
+template <std::ranges::view V1, std::ranges::view V2>
+using concat_view = gl::util::concat_view<V1, V2>;
 
 /// @ingroup HGL-Util
 /// @brief @copybrief gl::util::concat_fn
-/// @see gl::util::concat_fn
-using gl::util::concat_fn;
+/// @see gl::util::concat_fn for the full type definition
+using concat_fn = gl::util::concat_fn;
 
 /// @ingroup HGL-Util
-/// @brief @copybrief gl::util::concat
-/// @see gl::util::concat
-using gl::util::concat;
+/// @brief Concatenates two viewable ranges into a `concat_view`.
+///
+/// ### Example usage
+/// ```cpp
+/// std::vector<int> v1 = {1, 2, 3};
+/// std::vector<int> v2 = {4, 5, 6};
+/// auto concatenated = gl::util::concat(v1, v2);
+/// for (int x : concatenated)
+///     std::cout << x << " "; // Output: 1 2 3 4 5 6
+/// ```
+///
+/// @param r1 First range to concatenate.
+/// @param r2 Second range to concatenate.
+/// @todo Replace with `std::views::concat` (C++26).
+/// ### See Also
+/// - @ref hgl::util::concat_view "concat_view": The view type that represents the concatenation of two ranges.
+/// - @ref hgl::util::concat_fn "concat_fn": A helper compile-time constant function object for creating `concat_view` instances.
+inline constexpr concat_fn concat{};
 
-} // namespace hgl::util
+} // namespace util
+} // namespace hgl

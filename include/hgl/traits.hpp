@@ -19,6 +19,10 @@ namespace hgl {
 /// and metaprogramming utilities from `gl::traits`. Because hypergraphs share the same underlying
 /// implementation design and mechanisms as standard graphs, they seamlessly reuse the same
 /// fundamental C++20 concepts.
+///
+/// > [!NOTE]
+/// >
+/// > To get a detailed overview of these shared utilities, please refer to the GL module's @ref GL-Traits documentation page.
 namespace traits {
 
 using namespace gl::traits;
