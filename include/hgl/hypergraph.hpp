@@ -125,101 +125,159 @@ struct to_impl;
 } // namespace detail
 
 /// @ingroup HGL-Core
-/// @brief The primary, highly configurable generic container for representing n-ary hypergraphs.
+/// @brief The generic hypergraph container using a policy-based design.
 ///
-/// **Module:** Part of the @ref HGL-Core "Core Hypergraph Components" group.
-///
-/// Unlike standard graphs where edges connect exactly two vertices, hypergraphs generalize this
-/// concept by allowing a single hyperedge to connect any number of vertices simultaneously.
-/// The `hgl::hypergraph` template provides a strictly type-safe, highly optimized, and conceptually
-/// robust API for modeling both undirected and backward-forward (bf) directed hypergraphs.
+/// This class relies on the provided `HypergraphTraits` to determine its behavior, element
+/// property types, and the underlying memory representation. It exposes a unified API for
+/// adding, removing, and iterating over vertices and hyperedges regardless of the backend.
 ///
 /// ### Key Features
-/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through layout tags and static dispatch, removing unnecessary overhead.
-/// - **Multiple Internal Representations**: Supports both incidence matrices (optimal for dense, rigid structures) and incidence lists (optimal for sparse, dynamic structures), further separated into standard and flat-memory contiguous variants.
-/// - **Arbitrary Properties Injection**: Allows seamless integration of completely custom, user-defined data structures (properties) directly into vertices and hyperedges without inheriting from intrusive base classes.
+/// - **Policy-based design**: Behavior and representation are determined by `HypergraphTraits`.
+/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through implementation tags and static dispatch, removing unnecessary overhead.
+/// - **Configurable directionality**: Support for both undirected and BF-directed hypergraphs.
+/// - **Multiple representations**: Choose the underlying memory model and its layout to achieve the best performance for your needs:
+///   - @ref hgl::impl::list_t "list_t": Standard incidence list.
+///   - @ref hgl::impl::flat_list_t "flat_list_t": Flattened incidence list.
+///   - @ref hgl::impl::matrix_t "matrix_t": Standard incidence matrix.
+///   - @ref hgl::impl::flat_matrix_t "flat_matrix_t": Flattened incidence matrix.
+/// - **Property support**: Vertices and hyperedges can carry arbitrary properties.
+/// - **Unified API**: Consistent interface regardless of the underlying implementation.
 /// - **Standard Range Support**: Exposes lightweight views compliant with C++20 `std::ranges`, enabling functional-style iteration and algorithms.
 ///
 /// ### Basic Definitions
-/// - **Hyperedge**: A generalized edge that can connect any subset of vertices.
-/// - **Incidence**: The fundamental relationship in a hypergraph. A vertex is "incident to" a hyperedge if it is contained within that hyperedge's set.
-/// - **Undirected**: A hyperedge is simply a set of incident vertices.
-/// - **BF-Directed**: A hyperedge maps a distinct subset of vertices (the **Tail**) to another distinct subset of vertices (the **Head**).
+/// A hypergraph \f$G = (V, E)\f$ consists of a set of vertices \f$V\f$ and a set of hyperedges \f$E\f$.
+///
+/// - For undirected graphs, a hyperedge is a subset of the vertex set. Formally \f$E \subseteq 2^V\f$ and \f$e \in E \implies e \subseteq V\f$.
+/// - For BF-directed graphs, a hyperedge is an ordered pair of disjoint subsets of the vertex set - the *tail* (sources) and *head* (targets) of the hyperedge.
+///   Formally \f$e = (T_e, H_e)\f$ where \f$T_e, H_e \subset V \land T_e \cap H_e = \emptyset\f$.
 ///
 /// ### Example Usage
 /// ```cpp
-/// // 1. Define a directed hypergraph with string names on vertices and weights on hyperedges.
-/// using traits = hgl::hypergraph_traits<
-///     hgl::bf_directed_t, gl::name_property, gl::weight_property
-/// >;
-/// hgl::hypergraph<traits> h;
+/// hgl::undirected_hypergraph<> h(4, 2); // (1)!
 ///
-/// // 2. Add properties via the descriptor dereference operator.
-/// auto v0 = h.add_vertex(); v0->name = "Source"; // (1)!
-/// auto v1 = h.add_vertex(); v1->name = "Target A";
-/// auto v2 = h.add_vertex(); v2->name = "Target B";
+/// h.bind({0, 1, 2}, 0); // (2)!
 ///
-/// // 3. For directed hypergraphs, specify Tail vertices and Head vertices.
-/// auto e = h.add_hyperedge({v0}, {v1, v2}); // (2)!
-/// e->weight = 5.5;
+/// auto v_first = h.vertex(0); // (3)!
+/// auto v_last = h.vertex(3);
+/// auto e1 = h.hyperedge(1);
+/// h.bind({v_first, v_last}, e1); // (4)!
 ///
-/// std::cout << gl::io::verbose << gl::io::with_properties; // (3)!
-/// std::cout << "Hypergraph:\n" << h << '\n';
+/// std::cout << "Vertices: " << h.n_vertices() << '\n'; // (5)!
+/// std::cout << "Hyperedges: " << h.n_hyperedges() << '\n';
+///
+/// for (auto v : h.vertices()) { // (6)!
+///     for (auto e : h.incident_hyperedges(v)) {
+///         process(v, e);
+///     }
+/// }
+///
+/// std::cout << "Topology:\n" << h << '\n'; // (7)!
 /// ```
 ///
-/// 1. Vertices are created and returned as safe @ref hgl::vertex_descriptor "vertex_descriptor" wrappers.
-/// 2. Hyperedges are created and returned as safe @ref hgl::hyperedge_descriptor "hyperedge_descriptor" wrappers.
-/// 3. Standard GL stream manipulators format both graph and hypergraph output identically.
+/// 1\. Instantiate an undirected hypergraph with 4 vertices and 2 hyperedges.
+///
+/// 2\. Bind vertices with IDs 0, 1 and 2 to the hyperedge with ID 0.
+///
+/// 3\. Retrieve the vertex and hyperedge descriptors in the hypergraph using the dedicated getters.
+///
+/// 4\. Bind the given vertices to the edge using descriptor objects.
+///
+/// 5\. Query the hypergraph's properties.
+///
+/// 6\. Iterate over the hypergraph's vertices and then over the incident edges of each vertex.
+///
+/// 7\.  Utilize the builtin I/O stream support of the `hypergraph` class to print its topology to the console.
+///
+/// ### API Design: IDs vs. Descriptors
+/// The `hypergraph` class exposes a dual API to accommodate different performance and ergonomic needs:
+///
+/// - **Inputs**: Most query methods are overloaded to accept either a raw `id_type` or a `vertex_type`/`hyperedge_type` descriptor. They are functionally identical.
+/// - **Outputs**: Methods ending in `_ids` (e.g., `incident_vertex_ids`) return views of raw integral IDs. Methods without this suffix (e.g., `incident_vertices`) automatically map those IDs to the proper descriptor objects.
+/// - **Performance**: Descriptor-returning methods incur a slight overhead if the hypergraph utilizes properties, as the property reference must be fetched and bound to each descriptor. If you only need topology, prefer the `_ids` variants.
+///
+/// ### Descriptor Invalidation Behavior
+/// The hypergraph maintains the following invalidation semantics:
+///
+/// - **Vertex addition**: Does not invalidate vertex IDs. However, property references stored in existing vertex descriptors may be invalidated. Has no effect hyperedge descriptors.
+/// - **Vertex removal**: May invalidate vertex descriptors, IDs, and property references. Has no effect hyperedge descriptors.
+/// - **Edge addition**: Does not invalidate hyperedge IDs. However, property references stored in existing hyperedge descriptors may be invalidated. Has no effect on vertex descriptors.
+/// - **Edge removal**: Invalidates hyperedge descriptors, IDs, and property references. Has no effect on vertex descriptors.
+/// - **Property access**: References to vertex or edge properties obtained from the map may be invalidated by modifications to the hypergraph structure.
 ///
 /// ### Template Parameters
-/// | Parameter | Description | Default | Constraint |
-/// | :-------- | :---------- | :------ | :--------- |
-/// | HypergraphTraits | The core configuration object dictating the directionality, properties, identifier types, and internal memory layout of the hypergraph. | @ref hgl::hypergraph_traits "hypergraph_traits<>" | [**c_instantiation_of<hypergraph_traits>**](hgl_concepts.md#hgl-traits-c-instantiation-of) |
+/// | Parameter | Description | Constraint |
+/// | :-------- | :---------- | :--------- |
+/// | HypergraphTraits | The core configuration type specifying the behavior and representation of the hypergraph.  | [**c_instantiation_of<hypergraph_traits>**](gl_concepts.md#gl-traits-c-instantiation-of) |
 ///
 /// ### See Also
 /// - @ref hgl::hypergraph_traits "hypergraph_traits" for configuring the underlying properties and tags.
 /// - @ref gl::io::options_manip "options_manip" for custom stream formatting options.
+///
+/// ### See Also
+/// - @ref hgl::undirected_hypergraph "undirected_hypergraph" : Convenience alias for undirected hypergraphs.
+/// - @ref hgl::bf_directed_hypergraph "bf_directed_hypergraph" : Convenience alias for BF-directed hypergraphs.
+/// - @ref hgl::clone "clone" : Create a deep copy of a hypergraph.
+/// - @ref hgl::to "to" : Convert a hypergraph to a different implementation.
+///
+/// > [!IMPORTANT] Copy Semantics
+/// >
+/// > `hypergraph` supports move semantics but disables copy assignment to prevent accidental expensive copies.
+/// > Use @ref hgl::clone "clone" to explicitly copy a hypergraph.
+///
+/// > [!WARNING] Const Correctness & Properties (API Note)
+/// >
+/// > Currently, a `const` hypergraph guarantees **structural immutability** (vertices and hyperedges cannot be added or removed).
+/// > However, vertex and hyperedge property maps are internally treated as `mutable`. This means that property payloads
+/// > can still be modified through a `const hypergraph&`. Strict const-correct overloads for property access are planned
+/// > for a future release. Proceed with caution in multi-threaded contexts.
 template <traits::c_instantiation_of<hypergraph_traits> HypergraphTraits>
 class hypergraph final {
 public:
-    /// @brief The configured traits type governing this hypergraph's parameters.
+    /// @brief The traits type specifying the hypergraph's behavior and representation.
     using traits_type = HypergraphTraits;
-    /// @brief The directional tag indicating if the hypergraph is undirected or bf_directed.
+
+    /// @brief Type tag specifying the directionality of the hypergraph.
     using directional_tag = typename traits_type::directional_tag;
-    /// @brief The implementation tag defining the internal storage mechanism.
+    /// @brief Type tag indicating the underlying implementation model.
     using implementation_tag = typename traits_type::implementation_tag;
-    /// @brief The instantiated underlying implementation class matching the directional tag.
+
+    /// @brief The underlying implementation type matching the directional tag.
     using implementation_type =
         typename implementation_tag::template implementation_type<directional_tag>;
-    /// @brief The underlying integer type used for identifiers.
+
+    /// @brief Integral type used to identify vertices and hyperedges.
     using id_type = typename traits_type::id_type;
 
-    /// @brief The fully resolved type representing a vertex descriptor.
+    /// @brief The descriptor type representing a vertex.
     using vertex_type = typename traits_type::vertex_type;
     /// @brief The user-defined property payload type associated with vertices.
     using vertex_properties_type = typename traits_type::vertex_properties_type;
-    /// @brief The container type used for storing vertex properties internally.
+    /// @brief The container type used for storing the vertex properties mapping.
     using vertex_properties_map_type = std::conditional_t<
         traits::c_empty_properties<vertex_properties_type>,
         empty_properties_map,
         std::vector<vertex_properties_type>>;
 
-    /// @brief The fully resolved type representing a hyperedge descriptor.
+    /// @brief The descriptor type representing a hyperedge.
     using hyperedge_type = typename traits_type::hyperedge_type;
     /// @brief The user-defined property payload type associated with hyperedges.
     using hyperedge_properties_type = typename traits_type::hyperedge_properties_type;
-    /// @brief The container type used for storing hyperedge properties internally.
+    /// @brief The container type used for storing hyperedge properties mapping.
     using hyperedge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<hyperedge_properties_type>,
         empty_properties_map,
         std::vector<hyperedge_properties_type>>;
 
-    /// @brief Deleted copy assignment operator to prevent trivial overwrites (use `hgl::clone` instead).
-    hypergraph& operator=(const hypergraph&) = delete;
-
-    /// @brief Constructs an empty hypergraph, optionally pre-allocating capacity.
-    /// @param n_vertices The initial capacity or fixed count of vertices (especially relevant for matrix implementations).
-    /// @param n_hyperedges The initial capacity or fixed count of hyperedges.
+    /// @brief Constructs a hypergraph with the given number of vertices and hyperedges (empty by default).
+    /// @param n_vertices The initial number of vertices.
+    /// @param n_hyperedges The initial number of hyperedges.
+    ///
+    /// > [!NOTE] Memory Management
+    /// >
+    /// > Constructing a non-empty hypergraph and retrieving descriptors of the hypergraph's elements provides
+    /// > significantly better performance than adding elements one by one (especially for large hypergraphs)
+    /// > due to the ability to allocate the required memory for the internal incidence representation, which
+    /// > drastically reduces the overhead associated with reallocations associated with adding elements sequentially.
     explicit hypergraph(const size_type n_vertices = 0uz, const size_type n_hyperedges = 0uz)
     : _n_vertices(n_vertices), _n_hyperedges(n_hyperedges), _impl(n_vertices, n_hyperedges) {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
@@ -237,24 +295,28 @@ public:
     /// @brief Default destructor.
     ~hypergraph() = default;
 
+    /// @brief Hypergraph copy assignment is disabled to avoid accidental copies. Use @ref hgl::clone "clone" instead.
+    hypergraph& operator=(const hypergraph&) = delete;
+
     // --- size methods ---
 
-    /// @brief Retrieves the current number of valid vertices in the hypergraph.
-    /// @return The total vertex count.
+    /// @brief Returns the total number of vertices in the hypergraph.
+    /// @return The vertex count: $|V|$.
     [[nodiscard]] gl_attr_force_inline size_type n_vertices() const noexcept {
         return this->_n_vertices;
     }
 
-    /// @brief Retrieves the current number of valid hyperedges in the hypergraph.
-    /// @return The total hyperedge count.
+    /// @brief Returns the total number of hyperedges in the hypergraph.
+    /// @return The hyperedge count: $|E|$.
     [[nodiscard]] gl_attr_force_inline size_type n_hyperedges() const noexcept {
         return this->_n_hyperedges;
     }
 
     // --- vertex modifiers ---
 
-    /// @brief Adds a single new property-less vertex to the hypergraph.
-    /// @return A safe `vertex_descriptor` pointing to the newly created vertex.
+    /// @brief Adds a new, default-initialized vertex to the hypergraph.
+    /// @return A descriptor of the newly created vertex.
+    /// @copydetails detail::hypergraph_doc_anchors::add_vertex_note()
     vertex_type add_vertex() {
         this->_impl.add_vertices(1uz);
         const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
@@ -265,9 +327,10 @@ public:
             return vertex_type{new_vertex_id};
     }
 
-    /// @brief Adds a single new vertex to the hypergraph and initializes its properties.
-    /// @param properties The property payload to assign to the new vertex.
-    /// @return A safe `vertex_descriptor` pointing to the newly created vertex.
+    /// @brief Adds a new vertex with the given properties to the hypergraph.
+    /// @param properties The property payload for the new vertex.
+    /// @return A descriptor of the newly created vertex.
+    /// @copydetails detail::hypergraph_doc_anchors::add_vertex_note()
     vertex_type add_vertex_with(vertex_properties_type properties)
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -278,8 +341,9 @@ public:
         };
     }
 
-    /// @brief Efficiently adds multiple property-less vertices to the hypergraph.
+    /// @brief Adds multiple default-initialized vertices to the hypergraph.
     /// @param n The number of vertices to add.
+    /// @copydetails detail::hypergraph_doc_anchors::add_vertex_note()
     void add_vertices(const size_type n) {
         this->_impl.add_vertices(n);
         this->_n_vertices += n;
@@ -288,8 +352,9 @@ public:
             this->_vertex_properties.resize(this->_n_vertices);
     }
 
-    /// @brief Efficiently adds multiple vertices to the hypergraph, initializing them with a range of properties.
-    /// @param properties_rng A range containing the property payloads to assign to the newly created vertices.
+    /// @brief Adds multiple vertices based on a range of property payloads.
+    /// @param properties_rng A forward range of properties to initialize the new vertices with.
+    /// @copydetails detail::hypergraph_doc_anchors::add_vertex_note()
     void add_vertices_with(
         const traits::c_sized_range_of<vertex_properties_type> auto& properties_rng
     )
@@ -308,20 +373,26 @@ public:
             );
     }
 
-    /// @brief Safely removes a vertex and completely purges it from all incident hyperedges.
-    /// @param vertex_id The raw identifier of the vertex to remove.
+    /// @brief Removes a vertex by its ID, unbinding it from its incident hyperedges.
+    /// @param vertex_id The ID of the vertex to remove.
+    /// @throws std::invalid_argument If the ID is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertex(const id_type vertex_id) {
         this->_remove_vertex_impl(vertex_id);
     }
 
-    /// @brief Safely removes a vertex and completely purges it from all incident hyperedges.
-    /// @param vertex The `vertex_descriptor` wrapping the vertex to remove.
-    gl_attr_force_inline void remove_vertex(const vertex_type& vertex) {
+    /// @brief Removes a vertex using its descriptor, unbinding it from its incident hyperedges.
+    /// @param vertex The descriptor of the vertex to remove.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_vertex_wrn()
+    gl_attr_force_inline void remove_vertex(vertex_type vertex) {
         this->remove_vertex(vertex.id());
     }
 
-    /// @brief Removes multiple vertices specified by a range of raw identifiers.
-    /// @param vertex_id_rng A range of raw vertex identifiers to be removed.
+    /// @brief Removes a range of vertices using their IDs.
+    /// @param vertex_id_rng A forward range containing the IDs of vertices to remove.
+    /// @throws std::invalid_argument If any vertex ID in the range is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> vertex_id_set(
@@ -333,9 +404,11 @@ public:
             this->_remove_vertex_impl(vertex_id);
     }
 
-    /// @brief Removes multiple vertices specified by a range of vertex descriptors.
-    /// @param vertex_rng A range of `vertex_descriptor`s representing the vertices to be removed.
-    void remove_vertices(const traits::c_sized_range_of<vertex_type> auto& vertex_rng) {
+    /// @brief Removes a range of vertices using their descriptors.
+    /// @param vertex_rng A forward range containing the descriptors of vertices to remove.
+    /// @throws std::invalid_argument If any vertex descriptor is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_vertex_wrn()
+    void remove_vertices(const traits::c_forward_range_of<vertex_type> auto& vertex_rng) {
         // sort vertices in a descending n_vertices (by id) and removes duplicate ids
         std::set<vertex_type, std::greater<vertex_type>> vertex_set(
             std::ranges::begin(vertex_rng), std::ranges::end(vertex_rng)
@@ -348,40 +421,51 @@ public:
 
     // --- vertex getters ---
 
-    /// @brief Checks if a vertex with the given raw ID exists in the hypergraph.
-    /// @param vertex_id The raw identifier to check.
+    /// @brief Checks if a vertex with the given ID exists in the hypergraph.
+    /// @param vertex_id The ID to check.
     /// @return `true` if the vertex exists, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool has_vertex(const id_type vertex_id) const {
         return vertex_id < this->_n_vertices;
     }
 
     /// @brief Checks if the vertex referenced by the provided descriptor exists in the hypergraph.
-    /// @param vertex The vertex descriptor to check.
+    /// @param vertex The descriptor to check.
     /// @return `true` if the vertex exists, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool has_vertex(vertex_type vertex) const {
         return this->has_vertex(vertex.id());
     }
 
-    /// @brief Safely wraps a raw vertex ID into a `vertex_descriptor`, bounds-checking the ID.
-    /// @param vertex_id The raw numeric identifier of the vertex.
-    /// @return The constructed `vertex_descriptor`.
-    /// @throws std::invalid_argument If the `vertex_id` is out of bounds.
+    /// @brief Returns a descriptor of the vertex with the given *bounds-checked* ID.
+    /// @param vertex_id The ID of the vertex.
+    /// @return The corresponding vertex descriptor.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->vertex_unchecked(vertex_id);
     }
 
-    /// @brief Accesses a `vertex_descriptor` using a tag-based accessor.
-    /// @param vertex_id The raw numeric identifier of the vertex.
-    /// @return The constructed `vertex_descriptor`.
-    /// @throws std::invalid_argument If the `vertex_id` is out of bounds.
+    /// @brief Returns a descriptor of the vertex with the given bounds-checked ID.
+    ///
+    /// > [!NOTE] API Note
+    /// >
+    /// > Calling `hypergraph.at(hgl::vertex, id)` is equivalent to calling `hypergraph.vertex(id)`.
+    /// > However, the `at` methods of the `hypergraph` class are designed to be called in generic
+    /// > functions that can operate on vertices and hyperedges alike.
+    ///
+    /// @param vertex_id The ID of the vertex.
+    /// @return The corresponding `vertex_descriptor`.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline vertex_type at(vertex_t, const id_type vertex_id) const {
         return this->vertex(vertex_id);
     }
 
-    /// @brief Wraps a raw vertex ID into a `vertex_descriptor` without performing bounds checking.
-    /// @param vertex_id The raw numeric identifier of the vertex.
-    /// @return The constructed `vertex_descriptor`.
+    /// @brief Returns a descriptor of the vertex with the given ID without bounds checking.
+    /// @param vertex_id The ID of the vertex.
+    /// @return The corresponding vertex descriptor.
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id) const {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return vertex_type{vertex_id, this->_vertex_properties[vertex_id]};
@@ -389,30 +473,40 @@ public:
             return vertex_type{vertex_id};
     }
 
-    /// @brief Subscript operator to access a `vertex_descriptor` without bounds checking.
-    /// @param vertex_id The raw numeric identifier of the vertex.
-    /// @return The constructed `vertex_descriptor`.
+    /// @brief Returns a descriptor of the vertex with the given ID without bounds checking.
+    /// @param vertex_id The ID of the vertex.
+    /// @return The corresponding vertex descriptor.
+    ///
+    /// > [!NOTE] API Note
+    /// >
+    /// > Calling `hypergraph[hgl::vertex, id]` is equivalent to calling `hypergraph.vertex_unchecked(id)`.
+    /// > However, the subscript operators of the `hypergraph` class are designed to be called in generic
+    /// > functions that can operate on vertices and hyperedges alike.
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline vertex_type
     operator[](vertex_t, const id_type vertex_id) const {
         return this->vertex_unchecked(vertex_id);
     }
 
-    /// @brief Returns a transformed range wrapping all valid vertices into `vertex_descriptor`s.
-    /// @return A lazily evaluated view of all `vertex_descriptor`s.
+    /// @brief Returns a lazily evaluated, random-access view of all vertex descriptors in the hypergraph.
+    /// @return A view yielding descriptors for every vertex.
     [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
         return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    /// @brief Returns a lightweight, lazily evaluated range over all valid raw vertex IDs.
-    /// @return A view of all vertex identifiers.
+    /// @brief Returns a lazily evaluated, random-access view of all active vertex IDs in the hypergraph.
+    /// @return A view yielding all valid vertex IDs.
     [[nodiscard]] gl_attr_force_inline auto vertex_ids() const noexcept {
         return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
     /// @brief Retrieves a reference to the properties of a specified vertex.
-    /// @param vertex_id The identifier of the vertex.
+    /// @param vertex_id The ID of the vertex.
     /// @return A mutable reference to the vertex's properties.
-    /// @throws std::invalid_argument If the `vertex_id` is out of bounds.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(
         const id_type vertex_id
     ) const
@@ -422,8 +516,8 @@ public:
         return this->_vertex_properties[vertex_id];
     }
 
-    /// @brief Returns a view over the internal vertex properties container.
-    /// @return A standard view over the continuous block of property payloads.
+    /// @brief Retrieves a lazily evaluated, random-access view over all vertex properties in the hypergraph.
+    /// @return A view mapping each active vertex index to its property.
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -432,8 +526,9 @@ public:
 
     // --- hyperedge modifiers ---
 
-    /// @brief Adds a single new, empty, property-less hyperedge to the hypergraph.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new, default-initialized hyperedge to the hypergraph.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge() {
         this->_impl.add_hyperedges(1uz);
         const auto new_hyperedge_id = static_cast<id_type>(this->_n_hyperedges++);
@@ -444,9 +539,10 @@ public:
             return hyperedge_type{new_hyperedge_id};
     }
 
-    /// @brief Adds a single new empty hyperedge and initializes its properties.
-    /// @param properties The property payload to assign to the new hyperedge.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new hyperedge with the given properties to the hypergraph.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge_with(hyperedge_properties_type properties)
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
@@ -457,9 +553,10 @@ public:
         };
     }
 
-    /// @brief Adds a new hyperedge and immediately binds a range of vertices to it (undirected).
-    /// @param vertex_id_rng A range of raw vertex identifiers to incident with the new hyperedge.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge and immediately binds a range of vertices to it.
+    /// @param vertex_id_rng A forward range of vertex IDs to bind to the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge(const traits::c_forward_range_of<id_type> auto& vertex_id_rng)
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -468,18 +565,20 @@ public:
         return he;
     }
 
-    /// @brief Adds a new hyperedge and immediately binds an initializer list of vertices to it (undirected).
-    /// @param vertex_ids An initializer list of raw vertex identifiers.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge and immediately binds a list of vertices to it.
+    /// @param vertex_ids An initializer list of vertex IDs to bind to the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge(std::initializer_list<id_type> vertex_ids)
     requires std::same_as<directional_tag, undirected_t>
     {
         return this->add_hyperedge(std::views::all(vertex_ids));
     }
 
-    /// @brief Adds a new hyperedge and immediately binds a range of vertex descriptors to it (undirected).
-    /// @param vertex_rng A range of `vertex_descriptor` objects.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge and immediately binds a range of vertices to it.
+    /// @param vertex_rng A forward range of vertex descriptors to bind to the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type
     add_hyperedge(const traits::c_forward_range_of<vertex_type> auto& vertex_rng)
     requires std::same_as<directional_tag, undirected_t>
@@ -487,19 +586,21 @@ public:
         return this->add_hyperedge(vertex_rng | std::views::transform(&vertex_type::id));
     }
 
-    /// @brief Adds a new hyperedge and immediately binds an initializer list of vertex descriptors to it (undirected).
-    /// @param vertices An initializer list of `vertex_descriptor` objects.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge and immediately binds a list of vertices to it.
+    /// @param vertices An initializer list of vertex descriptors to bind to the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge(std::initializer_list<vertex_type> vertices)
     requires std::same_as<directional_tag, undirected_t>
     {
         return this->add_hyperedge(std::views::all(vertices));
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds a range of vertices to it (undirected).
-    /// @param vertex_id_rng A range of raw vertex identifiers.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge with the given properties and immediately binds a range of vertices to it.
+    /// @param vertex_id_rng A forward range of vertex IDs to bind to the new hyperedge.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<id_type> auto& vertex_id_rng,
         hyperedge_properties_type properties
@@ -511,10 +612,11 @@ public:
         return he;
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds an initializer list of vertices to it (undirected).
-    /// @param vertex_ids An initializer list of raw vertex identifiers.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge with the given properties and immediately binds a list of vertices to it.
+    /// @param vertex_ids An initializer list of vertex IDs to bind to the new hyperedge.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge_with(
         std::initializer_list<id_type> vertex_ids, hyperedge_properties_type properties
     )
@@ -523,10 +625,11 @@ public:
         return this->add_hyperedge_with(std::views::all(vertex_ids), std::move(properties));
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds a range of vertex descriptors to it (undirected).
-    /// @param vertex_rng A range of `vertex_descriptor` objects.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge with the given properties and immediately binds a range of vertices to it.
+    /// @param vertex_rng A forward range of vertex descriptors to bind to the new hyperedge.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
         hyperedge_properties_type properties
@@ -538,10 +641,11 @@ public:
         );
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds an initializer list of vertex descriptors to it (undirected).
-    /// @param vertices An initializer list of `vertex_descriptor` objects.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *undirected* hyperedge with the given properties and immediately binds a list of vertices to it.
+    /// @param vertices An initializer list of vertex descriptors to bind to the new hyperedge.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge_with(
         std::initializer_list<vertex_type> vertices, hyperedge_properties_type properties
     )
@@ -550,10 +654,11 @@ public:
         return this->add_hyperedge_with(std::views::all(vertices), std::move(properties));
     }
 
-    /// @brief Adds a new hyperedge and immediately binds tail and head vertices to it (bf-directed).
-    /// @param tail_id_rng A range of raw vertex identifiers forming the Tail.
-    /// @param head_id_rng A range of raw vertex identifiers forming the Head.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_id_rng A forward range of vertex IDs to bind to the new hyperedge's *tail*.
+    /// @param head_id_rng A forward range of vertex IDs to bind to the new hyperedge's *head*.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge(
         const traits::c_forward_range_of<id_type> auto& tail_id_rng,
         const traits::c_forward_range_of<id_type> auto& head_id_rng
@@ -566,10 +671,11 @@ public:
         return he;
     }
 
-    /// @brief Adds a new hyperedge and immediately binds tail and head vertices to it (bf-directed).
-    /// @param tail_ids An initializer list of raw vertex identifiers forming the Tail.
-    /// @param head_ids An initializer list of raw vertex identifiers forming the Head.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_ids An initializer of vertex IDs to bind to the new hyperedge's *tail*.
+    /// @param head_ids An initializer of vertex IDs to bind to the new hyperedge's *head*.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type
     add_hyperedge(std::initializer_list<id_type> tail_ids, std::initializer_list<id_type> head_ids)
     requires std::same_as<directional_tag, bf_directed_t>
@@ -577,10 +683,11 @@ public:
         return this->add_hyperedge(std::views::all(tail_ids), std::views::all(head_ids));
     }
 
-    /// @brief Adds a new hyperedge and immediately binds tail and head vertices to it (bf-directed).
-    /// @param tail_rng A range of `vertex_descriptor`s forming the Tail.
-    /// @param head_rng A range of `vertex_descriptor`s forming the Head.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_rng A forward range of vertex descriptors to bind to the new hyperedge's *tail*.
+    /// @param head_rng A forward range of vertex descriptors to bind to the new hyperedge's *head*.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge(
         const traits::c_forward_range_of<vertex_type> auto& tail_rng,
         const traits::c_forward_range_of<vertex_type> auto& head_rng
@@ -593,10 +700,11 @@ public:
         );
     }
 
-    /// @brief Adds a new hyperedge and immediately binds tail and head vertices to it (bf-directed).
-    /// @param tail An initializer list of `vertex_descriptor`s forming the Tail.
-    /// @param head An initializer list of `vertex_descriptor`s forming the Head.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail An intializer list of vertex descriptors to bind to the new hyperedge's *tail*.
+    /// @param head An intializer list of vertex descriptors to bind to the new hyperedge's *head*.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type
     add_hyperedge(std::initializer_list<vertex_type> tail, std::initializer_list<vertex_type> head)
     requires std::same_as<directional_tag, bf_directed_t>
@@ -604,11 +712,12 @@ public:
         return this->add_hyperedge(std::views::all(tail), std::views::all(head));
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds tail and head vertices to it (bf-directed).
-    /// @param tail_id_rng A range of raw vertex identifiers forming the Tail.
-    /// @param head_id_rng A range of raw vertex identifiers forming the Head.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_id_rng A forward range of vertex IDs to bind to the new hyperedge's *tail*.
+    /// @param head_id_rng A forward range of vertex IDs to bind to the new hyperedge's *head*.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<id_type> auto& tail_id_rng,
         const traits::c_forward_range_of<id_type> auto& head_id_rng,
@@ -622,11 +731,12 @@ public:
         return he;
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds tail and head vertices to it (bf-directed).
-    /// @param tail_ids An initializer list of raw vertex identifiers forming the Tail.
-    /// @param head_ids An initializer list of raw vertex identifiers forming the Head.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_ids An initializer list of vertex IDs to bind to the new hyperedge's *tail*.
+    /// @param head_ids An initializer list of vertex IDs to bind to the new hyperedge's *head*.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
         std::initializer_list<id_type> tail_ids,
         std::initializer_list<id_type> head_ids,
@@ -639,11 +749,12 @@ public:
         );
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds tail and head vertices to it (bf-directed).
-    /// @param tail_rng A range of `vertex_descriptor`s forming the Tail.
-    /// @param head_rng A range of `vertex_descriptor`s forming the Head.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail_rng A forward range of vertex descriptors to bind to the new hyperedge's *tail*.
+    /// @param head_rng A forward range of vertex descriptors to bind to the new hyperedge's *head*.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
         const traits::c_forward_range_of<vertex_type> auto& tail_rng,
         const traits::c_forward_range_of<vertex_type> auto& head_rng,
@@ -658,11 +769,12 @@ public:
         );
     }
 
-    /// @brief Adds a new hyperedge, initializes properties, and binds tail and head vertices to it (bf-directed).
-    /// @param tail An initializer list of `vertex_descriptor`s forming the Tail.
-    /// @param head An initializer list of `vertex_descriptor`s forming the Head.
-    /// @param properties The property payload to assign.
-    /// @return A safe `hyperedge_descriptor` pointing to the newly created hyperedge.
+    /// @brief Adds a new *BF-directed* hyperedge and immediately binds vertices to its *tail* and *head*.
+    /// @param tail An initializer list of vertex descriptor to bind to the new hyperedge's *tail*.
+    /// @param head An initializer list of vertex descriptor to bind to the new hyperedge's *head*.
+    /// @param properties The property payload for the new hyperedge.
+    /// @return A descriptor of the newly created hyperedge.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     gl_attr_force_inline hyperedge_type add_hyperedge_with(
         std::initializer_list<vertex_type> tail,
         std::initializer_list<vertex_type> head,
@@ -675,8 +787,9 @@ public:
         );
     }
 
-    /// @brief Efficiently adds multiple property-less hyperedges to the hypergraph.
-    /// @param n The number of empty hyperedges to add.
+    /// @brief Adds multiple default-initialized hyperedges to the hypergraph.
+    /// @param n The number of hyperedges to add.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     void add_hyperedges(const size_type n) {
         this->_impl.add_hyperedges(n);
         this->_n_hyperedges += n;
@@ -685,8 +798,9 @@ public:
             this->_hyperedge_properties.resize(this->_n_hyperedges);
     }
 
-    /// @brief Efficiently adds multiple hyperedges to the hypergraph, initializing them with a range of properties.
-    /// @param properties_rng A range containing the property payloads to assign to the newly created hyperedges.
+    /// @brief Adds multiple hyperedges based on a range of property payloads.
+    /// @param properties_rng A forward range of properties to initialize the new hyperedges with.
+    /// @copydetails detail::hypergraph_doc_anchors::add_hyperedge_note()
     void add_hyperedges_with(
         const traits::c_sized_range_of<hyperedge_properties_type> auto& properties_rng
     )
@@ -705,20 +819,26 @@ public:
             );
     }
 
-    /// @brief Safely removes a hyperedge and completely unbinds it from all incident vertices.
-    /// @param hyperedge_id The raw identifier of the hyperedge to remove.
+    /// @brief Removes a hyperedge by its ID, unbinding it from its incident vertices.
+    /// @param hyperedge_id The ID of the hyperedge to remove.
+    /// @throws std::invalid_argument If the ID is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
     gl_attr_force_inline void remove_hyperedge(const id_type hyperedge_id) {
         this->_remove_hyperedge_impl(hyperedge_id);
     }
 
-    /// @brief Safely removes a hyperedge and completely unbinds it from all incident vertices.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the hyperedge to remove.
-    gl_attr_force_inline void remove_hyperedge(const hyperedge_type& hyperedge) {
+    /// @brief Removes a hyperedge using its descriptor, unbinding it from its incident vertices.
+    /// @param hyperedge The descriptor of the hyperedge to remove.
+    /// @throws std::invalid_argument If the ID is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
+    gl_attr_force_inline void remove_hyperedge(hyperedge_type hyperedge) {
         this->remove_hyperedge(hyperedge.id());
     }
 
-    /// @brief Removes multiple hyperedges specified by a range of raw identifiers.
-    /// @param hyperedge_id_rng A range of raw hyperedge identifiers to be removed.
+    /// @brief Removes a range of hyperedges using their IDs.
+    /// @param hyperedge_id_rng A forward range containing the IDs of hyperedges to remove.
+    /// @throws std::invalid_argument If any hyperedge ID in the range is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
     void remove_hyperedges_from(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
         // sorts ids in a descending n_vertices and removes duplicate ids
         std::set<id_type, std::greater<id_type>> hyperedge_id_set(
@@ -730,9 +850,11 @@ public:
             this->_remove_hyperedge_impl(hyperedge_id);
     }
 
-    /// @brief Removes multiple hyperedges specified by a range of hyperedge descriptors.
-    /// @param hyperedge_rng A range of `hyperedge_descriptor`s representing the hyperedges to be removed.
-    void remove_hyperedges_from(const traits::c_sized_range_of<hyperedge_type> auto& hyperedge_rng
+    /// @brief Removes a range of hyperedges using their descriptors.
+    /// @param hyperedge_id_rng A forward range containing the descriptors of hyperedges to remove.
+    /// @throws std::invalid_argument If any hyperedge ID in the range is invalid.
+    /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
+    void remove_hyperedges_from(const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     ) {
         // sort hyperedges in a descending n_vertices (by id) and removes duplicate ids
         std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
@@ -746,41 +868,52 @@ public:
 
     // --- hyperedge getters ---
 
-    /// @brief Checks if a hyperedge with the given raw ID exists in the hypergraph.
-    /// @param hyperedge_id The raw identifier to check.
+    /// @brief Checks if a hyperedge with the given ID exists in the hypergraph.
+    /// @param hyperedge_id The ID to check.
     /// @return `true` if the hyperedge exists, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool has_hyperedge(const id_type hyperedge_id) const {
         return hyperedge_id < this->_n_hyperedges;
     }
 
     /// @brief Checks if the hyperedge referenced by the provided descriptor exists in the hypergraph.
-    /// @param hyperedge The hyperedge descriptor to check.
+    /// @param hyperedge The descriptor to check.
     /// @return `true` if the hyperedge exists, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool has_hyperedge(hyperedge_type hyperedge) const {
         return this->has_hyperedge(hyperedge.id());
     }
 
-    /// @brief Safely wraps a raw hyperedge ID into a `hyperedge_descriptor`, bounds-checking the ID.
-    /// @param hyperedge_id The raw numeric identifier of the hyperedge.
-    /// @return The constructed `hyperedge_descriptor`.
-    /// @throws std::invalid_argument If the `hyperedge_id` is out of bounds.
+    /// @brief Returns a descriptor of the hyperedge with the given *bounds-checked* ID.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The corresponding hyperedge descriptor.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->hyperedge_unchecked(hyperedge_id);
     }
 
-    /// @brief Accesses a `hyperedge_descriptor` using a tag-based accessor.
-    /// @param hyperedge_id The raw numeric identifier of the hyperedge.
-    /// @return The constructed `hyperedge_descriptor`.
-    /// @throws std::invalid_argument If the `hyperedge_id` is out of bounds.
+    /// @brief Returns a descriptor of the hyperedge with the given *bounds-checked* ID.
+    ///
+    /// > [!NOTE] API Note
+    /// >
+    /// > Calling `hypergraph.at(hgl::hyperedge, id)` is equivalent to calling `hypergraph.hyperedge(id)`.
+    /// > However, the `at` methods of the `hypergraph` class are designed to be called in generic
+    /// > functions that can operate on hyperedges and vertices alike.
+    ///
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The corresponding hyperedge descriptor.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] gl_attr_force_inline hyperedge_type
     at(hyperedge_t, const id_type hyperedge_id) const {
         return this->hyperedge(hyperedge_id);
     }
 
-    /// @brief Wraps a raw hyperedge ID into a `hyperedge_descriptor` without performing bounds checking.
-    /// @param hyperedge_id The raw numeric identifier of the hyperedge.
-    /// @return The constructed `hyperedge_descriptor`.
+    /// @brief Returns a descriptor of the hyperedge with the given ID without bounds checking.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The corresponding hyperedge descriptor.
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline hyperedge_type hyperedge_unchecked(const id_type hyperedge_id
     ) const {
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
@@ -789,41 +922,51 @@ public:
             return hyperedge_type{hyperedge_id};
     }
 
-    /// @brief Subscript operator to access a `hyperedge_descriptor` without bounds checking.
-    /// @param hyperedge_id The raw numeric identifier of the hyperedge.
-    /// @return The constructed `hyperedge_descriptor`.
+    /// @brief Returns a descriptor of the hyperedge with the given ID without bounds checking.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The corresponding hyperedge descriptor.
+    ///
+    /// > [!NOTE] API Note
+    /// >
+    /// > Calling `hypergraph[hgl::hyperedge, id]` is equivalent to calling `hypergraph.hyperedge_unchecked(id)`.
+    /// > However, the subscript operators of the `hypergraph` class are designed to be called in generic
+    /// > functions that can operate on hyperedges and vertices alike.
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline hyperedge_type
     operator[](hyperedge_t, const id_type hyperedge_id) const {
         return this->hyperedge_unchecked(hyperedge_id);
     }
 
-    /// @brief Returns a transformed range wrapping all valid hyperedges into `hyperedge_descriptor`s.
-    /// @return A lazily evaluated view of all `hyperedge_descriptor`s.
+    /// @brief Returns a lazily evaluated, random-access view of all hyperedge descriptors in the hypergraph.
+    /// @return A view yielding descriptors for every hyperedge.
     [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
         return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    /// @brief Returns a lightweight, lazily evaluated range over all valid raw hyperedge IDs.
-    /// @return A view of all hyperedge identifiers.
+    /// @brief Returns a lazily evaluated, random-access view of all active hyperedge IDs in the hypergraph.
+    /// @return A view yielding all valid hyperedge IDs.
     [[nodiscard]] gl_attr_force_inline auto hyperedge_ids() const noexcept {
         return std::views::iota(initial_id_v<id_type>, this->_n_hyperedges);
     }
 
     /// @brief Retrieves a reference to the properties of a specified hyperedge.
-    /// @param id The identifier of the hyperedge.
+    /// @param hyperedge_id The ID of the hyperedge.
     /// @return A mutable reference to the hyperedge's properties.
-    /// @throws std::invalid_argument If the `id` is out of bounds.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] gl_attr_force_inline hyperedge_properties_type& hyperedge_properties(
-        const id_type id
+        const id_type hyperedge_id
     ) const
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
-        this->_verify_hyperedge_id(id);
-        return this->_hyperedge_properties[id];
+        this->_verify_hyperedge_id(hyperedge_id);
+        return this->_hyperedge_properties[hyperedge_id];
     }
 
-    /// @brief Returns a view over the internal hyperedge properties container.
-    /// @return A standard view over the continuous block of property payloads.
+    /// @brief Retrieves a lazily evaluated, random-access view over all hyperedge properties in the hypergraph.
+    /// @return A view mapping each active hyperedge index to its property.
     [[nodiscard]] gl_attr_force_inline auto hyperedge_properties_map() const noexcept
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
@@ -833,8 +976,9 @@ public:
     // --- incidence modifiers ---
 
     /// @brief Binds a vertex to a hyperedge in an undirected hypergraph.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either ID is invalid.
     void bind(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -843,18 +987,20 @@ public:
         this->_impl.bind(vertex_id, hyperedge_id);
     }
 
-    /// @brief Binds a vertex to a hyperedge in an undirected hypergraph using descriptors.
-    /// @param vertex The `vertex_descriptor` mapping to the vertex.
-    /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    gl_attr_force_inline void bind(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    /// @brief Binds a vertex to a hyperedge in an undirected hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either descriptor is invalid.
+    gl_attr_force_inline void bind(vertex_type vertex, hyperedge_type hyperedge)
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex.id(), hyperedge.id());
     }
 
     /// @brief Binds a range of vertices to a single hyperedge in an undirected hypergraph.
-    /// @param vertex_id_rng A range of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @param vertex_id_rng A forward range of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     void bind(
         const traits::c_forward_range_of<id_type> auto& vertex_id_rng, const id_type hyperedge_id
     )
@@ -867,9 +1013,10 @@ public:
         }
     }
 
-    /// @brief Binds an initializer list of vertices to a single hyperedge in an undirected hypergraph.
-    /// @param vertex_ids An initializer list of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a list of vertices to a single hyperedge in an undirected hypergraph.
+    /// @param vertex_ids An initializer list of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     gl_attr_force_inline void bind(
         std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
     )
@@ -878,23 +1025,24 @@ public:
         this->bind(std::views::all(vertex_ids), hyperedge_id);
     }
 
-    /// @brief Binds a range of vertex descriptors to a single hyperedge in an undirected hypergraph.
-    /// @param vertex_rng A range of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a range of vertices to a single hyperedge in an undirected hypergraph.
+    /// @param vertex_rng A forward range of vertex descriptors.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind(
-        const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
-        const hyperedge_type& hyperedge
+        const traits::c_forward_range_of<vertex_type> auto& vertex_rng, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
     }
 
-    /// @brief Binds an initializer list of vertex descriptors to a single hyperedge in an undirected hypergraph.
-    /// @param vertices An initializer list of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a list of vertices to a single hyperedge in an undirected hypergraph.
+    /// @param vertices An initializer list of vertex descriptors.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind(
-        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
+        std::initializer_list<vertex_type> vertices, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -902,8 +1050,9 @@ public:
     }
 
     /// @brief Binds a single vertex to a range of hyperedges in an undirected hypergraph.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id_rng A range of raw hyperedge identifiers.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id_rng A forward range of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     void bind(
         const id_type vertex_id, const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng
     )
@@ -916,9 +1065,10 @@ public:
         }
     }
 
-    /// @brief Binds a single vertex to an initializer list of hyperedges in an undirected hypergraph.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_ids An initializer list of raw hyperedge identifiers.
+    /// @brief Binds a single vertex to a list of hyperedges in an undirected hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id_rng An initializer list of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     gl_attr_force_inline void bind(
         const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
     )
@@ -927,32 +1077,34 @@ public:
         this->bind(vertex_id, std::views::all(hyperedge_ids));
     }
 
-    /// @brief Binds a single vertex descriptor to a range of hyperedge descriptors in an undirected hypergraph.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedge_rng A range of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to a range of hyperedges in an undirected hypergraph.
+    /// @param vertex_id The descriptor of the vertex.
+    /// @param hyperedge_id_rng A forward range of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind(
-        const vertex_type& vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        vertex_type vertex, const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
     }
 
-    /// @brief Binds a single vertex descriptor to an initializer list of hyperedge descriptors in an undirected hypergraph.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedges An initializer list of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to a list of hyperedges in an undirected hypergraph.
+    /// @param vertex_id The descriptor of the vertex.
+    /// @param hyperedge_id_rng An initializer list of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind(
-        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
+        vertex_type vertex, std::initializer_list<hyperedge_type> hyperedges
     )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(vertex, std::views::all(hyperedges));
     }
 
-    /// @brief Binds a vertex to the tail (source) of a bf-directed hyperedge.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a vertex to the *tail* of a hyperedge in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either ID is invalid.
     void bind_tail(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -961,18 +1113,20 @@ public:
         this->_impl.bind_tail(vertex_id, hyperedge_id);
     }
 
-    /// @brief Binds a vertex descriptor to the tail (source) of a bf-directed hyperedge descriptor.
-    /// @param vertex The `vertex_descriptor` mapping to the vertex.
-    /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    gl_attr_force_inline void bind_tail(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    /// @brief Binds a vertex to the *tail* of a hyperedge in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either descriptor is invalid.
+    gl_attr_force_inline void bind_tail(vertex_type vertex, hyperedge_type hyperedge)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex.id(), hyperedge.id());
     }
 
-    /// @brief Binds a range of vertices to the tail of a single bf-directed hyperedge.
-    /// @param vertex_id_rng A range of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a range of vertices to the *tail* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_id_rng A forward range of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     void bind_tail(
         const traits::c_forward_range_of<id_type> auto& vertex_id_rng, const id_type hyperedge_id
     )
@@ -985,9 +1139,10 @@ public:
         }
     }
 
-    /// @brief Binds an initializer list of vertices to the tail of a single bf-directed hyperedge.
-    /// @param vertex_ids An initializer list of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a list of vertices to the *tail* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_ids An initializer list of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     gl_attr_force_inline void bind_tail(
         std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
     )
@@ -996,32 +1151,34 @@ public:
         this->bind_tail(std::views::all(vertex_ids), hyperedge_id);
     }
 
-    /// @brief Binds a range of vertex descriptors to the tail of a single bf-directed hyperedge descriptor.
-    /// @param vertex_rng A range of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a range of vertices to the *tail* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_rng A forward range of vertex descriptors.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_tail(
-        const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
-        const hyperedge_type& hyperedge
+        const traits::c_forward_range_of<vertex_type> auto& vertex_rng, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
     }
 
-    /// @brief Binds an initializer list of vertex descriptors to the tail of a single bf-directed hyperedge descriptor.
-    /// @param vertices An initializer list of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a range of vertices to the *tail* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertices An initializer list of vertex descriptors.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_tail(
-        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
+        std::initializer_list<vertex_type> vertices, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(std::views::all(vertices), hyperedge);
     }
 
-    /// @brief Binds a single vertex to the tails of a range of bf-directed hyperedges.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id_rng A range of raw hyperedge identifiers.
+    /// @brief Binds a single vertex to the *tail* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id_rng A forward range of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     void bind_tail(
         const id_type vertex_id, const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng
     )
@@ -1034,9 +1191,10 @@ public:
         }
     }
 
-    /// @brief Binds a single vertex to the tails of an initializer list of bf-directed hyperedges.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_ids An initializer list of raw hyperedge identifiers.
+    /// @brief Binds a single vertex to the *tail* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_ids An initializer list of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     gl_attr_force_inline void bind_tail(
         const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
     )
@@ -1045,32 +1203,34 @@ public:
         this->bind_tail(vertex_id, std::views::all(hyperedge_ids));
     }
 
-    /// @brief Binds a single vertex descriptor to the tails of a range of bf-directed hyperedge descriptors.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedge_rng A range of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to the *tail* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge_rng A forward range of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_tail(
-        const vertex_type& vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        vertex_type vertex, const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
     }
 
-    /// @brief Binds a single vertex descriptor to the tails of an initializer list of bf-directed hyperedge descriptors.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedges An initializer list of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to the *tail* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedges An initializer list of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_tail(
-        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
+        vertex_type vertex, std::initializer_list<hyperedge_type> hyperedges
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_tail(vertex, std::views::all(hyperedges));
     }
 
-    /// @brief Binds a vertex to the head (destination) of a bf-directed hyperedge.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a vertex to the *head* of a hyperedge in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either ID is invalid.
     void bind_head(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1079,18 +1239,20 @@ public:
         this->_impl.bind_head(vertex_id, hyperedge_id);
     }
 
-    /// @brief Binds a vertex descriptor to the head (destination) of a bf-directed hyperedge descriptor.
-    /// @param vertex The `vertex_descriptor` mapping to the vertex.
-    /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    gl_attr_force_inline void bind_head(const vertex_type& vertex, const hyperedge_type& hyperedge)
+    /// @brief Binds a vertex to the *head* of a hyperedge in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either descriptor is invalid.
+    gl_attr_force_inline void bind_head(vertex_type vertex, hyperedge_type hyperedge)
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex.id(), hyperedge.id());
     }
 
-    /// @brief Binds a range of vertices to the head of a single bf-directed hyperedge.
-    /// @param vertex_id_rng A range of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a range of vertices to the *head* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_id_rng A forward range of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     void bind_head(
         const traits::c_forward_range_of<id_type> auto& vertex_id_rng, const id_type hyperedge_id
     )
@@ -1103,9 +1265,10 @@ public:
         }
     }
 
-    /// @brief Binds an initializer list of vertices to the head of a single bf-directed hyperedge.
-    /// @param vertex_ids An initializer list of raw vertex identifiers.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Binds a list of vertices to the *head* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_ids An initializer list of vertex IDs.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge ID or any of the vertex IDs is invalid.
     gl_attr_force_inline void bind_head(
         std::initializer_list<id_type> vertex_ids, const id_type hyperedge_id
     )
@@ -1114,32 +1277,34 @@ public:
         this->bind_head(std::views::all(vertex_ids), hyperedge_id);
     }
 
-    /// @brief Binds a range of vertex descriptors to the head of a single bf-directed hyperedge descriptor.
-    /// @param vertex_rng A range of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a range of vertices to the *head* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertex_rng A forward range of vertex descriptors.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_head(
-        const traits::c_forward_range_of<vertex_type> auto& vertex_rng,
-        const hyperedge_type& hyperedge
+        const traits::c_forward_range_of<vertex_type> auto& vertex_rng, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex_rng | std::views::transform(&vertex_type::id), hyperedge.id());
     }
 
-    /// @brief Binds an initializer list of vertex descriptors to the head of a single bf-directed hyperedge descriptor.
-    /// @param vertices An initializer list of `vertex_descriptor`s.
-    /// @param hyperedge The `hyperedge_descriptor` wrapping the target hyperedge.
+    /// @brief Binds a range of vertices to the *head* of a single hyperedge in a BF-directed hypergraph.
+    /// @param vertices An initializer list of vertex descriptors.
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_head(
-        std::initializer_list<vertex_type> vertices, const hyperedge_type& hyperedge
+        std::initializer_list<vertex_type> vertices, hyperedge_type hyperedge
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(std::views::all(vertices), hyperedge);
     }
 
-    /// @brief Binds a single vertex to the heads of a range of bf-directed hyperedges.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id_rng A range of raw hyperedge identifiers.
+    /// @brief Binds a single vertex to the *head* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id_rng A forward range of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     void bind_head(
         const id_type vertex_id, const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng
     )
@@ -1152,9 +1317,10 @@ public:
         }
     }
 
-    /// @brief Binds a single vertex to the heads of an initializer list of bf-directed hyperedges.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_ids An initializer list of raw hyperedge identifiers.
+    /// @brief Binds a single vertex to the *head* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_ids An initializer list of hyperedge IDs.
+    /// @throws std::invalid_argument If either the vertex ID or any of the hyperedge IDs is invalid.
     gl_attr_force_inline void bind_head(
         const id_type vertex_id, std::initializer_list<id_type> hyperedge_ids
     )
@@ -1163,50 +1329,56 @@ public:
         this->bind_head(vertex_id, std::views::all(hyperedge_ids));
     }
 
-    /// @brief Binds a single vertex descriptor to the heads of a range of bf-directed hyperedge descriptors.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedge_rng A range of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to the *head* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge_rng A forward range of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_head(
-        const vertex_type& vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        vertex_type vertex, const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex.id(), hyperedge_rng | std::views::transform(&hyperedge_type::id));
     }
 
-    /// @brief Binds a single vertex descriptor to the heads of an initializer list of bf-directed hyperedge descriptors.
-    /// @param vertex The target `vertex_descriptor`.
-    /// @param hyperedges An initializer list of `hyperedge_descriptor`s.
+    /// @brief Binds a single vertex to the *head* of a range of hyperedges in a BF-directed hypergraph.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedges An initializer list of hyperedge descriptors.
+    /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_head(
-        const vertex_type& vertex, std::initializer_list<hyperedge_type> hyperedges
+        vertex_type vertex, std::initializer_list<hyperedge_type> hyperedges
     )
     requires std::same_as<directional_tag, bf_directed_t>
     {
         this->bind_head(vertex, std::views::all(hyperedges));
     }
 
-    /// @brief Unbinds a vertex from a hyperedge entirely.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Unbinds a vertex from a hyperedge.
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
     void unbind(const id_type vertex_id, const id_type hyperedge_id) {
         this->_verify_vertex_id(vertex_id);
         this->_verify_hyperedge_id(hyperedge_id);
         this->_impl.unbind(vertex_id, hyperedge_id);
     }
 
-    /// @brief Unbinds a vertex from a hyperedge entirely using descriptors.
-    /// @param vertex The `vertex_descriptor` mapping to the vertex.
-    /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    gl_attr_force_inline void unbind(const vertex_type& vertex, const hyperedge_type& hyperedge) {
+    /// @brief Unbinds a vertex from a hyperedge.
+    /// @param vertex The descriptor of the vertex.
+    /// @param hyperedge The descriptor of the hyperedge.
+    gl_attr_force_inline void unbind(vertex_type vertex, hyperedge_type hyperedge) {
         this->unbind(vertex.id(), hyperedge.id());
     }
 
     // --- incidence validators ---
 
-    /// @brief Evaluates whether a vertex and a hyperedge are currently incident.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Evaluates whether the given vertex and hyperedge are incident.
+    ///
+    /// ### Formal Definition
+    /// - **Undirected Hypergraphs:** A vertex $v$ and a hyperedge $e$ are incident if \f$v \in e\f$.
+    /// - **BF-directed Hypergraphs:** A vertex $v$ and a hyperedge $e$ are incident if \f$v \in T(e) \lor v \in H(e)\f$.
+    ///
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
     /// @return `true` if the vertex belongs to the hyperedge (in any direction), `false` otherwise.
     [[nodiscard]] bool are_incident(const id_type vertex_id, const id_type hyperedge_id) const {
         this->_verify_vertex_id(vertex_id);
@@ -1219,15 +1391,18 @@ public:
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
     /// @return `true` if the vertex belongs to the hyperedge, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool are_incident(
-        const vertex_type& vertex, const hyperedge_type& hyperedge
+        vertex_type vertex, hyperedge_type hyperedge
     ) const {
         return this->are_incident(vertex.id(), hyperedge.id());
     }
 
-    /// @brief Evaluates whether a vertex is in the tail (source) of a bf-directed hyperedge.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
-    /// @return `true` if the vertex is in the tail set, `false` otherwise.
+    /// @brief Evaluates whether a vertex belongs to the *tail* of a hyperedge in a BF-directed hypergraph.
+    ///
+    /// Formally, the function evaluates whether \f$v \in T(e)\f$ or is one of the sources of the hyperedge.
+    ///
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return `true` if the vertex is in the *tail* set of the hyperedge, `false` otherwise.
     [[nodiscard]] bool is_tail(const id_type vertex_id, const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1236,22 +1411,27 @@ public:
         return this->_impl.is_tail(vertex_id, hyperedge_id);
     }
 
-    /// @brief Evaluates whether a vertex descriptor is in the tail of a bf-directed hyperedge descriptor.
+    /// @brief Evaluates whether a vertex belongs to the *tail* of a hyperedge in a BF-directed hypergraph.
+    ///
+    /// Formally, the function evaluates whether \f$v \in T(e)\f$ or is one of the sources of the hyperedge.
+    ///
     /// @param vertex The `vertex_descriptor` mapping to the vertex.
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    /// @return `true` if the vertex is in the tail set, `false` otherwise.
-    [[nodiscard]] gl_attr_force_inline bool is_tail(
-        const vertex_type& vertex, const hyperedge_type& hyperedge
-    ) const
+    /// @return `true` if the vertex is in the *tail* set of the hyperedge, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_tail(vertex_type vertex, hyperedge_type hyperedge)
+        const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->is_tail(vertex.id(), hyperedge.id());
     }
 
-    /// @brief Evaluates whether a vertex is in the head (destination) of a bf-directed hyperedge.
-    /// @param vertex_id The raw identifier of the vertex.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
-    /// @return `true` if the vertex is in the head set, `false` otherwise.
+    /// @brief Evaluates whether a vertex belongs to the *head* of a hyperedge in a BF-directed hypergraph.
+    ///
+    /// Formally, the function evaluates whether \f$v \in H(e)\f$ or is one of the targets of the hyperedge.
+    ///
+    /// @param vertex_id The ID of the vertex.
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return `true` if the vertex is in the *head* set of the hyperedge, `false` otherwise.
     [[nodiscard]] bool is_head(const id_type vertex_id, const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1260,13 +1440,15 @@ public:
         return this->_impl.is_head(vertex_id, hyperedge_id);
     }
 
-    /// @brief Evaluates whether a vertex descriptor is in the head of a bf-directed hyperedge descriptor.
+    /// @brief Evaluates whether a vertex belongs to the *head* of a hyperedge in a BF-directed hypergraph.
+    ///
+    /// Formally, the function evaluates whether \f$v \in H(e)\f$ or is one of the targets of the hyperedge.
+    ///
     /// @param vertex The `vertex_descriptor` mapping to the vertex.
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
-    /// @return `true` if the vertex is in the head set, `false` otherwise.
-    [[nodiscard]] gl_attr_force_inline bool is_head(
-        const vertex_type& vertex, const hyperedge_type& hyperedge
-    ) const
+    /// @return `true` if the vertex is in the *head* set of the hyperedge, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_head(vertex_type vertex, hyperedge_type hyperedge)
+        const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->is_head(vertex.id(), hyperedge.id());
@@ -1274,53 +1456,69 @@ public:
 
     // --- incidence getters ---
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s incident to the specified vertex.
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves all hyperedges incident with a vertex (\f$\{e in E : v \in e\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of incident hyperedges.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const id_type vertex_id) {
         return this->incident_hyperedge_ids(vertex_id)
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s incident to the specified vertex descriptor.
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(const vertex_type& vertex) {
+    /// @brief Retrieves all hyperedges incident with a vertex (\f$\{e in E : v \in e\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of incident hyperedges.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedges(vertex_type vertex) {
         return this->incident_hyperedges(vertex.id());
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs incident to the specified vertex.
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves IDs of all hyperedges incident with a vertex (\f$\{e in E : v \in e\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of incident hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] auto incident_hyperedge_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.incident_hyperedges(vertex_id);
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs incident to the specified vertex descriptor.
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto incident_hyperedge_ids(const vertex_type& vertex
-    ) const {
+    /// @brief Retrieves IDs of all hyperedges incident with a vertex (\f$\{e in E : v \in e\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of incident hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto incident_hyperedge_ids(vertex_type vertex) const {
         return this->incident_hyperedge_ids(vertex.id());
     }
 
-    /// @brief Retrieves the total degree (number of incident hyperedges) of a vertex.
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Calculates the degree of a vertex in the hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::degree()
+    /// @param vertex_id The ID of the vertex.
+    /// @return The degree of the vertex.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] size_type degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.degree(vertex_id);
     }
 
-    /// @brief Retrieves the total degree (number of incident hyperedges) of a vertex descriptor.
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type degree(const vertex_type& vertex) const {
+    /// @brief Calculates the degree of a vertex in the hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::degree()
+    /// @param vertex The descriptor of the vertex.
+    /// @return The degree of the vertex.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type degree(vertex_type vertex) const {
         return this->degree(vertex.id());
     }
 
-    /// @brief Generates a contiguous degree map for all valid vertices in the hypergraph.
+    /// @brief Returns a mapped array of degrees for all vertices.
+    /// @return A vector where the index aligns with the vertex ID containing its degree.
     [[nodiscard]] std::vector<size_type> degree_map() const {
         return this->_impl.degree_map(this->_n_vertices);
     }
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s originating from the specified vertex (bf-directed).
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves all outgoing (tail-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in T(e)\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of outgoing hyperedges.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1328,16 +1526,20 @@ public:
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s originating from the specified vertex descriptor (bf-directed).
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(const vertex_type& vertex) const
+    /// @brief Retrieves all outgoing (tail-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in T(e)\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of outgoing hyperedges.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedges(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_hyperedges(vertex.id());
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs originating from the specified vertex (bf-directed).
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves IDs of all outgoing (tail-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in T(e)\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of outgoing hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] auto out_hyperedge_ids(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1345,16 +1547,21 @@ public:
         return this->_impl.out_hyperedges(vertex_id);
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs originating from the specified vertex descriptor (bf-directed).
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto out_hyperedge_ids(const vertex_type& vertex) const
+    /// @brief Retrieves IDs of all outgoing (tail-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in T(e)\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of outgoing hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto out_hyperedge_ids(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_hyperedge_ids(vertex.id());
     }
 
-    /// @brief Retrieves the out-degree (number of hyperedges where the vertex is in the Tail) of a vertex.
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Calculates the out-degree of a vertex in the *BF-directed* hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::out_degree()
+    /// @param vertex_id The ID of the vertex.
+    /// @return The out-degree of the vertex.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] size_type out_degree(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1362,23 +1569,29 @@ public:
         return this->_impl.out_degree(vertex_id);
     }
 
-    /// @brief Retrieves the out-degree (number of hyperedges where the vertex is in the Tail) of a vertex descriptor.
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type out_degree(const vertex_type& vertex) const
+    /// @brief Calculates the out-degree of a vertex in the *BF-directed* hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::out_degree()
+    /// @param vertex The descriptor of the vertex.
+    /// @return The out-degree of the vertex.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type out_degree(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->out_degree(vertex.id());
     }
 
-    /// @brief Generates a contiguous out-degree map for all valid vertices in the bf-directed hypergraph.
+    /// @brief Returns a mapped array of out-degrees for all vertices.
+    /// @return A vector where the index aligns with the vertex ID containing its out-degree.
     [[nodiscard]] std::vector<size_type> out_degree_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.out_degree_map(this->_n_vertices);
     }
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s entering the specified vertex (bf-directed).
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of incoming hyperedges.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1386,16 +1599,20 @@ public:
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `hyperedge_descriptor`s entering the specified vertex descriptor (bf-directed).
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(const vertex_type& vertex) const
+    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of incoming hyperedges.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedges(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->in_hyperedges(vertex.id());
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs entering the specified vertex (bf-directed).
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @param vertex_id The vertex ID.
+    /// @return A view representing the set of incoming hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] auto in_hyperedge_ids(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1403,16 +1620,21 @@ public:
         return this->_impl.in_hyperedges(vertex_id);
     }
 
-    /// @brief Returns a lightweight range of raw hyperedge IDs entering the specified vertex descriptor (bf-directed).
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto in_hyperedge_ids(const vertex_type& vertex) const
+    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @param vertex The vertex descriptor.
+    /// @return A view representing the set of incoming hyperedge IDs.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto in_hyperedge_ids(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->in_hyperedge_ids(vertex.id());
     }
 
-    /// @brief Retrieves the in-degree (number of hyperedges where the vertex is in the Head) of a vertex.
-    /// @param vertex_id The raw identifier of the vertex.
+    /// @brief Calculates the in-degree of a vertex in the *BF-directed* hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::in_degree()
+    /// @param vertex_id The ID of the vertex.
+    /// @return The in-degree of the vertex.
+    /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] size_type in_degree(const id_type vertex_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1420,70 +1642,94 @@ public:
         return this->_impl.in_degree(vertex_id);
     }
 
-    /// @brief Retrieves the in-degree (number of hyperedges where the vertex is in the Head) of a vertex descriptor.
-    /// @param vertex The target `vertex_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type in_degree(const vertex_type& vertex) const
+    /// @brief Calculates the in-degree of a vertex in the *BF-directed* hypergraph.
+    /// @copydetails detail::hypergraph_doc_anchors::in_degree()
+    /// @param vertex The descriptor of the vertex.
+    /// @return The in-degree of the vertex.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type in_degree(vertex_type vertex) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->in_degree(vertex.id());
     }
 
-    /// @brief Generates a contiguous in-degree map for all valid vertices in the bf-directed hypergraph.
+    /// @brief Returns a mapped array of in-degrees for all vertices.
+    /// @return A vector where the index aligns with the vertex ID containing its in-degree.
     [[nodiscard]] std::vector<size_type> in_degree_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.in_degree_map(this->_n_vertices);
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s incident to the specified hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves all vertices incident with a hyperedge ($e$).
+    /// @param hyperedge_id The hyperedge ID.
+    /// @return A view representing the set of incident vertices.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] auto incident_vertices(const id_type hyperedge_id) const {
         return this->incident_vertex_ids(hyperedge_id)
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s incident to the specified hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto incident_vertices(const hyperedge_type& hyperedge
-    ) const {
+    /// @brief Retrieves all vertices incident with a hyperedge ($e$).
+    /// @param hyperedge The hyperedge descriptor.
+    /// @return A view representing the set of incident vertices.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto incident_vertices(hyperedge_type hyperedge) const {
         return this->incident_vertices(hyperedge.id());
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs incident to the specified hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves IDs of all vertices incident with a hyperedge ($e$).
+    /// @param hyperedge_id The hyperedge ID.
+    /// @return A view representing the set of incident vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] auto incident_vertex_ids(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.incident_vertices(hyperedge_id);
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs incident to the specified hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(const hyperedge_type& hyperedge
-    ) const {
+    /// @brief Retrieves IDs of all vertices incident with a hyperedge ($e$).
+    /// @param hyperedge The hyperedge descriptor.
+    /// @return A view representing the set of incident vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(hyperedge_type hyperedge) const {
         return this->incident_vertex_ids(hyperedge.id());
     }
 
-    /// @brief Retrieves the size (total number of incident vertices) of a hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves the size (number of incident vertices) of the given hyperedge.
+    ///
+    /// - For undirected hypergraphs this is equivalent to $\vert e \vert$.
+    /// - For BF-directed hypergraphs this is equivalent to $\vert T(e) \vert + \vert H(e) \vert$
+    ///
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The size of the hyperedge.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] size_type hyperedge_size(const id_type hyperedge_id) const {
         this->_verify_hyperedge_id(hyperedge_id);
         return this->_impl.hyperedge_size(hyperedge_id);
     }
 
-    /// @brief Retrieves the size (total number of incident vertices) of a hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type hyperedge_size(const hyperedge_type& hyperedge
-    ) const {
+    /// @brief Retrieves the size (number of incident vertices) of the given hyperedge.
+    ///
+    /// - For undirected hypergraphs this is equivalent to $\vert e \vert$.
+    /// - For BF-directed hypergraphs this is equivalent to $\vert T(e) \vert + \vert H(e) \vert$
+    ///
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @return The size of the hyperedge.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type hyperedge_size(hyperedge_type hyperedge) const {
         return this->hyperedge_size(hyperedge.id());
     }
 
-    /// @brief Generates a contiguous map of sizes for all valid hyperedges in the hypergraph.
+    /// @brief Returns a mapped array of hyperedge sizes.
+    /// @return A vector where the index aligns with the hyperedge ID containing its size.
     [[nodiscard]] std::vector<size_type> hyperedge_size_map() const {
         return this->_impl.hyperedge_size_map(this->_n_hyperedges);
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s in the tail of the specified bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves all vertices in the *tail* set of a hyperedge ($T(e)$).
+    /// @param hyperedge_id The hypepredge ID.
+    /// @return A view representing the set of the hyperedge's tail vertices.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto tail(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1491,16 +1737,20 @@ public:
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s in the tail of the specified bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto tail(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves all vertices in the *tail* set of a hyperedge ($T(e)$).
+    /// @param hyperedge The hyperedge descriptor.
+    /// @return A view representing the set of the hyperedge's tail vertices.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto tail(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail(hyperedge.id());
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs in the tail of the specified bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves IDs all vertices in the *tail* set of a hyperedge ($T(e)$).
+    /// @param hyperedge_id The hypepredge ID.
+    /// @return A view representing the set of the hyperedge's tail vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] auto tail_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1508,16 +1758,20 @@ public:
         return this->_impl.tail(hyperedge_id);
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs in the tail of the specified bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto tail_ids(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves IDs all vertices in the *tail* set of a hyperedge ($T(e)$).
+    /// @param hyperedge The hypepredge descriptor.
+    /// @return A view representing the set of the hyperedge's tail vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto tail_ids(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_ids(hyperedge.id());
     }
 
-    /// @brief Retrieves the tail size (number of tail vertices) of a bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves the size of the *BF-directed* hyperedge's *tail* set ($\vert T(e) \vert).
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The size of the hyperedge's *tail* set.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] size_type tail_size(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1525,23 +1779,28 @@ public:
         return this->_impl.tail_size(hyperedge_id);
     }
 
-    /// @brief Retrieves the tail size (number of tail vertices) of a bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type tail_size(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves the size of the *BF-directed* hyperedge's *tail* set ($\vert T(e) \vert).
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @return The size of the hyperedge's *tail* set.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type tail_size(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->tail_size(hyperedge.id());
     }
 
-    /// @brief Generates a contiguous map of tail sizes for all valid bf-directed hyperedges.
+    /// @brief Returns a mapped array of sizes of the *tail* sets of hyperedged in a *BF-directed* hypergraph.
+    /// @return A vector where the index aligns with the hyperedge ID containing its *tail* set size.
     [[nodiscard]] std::vector<size_type> tail_size_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->_impl.tail_size_map(this->_n_hyperedges);
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s in the head of the specified bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves all vertices in the *head* set of a hyperedge ($H(e)$).
+    /// @param hyperedge_id The hypepredge ID.
+    /// @return A view representing the set of the hyperedge's head vertices.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto head(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1549,16 +1808,20 @@ public:
              | std::views::transform(this->_create_vertex_descriptor());
     }
 
-    /// @brief Returns a transformed range of fully bound `vertex_descriptor`s in the head of the specified bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto head(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves all vertices in the *head* set of a hyperedge ($H(e)$).
+    /// @param hyperedge The hyperedge descriptor.
+    /// @return A view representing the set of the hyperedge's head vertices.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto head(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head(hyperedge.id());
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs in the head of the specified bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves IDs all vertices in the *head* set of a hyperedge ($H(e)$).
+    /// @param hyperedge_id The hypepredge ID.
+    /// @return A view representing the set of the hyperedge's head vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] auto head_ids(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1566,16 +1829,20 @@ public:
         return this->_impl.head(hyperedge_id);
     }
 
-    /// @brief Returns a lightweight range of raw vertex IDs in the head of the specified bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline auto head_ids(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves IDs all vertices in the *head* set of a hyperedge ($H(e)$).
+    /// @param hyperedge The hypepredge descriptor.
+    /// @return A view representing the set of the hyperedge's head vertex IDs.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline auto head_ids(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_ids(hyperedge.id());
     }
 
-    /// @brief Retrieves the head size (number of head vertices) of a bf-directed hyperedge.
-    /// @param hyperedge_id The raw identifier of the hyperedge.
+    /// @brief Retrieves the size of the *BF-directed* hyperedge's *head* set ($\vert H(e) \vert).
+    /// @param hyperedge_id The ID of the hyperedge.
+    /// @return The size of the hyperedge's *head* set.
+    /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] size_type head_size(const id_type hyperedge_id) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1583,15 +1850,18 @@ public:
         return this->_impl.head_size(hyperedge_id);
     }
 
-    /// @brief Retrieves the head size (number of head vertices) of a bf-directed hyperedge descriptor.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    [[nodiscard]] gl_attr_force_inline size_type head_size(const hyperedge_type& hyperedge) const
+    /// @brief Retrieves the size of the *BF-directed* hyperedge's *head* set ($\vert H(e) \vert).
+    /// @param hyperedge The descriptor of the hyperedge.
+    /// @return The size of the hyperedge's *head* set.
+    /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
+    [[nodiscard]] gl_attr_force_inline size_type head_size(hyperedge_type hyperedge) const
     requires std::same_as<directional_tag, bf_directed_t>
     {
         return this->head_size(hyperedge.id());
     }
 
-    /// @brief Generates a contiguous map of head sizes for all valid bf-directed hyperedges.
+    /// @brief Returns a mapped array of sizes of the *head* sets of hyperedged in a *BF-directed* hypergraph.
+    /// @return A vector where the index aligns with the hyperedge ID containing its *head* set size.
     [[nodiscard]] std::vector<size_type> head_size_map() const
     requires std::same_as<directional_tag, bf_directed_t>
     {
@@ -1600,7 +1870,10 @@ public:
 
     // --- comparison ---
 
-    /// @brief Compares two hypergraphs for strict equality, checking topologies and properties.
+    /// @brief Compares two hypergraphs for strict structural and property equality.
+    /// @param lhs The left operand.
+    /// @param rhs The right operand.
+    /// @return `true` if both graphs represent the exact same topology and properties, `false` otherwise.
     [[nodiscard]] friend bool operator==(const hypergraph& lhs, const hypergraph& rhs) noexcept {
         if (lhs._n_vertices != rhs._n_vertices or lhs._n_hyperedges != rhs._n_hyperedges)
             return false;
@@ -1618,15 +1891,15 @@ public:
 
     // --- I/O utility ---
 
-    /// @brief Helper structure used to correctly format an individual hyperedge into an output stream.
+    /// @brief Helper structure used to properly format an individual hyperedge within the hypergraph's context into an output stream.
     struct hyperedge_formatter {
     public:
         /// @brief The hypergraph owning the hyperedge.
         const hypergraph& hg;
-        /// @brief The hyperedge descriptor to be formatted.
+        /// @brief The hyperedge to be formatted.
         const hyperedge_type hyperedge;
 
-        /// @brief Stream insertion operator for undirected hyperedge formatters.
+        /// @brief Stream insertion operator for undirected hyperedges.
         friend std::ostream& operator<<(std::ostream& os, const hyperedge_formatter& proxy)
         requires std::same_as<directional_tag, undirected_t>
         {
@@ -1650,7 +1923,7 @@ public:
             return os;
         }
 
-        /// @brief Stream insertion operator for bf-directed hyperedge formatters.
+        /// @brief Stream insertion operator for BF-directed hyperedges.
         friend std::ostream& operator<<(std::ostream& os, const hyperedge_formatter& proxy)
         requires std::same_as<directional_tag, bf_directed_t>
         {
@@ -1677,19 +1950,19 @@ public:
         }
     };
 
-    /// @brief Retrieves a formatter object that safely encapsulates a hyperedge for stream output.
-    /// @param hyperedge The target `hyperedge_descriptor`.
-    /// @return A `hyperedge_formatter` structure prepared for standard stream insertion.
-    [[nodiscard]] hyperedge_formatter display(const hyperedge_type& hyperedge) const {
+    /// @brief Returns a formatter object that safely encapsulates a hyperedge for stream output.
+    /// @param hyperedge The hyperedge to format.
+    /// @return A @ref hyperedge_formatter structure prepared for standard stream insertion.
+    [[nodiscard]] hyperedge_formatter display(hyperedge_type hyperedge) const {
         return hyperedge_formatter{*this, hyperedge};
     }
 
     /// @brief Formats and outputs the entire hypergraph structure to a standard output stream.
     ///
-    /// Behaves dynamically based on whether the `gl::io::verbose` or `gl::io::spec_fmt` stream manipulators are set.
+    /// The generated string representation of the hypergraph depends on the currently active formatting options of the stream.
     ///
     /// @param os The target output stream.
-    /// @param hg The hypergraph instance to serialize or print.
+    /// @param hg The hypergraph instance to write.
     /// @return The stream reference for chaining.
     friend std::ostream& operator<<(std::ostream& os, const hypergraph& hg) {
         using enum io::detail::option_bit;
@@ -1703,9 +1976,9 @@ public:
         return hg._concise_write(os);
     }
 
-    /// @brief Reads and deserializes an entire hypergraph from a given stream using HGSF format.
-    /// @param is The input stream containing HGSF formatted data.
-    /// @param hg The hypergraph instance to populate.
+    /// @brief Deserializes hypergraph structure data from an input stream (using the HGSF format).
+    /// @param is The source input stream.
+    /// @param g The hypergraph instance to populate.
     /// @return The stream reference for chaining.
     friend gl_attr_force_inline std::istream& operator>>(std::istream& is, hypergraph& hg) {
         return hg._hgsf_read(is);
@@ -2032,6 +2305,11 @@ private:
 
 // --- general hypergraph utility ---
 
+/// @ingroup HGL-Core
+/// @brief Creates a deep copy of the given hypergraph.
+/// @tparam Hypergraph The type of the hypergraph.
+/// @param source The hypergraph instance to clone.
+/// @return A newly constructed hypergraph containing identical vertices, hyperedges and properties (if applicable).
 template <traits::c_hypergraph Hypergraph>
 [[nodiscard]] Hypergraph clone(const Hypergraph& source) {
     return Hypergraph(source);
@@ -2047,7 +2325,7 @@ using undirected_hypergraph =
     hypergraph<undirected_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a bf-directed hypergraph.
+/// @brief Convenience alias for a BF-directed hypergraph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
@@ -2056,7 +2334,7 @@ using bf_directed_hypergraph =
     hypergraph<bf_directed_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph backed by a standard incidence list.
+/// @brief Convenience alias for a hypergraph utilizing a standard incidence list implementation model.
 template <
     traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
@@ -2067,7 +2345,7 @@ using list_hypergraph = hypergraph<
     list_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph backed by a flat incidence list.
+/// @brief Convenience alias for a hypergraph utilizing a flat incidence list implementation model.
 template <
     traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
@@ -2082,7 +2360,7 @@ using flat_list_hypergraph = hypergraph<flat_list_hypergraph_traits<
     IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph backed by a standard incidence matrix.
+/// @brief Convenience alias for a hypergraph utilizing a standard incidence matrix implementation model.
 template <
     traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
@@ -2093,7 +2371,7 @@ using matrix_hypergraph = hypergraph<
     matrix_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph backed by a flat incidence matrix.
+/// @brief Convenience alias for a hypergraph utilizing a flat incidence matrix implementation model.
 template <
     traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
@@ -2124,7 +2402,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the maximum out-degree among all vertices in a bf-directed hypergraph.
+/// @brief Calculates the maximum out-degree among all vertices in a *BF-directed* hypergraph.
 [[nodiscard]] size_type max_out_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
@@ -2132,7 +2410,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the minimum out-degree among all vertices in a bf-directed hypergraph.
+/// @brief Calculates the minimum out-degree among all vertices in a *BF-directed* hypergraph.
 [[nodiscard]] size_type min_out_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.out_degree_map();
@@ -2140,7 +2418,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the maximum in-degree among all vertices in a bf-directed hypergraph.
+/// @brief Calculates the maximum in-degree among all vertices in a *BF-directed* hypergraph.
 [[nodiscard]] size_type max_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
@@ -2148,7 +2426,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the minimum in-degree among all vertices in a bf-directed hypergraph.
+/// @brief Calculates the minimum in-degree among all vertices in a *BF-directed* hypergraph.
 [[nodiscard]] size_type min_in_degree(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto degrees = hypergraph.in_degree_map();
@@ -2158,21 +2436,21 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 // --- hyperedge size bounds ---
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the rank of a hypergraph, defined as the maximum size of any valid hyperedge.
+/// @brief Calculates the rank (maximum size of any hyperedge) of a hypergraph.
 [[nodiscard]] size_type rank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::max_element(sizes);
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the corank of a hypergraph, defined as the minimum size of any valid hyperedge.
+/// @brief Calculates the corank (minimum size of any hyperedge) of a hypergraph.
 [[nodiscard]] size_type corank(const traits::c_hypergraph auto& hypergraph) noexcept {
     const auto sizes = hypergraph.hyperedge_size_map();
     return sizes.empty() ? 0uz : *std::ranges::min_element(sizes);
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the maximum tail size among all hyperedges in a bf-directed hypergraph.
+/// @brief Calculates the maximum tail size among all hyperedges in a *BF-directed* hypergraph.
 [[nodiscard]] size_type max_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
@@ -2180,7 +2458,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the minimum tail size among all hyperedges in a bf-directed hypergraph.
+/// @brief Calculates the minimum tail size among all hyperedges in a *BF-directed* hypergraph.
 [[nodiscard]] size_type min_tail_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.tail_size_map();
@@ -2188,7 +2466,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the maximum head size among all hyperedges in a bf-directed hypergraph.
+/// @brief Calculates the maximum head size among all hyperedges in a *BF-directed* hypergraph.
 [[nodiscard]] size_type max_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
@@ -2196,7 +2474,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Calculates the minimum head size among all hyperedges in a bf-directed hypergraph.
+/// @brief Calculates the minimum head size among all hyperedges in a *BF-directed* hypergraph.
 [[nodiscard]] size_type min_head_size(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     const auto sizes = hypergraph.head_size_map();
@@ -2220,7 +2498,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is out-$k$-regular (all vertices have an out-degree of $k$).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is out-$k$-regular (all vertices have an out-degree of $k$).
 [[nodiscard]] bool is_out_regular(
     const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
@@ -2228,14 +2506,14 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is out-regular (all vertices have the same out-degree).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is out-regular (all vertices have the same out-degree).
 [[nodiscard]] bool is_out_regular(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.out_degree_map());
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is in-$k$-regular (all vertices have an in-degree of $k$).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is in-$k$-regular (all vertices have an in-degree of $k$).
 [[nodiscard]] bool is_in_regular(
     const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
@@ -2243,7 +2521,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is in-regular (all vertices have the same in-degree).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is in-regular (all vertices have the same in-degree).
 [[nodiscard]] bool is_in_regular(const traits::c_bf_directed_hypergraph auto& hypergraph) noexcept {
     return util::is_constant(hypergraph.in_degree_map());
 }
@@ -2265,7 +2543,7 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is tail-$k$-uniform (all hyperedges have a tail size of $k$).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is tail-$k$-uniform (all hyperedges have a tail size of $k$).
 [[nodiscard]] bool is_tail_uniform(
     const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
@@ -2273,14 +2551,14 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is tail-uniform (all hyperedges have the exact same tail size).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is tail-uniform (all hyperedges have the exact same tail size).
 [[nodiscard]] bool is_tail_uniform(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.tail_size_map());
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is head-$k$-uniform (all hyperedges have a head size of $k$).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is head-$k$-uniform (all hyperedges have a head size of $k$).
 [[nodiscard]] bool is_head_uniform(
     const traits::c_bf_directed_hypergraph auto& hypergraph, const size_type k
 ) noexcept {
@@ -2288,10 +2566,74 @@ using flat_matrix_hypergraph = hypergraph<flat_matrix_hypergraph_traits<
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Evaluates whether the given bf-directed hypergraph is head-uniform (all hyperedges have the exact same head size).
+/// @brief Evaluates whether the given *BF-directed* hypergraph is head-uniform (all hyperedges have the exact same head size).
 [[nodiscard]] bool is_head_uniform(const traits::c_bf_directed_hypergraph auto& hypergraph
 ) noexcept {
     return util::is_constant(hypergraph.head_size_map());
 }
+
+namespace detail::hypergraph_doc_anchors {
+
+/// > [!IMPORTANT] ID Stability
+/// >
+/// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in existing vertex descriptors may be invalidated.
+void add_vertex_note();
+
+/// > [!WARNING] Descriptor and ID Invalidation
+/// >
+/// > Removing a vertex invalidates:
+/// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
+/// > - References to all properties associated with the vertices with IDs shifted as a result of the removal operation.
+/// >
+/// > Proceed with caution when maintaining external vertex IDs, descriptors or properties.
+void remove_vertex_wrn();
+
+/// > [!IMPORTANT] ID Stability
+/// >
+/// > Adding hyperedges does **not** invalidate existing hyperedge IDs. **However**, property references stored in existing hyperedge descriptors may be invalidated.
+void add_hyperedge_note();
+
+/// > [!WARNING] Descriptor and ID Invalidation
+/// >
+/// > Removing a hyperedge invalidates:
+/// > - All hyperedge descriptors and IDs for hyperedges with higher IDs (they shift down).
+/// > - References to all properties associated with the hyperedges with IDs shifted as a result of the removal operation.
+/// >
+/// > Proceed with caution when maintaining external hyperedge IDs, descriptors, or properties.
+void remove_hyperedge_wrn();
+
+// --- definitions ---
+
+/// ### Formal Definition
+/// The degree of a vertex in a hypergraph is the total number of hyperedges incident with a vertex.
+///
+/// \f[
+/// deg(v) =
+/// \begin{cases}
+/// \vert\{e \in E : v \in e\}\vert & \text{if } H \text{ is undirected}
+/// \\ deg_{in}(v) + deg_{out}(v) & \text{if } H \text{ is BF-directed}
+/// \end{cases}
+/// \f]
+void degree();
+
+/// ### Formal Definition
+/// The in-degree of a vertex in a *BF-directed* hypergraph is the number of hyperedges forward-incident
+/// with the vertex (such that the vertex belongs to the head of the hyperedge).
+///
+/// \f[
+/// deg_{in}(v) = \vert\{e \in E : v \in H(e)\}\vert
+/// \f]
+void in_degree();
+
+/// ### Formal Definition
+/// The out-degree of a vertex in a *BF-directed* hypergraph is the number of hyperedges backward-incident
+/// with the vertex (such that the vertex belongs to the tail of the hyperedge).
+///
+/// \f[
+/// deg_{in}(v) = \vert\{e \in E : v \in H(e)\}\vert
+/// \f]
+void out_degree();
+
+} // namespace detail::hypergraph_doc_anchors
 
 } // namespace hgl
