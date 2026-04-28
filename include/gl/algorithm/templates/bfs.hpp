@@ -29,7 +29,7 @@ namespace gl::algorithm {
 ///
 /// bool completed = gl::algorithm::bfs(
 ///     graph,
-///     gl::algorithm::init_range<graph_type>(start_id), // (2)!
+///     gl::algorithm::init_node_range<graph_type>(start_id), // (2)!
 ///     gl::algorithm::default_visit_vertex_predicate(visited), // (3)!
 ///     [&](auto v, auto p) { // (4)!
 ///         std::cout << "Visited vertex " << v << '\n';

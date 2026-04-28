@@ -27,7 +27,7 @@ template <result_discriminator Result, traits::c_hypergraph H>
 }
 
 template <traits::c_hypergraph H>
-[[nodiscard]] gl_attr_force_inline std::vector<search_node<H>> init_range(
+[[nodiscard]] gl_attr_force_inline std::vector<search_node<H>> init_node_range(
     typename H::id_type root_vertex_id
 ) {
     return std::vector<search_node<H>>{search_node<H>{root_vertex_id}};

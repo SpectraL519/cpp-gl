@@ -79,7 +79,7 @@ template <
 
         const bool is_bipartite = bfs(
             graph,
-            init_range<G>(root_id),
+            init_node_range<G>(root_id),
             empty_callback{}, // visit predicate
             empty_callback{}, // visit callback
             [&coloring](typename G::id_type vertex_id, const edge_type& in_edge)

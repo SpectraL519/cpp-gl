@@ -42,10 +42,12 @@ int main() {
         return 1;
     }
 
-    auto path_to_target = gl::algorithm::reconstruct_path(paths.predecessors, target_id); // (7)!
+    auto path_to_target
+        = gl::algorithm::reconstruct_path(paths.predecessors, target_id); // (7)!
     std::cout << "Shortest path distance to vertex " << target_id << ": "
               << paths.distances[target_id] << "\nPath: "
-              << gl::io::range_formatter(path_to_target, " -> ", "", "") << '\n'; // (8)!
+              << gl::io::range_formatter(path_to_target, " -> ", "", "") // (8)!
+              << '\n';
 
     return 0;
 }
