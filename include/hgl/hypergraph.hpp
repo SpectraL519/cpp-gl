@@ -1239,7 +1239,7 @@ private:
 
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if (not this->has_vertex(vertex_id))
-            throw std::out_of_range(std::format("Got invalid vertex id [{}]", vertex_id));
+            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
     void _remove_vertex_impl(const id_type vertex_id) {
@@ -1270,7 +1270,7 @@ private:
 
     gl_attr_force_inline void _verify_hyperedge_id(const id_type hyperedge_id) const {
         if (not this->has_hyperedge(hyperedge_id))
-            throw std::out_of_range(std::format("Got invalid hyperedge id [{}]", hyperedge_id));
+            throw std::invalid_argument(std::format("Got invalid hyperedge id [{}]", hyperedge_id));
     }
 
     void _remove_hyperedge_impl(const id_type hyperedge_id) {
