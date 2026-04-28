@@ -36,6 +36,14 @@ nav:
           - Generic Templates: hgl/algorithms/templates.md
           - Concrete Traversals: hgl/algorithms/traversal.md
       - I/O Utility: hgl/io.md
+      - API Reference:
+          - Overview: cpp-gl/group__HGL.md
+          - Core Components: cpp-gl/group__HGL-Core.md
+          - Algorithms: cpp-gl/group__HGL-Algorithm.md
+          - I/O Utility: cpp-gl/group__HGL-IO.md
+          - Traits & Concepts: cpp-gl/group__HGL-Traits.md
+          - Generic Types: cpp-gl/group__HGL-Types.md
+          - General Utilities: cpp-gl/group__HGL-Util.md
   - API Index:
       - Modules: cpp-gl/modules.md
       - Classes & Structs: cpp-gl/annotated.md

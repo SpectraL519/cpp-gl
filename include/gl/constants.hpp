@@ -38,7 +38,7 @@ struct initial_id_t {
 };
 
 /// @ingroup GL GL-Core
-/// @brief A constant instance of `initial_id_t` that can be used to represent the initial ID value of 0 for graph elements in a type-safe manner.
+/// @brief An `initial_id_t` tag constant that can be used to represent the initial ID value of 0 for graph elements in a type-safe manner.
 ///
 /// ### Example Usage
 /// ```cpp
@@ -96,7 +96,7 @@ struct invalid_id_t {
 };
 
 /// @ingroup GL GL-Core
-/// @brief A constant instance of `invalid_id_t` that can be used to represent the invalid ID value for graph elements in a type-safe manner.
+/// @brief An `invalid_id_t` tag constant that can be used to represent the invalid ID value for graph elements in a type-safe manner.
 ///
 /// ### Example Usage
 /// ```cpp

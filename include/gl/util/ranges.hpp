@@ -13,7 +13,7 @@
 namespace gl::util {
 
 /// @ingroup GL GL-Util
-/// @brief Returns the size of a range.
+/// @brief Safely determines the size of a range.
 ///
 /// This function returns the size of a range if it is a sized range, otherwise it computes the
 /// distance between the beginning and end of the range. Note that computing the distance for

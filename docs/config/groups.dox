@@ -44,12 +44,12 @@
 
 /// @defgroup GL-IO I/O Utility
 /// @ingroup GL
-/// @brief Comprehensive I/O stream support, parsing algorithms, and range-based formatting.
+/// @brief I/O stream operations, formatting, and serialization of graph data.
 ///
 /// This group provides the necessary infrastructure to seamlessly serialize, deserialize, and
-/// visualize complex graph structures. By offering a robust set of stream manipulators, formatting
-/// traits, and configuration options, it allows users to easily translate in-memory graphs to
-/// and from standard streams, files, or custom string representations.
+/// visualize complex graph structures. By offering a robust set of stream manipulators, range
+/// formatting utilities, and configuration options, it allows users to easily translate
+/// in-memory graphs to and from standard streams, files, or custom string representations.
 
 /// @defgroup GL-Traits Traits & Concepts
 /// @ingroup GL
@@ -83,3 +83,78 @@
 /// operations, these utilities are completely independent of graph theory semantics. They provide
 /// a curated set of highly reusable, general-purpose tools that can smoothly integrate into any
 /// modern C++ codebase.
+
+/// @defgroup HGL Hypergraph Library (HGL)
+/// @brief The top-level module defining the general-purpose C++ template hypergraph library.
+///
+/// This module provides a comprehensive suite of memory-efficient hypergraph representations,
+/// highly customizable algorithms, and robust I/O facilities. Designed strictly around modern
+/// C++ paradigms, the library leverages templates and concepts to deliver an API that is fast,
+/// generic, and type-safe. It supports both undirected hypergraphs and backward-forward (bf)
+/// directed hypergraphs.
+
+/// @defgroup HGL-Core Core Hypergraph Components
+/// @ingroup HGL
+/// @brief Fundamental hypergraph data structures, element descriptors, and configuration tags.
+///
+/// This group establishes the primary user interface for the HGL module, centered around the highly
+/// configurable @ref hgl::hypergraph "hypergraph" class. It provides the core data types, such as vertex
+/// and hyperedge descriptors, required to safely navigate and manipulate graph elements.
+///
+/// Furthermore, this module defines the declarative tags (e.g., directedness and backend
+/// implementation types) that dictate both the behavioral semantics and the underlying memory
+/// layout of the instantiated hypergraphs.
+
+/// @defgroup HGL-Algorithm Hypergraph Algorithms
+/// @ingroup HGL
+/// @brief Generic hypergraph algorithms, search templates, and related utilities.
+///
+/// This module provides hypergraph-specific algorithmic templates and implementations
+/// (such as forward and backward searches) designed to natively navigate the complex,
+/// high-order structure of hyperedges.
+
+/// @defgroup HGL-IO I/O Utility
+/// @ingroup HGL
+/// @brief I/O stream operations, formatting, and serialization of hypergraph data.
+///
+/// Provides the necessary infrastructure to seamlessly serialize, deserialize, and visualize
+/// complex hypergraph structures. It utilizes shared stream manipulation options and range
+/// formatting utilities to easily translate in-memory hypergraphs to and from standard
+/// streams and files.
+
+/// @defgroup HGL-Traits Traits & Concepts
+/// @ingroup HGL
+/// @brief Type traits, template constraints, and compile-time metaprogramming utilities.
+///
+/// These components form the strict conceptual backbone of the HGL module, used extensively
+/// to ensure internal type safety and correctness, while also constraining user-defined types
+/// to required structural contracts.
+///
+/// @section concepts_link Detailed Concept Specifications
+/// For a detailed list of all HGL module's concepts and their formal requirements, please refer to
+/// the [HGL Concepts Documentation](hgl_concepts.md#hgl-concepts-documentation) page.
+///
+/// > [!NOTE]
+/// >
+/// > Because hypergraphs share the same underlying implementation design and mechanisms as standard
+/// > graphs, they seamlessly reuse the same fundamental C++20 concepts. Therefore the HGL module
+/// > pulls in all standard graph traits, concept checkers, and metaprogramming utilities from the
+/// > GL module. To get an overview of these traits and concepts, please refer to the GL module's
+/// > @ref GL-Traits documentation page.
+
+/// @defgroup HGL-Types Generic Types
+/// @ingroup HGL
+/// @brief Independent, high-performance data structures and utility types.
+///
+/// This module houses a variety of general-purpose data structures and types. Though they are
+/// utilized natively by hypergraph implementations, these components are carefully decoupled
+/// from specific hypergraph logic, they can be seamlessly extracted and utilized in broader
+/// contexts.
+
+/// @defgroup HGL-Util General Utilities
+/// @ingroup HGL
+/// @brief Practical, domain-agnostic C++ helpers, mathematical functions, and polyfills.
+///
+/// These utilities provide a curated set of general-purpose tools that support the
+/// library's internal algorithms and hypergraph modeling operations, completely
+/// independent of strict hypergraph theory semantics.
