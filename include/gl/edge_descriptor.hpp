@@ -22,8 +22,6 @@ namespace gl {
 /// @ingroup GL GL-Core
 /// @brief A lightweight wrapper representing a graph edge with its endpoints and optional properties.
 ///
-/// **Module:** Part of the @ref GL-Core "Core Graph Components" group.
-///
 /// The `edge_descriptor` class provides a type-safe and efficient way to represent
 /// edges in both directed and undirected graph structures. It encapsulates the unique
 /// identifier of the edge, its source and target vertices, and optional property data.

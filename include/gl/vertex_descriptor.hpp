@@ -23,8 +23,6 @@ namespace gl {
 /// @ingroup GL GL-Core
 /// @brief A lightweight wrapper around a vertex identifier with optional properties.
 ///
-/// **Module:** Part of the @ref GL-Core "Core Graph Components" group.
-///
 /// The `vertex_descriptor` class provides a type-safe and efficient way to represent
 /// vertices in graph structures. It acts as a lightweight wrapper that combines
 /// a unique identifier with optional property data, ensuring safe access and
@@ -32,7 +30,7 @@ namespace gl {
 ///
 /// > [!WARNING] This class is not intended to be instantiated directly.
 /// >
-/// > Instead, `vertex_descriptor` objects should be retrieved from the @ref gl::graph class instance that owns the given vertex.
+/// > Instead, `vertex_descriptor` objects should be retrieved from the @ref gl::graph "graph" class instance that owns the given vertex.
 ///
 /// ### Example Usage
 /// ```cpp
@@ -49,7 +47,7 @@ namespace gl {
 ///
 /// 1\. Apply the stream manipulator to ensure custom property data is included in the output.
 ///
-/// 2\. Use the arrow operator `->` to read custom properties attached to the vertex.
+/// 2\. Use the arrow operator `->` to read custom properties attached to the vertex (assuming the vertex properties type contains `parent` and `level` members).
 ///
 /// 3\. Access another vertex via the `graph` using its ID, and modify the current vertex's properties.
 ///

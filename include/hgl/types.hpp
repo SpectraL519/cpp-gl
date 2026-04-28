@@ -11,6 +11,7 @@
 #include "gl/types/flat_jagged_vector.hpp"
 #include "gl/types/flat_matrix.hpp"
 #include "gl/types/properties.hpp"
+#include "hgl/traits.hpp"
 
 namespace hgl {
 
@@ -21,12 +22,12 @@ namespace hgl {
 ///
 /// Used primarily for indices, counts, and sizes of hypergraph components.
 /// @see gl::size_type
-using gl::size_type;
+using size_type = gl::size_type;
 
 /// @ingroup HGL-Types
 /// @brief The default unsigned integer type used for vertex and hyperedge identifiers.
 /// @see gl::default_id_type
-using gl::default_id_type;
+using default_id_type = gl::default_id_type;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::to_idx
@@ -42,18 +43,21 @@ using gl::to_diff;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::flat_jagged_vector
-/// @see gl::flat_jagged_vector
-using gl::flat_jagged_vector;
+/// @see gl::flat_jagged_vector for the full type definition
+template <std::semiregular T>
+using flat_jagged_vector = gl::flat_jagged_vector<T>;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::flat_matrix
-/// @see gl::flat_matrix
-using gl::flat_matrix;
+/// @see gl::flat_matrix for the full type definition
+template <std::semiregular T>
+using flat_matrix = gl::flat_matrix<T>;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::homogeneous_pair
-/// @see gl::homogeneous_pair
-using gl::homogeneous_pair;
+/// @see gl::homogeneous_pair for the full type definition
+template <typename T>
+using homogeneous_pair = gl::homogeneous_pair<T>;
 
 // --- property types ---
 
@@ -65,8 +69,8 @@ using gl::homogeneous_pair;
 /// > This type is used as a default `properties_type` for hypergraph components that do not require any user-defined data.
 /// > It serves as a marker to indicate that the component is *property-less* and can be optimized accordingly.
 ///
-/// @see gl::empty_properties
-using gl::empty_properties;
+/// @see gl::empty_properties for the full type definition
+using empty_properties = gl::empty_properties;
 
 /// @ingroup HGL-Core
 /// @brief @copybrief gl::empty_properties_map
@@ -75,22 +79,23 @@ using gl::empty_properties;
 /// >
 /// > This type is used internally by the library to optimize storage for hypergraph components that have no properties.
 ///
-/// @see gl::empty_properties_map
-using gl::empty_properties_map;
+/// @see gl::empty_properties_map for the full type definition
+using empty_properties_map = gl::empty_properties_map;
 
 /// @ingroup HGL-Core
 /// @brief @copybrief gl::name_property
-/// @see gl::name_property
-using gl::name_property;
+/// @see gl::name_property for the full type definition
+using name_property = gl::name_property;
 
 /// @ingroup HGL-Core
 /// @brief @copybrief gl::dynamic_properties
-/// @see gl::dynamic_properties
-using gl::dynamic_properties;
+/// @see gl::dynamic_properties for the full type definition
+using dynamic_properties = gl::dynamic_properties;
 
 /// @ingroup HGL-Core
 /// @brief A property struct providing arithmetic weight for hyperedges or vertices.
-/// @see gl::weight_property
-using gl::weight_property;
+/// @see gl::weight_property for the full type definition
+template <traits::c_arithmetic WeightType = double>
+using weight_property = gl::weight_property<WeightType>;
 
 } // namespace hgl
