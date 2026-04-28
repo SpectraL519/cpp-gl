@@ -32,10 +32,10 @@ result_type<Result, search_tree<H>> breadth_first_search(
         bfs(
             hypergraph,
             init_range<H>(root_vertex_id),
-            default_visit_vertex_predicate<H>(visited_vertices),
+            default_visit_predicate<H>(visited_vertices),
             default_visit_callback<H, Result>(visited_vertices, stree),
             default_traverse_hyperedge_predicate(visited_hyperedges),
-            default_enqueue_vertex_predicate<H, true>(visited_vertices),
+            default_enqueue_predicate<H, true>(visited_vertices),
             pre_visit,
             post_visit
         );
@@ -45,10 +45,10 @@ result_type<Result, search_tree<H>> breadth_first_search(
             bfs(
                 hypergraph,
                 init_range<H>(root_id),
-                default_visit_vertex_predicate<H>(visited_vertices),
+                default_visit_predicate<H>(visited_vertices),
                 default_visit_callback<H, Result>(visited_vertices, stree),
                 default_traverse_hyperedge_predicate(visited_hyperedges),
-                default_enqueue_vertex_predicate<H, true>(visited_vertices),
+                default_enqueue_predicate<H, true>(visited_vertices),
                 pre_visit,
                 post_visit
             );

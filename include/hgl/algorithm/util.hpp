@@ -34,8 +34,7 @@ template <traits::c_hypergraph H>
 }
 
 template <traits::c_hypergraph H>
-[[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited_v
-) {
+[[nodiscard]] gl_attr_force_inline auto default_visit_predicate(std::vector<bool>& visited_v) {
     return [&](const search_node<H>& node) -> bool {
         return not visited_v[to_idx(node.vertex_id)];
     };
@@ -76,9 +75,7 @@ template <traits::c_hypergraph H, result_discriminator Result>
 }
 
 template <traits::c_hypergraph H, bool AsResult = false>
-[[nodiscard]] gl_attr_force_inline auto default_enqueue_vertex_predicate(
-    std::vector<bool>& visited_v
-) {
+[[nodiscard]] gl_attr_force_inline auto default_enqueue_predicate(std::vector<bool>& visited_v) {
     using return_t = std::conditional_t<AsResult, decision, bool>;
     return [&](const search_node<H>& node) -> return_t {
         return return_t(not visited_v[to_idx(node.vertex_id)]);

@@ -39,10 +39,10 @@ result_type<Result, search_tree<H>> forward_bfs(
     bfs<traversal_direction::backward>(
         hypergraph,
         root_queue,
-        default_visit_vertex_predicate<H>(visited_vertices),
+        default_visit_predicate<H>(visited_vertices),
         default_visit_callback<H, Result>(visited_vertices, stree),
         blocking_traverse_hyperedge_predicate(head_unvisited),
-        default_enqueue_vertex_predicate<H, true>(visited_vertices),
+        default_enqueue_predicate<H, true>(visited_vertices),
         pre_visit,
         post_visit
     );
@@ -80,10 +80,10 @@ result_type<Result, search_tree<H>> forward_dfs(
     dfs<traversal_direction::backward>(
         hypergraph,
         root_queue,
-        default_visit_vertex_predicate<H>(visited_vertices),
+        default_visit_predicate<H>(visited_vertices),
         default_visit_callback<H, Result>(visited_vertices, stree),
         blocking_traverse_hyperedge_predicate(head_unvisited),
-        default_enqueue_vertex_predicate<H, true>(visited_vertices),
+        default_enqueue_predicate<H, true>(visited_vertices),
         pre_visit,
         post_visit
     );
