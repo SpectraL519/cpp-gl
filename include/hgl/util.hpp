@@ -29,13 +29,15 @@ using gl::util::range_size;
 
 /// @ingroup HGL-Util
 /// @brief @copybrief gl::util::concat_view
-/// @see gl::util::concat_view for the full type definition
+/// ### See Also
+/// - @ref gl::util::concat_view : For the full type definition.
 template <std::ranges::view V1, std::ranges::view V2>
 using concat_view = gl::util::concat_view<V1, V2>;
 
 /// @ingroup HGL-Util
 /// @brief @copybrief gl::util::concat_fn
-/// @see gl::util::concat_fn for the full type definition
+/// ### See Also
+/// - @ref gl::util::concat_fn : For the full type definition.
 using concat_fn = gl::util::concat_fn;
 
 /// @ingroup HGL-Util

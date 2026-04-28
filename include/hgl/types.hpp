@@ -43,19 +43,22 @@ using gl::to_diff;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::flat_jagged_vector
-/// @see gl::flat_jagged_vector for the full type definition
+/// ### See Also
+/// - @ref gl::flat_jagged_vector : For the full type definition.
 template <std::semiregular T>
 using flat_jagged_vector = gl::flat_jagged_vector<T>;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::flat_matrix
-/// @see gl::flat_matrix for the full type definition
+/// ### See Also
+/// - @ref gl::flat_matrix "gl::flat_matrix" : For the full type definition.
 template <std::semiregular T>
 using flat_matrix = gl::flat_matrix<T>;
 
 /// @ingroup HGL-Types
 /// @brief @copybrief gl::homogeneous_pair
-/// @see gl::homogeneous_pair for the full type definition
+/// ### See Also
+/// - @ref gl::homogeneous_pair : For the full type definition.
 template <typename T>
 using homogeneous_pair = gl::homogeneous_pair<T>;
 
@@ -69,7 +72,8 @@ using homogeneous_pair = gl::homogeneous_pair<T>;
 /// > This type is used as a default `properties_type` for hypergraph components that do not require any user-defined data.
 /// > It serves as a marker to indicate that the component is *property-less* and can be optimized accordingly.
 ///
-/// @see gl::empty_properties for the full type definition
+/// ### See Also
+/// - @ref gl::empty_properties : For the full type definition.
 using empty_properties = gl::empty_properties;
 
 /// @ingroup HGL-Core
@@ -79,22 +83,26 @@ using empty_properties = gl::empty_properties;
 /// >
 /// > This type is used internally by the library to optimize storage for hypergraph components that have no properties.
 ///
-/// @see gl::empty_properties_map for the full type definition
+/// ### See Also
+/// - @ref gl::empty_properties_map : For the full type definition.
 using empty_properties_map = gl::empty_properties_map;
 
 /// @ingroup HGL-Core
 /// @brief @copybrief gl::name_property
-/// @see gl::name_property for the full type definition
+/// ### See Also
+/// - @ref gl::name_property : For the full type definition.
 using name_property = gl::name_property;
 
 /// @ingroup HGL-Core
 /// @brief @copybrief gl::dynamic_properties
-/// @see gl::dynamic_properties for the full type definition
+/// ### See Also
+/// - @ref gl::dynamic_properties : For the full type definition.
 using dynamic_properties = gl::dynamic_properties;
 
 /// @ingroup HGL-Core
 /// @brief A property struct providing arithmetic weight for hyperedges or vertices.
-/// @see gl::weight_property for the full type definition
+/// ### See Also
+/// - @ref gl::weight_property : For the full type definition.
 template <traits::c_arithmetic WeightType = double>
 using weight_property = gl::weight_property<WeightType>;
 

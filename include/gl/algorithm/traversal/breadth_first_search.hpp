@@ -26,7 +26,8 @@ namespace gl::algorithm {
 ///
 /// ### Example Usage
 /// ```cpp
-/// auto pred_map = gl::algorithm::breadth_first_search(graph, start_id); // (1)!
+/// auto pred_map
+///     = gl::algorithm::breadth_first_search(graph, start_id); // (1)!
 ///
 /// gl::algorithm::breadth_first_search<gl::algorithm::noret>( // (2)!
 ///     graph,
@@ -55,7 +56,7 @@ namespace gl::algorithm {
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
-/// | Result | @ref gl::algorithm::result_discriminator "Discriminator" dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). | Must be a valid @ref gl::algorithm::result_discriminator "result_discriminator" enum value. |
+/// | Result | Discriminator dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). | Must be a valid @ref gl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |

@@ -25,35 +25,40 @@ namespace algorithm {
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::empty_callback
-/// @see gl::algorithm::empty_callback for a more detailed description.
+/// ### See Also
+/// - @ref gl::algorithm::empty_callback : For a more detailed description.
 using empty_callback = gl::algorithm::empty_callback;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::decision
-/// @see gl::algorithm::decision for the full type definition
+/// ### See Also
+/// - @ref gl::algorithm::decision : For the full type definition.
 using decision = gl::algorithm::decision;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::result_discriminator
-/// @see gl::algorithm::result_discriminator for the full type definition.
+/// ### See Also
+/// - @ref gl::algorithm::result_discriminator : For the full type definition.
 using result_discriminator = gl::algorithm::result_discriminator;
 using enum result_discriminator;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::result_type
-/// @see gl::algorithm::result_type for the full type definition.
+/// ### See Also
+/// - @ref gl::algorithm::result_type : For the full type definition.
 template <result_discriminator Result, typename ResultType>
 using result_type = gl::algorithm::result_type<Result, ResultType>;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::non_void_result_type
-/// @see gl::algorithm::non_void_result_type for the full type definition.
+/// @see gl::algorithm::non_void_result_type : For the full type definition.
 template <result_discriminator Result, typename ResultType>
 using non_void_result_type = gl::algorithm::non_void_result_type<Result, ResultType>;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::no_root_v
-/// @see gl::algorithm::no_root_v
+/// ### See Also
+/// - @ref gl::algorithm::no_root_v
 template <traits::c_id_type IdType>
 inline constexpr IdType no_root_v = gl::algorithm::no_root_v<IdType>;
 
@@ -64,7 +69,8 @@ using no_root_t = gl::algorithm::no_root_t;
 
 /// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::no_root
-/// @see gl::algorithm::no_root
+/// ### See Also
+/// - @ref gl::algorithm::no_root
 inline constexpr no_root_t no_root = gl::algorithm::no_root;
 
 // --- traversal types ---
@@ -111,7 +117,7 @@ struct search_node {
 ///
 /// The $i$-th element corresponds to the vertex with `id == i`. The tree topology is formed implicitly,
 /// as each @ref hgl::algorithm::search_node "search_node" stores the ID of its predecessor and the
-/// connecting hyperedge, enabling $O(1)$ lookups and and $O(\vert V \vert)$ path reconstruction.
+/// connecting hyperedge, enabling \f$O(1)\f$ lookups and and \f$O(\vert V \vert)\f$ path reconstruction.
 ///
 /// @tparam H The type of the hypergraph being searched.
 template <traits::c_hypergraph H>

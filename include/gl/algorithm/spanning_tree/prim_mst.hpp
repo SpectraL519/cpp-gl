@@ -73,7 +73,8 @@ struct mst_descriptor {
 /// @param graph The undirected graph to evaluate.
 /// @param root_id The starting vertex ID for the MST calculation. Defaults to the graph's `initial_id` if `invalid_id` is passed.
 /// @return A @ref gl::algorithm::mst_descriptor "mst_descriptor" containing the accumulated minimum weight and the sequence of edges forming the tree.
-/// @see @ref gl::algorithm::vertex_heap_prim_mst "vertex_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
+/// ### See Also
+/// - @ref gl::algorithm::vertex_heap_prim_mst "vertex_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
 /// @hideparams
 template <traits::c_undirected_graph G>
 [[nodiscard]] mst_descriptor<G> edge_heap_prim_mst(const G& graph, typename G::id_type root_id) {
@@ -164,7 +165,8 @@ template <traits::c_undirected_graph G>
 /// @param graph The undirected graph to evaluate.
 /// @param root_id The starting vertex ID for the MST calculation. Defaults to the graph's `initial_id` if `invalid_id` is passed.
 /// @return A @ref gl::algorithm::mst_descriptor "mst_descriptor" containing the accumulated minimum weight and the sequence of edges forming the tree.
-/// @see @ref gl::algorithm::edge_heap_prim_mst "edge_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
+/// ### See Also
+/// - @ref gl::algorithm::edge_heap_prim_mst "edge_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
 /// @hideparams
 template <traits::c_undirected_graph G>
 requires(traits::c_has_numeric_limits_max<vertex_distance_type<G>>)

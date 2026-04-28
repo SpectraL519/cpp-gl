@@ -2,6 +2,9 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file hgl/algorithm/traversal/breadth_first_search.hpp
+/// @brief Concrete Breadth-First Search (BFS) traversal algorithm implementation for hypergraphs.
+
 #pragma once
 
 #include "hgl/algorithm/core.hpp"
@@ -10,6 +13,48 @@
 
 namespace hgl::algorithm {
 
+/// @ingroup HGL-Algorithm
+/// @brief Executes a concrete Breadth-First Search (BFS) traversal over the hypergraph.
+///
+/// This function utilizes the generic @ref hgl::algorithm::bfs "bfs" template to perform a standard queue-based traversal.
+/// It automatically manages the visited states (for both vertices and hyperedges), search tree tracking, and queue initialization.
+///
+/// If a specific `root_vertex_id` is provided, the algorithm explores only the connected component reachable from that root.
+/// If `no_root` is used, it iteratively ensures that every disconnected component in the entire hypergraph is fully traversed.
+///
+/// ### Example Usage
+/// ```cpp
+/// auto search_tree
+///     = hgl::algorithm::breadth_first_search(hypergraph, start_id); // (1)!
+///
+/// hgl::algorithm::breadth_first_search<hgl::algorithm::noret>( // (2)!
+///     hypergraph,
+///     hgl::algorithm::no_root, // (3)!
+///     [](const auto& node) { std::cout << "Pre-visit: " << node.vertex_id << '\n'; },
+///     [](const auto& node) { std::cout << "Post-visit: " << node.vertex_id << '\n'; }
+/// );
+/// ```
+///
+/// 1\. Executes a standard BFS returning a search tree mapped to the components reachable from `start_id`.
+///
+/// 2\. Executes a BFS purely for side-effects (callbacks) without allocating memory for a search tree.
+///
+/// 3\. Passing `no_root` forces the algorithm to iterate over all vertices, ensuring disjoint components are traversed.
+///
+/// ### Template Parameters
+/// | Parameter | Description | Constraint |
+/// | :-------- | :--- | :--- |
+/// | Result | Controls whether the algorithm builds and returns a search tree (`ret`) or evaluates purely for side effects (`noret`). | Must be a valid @ref hgl::algorithm::result_discriminator "result_discriminator" enum value. |
+/// | H | The type of the hypergraph being searched. | Must satisfy the [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) concept. |
+/// | PreVisitCallback | Type of the callable executed immediately before officially visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+///
+/// @param hypergraph The hypergraph to traverse.
+/// @param root_vertex_id The ID of the vertex to start the search from. If `no_root`, searches the entire hypergraph.
+/// @param pre_visit Hook executed immediately before officially visiting the vertex.
+/// @param post_visit Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated.
+/// @return A @ref hgl::algorithm::search_tree "search_tree" if `Result == ret`, otherwise nothing (`void`).
+/// @hideparams
 template <
     result_discriminator Result = ret,
     traits::c_hypergraph H,

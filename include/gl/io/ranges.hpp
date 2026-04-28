@@ -104,7 +104,8 @@ range_formatter(R&& r, std::string_view, std::string_view, std::string_view)
 /// @param range The range object to format.
 /// @param sep The separator string between elements. Defaults to `", "`.
 /// @return A @ref range_formatter configured for set-style output.
-/// @see @ref gl::io::multiline_set_formatter "multiline_set_formatter"
+/// ### See Also
+/// - @ref gl::io::multiline_set_formatter "multiline_set_formatter"
 template <std::ranges::range R>
 auto set_formatter(R&& range, std::string_view sep = ", ") {
     using view_type = std::views::all_t<R>;
@@ -136,7 +137,8 @@ auto set_formatter(R&& range, std::string_view sep = ", ") {
 /// @tparam R The type of the range.
 /// @param range The range object to format.
 /// @return A @ref range_formatter configured for multiline set-style output.
-/// @see @ref gl::io::set_formatter "set_formatter"
+/// ### See Also
+/// - @ref gl::io::set_formatter "set_formatter"
 template <std::ranges::range R>
 auto multiline_set_formatter(R&& range) {
     using view_type = std::views::all_t<R>;

@@ -58,7 +58,8 @@ struct list_t {
 ///
 /// @tparam LayoutTag Specifies the memory layout orientation for the underlying data structure.
 /// @tparam IdType The underlying integer type used for identifiers.
-/// @see @ref gl::flat_jagged_vector "flat_jagged_vector" for the data structure used for the underlying model implementation.
+/// ### See Also
+/// - @ref gl::flat_jagged_vector "flat_jagged_vector" for the data structure used for the underlying model implementation.
 template <traits::c_hypergraph_layout_tag LayoutTag, traits::c_id_type IdType>
 struct flat_list_t {
     /// @brief Self type alias.
@@ -115,7 +116,8 @@ struct matrix_t {
 ///
 /// @tparam LayoutTag Specifies the memory layout orientation for the underlying data structure (must be asymmetric).
 /// @tparam IdType The underlying integer type used for identifiers.
-/// @see @ref gl::flat_matrix "flat_matrix" for the data structure used for the underlying model implementation.
+/// ### See Also
+/// - @ref gl::flat_matrix "flat_matrix" for the data structure used for the underlying model implementation.
 template <traits::c_hypergraph_asymmetric_layout_tag LayoutTag, traits::c_id_type IdType>
 struct flat_matrix_t {
     /// @brief Self type alias.
