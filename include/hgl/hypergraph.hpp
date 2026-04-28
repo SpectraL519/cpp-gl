@@ -210,10 +210,6 @@ struct to_impl;
 /// | HypergraphTraits | The core configuration type specifying the behavior and representation of the hypergraph.  | [**c_instantiation_of<hypergraph_traits>**](gl_concepts.md#gl-traits-c-instantiation-of) |
 ///
 /// ### See Also
-/// - @ref hgl::hypergraph_traits "hypergraph_traits" for configuring the underlying properties and tags.
-/// - @ref gl::io::options_manip "options_manip" for custom stream formatting options.
-///
-/// ### See Also
 /// - @ref hgl::undirected_hypergraph "undirected_hypergraph" : Convenience alias for undirected hypergraphs.
 /// - @ref hgl::bf_directed_hypergraph "bf_directed_hypergraph" : Convenience alias for BF-directed hypergraphs.
 /// - @ref hgl::clone "clone" : Create a deep copy of a hypergraph.
