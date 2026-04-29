@@ -311,7 +311,8 @@ TEST_CASE_TEMPLATE_DEFINE(
             // e1: (1,2) - exists, (1,3), (2,3)
             {2uz, 3uz},
             {0uz, 3uz},
-            // e3: none
+            // e3: self-loop (0,0)
+            {0uz, 0uz}
         };
 
         auto test_conversion_for =
