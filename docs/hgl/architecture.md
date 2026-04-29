@@ -200,58 +200,150 @@ for (auto in_hyperedge : hg.in_hyperedges(vertex)) { // (2)!
 
 ## Representation & Layouts
 
-Because hypergraphs are generalizations of graphs, their topological data cannot be stored as simple arrays of pairs. Instead, CPP-GL relies on **Incidence Models**. HGL categorizes its memory representations via `ImplTag` and strictly controls orientation via `LayoutTag`.
+Because hypergraphs are generalizations of graphs, their topological data cannot be stored the same way as standard graphs (Adjacency Models). Instead, CPP-HGL relies on **Incidence Models** to capture the higher-order connections between vertices and hyperedges. The HGL module categorizes its memory representations via the `ImplTag` and strictly controls their memory orientation with the `LayoutTag`.
 
-### Incidence Models (Standard & Flat)
+### Fundamental Representations
 
-- **Incidence Lists** ([`list_t`](../cpp-gl/structhgl_1_1impl_1_1list__t.md) / [`flat_list_t`](../cpp-gl/structhgl_1_1impl_1_1flat__list__t.md)): Maps elements to dynamic jagged lists. Highly space-efficient for sparse hypergraphs, as memory is only allocated for existing incidence relations.
-- **Incidence Matrices** ([`matrix_t`](../cpp-gl/structhgl_1_1impl_1_1matrix__t.md) / [`flat_matrix_t`](../cpp-gl/structhgl_1_1impl_1_1flat__matrix__t.md)): Allocates a full $|V| \times |E|$ 2D grid. Memory intensive ($O(|V| \times |E|)$), but allows instant $O(1)$ verification if a given vertex belongs to a given hyperedge.
+At their core, hypergraph data structures differ in how they map vertices to the hyperedges they belong to, or vice versa. The primary incidence models in the HGL module are based on the following architectures:
 
-### Layout Tags (Orientation)
+- **Incidence Lists**: This model stores only the active incidence relationships. It works by mapping an element (e.g., a vertex) to a dynamic, list of its associated elements (e.g., the hyperedges it belongs to). This approach is highly space-efficient for sparse hypergraphs and allows rapid iteration over local incidence sets.
+- **Incidence Matrices**: This model allocates a full $|V| \times |E|$ 2D grid, where each cell represents a potential connection between a specific vertex and a specific hyperedge. While they consume significantly more memory ($O(|V| \times |E|)$), they provide instant $O(1)$ incidence verification, making them ideal for dense, heavily interconnected hypergraphs.
 
-The `LayoutTag` dictates the *primary indexing dimension* of the incidence structure, massively impacting query speeds and memory footprints:
+### Representation Layouts (Orientation)
 
-- [**bidirectional_t**](../cpp-gl/structhgl_1_1impl_1_1bidirectional__t.md): Maintains *two* internal mappings (Vertex-to-Hyperedges AND Hyperedge-to-Vertices). Offers optimal $O(1)$ access for both vertex degrees and hyperedge sizes, at the cost of doubled memory consumption. *(Compatible only with Incidence Lists)*.
-- [**vertex_major_t**](../cpp-gl/structhgl_1_1impl_1_1vertex__major__t.md): The primary index is the Vertex. Querying the hyperedges connected to a vertex is instantaneous, but finding which vertices belong to a hyperedge requires an expensive full-graph scan.
-- [**hyperedge_major_t**](../cpp-gl/structhgl_1_1impl_1_1hyperedge__major__t.md): The primary index is the Hyperedge. Querying the vertices within a hyperedge is instantaneous, but finding a vertex's degree requires a full-graph scan.
+The `LayoutTag` dictates the *primary indexing dimension* of the incidence structure. Because hypergraphs map two distinctly different sets ($V$ and $E$), changing the primary index massively impacts query speeds and memory footprints:
+
+- [**bidirectional_t**](../cpp-gl/structhgl_1_1impl_1_1bidirectional__t.md): Maintains *two* internal mappings simultaneously (Vertex-to-Hyperedges AND Hyperedge-to-Vertices). Offers optimal $O(1)$ access for both vertex degrees and hyperedge sizes, and fast iteration in both directions, at the cost of doubled memory consumption. **(Compatible only with Incidence Lists)**.
+- [**hyperedge_major_t**](../cpp-gl/structhgl_1_1impl_1_1hyperedge__major__t.md): The primary index is the Hyperedge. Querying the vertices within a specific hyperedge is instantaneous, but finding which hyperedges a vertex belongs to may require an expensive full-structure scan.
+- [**vertex_major_t**](../cpp-gl/structhgl_1_1impl_1_1vertex__major__t.md): The primary index is the Vertex. Querying the hyperedges connected to a specific vertex is instantaneous, but finding which vertices belong to a specific hyperedge may require an expensive, full-structure scan.
 
 > [!NOTE] Matrices and Asymmetry
 >
-> Incidence matrices fundamentally represent an asymmetric $|V| \times |E|$ mathematical grid. Therefore, matrix representations strictly require an asymmetric layout (`vertex_major_t` or `hyperedge_major_t`), mapping rows to the major element and columns to the minor element.
+> Incidence matrices fundamentally represent an asymmetric $|V| \times |E|$ grid. Therefore, matrix representations strictly require an asymmetric layout (`vertex_major_t` or `hyperedge_major_t`), mapping rows to the major element and columns to the minor element.
 
-### Operation Complexity Tables
+### Standard Models
 
-Because performance is heavily dictated by the combination of the Representation Model (List vs. Matrix) and the Layout Tag (Bidirectional vs. Major), the complexities are grouped accordingly.
+Standard models are heap-allocated, nested structures (e.g., `std::vector<std::vector<T>>`) that prioritize flexibility and dynamic structural modification. Because the inner containers can grow independently, they handle topological changes gracefully.
 
-*Note: In the tables below, $|V|$ is vertex count, $|E|$ is hyperedge count, $deg(v)$ is vertex degree, and $|e|$ is hyperedge size (number of incident vertices).*
+- [**list_t**](../cpp-gl/structhgl_1_1impl_1_1list__t.md): A standard Incidence List model implemented using traditional nested containers.
+- [**matrix_t**](../cpp-gl/structhgl_1_1impl_1_1matrix__t.md): A standard Incidence Matrix model implemented using traditional nested containers.
 
-#### 1. Incidence Lists (`list_t` / `flat_list_t`)
+<div align="center" markdown="1">
 
-| Operation                                | `bidirectional_t`                | `vertex_major_t`                 | `hyperedge_major_t`              |
-| :--------------------------------------- | :------------------------------- | :------------------------------- | :------------------------------- |
-| **Check Incidence** $(v, e)$             | $O(\min(deg(v), \vert e \vert))$ | $O(deg(v))$                      | $O(\vert e \vert)$               |
-| **Iterate Incident Hyperedges** of $v$   | $O(deg(v))$                      | $O(deg(v))$                      | $O(\vert V \vert + \sum \vert e \vert)$ |
-| **Iterate Incident Vertices** of $e$     | $O(\vert e \vert)$               | $O(\vert E \vert + \sum deg(v))$ | $O(\vert e \vert)$               |
-| **Get Degree** of $v$                    | $O(1)$                           | $O(1)$                           | $O(\vert V \vert + \sum \vert e \vert)$ |
-| **Get Size** of $e$                      | $O(1)$                           | $O(\vert E \vert + \sum deg(v))$ | $O(1)$                           |
-| **Memory Footprint (Topology)** | $O(2 \times \sum deg(v))$        | $O(\sum deg(v))$                 | $O(\sum \vert e \vert)$          |
+![Undirected Hypergraph Standard Representation Light](../img/doc/light/undir-hypergraph-repr-std.svg#only-light){: width="700" }
+![Undirected Hypergraph Standard Representation Dark](../img/doc/dark/undir-hypergraph-repr-std.svg#only-dark){: width="700" }
 
-#### 2. Incidence Matrices (`matrix_t` / `flat_matrix_t`)
+</div>
 
-| Operation                                | `vertex_major_t` (Rows = V, Cols = E) | `hyperedge_major_t` (Rows = E, Cols = V) |
-| :--------------------------------------- | :------------------------------------ | :--------------------------------------- |
-| **Check Incidence** $(v, e)$             | $O(1)$                                | $O(1)$                                   |
-| **Iterate Incident Hyperedges** of $v$   | $O(\vert E \vert)$ (Scan Row)         | $O(\vert E \vert)$ (Scan Column)         |
-| **Iterate Incident Vertices** of $e$     | $O(\vert V \vert)$ (Scan Column)      | $O(\vert V \vert)$ (Scan Row)            |
-| **Get Degree** of $v$                    | $O(\vert E \vert)$                    | $O(\vert E \vert)$                       |
-| **Get Size** of $e$                      | $O(\vert V \vert)$                    | $O(\vert V \vert)$                       |
-| **Memory Footprint (Topology)** | $O(\vert V \vert \times \vert E \vert)$ | $O(\vert V \vert \times \vert E \vert)$  |
+> [!NOTE] BF-Directed Representations
+>
+> The diagrams above illustrate standard representations for an **undirected** hypergraph. For **BF-directed** hypergraphs, the underlying architecture adapts to capture directionality:
+> - **Incidence List:** The structure maintains separate inner containers to explicitly distinguish between tail-bound and head-bound incidence relationships.
+> - **Incidence Matrix:** The cells of the matrix are no longer simple boolean indicators. Instead, they store specific directional states (conceptually mapped as `-1`, `0`, and `1`) to indicate whether a vertex is in the tail of the hyperedge, not connected, or in the head of the hyperedge, respectively.
+
+### Flat Models
+
+To maximize cache locality, the flat representations map the logical 2D structures into contiguous 1D memory blocks. By keeping all incidence data tightly packed, these models provide the absolute maximum traversal speed. However, this cache-friendliness comes at a structural cost: modifying an inner segment often requires shifting the entire remainder of the flat container in memory.
+
+- [**flat_list_t**](../cpp-gl/structhgl_1_1impl_1_1flat__list__t.md): A flattened Incidence List model implemented using the generic [**gl::flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
+- [**flat_matrix_t**](../cpp-gl/structhgl_1_1impl_1_1flat__matrix__t.md): A flattened Incidence Matrix model implemented using the generic [**gl::flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
+
+<div align="center" markdown="1">
+
+![Undirected Hypergraph Flat Representation Light](../img/doc/light/undir-hypergraph-repr-flat.svg#only-light){: width="700" }
+![Undirected Hypergraph Flat Representation Dark](../img/doc/dark/undir-hypergraph-repr-flat.svg#only-dark){: width="700" }
+
+</div>
+
+> [!NOTE] BF-Directed Representations
+>
+> Similarly to the standard models, flat architectures seamlessly adapt to directionality. A BF-directed *Flat Incidence List* utilizes separated flat storage for tail and head incidence, preserving contiguous memory reads for specific directional traversals. Meanwhile, a *Flat Incidence Matrix* packs the tri-state directional indicators directly into its contiguous 1D grid layout.
+
+> [!NOTE] Flat List Model Performance
+>
+> While the flat incidence list model is highly efficient for hypergraph storage and traversal, it is also highly inefficient to construct sequentially (element-by-element and incidence-by-incidence). The most efficient approach for utilizing flat list hypergraphs is to construct your hypergraph using the standard `list_t` model first, and then convert it into the `flat_list_t` model using the generic [**hgl::to**](../cpp-gl/group__HGL-Core.md#function-to) conversion function.
+
+### Operation Complexities
+
+Because hypergraph performance is heavily dictated by the combination of the Representation Model (List vs. Matrix), the underlying Memory Strategy (Standard vs. Flat), and the Layout Tag (Bidirectional vs. Major), the complexities are grouped accordingly.
+
+*Note: In the tables below, $|V|$ is the total vertex count, $|E|$ is the total hyperedge count, $deg(v)$ is the degree of a specific vertex, and $|e|$ is the size of a specific hyperedge. $I$ represents the total number of incidences across the entire hypergraph ($I = \sum deg(v) = \sum |e|$).*
+
+> [!NOTE] Directionality and Complexity
+> For **BF-directed** hypergraphs, operations like `in_degree`, `out_degree`, `tail_vertices`, and `head_vertices` follow the exact same complexity class as their undirected counterparts (`degree`, `incident_vertices`). They merely operate on isolated sub-containers (in list models) or specific tri-state indicators (in matrix models), keeping the Big-O structurally identical.
+
+#### 1. Incidence Lists
+
+**Topological Queries:**
+
+The complexities of topological queries is identical for standard (`list_t`) and flat (`flat_list_t`) Incidence List models.
+
+| Query Operation | Bidirectional | Vertex-Major | Hyperedge-Major |
+| :--- | :--- | :--- | :--- |
+| **Check Incidence** $(v, e)$ | $O(\log(\min(deg(v), \vert e \vert)))$ | $O(\log(deg(v)))$ | $O(\log(\vert e \vert))$ |
+| **Iterate Incident Hyperedges** of $v$ | $O(deg(v))$ | $O(deg(v))$ | $O(\vert V \vert + I)$ (Scan All) |
+| **Iterate Incident Vertices** of $e$ | $O(\vert e \vert)$ | $O(\vert E \vert + I)$ (Scan All) | $O(\vert e \vert)$ |
+| **Get Degree** of $v$ | $O(1)$ | $O(1)$ | $O(\vert V \vert + I)$ |
+| **Get Size** of $e$ | $O(1)$ | $O(\vert E \vert + I)$ | $O(1)$ |
+
+**Structural Mutations (Standard Incidence List, `list_t`):**
+
+| Mutation Operation | Bidirectional | Vertex-Major |Hyperedge-Major |
+| :--- | :--- | :--- | :--- |
+| **Add Vertex** | $O(1)$ amortized | $O(1)$ amortized | $O(1)$ amortized |
+| **Add Hyperedge** | $O(1)$ amortized | $O(1)$ amortized | $O(1)$ amortized |
+| **Remove Vertex** | $O(\vert V \vert + \vert E \vert + I)$ | $O(\vert V \vert)$ *(Major)* | $O(\vert E \vert + I)$ *(Minor)* |
+| **Remove Hyperedge** | $O(\vert V \vert + \vert E \vert + I)$ | $O(\vert V \vert + I)$ *(Minor)* | $O(\vert E \vert)$ *(Major)* |
+| **Add Incidence** (Bind) | $O(deg(v) + \vert e \vert)$ | $O(deg(v))$ | $O(\vert e \vert)$ |
+| **Remove Incidence** (Unbind)| $O(deg(v) + \vert e \vert)$ | $O(deg(v))$ | $O(\vert e \vert)$ |
+
+**Structural Mutations (Flat Incidence List, `flat_list_t`):**
+
+| Mutation Operation | Bidirectional | Vertex-Major |Hyperedge-Major |
+| :--- | :--- | :--- | :--- |
+| **Add Vertex** | $O(1)$ amortized | $O(1)$ amortized | $O(1)$ amortized |
+| **Add Hyperedge** | $O(1)$ amortized | $O(1)$ amortized | $O(1)$ amortized |
+| **Remove Vertex** | $O(\vert V \vert + \vert E \vert + I)$ | $O(\vert V \vert + I)$ *(Major)* | $O(\vert E \vert + I)$ *(Minor)* |
+| **Remove Hyperedge** | $O(\vert V \vert + \vert E \vert + I)$ | $O(\vert V \vert + I)$ *(Minor)* | $O(\vert E \vert + I)$ *(Major)* |
+| **Add Incidence** (Bind) | $O(I)$ | $O(I)$ | $O(I)$ |
+| **Remove Incidence** (Unbind)| $O(I)$ | $O(I)$ | $O(I)$ |
+
+*(Note: Adding/removing incidences in flat lists is always $O(I)$ because modifying any internal jagged segment requires shifting the remainder of the massive contiguous 1D data array).*
+
+#### 2. Incidence Matrices
+
+**Topological Queries:**
+
+The complexities of topological queries is identical for standard (`matrix_t`) and flat (`flat_matrix_t`) Incidence Matrix models.
+
+| Query Operation | Vertex-Major <br/> (Rows: V, Cols: E) |Hyperedge-Major <br/> (Rows: E, Cols: V) |
+| :--- | :--- | :--- |
+| **Check Incidence** $(v, e)$ | $O(1)$ | $O(1)$ |
+| **Iterate Incident Hyperedges** of $v$ | $O(\vert E \vert)$ (Scan Row) | $O(\vert E \vert)$ (Scan Column) |
+| **Iterate Incident Vertices** of $e$ | $O(\vert V \vert)$ (Scan Column) | $O(\vert V \vert)$ (Scan Row) |
+| **Get Degree** of $v$ | $O(\vert E \vert)$ (Scan Row) | $O(\vert E \vert)$ (Scan Column) |
+| **Get Size** of $e$ | $O(\vert V \vert)$ (Scan Column) | $O(\vert V \vert)$ (Scan Row) |
+
+**Structural Mutations:**
+
+| Mutation Operation | `matrix_t` (Standard) | `flat_matrix_t` (Flat) |
+| :--- | :--- | :--- |
+| **Add Vertex** | $O(\vert E \vert)$ amortized if `vertex_major_t`<br>$O(\vert V \vert \times \vert E \vert)$ if `hyperedge_major_t` | $O(\vert V \vert \times \vert E \vert)$ |
+| **Add Hyperedge** | $O(\vert V \vert \times \vert E \vert)$ if `vertex_major_t`<br>$O(\vert V \vert)$ amortized if `hyperedge_major_t` | $O(\vert V \vert \times \vert E \vert)$ |
+| **Remove Vertex / Hyperedge** | $O(\vert V \vert \times \vert E \vert)$ (Shift rows/cols) | $O(\vert V \vert \times \vert E \vert)$ |
+| **Add / Remove Incidence** (Bind/Unbind) | $O(1)$ | $O(1)$ |
+
+> [!NOTE] Matrix Layouts and Cache Locality
+>
+> While the theoretical Big-O complexities appear identical across matrix layouts, **real-world performance is heavily bound by cache locality.** Matrices map one dimension to contiguous rows and the other to strided columns.
+>
+> - **Query Direction:** Choose the layout that aligns your most frequent traversal with contiguous memory reads. If your algorithm primarily iterates over the vertices within specific hyperedges, `hyperedge_major_t` will drastically outperform `vertex_major_t` by avoiding cache misses.
+> - **Dimension Imbalance:** If your hypergraph is highly asymmetric (e.g., $|V| \gg |E|$), scanning the larger dimension across strided memory can degrade performance. Align the major layout with the dimension you need to scan most efficiently.
 
 ### Choosing the Representation & Layout
 
-Selecting the correct combination ensures your application hits peak performance:
+Selecting the optimal combination of Representation Model and Layout Tag requires balancing memory constraints, topology density, and your specific traversal patterns to achieve peak performance:
 
-- Use **`bidirectional_t`** Lists (the default) for general-purpose hypergraphs where you frequently query in both directions (e.g., "what nodes are in this hyperedge?" AND "what hyperedges is this node in?").
-- Use **`hyperedge_major_t`** Lists when dealing with massive datasets where memory is tight, and your algorithms are strictly edge-centric (e.g., simulating isolated hyperedge reactions).
-- Use **`matrix_t`** when your hypergraph is extremely dense, hyperedge sizes are close to $|V|$, and absolute instant incidence verification `are_incident(v, e)` is the algorithmic bottleneck.
-```
+- **`bidirectional_t` Lists (Default):** The most versatile choice for general-purpose hypergraphs. Use this when your algorithms require fast, symmetric traversals (e.g., frequently oscillating between querying "which vertices belong to this hyperedge?" and "which hyperedges contain this vertex?"). It trades a doubled memory footprint for optimal $O(1)$ degree and size lookups, ensuring fluid bidirectional navigation.
+- **Single-Major Lists (`hyperedge_major_t` / `vertex_major_t`):** Ideal for massive, sparse datasets operating under strict memory limits. Use these layouts when your algorithm's traversal logic is heavily asymmetrical. For instance, if an algorithm strictly simulates isolated chemical reactions and rarely needs to compute a vertex's degree, `hyperedge_major_t` eliminates the redundant backward-mapping overhead.
+- **Matrices (`matrix_t` / `flat_matrix_t`):** Reserved for exceptionally dense hypergraphs where hyperedge sizes consistently approach $|V|$. Choose a matrix representation only when absolute, instant $O(1)$ incidence verification (`are_incident(v, e)`) is the primary algorithmic bottleneck and the $O(|V| \times |E|)$ memory consumption is an acceptable trade-off.

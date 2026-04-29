@@ -232,7 +232,7 @@ By keeping all vertex and edge data in adjacent memory blocks, these models prov
 >
 > While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to construct element-by-element. The most efficient approach for utilizing flat list graphs is to construct your graph using the standard list model first, and then convert it into the flat list model using the generic [**gl::to**](../cpp-gl/group__GL-Core.md#function-to) conversion function. This exact methodology is utilized internally by the [**graph topology generators**](topologies.md) defined within the library.
 
-### Operation Complexity
+### Operation Complexities
 
 Depending on the chosen representation model, the computational complexity of standard graph operations will differ. The table below outlines these complexities.
 
