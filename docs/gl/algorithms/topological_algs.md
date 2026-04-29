@@ -48,8 +48,8 @@ else {
 > [!INFO] Algorithmic Complexity
 >
 > The time complexity depends on the underlying representation of `GraphType`:
-> - **Adjacency List Representations:** $\mathcal{O}(|V| + |E|)$.
-> - **Adjacency Matrix Representations:** $\mathcal{O}(|V|^2)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row.
+> - **Adjacency List Representations:** $O(|V| + |E|)$.
+> - **Adjacency Matrix Representations:** $O(|V|^2)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row.
 
 ---
 
@@ -87,5 +87,5 @@ else {
 > [!INFO] Algorithmic Complexity
 >
 > The time complexity depends on the underlying representation of `GraphType`:
-> - **Adjacency List Representations:** $\mathcal{O}(|V| + |E|)$.
-> - **Adjacency Matrix Representations:** $\mathcal{O}(|V|^2)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row.
+> - **Adjacency List Representations:** $O(|V| + |E|)$.
+> - **Adjacency Matrix Representations:** $O(|V|^2)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row.

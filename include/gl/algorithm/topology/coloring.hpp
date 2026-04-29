@@ -79,7 +79,7 @@ template <
 
         const bool is_bipartite = bfs(
             graph,
-            init_range<G>(root_id),
+            init_node_range<G>(root_id),
             empty_callback{}, // visit predicate
             empty_callback{}, // visit callback
             [&coloring](typename G::id_type vertex_id, const edge_type& in_edge)
@@ -117,7 +117,8 @@ template <
 /// @brief Convenience wrapper for the @ref gl::algorithm::bipartite_coloring "bipartite_coloring" algorithm to check if a graph is bipartite without extracting the exact coloring map.
 /// @param graph The graph to evaluate.
 /// @return `true` if the graph is bipartite (2-colorable), `false` otherwise.
-/// @see @ref gl::algorithm::apply_coloring "apply_coloring"
+/// ### See Also
+/// - @ref gl::algorithm::apply_coloring "apply_coloring"
 [[nodiscard]] gl_attr_force_inline bool is_bipartite(const traits::c_graph auto& graph) {
     return bipartite_coloring(graph).has_value();
 }

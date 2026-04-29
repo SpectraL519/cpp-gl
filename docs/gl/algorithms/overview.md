@@ -4,6 +4,8 @@ The CPP-GL algorithms module is designed with a strict architectural separation 
 
 This separation ensures maximum code reuse, provides strict zero-cost abstractions, and allows power users to inject highly customized logic directly into the traversal control flow.
 
+---
+
 ## The Architectural Separation
 
 ### 1. The Generic Templates (Engines)
@@ -19,12 +21,14 @@ The core generic templates include:
 
 ### 2. The Concrete Algorithms
 
-Concrete algorithms (like `dijkstra_shortest_paths`, `topological_sort`, or `breadth_first_search`) are essentially lightweight wrappers around the generic engines. They are responsible for:
+Concrete algorithms (like `dijkstra_shortest_paths`, `topological_sort`, or `breadth_first_search`) are essentially simple wrappers around the generic engines. They are responsible for:
 - Allocating and managing memory for algorithm state tracking (e.g., `std::vector<bool> visited` arrays, distance maps).
 - Defining the specific logic inside the lambda callbacks and predicates.
 - Managing the final return types and structures.
 
 By separating these layers, CPP-GL guarantees that all algorithms inherently benefit from the exact same optimized design and element management.
+
+---
 
 ## Core Algorithm Elements
 
@@ -63,7 +67,9 @@ CPP-GL manages this via the [**gl::algorithm::result_discriminator**](../../cpp-
 - `ret`: The algorithm will allocate memory and return a stateful object (e.g., `predecessors_map<G>`).
 - `noret`: The algorithm will execute purely for side-effects and return `void` (or a simple success boolean).
 
-## Available Concrete Algorithms
+---
+
+## Available Algorithms
 
 Explore the specific layers of the algorithm module below:
 

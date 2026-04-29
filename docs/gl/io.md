@@ -21,8 +21,8 @@ int main() {
     auto e = g.add_edge(v0, v1);
 
     std::cout << "Vertex: " << v0 << '\n'; // (1)!
-    std::cout << "Edge: " << e << '\n';    // (2)!
-    std::cout << "Graph:\n" << g << '\n';  // (3)!
+    std::cout << "Edge: " << e << '\n'; // (2)!
+    std::cout << "Graph:\n" << g << '\n'; // (3)!
 }
 ```
 
@@ -87,12 +87,11 @@ int main() {
     using graph_type = gl::directed_graph<gl::name_property, gl::name_property>;
     auto graph = gl::topology::biclique<graph_type>(2uz, 3uz); // (1)!
 
-    std::size_t v_idx = 0uz, e_idx = 0uz;
     for (const auto& vertex : graph.vertices()) { // (2)!
-        vertex->name = std::format("vertex_{}", ++v_idx);
+        vertex->name = std::format("vertex_{}", vertex.id() + 1);
         for (const auto& edge : graph.out_edges(vertex))
             if (edge->name.empty())
-                edge->name = std::format("edge_{}", ++e_idx);
+                edge->name = std::format("edge_{}", edge.id() + 1);
     }
 
     std::cout << graph << std::endl; // (3)!
@@ -170,7 +169,6 @@ For disk storage and network transmission, CPP-GL defines the **Graph Specificat
 <edge-list>
 ```
 
-<!-- TODO: ensure element col wide enough -->
 | **Element**        | **Description** |
 | :----------------- | :-------------- |
 | `dir-spec`         | `1` if the graph is directed<br/>`0` if the graph is undirected |
