@@ -6,7 +6,7 @@ The **GL (Graph Library)** module is engineered around a singular philosophy: pr
 
 This section explores the core architectural decisions of the GL module:
 
-- [Core Concepts](#core-concepts): Learn how the gl::graph template operates, the difference between IDs and descriptors, and how to navigate topologies.
+- [Core Concepts](#core-concepts): Learn how the `gl::graph` template operates, the difference between IDs and descriptors, and how to navigate topologies.
 - [Graph Representation Models](#graph-representation-models): Understand the diverse memory models available and their performance characteristics.
 - [Properties & Custom Data](#properties-custom-data): Discover how to inject arbitrary data directly into your graph elements with strict type safety.
 
@@ -82,7 +82,7 @@ When you add new vertices or edges to the graph, the library guarantees that exi
     >
     > Because a property-less vertex descriptor is essentially just a wrapper around an ID, there is zero overhead to using it instead of a raw ID, and it will never invalidate when new elements are added.
     >
-    > This means that performing operations like the following is completely safe:
+    > This means that performing operations like the following are completely safe:
     > ```cpp
     > const auto v1 = graph.add_vertex();
     > const auto v2 = graph.add_vertex();

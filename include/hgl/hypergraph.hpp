@@ -1584,7 +1584,7 @@ public:
         return this->_impl.out_degree_map(this->_n_vertices);
     }
 
-    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in H(e)\}\f$).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incoming hyperedges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
@@ -1595,7 +1595,7 @@ public:
              | std::views::transform(this->_create_hyperedge_descriptor());
     }
 
-    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @brief Retrieves all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in H(e)\}\f$).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incoming hyperedges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
@@ -1605,7 +1605,7 @@ public:
         return this->in_hyperedges(vertex.id());
     }
 
-    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in H(e)\}\f$).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incoming hyperedge IDs.
     /// @throws std::invalid_argument If the vertex ID is invalid.
@@ -1616,7 +1616,7 @@ public:
         return this->_impl.in_hyperedges(vertex_id);
     }
 
-    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in E(e)\}\f$).
+    /// @brief Retrieves IDs of all incoming (head-bound) hyperedges of a vertex in a *BF-directed* hypergraph (\f$\{e \in E : v \in H(e)\}\f$).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incoming hyperedge IDs.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
