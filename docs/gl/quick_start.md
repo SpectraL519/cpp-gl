@@ -71,6 +71,9 @@ Path: 0 -> 2 -> 3 -> 1 -> 4
 ### Understanding the Code
 
 - **Traits (`gl::list_graph_traits`):** CPP-GL relies heavily on template abstraction. Instead of passing multiple arguments to the `gl::graph` constructor, you pass a single *Traits* struct as its template parameter. This strictly dictates whether the graph uses an adjacency list or matrix, if it is directed, what custom properties (like `gl::weight_property`) exist on its elements and what id type is used for its elements.
+
 - **Property Access (`->weight`):** Adding an edge returns a descriptor handle. You access the specific payload fields associated with that edge by using the overloaded `->` operator, ensuring highly performant and type-safe data manipulation.
+
 - **Algorithm Separation:** Search engines and algorithms (like `dijkstra_shortest_paths`) exist entirely outside the graph class. They accept the graph as a `const` reference, mathematically guaranteeing that algorithms will never accidentally mutate your topology.
+
 - **Formatting (`gl::io::range_formatter`):** The library includes lightweight utility formatters so you can easily stream sequences, paths, and standard ranges directly to the console with complete control over delimiters and brackets.

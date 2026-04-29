@@ -23,7 +23,7 @@ namespace hgl::impl {
 /// ### Layout Implications
 /// The chosen layout significantly impacts memory usage and query performance:
 ///
-/// - @ref hgl::impl::bidirectional_t "bidirectional_t" (Default): Maintains two internal lists (vertex-to-hyperedges and hyperedge-to-vertices). Provides optimal $O(1)$ degree/size lookups and fast traversals in both directions at the cost of doubled memory consumption.
+/// - @ref hgl::impl::bidirectional_t "bidirectional_t" (Default): Maintains two internal lists (vertex-to-hyperedges and hyperedge-to-vertices). Provides optimal \f$O(1)\f$ degree/size lookups and fast traversals in both directions at the cost of doubled memory consumption.
 /// - @ref hgl::impl::vertex_major_t "vertex_major_t": Maintains only a vertex-to-hyperedges list. Highly memory efficient and fast for querying vertex degrees or incident hyperedge sets, but querying hyperedge sizes or incident vertex setss requires expensive full-hypergraph scans.
 /// - @ref hgl::impl::hyperedge_major_t "hyperedge_major_t": Maintains only a hyperedge-to-vertices list. Memory efficient and fast for hyperedge-centric queries, but querying vertex degrees or incident hyperedge sets requires full-hypergraph scans.
 ///
@@ -52,7 +52,7 @@ struct list_t {
 /// ### Layout Implications
 /// The chosen layout significantly impacts memory usage and query performance:
 ///
-/// - @ref hgl::impl::bidirectional_t "bidirectional_t" (Default): Maintains two internal flattened lists (vertex-to-hyperedges and hyperedge-to-vertices). Provides optimal $O(1)$ degree/size lookups and fast traversals in both directions at the cost of doubled memory consumption.
+/// - @ref hgl::impl::bidirectional_t "bidirectional_t" (Default): Maintains two internal flattened lists (vertex-to-hyperedges and hyperedge-to-vertices). Provides optimal \f$O(1)\f$ degree/size lookups and fast traversals in both directions at the cost of doubled memory consumption.
 /// - @ref hgl::impl::vertex_major_t "vertex_major_t": Maintains only a vertex-to-hyperedges flattened list. Highly memory efficient and fast for querying vertex degrees or incident hyperedge sets, but querying hyperedge sizes or incident vertex sets requires expensive full-graph scans.
 /// - @ref hgl::impl::hyperedge_major_t "hyperedge_major_t": Maintains only a hyperedge-to-vertices flattened list. Memory efficient and fast for hyperedge-centric queries, but querying vertex degrees or incident hyperedge sets requires full-graph scans.
 ///
