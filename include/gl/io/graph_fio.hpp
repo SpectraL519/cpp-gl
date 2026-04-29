@@ -118,7 +118,7 @@ requires(std::same_as<Mode, append>)
 /// Saves the graph topology and optionally its properties using the Graph Specification Format (GSF).
 /// The function strictly respects the @ref gl::io::write "write" and @ref gl::io::append "append" safety guards.
 ///
-/// @tparam GraphType The concrete type of the graph being saved. Must satisfy [**c_graph**](gl_concepts.md#hgl-traits-c-graph).
+/// @tparam GraphType The concrete type of the graph being saved. Must satisfy [**c_graph**](gl_concepts.md#gl-traits-c-graph).
 /// @tparam Mode The save behavior tag (@ref gl::io::write "write" or @ref gl::io::append "append"). Defaults to `write`.
 /// @param graph The graph instance to serialize.
 /// @param path The filesystem path where the graph will be saved. Defaults to `"graph.gsf"`.

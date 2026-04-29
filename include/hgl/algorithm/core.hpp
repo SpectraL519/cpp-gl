@@ -144,15 +144,19 @@ namespace algorithm {
 /// @ingroup HGL-Algorithm
 /// @brief Specifies the direction of traversal for *BF-directed* hypergraphs.
 ///
-/// > [!IMPORTANT] API Simplicity
+/// > [!IMPORTANT] API Note
 /// >
-/// > To ensure API simplicity, the `traversal_direction` is used for undirected hypergraphs as well by
+/// > - To ensure API simplicity, the `traversal_direction` is used for undirected hypergraphs as well by
 /// > the generic traversal templates. However, due to the structural nature of undirected hypergraphs,
 /// > both direction values implicitly yield the exact same traversal pattern for undirected hypergraphs.
+/// >
+/// > - The library utilizes C++20's `using enum` feature for the `traversal_direction` enum type, allowing
+/// > you to access these tags directly via `hgl::algorithm::forward` and `hgl::algorithm::backward`.
 enum class traversal_direction : bool {
     forward, ///< Traverse following the forward star (tail to head).
     backward ///< Traverse following the backward star (head to tail).
 };
+using enum traversal_direction;
 
 /// @ingroup HGL-Algorithm
 /// @brief Policy defining how to extract incident hyperedges and target vertices during traversal.
