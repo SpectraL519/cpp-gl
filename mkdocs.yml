@@ -29,12 +29,12 @@ nav:
   - HGL:
       - Quick Start: hgl/quick_start.md
       - Architecture & Basics: hgl/architecture.md
-      - Hypergraph Properties: hgl/properties.md
       - Graph Conversions: hgl/conversions.md
       - Algorithms:
           - Overview: hgl/algorithms/overview.md
           - Generic Templates: hgl/algorithms/templates.md
           - Concrete Traversals: hgl/algorithms/traversal.md
+          - Hypergraph Properties: hgl/algorithms/properties.md
       - I/O Utility: hgl/io.md
       - API Reference:
           - Overview: cpp-gl/group__HGL.md

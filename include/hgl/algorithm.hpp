@@ -20,4 +20,6 @@
 #include "hgl/algorithm/traversal/backward_search.hpp"
 #include "hgl/algorithm/traversal/forward_search.hpp"
 
+#include "hgl/algorithm/properties.hpp"
+
 // clang-format on
