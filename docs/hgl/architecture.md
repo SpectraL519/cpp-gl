@@ -328,9 +328,9 @@ The complexities of topological queries is identical for standard (`matrix_t`) a
 
 | Mutation Operation | `matrix_t` (Standard) | `flat_matrix_t` (Flat) |
 | :--- | :--- | :--- |
-| **Add Vertex** | $O(\vert E \vert)$ amortized if `vertex_major_t`<br>$O(\vert V \vert \times \vert E \vert)$ if `hyperedge_major_t` | $O(\vert V \vert \times \vert E \vert)$ |
-| **Add Hyperedge** | $O(\vert V \vert \times \vert E \vert)$ if `vertex_major_t`<br>$O(\vert V \vert)$ amortized if `hyperedge_major_t` | $O(\vert V \vert \times \vert E \vert)$ |
-| **Remove Vertex / Hyperedge** | $O(\vert V \vert \times \vert E \vert)$ (Shift rows/cols) | $O(\vert V \vert \times \vert E \vert)$ |
+| **Add Vertex** | $O(\vert E \vert)$ amortized if `vertex_major_t`<br>$O(\vert V \vert \cdot \vert E \vert)$ if `hyperedge_major_t` | $O(\vert V \vert \cdot \vert E \vert)$ |
+| **Add Hyperedge** | $O(\vert V \vert \cdot \vert E \vert)$ if `vertex_major_t`<br>$O(\vert V \vert)$ amortized if `hyperedge_major_t` | $O(\vert V \vert \cdot \vert E \vert)$ |
+| **Remove Vertex / Hyperedge** | $O(\vert V \vert \cdot \vert E \vert)$ (Shift rows/cols) | $O(\vert V \vert \cdot \vert E \vert)$ |
 | **Add / Remove Incidence** (Bind/Unbind) | $O(1)$ | $O(1)$ |
 
 > [!NOTE] Matrix Layouts and Cache Locality

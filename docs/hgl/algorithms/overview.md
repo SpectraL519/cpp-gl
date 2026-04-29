@@ -79,5 +79,5 @@ Explore the specific layers of the algorithm module below:
 
 - [**The Generic Templates**](templates.md): A detailed explanation of the core traversal engines and their two-step execution sequence.
 - [**Standard Traversals**](traversal.md#standard-traversals): Unrestricted wrappers for basic component discovery across any hypergraph topology (`breadth_first_search`, `depth_first_search`).
-- [**Backward Searches**](traversal.md#backward-search): Traversals enforcing strict B-reachability semantics on BF-directed hypergraphs (`backward_bfs`, `backward_dfs`), where a hyperedge is only traversed once *all* of its tail vertices are visited.
-- [**Forward Searches**](traversal.md#forward-search): Traversals enforcing strict F-reachability semantics on BF-directed hypergraphs (`forward_bfs`, `forward_dfs`), where a hyperedge is only traversed once *all* of its head vertices are visited.
+- [**Backward Searches**](traversal.md#backward-searches-b-reachability): Traversals enforcing strict B-reachability semantics on BF-directed hypergraphs (`backward_bfs`, `backward_dfs`), where a hyperedge is only traversed once *all* of its tail vertices are visited.
+- [**Forward Searches**](traversal.md#forward-searches-f-reachability): Traversals enforcing strict F-reachability semantics on BF-directed hypergraphs (`forward_bfs`, `forward_dfs`), where a hyperedge is only traversed once *all* of its head vertices are visited.
