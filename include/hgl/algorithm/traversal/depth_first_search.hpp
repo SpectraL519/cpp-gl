@@ -46,12 +46,12 @@ namespace hgl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | Result | Controls whether the algorithm builds and returns a search tree (`ret`) or evaluates purely for side effects (`noret`). | Must be a valid @ref hgl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before officially visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 /// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The hypergraph to traverse.
 /// @param root_vertex_id The ID of the vertex to start the search from. If `no_root`, searches the entire hypergraph.
-/// @param pre_visit Hook executed immediately before officially visiting the vertex.
+/// @param pre_visit Hook executed immediately before visiting the vertex.
 /// @param post_visit Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated.
 /// @return A @ref hgl::algorithm::search_tree "search_tree" if `Result == ret`, otherwise nothing (`void`).
 /// @hideparams
