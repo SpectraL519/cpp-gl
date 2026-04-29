@@ -15,7 +15,7 @@ The library provides four primary traversal engines.
 
 ## The Callback Sequence
 
-The true power of the generic templates lies in their callback/predicate hooks. Every iteration of the engine loop rigidly follows a defined sequence. By injecting custom lambdas (or omitting them via the [**empty_callback**](../../cpp-gl/structgl_1_1algorithm_1_1empty__callback.md)), you dictate the algorithm's behavior.
+The true power of the generic templates lies in their callback/predicate hooks. Every iteration of the engine loop rigidly follows a defined sequence. By injecting custom callbacks (or omitting them via the [**empty_callback**](../../cpp-gl/structgl_1_1algorithm_1_1empty__callback.md)), you dictate the algorithm's behavior.
 
 ### Execution Flowchart
 

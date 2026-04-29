@@ -106,15 +106,16 @@ struct to_impl;
 } // namespace detail
 
 /// @ingroup GL GL-Core
-/// @brief The primary graph container using a policy-based architecture.
+/// @brief The generic graph container using a policy-based architecture.
 ///
-/// `graph` relies on the provided `GraphTraits` to determine its behavior, properties
-/// (such as directionality), and underlying memory representation. It exposes a unified
+/// This class relies on the provided `GraphTraits` to determine its behavior, element
+/// property types, and the underlying memory representation. It exposes a unified
 /// API for adding, removing, and iterating over vertices and edges regardless of the backend.
 ///
 /// ### Key Features
 /// - **Policy-based design**: Behavior and representation are determined by `GraphTraits`.
-/// - **Flexible directionality**: Support for both directed and undirected graphs.
+/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through implementation tags and static dispatch, removing unnecessary overhead.
+/// - **Configurable directionality**: Support for both directed and undirected graphs.
 /// - **Multiple representations**: Choose the underlying memory model that best suits your algorithmic and cache-locality needs:
 ///   - @ref gl::impl::list_t "list_t": Standard adjacency list.
 ///   - @ref gl::impl::flat_list_t "flat_list_t": Flattened adjacency list.
@@ -122,6 +123,7 @@ struct to_impl;
 ///   - @ref gl::impl::flat_matrix_t "flat_matrix_t": Flattened adjacency matrix.
 /// - **Property support**: Vertices and edges can carry arbitrary properties.
 /// - **Unified API**: Consistent interface regardless of the underlying implementation.
+/// - **Standard Range Support**: Exposes lightweight views compliant with C++20 `std::ranges`, enabling functional-style iteration and algorithms.
 ///
 /// ### Basic Definitions
 /// A graph \f$G = (V, E)\f$ consists of a set of vertices \f$V\f$ and a set of edges \f$E\f$.
@@ -152,6 +154,8 @@ struct to_impl;
 ///     for (auto neighbor : g.neighbors(v0)) // (5)!
 ///         process(neighbor);
 ///
+///     std::cout << "Topology:\n" << g << '\n'; // (6)!
+///
 ///     return 0;
 /// }
 /// ```
@@ -166,29 +170,31 @@ struct to_impl;
 ///
 /// 5\. Iterate over neighbors of `v0`.
 ///
+/// 6\. Utilize the builtin I/O stream support of the `graph` class to print its topology to the console.
+///
 /// ### API Design: IDs vs. Descriptors
-/// The graph exposes a dual API to accommodate different performance and ergonomic needs:
+/// The `graph` class exposes a dual API to accommodate different performance and ergonomic needs:
 ///
 /// - **Inputs**: Most query methods are overloaded to accept either a raw `id_type` or a `vertex_type`/`edge_type` descriptor. They are functionally identical.
 /// - **Outputs**: Methods ending in `_ids` (e.g., `neighbor_ids`) return views of raw integral IDs. Methods without this suffix (e.g., `neighbors`) automatically map those IDs to the proper descriptor objects.
-/// - **Performance**: Descriptor-returning methods incur a slight overhead if the graph utilizes rich properties, as the descriptor must fetch the property payload. If you only need topology, prefer the `_ids` variants.
+/// - **Performance**: Descriptor-returning methods incur a slight overhead if the graph utilizes properties, as the property reference must be fetched and bound to each descriptor. If you only need topology, prefer the `_ids` variants.
 ///
 /// ### Descriptor Invalidation Behavior
 /// The graph maintains the following invalidation semantics:
 ///
-/// - **Vertex addition**: Does not invalidate vertex IDs. However, property references stored in vertex descriptors may be invalidated.
-/// - **Vertex removal**: Invalidates vertex descriptors, IDs, and property references. Subsequent vertex IDs may shift depending on the implementation.
+/// - **Vertex addition**: Does not invalidate vertex IDs. However, property references stored in existing vertex descriptors may be invalidated. Has no effect on edge descriptors.
+/// - **Vertex removal**: May invalidate both vertex and edge descriptors, IDs, and property references.
 /// - **Edge addition**: Does not invalidate vertex or edge IDs. However, property references stored in edge descriptors may be invalidated.
-/// - **Edge removal**: Invalidates edge descriptors, IDs, and property references. Vertex descriptors remain valid.
+/// - **Edge removal**: Invalidates edge descriptors, IDs, and property references. Has no effect on vertex descriptors.
 /// - **Property access**: References to vertex or edge properties obtained from the map may be invalidated by modifications to the graph structure.
 ///
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
-/// | GraphTraits | Traits struct specifying behavior and representation | An instantiation of @ref gl::graph_traits "graph_traits" |
+/// | GraphTraits | Traits struct specifying the behavior and representation of the graph. | An instantiation of @ref gl::graph_traits "graph_traits" |
 ///
 /// ### See Also
-/// - @ref gl::directed_graph "directed_graph" : Convenience alias for directed graphs with standard list-based representation.
+/// - @ref gl::directed_graph "directed_graph" : Convenience alias for directed graphs.
 /// - @ref gl::undirected_graph "undirected_graph" : Convenience alias for undirected graphs.
 /// - @ref gl::clone "clone" : Create a deep copy of a graph.
 /// - @ref gl::to "to" : Convert a graph to a different implementation.
@@ -215,7 +221,7 @@ public:
     /// @brief Type tag indicating the underlying implementation model.
     using implementation_tag = typename traits_type::implementation_tag;
 
-    /// @brief The internal implementation structure managing the adjacency logic.
+    /// @brief The underlying implementation type matching the directional tag.
     using implementation_type = typename implementation_tag::template type<traits_type>;
     friend implementation_type;
 
@@ -253,12 +259,12 @@ public:
             this->_vertex_properties.resize(n_vertices);
     }
 
-    /// @brief Move constructor transfers ownership from another graph.
+    /// @brief Default move constructor.
     graph(graph&&) noexcept = default;
-    /// @brief Move assignment transfers ownership from another graph.
+    /// @brief Default move assignment operator.
     graph& operator=(graph&&) noexcept = default;
 
-    /// @brief Destructor cleans up graph memory.
+    /// @brief Default destructor.
     ~graph() = default;
 
     /// @brief Graph copy assignment is disabled to avoid accidental copies. Use @ref gl::clone "clone" instead.
@@ -281,7 +287,7 @@ public:
     // --- vertex modifiers ---
 
     /// @brief Adds a new, default-initialized vertex to the graph.
-    /// @return A descriptor for the newly created vertex.
+    /// @return A descriptor of the newly created vertex.
     /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     vertex_type add_vertex() {
         this->_impl.add_vertex();
@@ -293,9 +299,9 @@ public:
             return vertex_descriptor{new_vertex_id};
     }
 
-    /// @brief Adds a new vertex with specific properties.
+    /// @brief Adds a new vertex with the given properties to the graph.
     /// @param properties The property payload for the new vertex.
-    /// @return A descriptor for the newly created vertex.
+    /// @return A descriptor of the newly created vertex.
     /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     vertex_type add_vertex_with(vertex_properties_type properties)
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -307,7 +313,7 @@ public:
         };
     }
 
-    /// @brief Adds a specified number of default-initialized vertices to the graph en masse.
+    /// @brief Adds a specified number of default-initialized vertices to the graph.
     /// @param n The number of vertices to add.
     /// @copydetails detail::graph_doc_anchors::add_vertex_note()
     void add_vertices(const size_type n) {
@@ -378,7 +384,7 @@ public:
     /// @throws std::invalid_argument If any vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertices(
-        const traits::c_sized_range_of<vertex_type> auto& vertex_rng
+        const traits::c_forward_range_of<vertex_type> auto& vertex_rng
     ) {
         this->remove_vertices(
             vertex_rng | std::views::transform([](const auto& v) { return v.id(); })
@@ -436,6 +442,10 @@ public:
     /// @brief Returns a vertex descriptor without bounds checking (array access style).
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
+    ///
+    /// > [!WARNING] Undefined Behavior
+    /// >
+    /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline vertex_type operator[](const id_type vertex_id
     ) const noexcept {
         return this->vertex_unchecked(vertex_id);
@@ -579,7 +589,7 @@ public:
         return this->_vertex_properties[id];
     }
 
-    /// @brief Retrieves a view over all vertex properties in the graph.
+    /// @brief Retrieves a random-access view over all vertex properties in the graph.
     /// @return A view mapping each active vertex index to its property.
     [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -910,9 +920,9 @@ public:
         return this->edges(source.id(), target.id());
     }
 
-    /// @brief Retrieves all incident edges attached to a vertex.
+    /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex_id The vertex ID.
-    /// @return A view or container representing the incident edges.
+    /// @return A view representing the set of incident edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
@@ -922,17 +932,17 @@ public:
             return this->_impl.incident_edges(vertex_id);
     }
 
-    /// @brief Retrieves all incident edges attached to a vertex.
+    /// @brief Retrieves all incident with a vertex.
     /// @param vertex The vertex descriptor.
-    /// @return A view or container representing the incident edges.
+    /// @return A view representing the set of incident edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto incident_edges(vertex_type vertex) const {
         return this->incident_edges(vertex.id());
     }
 
-    /// @brief Retrieves all incoming edges entering a vertex.
+    /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex_id The vertex ID.
-    /// @return A view or container representing the incoming edges.
+    /// @return A view representing the set of incoming edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
@@ -942,17 +952,17 @@ public:
             return this->_impl.in_edges(vertex_id);
     }
 
-    /// @brief Retrieves all incoming edges entering a vertex.
+    /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex The vertex descriptor.
-    /// @return A view or container representing the incoming edges.
+    /// @return A view representing the set of incoming edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto in_edges(vertex_type vertex) const {
         return this->in_edges(vertex.id());
     }
 
-    /// @brief Retrieves all outgoing edges leaving a vertex.
+    /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex_id The vertex ID.
-    /// @return A view or container representing the outgoing edges.
+    /// @return A view representing the set of outgoing edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] inline auto out_edges(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
@@ -962,9 +972,9 @@ public:
             return this->_impl.out_edges(vertex_id);
     }
 
-    /// @brief Retrieves all outgoing edges leaving a vertex.
+    /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex The vertex descriptor.
-    /// @return A view or container representing the outgoing edges.
+    /// @return A view representing the set of outgoing edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto out_edges(vertex_type vertex) const {
         return this->out_edges(vertex.id());
@@ -1110,9 +1120,9 @@ public:
 
     // --- stream operators ---
 
-    /// @brief Serializes the graph's string representation to an output stream.
+    /// @brief Formats and outputs the entire graph structure to a standard output stream.
     ///
-    /// Depending on active stream flags, this outputs in verbose, concise, or GSF formats.
+    /// The generated string representation of the graph depends on the currently active formatting options of the stream.
     ///
     /// @param os The target output stream.
     /// @param g The graph instance to write.
@@ -1129,7 +1139,7 @@ public:
             return g._concise_write(os);
     }
 
-    /// @brief Deserializes graph structure data from an input stream (GSF format).
+    /// @brief Deserializes graph structure data from an input stream (using the GSF format).
     /// @param is The source input stream.
     /// @param g The graph instance to populate.
     /// @return The stream reference for chaining.
@@ -1410,7 +1420,7 @@ template <traits::c_graph Graph>
 }
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a standard directed graph.
+/// @brief Convenience alias for defining a directed graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
@@ -1420,7 +1430,7 @@ using directed_graph =
     graph<directed_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a standard undirected graph.
+/// @brief Convenience alias for defining a nundirected graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
@@ -1430,7 +1440,7 @@ using undirected_graph =
     graph<undirected_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing an adjacency list.
+/// @brief Convenience alias for defining a graph utilizing an adjacency list implementation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1440,7 +1450,7 @@ using list_graph =
     graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing an adjacency matrix.
+/// @brief Convenience alias for defining a graph utilizing an adjacency matrix implementation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1450,7 +1460,7 @@ using matrix_graph =
     graph<matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing a flattened adjacency list.
+/// @brief Convenience alias for defining a graph utilizing a flattened adjacency list implementation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1460,7 +1470,7 @@ using flat_list_graph =
     graph<flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
 /// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix.
+/// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix implementation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1514,122 +1524,120 @@ template <traits::c_graph GraphType>
         return static_cast<default_vertex_distance_type>(1ll);
 }
 
-namespace detail {
+namespace detail::graph_doc_anchors {
 
-struct graph_doc_anchors {
-    // --- callouts ---
+// --- callouts ---
 
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in vertex descriptors may be invalidated.
-    void add_vertex_note();
+/// > [!IMPORTANT] ID Stability
+/// >
+/// > Adding vertices does **not** invalidate existing vertex IDs. **However**, property references stored in existing vertex descriptors may be invalidated.
+void add_vertex_note();
 
-    /// > [!WARNING] Descriptor and ID Invalidation
-    /// >
-    /// > Removing a vertex invalidates:
-    /// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
-    /// > - All edge descriptors and IDs for edges incident to this vertex.
-    /// > - All references to vertex and edge properties obtained from the property maps.
-    /// > - References to vertex properties obtained via `vertex_properties()`.
-    /// >
-    /// > Proceed with caution when maintaining external vertex IDs or edge descriptors.
-    void remove_vertex_wrn();
+/// > [!WARNING] Descriptor and ID Invalidation
+/// >
+/// > Removing a vertex invalidates:
+/// > - All vertex descriptors and IDs for vertices with higher IDs (they shift down).
+/// > - All edge descriptors and IDs for edges incident to this vertex.
+/// > - All references to vertex and edge properties obtained from the property maps.
+/// > - References to vertex properties obtained via `vertex_properties()`.
+/// >
+/// > Proceed with caution when maintaining external vertex IDs or edge descriptors.
+void remove_vertex_wrn();
 
-    /// > [!IMPORTANT] ID Stability
-    /// >
-    /// > Adding edges does **not** invalidate vertex or edge IDs. **However**, property references stored in edge descriptors may be invalidated.
-    void add_edge_note();
+/// > [!IMPORTANT] ID Stability
+/// >
+/// > Adding edges does **not** invalidate vertex or edge IDs. **However**, property references stored in existing edge descriptors may be invalidated.
+void add_edge_note();
 
-    /// > [!WARNING] Edge Descriptor Invalidation
-    /// >
-    /// > Removing an edge invalidates:
-    /// > - All edge descriptors and IDs for edges with higher IDs (they shift down).
-    /// > - References to edge properties obtained via `edge_properties()`.
-    /// > - References to edge properties obtained from `edge_properties_map()`.
-    /// >
-    /// > Vertex descriptors and IDs remain valid.
-    void remove_edge_wrn();
+/// > [!WARNING] Edge Descriptor Invalidation
+/// >
+/// > Removing an edge invalidates:
+/// > - All edge descriptors and IDs for edges with higher IDs (they shift down).
+/// > - References to edge properties obtained via `edge_properties()`.
+/// > - References to edge properties obtained from `edge_properties_map()`.
+/// >
+/// > Vertex descriptors and IDs remain valid.
+void remove_edge_wrn();
 
-    // --- definitions ---
+// --- definitions ---
 
-    /// ### Formal Definition
-    ///
-    /// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
-    ///
-    /// \f[
-    /// N(v) =
-    /// \begin{cases}
-    /// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V : (u, v) \in E \lor (v, u) \in E\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f]
-    void neighbors();
+/// ### Formal Definition
+///
+/// The neighborhood \f$N(v)\f$ of a vertex \f$v\f$ is the set of all its adjacent vertices:
+///
+/// \f[
+/// N(v) =
+/// \begin{cases}
+/// \{u \in V : \{u, v\} \in E\} & \text{if } G \text{ is undirected}
+/// \\\\ \{u \in V : (u, v) \in E \lor (v, u) \in E\} & \text{if } G \text{ is directed}
+/// \end{cases}
+/// \f]
+void neighbors();
 
-    /// ### Formal Definition
-    /// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
-    ///
-    /// \f[
-    /// N_{in}(v) =
-    /// \begin{cases}
-    /// N(v) & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V : (u, v) \in E\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f]
-    void predecessors();
+/// ### Formal Definition
+/// The set of predecessors (in-neighborhood) \f$N_{in}(v)\f$ is defined as:
+///
+/// \f[
+/// N_{in}(v) =
+/// \begin{cases}
+/// N(v) & \text{if } G \text{ is undirected}
+/// \\\\ \{u \in V : (u, v) \in E\} & \text{if } G \text{ is directed}
+/// \end{cases}
+/// \f]
+void predecessors();
 
-    /// ### Formal Definition
-    /// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
-    ///
-    /// \f[
-    /// N_{out}(v) =
-    /// \begin{cases}
-    /// N(v) & \text{if } G \text{ is undirected}
-    /// \\\\ \{u \in V : (v, u) \in E\} & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f]
-    void successors();
+/// ### Formal Definition
+/// The set of successors (out-neighborhood) \f$N_{out}(v)\f$ is defined as:
+///
+/// \f[
+/// N_{out}(v) =
+/// \begin{cases}
+/// N(v) & \text{if } G \text{ is undirected}
+/// \\\\ \{u \in V : (v, u) \in E\} & \text{if } G \text{ is directed}
+/// \end{cases}
+/// \f]
+void successors();
 
-    /// The degree is the total number of edge endpoints connected to the vertex.
-    /// For both directed and undirected graphs, a self-loop contributes **2** to the total degree.
-    ///
-    /// ### Formal Definition
-    /// The formal calculation, accounting for the set of loops \f$L(v)\f$, is defined as:
-    ///
-    /// \f[
-    /// deg(v) =
-    /// \begin{cases}
-    /// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
-    /// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
-    /// \end{cases}
-    /// \f]
-    void degree();
+/// The degree is the total number of edge endpoints connected to the vertex.
+/// For both directed and undirected graphs, a self-loop contributes **2** to the total degree.
+///
+/// ### Formal Definition
+/// The formal calculation, accounting for the set of loops \f$L(v)\f$, is defined as:
+///
+/// \f[
+/// deg(v) =
+/// \begin{cases}
+/// deg_{in}(v) + deg_{out}(v) & \text{if } G \text{ is directed}
+/// \\ 2 \cdot |L(v)| + |E(v) \setminus L(v)| & \text{if } G \text{ is undirected}
+/// \end{cases}
+/// \f]
+void degree();
 
-    /// The in-degree is the number of edges directed into the vertex.
-    ///
-    /// ### Formal Definition
-    ///
-    /// \f[
-    /// deg_{in}(v) =
-    /// \begin{cases}
-    /// deg(v) & \text{if } G \text{ is undirected}
-    /// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f]
-    void in_degree();
+/// The in-degree is the number of edges directed into the vertex.
+///
+/// ### Formal Definition
+///
+/// \f[
+/// deg_{in}(v) =
+/// \begin{cases}
+/// deg(v) & \text{if } G \text{ is undirected}
+/// \\\\ |E_{in}(v)| = |\{u \in V : (u, v) \in E\}| & \text{if } G \text{ is directed}
+/// \end{cases}
+/// \f]
+void in_degree();
 
-    /// The out-degree is the number of edges directed out of the vertex.
-    ///
-    /// ### Formal Definition
-    ///
-    /// \f[
-    /// deg_{out}(v) =
-    /// \begin{cases}
-    /// deg(v) & \text{if } G \text{ is undirected}
-    /// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
-    /// \end{cases}
-    /// \f]
-    void out_degree();
-};
+/// The out-degree is the number of edges directed out of the vertex.
+///
+/// ### Formal Definition
+///
+/// \f[
+/// deg_{out}(v) =
+/// \begin{cases}
+/// deg(v) & \text{if } G \text{ is undirected}
+/// \\\\ |E_{out}(v)| = |\{u \in V : (v, u) \in E\}| & \text{if } G \text{ is directed}
+/// \end{cases}
+/// \f]
+void out_degree();
 
-} // namespace detail
+} // namespace detail::graph_doc_anchors
 } // namespace gl

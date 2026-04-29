@@ -28,7 +28,8 @@ struct list_t {
 /// @ingroup GL GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the flattened adjacency list graph implementation.
-/// @see @ref gl::flat_jagged_vector "flat_jagged_vector" : For the data structure used for the underlying model implementation.
+/// ### See Also
+/// - @ref gl::flat_jagged_vector "flat_jagged_vector" : For the data structure used for the underlying model implementation.
 struct flat_list_t {
     /// @brief Type alias for the flattened adjacency list graph implementation based on the provided graph traits.
     /// @tparam GraphTraits The graph traits for which to define the flattened adjacency list type.
@@ -53,7 +54,8 @@ struct matrix_t {
 /// @ingroup GL GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the flattened adjacency matrix graph implementation.
-/// @see @ref gl::flat_matrix "flat_matrix" : For the data structure used for the underlying model implementation.
+/// ### See Also
+/// - @ref gl::flat_matrix "flat_matrix" : For the data structure used for the underlying model implementation.
 struct flat_matrix_t {
     /// @brief Type alias for the flattened adjacency matrix graph implementation based on the provided graph traits.
     /// @tparam GraphTraits The graph traits for which to define the flattened adjacency matrix type.

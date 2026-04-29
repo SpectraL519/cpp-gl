@@ -34,7 +34,7 @@ namespace gl::algorithm {
 ///     [](const auto& lhs, const auto& rhs) { // (2)!
 ///         return lhs.vertex_id > rhs.vertex_id;
 ///     },
-///     gl::algorithm::init_range<graph_type>(start_id), // (3)!
+///     gl::algorithm::init_node_range<graph_type>(start_id), // (3)!
 ///     gl::algorithm::default_visit_vertex_predicate(visited // (4)!
 ///     [&](auto v, auto p) { // (5)!
 ///         std::cout << "Priority visited vertex " << v << '\n';

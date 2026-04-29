@@ -66,8 +66,8 @@ std::cout << "Path: "
 > [!INFO] Algorithmic Complexity
 >
 > The time complexity depends heavily on the underlying representation of GraphType and the priority queue overhead:
-> - **Adjacency List Representations:** $\mathcal{O}((|V| + |E|) \log |V|)$. The queue operations scale with the number of edges, making this optimal for sparse graphs.
-> - **Adjacency Matrix Representations:** $\mathcal{O}(|V|^2 + |E| \log |V|)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row, shifting the bottleneck to row traversal.
+> - **Adjacency List Representations:** $O((|V| + |E|) \log |V|)$. The queue operations scale with the number of edges, making this optimal for sparse graphs.
+> - **Adjacency Matrix Representations:** $O(|V|^2 + |E| \log |V|)$. Iterating over adjacent vertices requires scanning the entire $|V|$-length matrix row, shifting the bottleneck to row traversal.
 
 ---
 

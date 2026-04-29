@@ -51,8 +51,6 @@ gl::algorithm::breadth_first_search<gl::algorithm::noret>( // (2)!
 3. Traverses all vertices in the graph, automatically jumping to new roots if disconnected components are found.
 4. A custom PreVisitCallback executed exactly when a vertex is marked as visited.
 
-<!-- TODO: Diagram -->
-
 ---
 
 ## Depth-First Search (DFS)
@@ -110,6 +108,6 @@ The following diagram illustrates the fundamental difference in exploration orde
 
 The time complexity for all three traversals (BFS, Iterative DFS, and Recursive DFS) depends entirely on the underlying representation of `GraphType`:
 
-- **Adjacency List Representations:** $\mathcal{O}(|V| + |E|)$. The algorithm strictly evaluates existing edges, making this optimal for sparse graphs.
+- **Adjacency List Representations:** $O(|V| + |E|)$. The algorithm strictly evaluates existing edges, making this optimal for sparse graphs.
 
-- **Adjacency Matrix Representations:** $\mathcal{O}(|V|^2)$. To find adjacent unvisited vertices, the algorithm must scan the entire $|V|$-length matrix row for every visited vertex, shifting the bottleneck from edge evaluation to row traversal.
+- **Adjacency Matrix Representations:** $O(|V|^2)$. To find adjacent unvisited vertices, the algorithm must scan the entire $|V|$-length matrix row for every visited vertex, shifting the bottleneck from edge evaluation to row traversal.

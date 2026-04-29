@@ -118,7 +118,7 @@ requires(std::same_as<Mode, append>)
 /// Saves the graph topology and optionally its properties using the Graph Specification Format (GSF).
 /// The function strictly respects the @ref gl::io::write "write" and @ref gl::io::append "append" safety guards.
 ///
-/// @tparam GraphType The underlying type of the graph being saved.
+/// @tparam GraphType The concrete type of the graph being saved. Must satisfy [**c_graph**](gl_concepts.md#gl-traits-c-graph).
 /// @tparam Mode The save behavior tag (@ref gl::io::write "write" or @ref gl::io::append "append"). Defaults to `write`.
 /// @param graph The graph instance to serialize.
 /// @param path The filesystem path where the graph will be saved. Defaults to `"graph.gsf"`.
@@ -146,14 +146,14 @@ void save(
 ///
 /// Instantiates a new graph populated with the topology and properties read from the target GSF file.
 ///
-/// @tparam GraphType The target graph type to construct. Must match the directional nature of the saved file.
-/// @param path The filesystem path from which to load the graph. Defaults to `"graph.gsf"`.
+/// @tparam GraphType The target graph type to construct. Must match the directional nature of the saved graph.
+/// @param path The filesystem path from which to load the graph.
 /// @return A newly constructed graph populated with the file's data.
 ///
 /// @throws std::filesystem::filesystem_error If the file does not exist or is not a standard file.
 /// @throws std::ios_base::failure If the file cannot be opened or if the GSF directional discriminator mismatches `GraphType`.
 template <traits::c_graph GraphType>
-[[nodiscard]] GraphType load(const std::filesystem::path& path = "graph.gsf") {
+[[nodiscard]] GraphType load(const std::filesystem::path& path) {
     std::ifstream file = detail::open_infile(path);
 
     file >> spec_fmt;

@@ -45,7 +45,7 @@ template <traits::c_id_type IdType>
 }
 
 /// @ingroup GL GL-Algorithm
-/// @brief Initializes a search container (queue or stack) with the starting root vertex.
+/// @brief Initializes a search container with the starting root vertex.
 /// @tparam G The type of the graph.
 /// @tparam InitRangeType The underlying container type for the container.
 /// @param root_vertex_id The ID of the starting vertex.
@@ -53,7 +53,8 @@ template <traits::c_id_type IdType>
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitRangeType = std::vector<search_node<G>>>
-[[nodiscard]] gl_attr_force_inline InitRangeType init_range(typename G::id_type root_vertex_id) {
+[[nodiscard]] gl_attr_force_inline InitRangeType init_node_range(typename G::id_type root_vertex_id
+) {
     return InitRangeType{search_node<G>{root_vertex_id}};
 }
 

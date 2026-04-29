@@ -34,7 +34,8 @@ namespace gl::algorithm {
 ///
 /// ### Example Usage
 /// ```cpp
-/// auto pred_map = gl::algorithm::depth_first_search(graph, start_id); // (1)!
+/// auto pred_map
+///     = gl::algorithm::depth_first_search(graph, start_id); // (1)!
 ///
 /// gl::algorithm::depth_first_search<gl::algorithm::noret>( // (2)!
 ///     graph,
@@ -95,7 +96,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
     if (root_vertex_id != no_root) {
         dfs(
             graph,
-            init_range<G>(root_vertex_id),
+            init_node_range<G>(root_vertex_id),
             default_visit_vertex_predicate(visited),
             default_visit_callback<G, Result>(visited, pred_map),
             default_enqueue_node_predicate<G, true>(visited),
@@ -107,7 +108,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
         for (const auto root_id : graph.vertex_ids())
             dfs(
                 graph,
-                init_range<G>(root_id),
+                init_node_range<G>(root_id),
                 default_visit_vertex_predicate(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
                 default_enqueue_node_predicate<G, true>(visited),
@@ -135,7 +136,6 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 ///
 /// ### Example Usage
 /// ```cpp
-/// // Execution purely for side-effects from a specific root
 /// gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>( // (1)!
 ///     graph,
 ///     start_id, // (2)!
@@ -144,7 +144,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 /// );
 /// ```
 ///
-/// 1\. Execution purely for side-effects over the entire graph. Uses the @ref gl::algorithm::result_discriminator "noret" discriminator to completely compile away the predecessor map allocations.
+/// 1\. Execution purely for side-effects. Uses the @ref gl::algorithm::result_discriminator "noret" discriminator to completely compile away the predecessor map allocations.
 ///
 /// 2\. Initiates the recursion from `start_id`.
 ///
