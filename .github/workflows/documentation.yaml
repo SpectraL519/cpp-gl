@@ -52,14 +52,9 @@ jobs:
             exit 1
           fi
 
-      - name: Generate Internal Documentation Assets
-        run: |
-          doxygen Doxyfile
-          uv run python docs/scripts/gen_concept_docs.py --config docs/config/concepts.json --xml documentation/xml --out docs/cpp-gl
-
       - name: Build Docs (PR Validation Only)
         if: github.event_name == 'pull_request'
-        run: uv run mkdocs build --strict
+        run: make build-docs
 
       # See: https://api.github.com/users/github-actions%5Bbot%5D
       - name: Configure Git (Deploy Only)
@@ -73,27 +68,21 @@ jobs:
         run: |
           CURRENT_VERSION="v${VERSION}"
           git fetch --tags --force
-          # Sorts tags by version number to find the absolute latest
           ALL_TAGS=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
           LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
 
           if [ "$CURRENT_VERSION" = "$LATEST_TAG" ]; then
             echo "DEPLOY_LATEST=true" >> $GITHUB_ENV
-            echo "Current tag is the latest. Will deploy and update 'latest' alias."
           else
             echo "DEPLOY_LATEST=false" >> $GITHUB_ENV
-            echo "Current tag is NOT the latest. Will deploy to 'v${VERSION}' only."
           fi
 
       - name: Deploy with mike (Latest)
         if: github.event_name == 'push' && env.DEPLOY_LATEST == 'true'
         run: |
-          # Deploys to the v-prefixed folder and tags it as 'latest'
-          uv run mike deploy --push --update-aliases "v${VERSION}" latest
-          # Sets the root redirect to point to the 'latest' alias
+          make docs TAGS="--push --update-aliases v${VERSION} latest"
           uv run mike set-default --push latest
 
       - name: Deploy with mike (Older Version)
         if: github.event_name == 'push' && env.DEPLOY_LATEST == 'false'
-        run: |
-          uv run mike deploy --push "v${VERSION}"
+        run: make docs TAGS="--push v${VERSION}"
