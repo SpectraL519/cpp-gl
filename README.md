@@ -101,7 +101,8 @@ target_link_libraries(my_project PRIVATE cpp-gl)
 | GNU G++ | 14 |
 | Clang | 18 |
 
-> [!NOTE]
+> [!NOTE] C++23 Support
+>
 > Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++23 support like MSVC.
 
 <br />
