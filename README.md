@@ -112,7 +112,7 @@ If CMake is not being used, simply download the desired version of the library f
 
 ## Benchmarks
 
-Performance and zero-cost abstraction are primary goals of this library. A comprehensive evaluation suite built on top of **Google Benchmark** provides a structured way to measure, filter, and report the library's performance across various graph algorithms and memory layouts. 
+Performance and zero-cost abstraction are primary goals of this library. A comprehensive evaluation suite built on top of **Google Benchmark** provides a structured way to measure, filter, and report the library's performance across various graph algorithms and memory layouts.
 
 For detailed performance metrics, configuration instructions (including BGL integration), and CLI usage, please refer to the **[Benchmarks Guide](benchmarks/README.md)**.
 
@@ -154,9 +154,9 @@ To format only the files modified in the last commit:
 python scripts/format.py -m -exe clang-format-18
 ```
 
-> [!NOTE] 
+> [!NOTE]
 >
-> If `clang-format-18` is your system's default, you can omit the `-exe` flag. 
+> If `clang-format-18` is your system's default, you can omit the `-exe` flag.
 
 ### Building the Documentation
 

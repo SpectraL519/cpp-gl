@@ -1,4 +1,4 @@
-name: documentation
+name: Documentation
 
 on:
   pull_request:
@@ -8,7 +8,6 @@ on:
     tags:
       - "v*"
 
-# Grants the runner permission to push to the repository (protect your main branch via Settings!)
 permissions:
   contents: write
 
@@ -37,8 +36,7 @@ jobs:
           pip install uv
           uv sync
 
-      - name: Validate internal project versions
-        # Runs your script to ensure CMake, Doxygen, and Bazel versions are identical
+      - name: Validate Internal Project Versions
         run: |
           VERSION=$(uv run python scripts/check_version.py)
           echo "project version = $VERSION"
@@ -54,7 +52,7 @@ jobs:
             exit 1
           fi
 
-      - name: Generate internal documentation assets
+      - name: Generate Internal Documentation Assets
         run: |
           doxygen Doxyfile
           uv run python docs/scripts/gen_concept_docs.py --config docs/config/concepts.json --xml documentation/xml --out docs/cpp-gl
@@ -63,6 +61,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: uv run mkdocs build --strict
 
+      # See: https://api.github.com/users/github-actions%5Bbot%5D
       - name: Configure Git (Deploy Only)
         if: github.event_name == 'push'
         run: |
