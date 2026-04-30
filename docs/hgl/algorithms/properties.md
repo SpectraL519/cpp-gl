@@ -5,7 +5,7 @@ Beyond hypergraph traversals, the HGL algorithms module provides a suite of ligh
 These algorithms are grouped into four primary categories:
 
 - [Vertex Degree Bounds](#vertex-degree-bounds): Functions for evaluating the minimum and maximum connectivity of vertices.
-- [Hyperedge Size Bounds](#hyperedge-size-bounds-rank--corank): Functions for evaluating the scale of hyperedges (Rank and Corank).
+- [Hyperedge Size Bounds](#hyperedge-size-bounds-rank-corank): Functions for evaluating the scale of hyperedges (Rank and Corank).
 - [Regularity](#regularity): Functions to check if all vertices share the same degree.
 - [Uniformity](#uniformity): Functions to check if all hyperedges contain the same number of vertices.
 

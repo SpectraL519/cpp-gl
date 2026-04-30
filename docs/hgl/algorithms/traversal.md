@@ -16,8 +16,8 @@ By default, concrete traversals are designed to build a traversal tree. However,
 
 You can explicitly control this using the template's `Result` discriminator:
 
-- [**`hgl::algorithm::ret`**](../../cpp-gl/group__HGL-Algorithm.md#enum-result_discriminator) (Default): The algorithm allocates and populates an [**hgl::algorithm::search_tree<H>**](../../cpp-gl/group__HGL-Algorithm.md#typedef-search_tree). This structure records both the predecessor vertex and the specific hyperedge that was traversed to discover each vertex.
-- [**`hgl::algorithm::noret`**](../../cpp-gl/group__HGL-Algorithm.md#enum-result_discriminator): The algorithm executes purely for side effects. The search tree allocation is completely optimized away at compile time, and the function returns `void`.
+- [**`hgl::algorithm::ret`**](../../cpp-gl/group__HGL-Algorithm.md#typedef-result_discriminator) (Default): The algorithm allocates and populates an [**hgl::algorithm::search_tree<H>**](../../cpp-gl/group__HGL-Algorithm.md#typedef-search_tree). This structure records both the predecessor vertex and the specific hyperedge that was traversed to discover each vertex.
+- [**`hgl::algorithm::noret`**](../../cpp-gl/group__HGL-Algorithm.md#typedef-result_discriminator): The algorithm executes purely for side effects. The search tree allocation is completely optimized away at compile time, and the function returns `void`.
 
 ### Handling Disconnected Components
 
