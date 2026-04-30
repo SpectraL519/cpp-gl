@@ -11,10 +11,10 @@
 #include "gl/constants.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/graph_traits.hpp"
-#include "gl/impl/impl_tags.hpp"
 #include "gl/io/graph_fmt_traits.hpp"
 #include "gl/io/options.hpp"
 #include "gl/io/options_manip.hpp"
+#include "gl/repr_tags.hpp"
 #include "gl/traits.hpp"
 #include "gl/util/ranges.hpp"
 
@@ -30,63 +30,63 @@ class graph;
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept checking if a type is an instantiation of the generic @ref "gl::graph" graph class.
 template <typename G>
 concept c_graph = c_instantiation_of<G, graph>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept checking if a graph is directed.
 /// @see gl::directed_t "directed_t" : For the directional tag used to specify directed graph configuration.
 template <typename G>
 concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept checking if a graph is undirected.
 /// @see gl::undirected_t "undirected_t" : For the directional tag used to specify undirected graph configuration.
 template <typename G>
 concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes the standard adjacency list implementation.
-/// @see gl::impl::list_t "list_t" : For the implementation tag used to specify the standard adjacency list representation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes the standard adjacency list representation.
+/// @see gl::repr::list_t "list_t" : For the representation tag used to specify the standard adjacency list representation.
 template <typename G>
-concept c_list_graph = c_graph<G> and std::same_as<typename G::implementation_tag, impl::list_t>;
+concept c_list_graph = c_graph<G> and std::same_as<typename G::representation_tag, repr::list_t>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes the flattened adjacency list implementation.
-/// @see gl::impl::flat_list_t "flat_list_t" : For the implementation tag used to specify the flattened adjacency list representation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes the flattened adjacency list representation.
+/// @see gl::repr::flat_list_t "flat_list_t" : For the representation tag used to specify the flattened adjacency list representation.
 template <typename G>
 concept c_flat_list_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_list_t>;
+    c_graph<G> and std::same_as<typename G::representation_tag, repr::flat_list_t>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes any list-based adjacency implementation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes any list-based adjacency representation.
 /// ### See Also
-/// - @ref gl::impl::list_t "list_t" : For the implementation tag used to specify the standard adjacency list representation.
-/// - @ref gl::impl::flat_list_t "flat_list_t" : For the implementation tag used to specify the flattened adjacency list representation.
+/// - @ref gl::repr::list_t "list_t" : For the representation tag used to specify the standard adjacency list representation.
+/// - @ref gl::repr::flat_list_t "flat_list_t" : For the representation tag used to specify the flattened adjacency list representation.
 template <typename G>
 concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes the standard adjacency matrix implementation.
-/// @see gl::impl::matrix_t "matrix_t" : For the implementation tag used to specify the standard adjacency matrix representation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes the standard adjacency matrix representation.
+/// @see gl::repr::matrix_t "matrix_t" : For the representation tag used to specify the standard adjacency matrix representation.
 template <typename G>
 concept c_matrix_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::matrix_t>;
+    c_graph<G> and std::same_as<typename G::representation_tag, repr::matrix_t>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes the flattened adjacency matrix implementation.
-/// @see gl::impl::flat_matrix_t "flat_matrix_t" : For the implementation tag used to specify the flattened adjacency matrix representation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes the flattened adjacency matrix representation.
+/// @see gl::repr::flat_matrix_t "flat_matrix_t" : For the representation tag used to specify the flattened adjacency matrix representation.
 template <typename G>
 concept c_flat_matrix_graph =
-    c_graph<G> and std::same_as<typename G::implementation_tag, impl::flat_matrix_t>;
+    c_graph<G> and std::same_as<typename G::representation_tag, repr::flat_matrix_t>;
 
-/// @ingroup GL GL-Traits
-/// @brief Concept checking if a graph utilizes any matrix-based adjacency implementation.
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph utilizes any matrix-based adjacency representation.
 /// ### See Also
-/// - @ref gl::impl::matrix_t "matrix_t" : For the implementation tag used to specify the standard adjacency matrix representation.
-/// - @ref gl::impl::flat_matrix_t "flat_matrix_t" : For the implementation tag used to specify the flattened adjacency matrix representation.
+/// - @ref gl::repr::matrix_t "matrix_t" : For the representation tag used to specify the standard adjacency matrix representation.
+/// - @ref gl::repr::flat_matrix_t "flat_matrix_t" : For the representation tag used to specify the flattened adjacency matrix representation.
 template <typename G>
 concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 
@@ -95,17 +95,17 @@ concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
 
-template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
+template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
 [[nodiscard]] auto to(Graph&& source);
 
 namespace detail {
 
-template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
+template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief The generic graph container using a policy-based architecture.
 ///
 /// This class relies on the provided `GraphTraits` to determine its behavior, element
@@ -114,15 +114,15 @@ struct to_impl;
 ///
 /// ### Key Features
 /// - **Policy-based design**: Behavior and representation are determined by `GraphTraits`.
-/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through implementation tags and static dispatch, removing unnecessary overhead.
+/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through representation tags and static dispatch, removing unnecessary overhead.
 /// - **Configurable directionality**: Support for both directed and undirected graphs.
 /// - **Multiple representations**: Choose the underlying memory model that best suits your algorithmic and cache-locality needs:
-///   - @ref gl::impl::list_t "list_t": Standard adjacency list.
-///   - @ref gl::impl::flat_list_t "flat_list_t": Flattened adjacency list.
-///   - @ref gl::impl::matrix_t "matrix_t": Standard adjacency matrix.
-///   - @ref gl::impl::flat_matrix_t "flat_matrix_t": Flattened adjacency matrix.
+///   - @ref gl::repr::list_t "list_t": Standard adjacency list.
+///   - @ref gl::repr::flat_list_t "flat_list_t": Flattened adjacency list.
+///   - @ref gl::repr::matrix_t "matrix_t": Standard adjacency matrix.
+///   - @ref gl::repr::flat_matrix_t "flat_matrix_t": Flattened adjacency matrix.
 /// - **Property support**: Vertices and edges can carry arbitrary properties.
-/// - **Unified API**: Consistent interface regardless of the underlying implementation.
+/// - **Unified API**: Consistent interface regardless of the underlying representation.
 /// - **Standard Range Support**: Exposes lightweight views compliant with C++20 `std::ranges`, enabling functional-style iteration and algorithms.
 ///
 /// ### Basic Definitions
@@ -197,7 +197,7 @@ struct to_impl;
 /// - @ref gl::directed_graph "directed_graph" : Convenience alias for directed graphs.
 /// - @ref gl::undirected_graph "undirected_graph" : Convenience alias for undirected graphs.
 /// - @ref gl::clone "clone" : Create a deep copy of a graph.
-/// - @ref gl::to "to" : Convert a graph to a different implementation.
+/// - @ref gl::to "to" : Convert a graph to a different representation.
 ///
 /// > [!IMPORTANT] Copy Semantics
 /// >
@@ -218,11 +218,11 @@ public:
 
     /// @brief Type tag specifying the directionality of the graph.
     using directional_tag = typename traits_type::directional_tag;
-    /// @brief Type tag indicating the underlying implementation model.
-    using implementation_tag = typename traits_type::implementation_tag;
+    /// @brief Type tag indicating the underlying representation model.
+    using representation_tag = typename traits_type::representation_tag;
 
-    /// @brief The underlying implementation type matching the directional tag.
-    using implementation_type = typename implementation_tag::template type<traits_type>;
+    /// @brief The underlying representation type matching the directional tag.
+    using implementation_type = typename representation_tag::template type<traits_type>;
     friend implementation_type;
 
     /// @brief Integral type used to identify vertices and edges.
@@ -1154,11 +1154,11 @@ public:
     friend Graph clone(const Graph& source);
 
     /// @brief Friend declaration providing access for graph target conversions.
-    template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph Graph>
+    template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
     friend auto to(Graph&& source);
 
     /// @brief Internal friend structure for `to` conversion operations.
-    template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
+    template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
     friend struct detail::to_impl;
 
 private:
@@ -1409,7 +1409,7 @@ private:
 
 // --- general graph utility ---
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Creates a deep copy of the given graph.
 /// @tparam Graph The type of the graph.
 /// @param source The graph instance to clone.
@@ -1419,28 +1419,28 @@ template <traits::c_graph Graph>
     return Graph(source);
 }
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Convenience alias for defining a directed graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
-    traits::c_graph_impl_tag ImplTag = impl::list_t,
+    traits::c_graph_repr_tag ReprTag = repr::list_t,
     traits::c_id_type IdType = default_id_type>
 using directed_graph =
-    graph<directed_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
+    graph<directed_graph_traits<VertexProperties, EdgeProperties, ReprTag, IdType>>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Convenience alias for defining a nundirected graph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
-    traits::c_graph_impl_tag ImplTag = impl::list_t,
+    traits::c_graph_repr_tag ReprTag = repr::list_t,
     traits::c_id_type IdType = default_id_type>
 using undirected_graph =
-    graph<undirected_graph_traits<VertexProperties, EdgeProperties, ImplTag, IdType>>;
+    graph<undirected_graph_traits<VertexProperties, EdgeProperties, ReprTag, IdType>>;
 
-/// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing an adjacency list implementation model.
+/// @ingroup GL-Core
+/// @brief Convenience alias for defining a graph utilizing an adjacency list representation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1449,8 +1449,8 @@ template <
 using list_graph =
     graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing an adjacency matrix implementation model.
+/// @ingroup GL-Core
+/// @brief Convenience alias for defining a graph utilizing an adjacency matrix representation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1459,8 +1459,8 @@ template <
 using matrix_graph =
     graph<matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing a flattened adjacency list implementation model.
+/// @ingroup GL-Core
+/// @brief Convenience alias for defining a graph utilizing a flattened adjacency list representation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1469,8 +1469,8 @@ template <
 using flat_list_graph =
     graph<flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
 
-/// @ingroup GL GL-Core
-/// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix implementation model.
+/// @ingroup GL-Core
+/// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix representation model.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
@@ -1484,7 +1484,7 @@ using flat_matrix_graph =
 /// @brief Default numeric type representing distances between vertices in unweighted graphs.
 using default_vertex_distance_type = std::int64_t;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Utility trait to resolve the underlying distance or weight numeric type for a graph.
 template <traits::c_graph GraphType>
 struct vertex_distance {
@@ -1492,7 +1492,7 @@ struct vertex_distance {
     using type = default_vertex_distance_type;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Specialization resolving the specific weight type when edge properties contain weight attributes.
 template <traits::c_graph GraphType>
 requires(traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
@@ -1501,12 +1501,12 @@ struct vertex_distance<GraphType> {
     using type = typename GraphType::edge_properties_type::weight_type;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Convenience alias to retrieve the appropriate distance numeric type from a graph structure.
 template <traits::c_graph GraphType>
 using vertex_distance_type = typename vertex_distance<GraphType>::type;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Helper utility to safely retrieve the weight payload of an edge.
 ///
 /// Automatically returns a constant default if the graph representation carries no attached weight properties.

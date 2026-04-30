@@ -28,7 +28,7 @@ using add_vertex_property = gl::graph_traits<
     typename TraitsType::directional_tag,
     VertexProperties,
     typename TraitsType::edge_properties_type,
-    typename TraitsType::implementation_tag>;
+    typename TraitsType::representation_tag>;
 
 template <
     gl::traits::c_instantiation_of<gl::graph_traits> TraitsType,
@@ -37,7 +37,7 @@ using add_edge_property = gl::graph_traits<
     typename TraitsType::directional_tag,
     typename TraitsType::vertex_properties_type,
     EdgeProperties,
-    typename TraitsType::implementation_tag>;
+    typename TraitsType::representation_tag>;
 
 template <
     gl::traits::c_instantiation_of<gl::graph_traits> TraitsType,
@@ -46,7 +46,7 @@ using add_properties = gl::graph_traits<
     typename TraitsType::directional_tag,
     Properties,
     Properties,
-    typename TraitsType::implementation_tag>;
+    typename TraitsType::representation_tag>;
 
 template <typename TraitsType>
 struct test_graph {
@@ -900,7 +900,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{constants::n_elements};
         std::vector<edge_type> expected_edges;
 
-        if constexpr (std::same_as<typename sut_type::implementation_tag, gl::impl::list_t>) {
+        if constexpr (std::same_as<typename sut_type::representation_tag, gl::repr::list_t>) {
             for (auto _ = 0uz; _ < constants::n_elements; _++)
                 expected_edges.emplace_back(sut.add_edge(constants::v1_id, constants::v2_id));
         }

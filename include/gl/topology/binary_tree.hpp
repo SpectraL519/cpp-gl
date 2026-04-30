@@ -30,7 +30,7 @@ constexpr size_type min_non_trivial_bin_tree_depth = 2uz;
 
 } // namespace detail
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular (regular) binary tree of a specified depth.
 ///
 /// A regular binary tree is a tree where all internal vertices have exactly two children
@@ -78,11 +78,11 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType regular_binary_tree(size_type depth) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
 }
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular binary tree with bidirectional edges.
 ///
 /// For directed graphs, this function ensures that for every parent-to-child edge,
@@ -136,8 +136,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType bidirectional_regular_binary_tree(size_type depth) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
 }
 
 } // namespace gl::topology

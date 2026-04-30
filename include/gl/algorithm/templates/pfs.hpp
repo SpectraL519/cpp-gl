@@ -17,7 +17,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A highly customizable, generic Priority-First Search (PFS) algorithm engine.
 ///
 /// This template provides the strict structural execution of a priority queue-based search.

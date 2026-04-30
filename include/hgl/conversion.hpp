@@ -24,44 +24,44 @@ namespace hgl {
 namespace traits {
 
 /// @ingroup HGL-Traits
-/// @brief Utility trait type used to swap the implementation tag of a hypergraph traits or hypergraph type.
+/// @brief Utility trait type used to swap the representation tag of a hypergraph traits or hypergraph type.
 /// ### See Also:
-/// - @ref hgl::to "to" : For the function that utilizes this trait to perform hypergraph conversions between different implementations.
-template <typename HT, traits::c_hypergraph_impl_tag NewImplTag>
+/// - @ref hgl::to "to" : For the function that utilizes this trait to perform hypergraph conversions between different representations.
+template <typename HT, traits::c_hypergraph_repr_tag NewReprTag>
 requires c_hypergraph<HT> or c_instantiation_of<HT, hypergraph_traits>
-struct swap_impl_tag;
+struct swap_repr_tag;
 
 /// @ingroup HGL-Traits
-/// @brief Specialization of @ref hgl::traits::swap_impl_tag "swap_impl_tag" for the @ref hgl::hypergraph_traits "hypergraph_traits" type.
+/// @brief Specialization of @ref hgl::traits::swap_repr_tag "swap_repr_tag" for the @ref hgl::hypergraph_traits "hypergraph_traits" type.
 template <
     traits::c_hypergraph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
-    traits::c_hypergraph_impl_tag OldImplTag,
-    traits::c_hypergraph_impl_tag NewImplTag>
-struct swap_impl_tag<hypergraph_traits<Dir, VP, EP, OldImplTag>, NewImplTag> {
-    using type = hypergraph_traits<Dir, VP, EP, NewImplTag>;
+    traits::c_hypergraph_repr_tag OldReprTag,
+    traits::c_hypergraph_repr_tag NewReprTag>
+struct swap_repr_tag<hypergraph_traits<Dir, VP, EP, OldReprTag>, NewReprTag> {
+    using type = hypergraph_traits<Dir, VP, EP, NewReprTag>;
 };
 
 /// @ingroup HGL-Traits
-/// @brief Specialization of @ref hgl::traits::swap_impl_tag "swap_impl_tag" for the @ref hgl::hypergraph "hypergraph" type.
+/// @brief Specialization of @ref hgl::traits::swap_repr_tag "swap_repr_tag" for the @ref hgl::hypergraph "hypergraph" type.
 template <
     traits::c_hypergraph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
-    traits::c_hypergraph_impl_tag OldImplTag,
-    traits::c_hypergraph_impl_tag NewImplTag>
-struct swap_impl_tag<hypergraph<hypergraph_traits<Dir, VP, EP, OldImplTag>>, NewImplTag> {
-    using type = hypergraph<hypergraph_traits<Dir, VP, EP, NewImplTag>>;
+    traits::c_hypergraph_repr_tag OldReprTag,
+    traits::c_hypergraph_repr_tag NewReprTag>
+struct swap_repr_tag<hypergraph<hypergraph_traits<Dir, VP, EP, OldReprTag>>, NewReprTag> {
+    using type = hypergraph<hypergraph_traits<Dir, VP, EP, NewReprTag>>;
 };
 
 /// @ingroup HGL-Traits
-/// @brief Alias template for easier usage of the @ref hl::traits::swap_impl_tag "swap_impl_tag" trait to resolve the swapped type directly.
+/// @brief Alias template for easier usage of the @ref hl::traits::swap_repr_tag "swap_repr_tag" trait to resolve the swapped type directly.
 /// ### See Also:
-/// - @ref hgl::to "to" : For the function that utilizes this trait to perform hypergraph conversions between different implementations.
-template <typename HT, traits::c_hypergraph_impl_tag NewImplTag>
+/// - @ref hgl::to "to" : For the function that utilizes this trait to perform hypergraph conversions between different representations.
+template <typename HT, traits::c_hypergraph_repr_tag NewReprTag>
 requires c_hypergraph<HT> or c_instantiation_of<HT, hypergraph_traits>
-using swap_impl_tag_t = typename swap_impl_tag<HT, NewImplTag>::type;
+using swap_repr_tag_t = typename swap_repr_tag<HT, NewReprTag>::type;
 
 } // namespace traits
 
@@ -69,7 +69,7 @@ using swap_impl_tag_t = typename swap_impl_tag<HT, NewImplTag>::type;
 
 namespace detail {
 
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph_repr_tag SourceReprTag>
 struct to_impl {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
@@ -93,8 +93,8 @@ struct to_impl {
 };
 
 // Conversion: identity
-template <traits::c_hypergraph_impl_tag ImplTag>
-struct to_impl<ImplTag, ImplTag> {
+template <traits::c_hypergraph_repr_tag ReprTag>
+struct to_impl<ReprTag, ReprTag> {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
         target._impl = std::move(source._impl);
@@ -103,7 +103,7 @@ struct to_impl<ImplTag, ImplTag> {
 
 // Conversion: list -> flat list (same layout)
 template <traits::c_hypergraph_layout_tag LayoutTag>
-struct to_impl<impl::flat_list_t<LayoutTag>, impl::list_t<LayoutTag>> {
+struct to_impl<repr::flat_list_t<LayoutTag>, repr::list_t<LayoutTag>> {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
         using dir_tag = typename std::decay_t<decltype(target)>::directional_tag;
@@ -111,7 +111,7 @@ struct to_impl<impl::flat_list_t<LayoutTag>, impl::list_t<LayoutTag>> {
         auto& target_impl = target._impl;
         auto& source_impl = source._impl;
 
-        if constexpr (std::same_as<LayoutTag, impl::bidirectional_t>) {
+        if constexpr (std::same_as<LayoutTag, repr::bidirectional_t>) {
             convert_asym<dir_tag>(target_impl._v_list, source_impl._v_list);
             convert_asym<dir_tag>(target_impl._e_list, source_impl._e_list);
         }
@@ -167,7 +167,7 @@ struct to_impl<impl::flat_list_t<LayoutTag>, impl::list_t<LayoutTag>> {
 
 // Conversion: flat list -> list (same layout)
 template <traits::c_hypergraph_layout_tag LayoutTag>
-struct to_impl<impl::list_t<LayoutTag>, impl::flat_list_t<LayoutTag>> {
+struct to_impl<repr::list_t<LayoutTag>, repr::flat_list_t<LayoutTag>> {
     template <typename TargetHypergraph, typename SourceHypergraph>
     static void convert(TargetHypergraph& target, SourceHypergraph& source) {
         using dir_tag = typename std::decay_t<decltype(target)>::directional_tag;
@@ -175,7 +175,7 @@ struct to_impl<impl::list_t<LayoutTag>, impl::flat_list_t<LayoutTag>> {
         auto& target_impl = target._impl;
         auto& source_impl = source._impl;
 
-        if constexpr (std::same_as<LayoutTag, impl::bidirectional_t>) {
+        if constexpr (std::same_as<LayoutTag, repr::bidirectional_t>) {
             convert_asym<dir_tag>(target_impl._v_list, source_impl._v_list);
             convert_asym<dir_tag>(target_impl._e_list, source_impl._e_list);
         }
@@ -217,38 +217,38 @@ struct to_impl<impl::list_t<LayoutTag>, impl::flat_list_t<LayoutTag>> {
 } // namespace detail
 
 /// @ingroup HGL-Core
-/// @brief Converts a hypergraph from one implementation model to another.
+/// @brief Converts a hypergraph from one representation model to another.
 ///
 /// This function efficiently transforms a hypergraph's underlying memory representation (e.g., from a standard incidence list to a flattened incidence list) while preserving its exact topology, properties, and identifiers.
 ///
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :---------- | :--------- |
-/// | TargetImplTag | The implementation tag of the desired target representation (e.g., `hgl::impl::flat_list_t`). | [**c_hypergraph_impl_tag**](hgl_concepts.md#hgl-traits-c-hypergraph-impl-tag) |
+/// | TargetReprTag | The representation tag of the desired target representation (e.g., `hgl::repr::flat_list_t`). | [**c_hypergraph_repr_tag**](hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag) |
 /// | Hypergraph | The type of the source hypergraph, which will be automatically deduced from the function argument. | [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) |
 ///
 /// @param source The hypergraph to convert. After the operation it will be left in a valid, empty state.
-/// @return A new hypergraph containing the moved data, structured according to `TargetImplTag`.
+/// @return A new hypergraph containing the moved data, structured according to `TargetReprTag`.
 ///
 /// ### See Also
-/// - @ref hgl::traits::swap_impl_tag "swap_impl_tag" : For the trait used to resolve the target hypergraph type with the swapped implementation tag.
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hypergraph>
+/// - @ref hgl::traits::swap_repr_tag "swap_repr_tag" : For the trait used to resolve the target hypergraph type with the swapped representation tag.
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph Hypergraph>
 [[nodiscard]] auto to(Hypergraph&& source) {
     using source_traits = typename Hypergraph::traits_type;
-    using source_impl_tag = typename source_traits::implementation_tag;
+    using source_impl_tag = typename source_traits::representation_tag;
 
-    using target_traits = traits::swap_impl_tag_t<source_traits, TargetImplTag>;
+    using target_traits = traits::swap_repr_tag_t<source_traits, TargetReprTag>;
     using target_hypergraph = hypergraph<target_traits>;
 
     target_hypergraph target;
 
-    detail::to_impl<TargetImplTag, source_impl_tag>::convert(target, source);
+    detail::to_impl<TargetReprTag, source_impl_tag>::convert(target, source);
 
     target._n_vertices = std::exchange(source._n_vertices, 0uz);
     target._n_hyperedges = std::exchange(source._n_hyperedges, 0uz);
     target._vertex_properties = std::move(source._vertex_properties);
     target._hyperedge_properties = std::move(source._hyperedge_properties);
-    source._impl = typename Hypergraph::implementation_type();
+    source._impl = typename Hypergraph::representation_type();
 
     return target;
 }
@@ -304,10 +304,10 @@ template <gl::traits::c_undirected_graph G>
 }
 
 template <gl::traits::c_undirected_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::representation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G projection(const traits::c_undirected_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(projection<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -321,7 +321,7 @@ requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::fla
 /// >
 /// > If the requested target graph `G` satisfies [**c_flat_list_graph**](gl_concepts.md#gl-traits-c-flat-list-graph),
 /// > an optimized overload is automatically selected. It internally constructs a standard adjacency list graph
-/// > first, and then utilizes the @ref gl::to "to" conversion to flatten it. This is significantly faster than
+/// > first, and then utilizes the @ref gl::to conversion to flatten it. This is significantly faster than
 /// > inserting edges one-by-one into a flat representation.
 ///
 /// @tparam G The target standard graph type to construct. Must satisfy [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph).
@@ -352,10 +352,10 @@ template <gl::traits::c_directed_graph G>
 }
 
 template <gl::traits::c_directed_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::representation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G projection(const traits::c_bf_directed_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(projection<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -401,10 +401,10 @@ template <gl::traits::c_undirected_graph G>
 }
 
 template <gl::traits::c_undirected_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::representation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G incidence_graph(const traits::c_undirected_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(incidence_graph<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -454,10 +454,10 @@ template <gl::traits::c_directed_graph G>
 }
 
 template <gl::traits::c_directed_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::representation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G incidence_graph(const traits::c_bf_directed_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(incidence_graph<list_graph>(h));
 }
 
 } // namespace hgl

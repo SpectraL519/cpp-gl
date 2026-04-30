@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Test code formatting
+    name: Test License Comments
     runs-on: ubuntu-24.04
 
     steps:
@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test formatting
+      - name: Validate Licence Comments
         shell: bash
         run: |
           python3 scripts/check_licence.py

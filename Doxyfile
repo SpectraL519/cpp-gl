@@ -1028,7 +1028,7 @@ EXCLUDE_PATTERNS       = *.mk
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # ANamespace::AClass, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        = std doctest doctest_detail_test_suite_ns detail *::detail
+EXCLUDE_SYMBOLS        = std doctest doctest_detail_test_suite_ns detail *::detail impl *::impl
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

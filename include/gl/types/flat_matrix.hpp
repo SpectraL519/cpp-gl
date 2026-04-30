@@ -21,7 +21,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Types
+/// @ingroup GL-Types
 /// @brief A flattened 2D matrix providing efficient storage and uniform access for a rectangular grid of elements.
 ///
 /// This container stores all elements in a single contiguous memory block (*data*) of size `n_rows * n_cols`

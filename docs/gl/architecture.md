@@ -23,17 +23,17 @@ The [**gl::graph_traits**](../cpp-gl/structgl_1_1graph__traits.md) struct config
 1. **Directionality**: Directed vs. Undirected.
 2. **Vertex Properties**: The data payload attached to each vertex.
 3. **Edge Properties**: The data payload attached to each edge.
-4. **Implementation Tag**: The underlying memory layout (e.g., Adjacency List).
+4. **Representation Tag**: The underlying memory layout (e.g., Adjacency List).
 5. **ID Type**: The integer type used for internal indexing (defaults to `std::uint32_t`).
 
 To reduce boilerplate, the library provides several generic type aliases for the most common configurations:
 
 - Based on the directional tag:
 
-    - [**gl::directed_graph<VP, EP, Impl, IdType>**](../cpp-gl/group__GL-Core.md#typedef-directed_graph)
-    - [**gl::undirected_graph<VP, EP, Impl, IdType>**](../cpp-gl/group__GL-Core.md#typedef-undirected_graph)
+    - [**gl::directed_graph<VP, EP, ReprTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-directed_graph)
+    - [**gl::undirected_graph<VP, EP, ReprTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-undirected_graph)
 
-- Based on the implementation tag:
+- Based on the representation tag:
 
     - [**gl::list_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-list_graph)
     - [**gl::flat_list_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-flat_list_graph)
@@ -139,7 +139,7 @@ for (auto neighbor_id : graph.neighbor_ids(source_id)) { // (3)!
 
 ## Graph Representation Models
 
-Choosing the correct memory layout is critical for algorithmic performance. CPP-GL abstracts this choice entirely behind the `ImplTag`, allowing you to swap layouts without altering a single line of traversal code.
+Choosing the correct memory layout is critical for algorithmic performance. CPP-GL abstracts this choice entirely behind the `ReprTag`, allowing you to swap layouts without altering a single line of traversal code.
 
 ### Fundamental Representations
 
@@ -161,21 +161,21 @@ Consider the following graph:
 
 CPP-GL currently categorizes its memory layouts into two primary families based on their underlying memory allocation strategy.
 
-> [!NOTE] All representation model tag types are defined in the `gl::impl` namespace.
+> [!NOTE] All representation model tag types are defined in the `gl::repr` namespace.
 
 #### Standard Models
 
 Heap-allocated, nested structures that prioritize flexibility and dynamic structural modification.
 
-- [**list_t**](../cpp-gl/structgl_1_1impl_1_1list__t.md): A standard Adjacency List model implemented using traditional nested containers (e.g., `std::vector<std::vector<T>>`).
-- [**matrix_t**](../cpp-gl/structgl_1_1impl_1_1matrix__t.md): A standard Adjacency Matrix model implemented using traditional nested containers.
+- [**list_t**](../cpp-gl/structgl_1_1repr_1_1list__t.md): A standard Adjacency List model implemented using traditional nested containers (e.g., `std::vector<std::vector<T>>`).
+- [**matrix_t**](../cpp-gl/structgl_1_1repr_1_1matrix__t.md): A standard Adjacency Matrix model implemented using traditional nested containers.
 
 ### Flat Models
 
 Contiguous 1D memory blocks that prioritize cache locality and maximum traversal speed over modification speed.
 
-- [**flat_list_t**](../cpp-gl/structgl_1_1impl_1_1flat__list__t.md): A flattened Adjacency List model implemented using the generic [**flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
-- [**flat_matrix_t**](../cpp-gl/structgl_1_1impl_1_1flat__matrix__t.md): A flattened Adjacency Matrix model implemented using the generic [**flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
+- [**flat_list_t**](../cpp-gl/structgl_1_1repr_1_1flat__list__t.md): A flattened Adjacency List model implemented using the generic [**flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
+- [**flat_matrix_t**](../cpp-gl/structgl_1_1repr_1_1flat__matrix__t.md): A flattened Adjacency Matrix model implemented using the generic [**flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
 
 ### Topology Support: Simple Graphs and Multigraphs
 
@@ -204,7 +204,7 @@ Being "edge-aware" means that the internal representation stores the specific `e
 
 #### Standard Memory Models
 
-The standard implementations utilize traditional, nested 2D containers (e.g., `std::vector<std::vector<T>>`).
+The standard model implementations utilize traditional, nested 2D containers (e.g., `std::vector<std::vector<T>>`).
 
 These models are highly flexible. Because the inner containers can grow independently, they handle structural modifications, like adding vertices or edges, gracefully. The trade-off is that the memory is fragmented across the heap, which can lead to cache misses during heavy graph traversals.
 
@@ -250,11 +250,11 @@ Depending on the chosen representation model, the computational complexity of st
 
 ### Choosing the Layout
 
-Selecting the right `ImplTag` is a balance of your specific operational needs - use:
+Selecting the right `ReprTag` is a balance of your specific operational needs - use:
 
-- [**list_t**](../cpp-gl/structgl_1_1impl_1_1list__t.md) for highly dynamic, sparse graphs where the topology changes frequently.
-- [**flat_list_t**](../cpp-gl/structgl_1_1impl_1_1flat__list__t.md) for static, sparse graphs where traversal speed and cache locality are paramount.
-- [**matrix_t**](../cpp-gl/structgl_1_1impl_1_1matrix__t.md) (or [**flat_matrix_t**](../cpp-gl/structgl_1_1impl_1_1flat__matrix__t.md) if structure is entirely static) for highly dense graphs (where $\vert E \vert \approx \vert V \vert^2$) when instant $O(1)$ edge lookups are strictly required and memory footprint is not a bottleneck.
+- [**list_t**](../cpp-gl/structgl_1_1repr_1_1list__t.md) for highly dynamic, sparse graphs where the topology changes frequently.
+- [**flat_list_t**](../cpp-gl/structgl_1_1repr_1_1flat__list__t.md) for static, sparse graphs where traversal speed and cache locality are paramount.
+- [**matrix_t**](../cpp-gl/structgl_1_1repr_1_1matrix__t.md) (or [**flat_matrix_t**](../cpp-gl/structgl_1_1repr_1_1flat__matrix__t.md) if structure is entirely static) for highly dense graphs (where $\vert E \vert \approx \vert V \vert^2$) when instant $O(1)$ edge lookups are strictly required and memory footprint is not a bottleneck.
 
 ---
 

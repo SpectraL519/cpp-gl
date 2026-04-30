@@ -13,7 +13,7 @@
 
 namespace gl::topology {
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular cycle graph (ring topology).
 ///
 /// A cycle graph consists of a single closed chain of vertices. Vertex \f$v_i\f$ is connected
@@ -45,11 +45,11 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType cycle(size_type n_vertices) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(cycle<base_graph_type>(n_vertices));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(cycle<base_graph_type>(n_vertices));
 }
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a cycle graph with bidirectional edges.
 ///
 /// For directed graphs, this function creates a reciprocal edge for every forward edge
@@ -90,8 +90,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType bidirectional_cycle(size_type n_vertices) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(bidirectional_cycle<base_graph_type>(n_vertices));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(bidirectional_cycle<base_graph_type>(n_vertices));
 }
 
 } // namespace gl::topology

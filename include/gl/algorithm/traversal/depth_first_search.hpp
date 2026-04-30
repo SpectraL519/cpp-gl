@@ -14,7 +14,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Executes a concrete iterative Depth-First Search (DFS) traversal over the graph.
 ///
 /// This function utilizes the generic @ref gl::algorithm::dfs "dfs" template to perform a standard, stack-based traversal.
@@ -56,9 +56,9 @@ namespace gl::algorithm {
 /// >
 /// > The time complexity depends entirely on the underlying representation of `GraphType`:
 /// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
-/// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
+/// >   - *Includes:* @ref gl::repr::list_t "list_t" and @ref gl::repr::flat_list_t "flat_list_t".
 /// > - **Adjacency Matrix Representations**: \f$O(|V|^2)\f$
-/// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
+/// >   - *Includes:* @ref gl::repr::matrix_t "matrix_t" and @ref gl::repr::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters
@@ -123,7 +123,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
         return pred_map;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Executes a concrete recursive Depth-First Search (DFS) traversal over the graph.
 ///
 /// This function relies on the generic @ref gl::algorithm::r_dfs "r_dfs" template. Instead of a
@@ -156,9 +156,9 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 /// >
 /// > The time complexity depends entirely on the underlying representation of `GraphType`:
 /// > - **Adjacency List Representations**: \f$O(|V| + |E|)\f$
-/// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
+/// >   - *Includes:* @ref gl::repr::list_t "list_t" and @ref gl::repr::flat_list_t "flat_list_t".
 /// > - **Adjacency Matrix Representations**: \f$O(|V|^2)\f$
-/// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
+/// >   - *Includes:* @ref gl::repr::matrix_t "matrix_t" and @ref gl::repr::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over adjacent vertices requires scanning the entire \f$|V|\f$-length matrix row.
 ///
 /// ### Template Parameters

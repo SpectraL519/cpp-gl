@@ -14,7 +14,7 @@
 
 namespace gl::util {
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Computes the value of `base` raised to the power of `exp` using exponentiation by squaring.
 /// @param base The base value to be raised to a power.
 /// @param exp The exponent to which the base is raised.
@@ -35,7 +35,7 @@ namespace gl::util {
     return result;
 }
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Computes the sum of powers of `base` from `base^i_begin` to `base^i_end` inclusive.
 /// @param base The base value for the powers.
 /// @param i_begin The starting exponent (inclusive).

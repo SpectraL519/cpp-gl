@@ -13,9 +13,9 @@
 #include "hgl/constants.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/hypergraph_traits.hpp"
-#include "hgl/impl/impl_tags.hpp"
 #include "hgl/io/core.hpp"
 #include "hgl/io/hypergraph_fmt_traits.hpp"
+#include "hgl/repr/repr_tags.hpp"
 
 #include <algorithm>
 #include <initializer_list>
@@ -55,46 +55,46 @@ concept c_bf_directed_hypergraph =
     c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses a standard incidence list implementation.
+/// @brief Concept checking if a hypergraph uses a standard incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_list_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_list_repr<typename H::representation_tag>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses a flattened incidence list implementation.
+/// @brief Concept checking if a hypergraph uses a flattened incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_flat_list_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_flat_list_repr<typename H::representation_tag>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses any incidence list implementation (standard or flattened).
+/// @brief Concept checking if a hypergraph uses any incidence list representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_list_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_incidence_list_repr<typename H::representation_tag>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses a standard incidence matrix implementation.
+/// @brief Concept checking if a hypergraph uses a standard incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_matrix_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_matrix_repr<typename H::representation_tag>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses a flattened incidence matrix implementation.
+/// @brief Concept checking if a hypergraph uses a flattened incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_flat_matrix_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_flat_matrix_repr<typename H::representation_tag>;
 
 /// @ingroup HGL-Traits
-/// @brief Concept checking if a hypergraph uses any incidence matrix implementation (standard or flattened).
+/// @brief Concept checking if a hypergraph uses any incidence matrix representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_matrix_impl<typename H::implementation_tag>;
+    c_hypergraph<H> and c_hypergraph_incidence_matrix_repr<typename H::representation_tag>;
 
 } // namespace traits
 
@@ -107,18 +107,18 @@ template <traits::c_hypergraph Hypergraph>
 [[nodiscard]] Hypergraph clone(const Hypergraph& source);
 
 /// @ingroup HGL-Core
-/// @brief Converts a hypergraph to a different implementation type (e.g., from incidence list to incidence matrix).
-/// @tparam TargetImplTag The implementation tag defining the target storage mechanism.
+/// @brief Converts a hypergraph to a different representation type (e.g., from incidence list to incidence matrix).
+/// @tparam TargetReprTag The representation tag defining the target storage mechanism.
 /// @tparam Hypergraph The concrete hypergraph type of the source.
 /// @param source The hypergraph to convert.
-/// @return A new hypergraph matching the target implementation type with identical topology and properties.
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hypergraph>
+/// @return A new hypergraph matching the target representation type with identical topology and properties.
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph Hypergraph>
 [[nodiscard]] auto to(Hypergraph&& source);
 
 namespace detail {
 
-/// @brief Internal structure for dispatching the hypergraph implementation conversion logic.
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
+/// @brief Internal structure for dispatching the hypergraph representation conversion logic.
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph_repr_tag SourceReprTag>
 struct to_impl;
 
 } // namespace detail
@@ -132,15 +132,15 @@ struct to_impl;
 ///
 /// ### Key Features
 /// - **Policy-based design**: Behavior and representation are determined by `HypergraphTraits`.
-/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through implementation tags and static dispatch, removing unnecessary overhead.
+/// - **Zero-cost Abstractions**: Core query logic is resolved at compile time through representation tags and static dispatch, removing unnecessary overhead.
 /// - **Configurable directionality**: Support for both undirected and BF-directed hypergraphs.
 /// - **Multiple representations**: Choose the underlying memory model and its layout to achieve the best performance for your needs:
-///   - @ref hgl::impl::list_t "list_t": Standard incidence list.
-///   - @ref hgl::impl::flat_list_t "flat_list_t": Flattened incidence list.
-///   - @ref hgl::impl::matrix_t "matrix_t": Standard incidence matrix.
-///   - @ref hgl::impl::flat_matrix_t "flat_matrix_t": Flattened incidence matrix.
+///   - @ref hgl::repr::list_t "list_t": Standard incidence list.
+///   - @ref hgl::repr::flat_list_t "flat_list_t": Flattened incidence list.
+///   - @ref hgl::repr::matrix_t "matrix_t": Standard incidence matrix.
+///   - @ref hgl::repr::flat_matrix_t "flat_matrix_t": Flattened incidence matrix.
 /// - **Property support**: Vertices and hyperedges can carry arbitrary properties.
-/// - **Unified API**: Consistent interface regardless of the underlying implementation.
+/// - **Unified API**: Consistent interface regardless of the underlying representation.
 /// - **Standard Range Support**: Exposes lightweight views compliant with C++20 `std::ranges`, enabling functional-style iteration and algorithms.
 ///
 /// ### Basic Definitions
@@ -212,7 +212,7 @@ struct to_impl;
 /// - @ref hgl::undirected_hypergraph "undirected_hypergraph" : Convenience alias for undirected hypergraphs.
 /// - @ref hgl::bf_directed_hypergraph "bf_directed_hypergraph" : Convenience alias for BF-directed hypergraphs.
 /// - @ref hgl::clone "clone" : Create a deep copy of a hypergraph.
-/// - @ref hgl::to "to" : Convert a hypergraph to a different implementation.
+/// - @ref hgl::to "to" : Convert a hypergraph to a different representation.
 ///
 /// > [!IMPORTANT] Copy Semantics
 /// >
@@ -233,12 +233,12 @@ public:
 
     /// @brief Type tag specifying the directionality of the hypergraph.
     using directional_tag = typename traits_type::directional_tag;
-    /// @brief Type tag indicating the underlying implementation model.
-    using implementation_tag = typename traits_type::implementation_tag;
+    /// @brief Type tag indicating the underlying representation model.
+    using representation_tag = typename traits_type::representation_tag;
 
-    /// @brief The underlying implementation type matching the directional tag.
-    using implementation_type =
-        typename implementation_tag::template implementation_type<directional_tag>;
+    /// @brief The underlying representation type matching the directional tag.
+    using representation_type =
+        typename representation_tag::template representation_type<directional_tag>;
 
     /// @brief Integral type used to identify vertices and hyperedges.
     using id_type = typename traits_type::id_type;
@@ -1985,14 +1985,14 @@ public:
     template <traits::c_hypergraph Hypergraph>
     friend Hypergraph clone(const Hypergraph& source);
 
-    /// @brief Converts a hypergraph to a different implementation type.
-    template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph Hypergraph>
+    /// @brief Converts a hypergraph to a different representation type.
+    template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph Hypergraph>
     friend auto to(Hypergraph&& source);
 
-    /// @brief Internal structure for dispatching implementation conversion.
+    /// @brief Internal structure for dispatching representation conversion.
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct detail::to_impl;
 
 private:
@@ -2288,8 +2288,8 @@ private:
     /// @brief The current count of initialized hyperedges.
     size_type _n_hyperedges = 0uz;
 
-    /// @brief The underlying container implementation (matrix or list).
-    implementation_type _impl{};
+    /// @brief The underlying representation type (matrix or list).
+    representation_type _impl{};
 
     /// @todo Replace mutability with proper const-correct getter overloads to ensure thread safety guarantees associated with the const qualifier
     [[no_unique_address]] mutable vertex_properties_map_type _vertex_properties{};
@@ -2315,23 +2315,23 @@ template <traits::c_hypergraph Hypergraph>
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
-    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+    traits::c_hypergraph_repr_tag ReprTag = repr::list_t<>>
 using undirected_hypergraph =
-    hypergraph<undirected_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+    hypergraph<undirected_hypergraph_traits<VertexProperties, HyperedgeProperties, ReprTag>>;
 
 /// @ingroup HGL-Core
 /// @brief Convenience alias for a BF-directed hypergraph.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
-    traits::c_hypergraph_impl_tag ImplTag = impl::list_t<>>
+    traits::c_hypergraph_repr_tag ReprTag = repr::list_t<>>
 using bf_directed_hypergraph =
-    hypergraph<bf_directed_hypergraph_traits<VertexProperties, HyperedgeProperties, ImplTag>>;
+    hypergraph<bf_directed_hypergraph_traits<VertexProperties, HyperedgeProperties, ReprTag>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph utilizing a standard incidence list implementation model.
+/// @brief Convenience alias for a hypergraph utilizing a standard incidence list representation model.
 template <
-    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_layout_tag LayoutTag = repr::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
@@ -2340,9 +2340,9 @@ using list_hypergraph = hypergraph<
     list_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph utilizing a flat incidence list implementation model.
+/// @brief Convenience alias for a hypergraph utilizing a flat incidence list representation model.
 template <
-    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_layout_tag LayoutTag = repr::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
@@ -2355,9 +2355,9 @@ using flat_list_hypergraph = hypergraph<flat_list_hypergraph_traits<
     IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph utilizing a standard incidence matrix implementation model.
+/// @brief Convenience alias for a hypergraph utilizing a standard incidence matrix representation model.
 template <
-    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_layout_tag LayoutTag = repr::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,
@@ -2366,9 +2366,9 @@ using matrix_hypergraph = hypergraph<
     matrix_hypergraph_traits<LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType>>;
 
 /// @ingroup HGL-Core
-/// @brief Convenience alias for a hypergraph utilizing a flat incidence matrix implementation model.
+/// @brief Convenience alias for a hypergraph utilizing a flat incidence matrix representation model.
 template <
-    traits::c_hypergraph_layout_tag LayoutTag = impl::bidirectional_t,
+    traits::c_hypergraph_layout_tag LayoutTag = repr::bidirectional_t,
     traits::c_hypergraph_directional_tag DirectionalTag = undirected_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties HyperedgeProperties = empty_properties,

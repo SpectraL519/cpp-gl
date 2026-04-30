@@ -2,7 +2,7 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file hgl/impl/layout_tags.hpp
+/// @file hgl/repr/layout_tags.hpp
 /// @brief Defines layout tags that dictate the memory orientation and primary indexing of incidence structures.
 
 #pragma once
@@ -15,7 +15,7 @@
 
 namespace hgl {
 
-namespace impl {
+namespace repr {
 
 /// @ingroup HGL-Core
 /// @brief Layout tag designating vertices as the primary structural dimension of the incidence representation.
@@ -89,31 +89,31 @@ struct hyperedge_major_t {
 /// @brief Layout tag representing a symmetric or fully bidirectional incidence structural layout.
 struct bidirectional_t {};
 
-} // namespace impl
+} // namespace repr
 
 namespace traits {
 
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid hypergraph layout tag.
 ///
-/// The valid hypergraph layout tags are @ref hgl::impl::vertex_major_t "vertex_major_t",
-/// @ref hgl::impl::hyperedge_major_t "hyperedge_major_t", and @ref hgl::impl::bidirectional_t "bidirectional_t".
+/// The valid hypergraph layout tags are @ref hgl::repr::vertex_major_t "vertex_major_t",
+/// @ref hgl::repr::hyperedge_major_t "hyperedge_major_t", and @ref hgl::repr::bidirectional_t "bidirectional_t".
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
 concept c_hypergraph_layout_tag =
-    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t, impl::bidirectional_t>;
+    c_one_of<T, repr::vertex_major_t, repr::hyperedge_major_t, repr::bidirectional_t>;
 
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid asymmetric hypergraph layout tag.
 ///
-/// Symmetric or bidirectional layouts are excluded. Valid tags are @ref hgl::impl::vertex_major_t "vertex_major_t"
-/// and @ref hgl::impl::hyperedge_major_t "hyperedge_major_t".
+/// Symmetric or bidirectional layouts are excluded. Valid tags are @ref hgl::repr::vertex_major_t "vertex_major_t"
+/// and @ref hgl::repr::hyperedge_major_t "hyperedge_major_t".
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
 concept c_hypergraph_asymmetric_layout_tag =
-    c_one_of<T, impl::vertex_major_t, impl::hyperedge_major_t>;
+    c_one_of<T, repr::vertex_major_t, repr::hyperedge_major_t>;
 
 } // namespace traits
 

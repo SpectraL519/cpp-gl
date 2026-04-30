@@ -12,7 +12,7 @@
 
 namespace gl::util {
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Safely determines the size of a range.
 ///
 /// This function returns the size of a range if it is a sized range, otherwise it computes the
@@ -37,7 +37,7 @@ constexpr auto range_size(R&& r) {
         return std::ranges::distance(std::begin(r), std::end(r));
 }
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Checks if all elements in a range are equal.
 /// @tparam R The type of the range.
 /// @param range The range to check.
@@ -56,7 +56,7 @@ template <std::ranges::forward_range R>
     });
 }
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Checks if all elements in a range are equal to a given value.
 /// @tparam R The type of the range.
 /// @param range The range to check.
@@ -76,7 +76,7 @@ template <std::ranges::forward_range R>
     return std::ranges::all_of(range, [&value](const auto& val) { return val == value; });
 }
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief A view concatenating two ranges sequentially (C++20 polyfill for C++26 `std::views::concat`).
 ///
 /// > [!WARNING] GCC 13/14 Bug
@@ -230,7 +230,7 @@ private:
     };
 };
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief A function object for concatenating two viewable ranges into a `concat_view`.
 /// ### See Also
 /// - @ref gl::util::concat_view "concat_view": The view type that represents the concatenation of two ranges.
@@ -250,7 +250,7 @@ struct concat_fn {
     }
 };
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Concatenates two viewable ranges into a `concat_view`.
 ///
 /// ### Example usage

@@ -35,9 +35,9 @@ The [**hgl::hypergraph**](../cpp-gl/classhgl_1_1hypergraph.md) class is the core
 1. **Directionality**: Undirected vs. BF-Directed.
 2. **Vertex Properties**: The data payload attached to each vertex.
 3. **Hyperedge Properties**: The data payload attached to each hyperedge.
-4. **Implementation Tag**: The underlying implementation model of the hypergraph.
+4. **Representation Tag**: The underlying representation model of the hypergraph.
     - This tag dictates the data structure used for the incidence representation (e.g., Incidence List or Incidence Matrix).
-    - The implementation tags can be further specialized with:
+    - The representation tags can be further specialized with:
         - **Layout Tag:** The memory layout of the data structure (e.g., Bidirectional (only for list models), Vertex-Major, or Hyperedge-Major).
         - **Id Type:** The integral type used for internal indexing (defaults to `std::uint32_t`).
 
@@ -45,10 +45,10 @@ To reduce boilerplate, the library provides several generic type aliases for the
 
 - Based on the directional tag:
 
-    - [**hgl::undirected_hypergraph<VP, HeP, ImplTag>**](../cpp-gl/group__HGL-Core.md#typedef-undirected_hypergraph)
-    - [**hgl::bf_directed_hypergraph<VP, HeP, ImplTag>**](../cpp-gl/group__HGL-Core.md#typedef-bf_directed_hypergraph)
+    - [**hgl::undirected_hypergraph<VP, HeP, ReprTag>**](../cpp-gl/group__HGL-Core.md#typedef-undirected_hypergraph)
+    - [**hgl::bf_directed_hypergraph<VP, HeP, ReprTag>**](../cpp-gl/group__HGL-Core.md#typedef-bf_directed_hypergraph)
 
-- Based on the implementation tag:
+- Based on the representation tag:
 
     - [**hgl::list_hypergraph<LayoutTag, VP, HeP, IdType>**](../cpp-gl/group__HGL-Core.md#typedef-list_hypergraph)
     - [**hgl::flat_list_hypergraph<LayoutTag, VP, HeP, IdType>**](../cpp-gl/group__HGL-Core.md#typedef-flat_list_hypergraph)
@@ -200,7 +200,7 @@ for (auto in_hyperedge : hg.in_hyperedges(vertex)) { // (2)!
 
 ## Representation & Layouts
 
-Because hypergraphs are generalizations of graphs, their topological data cannot be stored the same way as standard graphs (Adjacency Models). Instead, CPP-HGL relies on **Incidence Models** to capture the higher-order connections between vertices and hyperedges. The HGL module categorizes its memory representations via the `ImplTag` and strictly controls their memory orientation with the `LayoutTag`.
+Because hypergraphs are generalizations of graphs, their topological data cannot be stored the same way as standard graphs (Adjacency Models). Instead, CPP-HGL relies on **Incidence Models** to capture the higher-order connections between vertices and hyperedges. The HGL module categorizes its memory representations via the `ReprTag` and strictly controls their memory orientation with the `LayoutTag`.
 
 ### Fundamental Representations
 
@@ -213,9 +213,9 @@ At their core, hypergraph data structures differ in how they map vertices to the
 
 The `LayoutTag` dictates the *primary indexing dimension* of the incidence structure. Because hypergraphs map two distinctly different sets ($V$ and $E$), changing the primary index massively impacts query speeds and memory footprints:
 
-- [**bidirectional_t**](../cpp-gl/structhgl_1_1impl_1_1bidirectional__t.md): Maintains *two* internal mappings simultaneously (Vertex-to-Hyperedges AND Hyperedge-to-Vertices). Offers optimal $O(1)$ access for both vertex degrees and hyperedge sizes, and fast iteration in both directions, at the cost of doubled memory consumption. **(Compatible only with Incidence Lists)**.
-- [**hyperedge_major_t**](../cpp-gl/structhgl_1_1impl_1_1hyperedge__major__t.md): The primary index is the Hyperedge. Querying the vertices within a specific hyperedge is instantaneous, but finding which hyperedges a vertex belongs to may require an expensive full-structure scan.
-- [**vertex_major_t**](../cpp-gl/structhgl_1_1impl_1_1vertex__major__t.md): The primary index is the Vertex. Querying the hyperedges connected to a specific vertex is instantaneous, but finding which vertices belong to a specific hyperedge may require an expensive, full-structure scan.
+- [**bidirectional_t**](../cpp-gl/structhgl_1_1repr_1_1bidirectional__t.md): Maintains *two* internal mappings simultaneously (Vertex-to-Hyperedges AND Hyperedge-to-Vertices). Offers optimal $O(1)$ access for both vertex degrees and hyperedge sizes, and fast iteration in both directions, at the cost of doubled memory consumption. **(Compatible only with Incidence Lists)**.
+- [**hyperedge_major_t**](../cpp-gl/structhgl_1_1repr_1_1hyperedge__major__t.md): The primary index is the Hyperedge. Querying the vertices within a specific hyperedge is instantaneous, but finding which hyperedges a vertex belongs to may require an expensive full-structure scan.
+- [**vertex_major_t**](../cpp-gl/structhgl_1_1repr_1_1vertex__major__t.md): The primary index is the Vertex. Querying the hyperedges connected to a specific vertex is instantaneous, but finding which vertices belong to a specific hyperedge may require an expensive, full-structure scan.
 
 > [!NOTE] Matrices and Asymmetry
 >
@@ -225,8 +225,8 @@ The `LayoutTag` dictates the *primary indexing dimension* of the incidence struc
 
 Standard models are heap-allocated, nested structures (e.g., `std::vector<std::vector<T>>`) that prioritize flexibility and dynamic structural modification. Because the inner containers can grow independently, they handle topological changes gracefully.
 
-- [**list_t**](../cpp-gl/structhgl_1_1impl_1_1list__t.md): A standard Incidence List model implemented using traditional nested containers.
-- [**matrix_t**](../cpp-gl/structhgl_1_1impl_1_1matrix__t.md): A standard Incidence Matrix model implemented using traditional nested containers.
+- [**list_t**](../cpp-gl/structhgl_1_1repr_1_1list__t.md): A standard Incidence List model implemented using traditional nested containers.
+- [**matrix_t**](../cpp-gl/structhgl_1_1repr_1_1matrix__t.md): A standard Incidence Matrix model implemented using traditional nested containers.
 
 <div align="center" markdown="1">
 
@@ -245,8 +245,8 @@ Standard models are heap-allocated, nested structures (e.g., `std::vector<std::v
 
 To maximize cache locality, the flat representations map the logical 2D structures into contiguous 1D memory blocks. By keeping all incidence data tightly packed, these models provide the absolute maximum traversal speed. However, this cache-friendliness comes at a structural cost: modifying an inner segment often requires shifting the entire remainder of the flat container in memory.
 
-- [**flat_list_t**](../cpp-gl/structhgl_1_1impl_1_1flat__list__t.md): A flattened Incidence List model implemented using the generic [**gl::flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
-- [**flat_matrix_t**](../cpp-gl/structhgl_1_1impl_1_1flat__matrix__t.md): A flattened Incidence Matrix model implemented using the generic [**gl::flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
+- [**flat_list_t**](../cpp-gl/structhgl_1_1repr_1_1flat__list__t.md): A flattened Incidence List model implemented using the generic [**gl::flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) data structure.
+- [**flat_matrix_t**](../cpp-gl/structhgl_1_1repr_1_1flat__matrix__t.md): A flattened Incidence Matrix model implemented using the generic [**gl::flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md) data structure.
 
 <div align="center" markdown="1">
 
