@@ -14,7 +14,7 @@ This directory contains the performance evaluation suite for the CPP-GL library.
 
 ## Building the Benchmarks
 
-To configure and build the benchmark executable, use the following standard CMake commands:
+To configure and build the benchmark executable, use the following standard CMake commands from the project root:
 
 ```shell
 cmake -B build_bench -DBUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=Release
@@ -30,6 +30,7 @@ cmake -B build_bench -DBUILD_BENCHMARKS=ON -DBENCH_INCLUDE_BGL=ON -DCMAKE_BUILD_
 ```
 
 > [!NOTE]
+> 
 > BGL comparative benchmarks are only defined for specific benchmark suites where a direct equivalent exists in Boost.
 
 <br/>

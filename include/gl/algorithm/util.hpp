@@ -14,7 +14,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Initializes a predecessor map based on the static result discriminator.
 /// @tparam Result The compilation tag determining if the map should actually be built.
 /// @tparam G The type of the graph.
@@ -30,7 +30,7 @@ init_predecessors_map(const G& graph) {
         return return_t();
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Checks if a specific vertex was reached during a traversal.
 /// @tparam IdType The integral type of the vertex ID.
 /// @param pred_map The predecessor map populated by the traversal.
@@ -44,7 +44,7 @@ template <traits::c_id_type IdType>
     return pred_map[to_idx(vertex_id)] != invalid_id;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Initializes a search container with the starting root vertex.
 /// @tparam G The type of the graph.
 /// @tparam InitRangeType The underlying container type for the container.
@@ -58,7 +58,7 @@ template <
     return InitRangeType{search_node<G>{root_vertex_id}};
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Generates a default lambda predicate that checks if a vertex has not yet been visited.
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @return A callable predicate evaluating to `true` if the vertex is unvisited.
@@ -66,7 +66,7 @@ template <
     return [&](traits::c_id_type auto vertex_id) -> bool { return not visited[to_idx(vertex_id)]; };
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Generates a default lambda callback that marks a vertex as visited and updates the predecessor map.
 /// @tparam G The type of the graph.
 /// @tparam Result The static discriminator indicating if the predecessor map should be updated.
@@ -88,7 +88,7 @@ template <traits::c_graph G, result_discriminator Result>
     };
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Generates a default lambda predicate that checks if a node corresponding to an adjacent vertex should be enqueued into the search container.
 /// @tparam G The type of the graph.
 /// @tparam AsDecision If `true`, the generated predicate returns a @ref gl::algorithm::decision "decision" instead of a raw boolean.

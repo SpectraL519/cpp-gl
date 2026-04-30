@@ -6,10 +6,10 @@
 
 #include "gl/types/core.hpp"
 #include "hgl/constants.hpp"
-#include "hgl/decl/impl_tags.hpp"
+#include "hgl/decl/repr_tags.hpp"
 #include "hgl/directional_tags.hpp"
 #include "hgl/impl/bf_incidence.hpp"
-#include "hgl/impl/layout_tags.hpp"
+#include "hgl/repr/layout_tags.hpp"
 #include "hgl/types.hpp"
 
 #include <algorithm>
@@ -28,7 +28,7 @@ namespace hgl {
 
 namespace detail {
 
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph_repr_tag SourceReprTag>
 struct to_impl;
 
 } // namespace detail
@@ -37,17 +37,17 @@ namespace impl {
 
 template <
     traits::c_hypergraph_directional_tag DirectionalTag,
-    traits::c_hypergraph_matrix_impl ImplTag>
+    traits::c_hypergraph_matrix_repr ReprTag>
 class incidence_matrix;
 
-template <traits::c_hypergraph_matrix_impl ImplTag>
-requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
-class incidence_matrix<hgl::undirected_t, ImplTag> final {
+template <traits::c_hypergraph_matrix_repr ReprTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
+class incidence_matrix<hgl::undirected_t, ReprTag> final {
 public:
     using directional_tag = hgl::undirected_t;
-    using implementation_tag = ImplTag;
-    using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = typename implementation_tag::id_type;
+    using representation_tag = ReprTag;
+    using layout_tag = typename representation_tag::layout_tag;
+    using id_type = typename representation_tag::id_type;
 
     incidence_matrix() = default;
 
@@ -139,8 +139,8 @@ public:
     // --- friend declarations ---
 
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -236,14 +236,14 @@ private:
     hypergraph_storage_type _matrix;
 };
 
-template <traits::c_hypergraph_matrix_impl ImplTag>
-requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
-class incidence_matrix<hgl::bf_directed_t, ImplTag> final {
+template <traits::c_hypergraph_matrix_repr ReprTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
+class incidence_matrix<hgl::bf_directed_t, ReprTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
-    using implementation_tag = ImplTag;
-    using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = typename implementation_tag::id_type;
+    using representation_tag = ReprTag;
+    using layout_tag = typename representation_tag::layout_tag;
+    using id_type = typename representation_tag::id_type;
 
     incidence_matrix() = default;
 
@@ -413,8 +413,8 @@ public:
     // --- friend declarations ---
 
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING

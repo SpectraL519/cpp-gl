@@ -12,7 +12,7 @@
 
 namespace gl::io {
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief A customizable stream proxy for formatting and printing C++ ranges.
 ///
 /// This struct acts as a wrapper around any `std::ranges::range`, allowing it to be
@@ -84,7 +84,7 @@ template <std::ranges::range R>
 range_formatter(R&& r, std::string_view, std::string_view, std::string_view)
     -> range_formatter<std::views::all_t<R>>;
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Factory function to format a range as a set.
 ///
 /// Wraps the range output in curly braces `{}` instead of standard brackets `[]`.
@@ -112,7 +112,7 @@ auto set_formatter(R&& range, std::string_view sep = ", ") {
     return range_formatter<view_type>{std::views::all(std::forward<R>(range)), sep, "{", "}"};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Factory function to format a range as a multiline set.
 ///
 /// Outputs each element on a new line, bounded by curly braces `{}`.
@@ -147,7 +147,7 @@ auto multiline_set_formatter(R&& range) {
     };
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief A proxy object for concisely formatting large contiguous numeric ranges.
 ///
 /// Instead of iterating and printing every element of a massive sequence, this formatter
@@ -195,7 +195,7 @@ struct implicit_range_formatter {
     }
 };
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Factory function to create an implicit range formatter with a defined start and end.
 ///
 /// ### Example Usage
@@ -226,7 +226,7 @@ template <std::integral T>
     return implicit_range_formatter<T>{first, last + static_cast<T>(inclusive)};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Factory function to create an implicit range formatter starting from 0.
 ///
 /// ### Example Usage

@@ -7,7 +7,7 @@
 #include "gl/attributes/diagnostics.hpp"
 #include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
-#include "gl/decl/impl_tags.hpp"
+#include "gl/decl/repr_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/types/core.hpp"
 #include "gl/util/ranges.hpp"
@@ -449,7 +449,8 @@ struct adjacency_matrix_impl_traits {
 };
 
 template <traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(traits::c_directed_edge<typename AdjacencyMatrix::edge_type>)
+requires traits::c_directed_edge<typename AdjacencyMatrix::edge_type>
+     and std::same_as<typename AdjacencyMatrix::representation_tag, repr::matrix_t>
 struct adjacency_matrix_impl_traits<AdjacencyMatrix> {
     using type = directed_adjacency_matrix<AdjacencyMatrix>;
 
@@ -458,7 +459,8 @@ struct adjacency_matrix_impl_traits<AdjacencyMatrix> {
 };
 
 template <traits::c_instantiation_of<adjacency_matrix> AdjacencyMatrix>
-requires(traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>)
+requires traits::c_undirected_edge<typename AdjacencyMatrix::edge_type>
+     and std::same_as<typename AdjacencyMatrix::representation_tag, repr::matrix_t>
 struct adjacency_matrix_impl_traits<AdjacencyMatrix> {
     using type = undirected_adjacency_matrix<AdjacencyMatrix>;
 

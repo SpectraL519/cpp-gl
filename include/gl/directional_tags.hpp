@@ -19,7 +19,7 @@ struct undirected_t;
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Validates if a type is a valid graph directional tag.
 ///
 /// The valid graph directional tags are @ref gl::directed_t "directed_t" and @ref gl::undirected_t "undirected_t".
@@ -40,7 +40,7 @@ class edge_descriptor;
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::edge_descriptor "edge_descriptor" with the @ref gl::directed_t "directed_t" tag.
 /// @tparam T The type to evaluate against the concept.
 template <typename E>
@@ -48,7 +48,7 @@ concept c_directed_edge =
     c_instantiation_of<E, edge_descriptor>
     and std::same_as<typename E::directional_tag, directed_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::edge_descriptor "edge_descriptor" with the @ref gl::undirected_t "undirected_t" tag.
 /// @tparam T The type to evaluate against the concept.
 template <typename E>
@@ -58,7 +58,7 @@ concept c_undirected_edge =
 
 } // namespace traits
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/directional_tags.hpp
 /// @brief The tag type representing a directed graph configuration.
 ///
@@ -100,7 +100,7 @@ struct directed_t {
     }
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/directional_tags.hpp
 /// @brief The tag type representing an undirected graph configuration.
 ///

@@ -17,19 +17,19 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for the standard size type used throughout the library.
 ///
 /// Used primarily for indices, counts, and sizes of graph components.
 using size_type = std::size_t;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief The default unsigned integer type used for vertex and edge identifiers.
 using default_id_type = std::uint32_t;
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept defining the requirements for an identifier type.
 ///
 /// Ensures that any custom ID type provided to the graph library is an
@@ -41,7 +41,7 @@ concept c_id_type = std::unsigned_integral<T>;
 
 } // namespace traits
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Converts a valid identifier to a standard size type (index).
 ///
 /// Provides a safe, explicit cast from any unsigned integral ID type
@@ -53,7 +53,7 @@ concept c_id_type = std::unsigned_integral<T>;
     return static_cast<size_type>(id);
 }
 
-/// @ingroup GL GL-Util
+/// @ingroup GL-Util
 /// @brief Converts an integral value to a standard pointer difference type.
 ///
 /// Useful for safe pointer arithmetic and offset calculations within graph data structures.
@@ -64,7 +64,7 @@ concept c_id_type = std::unsigned_integral<T>;
     return static_cast<std::ptrdiff_t>(i);
 }
 
-/// @ingroup GL GL-Types
+/// @ingroup GL-Types
 /// @brief A type alias for a `std::pair` where both elements are of the exact same type.
 /// @tparam `T` The type of both the `first` and `second` elements in the pair.
 template <typename T>

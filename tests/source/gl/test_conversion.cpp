@@ -4,7 +4,7 @@
 #include <gl/conversion.hpp>
 #include <gl/directional_tags.hpp>
 #include <gl/graph.hpp>
-#include <gl/impl/impl_tags.hpp>
+#include <gl/repr_tags.hpp>
 
 #include <algorithm>
 #include <concepts>
@@ -99,22 +99,22 @@ TEST_CASE_TEMPLATE_DEFINE(
             SUBCASE(source_name) {
                 SUBCASE("to list") {
                     auto src = fixture.create_test_graph<Source>();
-                    auto dst = gl::to<gl::impl::list_t>(std::move(src));
+                    auto dst = gl::to<gl::repr::list_t>(std::move(src));
                     fixture.validate_graph(dst);
                 }
                 SUBCASE("to flat-list") {
                     auto src = fixture.create_test_graph<Source>();
-                    auto dst = gl::to<gl::impl::flat_list_t>(std::move(src));
+                    auto dst = gl::to<gl::repr::flat_list_t>(std::move(src));
                     fixture.validate_graph(dst);
                 }
                 SUBCASE("to matrix") {
                     auto src = fixture.create_test_graph<Source>();
-                    auto dst = gl::to<gl::impl::matrix_t>(std::move(src));
+                    auto dst = gl::to<gl::repr::matrix_t>(std::move(src));
                     fixture.validate_graph(dst);
                 }
                 SUBCASE("to flat-matrix") {
                     auto src = fixture.create_test_graph<Source>();
-                    auto dst = gl::to<gl::impl::flat_matrix_t>(std::move(src));
+                    auto dst = gl::to<gl::repr::flat_matrix_t>(std::move(src));
                     fixture.validate_graph(dst);
                 }
             }

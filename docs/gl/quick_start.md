@@ -23,7 +23,7 @@ int main() {
         gl::directed_t,
         gl::empty_properties,
         gl::weight_property<int>,
-        gl::impl::list_t>;
+        gl::repr::list_t>;
 
     gl::graph<traits_t> graph(5); // (3)!
 

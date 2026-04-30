@@ -15,7 +15,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A descriptor structure holding the results of a Minimum Spanning Tree (MST) execution.
 ///
 /// @tparam G The type of the undirected graph. Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept.
@@ -40,7 +40,7 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(0);
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with an edge-based priority queue.
 ///
 /// This implementation uses a standard binary heap (`std::priority_queue`) to store and sort edges based on their weight.
@@ -59,10 +59,10 @@ struct mst_descriptor {
 /// >
 /// > The time complexity depends on the underlying representation of `GraphType` and the queue overhead:
 /// > - **Adjacency List Representations**: \f$O(|E| \log |E|)\f$
-/// >   - *Includes:* @ref gl::impl::list_t "list_t" and @ref gl::impl::flat_list_t "flat_list_t".
+/// >   - *Includes:* @ref gl::repr::list_t "list_t" and @ref gl::repr::flat_list_t "flat_list_t".
 /// >   - *Note:* In simple graphs, this simplifies to \f$O(|E| \log |V|)\f$. However, because list models allow multigraphs, the queue size and operations scale strictly with \f$|E|\f$.
 /// > - **Adjacency Matrix Representations**: \f$O(|V|^2 + |E| \log |V|)\f$
-/// >   - *Includes:* @ref gl::impl::matrix_t "matrix_t" and @ref gl::impl::flat_matrix_t "flat_matrix_t".
+/// >   - *Includes:* @ref gl::repr::matrix_t "matrix_t" and @ref gl::repr::flat_matrix_t "flat_matrix_t".
 /// >   - *Note:* Iterating over incident edges requires scanning the entire \f$|V|\f$-length matrix row. Since matrices represent simple graphs, the heap operations safely simplify to \f$O(\log |V|)\f$.
 ///
 /// ### Template Parameters
@@ -133,7 +133,7 @@ template <traits::c_undirected_graph G>
     return mst;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with a vertex-based array heap.
 ///
 /// This variation maintains a heap of vertex IDs based on their minimum known connection cost.

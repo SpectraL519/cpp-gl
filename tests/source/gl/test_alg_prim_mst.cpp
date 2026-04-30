@@ -4,8 +4,8 @@
 #include "testing/gl/constants.hpp"
 
 #include <gl/algorithm.hpp>
-#include <gl/impl/impl_tags.hpp>
 #include <gl/io/graph_fio.hpp>
+#include <gl/repr_tags.hpp>
 #include <gl/topology.hpp>
 
 #include <cmath>
@@ -95,19 +95,19 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::list_t>, // undirected adjacency list graph
+        gl::repr::list_t>, // undirected adjacency list graph
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::flat_list_t>, // undirected flat adjacency list graph
+        gl::repr::flat_list_t>, // undirected flat adjacency list graph
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::matrix_t>, // undirected adjacency matrix graph,
+        gl::repr::matrix_t>, // undirected adjacency matrix graph,
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::flat_matrix_t> // undirected flat adjacency matrix graph
+        gl::repr::flat_matrix_t> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(
@@ -240,19 +240,19 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::list_t>, // undirected adjacency list graph
+        gl::repr::list_t>, // undirected adjacency list graph
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::flat_list_t>, // undirected flat adjacency list graph
+        gl::repr::flat_list_t>, // undirected flat adjacency list graph
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::matrix_t>, // undirected adjacency matrix graph
+        gl::repr::matrix_t>, // undirected adjacency matrix graph
     gl::undirected_graph_traits<
         gl::empty_properties,
         gl::weight_property<>,
-        gl::impl::flat_matrix_t> // undirected flat adjacency matrix graph
+        gl::repr::flat_matrix_t> // undirected flat adjacency matrix graph
 );
 
 TEST_CASE_TEMPLATE_DEFINE(

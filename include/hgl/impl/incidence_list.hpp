@@ -5,9 +5,9 @@
 #pragma once
 
 #include "hgl/constants.hpp"
-#include "hgl/decl/impl_tags.hpp"
+#include "hgl/decl/repr_tags.hpp"
 #include "hgl/directional_tags.hpp"
-#include "hgl/impl/layout_tags.hpp"
+#include "hgl/repr/layout_tags.hpp"
 #include "hgl/types.hpp"
 #include "hgl/util.hpp"
 
@@ -28,24 +28,24 @@ namespace hgl {
 
 namespace detail {
 
-template <traits::c_hypergraph_impl_tag TargetImplTag, traits::c_hypergraph_impl_tag SourceImplTag>
+template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph_repr_tag SourceReprTag>
 struct to_impl;
 
 } // namespace detail
 
 namespace impl {
 
-template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_impl ImplTag>
+template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_repr ReprTag>
 class incidence_list;
 
-template <traits::c_hypergraph_list_impl ImplTag>
-requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
-class incidence_list<hgl::undirected_t, ImplTag> final {
+template <traits::c_hypergraph_list_repr ReprTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
+class incidence_list<hgl::undirected_t, ReprTag> final {
 public:
     using directional_tag = hgl::undirected_t;
-    using implementation_tag = ImplTag;
-    using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = typename implementation_tag::id_type;
+    using representation_tag = ReprTag;
+    using layout_tag = typename representation_tag::layout_tag;
+    using id_type = typename representation_tag::id_type;
 
     incidence_list() = default;
 
@@ -146,8 +146,8 @@ public:
     // --- friend declarations ---
 
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -235,14 +235,14 @@ private:
     major_storage_type _major_storage;
 };
 
-template <traits::c_hypergraph_list_impl ImplTag>
-requires traits::c_hypergraph_asymmetric_layout_tag<typename ImplTag::layout_tag>
-class incidence_list<hgl::bf_directed_t, ImplTag> final {
+template <traits::c_hypergraph_list_repr ReprTag>
+requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
+class incidence_list<hgl::bf_directed_t, ReprTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
-    using implementation_tag = ImplTag;
-    using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = typename implementation_tag::id_type;
+    using representation_tag = ReprTag;
+    using layout_tag = typename representation_tag::layout_tag;
+    using id_type = typename representation_tag::id_type;
 
 
     incidence_list() = default;
@@ -417,8 +417,8 @@ public:
     // --- friend declarations ---
 
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -587,14 +587,14 @@ private:
     major_storage_type _head_storage;
 };
 
-template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_impl ImplTag>
-requires std::same_as<typename ImplTag::layout_tag, bidirectional_t>
-class incidence_list<DirectionalTag, ImplTag> final {
+template <traits::c_hypergraph_directional_tag DirectionalTag, traits::c_hypergraph_list_repr ReprTag>
+requires std::same_as<typename ReprTag::layout_tag, repr::bidirectional_t>
+class incidence_list<DirectionalTag, ReprTag> final {
 public:
     using directional_tag = DirectionalTag;
-    using implementation_tag = ImplTag;
-    using layout_tag = typename implementation_tag::layout_tag;
-    using id_type = typename implementation_tag::id_type;
+    using representation_tag = ReprTag;
+    using layout_tag = typename representation_tag::layout_tag;
+    using id_type = typename representation_tag::id_type;
 
 
     incidence_list() = default;
@@ -806,8 +806,8 @@ public:
     // --- friend declarations ---
 
     template <
-        traits::c_hypergraph_impl_tag TargetImplTag,
-        traits::c_hypergraph_impl_tag SourceImplTag>
+        traits::c_hypergraph_repr_tag TargetReprTag,
+        traits::c_hypergraph_repr_tag SourceReprTag>
     friend struct hgl::detail::to_impl;
 
 #ifdef HGL_TESTING
@@ -815,8 +815,10 @@ public:
 #endif
 
 private:
-    using vertex_major_list = incidence_list<DirectionalTag, list_t<vertex_major_t, id_type>>;
-    using hyperedge_major_list = incidence_list<DirectionalTag, list_t<hyperedge_major_t, id_type>>;
+    using vertex_major_list =
+        incidence_list<DirectionalTag, repr::list_t<repr::vertex_major_t, id_type>>;
+    using hyperedge_major_list =
+        incidence_list<DirectionalTag, repr::list_t<repr::hyperedge_major_t, id_type>>;
 
     vertex_major_list _v_list;
     hyperedge_major_list _e_list;

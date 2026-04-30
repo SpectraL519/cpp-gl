@@ -20,7 +20,7 @@ namespace gl {
 
 namespace detail {
 
-template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
+template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
 struct to_impl;
 
 } // namespace detail
@@ -30,7 +30,7 @@ namespace impl {
 template <traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list final {
 public:
-    using implementation_tag = typename GraphTraits::implementation_tag;
+    using representation_tag = typename GraphTraits::representation_tag;
     using id_type = typename GraphTraits::id_type;
 
     using vertex_type = typename GraphTraits::vertex_type;
@@ -270,7 +270,7 @@ public:
 
     // --- friend declarations ---
 
-    template <traits::c_graph_impl_tag TargetImplTag, traits::c_graph_impl_tag SourceImplTag>
+    template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
     friend struct gl::detail::to_impl;
 
 #ifdef GL_TESTING

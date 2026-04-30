@@ -13,7 +13,7 @@
 
 namespace gl::topology {
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a complete graph (clique).
 ///
 /// A complete graph is a simple graph in which every pair of distinct vertices is connected by an edge.
@@ -50,8 +50,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType clique(size_type n_vertices) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(clique<base_graph_type>(n_vertices));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(clique<base_graph_type>(n_vertices));
 }
 
 } // namespace gl::topology

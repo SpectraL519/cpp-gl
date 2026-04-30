@@ -1,9 +1,9 @@
 #include "doctest.h"
 #include "testing/hgl/constants.hpp"
 
-#include <hgl/impl/impl_tags.hpp>
 #include <hgl/impl/incidence_list.hpp>
-#include <hgl/impl/layout_tags.hpp>
+#include <hgl/repr/layout_tags.hpp>
+#include <hgl/repr/repr_tags.hpp>
 
 #include <algorithm>
 #include <ranges>
@@ -33,7 +33,7 @@ struct test_incidence_list {
 };
 
 struct test_undirected_vertex_major_incidence_list : public test_incidence_list {
-    using impl_tag = hgl::impl::list_t<hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::repr::list_t<hgl::repr::vertex_major_t>;
     using sut_type = hgl::impl::incidence_list<hgl::undirected_t, impl_tag>;
 };
 
@@ -316,7 +316,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_undirected_hyperedge_major_incidence_list : public test_incidence_list {
-    using impl_tag = hgl::impl::list_t<hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::repr::list_t<hgl::repr::hyperedge_major_t>;
     using sut_type = hgl::impl::incidence_list<hgl::undirected_t, impl_tag>;
 };
 
@@ -633,7 +633,7 @@ struct test_bf_directed_incidence_list : public test_incidence_list {
 constexpr auto is_empty_pred = [](const auto& rng) { return rng.empty(); };
 
 struct test_bf_directed_vertex_major_incidence_list : public test_bf_directed_incidence_list {
-    using impl_tag = hgl::impl::list_t<hgl::impl::vertex_major_t>;
+    using impl_tag = hgl::repr::list_t<hgl::repr::vertex_major_t>;
     using sut_type = hgl::impl::incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 
@@ -1109,7 +1109,7 @@ TEST_CASE_FIXTURE(
 }
 
 struct test_bf_directed_hyperedge_major_incidence_list : public test_bf_directed_incidence_list {
-    using impl_tag = hgl::impl::list_t<hgl::impl::hyperedge_major_t>;
+    using impl_tag = hgl::repr::list_t<hgl::repr::hyperedge_major_t>;
     using sut_type = hgl::impl::incidence_list<hgl::bf_directed_t, impl_tag>;
 };
 

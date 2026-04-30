@@ -16,7 +16,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A stateless, empty structural tag representing an absence of properties.
 ///
 /// > [!IMPORTANT]
@@ -25,7 +25,7 @@ namespace gl {
 /// > It serves as a marker to indicate that the component is *property-less* and can be optimized accordingly.
 struct empty_properties {};
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A stateless, empty structural tag indicating that the absence of a property map container.
 ///
 /// > [!NOTE]
@@ -33,7 +33,7 @@ struct empty_properties {};
 /// > This type is used internally by the library to optimize storage for graph components that have no properties.
 struct empty_properties_map {};
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A property struct providing a basic string-based naming facility.
 struct name_property {
     /// @brief The underlying string type used for the name.
@@ -72,7 +72,7 @@ struct name_property {
     }
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A type-safe container for heterogeneous properties stored by string keys.
 ///
 /// Stores an arbitrary number of properties identified by string keys, where each
@@ -148,7 +148,7 @@ private:
     property_map_type _property_map;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A specialized color property for algorithms requiring binary states (e.g., bipartition).
 class binary_color final {
 public:
@@ -207,18 +207,18 @@ private:
     value _value{value::unset};
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Alias for the underlying `binary_color::value` enum.
 using bin_color_value = typename binary_color::value;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A property struct wrapping a `binary_color`.
 struct binary_color_property {
     using color_type = binary_color;
     color_type color;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A property struct providing arithmetic weight for edges or vertices.
 ///
 /// ### Template Parameters
@@ -249,7 +249,7 @@ struct weight_property {
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Defines the minimal requirements for a type to be used as a property.
 ///
 /// A valid property type must be **semiregular** (default constructible and copyable).
@@ -258,7 +258,7 @@ namespace traits {
 template <typename T>
 concept c_properties = std::semiregular<T>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Validates if a type is specifically the @ref gl::empty_properties tag.
 ///
 /// This concept is used to specialize behavior for graph components that
@@ -268,7 +268,7 @@ concept c_properties = std::semiregular<T>;
 template <typename T>
 concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Validates if a property type contains actual user-defined data.
 ///
 /// Requires that the type satisfies [**c_properties**](gl_concepts.md#gl-traits-c-properties) and is not the @ref gl::empty_properties tag.
@@ -277,7 +277,7 @@ concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_prope
 template <typename T>
 concept c_non_empty_properties = c_properties<T> and not c_empty_properties<T>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Checks if a type/component has a nested `properties_type` that is the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
@@ -285,7 +285,7 @@ template <typename T>
 concept c_has_empty_properties =
     requires { typename T::properties_type; } and c_empty_properties<typename T::properties_type>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Checks if a type/component has a nested `properties_type` that is not the @ref gl::empty_properties tag.
 ///
 /// @tparam T The type to evaluate against the concept.
@@ -294,7 +294,7 @@ concept c_has_non_empty_properties = requires {
     typename T::properties_type;
 } and not c_empty_properties<typename T::properties_type>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Requirements for properties that support binary coloring algorithms.
 ///
 /// Requires a property type that:
@@ -312,7 +312,7 @@ concept c_binary_color_properties_type = c_properties<Properties> and requires(P
     requires std::constructible_from<typename Properties::color_type, binary_color>;
 };
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Requirements for properties that support arithmetic weight values.
 ///
 /// Requires a property type that:

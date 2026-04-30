@@ -15,7 +15,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A highly customizable, generic iterative Depth-First Search (DFS) algorithm engine.
 ///
 /// This engine provides the strict structural execution of a stack-based Depth-First Search.
@@ -130,7 +130,7 @@ bool dfs(
     return true;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A highly customizable, generic recursive Depth-First Search (DFS) algorithm engine.
 ///
 /// This engine mirrors the iterative `dfs` behavior but utilizes the C++ call stack.

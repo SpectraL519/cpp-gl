@@ -24,7 +24,7 @@ int main() {
         hgl::bf_directed_t,
         gl::name_property,
         gl::weight_property<double>,
-        hgl::impl::list_t<hgl::impl::bidirectional_t>>;
+        hgl::repr::list_t<hgl::repr::bidirectional_t>>;
 
     hgl::hypergraph<traits_t> hg(4); // (3)!
 
@@ -79,7 +79,7 @@ hyperedges:
 
 ## Understanding the Code
 
-- **Generic Traits:** Similar to the standard GL module, the HGL module relies entirely on template abstraction. By passing a [**hgl::hypergraph_traits**](../cpp-gl/structhgl_1_1hypergraph__traits.md) struct to the [**hgl::hypergraph**](../cpp-gl/classhgl_1_1hypergraph.md) constructor, you dictate whether the hypergraph is undirected or BF-directed ([**hgl::bf_directed_t**](../cpp-gl/structhgl_1_1bf__directed__t.md)), what custom properties exist on vertices and hyperedges, and which underlying memory architecture it utilizes (e.g., [**hgl::impl::list_t**](../cpp-gl/structhgl_1_1impl_1_1list__t.md)).
+- **Generic Traits:** Similar to the standard GL module, the HGL module relies entirely on template abstraction. By passing a [**hgl::hypergraph_traits**](../cpp-gl/structhgl_1_1hypergraph__traits.md) struct to the [**hgl::hypergraph**](../cpp-gl/classhgl_1_1hypergraph.md) constructor, you dictate whether the hypergraph is undirected or BF-directed ([**hgl::bf_directed_t**](../cpp-gl/structhgl_1_1bf__directed__t.md)), what custom properties exist on vertices and hyperedges, and which underlying memory architecture it utilizes (e.g., [**hgl::repr::list_t**](../cpp-gl/structhgl_1_1repr_1_1list__t.md)).
 
 - **Generalized Incidence:** Unlike standard graphs where an edge connects exactly two vertices, hyperedges connect sets of vertices of arbitrary sizes. In a BF-directed hypergraph, `add_hyperedge` accepts an iterable range of *tail* (source) vertices and *head* (destination) vertices and represents a single connection from all tail vertices to all head vertices simultaneously.
 

@@ -20,7 +20,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Types
+/// @ingroup GL-Types
 /// @brief A flattened 2D vector (jagged array) providing efficient storage for variable-length segments.
 ///
 /// This container stores all elements in a single contiguous memory block (*data*) while maintaining

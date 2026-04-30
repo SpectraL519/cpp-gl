@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build and run benchmarks
+    name: Build and Run Benchmarks (Smoke Test)
     runs-on: ubuntu-24.04
 
     steps:
@@ -33,12 +33,12 @@ jobs:
             -DBUILD_BENCHMARKS=ON -DBENCH_INCLUDE_BGL=ON -DCMAKE_BUILD_TYPE=Release
         continue-on-error: false
 
-      - name: Build the benchmarks
+      - name: Build the Benchmarks
         run: |
           cmake --build build_bench/ -j$(nproc)
         continue-on-error: false
 
-      - name: Execute the smoke test
+      - name: Execute the Smoke Test
         run: |
           ./build_bench/benchmarks/cpp-gl-bench \
             --benchmark_repetitions=1 --benchmark_display_aggregates_only=true \

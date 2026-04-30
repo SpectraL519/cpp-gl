@@ -12,8 +12,14 @@
 
 [![G++](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/gpp.yaml)
 [![Clang++](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/clang.yaml)
+
+</div>
+
+<div align="center" markdown="1">
+
 [![Code Formatting](https://github.com/SpectraL519/cpp-gl/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/format.yaml)
 [![Benchmarks Smoke Test](https://github.com/SpectraL519/cpp-gl/actions/workflows/benchmarks.yaml/badge.svg)](https://github.com/SpectraL519/cpp-gl/actions/workflows/benchmarks.yaml)
+[![changelog](https://img.shields.io/badge/changelog-blue.svg?logo=github)](https://github.com/SpectraL519/cpp-gl/releases)
 
 </div>
 
@@ -31,17 +37,34 @@ Designed strictly around modern C++ paradigms, the library heavily leverages tem
 
 To accommodate different mathematical models without compromising API clarity or performance, the library is strictly partitioned into two primary modules:
 
-- **GL (Graph Library):** The core module dedicated to standard graphs. It handles both directed and undirected topologies where edges represent connections between two vertices. It provides a comprehensive suite of utilities including structural generators, graph modifiers, and a broad spectrum of classical graph algorithms.
-- **HGL (Hypergraph Library):** A specialized module dedicated to hypergraphs, where a single hyperedge represent higher-order connections. It features generalized traversal algorithms and incidence-based memory models tailored for complex, multi-way relationships.
+- **GL (Graph Library):** The core module dedicated to standard graphs. It handles both directed and undirected topologies where edges represent connections between exactly two vertices. It provides a comprehensive suite of utilities including structural generators, graph modifiers, and a broad spectrum of classical graph algorithms.
+- **HGL (Hypergraph Library):** A specialized module dedicated to hypergraphs, where a single hyperedge represents a higher-order connection between an arbitrary number of vertices. It features generalized traversal algorithms and incidence-based memory models tailored for complex, multi-way relationships.
 
-## GL: Core Features
+---
 
-- **Unified API:** The `gl::graph` class offers a single, consistent interface that completely abstracts away the underlying data structures. Users can seamlessly swap between different backend representations without needing to rewrite any of their traversal logic, property accesses, or algorithm calls.
-- **Flexible Memory Layouts:** The library provides a comprehensive suite of memory-efficient representations tailored to different graph types and access patterns. Users can choose between standard container-based layouts (Adjacency Lists and Matrices) and highly optimized, cache-friendly contiguous array structures (Flat Lists and Flat Matrices).
-- **Customizable Element Properties:** Vertices and edges can carry arbitrary, user-defined payloads. Whether you are assigning standard metric weights and colors or attaching complex, application-specific data structures, the library's traits system ensures that property injection and access remain strictly type-safe and performant.
-- **Zero-Cost Abstractions:** By relying on C++20 concepts instead of virtual interfaces and dynamic dispatch, CPP-GL eliminates vtable overhead while enforcing strict compile-time contracts.
-- **Extensible Engines & Concrete Algorithms:** CPP-GL features a dual-layered algorithmic architecture. At its core, it provides highly generic search templates (such as BFS, DFS and Priority-First Search) that act as foundational engines, allowing users to build entirely new algorithms by injecting custom callbacks. Built upon these engines is a robust suite of concrete, ready-to-use algorithms for immediate application.
-- **Robust I/O Facilities:** Built-in serialization and formatting tools allow for seamless translation of in-memory graphs to and from standard streams and files, utilizing a shared global state for consistent formatting.
+## Core Features
+
+Because both modules share the same fundamental design philosophy, they offer a unified, symmetrical feature set tailored to their respective mathematical domains:
+
+- **Shared Zero-Cost Infrastructure:** By relying on C++20 concepts instead of virtual interfaces and dynamic dispatch, CPP-GL eliminates vtable overhead while enforcing strict compile-time contracts. Crucially, the **HGL module is built strictly on top of the GL module**, directly reusing its core infrastructure (ID types, traits, memory structures) to ensure maximum code reuse, while allowing the GL module to remain completely standalone for standard graph use cases.
+- **Unified Topology APIs:** The `gl::graph` and `hgl::hypergraph` classes offer consistent interfaces that completely abstract away the underlying memory models. Users can seamlessly swap between different backend representations without rewriting their traversal logic, property accesses, or algorithm calls.
+- **Flexible Memory Layouts:** The library provides a comprehensive suite of memory-efficient representations. Users can choose between dynamic container-based layouts (Lists and Matrices) and highly optimized, cache-friendly contiguous array structures (Flat Lists and Flat Matrices). The HGL module further extends this by allowing users to specify the orientation of the memory models to optimize generalized incidence queries.
+- **Customizable Element Properties:** Vertices, edges, and hyperedges can carry arbitrary, user-defined payloads. Whether you are assigning standard metric weights and colors or attaching complex, application-specific data structures, the library's traits system ensures that property injection and access remain strictly type-safe and performant.
+- **Dual-Layered Algorithmic Architecture:** CPP-GL cleanly separates traversal mechanics from specific problem-solving logic. At the foundation, highly generic search engines (like BFS and DFS) empower users to construct completely custom algorithms via injected callbacks. Layered seamlessly above this is a comprehensive suite of ready-to-use concrete algorithms, ranging from standard graph pathfinding to specialized hypergraph reachability (such as B-Searches and F-Searches).
+- **Robust I/O Facilities:** Native serialization and formatting tools make it simple to pipe topologies directly to and from standard C++ streams and files. Both the GL and HGL modules share a unified set of stream options for visual output, while relying on dedicated, easily parsable flat-text formats (GSF and HGSF) to ensure fast and predictable data serialization.
+
+---
+
+## Compiler support
+
+| Compiler | Min version |
+| :-: | :-: |
+| GNU G++ | 14 |
+| Clang | 18 |
+
+> [!NOTE] C++23 Support
+>
+> Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++23 support like MSVC.
 
 ---
 
@@ -61,8 +84,8 @@ include(FetchContent)
 
 FetchContent_Declare(
     cpp-gl
-    GIT_REPOSITORY [https://github.com/SpectraL519/cpp-gl.git](https://github.com/SpectraL519/cpp-gl.git)
-    GIT_TAG <tag> # Spcify the desired version tag, branch, or specific commit
+    GIT_REPOSITORY https://github.com/SpectraL519/cpp-gl.git
+    GIT_TAG <tag> # (1)!
 )
 
 FetchContent_MakeAvailable(cpp-gl)
@@ -70,25 +93,17 @@ FetchContent_MakeAvailable(cpp-gl)
 add_executable(my_project main.cpp)
 
 set_target_properties(my_project PROPERTIES
-    CXX_STANDARD 23 # (1)!
+    CXX_STANDARD 23 # (2)!
     CXX_STANDARD_REQUIRED YES
 )
 
 target_link_libraries(my_project PRIVATE cpp-gl)
 ```
 
-1. The CPP-GL library requires C++23
+1. Specify the desired version tag, branch, or specific commit
+2. The CPP-GL library requires C++23
 
-### Option B: CMake `find_package`
-
-If you have already downloaded or installed the library locally, you can add the <cpp-gl-root>/include path to your system and link it using `find_package`:
-
-```cmake
-find_package(cpp-gl REQUIRED)
-target_link_libraries(my_project PRIVATE cpp-gl::cpp-gl)
-```
-
-### Option C: Including the Headers Directly
+### Option B: Including the Headers Directly
 
 If you do not wish to use CMake, you can simply download the desired version of the library from the [Releases Page](https://github.com/SpectraL519/cpp-gl/releases) and add the `include` directory of the library to your project via the `-I<cpp-gl-dir>/include` flag.
 
@@ -99,4 +114,4 @@ If you do not wish to use CMake, you can simply download the desired version of 
 Ready to write some code? Choose a module below to view its Quick Start guide and dive into the tutorials:
 
 * [**Get Started with GL (Standard Graphs)**](gl/quick_start.md) - Master the core concepts, build custom topologies, and explore the robust suite of generic traversal engines and classical algorithms.
-* **Get Started with HGL (Hypergraphs)** - *(Coming Soon)*
+* [**Get Started with HGL (Hypergraphs)**](hgl/quick_start.md) - Master generalized incidence, configure complex memory layouts, and evaluate higher-order reachability across hypergraph networks.

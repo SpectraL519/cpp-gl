@@ -19,7 +19,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A lightweight wrapper representing a graph edge with its endpoints and optional properties.
 ///
 /// The `edge_descriptor` class provides a type-safe and efficient way to represent
@@ -372,7 +372,7 @@ private:
         std::reference_wrapper<properties_type>> _properties;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for a directed edge descriptor.
 ///
 /// Pre-binds the `DirectionalTag` of `edge_descriptor` to `directed_t`.
@@ -387,7 +387,7 @@ template <
     traits::c_id_type IdType = default_id_type>
 using directed_edge = edge_descriptor<directed_t, Properties, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for an undirected edge descriptor.
 ///
 /// Pre-binds the `DirectionalTag` of `edge_descriptor` to `undirected_t`.
