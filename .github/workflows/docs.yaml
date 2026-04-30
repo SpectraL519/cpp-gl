@@ -1,0 +1,100 @@
+name: documentation
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    tags:
+      - "v*"
+
+# Grants the runner permission to push to the repository (protect your main branch via Settings!)
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Documentation
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install doxygen -y
+
+      - name: Install Python dependencies (uv)
+        run: |
+          pip install uv
+          uv sync
+
+      - name: Validate internal project versions
+        # Runs your script to ensure CMake, Doxygen, and Bazel versions are identical
+        run: |
+          VERSION=$(uv run python scripts/check_version.py)
+          echo "project version = $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Validate Git Tag (Deploy Only)
+        if: github.event_name == 'push'
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME}"
+          echo "git version tag = $VERSION_TAG"
+          if [[ "$VERSION_TAG" != "v$VERSION" ]]; then
+            echo "Error: Tag mismatch: git version tag = $VERSION_TAG, project version: v$VERSION"
+            exit 1
+          fi
+
+      - name: Generate internal documentation assets
+        run: |
+          doxygen Doxyfile
+          uv run python docs/scripts/gen_concept_docs.py --config docs/config/concepts.json --xml documentation/xml --out docs/cpp-gl
+
+      - name: Build Docs (PR Validation Only)
+        if: github.event_name == 'pull_request'
+        run: uv run mkdocs build --strict
+
+      - name: Configure Git (Deploy Only)
+        if: github.event_name == 'push'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine if Latest Tag (Deploy Only)
+        if: github.event_name == 'push'
+        run: |
+          CURRENT_VERSION="v${VERSION}"
+          git fetch --tags --force
+          # Sorts tags by version number to find the absolute latest
+          ALL_TAGS=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ "$CURRENT_VERSION" = "$LATEST_TAG" ]; then
+            echo "DEPLOY_LATEST=true" >> $GITHUB_ENV
+            echo "Current tag is the latest. Will deploy and update 'latest' alias."
+          else
+            echo "DEPLOY_LATEST=false" >> $GITHUB_ENV
+            echo "Current tag is NOT the latest. Will deploy to 'v${VERSION}' only."
+          fi
+
+      - name: Deploy with mike (Latest)
+        if: github.event_name == 'push' && env.DEPLOY_LATEST == 'true'
+        run: |
+          # Deploys to the v-prefixed folder and tags it as 'latest'
+          uv run mike deploy --push --update-aliases "v${VERSION}" latest
+          # Sets the root redirect to point to the 'latest' alias
+          uv run mike set-default --push latest
+
+      - name: Deploy with mike (Older Version)
+        if: github.event_name == 'push' && env.DEPLOY_LATEST == 'false'
+        run: |
+          uv run mike deploy --push "v${VERSION}"
