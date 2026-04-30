@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1algorithm_1_1decision" kind="struct" language="C++" prot="public">
+    <compoundname>gl::algorithm::decision</compoundname>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="no">hgl/algorithm/core.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fd" prot="public" static="no" strong="yes">
+        <type>std::uint8_t</type>
+        <name>eval</name>
+        <qualifiedname>gl::algorithm::decision::eval</qualifiedname>
+        <enumvalue id="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fda4abe77c201ff11663ccdf52fd6ecea86" prot="public">
+          <name>accept</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fda6bfaf02d9f3b165809fb7f056665a6bd" prot="public">
+          <name>reject</name>
+          <briefdescription>
+<para>&lt; Proceed with the current element or operation. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fda5bb94a1c12413a2e5d14deabab29f2aa" prot="public">
+          <name>abort</name>
+          <briefdescription>
+<para>&lt; Skip the current element but continue the overall process. </para>
+          </briefdescription>
+          <detaileddescription>
+<para>&lt; Immediately terminate the entire process or algorithm. </para>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The underlying evaluation states. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="41" column="5" bodyfile="include/hgl/algorithm/core.hpp" bodystart="41" bodyend="45"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1algorithm_1_1decision_1a33fb04a4eb6712f524e096a8926bdc1d" prot="public" static="no" mutable="no">
+        <type><ref refid="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fd" kindref="member">eval</ref></type>
+        <definition>eval gl::algorithm::decision::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>gl::algorithm::decision::value</qualifiedname>
+        <briefdescription>
+<para>The stored evaluation state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="78" column="10" bodyfile="include/hgl/algorithm/core.hpp" bodystart="78" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1decision_1a3a3ec60e7fe62973d1d358f80eb74a9b" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::algorithm::decision::decision</definition>
+        <argsstring>(const eval value)</argsstring>
+        <name>decision</name>
+        <qualifiedname>gl::algorithm::decision::decision</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fd" kindref="member">eval</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a decision from an explicit evaluation state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The tri-state evaluation. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="50" column="15" bodyfile="include/hgl/algorithm/core.hpp" bodystart="50" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1decision_1a367e5c68130d1f11761477924fbc0876" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::algorithm::decision::decision</definition>
+        <argsstring>(const bool value)</argsstring>
+        <name>decision</name>
+        <qualifiedname>gl::algorithm::decision::decision</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a decision from a boolean value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><computeroutput>true</computeroutput> maps to <computeroutput>accept</computeroutput>, <computeroutput>false</computeroutput> maps to <computeroutput>reject</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="54" column="15" bodyfile="include/hgl/algorithm/core.hpp" bodystart="54" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1decision_1a75356ef52cae9d7712578b423e3d260f" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref> &amp;</type>
+        <definition>constexpr decision &amp; gl::algorithm::decision::operator=</definition>
+        <argsstring>(const bool value)</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::algorithm::decision::operator=</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Assigns a boolean value to the decision. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><computeroutput>true</computeroutput> maps to <computeroutput>accept</computeroutput>, <computeroutput>false</computeroutput> maps to <computeroutput>reject</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A reference to this decision. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="59" column="24" bodyfile="include/hgl/algorithm/core.hpp" bodystart="59" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1decision_1a6189a839893717c1637276cc03c6fc9b" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::algorithm::decision::operator bool</definition>
+        <argsstring>() const</argsstring>
+        <name>operator bool</name>
+        <qualifiedname>gl::algorithm::decision::operator bool</qualifiedname>
+        <briefdescription>
+<para>Evaluates the decision as a boolean. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the decision is <computeroutput>accept</computeroutput>, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="66" column="16" bodyfile="include/hgl/algorithm/core.hpp" bodystart="66" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1decision_1a925ec2532212791904f915bce09604f0" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool gl::algorithm::decision::operator==</definition>
+        <argsstring>(const eval value) const</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::algorithm::decision::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fd" kindref="member">eval</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Compares the decision against a specific evaluation state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The state to compare against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the states match. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="73" column="21" bodyfile="include/hgl/algorithm/core.hpp" bodystart="73" bodyend="75"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents a generic tri-state decision for control flow. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Used by custom predicates to determine how to proceed with a given item, execution step, or operation. While heavily utilized in graph traversal algorithms, it is entirely decoupled from graph-specific logic and can be used in any generic context requiring explicit accept/reject/abort semantics. </para>
+    </detaileddescription>
+    <location file="include/gl/algorithm/core.hpp" line="39" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="39" bodyend="79"/>
+    <listofallmembers>
+      <member refid="structgl_1_1algorithm_1_1decision_1a3a3ec60e7fe62973d1d358f80eb74a9b" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>decision</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a367e5c68130d1f11761477924fbc0876" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>decision</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a1d86b2cda89eb972eecb8ab07b7bc7fd" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>eval</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a6189a839893717c1637276cc03c6fc9b" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>operator bool</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a75356ef52cae9d7712578b423e3d260f" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>operator=</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a925ec2532212791904f915bce09604f0" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>operator==</name></member>
+      <member refid="structgl_1_1algorithm_1_1decision_1a33fb04a4eb6712f524e096a8926bdc1d" prot="public" virt="non-virtual"><scope>gl::algorithm::decision</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

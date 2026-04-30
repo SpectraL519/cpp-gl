@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1algorithm_1_1no__root__t" kind="struct" language="C++" prot="public">
+    <compoundname>gl::algorithm::no_root_t</compoundname>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="no">hgl/algorithm/core.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1no__root__t_1ad52c8503766efff02d74773faaa5a380" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::algorithm::no_root_t::operator IdType</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator IdType</name>
+        <qualifiedname>gl::algorithm::no_root_t::operator IdType</qualifiedname>
+        <briefdescription>
+<para>Implicitly converts to the numeric <computeroutput>no_root_v</computeroutput> constant. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="177" column="16" bodyfile="include/hgl/algorithm/core.hpp" bodystart="177" bodyend="179"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structgl_1_1algorithm_1_1no__root__t_1ab3c6a3a2467708bec110363b3176dfa1" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool operator==</definition>
+        <argsstring>(const IdType &amp;lhs, no_root_t) noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::algorithm::no_root_t::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">IdType</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="structgl_1_1algorithm_1_1no__root__t" kindref="compound">no_root_t</ref></type>
+        </param>
+        <briefdescription>
+<para>Checks if a given ID matches the <computeroutput>no_root_v</computeroutput> constant. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="183" column="28" bodyfile="include/hgl/algorithm/core.hpp" bodystart="183" bodyend="185"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Tag type providing an implicit conversion to the appropriate <computeroutput>no_root_v</computeroutput> for any numeric ID type. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structgl_1_1algorithm_1_1no__root__t_1see-also-4">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1gaa49c574ed607d45e2a55f9495cfb8494" kindref="member">no_root_v</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">no_root</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/algorithm/core.hpp" line="174" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="174" bodyend="186"/>
+    <listofallmembers>
+      <member refid="structgl_1_1algorithm_1_1no__root__t_1ad52c8503766efff02d74773faaa5a380" prot="public" virt="non-virtual"><scope>gl::algorithm::no_root_t</scope><name>operator IdType</name></member>
+      <member refid="structgl_1_1algorithm_1_1no__root__t_1ab3c6a3a2467708bec110363b3176dfa1" prot="public" virt="non-virtual"><scope>gl::algorithm::no_root_t</scope><name>operator==</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

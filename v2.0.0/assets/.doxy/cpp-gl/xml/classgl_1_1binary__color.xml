@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1binary__color" kind="class" language="C++" prot="public" final="yes">
+    <compoundname>gl::binary_color</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" prot="public" static="no" strong="yes">
+        <type>std::uint8_t</type>
+        <name>value</name>
+        <qualifiedname>gl::binary_color::value</qualifiedname>
+        <enumvalue id="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0a1ffd9e753c8054cc61456ac7fac1ac89" prot="public">
+          <name>black</name>
+          <initializer>= static_cast&lt;std::uint8_t&gt;(0)</initializer>
+          <briefdescription>
+<para>Represents the first color state. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0ad508fe45cecaf653904a0e774084bb5c" prot="public">
+          <name>white</name>
+          <initializer>= static_cast&lt;std::uint8_t&gt;(1)</initializer>
+          <briefdescription>
+<para>Represents the second color state. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0ae2181b5014a67159cc230c8fe0d6c5b6" prot="public">
+          <name>unset</name>
+          <initializer>= static_cast&lt;std::uint8_t&gt;(2)</initializer>
+          <briefdescription>
+<para>Represents an uninitialized or neutral state. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The discrete states available for binary coloring. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="156" column="5" bodyfile="include/gl/types/properties.hpp" bodystart="156" bodyend="160"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1binary__color_1a186cdbba6977dff2a1b0b55f3b73ce6c" prot="private" static="no" mutable="no">
+        <type><ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref></type>
+        <definition>value gl::binary_color::_value</definition>
+        <argsstring></argsstring>
+        <name>_value</name>
+        <qualifiedname>gl::binary_color::_value</qualifiedname>
+        <initializer>{<ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0ae2181b5014a67159cc230c8fe0d6c5b6" kindref="member">value::unset</ref>}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="207" column="11" bodyfile="include/gl/types/properties.hpp" bodystart="207" bodyend="207"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1binary__color_1a6f5476634442008447bb1cd7fc47aef5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::binary_color</definition>
+        <argsstring>()=default</argsstring>
+        <name>binary_color</name>
+        <qualifiedname>gl::binary_color::binary_color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="162" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a8b99902a568bb46d2ff18b033f96be02" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::binary_color</definition>
+        <argsstring>(value value)</argsstring>
+        <name>binary_color</name>
+        <qualifiedname>gl::binary_color::binary_color</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="164" column="5" bodyfile="include/gl/types/properties.hpp" bodystart="164" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a2d57c623c0e68475b298680c0d192141" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::binary_color</definition>
+        <argsstring>(const binary_color &amp;)=default</argsstring>
+        <name>binary_color</name>
+        <qualifiedname>gl::binary_color::binary_color</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="166" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1acacccf811d691edcad26d8bd6ea822f1" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::binary_color</definition>
+        <argsstring>(binary_color &amp;&amp;) noexcept=default</argsstring>
+        <name>binary_color</name>
+        <qualifiedname>gl::binary_color::binary_color</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="167" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a0f7123edf4b9e0774d4b13b9be415438" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        <definition>binary_color &amp; gl::binary_color::operator=</definition>
+        <argsstring>(const binary_color &amp;)=default</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::binary_color::operator=</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="169" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1aa9c13dd86557700b6e41e65d7a61345b" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        <definition>binary_color &amp; gl::binary_color::operator=</definition>
+        <argsstring>(binary_color &amp;&amp;) noexcept=default</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::binary_color::operator=</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="170" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a152b1517073257a8739166bdd215a768" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::~binary_color</definition>
+        <argsstring>()=default</argsstring>
+        <name>~binary_color</name>
+        <qualifiedname>gl::binary_color::~binary_color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="172" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1ade83e94b2850ddcda9adec265ac28436" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        <definition>binary_color &amp; gl::binary_color::operator=</definition>
+        <argsstring>(value value)</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::binary_color::operator=</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="174" column="18" bodyfile="include/gl/types/properties.hpp" bodystart="174" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a34115a85fbc4b4109b6a52745adc3b75" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>auto gl::binary_color::operator&lt;=&gt;</definition>
+        <argsstring>(const binary_color &amp;) const =default</argsstring>
+        <name>operator&lt;=&gt;</name>
+        <qualifiedname>gl::binary_color::operator&lt;=&gt;</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="179" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1aec4b68de30b60b65843d6e95d6c6f675" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::binary_color::operator==</definition>
+        <argsstring>(const binary_color &amp;) const =default</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::binary_color::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="180" column="11"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a8536c62fb2e8ca536c2ba62e8d93607f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::binary_color::operator bool</definition>
+        <argsstring>() const</argsstring>
+        <name>operator bool</name>
+        <qualifiedname>gl::binary_color::operator bool</qualifiedname>
+        <briefdescription>
+<para>Returns <computeroutput>true</computeroutput> if the color is either Black or White (i.e., not Unset). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="183" column="6" bodyfile="include/gl/types/properties.hpp" bodystart="183" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a9cec31d47306172a98109d928e4aff2f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::binary_color::is_set</definition>
+        <argsstring>() const</argsstring>
+        <name>is_set</name>
+        <qualifiedname>gl::binary_color::is_set</qualifiedname>
+        <briefdescription>
+<para>Explicit check to see if the color state is not <computeroutput>unset</computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="188" column="12" bodyfile="include/gl/types/properties.hpp" bodystart="188" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1aa1cfd420cdaa5ee294d1b31e92c7db3b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::underlying_type_t&lt; <ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref> &gt;</type>
+        <definition>std::underlying_type_t&lt; value &gt; gl::binary_color::to_underlying</definition>
+        <argsstring>() const</argsstring>
+        <name>to_underlying</name>
+        <qualifiedname>gl::binary_color::to_underlying</qualifiedname>
+        <briefdescription>
+<para>Returns the integer representation of the current color state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="193" column="30" bodyfile="include/gl/types/properties.hpp" bodystart="193" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1binary__color_1a12f0e015f77d736c5a899c43658cbf4a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref></type>
+        <definition>binary_color gl::binary_color::next</definition>
+        <argsstring>() const</argsstring>
+        <name>next</name>
+        <qualifiedname>gl::binary_color::next</qualifiedname>
+        <briefdescription>
+<para>Returns a new <computeroutput><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref></computeroutput> representing the opposite state (Black &lt;-&gt; White). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="198" column="20" bodyfile="include/gl/types/properties.hpp" bodystart="198" bodyend="200"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="classgl_1_1binary__color_1ae89af4396f0ad6191a1ee395c6cb9ea3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref></type>
+        <definition>value gl::binary_color::_restrict</definition>
+        <argsstring>(const value value)</argsstring>
+        <name>_restrict</name>
+        <qualifiedname>gl::binary_color::_restrict</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">value</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="203" column="12" bodyfile="include/gl/types/properties.hpp" bodystart="203" bodyend="205"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A specialized color property for algorithms requiring binary states (e.g., bipartition). </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="153" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="153" bodyend="208"/>
+    <listofallmembers>
+      <member refid="classgl_1_1binary__color_1ae89af4396f0ad6191a1ee395c6cb9ea3" prot="private" virt="non-virtual"><scope>gl::binary_color</scope><name>_restrict</name></member>
+      <member refid="classgl_1_1binary__color_1a186cdbba6977dff2a1b0b55f3b73ce6c" prot="private" virt="non-virtual"><scope>gl::binary_color</scope><name>_value</name></member>
+      <member refid="classgl_1_1binary__color_1a6f5476634442008447bb1cd7fc47aef5" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>binary_color</name></member>
+      <member refid="classgl_1_1binary__color_1a8b99902a568bb46d2ff18b033f96be02" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>binary_color</name></member>
+      <member refid="classgl_1_1binary__color_1a2d57c623c0e68475b298680c0d192141" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>binary_color</name></member>
+      <member refid="classgl_1_1binary__color_1acacccf811d691edcad26d8bd6ea822f1" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>binary_color</name></member>
+      <member refid="classgl_1_1binary__color_1a9cec31d47306172a98109d928e4aff2f" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>is_set</name></member>
+      <member refid="classgl_1_1binary__color_1a12f0e015f77d736c5a899c43658cbf4a" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>next</name></member>
+      <member refid="classgl_1_1binary__color_1a8536c62fb2e8ca536c2ba62e8d93607f" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator bool</name></member>
+      <member refid="classgl_1_1binary__color_1a34115a85fbc4b4109b6a52745adc3b75" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator&lt;=&gt;</name></member>
+      <member refid="classgl_1_1binary__color_1a0f7123edf4b9e0774d4b13b9be415438" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator=</name></member>
+      <member refid="classgl_1_1binary__color_1aa9c13dd86557700b6e41e65d7a61345b" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator=</name></member>
+      <member refid="classgl_1_1binary__color_1ade83e94b2850ddcda9adec265ac28436" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator=</name></member>
+      <member refid="classgl_1_1binary__color_1aec4b68de30b60b65843d6e95d6c6f675" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>operator==</name></member>
+      <member refid="classgl_1_1binary__color_1aa1cfd420cdaa5ee294d1b31e92c7db3b" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>to_underlying</name></member>
+      <member refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>value</name></member>
+      <member refid="classgl_1_1binary__color_1a152b1517073257a8739166bdd215a768" prot="public" virt="non-virtual"><scope>gl::binary_color</scope><name>~binary_color</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

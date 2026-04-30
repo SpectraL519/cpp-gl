@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1io_1_1append" kind="struct" language="C++" prot="public">
+    <compoundname>gl::io::append</compoundname>
+    <includes refid="graph__fio_8hpp" local="no">gl/io/graph_fio.hpp</includes>
+    <briefdescription>
+<para>Tag type specifying that a file should be opened in append mode. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>When using this mode, the operation will append data to an existing file. It will throw an exception if the target file does not already exist. </para>
+    </detaileddescription>
+    <location file="include/gl/io/graph_fio.hpp" line="30" column="1" bodyfile="include/gl/io/graph_fio.hpp" bodystart="30" bodyend="30"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

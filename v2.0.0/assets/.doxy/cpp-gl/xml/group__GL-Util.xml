@@ -1,0 +1,398 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__GL-Util" kind="group">
+    <compoundname>GL-Util</compoundname>
+    <title>General Utilities</title>
+    <innerclass refid="classgl_1_1util_1_1concat__view" prot="public">gl::util::concat_view</innerclass>
+    <innerclass refid="structgl_1_1util_1_1concat__fn" prot="public">gl::util::concat_fn</innerclass>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr concat_fn</type>
+        <definition>constexpr concat_fn gl::util::concat</definition>
+        <argsstring></argsstring>
+        <name>concat</name>
+        <qualifiedname>gl::util::concat</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>Concatenates two viewable ranges into a <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Util_1example-usage-23">
+<title>Example usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v1</ref><sp/>=<sp/>{1,<sp/>2,<sp/>3};</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v2</ref><sp/>=<sp/>{4,<sp/>5,<sp/>6};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">concatenated</ref><sp/>=<sp/><ref refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kindref="member">gl::util::concat</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v1</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v2</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">x</ref><sp/>:<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">concatenated</ref>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">cout</ref><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">x</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Output:<sp/>1<sp/>2<sp/>3<sp/>4<sp/>5<sp/>6</highlight></codeline>
+</programlisting></para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>r1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>r2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<xrefsect id="todo_1_todo000005"><xreftitle>Todo</xreftitle><xrefdescription><para>Replace with <computeroutput>std::views::concat</computeroutput> (C++26). </para>
+</xrefdescription></xrefsect></para>
+</sect3>
+<sect3 id="group__GL-Util_1see-also-38">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref>: The view type that represents the concatenation of two ranges.</para>
+</listitem><listitem><para><ref refid="structgl_1_1util_1_1concat__fn" kindref="compound">concat_fn</ref>: A helper compile-time constant function object for creating <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput> instances. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="271" column="28" bodyfile="include/gl/util/ranges.hpp" bodystart="271" bodyend="271"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__GL-Util_1ga26f34dd65c6c20358affba17b9f02f75" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>constexpr size_type</type>
+        <definition>constexpr size_type gl::to_idx</definition>
+        <argsstring>(traits::c_id_type auto id) noexcept</argsstring>
+        <name>to_idx</name>
+        <qualifiedname>gl::to_idx</qualifiedname>
+        <param>
+          <type>traits::c_id_type auto</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Converts a valid identifier to a standard size type (index). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Provides a safe, explicit cast from any unsigned integral ID type into a <computeroutput>size_type</computeroutput>, commonly used for array/vector lookups.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The identifier to convert. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The identifier statically cast to <computeroutput>size_type</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/core.hpp" line="52" column="23" bodyfile="include/gl/types/core.hpp" bodystart="52" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1ga7d38806ec007262b76e8ef797674abc2" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>constexpr std::ptrdiff_t</type>
+        <definition>constexpr std::ptrdiff_t gl::to_diff</definition>
+        <argsstring>(std::integral auto i) noexcept</argsstring>
+        <name>to_diff</name>
+        <qualifiedname>gl::to_diff</qualifiedname>
+        <param>
+          <type>std::integral auto</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Converts an integral value to a standard pointer difference type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Useful for safe pointer arithmetic and offset calculations within graph data structures.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>i</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The integral value to convert. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The value statically cast to <computeroutput>std::ptrdiff_t</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/core.hpp" line="63" column="28" bodyfile="include/gl/types/core.hpp" bodystart="63" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1ga175f83b8e106986ae6f5c77666662f09" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr size_type</type>
+        <definition>constexpr size_type gl::util::upow</definition>
+        <argsstring>(size_type base, size_type exp)</argsstring>
+        <name>upow</name>
+        <qualifiedname>gl::util::upow</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>base</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>exp</declname>
+        </param>
+        <briefdescription>
+<para>Computes the value of <computeroutput>base</computeroutput> raised to the power of <computeroutput>exp</computeroutput> using exponentiation by squaring. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The base value to be raised to a power. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>exp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The exponent to which the base is raised. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The result of <computeroutput>base</computeroutput> raised to the power of <computeroutput>exp</computeroutput>.</para>
+</simplesect>
+<blockquote><para><zwj/>[!INFO] Time Complexity</para>
+<para>$O(\log(\text{exp}))$ due to halving the exponent at each step. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/math.hpp" line="26" column="29" bodyfile="include/gl/util/math.hpp" bodystart="26" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1gaa99b4b62fb6b3d4ec4236de65a57caf3" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr size_type</type>
+        <definition>constexpr size_type gl::util::upow_sum</definition>
+        <argsstring>(const size_type base, size_type i_begin, size_type i_end)</argsstring>
+        <name>upow_sum</name>
+        <qualifiedname>gl::util::upow_sum</qualifiedname>
+        <param>
+          <type>const size_type</type>
+          <declname>base</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>i_begin</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>i_end</declname>
+        </param>
+        <briefdescription>
+<para>Computes the sum of powers of <computeroutput>base</computeroutput> from <computeroutput>base^i_begin</computeroutput> to <computeroutput>base^i_end</computeroutput> inclusive. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The base value for the powers. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_begin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting exponent (inclusive). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ending exponent (inclusive). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The sum of <computeroutput>base^i</computeroutput> for all <computeroutput>i</computeroutput> in the range <computeroutput>[i_begin, i_end]</computeroutput>.</para>
+</simplesect>
+<blockquote><para><zwj/>[!INFO] Time Complexity</para>
+<para><formula id="46">$O(\log(\text{max}(\text{i_begin}, \text{i_end})))$</formula> due to the use of the closed-form formula for geometric series. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/math.hpp" line="48" column="29" bodyfile="include/gl/util/math.hpp" bodystart="48" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1ga646a472962b93ce25906cd2935e49422" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr auto</type>
+        <definition>constexpr auto gl::util::range_size</definition>
+        <argsstring>(R &amp;&amp;r)</argsstring>
+        <name>range_size</name>
+        <qualifiedname>gl::util::range_size</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>Safely determines the size of a range. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function returns the size of a range if it is a sized range, otherwise it computes the distance between the beginning and end of the range. Note that computing the distance for non-sized ranges may be expensive.</para>
+<para><blockquote><para><zwj/>[!WARNING] This function will consume input ranges that are not sized, as it needs to iterate through them to count the elements. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the range. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>r</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The range to measure. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The size of the range if it is a sized range, otherwise the distance between the beginning and end of the range.</para>
+</simplesect>
+<blockquote><para><zwj/>[!INFO] Time Complexity</para>
+<para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">$O(1)</ref>$ if the range is a sized range, otherwise <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">$O(N)</ref>$ where $N$ is the number of elements in the range. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="32" column="16" bodyfile="include/gl/util/ranges.hpp" bodystart="32" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1gaec0f5842d50d907edfa9181802334269" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::forward_range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool gl::util::is_constant</definition>
+        <argsstring>(R &amp;&amp;range) noexcept</argsstring>
+        <name>is_constant</name>
+        <qualifiedname>gl::util::is_constant</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>range</declname>
+        </param>
+        <briefdescription>
+<para>Checks if all elements in a range are equal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the range. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>range</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The range to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if all elements in the range are equal or the range is empty, otherwise <computeroutput>false</computeroutput>.</para>
+</simplesect>
+<blockquote><para><zwj/>[!INFO] Time Complexity</para>
+<para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">$O(N)</ref>$ where $N$ is the number of elements in the range. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="50" column="17" bodyfile="include/gl/util/ranges.hpp" bodystart="50" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Util_1ga27b14af97ffe14019ecac6cec881b8ff" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::forward_range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool gl::util::all_equal</definition>
+        <argsstring>(R &amp;&amp;range, const std::ranges::range_value_t&lt; R &gt; &amp;value) noexcept</argsstring>
+        <name>all_equal</name>
+        <qualifiedname>gl::util::all_equal</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>range</declname>
+        </param>
+        <param>
+          <type>const std::ranges::range_value_t&lt; R &gt; &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Checks if all elements in a range are equal to a given value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the range. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>range</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The range to check. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to compare against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if all elements in the range are equal to the given value or the range is empty, otherwise <computeroutput>false</computeroutput>.</para>
+</simplesect>
+<blockquote><para><zwj/>[!INFO] Time Complexity</para>
+<para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">$O(N)</ref>$ where $N$ is the number of elements in the range. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="70" column="17" bodyfile="include/gl/util/ranges.hpp" bodystart="70" bodyend="77"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Practical, domain-agnostic C++ helpers, mathematical functions, and polyfills. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>While originally engineered to support the library&apos;s internal algorithms and graph modeling operations, these utilities are completely independent of graph theory semantics. They provide a curated set of highly reusable, general-purpose tools that can smoothly integrate into any modern C++ codebase. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

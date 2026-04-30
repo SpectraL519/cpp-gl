@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1repr_1_1matrix__t" kind="struct" language="C++" prot="public">
+    <compoundname>gl::repr::matrix_t</compoundname>
+    <includes refid="gl_2repr__tags_8hpp" local="no">gl/repr_tags.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1repr_1_1matrix__t_1a90c55b445b8fb7789c2eb7d3a9098424" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_instantiation_of&lt; <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref> &gt;</type>
+            <declname>GraphTraits</declname>
+            <defname>GraphTraits</defname>
+          </param>
+        </templateparamlist>
+        <type>impl::adjacency_matrix&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">GraphTraits</ref> &gt;</type>
+        <definition>using gl::repr::matrix_t::type =  impl::adjacency_matrix&lt;GraphTraits&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>gl::repr::matrix_t::type</qualifiedname>
+        <briefdescription>
+<para>Type alias for the adjacency matrix graph representation based on the provided graph traits. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphTraits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph traits for which to define the adjacency matrix type. Must be an instantiation of <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref> and have <computeroutput><ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref></computeroutput> as its representation tag. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/repr_tags.hpp" line="51" column="5" bodyfile="include/gl/repr_tags.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Tag struct for the standard adjacency matrix graph representation. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/repr_tags.hpp" line="45" column="1" bodyfile="include/gl/repr_tags.hpp" bodystart="45" bodyend="52"/>
+    <listofallmembers>
+      <member refid="structgl_1_1repr_1_1matrix__t_1a90c55b445b8fb7789c2eb7d3a9098424" prot="public" virt="non-virtual"><scope>gl::repr::matrix_t</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

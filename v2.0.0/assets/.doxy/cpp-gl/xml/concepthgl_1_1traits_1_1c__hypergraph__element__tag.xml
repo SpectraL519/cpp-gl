@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="concepthgl_1_1traits_1_1c__hypergraph__element__tag" kind="concept">
+    <compoundname>hgl::traits::c_hypergraph_element_tag</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename T&gt;
+concept <ref refid="concepthgl_1_1traits_1_1c__hypergraph__element__tag" kindref="compound">hgl::traits::c_hypergraph_element_tag</ref> =  c_one_of&lt;T, vertex_t, hyperedge_t&gt;    </initializer>
+    <briefdescription>
+<para>Validates if a type is a valid hypergraph element tag. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The valid hypergraph element tags are <ref refid="structhgl_1_1vertex__t" kindref="compound">vertex_t</ref> and <ref refid="structhgl_1_1hyperedge__t" kindref="compound">hyperedge_t</ref>.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/hgl/hypergraph_elements.hpp" line="310" column="1"/>
+  </compounddef>
+</doxygen>

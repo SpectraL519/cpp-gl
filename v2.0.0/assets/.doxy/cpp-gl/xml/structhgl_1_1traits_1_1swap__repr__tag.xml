@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1traits_1_1swap__repr__tag" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::traits::swap_repr_tag</compoundname>
+    <templateparamlist>
+      <param>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">HT</ref></type>
+      </param>
+      <param>
+        <type>traits::c_hypergraph_repr_tag</type>
+        <declname>NewReprTag</declname>
+        <defname>NewReprTag</defname>
+      </param>
+    </templateparamlist>
+    <requiresclause>c_hypergraph&lt;<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">HT</ref>&gt;    </requiresclause>
+    <briefdescription>
+<para>Utility trait type used to swap the representation tag of a hypergraph traits or hypergraph type. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structhgl_1_1traits_1_1swap__repr__tag_1see-also-47">
+<title>See Also:</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__HGL-Core_1gaba0f2ee9cfcdc31bbeb8705459d07940" kindref="member">to</ref> : For the function that utilizes this trait to perform hypergraph conversions between different representations. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/hgl/conversion.hpp" line="32" column="1" bodyfile="include/hgl/conversion.hpp" bodystart="32" bodyend="-1"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

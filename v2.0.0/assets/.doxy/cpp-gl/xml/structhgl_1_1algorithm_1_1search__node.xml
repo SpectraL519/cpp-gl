@@ -1,0 +1,224 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1algorithm_1_1search__node" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::algorithm::search_node</compoundname>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="no">hgl/algorithm/core.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_hypergraph</type>
+        <declname>H</declname>
+        <defname>H</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> H::id_type</type>
+        <definition>using hgl::algorithm::search_node&lt; H &gt;::id_type =  typename H::id_type</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>hgl::algorithm::search_node::id_type</qualifiedname>
+        <briefdescription>
+<para>The identifier type of the hypergraph elements. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="84" column="5" bodyfile="include/hgl/algorithm/core.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structhgl_1_1algorithm_1_1search__node_1aaeb08738ea098a439be032dc79997009" prot="public" static="no" mutable="no">
+        <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+        <definition>id_type hgl::algorithm::search_node&lt; H &gt;::vertex_id</definition>
+        <argsstring></argsstring>
+        <name>vertex_id</name>
+        <qualifiedname>hgl::algorithm::search_node::vertex_id</qualifiedname>
+        <initializer>= <ref refid="group__HGL-Core_1ga75fe8c8b1a0b67e89b197e63d08816a6" kindref="member">invalid_id</ref></initializer>
+        <briefdescription>
+<para>The ID of the current vertex. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="108" column="13" bodyfile="include/hgl/algorithm/core.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhgl_1_1algorithm_1_1search__node_1a7ec9244a972dcc76d4eae6d1d20c6b4e" prot="public" static="no" mutable="no">
+        <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+        <definition>id_type hgl::algorithm::search_node&lt; H &gt;::pred_id</definition>
+        <argsstring></argsstring>
+        <name>pred_id</name>
+        <qualifiedname>hgl::algorithm::search_node::pred_id</qualifiedname>
+        <initializer>= <ref refid="group__HGL-Core_1ga75fe8c8b1a0b67e89b197e63d08816a6" kindref="member">invalid_id</ref></initializer>
+        <briefdescription>
+<para>The ID of the predecessor from which this vertex was reached. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="110" column="13" bodyfile="include/hgl/algorithm/core.hpp" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhgl_1_1algorithm_1_1search__node_1a67f6ae9fcf1c8bfe3fe2e01ab00282aa" prot="public" static="no" mutable="no">
+        <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+        <definition>id_type hgl::algorithm::search_node&lt; H &gt;::hyperedge_id</definition>
+        <argsstring></argsstring>
+        <name>hyperedge_id</name>
+        <qualifiedname>hgl::algorithm::search_node::hyperedge_id</qualifiedname>
+        <initializer>= <ref refid="group__HGL-Core_1ga75fe8c8b1a0b67e89b197e63d08816a6" kindref="member">invalid_id</ref></initializer>
+        <briefdescription>
+<para>The ID of the hyperedge via which this vertex was reached from the predecessor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="112" column="13" bodyfile="include/hgl/algorithm/core.hpp" bodystart="112" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1search__node_1aa4591a9b26c17d068957ad13b9cd8b43" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>hgl::algorithm::search_node&lt; H &gt;::search_node</definition>
+        <argsstring>()=default</argsstring>
+        <name>search_node</name>
+        <qualifiedname>hgl::algorithm::search_node::search_node</qualifiedname>
+        <briefdescription>
+<para>Default constructor creates an invalid node. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="87" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1search__node_1a37d24c3191f16736bc3323c547563a11" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>hgl::algorithm::search_node&lt; H &gt;::search_node</definition>
+        <argsstring>(id_type vertex_id)</argsstring>
+        <name>search_node</name>
+        <qualifiedname>hgl::algorithm::search_node::search_node</qualifiedname>
+        <param>
+          <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a <emphasis>root</emphasis> search node (predecessor is itself, no incident hyperedge). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the root vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="91" column="5" bodyfile="include/hgl/algorithm/core.hpp" bodystart="91" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1search__node_1acb4ec0648a05146011267c0c248a5af3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>hgl::algorithm::search_node&lt; H &gt;::search_node</definition>
+        <argsstring>(id_type vertex_id, id_type pred_id, id_type hyperedge_id)</argsstring>
+        <name>search_node</name>
+        <qualifiedname>hgl::algorithm::search_node::search_node</qualifiedname>
+        <param>
+          <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <param>
+          <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+          <declname>pred_id</declname>
+        </param>
+        <param>
+          <type><ref refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" kindref="member">id_type</ref></type>
+          <declname>hyperedge_id</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a search node with an explicit predecessor vertex and the connecting hyperedge. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the currently reached vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pred_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the predecessor vertex from which this vertex was reached. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hyperedge_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the hyperedge connecting the predecessor to this vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="98" column="5" bodyfile="include/hgl/algorithm/core.hpp" bodystart="98" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1search__node_1a0ba314672fb2c753d3a315512e237f53" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">bool</ref></type>
+        <definition>bool hgl::algorithm::search_node&lt; H &gt;::is_root</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>is_root</name>
+        <qualifiedname>hgl::algorithm::search_node::is_root</qualifiedname>
+        <briefdescription>
+<para>Checks if this node is the root of a search tree. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the node is valid and its predecessor is itself, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="103" column="12" bodyfile="include/hgl/algorithm/core.hpp" bodystart="103" bodyend="105"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents an active node in a search container (e.g., a BFS queue or DFS stack) for hypergraph traversals. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph being searched. Must satisfy <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="82" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="82" bodyend="113"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1a67f6ae9fcf1c8bfe3fe2e01ab00282aa" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>hyperedge_id</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1a24bc344b2411709f7e9e513a8a757662" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>id_type</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1a0ba314672fb2c753d3a315512e237f53" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>is_root</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1a7ec9244a972dcc76d4eae6d1d20c6b4e" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>pred_id</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1aa4591a9b26c17d068957ad13b9cd8b43" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>search_node</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1a37d24c3191f16736bc3323c547563a11" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>search_node</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1acb4ec0648a05146011267c0c248a5af3" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>search_node</name></member>
+      <member refid="structhgl_1_1algorithm_1_1search__node_1aaeb08738ea098a439be032dc79997009" prot="public" virt="non-virtual"><scope>hgl::algorithm::search_node</scope><name>vertex_id</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

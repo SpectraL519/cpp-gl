@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1traits_1_1swap__repr__tag" kind="struct" language="C++" prot="public">
+    <compoundname>gl::traits::swap_repr_tag</compoundname>
+    <templateparamlist>
+      <param>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">GT</ref></type>
+      </param>
+      <param>
+        <type>traits::c_graph_repr_tag</type>
+        <declname>NewImplTag</declname>
+        <defname>NewImplTag</defname>
+      </param>
+    </templateparamlist>
+    <requiresclause>c_graph&lt;<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">GT</ref>&gt;    </requiresclause>
+    <briefdescription>
+<para>Utility trait type used to swap the representation tag of a graph traits or graph type. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structgl_1_1traits_1_1swap__repr__tag_1see-also-18">
+<title>See Also:</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> : For the function that utilizes this trait to perform graph conversions between different representations. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/conversion.hpp" line="28" column="1" bodyfile="include/hgl/conversion.hpp" bodystart="28" bodyend="-1"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

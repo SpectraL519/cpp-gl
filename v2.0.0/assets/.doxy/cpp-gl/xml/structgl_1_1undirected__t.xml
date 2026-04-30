@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1undirected__t" kind="struct" language="C++" prot="public">
+    <compoundname>gl::undirected_t</compoundname>
+    <includes refid="hgl_2directional__tags_8hpp" local="no">gl/directional_tags.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1undirected__t_1a6b44e0f8e6a0d3d289c81638bdf7577b" prot="public" static="no">
+        <type>std::type_identity_t&lt; <ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref> &gt;</type>
+        <definition>using gl::undirected_t::type =  std::type_identity_t&lt;undirected_t&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>gl::undirected_t::type</qualifiedname>
+        <briefdescription>
+<para>A type identity alias for the <ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref> tag, allowing for easier type comparisons and trait evaluations. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/directional_tags.hpp" line="116" column="5" bodyfile="include/hgl/directional_tags.hpp" bodystart="116" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structgl_1_1undirected__t_1ac98c3684cf3a5ca3cd2c66af6ba0d238" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_undirected_edge</type>
+            <declname>EdgeType</declname>
+            <defname>EdgeType</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>static bool gl::undirected_t::is_incident_from</definition>
+        <argsstring>(const EdgeType &amp;edge, typename EdgeType::id_type vertex_id)</argsstring>
+        <name>is_incident_from</name>
+        <qualifiedname>gl::undirected_t::is_incident_from</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">EdgeType</ref> &amp;</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> EdgeType::id_type</type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Determines if a given edge is incident from a specified vertex in an undirected graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Validates whether the provided vertex ID corresponds to either of the vertices connected by the edge, since in an undirected graph, both vertices are incident <emphasis>with</emphasis> the edge, hence they are both considered to be incident from the edge.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>EdgeType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the edge descriptor, which must be an instantiation of <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> with the undirected tag. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>For an undirected edge <formula id="13">$\{u, v\}$</formula>, and a vertex ID <computeroutput>vertex_id</computeroutput>, returns <computeroutput>true</computeroutput> if <computeroutput>vertex_id</computeroutput> corresponds to either $u$ or $v$, and <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/directional_tags.hpp" line="127" column="19" bodyfile="include/hgl/directional_tags.hpp" bodystart="127" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1undirected__t_1a4ba1d1c0cc19548607245ec70acccc16" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_undirected_edge</type>
+            <declname>EdgeType</declname>
+            <defname>EdgeType</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>static bool gl::undirected_t::is_incident_to</definition>
+        <argsstring>(const EdgeType &amp;edge, typename EdgeType::id_type vertex_id)</argsstring>
+        <name>is_incident_to</name>
+        <qualifiedname>gl::undirected_t::is_incident_to</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">EdgeType</ref> &amp;</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> EdgeType::id_type</type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Determines if a given edge is incident to a specified vertex in an undirected graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Validates whether the provided vertex ID corresponds to either of the vertices connected by the edge, since in an undirected graph, both vertices are incident <emphasis>with</emphasis> the edge, hence they are both considered to be incident to the edge.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>EdgeType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the edge descriptor, which must be an instantiation of <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> with the undirected tag. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>For an undirected edge <formula id="13">$\{u, v\}$</formula>, and a vertex ID <computeroutput>vertex_id</computeroutput>, returns <computeroutput>true</computeroutput> if <computeroutput>vertex_id</computeroutput> corresponds to either $u$ or $v$, and <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/directional_tags.hpp" line="142" column="19" bodyfile="include/hgl/directional_tags.hpp" bodystart="142" bodyend="146"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>The tag type representing an undirected graph configuration. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This tag is used to indicate that a graph is undirected, meaning that its edges do not have a specific direction and can be traversed in both directions between the connected vertices.</para>
+<sect3 id="structgl_1_1undirected__t_1see-also-21">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref> : For the tag representing a directed graph configuration.</para>
+</listitem><listitem><para><ulink url="gl_concepts.md#gl-traits-c-graph-directional-tag"><bold>c_graph_directional_tag</bold></ulink> : For the concept used to validate graph directional tags.</para>
+</listitem><listitem><para><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> : For the edge descriptor type defined based on the graph traits, which includes the directional tag as part of its definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/directional_tags.hpp" line="114" column="1" bodyfile="include/hgl/directional_tags.hpp" bodystart="114" bodyend="147"/>
+    <listofallmembers>
+      <member refid="structgl_1_1undirected__t_1ac98c3684cf3a5ca3cd2c66af6ba0d238" prot="public" virt="non-virtual"><scope>gl::undirected_t</scope><name>is_incident_from</name></member>
+      <member refid="structgl_1_1undirected__t_1a4ba1d1c0cc19548607245ec70acccc16" prot="public" virt="non-virtual"><scope>gl::undirected_t</scope><name>is_incident_to</name></member>
+      <member refid="structgl_1_1undirected__t_1a6b44e0f8e6a0d3d289c81638bdf7577b" prot="public" virt="non-virtual"><scope>gl::undirected_t</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

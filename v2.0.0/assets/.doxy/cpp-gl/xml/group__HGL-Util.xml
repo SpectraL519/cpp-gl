@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__HGL-Util" kind="group">
+    <compoundname>HGL-Util</compoundname>
+    <title>General Utilities</title>
+    <innernamespace refid="namespacehgl_1_1util">hgl::util</innernamespace>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__HGL-Util_1ga8eb4d107be60f0a301d78fb6b7e8ec89" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::view</type>
+            <declname>V1</declname>
+            <defname>V1</defname>
+          </param>
+          <param>
+            <type>std::ranges::view</type>
+            <declname>V2</declname>
+            <defname>V2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">gl::util::concat_view</ref>&lt; V1, V2 &gt;</type>
+        <definition>using hgl::util::concat_view = typedef gl::util::concat_view&lt;V1, V2&gt;</definition>
+        <argsstring></argsstring>
+        <name>concat_view</name>
+        <qualifiedname>hgl::util::concat_view</qualifiedname>
+        <briefdescription>
+<para>A view concatenating two ranges sequentially (C++20 polyfill for C++26 <computeroutput>std::views::concat</computeroutput>).   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Util_1see-also-62">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">gl::util::concat_view</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/util.hpp" line="35" column="1" bodyfile="include/hgl/util.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Util_1gadfc2bd4901b272bceb7a4d9be9d087a2" prot="public" static="no">
+        <type><ref refid="structgl_1_1util_1_1concat__fn" kindref="compound">gl::util::concat_fn</ref></type>
+        <definition>using hgl::util::concat_fn = typedef gl::util::concat_fn</definition>
+        <argsstring></argsstring>
+        <name>concat_fn</name>
+        <qualifiedname>hgl::util::concat_fn</qualifiedname>
+        <briefdescription>
+<para>A function object for concatenating two viewable ranges into a <computeroutput>concat_view</computeroutput>.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Util_1see-also-63">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1util_1_1concat__fn" kindref="compound">gl::util::concat_fn</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/util.hpp" line="41" column="1" bodyfile="include/hgl/util.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__HGL-Util_1ga2376286fe8ad2ea5024b1c278e84b8f5" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr concat_fn</type>
+        <definition>constexpr concat_fn hgl::util::concat</definition>
+        <argsstring></argsstring>
+        <name>concat</name>
+        <qualifiedname>hgl::util::concat</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>Concatenates two viewable ranges into a <computeroutput>concat_view</computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Util_1example-usage-36">
+<title>Example usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">v1</ref><sp/>=<sp/>{1,<sp/>2,<sp/>3};</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">v2</ref><sp/>=<sp/>{4,<sp/>5,<sp/>6};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">concatenated</ref><sp/>=<sp/><ref refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kindref="member">gl::util::concat</ref>(<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">v1</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">v2</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">x</ref><sp/>:<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">concatenated</ref>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">cout</ref><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">x</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Output:<sp/>1<sp/>2<sp/>3<sp/>4<sp/>5<sp/>6</highlight></codeline>
+</programlisting></para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>r1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>r2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<xrefsect id="todo_1_todo000008"><xreftitle>Todo</xreftitle><xrefdescription><para>Replace with <computeroutput>std::views::concat</computeroutput> (C++26). </para>
+</xrefdescription></xrefsect></para>
+</sect3>
+<sect3 id="group__HGL-Util_1see-also-64">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__HGL-Util_1ga8eb4d107be60f0a301d78fb6b7e8ec89" kindref="member">concat_view</ref>: The view type that represents the concatenation of two ranges.</para>
+</listitem><listitem><para><ref refid="group__HGL-Util_1gadfc2bd4901b272bceb7a4d9be9d087a2" kindref="member">concat_fn</ref>: A helper compile-time constant function object for creating <computeroutput>concat_view</computeroutput> instances. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/util.hpp" line="61" column="28" bodyfile="include/hgl/util.hpp" bodystart="61" bodyend="61"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Practical, domain-agnostic C++ helpers, mathematical functions, and polyfills. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>These utilities provide a curated set of general-purpose tools that support the library&apos;s internal algorithms and hypergraph modeling operations, completely independent of strict hypergraph theory semantics. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

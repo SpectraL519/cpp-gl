@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="gl_2algorithm_2traits_8hpp" kind="file" language="C++">
+    <compoundname>traits.hpp</compoundname>
+    <includes local="yes">gl/algorithm/core.hpp</includes>
+    <includes local="no">functional</includes>
+    <includedby refid="pfs_8hpp" local="yes">include/gl/algorithm/templates/pfs.hpp</includedby>
+    <includedby refid="hgl_2algorithm_8hpp" local="yes">include/hgl/algorithm.hpp</includedby>
+    <includedby refid="hgl_2algorithm_2core_8hpp" local="yes">include/hgl/algorithm/core.hpp</includedby>
+    <includedby refid="hgl_2algorithm_2templates_2bfs_8hpp" local="yes">include/hgl/algorithm/templates/bfs.hpp</includedby>
+    <includedby refid="hgl_2algorithm_2templates_2dfs_8hpp" local="yes">include/hgl/algorithm/templates/dfs.hpp</includedby>
+    <includedby refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp" local="yes">include/hgl/algorithm/traversal/breadth_first_search.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/traits.hpp</label>
+        <link refid="gl_2algorithm_2traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>functional</label>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/core.hpp</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>include/gl/algorithm/pathfinding/dijkstra.hpp</label>
+        <link refid="dijkstra_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/gl/algorithm/templates/pfs.hpp</label>
+        <link refid="pfs_8hpp_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/algorithm/traits.hpp</label>
+        <link refid="gl_2algorithm_2traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+      <node id="5">
+        <label>include/hgl/algorithm/core.hpp</label>
+        <link refid="hgl_2algorithm_2core_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>include/hgl/algorithm/templates/bfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2bfs_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>include/hgl/algorithm/templates/dfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2dfs_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>include/hgl/algorithm/traversal/backward_search.hpp</label>
+        <link refid="backward__search_8hpp_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>include/hgl/algorithm/traversal/breadth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>include/hgl/algorithm/traversal/depth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>include/hgl/algorithm/traversal/forward_search.hpp</label>
+        <link refid="forward__search_8hpp_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>include/hgl/algorithm/util.hpp</label>
+        <link refid="hgl_2algorithm_2util_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1traits">gl::traits</innernamespace>
+    <briefdescription>
+<para>C++20 concepts for validating custom callbacks and predicates passed to graph algorithms. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/traits.hpp"/>
+  </compounddef>
+</doxygen>

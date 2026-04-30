@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1repr_1_1flat__matrix__t" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::repr::flat_matrix_t</compoundname>
+    <includes refid="hgl_2repr_2repr__tags_8hpp" local="no">hgl/repr/repr_tags.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_hypergraph_asymmetric_layout_tag</type>
+        <declname>LayoutTag</declname>
+        <defname>LayoutTag</defname>
+      </param>
+      <param>
+        <type>traits::c_id_type</type>
+        <declname>IdType</declname>
+        <defname>IdType</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1flat__matrix__t_1ab5517c43a258660ffed21cc357c9483b" prot="public" static="no">
+        <type><ref refid="structhgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>&lt; <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">LayoutTag</ref>, <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">IdType</ref> &gt;</type>
+        <definition>using hgl::repr::flat_matrix_t&lt; LayoutTag, IdType &gt;::type =  flat_matrix_t&lt;LayoutTag, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>hgl::repr::flat_matrix_t::type</qualifiedname>
+        <briefdescription>
+<para>Self type alias. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/repr_tags.hpp" line="124" column="5" bodyfile="include/hgl/repr/repr_tags.hpp" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1flat__matrix__t_1a4bbed8b299634b74fd12c64eed7ac098" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">LayoutTag</ref></type>
+        <definition>using hgl::repr::flat_matrix_t&lt; LayoutTag, IdType &gt;::layout_tag =  LayoutTag</definition>
+        <argsstring></argsstring>
+        <name>layout_tag</name>
+        <qualifiedname>hgl::repr::flat_matrix_t::layout_tag</qualifiedname>
+        <briefdescription>
+<para>The configured asymmetric layout tag. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/repr_tags.hpp" line="127" column="5" bodyfile="include/hgl/repr/repr_tags.hpp" bodystart="127" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1flat__matrix__t_1afe1367b86f9f71c9959d3e3ff5822301" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">IdType</ref></type>
+        <definition>using hgl::repr::flat_matrix_t&lt; LayoutTag, IdType &gt;::id_type =  IdType</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>hgl::repr::flat_matrix_t::id_type</qualifiedname>
+        <briefdescription>
+<para>The configured identifier type. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/repr_tags.hpp" line="129" column="5" bodyfile="include/hgl/repr/repr_tags.hpp" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1flat__matrix__t_1a149d363a9d224bbe5fcc7cae5ae5c420" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+          </param>
+        </templateparamlist>
+        <type>impl::flat_incidence_matrix&lt; <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">DirectionalTag</ref>, <ref refid="structhgl_1_1repr_1_1flat__matrix__t_1ab5517c43a258660ffed21cc357c9483b" kindref="member">type</ref> &gt;</type>
+        <definition>using hgl::repr::flat_matrix_t&lt; LayoutTag, IdType &gt;::representation_type =  impl::flat_incidence_matrix&lt;DirectionalTag, type&gt;</definition>
+        <argsstring></argsstring>
+        <name>representation_type</name>
+        <qualifiedname>hgl::repr::flat_matrix_t::representation_type</qualifiedname>
+        <briefdescription>
+<para>Type alias for the underlying flattened incidence matrix hypergraph representation based on the provided directional tag. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>DirectionalTag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The directional tag (e.g., undirected or bf_directed). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/repr_tags.hpp" line="134" column="5" bodyfile="include/hgl/repr/repr_tags.hpp" bodystart="134" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Tag struct for the flattened incidence matrix hypergraph representation. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structhgl_1_1repr_1_1flat__matrix__t_1layout-implications-3">
+<title>Layout Implications</title>
+<para>Matrix implementations strictly require an asymmetric layout tag to define the row and column dimensions of the underlying matrix:</para>
+<para><itemizedlist>
+<listitem><para><ref refid="structhgl_1_1repr_1_1hyperedge__major__t" kindref="compound">hyperedge_major_t</ref> (Default): Stores a <formula id="60">$\vert E \vert \times \vert V \vert$</formula> flat matrix, where hyperedges are mapped to rows and vertices to columns. Retrieving the vertices incident to a specific hyperedge translates to a fast, cache-friendly contiguous memory read across a single row.</para>
+</listitem><listitem><para><ref refid="structhgl_1_1repr_1_1vertex__major__t" kindref="compound">vertex_major_t</ref>: Stores a <formula id="61">$\vert V \vert \times \vert E \vert$</formula> flat matrix, where vertices are mapped to rows and hyperedges to columns. Retrieving the hyperedges incident to a specific vertex translates to a fast, contiguous memory read.</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>LayoutTag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies the memory layout orientation for the underlying data structure (must be asymmetric). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>IdType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The underlying integer type used for identifiers. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+<sect3 id="structhgl_1_1repr_1_1flat__matrix__t_1see-also-53">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1flat__matrix" kindref="compound">flat_matrix</ref> for the data structure used for the underlying model representation. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/hgl/repr/repr_tags.hpp" line="122" column="1" bodyfile="include/hgl/repr/repr_tags.hpp" bodystart="122" bodyend="135"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1repr_1_1flat__matrix__t_1afe1367b86f9f71c9959d3e3ff5822301" prot="public" virt="non-virtual"><scope>hgl::repr::flat_matrix_t</scope><name>id_type</name></member>
+      <member refid="structhgl_1_1repr_1_1flat__matrix__t_1a4bbed8b299634b74fd12c64eed7ac098" prot="public" virt="non-virtual"><scope>hgl::repr::flat_matrix_t</scope><name>layout_tag</name></member>
+      <member refid="structhgl_1_1repr_1_1flat__matrix__t_1a149d363a9d224bbe5fcc7cae5ae5c420" prot="public" virt="non-virtual"><scope>hgl::repr::flat_matrix_t</scope><name>representation_type</name></member>
+      <member refid="structhgl_1_1repr_1_1flat__matrix__t_1ab5517c43a258660ffed21cc357c9483b" prot="public" virt="non-virtual"><scope>hgl::repr::flat_matrix_t</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

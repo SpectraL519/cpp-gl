@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__undirected__graph" kind="concept">
+    <compoundname>gl::traits::c_undirected_graph</compoundname>
+    <includes refid="graph_8hpp" local="no">gl/graph.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename G</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename G&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__undirected__graph" kindref="compound">gl::traits::c_undirected_graph</ref> =  c_graph&lt;G&gt; and c_undirected_edge&lt;typename G::edge_type&gt;    </initializer>
+    <briefdescription>
+<para>Concept checking if a graph is undirected. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1undirected__t" kindref="compound">gl::undirected_t</ref> &quot;undirected_t&quot; : For the directional tag used to specify undirected graph configuration. </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <location file="include/gl/graph.hpp" line="48" column="1"/>
+  </compounddef>
+</doxygen>

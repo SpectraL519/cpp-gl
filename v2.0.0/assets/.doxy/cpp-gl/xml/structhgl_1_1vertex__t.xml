@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1vertex__t" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::vertex_t</compoundname>
+    <includes refid="hypergraph__elements_8hpp" local="no">hgl/hypergraph_elements.hpp</includes>
+    <briefdescription>
+<para>Tag type representing a vertex element in a hypergraph. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/hypergraph_elements.hpp" line="288" column="1" bodyfile="include/hgl/hypergraph_elements.hpp" bodystart="288" bodyend="288"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

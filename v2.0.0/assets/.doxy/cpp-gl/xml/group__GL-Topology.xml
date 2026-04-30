@@ -1,0 +1,435 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__GL-Topology" kind="group">
+    <compoundname>GL-Topology</compoundname>
+    <title>Graph Topologies</title>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__GL-Topology_1gae2a960a9c81b1ea5df0c417fb9d07852" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::regular_binary_tree</definition>
+        <argsstring>(size_type depth)</argsstring>
+        <name>regular_binary_tree</name>
+        <qualifiedname>gl::topology::regular_binary_tree</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>depth</declname>
+        </param>
+        <briefdescription>
+<para>Generates a regular (regular) binary tree of a specified depth. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A regular binary tree is a tree where all internal vertices have exactly two children and all leaf vertices are at the same depth. For a given depth <formula id="36">$d$</formula>, the graph will contain exactly <formula id="37">$2^d - 1$</formula> vertices.</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> is directed, edges are created pointing from the parent vertex to its children.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The depth (number of levels) of the binary tree. A depth of <computeroutput>1</computeroutput> yields a single root vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the regular binary tree. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/binary_tree.hpp" line="54" column="12" bodyfile="include/gl/topology/binary_tree.hpp" bodystart="54" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1ga26177d60a704ca8e5be99d476527e792" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::bidirectional_regular_binary_tree</definition>
+        <argsstring>(size_type depth)</argsstring>
+        <name>bidirectional_regular_binary_tree</name>
+        <qualifiedname>gl::topology::bidirectional_regular_binary_tree</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>depth</declname>
+        </param>
+        <briefdescription>
+<para>Generates a regular binary tree with bidirectional edges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>For directed graphs, this function ensures that for every parent-to-child edge, a reciprocal child-to-parent edge is also created.</para>
+<para>For undirected graphs, this function simply falls back to <ref refid="group__GL-Topology_1gae2a960a9c81b1ea5df0c417fb9d07852" kindref="member">regular_binary_tree</ref>, as undirected edges are inherently bidirectional.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The depth of the binary tree. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the bidirectional binary tree. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/binary_tree.hpp" line="105" column="12" bodyfile="include/gl/topology/binary_tree.hpp" bodystart="105" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1ga0c92916bbeaf29884453c1f7f826360e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::biclique</definition>
+        <argsstring>(size_type n_vertices_a, size_type n_vertices_b)</argsstring>
+        <name>biclique</name>
+        <qualifiedname>gl::topology::biclique</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices_a</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices_b</declname>
+        </param>
+        <briefdescription>
+<para>Generates a complete bipartite graph (biclique). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A complete bipartite graph is a graph whose vertices are partitioned into two disjoint sets, <formula id="38">$A$</formula> and <formula id="39">$B$</formula>, such that every vertex in <formula id="38">$A$</formula> connects to every vertex in <formula id="39">$B$</formula>.</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> is directed, this function generates reciprocal edges (from <formula id="38">$A$</formula> to <formula id="39">$B$</formula> and from <formula id="39">$B$</formula> to <formula id="38">$A$</formula>) to mimic full undirected connectivity.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices_a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of vertices in partition <formula id="38">$A$</formula>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_vertices_b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of vertices in partition <formula id="39">$B$</formula>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the biclique. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/bipartite.hpp" line="38" column="12" bodyfile="include/gl/topology/bipartite.hpp" bodystart="38" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1ga088a971ff5a8bf8e365aaddfe93724ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::clique</definition>
+        <argsstring>(size_type n_vertices)</argsstring>
+        <name>clique</name>
+        <qualifiedname>gl::topology::clique</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Generates a complete graph (clique). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A complete graph is a simple graph in which every pair of distinct vertices is connected by an edge.</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> is directed, this function generates fully bidirectional edges between every pair of vertices.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the clique. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the clique. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/clique.hpp" line="35" column="12" bodyfile="include/gl/topology/clique.hpp" bodystart="35" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1gac54a8f8b42bac51874475dd475d570c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::cycle</definition>
+        <argsstring>(size_type n_vertices)</argsstring>
+        <name>cycle</name>
+        <qualifiedname>gl::topology::cycle</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Generates a regular cycle graph (ring topology). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A cycle graph consists of a single closed chain of vertices. Vertex <formula id="40">$v_i$</formula> is connected to vertex <formula id="41">$v_{i+1}$</formula>, with the final vertex connecting back to vertex <formula id="42">$v_0$</formula>.</para>
+<para>For directed graphs, this creates a unidirectional loop.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the cycle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the cycle. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/cycle.hpp" line="35" column="12" bodyfile="include/gl/topology/cycle.hpp" bodystart="35" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1ga54ab80177618addc72bcbe60f26134cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::bidirectional_cycle</definition>
+        <argsstring>(size_type n_vertices)</argsstring>
+        <name>bidirectional_cycle</name>
+        <qualifiedname>gl::topology::bidirectional_cycle</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Generates a cycle graph with bidirectional edges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>For directed graphs, this function creates a reciprocal edge for every forward edge in the closed chain, forming a bidirectional ring.</para>
+<para>For undirected graphs, this function simply falls back to <ref refid="group__GL-Topology_1gac54a8f8b42bac51874475dd475d570c7" kindref="member">cycle</ref>, as undirected edges are inherently bidirectional.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the cycle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the bidirectional cycle. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/cycle.hpp" line="72" column="12" bodyfile="include/gl/topology/cycle.hpp" bodystart="72" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1gaf7b745f5b1b8bcfb51eb5f097f3969b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::path</definition>
+        <argsstring>(size_type n_vertices)</argsstring>
+        <name>path</name>
+        <qualifiedname>gl::topology::path</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Generates a regular path graph (linear topology). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A path graph consists of a simple linear sequence of vertices. Vertex <formula id="40">$v_i$</formula> is connected to vertex <formula id="41">$v_{i+1}$</formula>, terminating at the final vertex.</para>
+<para>For directed graphs, this creates a one-way chain from the first to the last vertex.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the path. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the linear path. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/path.hpp" line="35" column="12" bodyfile="include/gl/topology/path.hpp" bodystart="35" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Topology_1ga9fd3d043786182ef1d45601952b7881c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>GraphType</type>
+        <definition>GraphType gl::topology::bidirectional_path</definition>
+        <argsstring>(size_type n_vertices)</argsstring>
+        <name>bidirectional_path</name>
+        <qualifiedname>gl::topology::bidirectional_path</qualifiedname>
+        <param>
+          <type>size_type</type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Generates a path graph with bidirectional edges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>For directed graphs, this function creates reciprocal edges along the linear sequence, allowing traversal in both directions.</para>
+<para>For undirected graphs, this function simply falls back to <ref refid="group__GL-Topology_1gaf7b745f5b1b8bcfb51eb5f097f3969b7" kindref="member">path</ref>, as undirected edges are inherently bidirectional.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested <computeroutput>GraphType</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target graph type to generate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the path. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph representing the bidirectional path. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/topology/path.hpp" line="72" column="12" bodyfile="include/gl/topology/path.hpp" bodystart="72" bodyend="89"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Generators and evaluators for standard structural graph topologies. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>A collection of lightweight utilities designed to quickly instantiate classic graph topologies. Featuring out-of-the-box support for cliques (complete graphs), bipartite graphs, binary trees, paths, and cycles, these generators are ideal for rapid prototyping, algorithm benchmarking, and automated testing. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

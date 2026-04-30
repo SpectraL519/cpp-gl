@@ -1,0 +1,1062 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="hgl_2algorithm_8hpp" kind="file" language="C++">
+    <compoundname>algorithm.hpp</compoundname>
+    <includes local="yes">gl/algorithm/core.hpp</includes>
+    <includes refid="gl_2algorithm_2traits_8hpp" local="yes">gl/algorithm/traits.hpp</includes>
+    <includes local="yes">gl/algorithm/util.hpp</includes>
+    <includes local="yes">gl/algorithm/templates/bfs.hpp</includes>
+    <includes local="yes">gl/algorithm/templates/dfs.hpp</includes>
+    <includes refid="pfs_8hpp" local="yes">gl/algorithm/templates/pfs.hpp</includes>
+    <includes local="yes">gl/algorithm/traversal/breadth_first_search.hpp</includes>
+    <includes local="yes">gl/algorithm/traversal/depth_first_search.hpp</includes>
+    <includes refid="coloring_8hpp" local="yes">gl/algorithm/topology/coloring.hpp</includes>
+    <includes refid="topological__sort_8hpp" local="yes">gl/algorithm/topology/topological_sort.hpp</includes>
+    <includes refid="dijkstra_8hpp" local="yes">gl/algorithm/pathfinding/dijkstra.hpp</includes>
+    <includes refid="prim__mst_8hpp" local="yes">gl/algorithm/spanning_tree/prim_mst.hpp</includes>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="yes">hgl/algorithm/core.hpp</includes>
+    <includes refid="hgl_2algorithm_2util_8hpp" local="yes">hgl/algorithm/util.hpp</includes>
+    <includes refid="hgl_2algorithm_2templates_2bfs_8hpp" local="yes">hgl/algorithm/templates/bfs.hpp</includes>
+    <includes refid="hgl_2algorithm_2templates_2dfs_8hpp" local="yes">hgl/algorithm/templates/dfs.hpp</includes>
+    <includes refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp" local="yes">hgl/algorithm/traversal/breadth_first_search.hpp</includes>
+    <includes refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp" local="yes">hgl/algorithm/traversal/depth_first_search.hpp</includes>
+    <includes refid="backward__search_8hpp" local="yes">hgl/algorithm/traversal/backward_search.hpp</includes>
+    <includes refid="forward__search_8hpp" local="yes">hgl/algorithm/traversal/forward_search.hpp</includes>
+    <includes refid="hgl_2algorithm_2properties_8hpp" local="yes">hgl/algorithm/properties.hpp</includes>
+    <incdepgraph>
+      <node id="16">
+        <label>gl/algorithm/pathfinding/dijkstra.hpp</label>
+        <link refid="dijkstra_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>gl/algorithm/spanning_tree/prim_mst.hpp</label>
+        <link refid="prim__mst_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>gl/algorithm/templates/pfs.hpp</label>
+        <link refid="pfs_8hpp_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>gl/algorithm/topology/coloring.hpp</label>
+        <link refid="coloring_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>gl/algorithm/topology/topological_sort.hpp</label>
+        <link refid="topological__sort_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>gl/algorithm/traits.hpp</label>
+        <link refid="gl_2algorithm_2traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="60">
+        <label>gl/attributes/diagnostics.hpp</label>
+        <link refid="diagnostics_8hpp_source"/>
+      </node>
+      <node id="19">
+        <label>gl/attributes/force_inline.hpp</label>
+        <link refid="force__inline_8hpp_source"/>
+      </node>
+      <node id="30">
+        <label>gl/decl/graph_traits.hpp</label>
+        <link refid="decl_2graph__traits_8hpp_source"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>gl/edge_descriptor.hpp</label>
+        <link refid="edge__descriptor_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>gl/graph.hpp</label>
+        <link refid="graph_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>gl/graph_traits.hpp</label>
+        <link refid="graph__traits_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="48">
+        <label>gl/impl/adjacency_list.hpp</label>
+        <link refid="adjacency__list_8hpp_source"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>gl/impl/adjacency_matrix.hpp</label>
+        <link refid="adjacency__matrix_8hpp_source"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="49">
+        <label>gl/impl/specialized/adjacency_list.hpp</label>
+        <link refid="specialized_2adjacency__list_8hpp_source"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="59">
+        <label>gl/impl/specialized/adjacency_matrix.hpp</label>
+        <link refid="specialized_2adjacency__matrix_8hpp_source"/>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="53">
+        <label>gl/impl/specialized/flat_adjacency_list.hpp</label>
+        <link refid="flat__adjacency__list_8hpp_source"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="61">
+        <label>gl/impl/specialized/flat_adjacency_matrix.hpp</label>
+        <link refid="flat__adjacency__matrix_8hpp_source"/>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="45">
+        <label>gl/io/graph_fmt_traits.hpp</label>
+        <link refid="graph__fmt__traits_8hpp_source"/>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>gl/io/options.hpp</label>
+        <link refid="options_8hpp"/>
+        <childnode refid="35" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>gl/io/options_manip.hpp</label>
+        <link refid="options__manip_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>gl/io/ranges.hpp</label>
+        <link refid="io_2ranges_8hpp"/>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="47">
+        <label>gl/repr_tags.hpp</label>
+        <link refid="gl_2repr__tags_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>gl/types/core.hpp</label>
+        <link refid="gl_2types_2core_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>gl/types/flat_jagged_vector.hpp</label>
+        <link refid="flat__jagged__vector_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>gl/types/flat_matrix.hpp</label>
+        <link refid="flat__matrix_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>gl/types/properties.hpp</label>
+        <link refid="gl_2types_2properties_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>gl/util/ranges.hpp</label>
+        <link refid="util_2ranges_8hpp"/>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>gl/vertex_descriptor.hpp</label>
+        <link refid="vertex__descriptor_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="89" relation="include">
+        </childnode>
+        <childnode refid="90" relation="include">
+        </childnode>
+        <childnode refid="91" relation="include">
+        </childnode>
+        <childnode refid="92" relation="include">
+        </childnode>
+        <childnode refid="93" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>hgl/algorithm/core.hpp</label>
+        <link refid="hgl_2algorithm_2core_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="93">
+        <label>hgl/algorithm/properties.hpp</label>
+        <link refid="hgl_2algorithm_2properties_8hpp"/>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+      </node>
+      <node id="86">
+        <label>hgl/algorithm/templates/bfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2bfs_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="87">
+        <label>hgl/algorithm/templates/dfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2dfs_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="88" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="91">
+        <label>hgl/algorithm/traversal/backward_search.hpp</label>
+        <link refid="backward__search_8hpp_source"/>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+      </node>
+      <node id="89">
+        <label>hgl/algorithm/traversal/breadth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+      </node>
+      <node id="90">
+        <label>hgl/algorithm/traversal/depth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+      </node>
+      <node id="92">
+        <label>hgl/algorithm/traversal/forward_search.hpp</label>
+        <link refid="forward__search_8hpp_source"/>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+      </node>
+      <node id="85">
+        <label>hgl/algorithm/util.hpp</label>
+        <link refid="hgl_2algorithm_2util_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="65">
+        <label>hgl/constants.hpp</label>
+        <link refid="hgl_2constants_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="77">
+        <label>hgl/decl/repr_tags.hpp</label>
+        <link refid="hgl_2decl_2repr__tags_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+      </node>
+      <node id="70">
+        <label>hgl/directional_tags.hpp</label>
+        <link refid="hgl_2directional__tags_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>hgl/hypergraph.hpp</label>
+        <link refid="hypergraph_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="73" relation="include">
+        </childnode>
+        <childnode refid="84" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="72">
+        <label>hgl/hypergraph_elements.hpp</label>
+        <link refid="hypergraph__elements_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="73" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+      </node>
+      <node id="71">
+        <label>hgl/hypergraph_traits.hpp</label>
+        <link refid="hypergraph__traits_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+      </node>
+      <node id="81">
+        <label>hgl/impl/bf_incidence.hpp</label>
+        <link refid="bf__incidence_8hpp_source"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="78">
+        <label>hgl/impl/flat_incidence_list.hpp</label>
+        <link refid="flat__incidence__list_8hpp_source"/>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="80">
+        <label>hgl/impl/flat_incidence_matrix.hpp</label>
+        <link refid="flat__incidence__matrix_8hpp_source"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>hgl/impl/incidence_list.hpp</label>
+        <link refid="incidence__list_8hpp_source"/>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="83">
+        <label>hgl/impl/incidence_matrix.hpp</label>
+        <link refid="incidence__matrix_8hpp_source"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="73">
+        <label>hgl/io/core.hpp</label>
+        <link refid="hgl_2io_2core_8hpp"/>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="84">
+        <label>hgl/io/hypergraph_fmt_traits.hpp</label>
+        <link refid="hypergraph__fmt__traits_8hpp_source"/>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="75">
+        <label>hgl/repr/layout_tags.hpp</label>
+        <link refid="layout__tags_8hpp"/>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="76">
+        <label>hgl/repr/repr_tags.hpp</label>
+        <link refid="hgl_2repr_2repr__tags_8hpp"/>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="80" relation="include">
+        </childnode>
+        <childnode refid="82" relation="include">
+        </childnode>
+        <childnode refid="83" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+      </node>
+      <node id="67">
+        <label>hgl/traits.hpp</label>
+        <link refid="hgl_2traits_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="74">
+        <label>hgl/types.hpp</label>
+        <link refid="types_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="79">
+        <label>hgl/util.hpp</label>
+        <link refid="hgl_2util_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>algorithm</label>
+      </node>
+      <node id="40">
+        <label>any</label>
+      </node>
+      <node id="43">
+        <label>compare</label>
+      </node>
+      <node id="9">
+        <label>concepts</label>
+      </node>
+      <node id="20">
+        <label>cstddef</label>
+      </node>
+      <node id="21">
+        <label>cstdint</label>
+      </node>
+      <node id="44">
+        <label>format</label>
+      </node>
+      <node id="4">
+        <label>functional</label>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/core.hpp</label>
+      </node>
+      <node id="6">
+        <label>gl/algorithm/templates/bfs.hpp</label>
+      </node>
+      <node id="7">
+        <label>gl/algorithm/templates/dfs.hpp</label>
+      </node>
+      <node id="12">
+        <label>gl/algorithm/traversal/breadth_first_search.hpp</label>
+      </node>
+      <node id="13">
+        <label>gl/algorithm/traversal/depth_first_search.hpp</label>
+      </node>
+      <node id="5">
+        <label>gl/algorithm/util.hpp</label>
+      </node>
+      <node id="17">
+        <label>gl/constants.hpp</label>
+      </node>
+      <node id="31">
+        <label>gl/decl/repr_tags.hpp</label>
+      </node>
+      <node id="28">
+        <label>gl/directional_tags.hpp</label>
+      </node>
+      <node id="32">
+        <label>gl/traits.hpp</label>
+      </node>
+      <node id="55">
+        <label>initializer_list</label>
+      </node>
+      <node id="41">
+        <label>iomanip</label>
+      </node>
+      <node id="36">
+        <label>iostream</label>
+      </node>
+      <node id="66">
+        <label>limits</label>
+      </node>
+      <node id="68">
+        <label>memory</label>
+      </node>
+      <node id="25">
+        <label>numeric</label>
+      </node>
+      <node id="22">
+        <label>optional</label>
+      </node>
+      <node id="10">
+        <label>queue</label>
+      </node>
+      <node id="11">
+        <label>ranges</label>
+      </node>
+      <node id="63">
+        <label>set</label>
+      </node>
+      <node id="56">
+        <label>span</label>
+      </node>
+      <node id="88">
+        <label>stack</label>
+      </node>
+      <node id="57">
+        <label>stdexcept</label>
+      </node>
+      <node id="46">
+        <label>string_view</label>
+      </node>
+      <node id="69">
+        <label>type_traits</label>
+      </node>
+      <node id="42">
+        <label>unordered_map</label>
+      </node>
+      <node id="23">
+        <label>utility</label>
+      </node>
+      <node id="52">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm.hpp"/>
+  </compounddef>
+</doxygen>

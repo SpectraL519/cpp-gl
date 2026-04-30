@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_e5528d3ed04ddd122cb0665c34ebe369" kind="dir">
+    <compoundname>include/hgl/repr</compoundname>
+    <innerfile refid="layout__tags_8hpp">layout_tags.hpp</innerfile>
+    <innerfile refid="hgl_2repr_2repr__tags_8hpp">repr_tags.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/repr/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1binary__color__property" kind="struct" language="C++" prot="public">
+    <compoundname>gl::binary_color_property</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1binary__color__property_1a73978d7562f9ea41f9da94cb049ae74c" prot="public" static="no">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref></type>
+        <definition>using gl::binary_color_property::color_type =  binary_color</definition>
+        <argsstring></argsstring>
+        <name>color_type</name>
+        <qualifiedname>gl::binary_color_property::color_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="217" column="5" bodyfile="include/gl/types/properties.hpp" bodystart="217" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1binary__color__property_1aad057d9491e08f68bd9f8b6bf2d6e9d1" prot="public" static="no" mutable="no">
+        <type><ref refid="classgl_1_1binary__color" kindref="compound">color_type</ref></type>
+        <definition>color_type gl::binary_color_property::color</definition>
+        <argsstring></argsstring>
+        <name>color</name>
+        <qualifiedname>gl::binary_color_property::color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="218" column="16" bodyfile="include/gl/types/properties.hpp" bodystart="218" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A property struct wrapping a <computeroutput><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref></computeroutput>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>gl::binary_color</label>
+        <link refid="classgl_1_1binary__color"/>
+      </node>
+      <node id="1">
+        <label>gl::binary_color_property</label>
+        <link refid="structgl_1_1binary__color__property"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>color</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/gl/types/properties.hpp" line="216" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="216" bodyend="219"/>
+    <listofallmembers>
+      <member refid="structgl_1_1binary__color__property_1aad057d9491e08f68bd9f8b6bf2d6e9d1" prot="public" virt="non-virtual"><scope>gl::binary_color_property</scope><name>color</name></member>
+      <member refid="structgl_1_1binary__color__property_1a73978d7562f9ea41f9da94cb049ae74c" prot="public" virt="non-virtual"><scope>gl::binary_color_property</scope><name>color_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

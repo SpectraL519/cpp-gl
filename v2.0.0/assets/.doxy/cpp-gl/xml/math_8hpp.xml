@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="math_8hpp" kind="file" language="C++">
+    <compoundname>math.hpp</compoundname>
+    <includes refid="gl_2types_2core_8hpp" local="yes">gl/types/core.hpp</includes>
+    <includes local="no">algorithm</includes>
+    <includes local="no">tuple</includes>
+    <includedby refid="binary__tree_8hpp" local="yes">include/gl/topology/binary_tree.hpp</includedby>
+    <incdepgraph>
+      <node id="3">
+        <label>gl/attributes/force_inline.hpp</label>
+        <link refid="force__inline_8hpp_source"/>
+      </node>
+      <node id="2">
+        <label>gl/types/core.hpp</label>
+        <link refid="gl_2types_2core_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/util/math.hpp</label>
+        <link refid="math_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>algorithm</label>
+      </node>
+      <node id="4">
+        <label>concepts</label>
+      </node>
+      <node id="5">
+        <label>cstddef</label>
+      </node>
+      <node id="6">
+        <label>cstdint</label>
+      </node>
+      <node id="7">
+        <label>optional</label>
+      </node>
+      <node id="10">
+        <label>tuple</label>
+      </node>
+      <node id="8">
+        <label>utility</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>include/gl/topology.hpp</label>
+        <link refid="topology_8hpp"/>
+      </node>
+      <node id="2">
+        <label>include/gl/topology/binary_tree.hpp</label>
+        <link refid="binary__tree_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/util/math.hpp</label>
+        <link refid="math_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1util">gl::util</innernamespace>
+    <briefdescription>
+<para>Defines utility mathematical functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/util/math.hpp"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_725a01591e8450819a524e13a57ce191" kind="dir">
+    <compoundname>include/gl/types</compoundname>
+    <innerfile refid="gl_2types_2core_8hpp">core.hpp</innerfile>
+    <innerfile refid="flat__jagged__vector_8hpp">flat_jagged_vector.hpp</innerfile>
+    <innerfile refid="flat__matrix_8hpp">flat_matrix.hpp</innerfile>
+    <innerfile refid="gl_2types_2properties_8hpp">properties.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/types/"/>
+  </compounddef>
+</doxygen>

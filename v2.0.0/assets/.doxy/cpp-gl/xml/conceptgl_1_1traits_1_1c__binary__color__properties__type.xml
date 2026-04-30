@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__binary__color__properties__type" kind="concept">
+    <compoundname>gl::traits::c_binary_color_properties_type</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename Properties</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename Properties&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__binary__color__properties__type" kindref="compound">gl::traits::c_binary_color_properties_type</ref> =  c_properties&lt;Properties&gt; and requires(Properties p) {
+    typename Properties::color_type;
+    { p.color } -&gt; std::same_as&lt;typename Properties::color_type&amp;&gt;;
+    { p.color == binary_color{} } -&gt; std::convertible_to&lt;bool&gt;;
+    requires std::constructible_from&lt;typename Properties::color_type, binary_color&gt;;
+}    </initializer>
+    <briefdescription>
+<para>Requirements for properties that support binary coloring algorithms. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Requires a property type that:<orderedlist>
+<listitem><para>Satisfies <ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>.</para>
+</listitem><listitem><para>Has a nested <computeroutput>color_type</computeroutput>.</para>
+</listitem><listitem><para>Has a public <computeroutput>color</computeroutput> member of the <computeroutput>color_type</computeroutput> type.</para>
+</listitem><listitem><para>Supports construction and comparison with <ref refid="classgl_1_1binary__color" kindref="compound">gl::binary_color</ref>.</para>
+</listitem></orderedlist>
+</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="308" column="1"/>
+  </compounddef>
+</doxygen>

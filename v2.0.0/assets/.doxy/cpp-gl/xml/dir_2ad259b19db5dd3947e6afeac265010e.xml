@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_2ad259b19db5dd3947e6afeac265010e" kind="dir">
+    <compoundname>include/gl/impl</compoundname>
+    <innerdir refid="dir_2745926628c58fff9937ce11c43267d4">include/gl/impl/specialized</innerdir>
+    <innerfile refid="adjacency__list_8hpp">adjacency_list.hpp</innerfile>
+    <innerfile refid="adjacency__matrix_8hpp">adjacency_matrix.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/impl/"/>
+  </compounddef>
+</doxygen>

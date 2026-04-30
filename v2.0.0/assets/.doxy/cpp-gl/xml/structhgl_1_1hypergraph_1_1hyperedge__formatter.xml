@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1hypergraph_1_1hyperedge__formatter" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::hypergraph::hyperedge_formatter</compoundname>
+    <includes refid="hypergraph_8hpp" local="no">hgl/hypergraph.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structhgl_1_1hypergraph_1_1hyperedge__formatter_1a56c58ad226f0a5e29eba8e178f87d322" prot="public" static="no" mutable="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref> &amp;</type>
+        <definition>const hypergraph&amp; hgl::hypergraph&lt; HypergraphTraits &gt;::hyperedge_formatter::hg</definition>
+        <argsstring></argsstring>
+        <name>hg</name>
+        <qualifiedname>hgl::hypergraph::hyperedge_formatter::hg</qualifiedname>
+        <briefdescription>
+<para>The hypergraph owning the hyperedge. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="1893" column="26" bodyfile="include/hgl/hypergraph.hpp" bodystart="1893" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhgl_1_1hypergraph_1_1hyperedge__formatter_1ac69cb3be716f5eecdddd509f6764af0e" prot="public" static="no" mutable="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="classhgl_1_1hypergraph_1ab0fe7058f182e6986e1c1eb5c5335461" kindref="member">hyperedge_type</ref></type>
+        <definition>const hyperedge_type hgl::hypergraph&lt; HypergraphTraits &gt;::hyperedge_formatter::hyperedge</definition>
+        <argsstring></argsstring>
+        <name>hyperedge</name>
+        <qualifiedname>hgl::hypergraph::hyperedge_formatter::hyperedge</qualifiedname>
+        <briefdescription>
+<para>The hyperedge to be formatted. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="1895" column="30" bodyfile="include/hgl/hypergraph.hpp" bodystart="1895" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structhgl_1_1hypergraph_1_1hyperedge__formatter_1aef5145cc2c0a786711516ca99de263b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const hyperedge_formatter &amp;proxy)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>hgl::hypergraph::hyperedge_formatter::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="structhgl_1_1hypergraph_1_1hyperedge__formatter" kindref="compound">hyperedge_formatter</ref> &amp;</type>
+          <declname>proxy</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, undirected_t&gt;    </requiresclause>
+        <briefdescription>
+<para>Stream insertion operator for undirected hyperedges. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="1898" column="16" bodyfile="include/hgl/hypergraph.hpp" bodystart="1898" bodyend="1919"/>
+      </memberdef>
+      <memberdef kind="friend" id="structhgl_1_1hypergraph_1_1hyperedge__formatter_1a3bd01f6e2029e854bdaa142ee9c735fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const hyperedge_formatter &amp;proxy)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>hgl::hypergraph::hyperedge_formatter::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="structhgl_1_1hypergraph_1_1hyperedge__formatter" kindref="compound">hyperedge_formatter</ref> &amp;</type>
+          <declname>proxy</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, bf_directed_t&gt;    </requiresclause>
+        <briefdescription>
+<para>Stream insertion operator for BF-directed hyperedges. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="1922" column="16" bodyfile="include/hgl/hypergraph.hpp" bodystart="1922" bodyend="1945"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Helper structure used to properly format an individual hyperedge within the hypergraph&apos;s context into an output stream. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>hgl::hypergraph&lt; HypergraphTraits &gt;</label>
+        <link refid="classhgl_1_1hypergraph"/>
+      </node>
+      <node id="1">
+        <label>hgl::hypergraph&lt; HypergraphTraits &gt;::hyperedge_formatter</label>
+        <link refid="structhgl_1_1hypergraph_1_1hyperedge__formatter"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>hg</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/hgl/hypergraph.hpp" line="1890" column="5" bodyfile="include/hgl/hypergraph.hpp" bodystart="1890" bodyend="1946"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1hypergraph_1_1hyperedge__formatter_1a56c58ad226f0a5e29eba8e178f87d322" prot="public" virt="non-virtual"><scope>hgl::hypergraph::hyperedge_formatter</scope><name>hg</name></member>
+      <member refid="structhgl_1_1hypergraph_1_1hyperedge__formatter_1ac69cb3be716f5eecdddd509f6764af0e" prot="public" virt="non-virtual"><scope>hgl::hypergraph::hyperedge_formatter</scope><name>hyperedge</name></member>
+      <member refid="structhgl_1_1hypergraph_1_1hyperedge__formatter_1aef5145cc2c0a786711516ca99de263b5" prot="public" virt="non-virtual"><scope>hgl::hypergraph::hyperedge_formatter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="structhgl_1_1hypergraph_1_1hyperedge__formatter_1a3bd01f6e2029e854bdaa142ee9c735fa" prot="public" virt="non-virtual"><scope>hgl::hypergraph::hyperedge_formatter</scope><name>operator&lt;&lt;</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

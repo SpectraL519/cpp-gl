@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__GL" kind="group">
+    <compoundname>GL</compoundname>
+    <title>Graph Library (GL)</title>
+    <innergroup refid="group__GL-Core">Core Graph Components</innergroup>
+    <innergroup refid="group__GL-Algorithm">Graph Algorithms</innergroup>
+    <innergroup refid="group__GL-Topology">Graph Topologies</innergroup>
+    <innergroup refid="group__GL-IO">I/O Utility</innergroup>
+    <innergroup refid="group__GL-Traits">Traits &amp; Concepts</innergroup>
+    <innergroup refid="group__GL-Types">Generic Types</innergroup>
+    <innergroup refid="group__GL-Util">General Utilities</innergroup>
+    <briefdescription>
+<para>The top-level module defining the general-purpose C++ template graph library. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This module provides a comprehensive suite of memory-efficient graph representations, highly customizable algorithms, topology generators, and robust I/O facilities. Designed strictly around modern C++ paradigms, the library heavily leverages templates and concepts to deliver an API that is exceptionally fast, generic, and type-safe. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

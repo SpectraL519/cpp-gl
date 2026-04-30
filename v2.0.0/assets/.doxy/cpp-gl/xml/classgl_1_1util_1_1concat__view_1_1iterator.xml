@@ -1,0 +1,337 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1util_1_1concat__view_1_1iterator" kind="class" language="C++" prot="private">
+    <compoundname>gl::util::concat_view::iterator</compoundname>
+    <templateparamlist>
+      <param>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <declname>Const</declname>
+        <defname>Const</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1ab04247846e320827bdd9fd223af3e3a0" prot="private" static="no">
+        <type>std::conditional_t&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> V1, V1 &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::BaseV1 =  std::conditional_t&lt;Const, const V1, V1&gt;</definition>
+        <argsstring></argsstring>
+        <name>BaseV1</name>
+        <qualifiedname>gl::util::concat_view::iterator::BaseV1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="152" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1a92c976098fb114d9720fd7e933539974" prot="private" static="no">
+        <type>std::conditional_t&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> V2, V2 &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::BaseV2 =  std::conditional_t&lt;Const, const V2, V2&gt;</definition>
+        <argsstring></argsstring>
+        <name>BaseV2</name>
+        <qualifiedname>gl::util::concat_view::iterator::BaseV2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="153" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="153" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1ada7016fe9501e0d06fe558b155973e00" prot="public" static="no">
+        <type>std::common_type_t&lt; std::ranges::range_difference_t&lt; BaseV1 &gt;, std::ranges::range_difference_t&lt; BaseV2 &gt; &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::difference_type =  std::common_type_t&lt; std::ranges::range_difference_t&lt;BaseV1&gt;, std::ranges::range_difference_t&lt;BaseV2&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <qualifiedname>gl::util::concat_view::iterator::difference_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="156" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1adcece6b969b3a4481b40ded4ed97ba4c" prot="public" static="no">
+        <type>std::common_type_t&lt; std::ranges::range_value_t&lt; BaseV1 &gt;, std::ranges::range_value_t&lt; BaseV2 &gt; &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::value_type =  std:: common_type_t&lt;std::ranges::range_value_t&lt;BaseV1&gt;, std::ranges::range_value_t&lt;BaseV2&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <qualifiedname>gl::util::concat_view::iterator::value_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="159" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1a7a7d87cdaaed15c543ef8b00ef715050" prot="public" static="no">
+        <type>std::common_reference_t&lt; std::ranges::range_reference_t&lt; BaseV1 &gt;, std::ranges::range_reference_t&lt; BaseV2 &gt; &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::reference =  std::common_reference_t&lt; std::ranges::range_reference_t&lt;BaseV1&gt;, std::ranges::range_reference_t&lt;BaseV2&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <qualifiedname>gl::util::concat_view::iterator::reference</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="161" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1a0bc17a9f6dc40e15189740267ca13df8" prot="public" static="no">
+        <type>std::forward_iterator_tag</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::iterator_category =  std::forward_iterator_tag</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <qualifiedname>gl::util::concat_view::iterator::iterator_category</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="164" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1iterator_1aea9e7af9503d419cfb9220d0bab19d45" prot="public" static="no">
+        <type>std::forward_iterator_tag</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::iterator_concept =  std::forward_iterator_tag</definition>
+        <argsstring></argsstring>
+        <name>iterator_concept</name>
+        <qualifiedname>gl::util::concat_view::iterator::iterator_concept</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="165" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="165" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1_1iterator_1a5c5484553dbdbd2ff9bad5894ac65415" prot="private" static="no" mutable="no">
+        <type>std::ranges::iterator_t&lt; BaseV1 &gt;</type>
+        <definition>std::ranges::iterator_t&lt;BaseV1&gt; gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::_it1</definition>
+        <argsstring></argsstring>
+        <name>_it1</name>
+        <qualifiedname>gl::util::concat_view::iterator::_it1</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="203" column="33" bodyfile="include/gl/util/ranges.hpp" bodystart="203" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1_1iterator_1a6d84308fa57aeed38958a1a5205cd4d5" prot="private" static="no" mutable="no">
+        <type>std::ranges::sentinel_t&lt; BaseV1 &gt;</type>
+        <definition>std::ranges::sentinel_t&lt;BaseV1&gt; gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::_end1</definition>
+        <argsstring></argsstring>
+        <name>_end1</name>
+        <qualifiedname>gl::util::concat_view::iterator::_end1</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="204" column="33" bodyfile="include/gl/util/ranges.hpp" bodystart="204" bodyend="204"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1_1iterator_1a01b26634a4495556d69ca28ccdc736e6" prot="private" static="no" mutable="no">
+        <type>std::ranges::iterator_t&lt; BaseV2 &gt;</type>
+        <definition>std::ranges::iterator_t&lt;BaseV2&gt; gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::_it2</definition>
+        <argsstring></argsstring>
+        <name>_it2</name>
+        <qualifiedname>gl::util::concat_view::iterator::_it2</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="205" column="33" bodyfile="include/gl/util/ranges.hpp" bodystart="205" bodyend="205"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classgl_1_1util_1_1concat__view_1_1iterator_1acf1f8c8a8532623cda7d3f708fc97261" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">class</ref></type>
+        <definition>friend class concat_view</definition>
+        <argsstring></argsstring>
+        <name>concat_view</name>
+        <qualifiedname>gl::util::concat_view::iterator::concat_view</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></type>
+        </param>
+        <briefdescription>
+<para>A view concatenating two ranges sequentially (C++20 polyfill for C++26 <computeroutput>std::views::concat</computeroutput>).   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Util_1see-also-62">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">gl::util::concat_view</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="207" column="22" bodyfile="include/gl/util/ranges.hpp" bodystart="207" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a29a11f03b4eda4e15df1ad3f7bea95c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::iterator</definition>
+        <argsstring>()=default</argsstring>
+        <name>iterator</name>
+        <qualifiedname>gl::util::concat_view::iterator::iterator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="167" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a2027d394e6f7be6e14af51c6575c23f4" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::iterator</definition>
+        <argsstring>(std::ranges::iterator_t&lt; BaseV1 &gt; it1, std::ranges::sentinel_t&lt; BaseV1 &gt; end1, std::ranges::iterator_t&lt; BaseV2 &gt; it2)</argsstring>
+        <name>iterator</name>
+        <qualifiedname>gl::util::concat_view::iterator::iterator</qualifiedname>
+        <param>
+          <type>std::ranges::iterator_t&lt; BaseV1 &gt;</type>
+          <declname>it1</declname>
+        </param>
+        <param>
+          <type>std::ranges::sentinel_t&lt; BaseV1 &gt;</type>
+          <declname>end1</declname>
+        </param>
+        <param>
+          <type>std::ranges::iterator_t&lt; BaseV2 &gt;</type>
+          <declname>it2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="169" column="19" bodyfile="include/gl/util/ranges.hpp" bodystart="169" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a437dde87e2bc37538a981c69df5b7db3" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> reference</type>
+        <definition>constexpr reference gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::operator*</definition>
+        <argsstring>() const</argsstring>
+        <name>operator*</name>
+        <qualifiedname>gl::util::concat_view::iterator::operator*</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="176" column="29" bodyfile="include/gl/util/ranges.hpp" bodystart="176" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a66dc47f59e2e36eaf9badf78874228ec" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> iterator &amp;</type>
+        <definition>constexpr iterator &amp; gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <qualifiedname>gl::util::concat_view::iterator::operator++</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="180" column="28" bodyfile="include/gl/util/ranges.hpp" bodystart="180" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a67c680aa370f83a7ab6104682d578a5c" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> iterator</type>
+        <definition>constexpr iterator gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <qualifiedname>gl::util::concat_view::iterator::operator++</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">int</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="188" column="28" bodyfile="include/gl/util/ranges.hpp" bodystart="188" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a752958e8ce4cc664414a427cf481d9bc" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::operator==</definition>
+        <argsstring>(const iterator &amp;other) const</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::util::concat_view::iterator::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> iterator &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="194" column="24" bodyfile="include/gl/util/ranges.hpp" bodystart="194" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1iterator_1a1132021b7794c0d9e8e9d02ce037ee7b" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool gl::util::concat_view&lt; V1, V2 &gt;::iterator&lt; Const &gt;::operator==</definition>
+        <argsstring>(const sentinel&lt; Const &gt; &amp;s) const</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::util::concat_view::iterator::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> sentinel&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref> &gt; &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="198" column="24" bodyfile="include/gl/util/ranges.hpp" bodystart="198" bodyend="200"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/util/ranges.hpp" line="150" column="5" bodyfile="include/gl/util/ranges.hpp" bodystart="150" bodyend="208"/>
+    <listofallmembers>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a6d84308fa57aeed38958a1a5205cd4d5" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>_end1</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a5c5484553dbdbd2ff9bad5894ac65415" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>_it1</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a01b26634a4495556d69ca28ccdc736e6" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>_it2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1ab04247846e320827bdd9fd223af3e3a0" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>BaseV1</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a92c976098fb114d9720fd7e933539974" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>BaseV2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1acf1f8c8a8532623cda7d3f708fc97261" prot="private" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>concat_view</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1ada7016fe9501e0d06fe558b155973e00" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>difference_type</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a29a11f03b4eda4e15df1ad3f7bea95c2" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>iterator</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a2027d394e6f7be6e14af51c6575c23f4" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>iterator</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a0bc17a9f6dc40e15189740267ca13df8" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>iterator_category</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1aea9e7af9503d419cfb9220d0bab19d45" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>iterator_concept</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a437dde87e2bc37538a981c69df5b7db3" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>operator*</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a66dc47f59e2e36eaf9badf78874228ec" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>operator++</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a67c680aa370f83a7ab6104682d578a5c" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>operator++</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a752958e8ce4cc664414a427cf481d9bc" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>operator==</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a1132021b7794c0d9e8e9d02ce037ee7b" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>operator==</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1a7a7d87cdaaed15c543ef8b00ef715050" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>reference</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1iterator_1adcece6b969b3a4481b40ded4ed97ba4c" prot="public" virt="non-virtual"><scope>gl::util::concat_view::iterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

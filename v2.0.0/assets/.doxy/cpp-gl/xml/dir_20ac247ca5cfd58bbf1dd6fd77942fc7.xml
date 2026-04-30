@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_20ac247ca5cfd58bbf1dd6fd77942fc7" kind="dir">
+    <compoundname>include/hgl/io</compoundname>
+    <innerfile refid="hgl_2io_2core_8hpp">core.hpp</innerfile>
+    <innerfile refid="hypergraph__fio_8hpp">hypergraph_fio.hpp</innerfile>
+    <innerfile refid="hypergraph__fmt__traits_8hpp">hypergraph_fmt_traits.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/io/"/>
+  </compounddef>
+</doxygen>

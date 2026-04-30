@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_e7d4219177810bb688142c2492e313d1" kind="dir">
+    <compoundname>include/gl/algorithm/topology</compoundname>
+    <innerfile refid="coloring_8hpp">coloring.hpp</innerfile>
+    <innerfile refid="topological__sort_8hpp">topological_sort.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/topology/"/>
+  </compounddef>
+</doxygen>

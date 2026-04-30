@@ -1,0 +1,754 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1flat__jagged__vector_1_1segment__iterator" kind="class" language="C++" prot="public">
+    <compoundname>gl::flat_jagged_vector::segment_iterator</compoundname>
+    <includes refid="flat__jagged__vector_8hpp" local="no">gl/types/flat_jagged_vector.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <declname>Const</declname>
+        <defname>Const</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ad06a87f1a7fe60e7de245ea59b517cbd" prot="private" static="no">
+        <type>std::conditional_t&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> container_type::const_iterator, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> container_type::iterator &gt;</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::data_iter_type =  std::conditional_t&lt; Const, typename container_type::const_iterator, typename container_type::iterator&gt;</definition>
+        <argsstring></argsstring>
+        <name>data_iter_type</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::data_iter_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="134" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ad56d278897623fee2b254bb2401760ba" prot="private" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1ae71415aaf0b769c3b984a3439f62c6ce" kindref="member">size_type</ref> *</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::offset_ptr_type =  const size_type*</definition>
+        <argsstring></argsstring>
+        <name>offset_ptr_type</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::offset_ptr_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="138" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="138" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac436584f64937d28a6896e135ea50be4" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::iterator_concept =  std::random_access_iterator_tag</definition>
+        <argsstring></argsstring>
+        <name>iterator_concept</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::iterator_concept</qualifiedname>
+        <briefdescription>
+<para>Satisfies random access iterator concept. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="142" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aed34aaeb2e05b3641d0661741e4fe59f" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::iterator_category =  std::random_access_iterator_tag</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::iterator_category</qualifiedname>
+        <briefdescription>
+<para>Legacy iterator category (random access). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="144" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a87973cf17e94bcf5f7853d80a7295a12" prot="public" static="no">
+        <type>std::conditional_t&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref>, <ref refid="classgl_1_1flat__jagged__vector_1a09e3d578affd29c76b9585a1b4da1f5e" kindref="member">const_segment_type</ref>, <ref refid="classgl_1_1flat__jagged__vector_1af670eae807f178db7d49560b34489220" kindref="member">segment_type</ref> &gt;</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::value_type =  std::conditional_t&lt;Const, const_segment_type, segment_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::value_type</qualifiedname>
+        <briefdescription>
+<para>Type of segment this iterator dereferences to (subrange or const subrange). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="146" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" prot="public" static="no">
+        <type>std::ptrdiff_t</type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::difference_type =  std::ptrdiff_t</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::difference_type</qualifiedname>
+        <briefdescription>
+<para>Signed integral difference type. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="148" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1abb0f293224601f6f033c0a58ffdcf498" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">void</ref></type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::pointer =  void</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::pointer</qualifiedname>
+        <briefdescription>
+<para>Pointer type (void because segment iterators dereference to subranges). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="150" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1afd6e24c516adb715d1954fde9a1ac65c" prot="public" static="no">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a87973cf17e94bcf5f7853d80a7295a12" kindref="member">value_type</ref></type>
+        <definition>using gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::reference =  value_type</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::reference</qualifiedname>
+        <briefdescription>
+<para>Reference type (subrange of elements). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="152" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="152" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a23d2a1765fd573224a19f638c4cade68" prot="private" static="no" mutable="no">
+        <type>data_iter_type</type>
+        <definition>data_iter_type gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::_data_iter</definition>
+        <argsstring></argsstring>
+        <name>_data_iter</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::_data_iter</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="296" column="24" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="296" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a21579f63c534c823d3fa8f8e581d533d" prot="private" static="no" mutable="no">
+        <type>offset_ptr_type</type>
+        <definition>offset_ptr_type gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::_offset_ptr</definition>
+        <argsstring></argsstring>
+        <name>_offset_ptr</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::_offset_ptr</qualifiedname>
+        <initializer>{<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">nullptr</ref>}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="297" column="25" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="297" bodyend="297"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac99af3a807352b4dfb59216ecd5e0698" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::segment_iterator</definition>
+        <argsstring>()=default</argsstring>
+        <name>segment_iterator</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::segment_iterator</qualifiedname>
+        <briefdescription>
+<para>Default constructor creates a null iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="155" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a14c087ef4690277f030dd47b829afd81" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::segment_iterator</definition>
+        <argsstring>(data_iter_type data_iter, offset_ptr_type offset_ptr) noexcept</argsstring>
+        <name>segment_iterator</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::segment_iterator</qualifiedname>
+        <param>
+          <type>data_iter_type</type>
+          <declname>data_iter</declname>
+        </param>
+        <param>
+          <type>offset_ptr_type</type>
+          <declname>offset_ptr</declname>
+        </param>
+        <briefdescription>
+<para>Constructs an iterator pointing to a specific segment. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>data_iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the underlying element data (may be null for null iterator). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset_ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the offsets array at the position of this segment. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="160" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="160" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0835993dcf1ab8e8b001b7ea00499609" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator segment_iterator&lt; true &gt;</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator segment_iterator&lt; true &gt;</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator segment_iterator&lt; true &gt;</qualifiedname>
+    <requiresclause>(not Const)    </requiresclause>
+        <briefdescription>
+<para>Implicit conversion from mutable to const iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A const iterator pointing to the same segment. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="165" column="9" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="165" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aeff6249b32fd85cc757b87840971ca4a" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1afd6e24c516adb715d1954fde9a1ac65c" kindref="member">reference</ref></type>
+        <definition>reference gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator*</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator*</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator*</qualifiedname>
+        <briefdescription>
+<para>Dereferences the iterator to the current segment. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A subrange representing the segment at the current position. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="173" column="20" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="173" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1af5d33ba2658c7ec3476d743c27b97d33" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1afd6e24c516adb715d1954fde9a1ac65c" kindref="member">reference</ref></type>
+        <definition>reference gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator[]</definition>
+        <argsstring>(difference_type n) const noexcept</argsstring>
+        <name>operator[]</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator[]</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Random access to a segment at offset from current position. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Offset (can be negative). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Segment at offset n from the current position. </para>
+</simplesect>
+<simplesect kind="pre"><para><computeroutput>0 &lt;= current_position + n &lt; container.size()</computeroutput> <blockquote><para><zwj/>[!WARNING] The operation results in Undefined Behavior if the precondition is not satisfied. </para>
+</blockquote></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="185" column="20" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="185" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1af510cb44cdcc6090ac600044272bd8fc" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+        <definition>segment_iterator &amp; gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator++</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>operator++</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator++</qualifiedname>
+        <briefdescription>
+<para>Pre-increment operator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to this iterator after advancing to the next segment. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="191" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="191" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a524ede94e134962272158f0b2fd0d447" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+        <definition>segment_iterator gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator++</definition>
+        <argsstring>(int) noexcept</argsstring>
+        <name>operator++</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator++</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">int</ref></type>
+        </param>
+        <briefdescription>
+<para>Post-increment operator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A copy of this iterator before the increment. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="198" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="198" bodyend="202"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac0dae7ed35fd11a844438eff9f0ec6ef" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+        <definition>segment_iterator &amp; gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator--</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>operator--</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator--</qualifiedname>
+        <briefdescription>
+<para>Pre-decrement operator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to this iterator after moving to the previous segment. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="206" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="206" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a6c3f4065ad1674293cd2acfdc285ae34" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+        <definition>segment_iterator gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator--</definition>
+        <argsstring>(int) noexcept</argsstring>
+        <name>operator--</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator--</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">int</ref></type>
+        </param>
+        <briefdescription>
+<para>Post-decrement operator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A copy of this iterator before the decrement. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="213" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="213" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a10bf8985b90da7807f9478499f7abf9c" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+        <definition>segment_iterator &amp; gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator+=</definition>
+        <argsstring>(difference_type n) noexcept</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Advances the iterator by n positions. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of segments to advance (can be negative). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to this iterator. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="222" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="222" bodyend="225"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aec96df8c0a087671cabff2bbf309096d" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+        <definition>segment_iterator &amp; gl::flat_jagged_vector&lt; T &gt;::segment_iterator&lt; Const &gt;::operator-=</definition>
+        <argsstring>(difference_type n) noexcept</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Moves the iterator backward by n positions. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of segments to move backward (can be negative). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to this iterator. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="230" column="26" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="230" bodyend="233"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0c06b232045b2384caf2b6c9267afd81" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+        <definition>segment_iterator operator+</definition>
+        <argsstring>(segment_iterator it, difference_type n) noexcept</argsstring>
+        <name>operator+</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator+</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+          <declname>it</declname>
+        </param>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new iterator advanced by n positions from the given iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to advance from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of segments to advance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>New iterator at the advanced position. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="239" column="34" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="239" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a586d7826ac8305b956a4d07299ef14db" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+        <definition>segment_iterator operator+</definition>
+        <argsstring>(difference_type n, segment_iterator it) noexcept</argsstring>
+        <name>operator+</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator+</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+          <declname>it</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new iterator advanced by n positions (commutative form). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of segments to advance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to advance from. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>New iterator at the advanced position. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="249" column="34" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="249" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a60d50a2b6327cc159a5ae0c1f02a2cb1" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+        <definition>segment_iterator operator-</definition>
+        <argsstring>(segment_iterator it, difference_type n) noexcept</argsstring>
+        <name>operator-</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator-</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref></type>
+          <declname>it</declname>
+        </param>
+        <param>
+          <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new iterator moved backward by n positions. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to move backward from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of segments to move backward. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>New iterator at the moved position. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="259" column="34" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="259" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0b22734eb7971c699e4e1e2bf28798ee" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" kindref="member">difference_type</ref></type>
+        <definition>difference_type operator-</definition>
+        <argsstring>(const segment_iterator &amp;lhs, const segment_iterator &amp;rhs) noexcept</argsstring>
+        <name>operator-</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator-</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+<para>Computes the distance between two iterators. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The later iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The earlier iterator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Number of segments between the iterators; negative if <computeroutput>lhs &lt; rhs</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="269" column="33" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="269" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a10c9c411ebbff6aa31c00d3f584d9b6b" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool operator==</definition>
+        <argsstring>(const segment_iterator &amp;lhs, const segment_iterator &amp;rhs) noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+<para>Tests equality of two iterators. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Left iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Right iterator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if both iterators point to the same segment. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="279" column="22" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="279" bodyend="283"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aeab4ae93a2cc579358ce1117a9118a25" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>auto operator&lt;=&gt;</definition>
+        <argsstring>(const segment_iterator &amp;lhs, const segment_iterator &amp;rhs) noexcept</argsstring>
+        <name>operator&lt;=&gt;</name>
+        <qualifiedname>gl::flat_jagged_vector::segment_iterator::operator&lt;=&gt;</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1flat__jagged__vector_1_1segment__iterator" kindref="compound">segment_iterator</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+<para>Three-way comparison of two iterators. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Left iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rhs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Right iterator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Comparison result indicating iterator ordering. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/flat_jagged_vector.hpp" line="289" column="17" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="289" bodyend="293"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Random access iterator over segments of the <computeroutput><ref refid="classgl_1_1flat__jagged__vector" kindref="compound">flat_jagged_vector</ref></computeroutput>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This iterator dereferences to a <computeroutput>segment_type</computeroutput> (subrange of elements in a single segment), allowing efficient iteration and random access to individual segments. The iterator maintains pointers to the element data and the offsets array for dereferencing.</para>
+<sect3 id="classgl_1_1flat__jagged__vector_1_1segment__iterator_1template-parameters-22">
+<title>Template Parameters</title>
+<para><table rows="2" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Type   </para>
+</entry><entry thead="yes" align='left'><para>Description    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Const   </para>
+</entry><entry thead="no" align='left'><para><computeroutput>bool</computeroutput>   </para>
+</entry><entry thead="no" align='left'><para>If <computeroutput>true</computeroutput>, produces const iterators; if <computeroutput>false</computeroutput>, produces mutable iterators.   </para>
+</entry></row>
+</table>
+</para>
+<para><blockquote><para><zwj/>[!NOTE] Complexity</para>
+<para>Provides random access semantics: <formula id="43">$O(1)$</formula> for all operations. </para>
+</blockquote><blockquote><para><zwj/>[!Caution] Invalidation</para>
+<para>Invalidated when the referenced <ref refid="classgl_1_1flat__jagged__vector" kindref="compound">flat_jagged_vector</ref> is modified (structure changes or element insertions/deletions). </para>
+</blockquote><simplesect kind="see"><para><ref refid="classgl_1_1flat__jagged__vector" kindref="compound">gl::flat_jagged_vector</ref> </para>
+</simplesect>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/types/flat_jagged_vector.hpp" line="133" column="5" bodyfile="include/gl/types/flat_jagged_vector.hpp" bodystart="133" bodyend="298"/>
+    <listofallmembers>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a23d2a1765fd573224a19f638c4cade68" prot="private" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>_data_iter</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a21579f63c534c823d3fa8f8e581d533d" prot="private" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>_offset_ptr</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ad06a87f1a7fe60e7de245ea59b517cbd" prot="private" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>data_iter_type</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1adc78a10926012ea2cc78bb95ed04c9e2" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>difference_type</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aed34aaeb2e05b3641d0661741e4fe59f" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>iterator_category</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac436584f64937d28a6896e135ea50be4" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>iterator_concept</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ad56d278897623fee2b254bb2401760ba" prot="private" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>offset_ptr_type</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0835993dcf1ab8e8b001b7ea00499609" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator segment_iterator&lt; true &gt;</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aeff6249b32fd85cc757b87840971ca4a" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator*</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0c06b232045b2384caf2b6c9267afd81" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator+</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a586d7826ac8305b956a4d07299ef14db" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator+</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1af510cb44cdcc6090ac600044272bd8fc" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator++</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a524ede94e134962272158f0b2fd0d447" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator++</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a10bf8985b90da7807f9478499f7abf9c" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator+=</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a60d50a2b6327cc159a5ae0c1f02a2cb1" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator-</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a0b22734eb7971c699e4e1e2bf28798ee" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator-</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac0dae7ed35fd11a844438eff9f0ec6ef" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator--</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a6c3f4065ad1674293cd2acfdc285ae34" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator--</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aec96df8c0a087671cabff2bbf309096d" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator-=</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1aeab4ae93a2cc579358ce1117a9118a25" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator&lt;=&gt;</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a10c9c411ebbff6aa31c00d3f584d9b6b" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator==</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1af5d33ba2658c7ec3476d743c27b97d33" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>operator[]</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1abb0f293224601f6f033c0a58ffdcf498" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>pointer</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1afd6e24c516adb715d1954fde9a1ac65c" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>reference</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1ac99af3a807352b4dfb59216ecd5e0698" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>segment_iterator</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a14c087ef4690277f030dd47b829afd81" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>segment_iterator</name></member>
+      <member refid="classgl_1_1flat__jagged__vector_1_1segment__iterator_1a87973cf17e94bcf5f7853d80a7295a12" prot="public" virt="non-virtual"><scope>gl::flat_jagged_vector::segment_iterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

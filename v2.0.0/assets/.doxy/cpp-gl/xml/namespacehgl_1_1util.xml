@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacehgl_1_1util" kind="namespace" language="C++">
+    <compoundname>hgl::util</compoundname>
+    <sectiondef kind="typedef">
+      <member refid="group__HGL-Util_1ga8eb4d107be60f0a301d78fb6b7e8ec89" kind="typedef"><name>concat_view</name></member>
+      <member refid="group__HGL-Util_1gadfc2bd4901b272bceb7a4d9be9d087a2" kind="typedef"><name>concat_fn</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__HGL-Util_1ga2376286fe8ad2ea5024b1c278e84b8f5" kind="variable"><name>concat</name></member>
+    </sectiondef>
+    <briefdescription>
+<para>General utilities, ranges, and helpers for the HGL module (originating in the GL module). </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This namespace pulls in practical, domain-agnostic C++ <bold>range</bold> utilities from <computeroutput>gl::util</computeroutput>. Because hypergraphs share the same underlying memory models and algorithmic requirements as standard graphs, they seamlessly reuse the same fundamental C++20 range utilities and helpers.</para>
+<para><blockquote><para><zwj/>[!NOTE]</para>
+<para>To get a detailed overview of these shared utilities, please refer to the GL module&apos;s <ref refid="group__GL-Util" kindref="compound">General Utilities</ref> documentation page. </para>
+</blockquote></para>
+    </detaileddescription>
+    <location file="include/hgl/util.hpp" line="24" column="1"/>
+  </compounddef>
+</doxygen>

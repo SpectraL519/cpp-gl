@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1util_1_1concat__view" kind="class" language="C++" prot="public">
+    <compoundname>gl::util::concat_view</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::ranges::view_interface&lt; concat_view&lt; V1, V2 &gt; &gt;</basecompoundref>
+    <includes refid="util_2ranges_8hpp" local="no">gl/util/ranges.hpp</includes>
+    <innerclass refid="classgl_1_1util_1_1concat__view_1_1iterator" prot="private">gl::util::concat_view::iterator</innerclass>
+    <innerclass refid="classgl_1_1util_1_1concat__view_1_1sentinel" prot="private">gl::util::concat_view::sentinel</innerclass>
+    <templateparamlist>
+      <param>
+        <type>std::ranges::view</type>
+        <declname>V1</declname>
+        <defname>V1</defname>
+      </param>
+      <param>
+        <type>std::ranges::view</type>
+        <declname>V2</declname>
+        <defname>V2</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1aacf0f69c37f87f09d2af480536a1ecdf" prot="private" static="no" mutable="no">
+        <type>V1</type>
+        <definition>V1 gl::util::concat_view&lt; V1, V2 &gt;::_v1</definition>
+        <argsstring></argsstring>
+        <name>_v1</name>
+        <qualifiedname>gl::util::concat_view::_v1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="143" column="8" bodyfile="include/gl/util/ranges.hpp" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1afd69351d9614d09453cb1f7af4efc302" prot="private" static="no" mutable="no">
+        <type>V2</type>
+        <definition>V2 gl::util::concat_view&lt; V1, V2 &gt;::_v2</definition>
+        <argsstring></argsstring>
+        <name>_v2</name>
+        <qualifiedname>gl::util::concat_view::_v2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="144" column="8" bodyfile="include/gl/util/ranges.hpp" bodystart="144" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1af779c4d9c92709f5e4bb5960a99bb619" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::util::concat_view&lt; V1, V2 &gt;::concat_view</definition>
+        <argsstring>()=default</argsstring>
+        <name>concat_view</name>
+        <qualifiedname>gl::util::concat_view::concat_view</qualifiedname>
+        <briefdescription>
+<para>Default constructor creates an empty concatenated view. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="99" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1a17b523fab5c09ad0c79b434983290f7b" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::util::concat_view&lt; V1, V2 &gt;::concat_view</definition>
+        <argsstring>(V1 v1, V2 v2)</argsstring>
+        <name>concat_view</name>
+        <qualifiedname>gl::util::concat_view::concat_view</qualifiedname>
+        <param>
+          <type>V1</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>V2</type>
+          <declname>v2</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput> from two viewable ranges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="104" column="15" bodyfile="include/gl/util/ranges.hpp" bodystart="104" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1a5dc5f468c31d500d8504be479586cb2d" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_view&lt; V1, V2 &gt;::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <qualifiedname>gl::util::concat_view::begin</qualifiedname>
+        <briefdescription>
+<para>Returns an iterator to the beginning of the concatenated view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>An iterator that traverses the first range followed by the second range. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="108" column="20" bodyfile="include/gl/util/ranges.hpp" bodystart="108" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1a188141f3d49b10dabd7d6ddea4fbbd75" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_view&lt; V1, V2 &gt;::begin</definition>
+        <argsstring>() const</argsstring>
+        <name>begin</name>
+        <qualifiedname>gl::util::concat_view::begin</qualifiedname>
+    <requiresclause>(std::ranges::range&lt;const V1&gt; and std::ranges::range&lt;const V2&gt;)    </requiresclause>
+        <briefdescription>
+<para>Returns a const iterator to the beginning of the concatenated view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A const iterator that traverses the first range followed by the second range. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="118" column="20" bodyfile="include/gl/util/ranges.hpp" bodystart="118" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1a012f5104bf410b2d57d436fd45c3c097" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_view&lt; V1, V2 &gt;::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <qualifiedname>gl::util::concat_view::end</qualifiedname>
+        <briefdescription>
+<para>Returns a sentinel representing the end of the concatenated view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A sentinel that compares equal to an iterator when it reaches the end of the second range. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="130" column="20" bodyfile="include/gl/util/ranges.hpp" bodystart="130" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1a1fc1ea57ca902bd6c7f5b350493cf614" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_view&lt; V1, V2 &gt;::end</definition>
+        <argsstring>() const</argsstring>
+        <name>end</name>
+        <qualifiedname>gl::util::concat_view::end</qualifiedname>
+    <requiresclause>(std::ranges::range&lt;const V1&gt; and std::ranges::range&lt;const V2&gt;)    </requiresclause>
+        <briefdescription>
+<para>Returns a const sentinel representing the end of the concatenated view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A const sentinel that compares equal to a const iterator when it reaches the end </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="136" column="20" bodyfile="include/gl/util/ranges.hpp" bodystart="136" bodyend="140"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A view concatenating two ranges sequentially (C++20 polyfill for C++26 <computeroutput>std::views::concat</computeroutput>). </para>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para><zwj/>[!WARNING] GCC 13/14 Bug</para>
+<para>Using branching views (like this or <computeroutput>std::ranges::filter_view</computeroutput>) inside complex algorithms (e.g., <computeroutput>std::ranges::is_permutation</computeroutput>) may trigger false-positive <computeroutput>-Wmaybe-uninitialized</computeroutput> warnings. To work around this, suppress the warning at the call site or materialize the view into a contiguous container like <computeroutput>std::vector</computeroutput>. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>V1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First view type. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>V2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second view type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<xrefsect id="todo_1_todo000004"><xreftitle>Todo</xreftitle><xrefdescription><para>Replace with <computeroutput>std::views::concat</computeroutput> (C++26). </para>
+</xrefdescription></xrefsect></para>
+<sect3 id="classgl_1_1util_1_1concat__view_1see-also-36">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1util_1_1concat__fn" kindref="compound">concat_fn</ref>: A helper compile-time constant function object for creating <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput> instances.</para>
+</listitem><listitem><para><ref refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kindref="member">concat</ref>: A compile-time constant instantiation of this function object for convenient use. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/util/ranges.hpp" line="96" column="1" bodyfile="include/gl/util/ranges.hpp" bodystart="96" bodyend="231"/>
+    <listofallmembers>
+      <member refid="classgl_1_1util_1_1concat__view_1aacf0f69c37f87f09d2af480536a1ecdf" prot="private" virt="non-virtual"><scope>gl::util::concat_view</scope><name>_v1</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1afd69351d9614d09453cb1f7af4efc302" prot="private" virt="non-virtual"><scope>gl::util::concat_view</scope><name>_v2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1a5dc5f468c31d500d8504be479586cb2d" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>begin</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1a188141f3d49b10dabd7d6ddea4fbbd75" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>begin</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1af779c4d9c92709f5e4bb5960a99bb619" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>concat_view</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1a17b523fab5c09ad0c79b434983290f7b" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>concat_view</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1a012f5104bf410b2d57d436fd45c3c097" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>end</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1a1fc1ea57ca902bd6c7f5b350493cf614" prot="public" virt="non-virtual"><scope>gl::util::concat_view</scope><name>end</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

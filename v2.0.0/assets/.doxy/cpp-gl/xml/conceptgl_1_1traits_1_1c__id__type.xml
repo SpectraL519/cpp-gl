@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__id__type" kind="concept">
+    <compoundname>gl::traits::c_id_type</compoundname>
+    <includes refid="gl_2types_2core_8hpp" local="no">gl/types/core.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename T&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__id__type" kindref="compound">gl::traits::c_id_type</ref> =  std::unsigned_integral&lt;T&gt;    </initializer>
+    <briefdescription>
+<para>Concept defining the requirements for an identifier type. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Ensures that any custom ID type provided to the graph library is an unsigned integral type to guarantee safe indexing and representation.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/types/core.hpp" line="40" column="1"/>
+  </compounddef>
+</doxygen>

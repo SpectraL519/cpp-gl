@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1vertex__distance" kind="struct" language="C++" prot="public">
+    <compoundname>gl::vertex_distance</compoundname>
+    <includes refid="graph_8hpp" local="no">gl/graph.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_graph</type>
+        <declname>GraphType</declname>
+        <defname>GraphType</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1vertex__distance_1ae5b3fa49c8caae1c1be739504173be27" prot="public" static="no">
+        <type><ref refid="graph_8hpp_1af2fcdfe7be412a68b3f43ab130ec20a2" kindref="member">default_vertex_distance_type</ref></type>
+        <definition>using gl::vertex_distance&lt; GraphType &gt;::type =  default_vertex_distance_type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>gl::vertex_distance::type</qualifiedname>
+        <briefdescription>
+<para>Resolves to the default distance type if no specific weight property is detected. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1492" column="5" bodyfile="include/gl/graph.hpp" bodystart="1492" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Utility trait to resolve the underlying distance or weight numeric type for a graph. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/graph.hpp" line="1490" column="1" bodyfile="include/gl/graph.hpp" bodystart="1490" bodyend="1493"/>
+    <listofallmembers>
+      <member refid="structgl_1_1vertex__distance_1ae5b3fa49c8caae1c1be739504173be27" prot="public" virt="non-virtual"><scope>gl::vertex_distance</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

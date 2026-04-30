@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_88ac9850b1107c7963f4bc5452008419" kind="dir">
+    <compoundname>include/gl/attributes</compoundname>
+    <innerfile refid="diagnostics_8hpp">diagnostics.hpp</innerfile>
+    <innerfile refid="force__inline_8hpp">force_inline.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/attributes/"/>
+  </compounddef>
+</doxygen>

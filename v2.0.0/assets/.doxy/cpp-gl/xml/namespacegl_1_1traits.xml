@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1traits" kind="namespace" language="C++">
+    <compoundname>gl::traits</compoundname>
+    <innerclass refid="structgl_1_1traits_1_1is__instantiation__of" prot="public">gl::traits::is_instantiation_of</innerclass>
+    <innerclass refid="structgl_1_1traits_1_1is__instantiation__of_3_01U_3_01Args_8_8_8_01_4_00_01U_01_4" prot="public">gl::traits::is_instantiation_of&lt; U&lt; Args... &gt;, U &gt;</innerclass>
+    <innerclass refid="structgl_1_1traits_1_1swap__repr__tag" prot="public">gl::traits::swap_repr_tag</innerclass>
+    <innerclass refid="structgl_1_1traits_1_1swap__repr__tag_3_01graph_3_01graph__traits_3_01Dir_00_01VP_00_01EP_00_01O2a1c51ed02510394fe4450b6c0754649" prot="public">gl::traits::swap_repr_tag&lt; graph&lt; graph_traits&lt; Dir, VP, EP, OldImplTag, IdType &gt; &gt;, NewImplTag &gt;</innerclass>
+    <innerclass refid="structgl_1_1traits_1_1swap__repr__tag_3_01graph__traits_3_01Dir_00_01VP_00_01EP_00_01OldImplTag_9a28fe1b0e4026b5274857dfd47a2822" prot="public">gl::traits::swap_repr_tag&lt; graph_traits&lt; Dir, VP, EP, OldImplTag, IdType &gt;, NewImplTag &gt;</innerclass>
+    <sectiondef kind="typedef">
+      <member refid="group__GL-Traits_1gac81edc0621da8268644817708ed9e885" kind="typedef"><name>swap_repr_tag_t</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__GL-Traits_1ga6de595e64a7aefacd003bc2423e6f383" kind="variable"><name>is_instantiation_of_v</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/traits.hpp" line="14" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,440 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__HGL-IO" kind="group">
+    <compoundname>HGL-IO</compoundname>
+    <title>I/O Utility</title>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__HGL-IO_1gad8fc63e41f008399ed09373f24b359f7" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref>&lt; R &gt;</type>
+        <definition>using hgl::io::range_formatter = typedef gl::io::range_formatter&lt;R&gt;</definition>
+        <argsstring></argsstring>
+        <name>range_formatter</name>
+        <qualifiedname>hgl::io::range_formatter</qualifiedname>
+        <briefdescription>
+<para>A customizable stream proxy for formatting and printing C++ ranges.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="23" column="1" bodyfile="include/hgl/io/core.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-IO_1ga696b1d4a9a40f42efbcf3096ce4f95fd" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::integral</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structgl_1_1io_1_1implicit__range__formatter" kindref="compound">gl::io::implicit_range_formatter</ref>&lt; T &gt;</type>
+        <definition>using hgl::io::implicit_range_formatter = typedef gl::io::implicit_range_formatter&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>implicit_range_formatter</name>
+        <qualifiedname>hgl::io::implicit_range_formatter</qualifiedname>
+        <briefdescription>
+<para>A proxy object for concisely formatting large contiguous numeric ranges.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1io_1_1implicit__range__formatter" kindref="compound">gl::io::implicit_range_formatter</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="34" column="1" bodyfile="include/hgl/io/core.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" prot="public" static="no">
+        <type><ref refid="classgl_1_1io_1_1options__manip" kindref="compound">gl::io::options_manip</ref></type>
+        <definition>using hgl::io::options_manip = typedef gl::io::options_manip</definition>
+        <argsstring></argsstring>
+        <name>options_manip</name>
+        <qualifiedname>hgl::io::options_manip</qualifiedname>
+        <briefdescription>
+<para>A custom stream manipulator for modifying formatting options on standard I/O streams.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="classgl_1_1io_1_1options__manip" kindref="compound">gl::io::options_manip</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="64" column="1" bodyfile="include/hgl/io/core.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-IO_1ga68c7a56059c564fcab9ffd8d46213773" prot="public" static="no">
+        <type><ref refid="structgl_1_1io_1_1append" kindref="compound">gl::io::append</ref></type>
+        <definition>using hgl::io::append = typedef gl::io::append</definition>
+        <argsstring></argsstring>
+        <name>append</name>
+        <qualifiedname>hgl::io::append</qualifiedname>
+        <briefdescription>
+<para>Tag type specifying that a file should be opened in append mode.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para>When using this mode, the operation will append data to an existing file. It will throw an exception if the target file does not already exist.   </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/hypergraph_fio.hpp" line="24" column="1" bodyfile="include/hgl/io/hypergraph_fio.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-IO_1ga122e8e1c01d620ad256cbc6fa4b11c7a" prot="public" static="no">
+        <type><ref refid="structgl_1_1io_1_1write" kindref="compound">gl::io::write</ref></type>
+        <definition>using hgl::io::write = typedef gl::io::write</definition>
+        <argsstring></argsstring>
+        <name>write</name>
+        <qualifiedname>hgl::io::write</qualifiedname>
+        <briefdescription>
+<para>Tag type specifying that a file should be opened in strictly write (truncate) mode.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para>When using this mode, the operation will intentionally throw an exception if the target file already exists to prevent accidental data overwrites.   </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/hypergraph_fio.hpp" line="29" column="1" bodyfile="include/hgl/io/hypergraph_fio.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__HGL-IO_1gac2983c25b298e57c25b32884df848eb0" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::concise</definition>
+        <argsstring></argsstring>
+        <name>concise</name>
+        <qualifiedname>hgl::io::concise</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable concise hypergraph formatting. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Clears all layout-specific flags to default back to a compact representation. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="84" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1ga79dac2710edde0c5a1f805bb7a7b23ec" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::spec_fmt</definition>
+        <argsstring></argsstring>
+        <name>spec_fmt</name>
+        <qualifiedname>hgl::io::spec_fmt</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable verbose hypergraph formatting. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies the stream state to output detailed structural information. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="92" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gae3516eceec11b785a0d9b5a26ded68a9" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::verbose</definition>
+        <argsstring></argsstring>
+        <name>verbose</name>
+        <qualifiedname>hgl::io::verbose</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable the Hypergraph Specification Format (HGSF). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies the stream to output or expect data matching the precise internal parsing format used for serialization and deserialization. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="100" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1ga769067565d63ac236c6e5a9070a5e64e" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::with_vertex_properties</definition>
+        <argsstring></argsstring>
+        <name>with_vertex_properties</name>
+        <qualifiedname>hgl::io::with_vertex_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable the processing of vertex properties. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="105" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gaf9347ff56f2e73680c9deb198e12b0d1" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::without_vertex_properties</definition>
+        <argsstring></argsstring>
+        <name>without_vertex_properties</name>
+        <qualifiedname>hgl::io::without_vertex_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to disable the processing of vertex properties. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="110" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gaa3b84e9653cec1cd87a8f72d50a1d31e" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::with_hyperedge_properties</definition>
+        <argsstring></argsstring>
+        <name>with_hyperedge_properties</name>
+        <qualifiedname>hgl::io::with_hyperedge_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable the processing of hyperedge properties. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="115" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="115" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gae2cb9a2dbb43a94a93efcbb5f4cb6b75" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::without_hyperedge_properties</definition>
+        <argsstring></argsstring>
+        <name>without_hyperedge_properties</name>
+        <qualifiedname>hgl::io::without_hyperedge_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to disable the processing of hyperedge properties. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="121" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="121" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1ga8735be586da90ff9701dd5a4a7bc5398" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::with_properties</definition>
+        <argsstring></argsstring>
+        <name>with_properties</name>
+        <qualifiedname>hgl::io::with_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to enable the processing of both vertex and hyperedge properties simultaneously. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="127" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="127" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gae5b683600c296342dbbb5cc544fd2abe" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::without_properties</definition>
+        <argsstring></argsstring>
+        <name>without_properties</name>
+        <qualifiedname>hgl::io::without_properties</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to disable the processing of both vertex and hyperedge properties simultaneously. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="132" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-IO_1gafb6763f4653fe669d5de30731cfe4ea9" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr options_manip</type>
+        <definition>constexpr options_manip hgl::io::default_options</definition>
+        <argsstring></argsstring>
+        <name>default_options</name>
+        <qualifiedname>hgl::io::default_options</qualifiedname>
+        <briefdescription>
+<para><ref refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kindref="member">Stream manipulator</ref> to reset all custom graph formatting flags back to their default states. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/core.hpp" line="137" column="32" bodyfile="include/hgl/io/core.hpp" bodystart="137" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__HGL-IO_1ga3d00c83d753c21006db22da0fc04cf52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>HypergraphType</declname>
+            <defname>HypergraphType</defname>
+          </param>
+          <param>
+            <type>traits::c_io_save_mode</type>
+            <declname>Mode</declname>
+            <defname>Mode</defname>
+            <defval>write</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void hgl::io::save</definition>
+        <argsstring>(const HypergraphType &amp;hypergraph, const std::filesystem::path &amp;path=&quot;hypergraph.hgsf&quot;, const std::initializer_list&lt; gl::io::options_manip &gt; &amp;options={})</argsstring>
+        <name>save</name>
+        <qualifiedname>hgl::io::save</qualifiedname>
+        <param>
+          <type>const HypergraphType &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const std::filesystem::path &amp;</type>
+          <declname>path</declname>
+          <defval>&quot;hypergraph.hgsf&quot;</defval>
+        </param>
+        <param>
+          <type>const std::initializer_list&lt; <ref refid="classgl_1_1io_1_1options__manip" kindref="compound">gl::io::options_manip</ref> &gt; &amp;</type>
+          <declname>options</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Serializes and saves a hypergraph to a file. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Writes the topology and optionally the properties of the hypergraph to the specified file using the Hypergraph Specification Format (HGSF). By default, The function strictly respects the <ref refid="group__HGL-IO_1ga122e8e1c01d620ad256cbc6fa4b11c7a" kindref="member">write</ref> and <ref refid="group__HGL-IO_1ga68c7a56059c564fcab9ffd8d46213773" kindref="member">append</ref> safety guards.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>HypergraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The concrete type of the hypergraph being saved. Must satisfy <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The file access mode (e.g., <ref refid="group__HGL-IO_1ga122e8e1c01d620ad256cbc6fa4b11c7a" kindref="member">write</ref> or <ref refid="group__HGL-IO_1ga68c7a56059c564fcab9ffd8d46213773" kindref="member">append</ref>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph instance to serialize. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The filesystem path where the hypergraph will be saved. Defaults to <computeroutput>&quot;hypergraph.hgsf&quot;</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An optional initializer list of stream manipulators to configure the output (e.g., <computeroutput>{<ref refid="group__HGL-IO_1ga8735be586da90ff9701dd5a4a7bc5398" kindref="member">hgl::io::with_properties</ref>}</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::filesystem::filesystem_error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If file safety checks fail (e.g., overwriting an existing file in <computeroutput>write</computeroutput> mode). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>std::ios_base::failure</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the underlying file stream cannot be opened. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/hypergraph_fio.hpp" line="52" column="6" bodyfile="include/hgl/io/hypergraph_fio.hpp" bodystart="52" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-IO_1gad744a03534f2dfba958705c22eab9dfe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>HypergraphType</declname>
+            <defname>HypergraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>HypergraphType</type>
+        <definition>HypergraphType hgl::io::load</definition>
+        <argsstring>(const std::filesystem::path &amp;path)</argsstring>
+        <name>load</name>
+        <qualifiedname>hgl::io::load</qualifiedname>
+        <param>
+          <type>const std::filesystem::path &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Deserializes and loads a hypergraph from a file. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Instantiates a new hypergraph populated with the topology and properties read from the target HGSF file.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>HypergraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target hypergraph type to construct. Must match the directional nature of the saved hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The filesystem path from which to load the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed hypergraph populated with the file&apos;s data.</para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::filesystem::filesystem_error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the file does not exist or is not a regular file. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>std::ios_base::failure</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the file cannot be opened or if the HGSF directional discriminator mismatches <computeroutput>HypergraphType</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/io/hypergraph_fio.hpp" line="78" column="17" bodyfile="include/hgl/io/hypergraph_fio.hpp" bodystart="78" bodyend="87"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>I/O stream operations, formatting, and serialization of hypergraph data. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Provides the necessary infrastructure to seamlessly serialize, deserialize, and visualize complex hypergraph structures. It utilizes shared stream manipulation options and range formatting utilities to easily translate in-memory hypergraphs to and from standard streams and files. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

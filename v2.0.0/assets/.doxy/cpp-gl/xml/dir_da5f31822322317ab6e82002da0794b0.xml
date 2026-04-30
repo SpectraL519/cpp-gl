@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_da5f31822322317ab6e82002da0794b0" kind="dir">
+    <compoundname>include/gl/io</compoundname>
+    <innerfile refid="graph__fio_8hpp">graph_fio.hpp</innerfile>
+    <innerfile refid="graph__fmt__traits_8hpp">graph_fmt_traits.hpp</innerfile>
+    <innerfile refid="options_8hpp">options.hpp</innerfile>
+    <innerfile refid="options__manip_8hpp">options_manip.hpp</innerfile>
+    <innerfile refid="io_2ranges_8hpp">ranges.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/io/"/>
+  </compounddef>
+</doxygen>

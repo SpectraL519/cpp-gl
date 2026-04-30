@@ -1,0 +1,2960 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__GL-Algorithm" kind="group">
+    <compoundname>GL-Algorithm</compoundname>
+    <title>Graph Algorithms</title>
+    <innerclass refid="structgl_1_1algorithm_1_1empty__callback" prot="public">gl::algorithm::empty_callback</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1decision" prot="public">gl::algorithm::decision</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1search__node" prot="public">gl::algorithm::search_node</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1no__root__t" prot="public">gl::algorithm::no_root_t</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1paths__descriptor" prot="public">gl::algorithm::paths_descriptor</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1dijkstra__search__node" prot="public">gl::algorithm::dijkstra_search_node</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1mst__descriptor" prot="public">gl::algorithm::mst_descriptor</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" prot="public" static="no" strong="yes">
+        <type>bool</type>
+        <name>result_discriminator</name>
+        <qualifiedname>gl::algorithm::result_discriminator</qualifiedname>
+        <enumvalue id="group__GL-Algorithm_1gga4c3a735fb0cb47c85d657fd764c1b471a2cb9df9898e55fd0ad829dc202ddbd1c" prot="public">
+          <name>ret</name>
+          <initializer>= true</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__GL-Algorithm_1gga4c3a735fb0cb47c85d657fd764c1b471aa929137205b29f10cf87b490f1026b5a" prot="public">
+          <name>noret</name>
+          <initializer>= false</initializer>
+          <briefdescription>
+<para>&lt; The algorithm should build and return a result (e.g., a predecessor map). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Tag used to statically dictate whether an algorithm should return a constructed result or execute purely for side effects. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><blockquote><para><zwj/>[!NOTE] Namespace Availability</para>
+<para>Because this enum uses the <computeroutput>using enum</computeroutput> declaration, its members (<computeroutput>ret</computeroutput> and <computeroutput>noret</computeroutput>) are injected directly into the <computeroutput>gl::algorithm</computeroutput> namespace. Hence, you can use <computeroutput>gl::algorithm::ret</computeroutput> and <computeroutput><ref refid="group__GL-Algorithm_1gga4c3a735fb0cb47c85d657fd764c1b471aa929137205b29f10cf87b490f1026b5a" kindref="member">gl::algorithm::noret</ref></computeroutput> directly without the <computeroutput>result_discriminator::</computeroutput> scope. </para>
+</blockquote></para>
+<sect3 id="group__GL-Algorithm_1see-also">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" kindref="member">result_type</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" kindref="member">non_void_result_type</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="93" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="93" bodyend="96"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>typename ResultType</type>
+          </param>
+        </templateparamlist>
+        <type>std::conditional_t&lt; Result==algorithm::ret, ResultType, void &gt;</type>
+        <definition>using gl::algorithm::result_type = typedef std::conditional_t&lt;Result == algorithm::ret, ResultType, void&gt;</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <qualifiedname>gl::algorithm::result_type</qualifiedname>
+        <briefdescription>
+<para>Resolves to the specified <computeroutput>ResultType</computeroutput> if <computeroutput>Result</computeroutput> is <computeroutput>ret</computeroutput>, otherwise resolves to <computeroutput>void</computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Algorithm_1see-also-1">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">result_discriminator</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" kindref="member">non_void_result_type</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="106" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>typename ResultType</type>
+          </param>
+        </templateparamlist>
+        <type>std::conditional_t&lt; Result==algorithm::ret, ResultType, std::monostate &gt;</type>
+        <definition>using gl::algorithm::non_void_result_type = typedef std::conditional_t&lt;Result == algorithm::ret, ResultType, std::monostate&gt;</definition>
+        <argsstring></argsstring>
+        <name>non_void_result_type</name>
+        <qualifiedname>gl::algorithm::non_void_result_type</qualifiedname>
+        <briefdescription>
+<para>Resolves to the specified <computeroutput>ResultType</computeroutput> if <computeroutput>Result</computeroutput> is <computeroutput>ret</computeroutput>, otherwise resolves to <computeroutput>std::monostate</computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Useful for returning dummy values from conditionally compiled algorithm branches.</para>
+<sect3 id="group__GL-Algorithm_1see-also-2">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">result_discriminator</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" kindref="member">result_type</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="117" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; typename GraphType::id_type &gt;</type>
+        <definition>using gl::algorithm::predecessors_map = typedef std::vector&lt;typename GraphType::id_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>predecessors_map</name>
+        <qualifiedname>gl::algorithm::predecessors_map</qualifiedname>
+        <briefdescription>
+<para>Maps a vertex ID to its predecessor&apos;s ID in a traversal tree. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph being traversed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="126" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Algorithm_1ga209f641feca0451f9627fd067935daa7" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>paths_descriptor&lt; G, vertex_distance_type&lt; G &gt; &gt;</type>
+        <definition>using gl::algorithm::paths_descriptor_type = typedef paths_descriptor&lt;G, vertex_distance_type&lt;G&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>paths_descriptor_type</name>
+        <qualifiedname>gl::algorithm::paths_descriptor_type</qualifiedname>
+        <briefdescription>
+<para>An alias for <ref refid="structgl_1_1algorithm_1_1paths__descriptor" kindref="compound">paths_descriptor</ref> that automatically deduces the appropriate distance type for the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="46" column="1" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Algorithm_1gafe3650547f62e5b3efa5af18fccbfcad" prot="public" static="no">
+        <type>std::vector&lt; binary_color &gt;</type>
+        <definition>using gl::algorithm::bicoloring_type = typedef std::vector&lt;binary_color&gt;</definition>
+        <argsstring></argsstring>
+        <name>bicoloring_type</name>
+        <qualifiedname>gl::algorithm::bicoloring_type</qualifiedname>
+        <briefdescription>
+<para>Alias for a container mapping vertex indices to their calculated binary (bipartite) colors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/topology/coloring.hpp" line="17" column="1" bodyfile="include/gl/algorithm/topology/coloring.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__GL-Algorithm_1gaa49c574ed607d45e2a55f9495cfb8494" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType gl::algorithm::no_root_v</definition>
+        <argsstring></argsstring>
+        <name>no_root_v</name>
+        <qualifiedname>gl::algorithm::no_root_v</qualifiedname>
+        <initializer>= invalid_id_v&lt;IdType&gt;</initializer>
+        <briefdescription>
+<para>Constant representing the absence of a root vertex ID for a specific ID type. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Algorithm_1see-also-3">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">gl::invalid_id_v</ref></para>
+</listitem><listitem><para><ref refid="structgl_1_1algorithm_1_1no__root__t" kindref="compound">no_root_t</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">no_root</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="166" column="25" bodyfile="include/hgl/algorithm/core.hpp" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr no_root_t</type>
+        <definition>constexpr no_root_t gl::algorithm::no_root</definition>
+        <argsstring></argsstring>
+        <name>no_root</name>
+        <qualifiedname>gl::algorithm::no_root</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>Global constant representing the absence of a root vertex. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Algorithm_1see-also-5">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1gaa49c574ed607d45e2a55f9495cfb8494" kindref="member">no_root_v</ref></para>
+</listitem><listitem><para><ref refid="structgl_1_1algorithm_1_1no__root__t" kindref="compound">no_root_t</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/core.hpp" line="194" column="28" bodyfile="include/hgl/algorithm/core.hpp" bodystart="194" bodyend="194"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__GL-Algorithm_1gaaa3d44e461049fdfa8df79ec58d1f75a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>paths_descriptor_type&lt; G &gt;</type>
+        <definition>paths_descriptor_type&lt; G &gt; gl::algorithm::make_paths_descriptor</definition>
+        <argsstring>(const G &amp;graph)</argsstring>
+        <name>make_paths_descriptor</name>
+        <qualifiedname>gl::algorithm::make_paths_descriptor</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>Factory function to create an initialized paths descriptor sized for the given graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to size the descriptor against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="structgl_1_1algorithm_1_1paths__descriptor" kindref="compound">paths_descriptor</ref> initialized with invalid predecessors and default-constructed distances. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="54" column="25" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="54" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gaa94c7bbaa9f46fc9651d5f5cb035d38f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>paths_descriptor_type&lt; G &gt;</type>
+        <definition>paths_descriptor_type&lt; G &gt; gl::algorithm::dijkstra_shortest_paths</definition>
+        <argsstring>(const G &amp;graph, typename G::id_type source_id, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>dijkstra_shortest_paths</name>
+        <qualifiedname>gl::algorithm::dijkstra_shortest_paths</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>typename G::id_type</type>
+          <declname>source_id</declname>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Computes the shortest paths from a single source vertex to all reachable vertices using Dijkstra&apos;s algorithm. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm utilizes the generic <ref refid="group__GL-Algorithm_1ga7367aa670e37c4bdcc5e0013a1452c34" kindref="member">pfs</ref> template using the dedicated <ref refid="structgl_1_1algorithm_1_1dijkstra__search__node" kindref="compound">serch node type</ref> to perform a priority-first search based on accumulated edge weights. It strictly requires non-negative edge weights; if a negative weight is encountered during traversal, the algorithm immediately throws an exception.</para>
+<sect3 id="group__GL-Algorithm_1example-usage">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">paths</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1gaa94c7bbaa9f46fc9651d5f5cb035d38f" kindref="member">gl::algorithm::dijkstra_shortest_paths</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">source_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">path_to_target</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga7e05d262c7f9fef1127228f6f3232352" kindref="member">gl::algorithm::reconstruct_path</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">paths</ref>.predecessors,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">target_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Path:<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">path_to_target</ref>,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>-&gt;<sp/>&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">)<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\nDistance:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">paths</ref>.distances[<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">target_id</ref>]<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight></codeline>
+</programlisting></para>
+<para>1. Executes the shortest path calculation from the given <computeroutput>source_id</computeroutput>.</para>
+<para>2. Reconstructs the exact sequence of vertices from the source to the <computeroutput>target_id</computeroutput> using the <ref refid="group__GL-Algorithm_1ga7e05d262c7f9fef1127228f6f3232352" kindref="member">reconstruct_path</ref> function.</para>
+<para>3. Prints the path to the target vertex using the <ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">range_formatter</ref> helper.</para>
+<para>4. Retrievs the total distance to the target vertex from the <ref refid="structgl_1_1algorithm_1_1paths__descriptor" kindref="compound">paths descriptor</ref> object returned by Dijkstra&apos;s algorithm.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends on the underlying representation of <computeroutput>GraphType</computeroutput> and the priority queue overhead:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="0">$O((|V| + |E|) \log |V|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="1">$O(|V|^2 + |E| \log |V|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-1">
+<title>Template Parameters</title>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed. Must define a valid distance/weight property.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>source_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex ID for the shortest path calculation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been enqueued. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="structgl_1_1algorithm_1_1paths__descriptor" kindref="compound">paths_descriptor</ref> containing the accumulated distances and predecessor map. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If an edge with a negative weight is encountered.  <hideparams/>  </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="131" column="24" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="131" bodyend="204"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga7e05d262c7f9fef1127228f6f3232352" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+          <param>
+            <type>traits::c_random_access_range_of&lt; IdType &gt;</type>
+            <declname>IdRange</declname>
+            <defname>IdRange</defname>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; IdType &gt;</type>
+        <definition>std::vector&lt; IdType &gt; gl::algorithm::reconstruct_path</definition>
+        <argsstring>(const IdRange &amp;predecessor_map, const IdType vertex_id)</argsstring>
+        <name>reconstruct_path</name>
+        <qualifiedname>gl::algorithm::reconstruct_path</qualifiedname>
+        <param>
+          <type>const IdRange &amp;</type>
+          <declname>predecessor_map</declname>
+        </param>
+        <param>
+          <type>const IdType</type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Reconstructs the sequence of vertices forming a path to a specific target. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This utility walks backward through a predecessor map, starting from the <computeroutput>vertex_id</computeroutput> until it reaches the root vertex (a vertex that is its own predecessor).</para>
+<sect3 id="group__GL-Algorithm_1template-parameters-2">
+<title>Template Parameters</title>
+<para><table rows="3" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The type of the vertex IDs.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the random-access range containing the predecessor map.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-random-access-range-of"><bold>c_random_access_range_of</bold></ulink> concept for <computeroutput>IdType</computeroutput>.   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>predecessor_map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The predecessor map generated by a traversal algorithm (e.g., BFS, DFS, Dijkstra). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target vertex ID to reconstruct the path for. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>std::vector</computeroutput> containing the sequence of vertex IDs from the source to the target. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the target <computeroutput>vertex_id</computeroutput> is unreachable (its predecessor is invalid).  <hideparams/>  </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="224" column="14" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="224" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga62cd7826c787963e2a27cd81392d0526" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_undirected_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>mst_descriptor&lt; G &gt;</type>
+        <definition>mst_descriptor&lt; G &gt; gl::algorithm::edge_heap_prim_mst</definition>
+        <argsstring>(const G &amp;graph, typename G::id_type root_id)</argsstring>
+        <name>edge_heap_prim_mst</name>
+        <qualifiedname>gl::algorithm::edge_heap_prim_mst</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>typename G::id_type</type>
+          <declname>root_id</declname>
+        </param>
+        <briefdescription>
+<para>Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim&apos;s algorithm with an edge-based priority queue. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This implementation uses a standard binary heap (<computeroutput>std::priority_queue</computeroutput>) to store and sort edges based on their weight. It pushes newly discovered adjacent edges into the queue and safely ignores those that lead to already-visited vertices.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-1">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga62cd7826c787963e2a27cd81392d0526" kindref="member">gl::algorithm::edge_heap_prim_mst</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Total<sp/>MST<sp/>Weight:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref>.weight</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\nMST<sp/>Edges:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1ga53e1e6926f47023bf3efb4c3841611d9" kindref="member">gl::io::set_formatter</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref>.edges)<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para>1. Computes the MST starting from the given <computeroutput>start_id</computeroutput>. If <computeroutput>invalid_id</computeroutput> is passed, it defaults to the graph&apos;s <computeroutput>initial_id</computeroutput>.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends on the underlying representation of <computeroutput>GraphType</computeroutput> and the queue overhead:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="3">$O(|E| \log |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> In simple graphs, this simplifies to <formula id="4">$O(|E| \log |V|)$</formula>. However, because list models allow multigraphs, the queue size and operations scale strictly with <formula id="5">$|E|$</formula>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="1">$O(|V|^2 + |E| \log |V|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over incident edges requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. Since matrices represent simple graphs, the heap operations safely simplify to <formula id="6">$O(\log |V|)$</formula>. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-3">
+<title>Template Parameters</title>
+<para><table rows="2" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the undirected graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-undirected-graph"><bold>c_undirected_graph</bold></ulink> concept.   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The undirected graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex ID for the MST calculation. Defaults to the graph&apos;s <computeroutput>initial_id</computeroutput> if <computeroutput>invalid_id</computeroutput> is passed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="structgl_1_1algorithm_1_1mst__descriptor" kindref="compound">mst_descriptor</ref> containing the accumulated minimum weight and the sequence of edges forming the tree. </para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1see-also-6">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga528fe265080e14aa5bd1320263e10419" kindref="member">vertex_heap_prim_mst</ref> For the vertex-heap variant of the Prim&apos;s MST finding algorithm.  <hideparams/>  </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/spanning_tree/prim_mst.hpp" line="80" column="17" bodyfile="include/gl/algorithm/spanning_tree/prim_mst.hpp" bodystart="80" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga528fe265080e14aa5bd1320263e10419" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_undirected_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>mst_descriptor&lt; G &gt;</type>
+        <definition>mst_descriptor&lt; G &gt; gl::algorithm::vertex_heap_prim_mst</definition>
+        <argsstring>(const G &amp;graph, typename G::id_type root_id)</argsstring>
+        <name>vertex_heap_prim_mst</name>
+        <qualifiedname>gl::algorithm::vertex_heap_prim_mst</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>typename G::id_type</type>
+          <declname>root_id</declname>
+        </param>
+    <requiresclause>(traits::c_has_numeric_limits_max&lt;vertex_distance_type&lt;G&gt;&gt;)    </requiresclause>
+        <briefdescription>
+<para>Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim&apos;s algorithm with a vertex-based array heap. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This variation maintains a heap of vertex IDs based on their minimum known connection cost. Because standard C++ heaps do not support a <computeroutput>decrease_key</computeroutput> operation, this implementation dynamically rebuilds the heap (<computeroutput>std::make_heap</computeroutput>) at the end of each iteration to reflect updated distances.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-2">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga528fe265080e14aa5bd1320263e10419" kindref="member">gl::algorithm::vertex_heap_prim_mst</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Total<sp/>MST<sp/>Weight:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref>.weight</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\nMST<sp/>Edges:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1ga53e1e6926f47023bf3efb4c3841611d9" kindref="member">gl::io::set_formatter</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">mst</ref>.edges)<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para>1. Computes the MST starting from the given <computeroutput>start_id</computeroutput>. Highly optimal for dense matrix graphs.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>Due to rebuilding the heap ( <formula id="7">$O(|V|)$</formula>) up to <formula id="2">$|V|$</formula> times, combined with evaluating every edge, the strict time complexity is <formula id="8">$O(|V|^2 + |E|)$</formula>:<itemizedlist>
+<listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Note:</emphasis> Since matrix models inherently represent simple graphs (where <formula id="10">$|E| \le |V|^2$</formula>), the complexity strictly simplifies to <formula id="9">$O(|V|^2)$</formula>. This makes the vertex heap approach highly suitable for dense graphs.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency List Representations</bold>: <formula id="8">$O(|V|^2 + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Note:</emphasis> For multigraphs, the edge count <formula id="5">$|E|$</formula> can exceed <formula id="11">$|V|^2$</formula>, meaning the edge traversal phase will dictate the overall performance. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-4">
+<title>Template Parameters</title>
+<para><table rows="2" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the undirected graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-undirected-graph"><bold>c_undirected_graph</bold></ulink> concept and its <ref refid="group__GL-Core_1ga8406242194997458e6b145b6dd579bf6" kindref="member">distance type</ref> must satisfy <ulink url="gl_concepts.md#gl-traits-c-has-numeric-limits-max"><bold>c_has_numeric_limits_max</bold></ulink>.   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The undirected graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex ID for the MST calculation. Defaults to the graph&apos;s <computeroutput>initial_id</computeroutput> if <computeroutput>invalid_id</computeroutput> is passed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="structgl_1_1algorithm_1_1mst__descriptor" kindref="compound">mst_descriptor</ref> containing the accumulated minimum weight and the sequence of edges forming the tree. </para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1see-also-7">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga62cd7826c787963e2a27cd81392d0526" kindref="member">edge_heap_prim_mst</ref> For the vertex-heap variant of the Prim&apos;s MST finding algorithm.  <hideparams/>  </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/spanning_tree/prim_mst.hpp" line="173" column="17" bodyfile="include/gl/algorithm/spanning_tree/prim_mst.hpp" bodystart="173" bodyend="235"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; search_node&lt; G &gt; &gt;</type>
+            <declname>InitQueueRangeType</declname>
+            <defname>InitQueueRangeType</defname>
+            <defval>std::vector&lt;search_node&lt;G&gt;&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type &gt;</type>
+            <declname>VisitVertexPredicate</declname>
+            <defname>VisitVertexPredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type, typename G::id_type &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; typename G::id_type, const typename G::edge_type &amp; &gt;</type>
+            <declname>EnqueueNodePred</declname>
+            <defname>EnqueueNodePred</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool gl::algorithm::bfs</definition>
+        <argsstring>(const G &amp;graph, const InitQueueRangeType &amp;initial_queue_content, VisitVertexPredicate visit_vertex_pred={}, VisitCallback visit={}, EnqueueNodePred enqueue_node_pred={}, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>bfs</name>
+        <qualifiedname>gl::algorithm::bfs</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const InitQueueRangeType &amp;</type>
+          <declname>initial_queue_content</declname>
+        </param>
+        <param>
+          <type>VisitVertexPredicate</type>
+          <declname>visit_vertex_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>VisitCallback</type>
+          <declname>visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>EnqueueNodePred</type>
+          <declname>enqueue_node_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>A highly customizable, generic Breadth-First Search (BFS) algorithm engine. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This template does not implement a specific algorithm (like finding a shortest path). Instead, it provides the strict structural execution of a queue-based Breadth-First Search. Concrete algorithms are constructed by injecting logic into the provided callback and predicate hooks.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-3">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>.<ref refid="classgl_1_1graph_1ad2964442759986d95387119dfaf98018" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">completed</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" kindref="member">gl::algorithm::bfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::init_node_range&lt;graph_type&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>),<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" kindref="member">gl::algorithm::default_visit_vertex_predicate</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>),<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">p</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Visited<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Continue<sp/>search</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::default_enqueue_node_predicate&lt;graph_type,<sp/>true&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>)<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Tracks discovered vertices.</para>
+<para>2. Initializes the search queue with the starting vertex.</para>
+<para>3. Predicate ensuring we don&apos;t process a vertex if it was already marked visited.</para>
+<para>4. The main visit callback. Here we just print the ID. Returning <computeroutput>false</computeroutput> would abort the search.</para>
+<para>5. Predicate ensuring we only enqueue adjacent vertices that haven&apos;t been visited yet, returning a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref>.</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-5">
+<title>Template Parameters</title>
+<para><table rows="8" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>InitQueueRangeType   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must be a <emphasis>forward range</emphasis> of <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitVertexPredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a popped vertex should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed when a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueueNodePred   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the queue.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, const edge_type&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_queue_content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref> to seed the BFS queue. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_vertex_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated immediately after popping a vertex. If it returns <computeroutput>false</computeroutput>, the vertex is skipped. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback invoked when a vertex is officially visited. If it returns <computeroutput>false</computeroutput>, the entire BFS immediately aborts. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_node_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated for each outgoing edge. Returns a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to enqueue,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the BFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the <computeroutput>visit</computeroutput> callback. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the queue was exhausted naturally, <computeroutput>false</computeroutput> if the search was aborted early by a callback or predicate.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/templates/bfs.hpp" line="85" column="6" bodyfile="include/hgl/algorithm/templates/bfs.hpp" bodystart="85" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga092865c8a4a9965e4a281a32086ee496" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; search_node&lt; G &gt; &gt;</type>
+            <declname>InitStackRangeType</declname>
+            <defname>InitStackRangeType</defname>
+            <defval>std::vector&lt;search_node&lt;G&gt;&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type &gt;</type>
+            <declname>VisitVertexPredicate</declname>
+            <defname>VisitVertexPredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type, typename G::id_type &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; typename G::id_type, const typename G::edge_type &amp; &gt;</type>
+            <declname>EnqueueNodePred</declname>
+            <defname>EnqueueNodePred</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool gl::algorithm::dfs</definition>
+        <argsstring>(const G &amp;graph, const InitStackRangeType &amp;initial_stack_content, VisitVertexPredicate visit_vertex_pred={}, VisitCallback visit={}, EnqueueNodePred enqueue_node_pred={}, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>dfs</name>
+        <qualifiedname>gl::algorithm::dfs</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const InitStackRangeType &amp;</type>
+          <declname>initial_stack_content</declname>
+        </param>
+        <param>
+          <type>VisitVertexPredicate</type>
+          <declname>visit_vertex_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>VisitCallback</type>
+          <declname>visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>EnqueueNodePred</type>
+          <declname>enqueue_node_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>A highly customizable, generic iterative Depth-First Search (DFS) algorithm engine. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This engine provides the strict structural execution of a stack-based Depth-First Search. Concrete algorithms (like cycle detection or topological sorting) are built by injecting specific logic into the provided callback hooks.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-4">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>.<ref refid="classgl_1_1graph_1ad2964442759986d95387119dfaf98018" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">completed</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga092865c8a4a9965e4a281a32086ee496" kindref="member">gl::algorithm::dfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::init_node_range&lt;graph_type&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>),<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" kindref="member">gl::algorithm::default_visit_vertex_predicate</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>),<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">p</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Visited<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Continue<sp/>search</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::default_enqueue_node_predicate&lt;graph_type,<sp/>true&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>)<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Tracks discovered vertices.</para>
+<para>2. Initializes the search stack with the starting vertex.</para>
+<para>3. Predicate ensuring we don&apos;t process a vertex if it was already marked visited.</para>
+<para>4. The main visit callback. Returning <computeroutput>false</computeroutput> would abort the search.</para>
+<para>5. Predicate ensuring we only push adjacent, unvisited vertices to the stack, returning a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref>.</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-6">
+<title>Template Parameters</title>
+<para><table rows="8" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>InitStackRangeType   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to push to the stack.   </para>
+</entry><entry thead="no" align='left'><para>Must be a <emphasis>forward range</emphasis> of <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitVertexPredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a popped vertex should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed when a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueueNodePred   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the stack.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, const edge_type&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_stack_content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref> to seed the DFS stack. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_vertex_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated immediately after popping a vertex. If it returns <computeroutput>false</computeroutput>, the vertex is skipped. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback invoked when a vertex is officially visited. If it returns <computeroutput>false</computeroutput>, the entire DFS immediately aborts. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_node_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated for each outgoing edge. Returns a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to enqueue,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the DFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the <computeroutput>visit</computeroutput> callback. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the stack was exhausted naturally, <computeroutput>false</computeroutput> if the search was aborted early.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/templates/dfs.hpp" line="84" column="6" bodyfile="include/hgl/algorithm/templates/dfs.hpp" bodystart="84" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga0513c30f79cc2c4d3180d47cd799cad6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type &gt;</type>
+            <declname>VisitVertexPredicate</declname>
+            <defname>VisitVertexPredicate</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type, typename G::id_type &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; typename G::id_type, const typename G::edge_type &amp; &gt;</type>
+            <declname>EnqueueNodePred</declname>
+            <defname>EnqueueNodePred</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void gl::algorithm::r_dfs</definition>
+        <argsstring>(const G &amp;graph, const typename G::id_type vertex_id, const typename G::id_type pred_id, VisitVertexPredicate visit_vertex_pred, VisitCallback visit, EnqueueNodePred enqueue_node_pred, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>r_dfs</name>
+        <qualifiedname>gl::algorithm::r_dfs</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const typename G::id_type</type>
+          <declname>vertex_id</declname>
+        </param>
+        <param>
+          <type>const typename G::id_type</type>
+          <declname>pred_id</declname>
+        </param>
+        <param>
+          <type>VisitVertexPredicate</type>
+          <declname>visit_vertex_pred</declname>
+        </param>
+        <param>
+          <type>VisitCallback</type>
+          <declname>visit</declname>
+        </param>
+        <param>
+          <type>EnqueueNodePred</type>
+          <declname>enqueue_node_pred</declname>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>A highly customizable, generic recursive Depth-First Search (DFS) algorithm engine. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This engine mirrors the iterative <computeroutput>dfs</computeroutput> behavior but utilizes the C++ call stack. It does not accept an initial range, but instead is kicked off for a specific root vertex. It does not return a boolean abort signal; logic flow must be managed by the injected callbacks.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-5">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>.<ref refid="classgl_1_1graph_1ad2964442759986d95387119dfaf98018" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GL-Algorithm_1ga0513c30f79cc2c4d3180d47cd799cad6" kindref="member">gl::algorithm::r_dfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>,<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">gl::algorithm::no_root</ref>,<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" kindref="member">gl::algorithm::default_visit_vertex_predicate</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>),<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">p</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Recursively<sp/>visiting<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::default_enqueue_node_predicate&lt;graph_type,<sp/>false&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>)<sp/></highlight><highlight class="comment">//<sp/>(6)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Tracks discovered vertices.</para>
+<para>2. The ID of the starting vertex for the recursion.</para>
+<para>3. Indicates that the starting vertex has no predecessor.</para>
+<para>4. Predicate evaluated upon entering the recursive call to prevent duplicate processing.</para>
+<para>5. The main visit callback.</para>
+<para>6. Predicate evaluating whether to recursively traverse into the target vertex.</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-7">
+<title>Template Parameters</title>
+<para><table rows="7" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitVertexPredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if the current vertex should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed when the vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueueNodePred   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a node corresponding to an adjacent vertex should be recursed into.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, const edge_type&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the vertex currently being visited. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pred_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the predecessor vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_vertex_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated immediately upon entry. If it returns <computeroutput>false</computeroutput>, recursion returns early. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback invoked when a vertex is officially visited. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_node_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated for each outgoing edge. If <computeroutput>true</computeroutput>, the target is recursed into. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the <computeroutput>visit</computeroutput> callback. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after returning from all adjacent recursive calls.  <hideparams/>  </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/templates/dfs.hpp" line="195" column="6" bodyfile="include/hgl/algorithm/templates/dfs.hpp" bodystart="195" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga7367aa670e37c4bdcc5e0013a1452c34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>typename PQCmp</type>
+          </param>
+          <param>
+            <type>typename InitQueueRangeType</type>
+            <defval>std::vector&lt;search_node&lt;G&gt;&gt;</defval>
+          </param>
+          <param>
+            <type>typename NodeType</type>
+            <defval>std::ranges::range_value_t&lt;InitQueueRangeType&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; NodeType &gt;</type>
+            <declname>VisitVertexPredicate</declname>
+            <defname>VisitVertexPredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; typename G::id_type, typename G::id_type &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; typename G::id_type, const typename G::edge_type &amp; &gt;</type>
+            <declname>EnqueueNodePred</declname>
+            <defname>EnqueueNodePred</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; NodeType, typename G::id_type, typename G::id_type, const typename G::edge_type &amp; &gt;</type>
+            <declname>MakeNodeCallback</declname>
+            <defname>MakeNodeCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool gl::algorithm::pfs</definition>
+        <argsstring>(const G &amp;graph, const PQCmp &amp;pq_cmp, const InitQueueRangeType &amp;initial_queue_content, VisitVertexPredicate visit_vertex_pred={}, VisitCallback visit={}, EnqueueNodePred enqueue_node_pred={}, MakeNodeCallback make_node={}, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>pfs</name>
+        <qualifiedname>gl::algorithm::pfs</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const PQCmp &amp;</type>
+          <declname>pq_cmp</declname>
+        </param>
+        <param>
+          <type>const InitQueueRangeType &amp;</type>
+          <declname>initial_queue_content</declname>
+        </param>
+        <param>
+          <type>VisitVertexPredicate</type>
+          <declname>visit_vertex_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>VisitCallback</type>
+          <declname>visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>EnqueueNodePred</type>
+          <declname>enqueue_node_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>MakeNodeCallback</type>
+          <declname>make_node</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+    <requiresclause>traits::c_predicate&lt;PQCmp, NodeType, NodeType&gt;    </requiresclause>
+        <briefdescription>
+<para>A highly customizable, generic Priority-First Search (PFS) algorithm engine. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This template provides the strict structural execution of a priority queue-based search. It acts as the underlying engine for algorithms like Dijkstra&apos;s Shortest Path Search. Concrete algorithms are constructed by injecting logic into the provided callbacks and defining the custom priority comparator.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-6">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>.<ref refid="classgl_1_1graph_1ad2964442759986d95387119dfaf98018" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">completed</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga7367aa670e37c4bdcc5e0013a1452c34" kindref="member">gl::algorithm::pfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">lhs</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">rhs</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">lhs</ref>.vertex_id<sp/>&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">rhs</ref>.vertex_id;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::init_node_range&lt;graph_type&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>),<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" kindref="member">gl::algorithm::default_visit_vertex_predicate</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref><sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">p</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Priority<sp/>visited<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Continue<sp/>search</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gl::algorithm::default_enqueue_node_predicate&lt;graph_type,<sp/>true&gt;(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">visited</ref>)<sp/></highlight><highlight class="comment">//<sp/>(6)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Tracks discovered vertices.</para>
+<para>2. Injects the comparator to order the search exploration. A min-heap based on vertex IDs.</para>
+<para>3. Initializes the priority queue with the starting vertex. By default, this yields standard <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search_nodes</ref>.</para>
+<para>4. Predicate evaluated after popping the highest priority node. Accepts the entire <computeroutput>NodeType</computeroutput> to allow for snapshot inspections (like stale-node rejection).</para>
+<para>5. The main visit callback. Returning <computeroutput>false</computeroutput> aborts the search.</para>
+<para>6. Predicate determining if an adjacent vertex should be pushed into the priority queue.</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-8">
+<title>Template Parameters</title>
+<para><table rows="11" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PQCmp   </para>
+</entry><entry thead="no" align='left'><para>The comparator used to order elements within the priority queue.   </para>
+</entry><entry thead="no" align='left'><para>Must be a <computeroutput>(NodeType, NodeType) -&gt; bool</computeroutput> callable.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>InitQueueRangeType   </para>
+</entry><entry thead="no" align='left'><para>The container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy <computeroutput>std::ranges::forward_range</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>NodeType   </para>
+</entry><entry thead="no" align='left'><para>The type of the node stored in the priority queue.   </para>
+</entry><entry thead="no" align='left'><para>Extracted implicitly. Must be constructible from <computeroutput>(id_type, id_type)</computeroutput> unless <computeroutput>MakeNodeCallback</computeroutput> is provided.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitVertexPredicate   </para>
+</entry><entry thead="no" align='left'><para>Decides if a popped node should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(NodeType) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Executed when a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type, id_type) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueueNodePred   </para>
+</entry><entry thead="no" align='left'><para>Decides if a node corresponding to an adjacent vertex should be pushed to the queue.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type, const edge_type&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>MakeNodeCallback   </para>
+</entry><entry thead="no" align='left'><para>Constructs a custom <computeroutput>NodeType</computeroutput> before pushing to the queue.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type, id_type, const edge_type&amp;) -&gt; NodeType</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Executed after all adjacent edges are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pq_cmp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The comparator instance used to determine priority (highest priority is popped first). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_queue_content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial nodes to seed the priority queue. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_vertex_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated immediately after popping a node. If it returns <computeroutput>false</computeroutput>, the node is skipped (often used for late-rejection in Dijkstra). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback invoked when a vertex is officially visited. If it returns <computeroutput>false</computeroutput>, the entire PFS immediately aborts. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_node_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate evaluated for each outgoing edge. Returns a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to enqueue,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the PFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>make_node</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Factory callback to construct a custom <computeroutput>NodeType</computeroutput> prior to enqueueing. Defaults to invoking the <computeroutput><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">NodeType(target_id, pred_id)</ref></computeroutput> constructor. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the <computeroutput>visit</computeroutput> callback. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the queue was exhausted naturally, <computeroutput>false</computeroutput> if the search was aborted early by a callback or predicate.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/templates/pfs.hpp" line="105" column="6" bodyfile="include/gl/algorithm/templates/pfs.hpp" bodystart="105" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gaabcae8a79a8e259d4966174f89387ce9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>std::optional&lt; bicoloring_type &gt;</type>
+        <definition>std::optional&lt; bicoloring_type &gt; gl::algorithm::bipartite_coloring</definition>
+        <argsstring>(const G &amp;graph, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>bipartite_coloring</name>
+        <qualifiedname>gl::algorithm::bipartite_coloring</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Attempts to compute a valid bipartite (2-color) coloring for the given graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm utilizes the generic <ref refid="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" kindref="member">bfs</ref> template to traverse the graph and alternate colors between adjacent vertices. If an edge connects two vertices of the same color (indicating an odd-length cycle), the graph is not bipartite, and the search immediately aborts.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-7">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">coloring</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1gaabcae8a79a8e259d4966174f89387ce9" kindref="member">gl::algorithm::bipartite_coloring</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>))<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1ga5320a6424759cf4e7263da147768c00d" kindref="member">gl::algorithm::apply_coloring</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/>*<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">coloring</ref>);<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Graph<sp/>contains<sp/>an<sp/>odd<sp/>cycle<sp/>and<sp/>is<sp/>not<sp/>bipartite.\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para>1. Attempts to find a valid 2-coloring for the graph. Returns <computeroutput>std::nullopt</computeroutput> if impossible.</para>
+<para>2. If successful, directly modifies the graph&apos;s internal vertex properties to store the colors. <bold>NOTE:</bold> This operation is only available if the property type of the graph&apos;s vertices satisfies <ulink url="gl_concepts.md#gl-traits-c-binary-color-properties-type"><bold>c_binary_color_properties_type</bold></ulink>.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends entirely on the underlying representation of <computeroutput>GraphType</computeroutput>:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="12">$O(|V| + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-9">
+<title>Template Parameters</title>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been enqueued. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An <computeroutput>std::optional</computeroutput> containing the <ref refid="group__GL-Algorithm_1gafe3650547f62e5b3efa5af18fccbfcad" kindref="member">bicoloring_type</ref> map if the graph is bipartite. Returns <computeroutput>std::nullopt</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1see-also-8">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga082c497700699bf5047ab75b491bf965" kindref="member">is_bipartite</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga5320a6424759cf4e7263da147768c00d" kindref="member">apply_coloring</ref>  <hideparams/>  </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/topology/coloring.hpp" line="67" column="16" bodyfile="include/gl/algorithm/topology/coloring.hpp" bodystart="67" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga082c497700699bf5047ab75b491bf965" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool gl::algorithm::is_bipartite</definition>
+        <argsstring>(const traits::c_graph auto &amp;graph)</argsstring>
+        <name>is_bipartite</name>
+        <qualifiedname>gl::algorithm::is_bipartite</qualifiedname>
+        <param>
+          <type>const traits::c_graph auto &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>Convenience wrapper for the <ref refid="group__GL-Algorithm_1gaabcae8a79a8e259d4966174f89387ce9" kindref="member">bipartite_coloring</ref> algorithm to check if a graph is bipartite without extracting the exact coloring map. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the graph is bipartite (2-colorable), <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+<sect3 id="group__GL-Algorithm_1see-also-9">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga5320a6424759cf4e7263da147768c00d" kindref="member">apply_coloring</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/topology/coloring.hpp" line="122" column="8" bodyfile="include/gl/algorithm/topology/coloring.hpp" bodystart="122" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga5320a6424759cf4e7263da147768c00d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_sized_range_of&lt; binary_color &gt;</type>
+            <declname>ColorRange</declname>
+            <defname>ColorRange</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool gl::algorithm::apply_coloring</definition>
+        <argsstring>(G &amp;graph, const ColorRange &amp;color_range)</argsstring>
+        <name>apply_coloring</name>
+        <qualifiedname>gl::algorithm::apply_coloring</qualifiedname>
+        <param>
+          <type>G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const ColorRange &amp;</type>
+          <declname>color_range</declname>
+        </param>
+    <requiresclause>(traits::c_binary_color_properties_type&lt;typename G::vertex_properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Applies a computed range of binary colors to the property payload of each vertex in the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Algorithm_1template-parameters-10">
+<title>Template Parameters</title>
+<para><table rows="3" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph to modify. Must have compatible color properties.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept, and its properties must satisfy <ulink url="gl_concepts.md#gl-traits-c-binary-color-properties-type"><bold>c_binary_color_properties_type</bold></ulink>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>ColorRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the range containing the computed colors.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-sized-range-of"><bold>c_sized_range_of</bold></ulink> concept for <computeroutput><ref refid="classgl_1_1binary__color" kindref="compound">binary_color</ref></computeroutput>.   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The mutable graph instance whose properties will be updated. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color_range</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A sized range (e.g., <ref refid="group__GL-Algorithm_1gafe3650547f62e5b3efa5af18fccbfcad" kindref="member">bicoloring_type</ref>) matching the vertex count. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the coloring was successfully applied, <computeroutput>false</computeroutput> if the size of the range does not match the graph&apos;s vertex count. </para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1see-also-10">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1gaabcae8a79a8e259d4966174f89387ce9" kindref="member">bipartite_coloring</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Algorithm_1ga082c497700699bf5047ab75b491bf965" kindref="member">is_bipartite</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/topology/coloring.hpp" line="143" column="6" bodyfile="include/gl/algorithm/topology/coloring.hpp" bodystart="143" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga6de646913ccaa2744b18288436f5af8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_directed_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>std::optional&lt; std::vector&lt; typename G::id_type &gt; &gt;</type>
+        <definition>std::optional&lt; std::vector&lt; typename G::id_type &gt; &gt; gl::algorithm::topological_sort</definition>
+        <argsstring>(const G &amp;graph, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>topological_sort</name>
+        <qualifiedname>gl::algorithm::topological_sort</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Computes a topological ordering of the vertices in a Directed Acyclic Graph (DAG). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This implementation relies on Kahn&apos;s Algorithm. It utilizes the generic <ref refid="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" kindref="member">bfs</ref> template, seeding the queue with all vertices that have an in-degree of 0. As vertices are processed, the in-degrees of adjacent vertices are iteratively decremented.</para>
+<para>If the final sorted order does not contain all vertices in the graph, it indicates the presence of a cycle, meaning the graph is not a DAG.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-8">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">top_order</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga6de646913ccaa2744b18288436f5af8e" kindref="member">gl::algorithm::topological_sort</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>))<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Topological<sp/>Order:<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">top_order</ref>.value())<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Graph<sp/>contains<sp/>a<sp/>cycle!\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>1. Attempts to compute the ordering. Fails and returns <computeroutput>std::nullopt</computeroutput> if a cycle is detected.</para>
+<para>2. Prints the topologically sorted vector of vertex IDs using the <ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">range_formatter</ref> helper.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends entirely on the underlying representation of <computeroutput>GraphType</computeroutput>:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="12">$O(|V| + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-11">
+<title>Template Parameters</title>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the directed graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-directed-graph"><bold>c_directed_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is pushed into the sort order.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The directed graph to evaluate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal sort logic processes a vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been evaluated and their in-degrees decremented. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An <computeroutput>std::optional</computeroutput> containing a vector of vertex IDs in topological order or <computeroutput>std::nullopt</computeroutput> if the graph is not a DAG.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/topology/topological_sort.hpp" line="66" column="16" bodyfile="include/gl/algorithm/topology/topological_sort.hpp" bodystart="66" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga21f2ff00984ec8b2633ba522ece58e8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, predecessors_map&lt; G &gt; &gt;</type>
+        <definition>result_type&lt; Result, predecessors_map&lt; G &gt; &gt; gl::algorithm::breadth_first_search</definition>
+        <argsstring>(const G &amp;graph, const typename G::id_type root_vertex_id=no_root, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>breadth_first_search</name>
+        <qualifiedname>gl::algorithm::breadth_first_search</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const typename G::id_type</type>
+          <declname>root_vertex_id</declname>
+          <defval>no_root</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a concrete Breadth-First Search (BFS) traversal over the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function utilizes the generic <ref refid="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" kindref="member">bfs</ref> template to perform a standard queue-based traversal. It automatically manages the visited states, predecessor tracking, and queue initialization.</para>
+<para>If a specific <computeroutput>root_vertex_id</computeroutput> is provided, the algorithm explores only the connected component reachable from that root. If <computeroutput>no_root</computeroutput> is used, it iteratively ensures that every disconnected component in the entire graph is fully traversed.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-9">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">pred_map</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga21f2ff00984ec8b2633ba522ece58e8d" kindref="member">gl::algorithm::breadth_first_search</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gl::algorithm::breadth_first_search&lt;gl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">gl::algorithm::no_root</ref>,<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Discovered:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Standard execution returning a predecessor map from a specific root. Traverses only the component reachable from <computeroutput>start_id</computeroutput> and builds a predecessor tree.</para>
+<para>2. Execution purely for side-effects over the entire graph. Uses the <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">noret</ref> discriminator to completely compile away the predecessor map allocations.</para>
+<para>3. Traverses all vertices in the graph, regardless of disconnected components.</para>
+<para>4. A custom <computeroutput>PreVisitCallback</computeroutput> executed when a vertex is popped from the queue.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends entirely on the underlying representation of <computeroutput>GraphType</computeroutput>:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="12">$O(|V| + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-12">
+<title>Template Parameters</title>
+<para><table rows="5" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Discriminator dictating if the algorithm should return a predecessor map (<computeroutput>ret</computeroutput>) or <computeroutput>void</computeroutput> (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex for the search. Defaults to <ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">no_root</ref> to traverse the entire graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been enqueued. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" kindref="member">predecessors_map</ref> mapping each visited vertex to its parent if <computeroutput>Result == ret</computeroutput>. Returns <computeroutput>void</computeroutput> otherwise.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/traversal/breadth_first_search.hpp" line="75" column="13" bodyfile="include/hgl/algorithm/traversal/breadth_first_search.hpp" bodystart="75" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga18e38d53097cdafbcc1c0ed85d2aa190" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, predecessors_map&lt; G &gt; &gt;</type>
+        <definition>result_type&lt; Result, predecessors_map&lt; G &gt; &gt; gl::algorithm::depth_first_search</definition>
+        <argsstring>(const G &amp;graph, const typename G::id_type root_vertex_id=no_root, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>depth_first_search</name>
+        <qualifiedname>gl::algorithm::depth_first_search</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const typename G::id_type</type>
+          <declname>root_vertex_id</declname>
+          <defval>no_root</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a concrete iterative Depth-First Search (DFS) traversal over the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function utilizes the generic <ref refid="group__GL-Algorithm_1ga092865c8a4a9965e4a281a32086ee496" kindref="member">dfs</ref> template to perform a standard, stack-based traversal. It automatically manages the visited states and predecessor tracking.</para>
+<para>If a specific <computeroutput>root_vertex_id</computeroutput> is provided, the algorithm explores only the connected component reachable from that root. If <computeroutput>no_root</computeroutput> is used, it iteratively ensures that every disconnected component in the entire graph is fully traversed.</para>
+<sect3 id="group__GL-Algorithm_1example-usage-10">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>Standard<sp/>execution<sp/>returning<sp/>a<sp/>predecessor<sp/>map<sp/>for<sp/>the<sp/>whole<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">pred_map</ref><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga18e38d53097cdafbcc1c0ed85d2aa190" kindref="member">gl::algorithm::depth_first_search</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight></codeline>
+</programlisting></para>
+<para>1. Explores every vertex in the graph and builds a complete predecessor forest.</para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1example-usage-11">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">pred_map</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>=<sp/><ref refid="group__GL-Algorithm_1ga18e38d53097cdafbcc1c0ed85d2aa190" kindref="member">gl::algorithm::depth_first_search</ref>(<ref refid="classgl_1_1graph" kindref="compound">graph</ref>,<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gl::algorithm::depth_first_search&lt;gl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">gl::algorithm::no_root</ref>,<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Discovered:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Standard execution returning a predecessor map from a specific root. Traverses only the component reachable from <computeroutput>start_id</computeroutput> and builds a predecessor tree.</para>
+<para>2. Execution purely for side-effects over the entire graph. Uses the <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">noret</ref> discriminator to completely compile away the predecessor map allocations.</para>
+<para>3. Traverses all vertices in the graph, regardless of disconnected components.</para>
+<para>4. A custom <computeroutput>PreVisitCallback</computeroutput> executed when a vertex is popped from the stack.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends entirely on the underlying representation of <computeroutput>GraphType</computeroutput>:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="12">$O(|V| + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-13">
+<title>Template Parameters</title>
+<para><table rows="5" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">Discriminator</ref> dictating if the algorithm should return a predecessor map (<computeroutput>ret</computeroutput>) or <computeroutput>void</computeroutput> (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex for the search. Defaults to <ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">no_root</ref> to traverse the entire graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent edges of the current vertex have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" kindref="member">predecessors_map</ref> mapping each visited vertex to its parent if <computeroutput>Result == ret</computeroutput>. Returns <computeroutput>void</computeroutput> otherwise.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/traversal/depth_first_search.hpp" line="83" column="13" bodyfile="include/hgl/algorithm/traversal/depth_first_search.hpp" bodystart="83" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gaadd56e6c4109217e55318cdb6f99c7f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, typename G::id_type &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, predecessors_map&lt; G &gt; &gt;</type>
+        <definition>result_type&lt; Result, predecessors_map&lt; G &gt; &gt; gl::algorithm::recursive_depth_first_search</definition>
+        <argsstring>(const G &amp;graph, const typename G::id_type root_vertex_id=no_root, PreVisitCallback pre_visit={}, PostVisitCallback post_visit={})</argsstring>
+        <name>recursive_depth_first_search</name>
+        <qualifiedname>gl::algorithm::recursive_depth_first_search</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const typename G::id_type</type>
+          <declname>root_vertex_id</declname>
+          <defval>no_root</defval>
+        </param>
+        <param>
+          <type>PreVisitCallback</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>PostVisitCallback</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a concrete recursive Depth-First Search (DFS) traversal over the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function relies on the generic <ref refid="group__GL-Algorithm_1ga0513c30f79cc2c4d3180d47cd799cad6" kindref="member">r_dfs</ref> template. Instead of a heap-allocated stack, it utilizes the C++ call stack to navigate the graph.</para>
+<para><blockquote><para><zwj/>[!WARNING] Call Stack Depth</para>
+<para>While recursive DFS can be slightly faster due to the lack of heap allocations, it is vulnerable to Stack Overflow errors on extremely deep graphs (e.g., long linear paths). </para>
+</blockquote></para>
+<sect3 id="group__GL-Algorithm_1example-usage-12">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">gl::algorithm::recursive_depth_first_search&lt;gl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classgl_1_1graph" kindref="compound">graph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">start_id</ref>,<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Entering<sp/>subtree<sp/>of:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Exiting<sp/>subtree<sp/>of:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Execution purely for side-effects. Uses the <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">noret</ref> discriminator to completely compile away the predecessor map allocations.</para>
+<para>2. Initiates the recursion from <computeroutput>start_id</computeroutput>.</para>
+<para>3. Hook triggered before descending into the current vertex&apos;s adjacent neighbors.</para>
+<para>4. Hook triggered after returning from all recursive calls for the current vertex.</para>
+<para><blockquote><para><zwj/>[!INFO] Algorithmic Complexity</para>
+<para>The time complexity depends entirely on the underlying representation of <computeroutput>GraphType</computeroutput>:<itemizedlist>
+<listitem><para><bold>Adjacency List Representations</bold>: <formula id="12">$O(|V| + |E|)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref> and <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">flat_list_t</ref>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><bold>Adjacency Matrix Representations</bold>: <formula id="9">$O(|V|^2)$</formula><itemizedlist>
+<listitem><para><emphasis>Includes:</emphasis> <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">matrix_t</ref> and <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">flat_matrix_t</ref>.</para>
+</listitem><listitem><para><emphasis>Note:</emphasis> Iterating over adjacent vertices requires scanning the entire <formula id="2">$|V|$</formula>-length matrix row. </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+</sect3>
+<sect3 id="group__GL-Algorithm_1template-parameters-14">
+<title>Template Parameters</title>
+<para><table rows="5" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">Discriminator</ref> dictating if the algorithm should return a predecessor map (<computeroutput>ret</computeroutput>) or <computeroutput>void</computeroutput> (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph being traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent edges of a vertex are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- <computeroutput>(id_type) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting vertex for the search. Defaults to <ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">no_root</ref> to traverse the entire graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before the internal visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after returning from all recursive calls for the current vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" kindref="member">predecessors_map</ref> mapping each visited vertex to its parent if <computeroutput>Result == ret</computeroutput>. Returns <computeroutput>void</computeroutput> otherwise.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/traversal/depth_first_search.hpp" line="183" column="13" bodyfile="include/hgl/algorithm/traversal/depth_first_search.hpp" bodystart="183" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gab1fd9b558f402f9c5d5920a105add705" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>non_void_result_type&lt; Result, predecessors_map&lt; G &gt; &gt;</type>
+        <definition>non_void_result_type&lt; Result, predecessors_map&lt; G &gt; &gt; gl::algorithm::init_predecessors_map</definition>
+        <argsstring>(const G &amp;graph)</argsstring>
+        <name>init_predecessors_map</name>
+        <qualifiedname>gl::algorithm::init_predecessors_map</qualifiedname>
+        <param>
+          <type>const G &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>Initializes a predecessor map based on the static result discriminator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The compilation tag determining if the map should actually be built. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph instance to size the map against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A fully sized and initialized <computeroutput>predecessors_map</computeroutput> if <computeroutput>Result == ret</computeroutput>, otherwise a dummy <computeroutput>std::monostate</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="25" column="1" bodyfile="include/hgl/algorithm/util.hpp" bodystart="25" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga2f23b38a7b9644b19b0cbef1eef9f1c0" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool gl::algorithm::is_reachable</definition>
+        <argsstring>(const traits::c_random_access_range_of&lt; IdType &gt; auto &amp;pred_map, IdType vertex_id) noexcept</argsstring>
+        <name>is_reachable</name>
+        <qualifiedname>gl::algorithm::is_reachable</qualifiedname>
+        <param>
+          <type>const traits::c_random_access_range_of&lt; IdType &gt; auto &amp;</type>
+          <declname>pred_map</declname>
+        </param>
+        <param>
+          <type>IdType</type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific vertex was reached during a traversal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>IdType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The integral type of the vertex ID. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pred_map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The predecessor map populated by the traversal. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vertex ID to query. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the vertex has a valid assigned predecessor, <computeroutput>false</computeroutput> otherwise.  <hideparams/>  </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="41" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="41" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga59400b5122e402daef165e0704413ef3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; search_node&lt; G &gt; &gt;</type>
+            <declname>InitRangeType</declname>
+            <defname>InitRangeType</defname>
+            <defval>std::vector&lt;search_node&lt;G&gt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>InitRangeType</type>
+        <definition>InitRangeType gl::algorithm::init_node_range</definition>
+        <argsstring>(typename G::id_type root_vertex_id)</argsstring>
+        <name>init_node_range</name>
+        <qualifiedname>gl::algorithm::init_node_range</qualifiedname>
+        <param>
+          <type>typename G::id_type</type>
+          <declname>root_vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Initializes a search container with the starting root vertex. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>InitRangeType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The underlying container type for the container. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the starting vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A container initialized with a single <ref refid="structgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref> for the root vertex. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="56" column="17" bodyfile="include/hgl/algorithm/util.hpp" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>auto</type>
+        <definition>auto gl::algorithm::default_visit_vertex_predicate</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited)</argsstring>
+        <name>default_visit_vertex_predicate</name>
+        <qualifiedname>gl::algorithm::default_visit_vertex_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda predicate that checks if a vertex has not yet been visited. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate evaluating to <computeroutput>true</computeroutput> if the vertex is unvisited. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="65" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="65" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1ga5b43a8d3c7d9497c7832804f967ac721" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto gl::algorithm::default_visit_callback</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited, non_void_result_type&lt; Result, predecessors_map&lt; G &gt; &gt; &amp;pred_map)</argsstring>
+        <name>default_visit_callback</name>
+        <qualifiedname>gl::algorithm::default_visit_callback</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited</declname>
+        </param>
+        <param>
+          <type>non_void_result_type&lt; Result, predecessors_map&lt; G &gt; &gt; &amp;</type>
+          <declname>pred_map</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda callback that marks a vertex as visited and updates the predecessor map. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The static discriminator indicating if the predecessor map should be updated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pred_map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the active predecessor map. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable callback that executes state updates upon visiting a vertex.  <hideparams/>  </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="78" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="78" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Algorithm_1gae47bb939d4207d7a2b667a0fbd3e1b16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>bool</type>
+            <declname>AsDecision</declname>
+            <defname>AsDecision</defname>
+            <defval>false</defval>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto gl::algorithm::default_enqueue_node_predicate</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited)</argsstring>
+        <name>default_enqueue_node_predicate</name>
+        <qualifiedname>gl::algorithm::default_enqueue_node_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda predicate that checks if a node corresponding to an adjacent vertex should be enqueued into the search container. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>AsDecision</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, the generated predicate returns a <ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">decision</ref> instead of a raw boolean. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate that returns <computeroutput>true</computeroutput> (or <computeroutput>decision::accept</computeroutput>) if the adjacent vertex has not been visited. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/util.hpp" line="98" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="98" bodyend="103"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Generic graph algorithms, foundational search templates, and related utilities. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This module provides a dual-layered approach to graph algorithms. At its core, it features highly generic and extensible search templates (such as BFS, DFS, and Priority-First Search). These templates serve as the foundational building blocks of the library, empowering users to inject custom behavior via callbacks and predicates to build entirely new algorithms with minimal effort.</para>
+<para>Alongside these templates, the module offers a suite of concrete, ready-to-use algorithms. Rather than a flat list of functions, the algorithms are categorized into broad domains, including basic graph traversal, pathfinding, minimum spanning trees, and topological operations like sorting and coloring. All implementations are designed to operate seamlessly with generic graph types and property maps. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

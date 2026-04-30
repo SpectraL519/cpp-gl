@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacehgl_1_1algorithm" kind="namespace" language="C++">
+    <compoundname>hgl::algorithm</compoundname>
+    <innerclass refid="structhgl_1_1algorithm_1_1search__node" prot="public">hgl::algorithm::search_node</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy" prot="public">hgl::algorithm::traversal_policy</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01Dir_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, Dir &gt;</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1forward_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, traversal_direction::forward &gt;</innerclass>
+    <sectiondef kind="enum">
+      <member refid="group__HGL-Algorithm_1gafc7517c668a2769f8def4461e1e6cb60" kind="enum"><name>traversal_direction</name></member>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <member refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kind="typedef"><name>empty_callback</name></member>
+      <member refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kind="typedef"><name>decision</name></member>
+      <member refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kind="typedef"><name>result_discriminator</name></member>
+      <member refid="group__HGL-Algorithm_1ga51d01bb512094dc0368656a1c1bdb1ac" kind="typedef"><name>result_type</name></member>
+      <member refid="group__HGL-Algorithm_1ga7c9c575739b21db63ec2e120f5392fa7" kind="typedef"><name>non_void_result_type</name></member>
+      <member refid="group__HGL-Algorithm_1ga74021cb0b6789fb62d750075d5253a2c" kind="typedef"><name>no_root_t</name></member>
+      <member refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kind="typedef"><name>search_tree</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__HGL-Algorithm_1ga0230547f9cea72dfd6d36f84ea30d87b" kind="variable"><name>no_root_v</name></member>
+      <member refid="group__HGL-Algorithm_1ga7f7d879663329e9be61e2327eadbd2a1" kind="variable"><name>no_root</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__HGL-Algorithm_1ga306756e480ea27bb92cd9ace0483816e" kind="function"><name>max_degree</name></member>
+      <member refid="group__HGL-Algorithm_1ga5426b3e2467487540518b70bb0261ba4" kind="function"><name>min_degree</name></member>
+      <member refid="group__HGL-Algorithm_1gabfd7cc21381a27819f269c845a683e30" kind="function"><name>max_out_degree</name></member>
+      <member refid="group__HGL-Algorithm_1ga1401798de59decaf68ac0833c9421149" kind="function"><name>min_out_degree</name></member>
+      <member refid="group__HGL-Algorithm_1ga5daec9b3c71228635dfb0c7d084e6691" kind="function"><name>max_in_degree</name></member>
+      <member refid="group__HGL-Algorithm_1ga853fc348436a36680b2e6d8b405d41ed" kind="function"><name>min_in_degree</name></member>
+      <member refid="group__HGL-Algorithm_1ga1953442fad2347e3ed29093e4267d527" kind="function"><name>rank</name></member>
+      <member refid="group__HGL-Algorithm_1ga0c73c2f9653a4fc8a06dfb60f8a1cf01" kind="function"><name>corank</name></member>
+      <member refid="group__HGL-Algorithm_1gae00e405002cb3138f64d30668fe8a49a" kind="function"><name>max_tail_size</name></member>
+      <member refid="group__HGL-Algorithm_1ga5b0874ce4615122eb02f8aa58ab71c66" kind="function"><name>min_tail_size</name></member>
+      <member refid="group__HGL-Algorithm_1gaa59b3ed32f854dbd3360e4919a4f4760" kind="function"><name>max_head_size</name></member>
+      <member refid="group__HGL-Algorithm_1gaedf8756d4faa6b75a7e74955056a449b" kind="function"><name>min_head_size</name></member>
+      <member refid="group__HGL-Algorithm_1gaf2cf6bc753007cd445490df988ced514" kind="function"><name>is_regular</name></member>
+      <member refid="group__HGL-Algorithm_1ga143ac25f2830ab6874cbc8e263a092d2" kind="function"><name>is_regular</name></member>
+      <member refid="group__HGL-Algorithm_1gaa0615f999436126737dd4824f2e92190" kind="function"><name>is_out_regular</name></member>
+      <member refid="group__HGL-Algorithm_1ga3574e4310ce6944dfd30a7991850556d" kind="function"><name>is_out_regular</name></member>
+      <member refid="group__HGL-Algorithm_1ga300c96a16d01a4b8a1c29ca3fe2e1a2d" kind="function"><name>is_in_regular</name></member>
+      <member refid="group__HGL-Algorithm_1gac9f22cd8926573439ef7e5805cc9600c" kind="function"><name>is_in_regular</name></member>
+      <member refid="group__HGL-Algorithm_1ga92294c6e8c6e87ef2fb2b7ddf5f7b280" kind="function"><name>is_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1ga48efb1bdd8fa4f44f77939e708bbb7a4" kind="function"><name>is_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1gac3f1351cd7ee20e6702be1ef36cc7d3c" kind="function"><name>is_tail_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1gad4e1d5d4f794d3b9fd6b64d01c462141" kind="function"><name>is_tail_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1ga9764be5ed8609e74bbbca97588368108" kind="function"><name>is_head_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1ga9b9413ea6dc0070ce55b30cfe54ce13a" kind="function"><name>is_head_uniform</name></member>
+      <member refid="group__HGL-Algorithm_1ga37f079f7da6f35c7524b6480655a3f5a" kind="function"><name>bfs</name></member>
+      <member refid="group__HGL-Algorithm_1gac6b3b6612fb3f928dc0eb735bf56283e" kind="function"><name>dfs</name></member>
+      <member refid="group__HGL-Algorithm_1gae1e1c2ff69e20056d85cde2cd9343cad" kind="function"><name>backward_bfs</name></member>
+      <member refid="group__HGL-Algorithm_1ga68918c01033aa663ba102c29bc00d834" kind="function"><name>backward_dfs</name></member>
+      <member refid="group__HGL-Algorithm_1gad3069e211020fd934b7216ba9fb850c4" kind="function"><name>breadth_first_search</name></member>
+      <member refid="group__HGL-Algorithm_1ga707fd07612a7fb4f74055b86980cef79" kind="function"><name>depth_first_search</name></member>
+      <member refid="group__HGL-Algorithm_1gaf39ec652e158c9be639c3bc406105adb" kind="function"><name>forward_bfs</name></member>
+      <member refid="group__HGL-Algorithm_1ga6fa35b24e5bb4a1bda5ca490a1e982d3" kind="function"><name>forward_dfs</name></member>
+      <member refid="group__HGL-Algorithm_1ga6387e710f35f5d55e65e4f0e47d55385" kind="function"><name>init_search_tree</name></member>
+      <member refid="group__HGL-Algorithm_1gab366aea50e2ab6f854626a3c354592c9" kind="function"><name>is_reachable</name></member>
+      <member refid="group__HGL-Algorithm_1ga12637e8123b5d9e9d175ece9c2f6e3f3" kind="function"><name>init_node_range</name></member>
+      <member refid="group__HGL-Algorithm_1gab541a7c6652ff19b019febb7c904ea7f" kind="function"><name>default_visit_predicate</name></member>
+      <member refid="group__HGL-Algorithm_1ga864afc824dfce07a6489e442e6ba95f7" kind="function"><name>default_visit_callback</name></member>
+      <member refid="group__HGL-Algorithm_1ga81081790f8e1f195d77fad7ff5271ed1" kind="function"><name>default_traverse_hyperedge_predicate</name></member>
+      <member refid="group__HGL-Algorithm_1gae6af3580796cc8889cbcd3cae08c22f6" kind="function"><name>blocking_traverse_hyperedge_predicate</name></member>
+      <member refid="group__HGL-Algorithm_1gaf2eeae405488c08180f26b8e76c258d8" kind="function"><name>default_enqueue_predicate</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="22" column="1"/>
+  </compounddef>
+</doxygen>

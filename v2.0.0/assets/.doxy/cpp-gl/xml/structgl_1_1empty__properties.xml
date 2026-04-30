@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1empty__properties" kind="struct" language="C++" prot="public">
+    <compoundname>gl::empty_properties</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <briefdescription>
+<para>A stateless, empty structural tag representing an absence of properties. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para><zwj/>[!IMPORTANT]</para>
+<para>This type is used as a default <computeroutput>properties_type</computeroutput> for graph components that do not require any user-defined data. It serves as a marker to indicate that the component is <emphasis>property-less</emphasis> and can be optimized accordingly. </para>
+</blockquote></para>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="26" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="26" bodyend="26"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

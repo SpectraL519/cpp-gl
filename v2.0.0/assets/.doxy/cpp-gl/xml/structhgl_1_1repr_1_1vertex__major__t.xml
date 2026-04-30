@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1repr_1_1vertex__major__t" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::repr::vertex_major_t</compoundname>
+    <includes refid="layout__tags_8hpp" local="no">hgl/repr/layout_tags.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1vertex__major__t_1a4bc4fb76972f138138f9fd9a2836a1e8" prot="public" static="no">
+        <type><ref refid="structhgl_1_1vertex__t" kindref="compound">vertex_t</ref></type>
+        <definition>using hgl::repr::vertex_major_t::major_element =  vertex_t</definition>
+        <argsstring></argsstring>
+        <name>major_element</name>
+        <qualifiedname>hgl::repr::vertex_major_t::major_element</qualifiedname>
+        <briefdescription>
+<para>The major element type for this layout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/layout_tags.hpp" line="24" column="5" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1repr_1_1vertex__major__t_1a32ff556eaf01cd76e6deffcf5e797aed" prot="public" static="no">
+        <type><ref refid="structhgl_1_1hyperedge__t" kindref="compound">hyperedge_t</ref></type>
+        <definition>using hgl::repr::vertex_major_t::minor_element =  hyperedge_t</definition>
+        <argsstring></argsstring>
+        <name>minor_element</name>
+        <qualifiedname>hgl::repr::vertex_major_t::minor_element</qualifiedname>
+        <briefdescription>
+<para>The minor element type for this layout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/layout_tags.hpp" line="26" column="5" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structhgl_1_1repr_1_1vertex__major__t_1a7be741540921b3aa076961c6cd2f05ea" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::regular</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">constexpr</ref> T</type>
+        <definition>static constexpr T hgl::repr::vertex_major_t::major</definition>
+        <argsstring>(const T &amp;vertex_el, const T &amp;hyperedge_el) noexcept</argsstring>
+        <name>major</name>
+        <qualifiedname>hgl::repr::vertex_major_t::major</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>vertex_el</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>hyperedge_el</declname>
+        </param>
+        <briefdescription>
+<para>Retrieves the major element from the provided arguments based on the layout rules. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/layout_tags.hpp" line="30" column="25" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="30" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1repr_1_1vertex__major__t_1ad97900f767dd63feecf94a0c112d366c" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::regular</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">constexpr</ref> T</type>
+        <definition>static constexpr T hgl::repr::vertex_major_t::minor</definition>
+        <argsstring>(const T &amp;vertex_el, const T &amp;hyperedge_el) noexcept</argsstring>
+        <name>minor</name>
+        <qualifiedname>hgl::repr::vertex_major_t::minor</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>vertex_el</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>hyperedge_el</declname>
+        </param>
+        <briefdescription>
+<para>Retrieves the minor element from the provided arguments based on the layout rules. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/layout_tags.hpp" line="38" column="25" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="38" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1repr_1_1vertex__major__t_1a6b40d140b878b31b1879c8a3bdfdfdaa" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::regular</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">constexpr</ref> <ref refid="group__HGL-Types_1ga8e9e83caebb30747e771c756296c0769" kindref="member">homogeneous_pair</ref>&lt; T &gt;</type>
+        <definition>static constexpr homogeneous_pair&lt; T &gt; hgl::repr::vertex_major_t::majmin</definition>
+        <argsstring>(const T &amp;vertex_el, const T &amp;hyperedge_el) noexcept</argsstring>
+        <name>majmin</name>
+        <qualifiedname>hgl::repr::vertex_major_t::majmin</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>vertex_el</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> T &amp;</type>
+          <declname>hyperedge_el</declname>
+        </param>
+        <briefdescription>
+<para>Packages data associated with the vertex and hyperedge elements into a strictly ordered major-minor pair. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type associated with hypergraph&apos;s elements to be ordered. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/repr/layout_tags.hpp" line="47" column="40" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="47" bodyend="51"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Layout tag designating vertices as the primary structural dimension of the incidence representation. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/repr/layout_tags.hpp" line="22" column="1" bodyfile="include/hgl/repr/layout_tags.hpp" bodystart="22" bodyend="52"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1repr_1_1vertex__major__t_1a6b40d140b878b31b1879c8a3bdfdfdaa" prot="public" virt="non-virtual"><scope>hgl::repr::vertex_major_t</scope><name>majmin</name></member>
+      <member refid="structhgl_1_1repr_1_1vertex__major__t_1a7be741540921b3aa076961c6cd2f05ea" prot="public" virt="non-virtual"><scope>hgl::repr::vertex_major_t</scope><name>major</name></member>
+      <member refid="structhgl_1_1repr_1_1vertex__major__t_1a4bc4fb76972f138138f9fd9a2836a1e8" prot="public" virt="non-virtual"><scope>hgl::repr::vertex_major_t</scope><name>major_element</name></member>
+      <member refid="structhgl_1_1repr_1_1vertex__major__t_1ad97900f767dd63feecf94a0c112d366c" prot="public" virt="non-virtual"><scope>hgl::repr::vertex_major_t</scope><name>minor</name></member>
+      <member refid="structhgl_1_1repr_1_1vertex__major__t_1a32ff556eaf01cd76e6deffcf5e797aed" prot="public" virt="non-virtual"><scope>hgl::repr::vertex_major_t</scope><name>minor_element</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

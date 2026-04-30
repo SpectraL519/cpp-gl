@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacehgl_1_1io" kind="namespace" language="C++">
+    <compoundname>hgl::io</compoundname>
+    <sectiondef kind="typedef">
+      <member refid="group__HGL-IO_1gad8fc63e41f008399ed09373f24b359f7" kind="typedef"><name>range_formatter</name></member>
+      <member refid="group__HGL-IO_1ga696b1d4a9a40f42efbcf3096ce4f95fd" kind="typedef"><name>implicit_range_formatter</name></member>
+      <member refid="group__HGL-IO_1ga873331bd5e3fbcba3cb6931abd4e4043" kind="typedef"><name>options_manip</name></member>
+      <member refid="group__HGL-IO_1ga68c7a56059c564fcab9ffd8d46213773" kind="typedef"><name>append</name></member>
+      <member refid="group__HGL-IO_1ga122e8e1c01d620ad256cbc6fa4b11c7a" kind="typedef"><name>write</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__HGL-IO_1gac2983c25b298e57c25b32884df848eb0" kind="variable"><name>concise</name></member>
+      <member refid="group__HGL-IO_1ga79dac2710edde0c5a1f805bb7a7b23ec" kind="variable"><name>spec_fmt</name></member>
+      <member refid="group__HGL-IO_1gae3516eceec11b785a0d9b5a26ded68a9" kind="variable"><name>verbose</name></member>
+      <member refid="group__HGL-IO_1ga769067565d63ac236c6e5a9070a5e64e" kind="variable"><name>with_vertex_properties</name></member>
+      <member refid="group__HGL-IO_1gaf9347ff56f2e73680c9deb198e12b0d1" kind="variable"><name>without_vertex_properties</name></member>
+      <member refid="group__HGL-IO_1gaa3b84e9653cec1cd87a8f72d50a1d31e" kind="variable"><name>with_hyperedge_properties</name></member>
+      <member refid="group__HGL-IO_1gae2cb9a2dbb43a94a93efcbb5f4cb6b75" kind="variable"><name>without_hyperedge_properties</name></member>
+      <member refid="group__HGL-IO_1ga8735be586da90ff9701dd5a4a7bc5398" kind="variable"><name>with_properties</name></member>
+      <member refid="group__HGL-IO_1gae5b683600c296342dbbb5cc544fd2abe" kind="variable"><name>without_properties</name></member>
+      <member refid="group__HGL-IO_1gafb6763f4653fe669d5de30731cfe4ea9" kind="variable"><name>default_options</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__HGL-IO_1ga3d00c83d753c21006db22da0fc04cf52" kind="function"><name>save</name></member>
+      <member refid="group__HGL-IO_1gad744a03534f2dfba958705c22eab9dfe" kind="function"><name>load</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/io/core.hpp" line="17" column="1"/>
+  </compounddef>
+</doxygen>

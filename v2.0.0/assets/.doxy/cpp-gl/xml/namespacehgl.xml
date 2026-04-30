@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacehgl" kind="namespace" language="C++">
+    <compoundname>hgl</compoundname>
+    <innerclass refid="structhgl_1_1bf__directed__t" prot="public">hgl::bf_directed_t</innerclass>
+    <innerclass refid="classhgl_1_1hyperedge__descriptor" prot="public">hgl::hyperedge_descriptor</innerclass>
+    <innerclass refid="structhgl_1_1hyperedge__t" prot="public">hgl::hyperedge_t</innerclass>
+    <innerclass refid="classhgl_1_1hypergraph" prot="public">hgl::hypergraph</innerclass>
+    <innerclass refid="structhgl_1_1hypergraph__traits" prot="public">hgl::hypergraph_traits</innerclass>
+    <innerclass refid="structhgl_1_1undirected__t" prot="public">hgl::undirected_t</innerclass>
+    <innerclass refid="structhgl_1_1vertex__t" prot="public">hgl::vertex_t</innerclass>
+    <innernamespace refid="namespacehgl_1_1algorithm">hgl::algorithm</innernamespace>
+    <innernamespace refid="namespacehgl_1_1io">hgl::io</innernamespace>
+    <innernamespace refid="namespacehgl_1_1repr">hgl::repr</innernamespace>
+    <innernamespace refid="namespacehgl_1_1traits">hgl::traits</innernamespace>
+    <innernamespace refid="namespacehgl_1_1util">hgl::util</innernamespace>
+    <sectiondef kind="typedef">
+      <member refid="group__HGL-Core_1ga75a5fd755386200331d53710a79435df" kind="typedef"><name>initial_id_t</name></member>
+      <member refid="group__HGL-Core_1gaa97b7a8d4a3bb19d6b26f473db373937" kind="typedef"><name>invalid_id_t</name></member>
+      <member refid="group__HGL-Core_1ga24a58d13f94e0aeef7ffffb2871e6595" kind="typedef"><name>undirected_hypergraph</name></member>
+      <member refid="group__HGL-Core_1gaeb24e547f9ee3c9c01fbf4eb3711f243" kind="typedef"><name>bf_directed_hypergraph</name></member>
+      <member refid="group__HGL-Core_1ga019f60af41134b4c32361ca7c2526754" kind="typedef"><name>list_hypergraph</name></member>
+      <member refid="group__HGL-Core_1ga4e217cb4035204e1635065469b73b98c" kind="typedef"><name>flat_list_hypergraph</name></member>
+      <member refid="group__HGL-Core_1gae95e48f15275a8bb5406deb1c1f812ec" kind="typedef"><name>matrix_hypergraph</name></member>
+      <member refid="group__HGL-Core_1gaa930531a7af986444a686d1ae56410a3" kind="typedef"><name>flat_matrix_hypergraph</name></member>
+      <member refid="group__HGL-Core_1gaf812a1ec3b6cb1dd2357856eb6fca431" kind="typedef"><name>vertex_descriptor</name></member>
+      <member refid="group__HGL-Core_1ga3298d007ceaccb547febc3de2de8cab6" kind="typedef"><name>list_hypergraph_traits</name></member>
+      <member refid="group__HGL-Core_1gab210cd483c26ac8970e9a750ec140481" kind="typedef"><name>flat_list_hypergraph_traits</name></member>
+      <member refid="group__HGL-Core_1ga31034eb0af18e107d685cd8b4d912368" kind="typedef"><name>matrix_hypergraph_traits</name></member>
+      <member refid="group__HGL-Core_1ga49c09f458ab8aa042840efc656681426" kind="typedef"><name>flat_matrix_hypergraph_traits</name></member>
+      <member refid="group__HGL-Core_1ga9e772458434bb16f745e15d3b9d845bd" kind="typedef"><name>undirected_hypergraph_traits</name></member>
+      <member refid="group__HGL-Core_1ga56d9e6342dec8318532fed28d94f3a6f" kind="typedef"><name>bf_directed_hypergraph_traits</name></member>
+      <member refid="group__HGL-Traits_1gae837762bfc705171a16e0617c1a14603" kind="typedef"><name>major_element_t</name></member>
+      <member refid="group__HGL-Traits_1ga1f285b0d3fc6dec568fa4b41193eaedc" kind="typedef"><name>minor_element_t</name></member>
+      <member refid="group__HGL-Types_1ga02a2aefc5f41e92044c920a53f251220" kind="typedef"><name>size_type</name></member>
+      <member refid="group__HGL-Types_1gade4ef2c9829dbb140c1927ed0bf81b96" kind="typedef"><name>default_id_type</name></member>
+      <member refid="group__HGL-Types_1gaf96373b6c8ebdcbe60f6c3b693032869" kind="typedef"><name>flat_jagged_vector</name></member>
+      <member refid="group__HGL-Types_1ga3435911fe228c88c4474a2cb1bc9c5fa" kind="typedef"><name>flat_matrix</name></member>
+      <member refid="group__HGL-Types_1ga8e9e83caebb30747e771c756296c0769" kind="typedef"><name>homogeneous_pair</name></member>
+      <member refid="group__HGL-Core_1gaa4d78a438caa013a20e3b9dbafc691ef" kind="typedef"><name>empty_properties</name></member>
+      <member refid="group__HGL-Core_1ga23ff0137c9f4b1bff65ce027ca16a5c2" kind="typedef"><name>empty_properties_map</name></member>
+      <member refid="group__HGL-Core_1ga8bc26ca61d79dd7d2440f7c0b23374ae" kind="typedef"><name>name_property</name></member>
+      <member refid="group__HGL-Core_1ga7f5e923d2421644c974233f6cf8bbfa0" kind="typedef"><name>dynamic_properties</name></member>
+      <member refid="group__HGL-Core_1gab696396fd090f9419fa3ca74da45b03b" kind="typedef"><name>weight_property</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__HGL-Core_1ga3d69ff0a4f49491c427051ac43280fb6" kind="variable"><name>initial_id_v</name></member>
+      <member refid="group__HGL-Core_1ga6d566a1f29434c26e03f4bf962d541a9" kind="variable"><name>initial_id</name></member>
+      <member refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kind="variable"><name>invalid_id_v</name></member>
+      <member refid="group__HGL-Core_1ga75fe8c8b1a0b67e89b197e63d08816a6" kind="variable"><name>invalid_id</name></member>
+      <member refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kind="variable"><name>vertex</name></member>
+      <member refid="group__HGL-Core_1gae94336ecc13ee932feabf200ff550088" kind="variable"><name>hyperedge</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__HGL-Core_1gaba0f2ee9cfcdc31bbeb8705459d07940" kind="function"><name>to</name></member>
+      <member refid="group__HGL-Core_1ga1b07a0a4d7f54bb813200bccf6e4bbd5" kind="function"><name>projection</name></member>
+      <memberdef kind="function" id="hgl_2conversion_8hpp_1a70adcd15812b667856f8eb64172a2d82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__undirected__graph" kindref="compound">gl::traits::c_undirected_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">G</ref></type>
+        <definition>G hgl::projection</definition>
+        <argsstring>(const traits::c_undirected_hypergraph auto &amp;h)</argsstring>
+        <name>projection</name>
+        <qualifiedname>hgl::projection</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> traits::c_undirected_hypergraph <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+    <requiresclause>std::same_as&lt;typename G::traits_type::representation_tag, <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">gl::repr::flat_list_t</ref>&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="308" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="308" bodyend="311"/>
+      </memberdef>
+      <member refid="group__HGL-Core_1ga7c6f12b13c0b66dc379766a1dd908e8d" kind="function"><name>projection</name></member>
+      <memberdef kind="function" id="hgl_2conversion_8hpp_1a10979cef2eb8ae6131dc41cc7efc305d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__directed__graph" kindref="compound">gl::traits::c_directed_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">G</ref></type>
+        <definition>G hgl::projection</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;h)</argsstring>
+        <name>projection</name>
+        <qualifiedname>hgl::projection</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> traits::c_bf_directed_hypergraph <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+    <requiresclause>std::same_as&lt;typename G::traits_type::representation_tag, <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">gl::repr::flat_list_t</ref>&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="356" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="356" bodyend="359"/>
+      </memberdef>
+      <member refid="group__HGL-Core_1ga40762e8f5f556c29d5fa3f236092cebb" kind="function"><name>incidence_graph</name></member>
+      <memberdef kind="function" id="hgl_2conversion_8hpp_1aaf2404311e0e487272623a612cc40e3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__undirected__graph" kindref="compound">gl::traits::c_undirected_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">G</ref></type>
+        <definition>G hgl::incidence_graph</definition>
+        <argsstring>(const traits::c_undirected_hypergraph auto &amp;h)</argsstring>
+        <name>incidence_graph</name>
+        <qualifiedname>hgl::incidence_graph</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> traits::c_undirected_hypergraph <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+    <requiresclause>std::same_as&lt;typename G::traits_type::representation_tag, <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">gl::repr::flat_list_t</ref>&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="405" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="405" bodyend="408"/>
+      </memberdef>
+      <member refid="group__HGL-Core_1gacec4189a9baa4048b9a7475581fa350f" kind="function"><name>incidence_graph</name></member>
+      <memberdef kind="function" id="hgl_2conversion_8hpp_1a015fcee15ae58b7d4aaa6080b5a22cc9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__directed__graph" kindref="compound">gl::traits::c_directed_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">G</ref></type>
+        <definition>G hgl::incidence_graph</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;h)</argsstring>
+        <name>incidence_graph</name>
+        <qualifiedname>hgl::incidence_graph</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> traits::c_bf_directed_hypergraph <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+    <requiresclause>std::same_as&lt;typename G::traits_type::representation_tag, <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">gl::repr::flat_list_t</ref>&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="458" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="458" bodyend="461"/>
+      </memberdef>
+      <member refid="group__HGL-Core_1ga61b813d5e525542cceae9504fe23f3f1" kind="function"><name>clone</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="20" column="1"/>
+  </compounddef>
+</doxygen>

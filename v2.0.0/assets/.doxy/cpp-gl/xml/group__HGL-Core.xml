@@ -1,0 +1,1515 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__HGL-Core" kind="group">
+    <compoundname>HGL-Core</compoundname>
+    <title>Core Hypergraph Components</title>
+    <innerclass refid="structhgl_1_1undirected__t" prot="public">hgl::undirected_t</innerclass>
+    <innerclass refid="structhgl_1_1bf__directed__t" prot="public">hgl::bf_directed_t</innerclass>
+    <innerclass refid="classhgl_1_1hypergraph" prot="public">hgl::hypergraph</innerclass>
+    <innerclass refid="classhgl_1_1hyperedge__descriptor" prot="public">hgl::hyperedge_descriptor</innerclass>
+    <innerclass refid="structhgl_1_1vertex__t" prot="public">hgl::vertex_t</innerclass>
+    <innerclass refid="structhgl_1_1hyperedge__t" prot="public">hgl::hyperedge_t</innerclass>
+    <innerclass refid="structhgl_1_1hypergraph__traits" prot="public">hgl::hypergraph_traits</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1vertex__major__t" prot="public">hgl::repr::vertex_major_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1hyperedge__major__t" prot="public">hgl::repr::hyperedge_major_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1bidirectional__t" prot="public">hgl::repr::bidirectional_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1list__t" prot="public">hgl::repr::list_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1flat__list__t" prot="public">hgl::repr::flat_list_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1matrix__t" prot="public">hgl::repr::matrix_t</innerclass>
+    <innerclass refid="structhgl_1_1repr_1_1flat__matrix__t" prot="public">hgl::repr::flat_matrix_t</innerclass>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__HGL-Core_1ga75a5fd755386200331d53710a79435df" prot="public" static="no">
+        <type><ref refid="structgl_1_1initial__id__t" kindref="compound">gl::initial_id_t</ref></type>
+        <definition>using hgl::initial_id_t = typedef gl::initial_id_t</definition>
+        <argsstring></argsstring>
+        <name>initial_id_t</name>
+        <qualifiedname>hgl::initial_id_t</qualifiedname>
+        <briefdescription>
+<para>A helper type that can be implicitly converted to the initial ID value of 0 for any valid ID type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1initial__id__t" kindref="compound">gl::initial_id_t</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="24" column="1" bodyfile="include/hgl/constants.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gaa97b7a8d4a3bb19d6b26f473db373937" prot="public" static="no">
+        <type><ref refid="structgl_1_1invalid__id__t" kindref="compound">gl::invalid_id_t</ref></type>
+        <definition>using hgl::invalid_id_t = typedef gl::invalid_id_t</definition>
+        <argsstring></argsstring>
+        <name>invalid_id_t</name>
+        <qualifiedname>hgl::invalid_id_t</qualifiedname>
+        <briefdescription>
+<para>A helper type that can be implicitly converted to the invalid ID value for any valid ID type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1invalid__id__t" kindref="compound">gl::invalid_id_t</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="40" column="1" bodyfile="include/hgl/constants.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga24a58d13f94e0aeef7ffffb2871e6595" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t&lt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; undirected_hypergraph_traits&lt; VertexProperties, HyperedgeProperties, ReprTag &gt; &gt;</type>
+        <definition>using hgl::undirected_hypergraph = typedef hypergraph&lt;undirected_hypergraph_traits&lt;VertexProperties, HyperedgeProperties, ReprTag&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>undirected_hypergraph</name>
+        <qualifiedname>hgl::undirected_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for an undirected hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2319" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2320" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gaeb24e547f9ee3c9c01fbf4eb3711f243" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t&lt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; bf_directed_hypergraph_traits&lt; VertexProperties, HyperedgeProperties, ReprTag &gt; &gt;</type>
+        <definition>using hgl::bf_directed_hypergraph = typedef hypergraph&lt;bf_directed_hypergraph_traits&lt;VertexProperties, HyperedgeProperties, ReprTag&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>bf_directed_hypergraph</name>
+        <qualifiedname>hgl::bf_directed_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for a BF-directed hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2328" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2329" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga019f60af41134b4c32361ca7c2526754" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; list_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType &gt; &gt;</type>
+        <definition>using hgl::list_hypergraph = typedef hypergraph&lt; list_hypergraph_traits&lt;LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>list_hypergraph</name>
+        <qualifiedname>hgl::list_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for a hypergraph utilizing a standard incidence list representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2339" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2340" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga4e217cb4035204e1635065469b73b98c" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; flat_list_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType &gt; &gt;</type>
+        <definition>using hgl::flat_list_hypergraph = typedef hypergraph&lt;flat_list_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_list_hypergraph</name>
+        <qualifiedname>hgl::flat_list_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for a hypergraph utilizing a flat incidence list representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2350" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2355" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gae95e48f15275a8bb5406deb1c1f812ec" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; matrix_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType &gt; &gt;</type>
+        <definition>using hgl::matrix_hypergraph = typedef hypergraph&lt; matrix_hypergraph_traits&lt;LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>matrix_hypergraph</name>
+        <qualifiedname>hgl::matrix_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for a hypergraph utilizing a standard incidence matrix representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2365" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2366" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gaa930531a7af986444a686d1ae56410a3" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph&lt; flat_matrix_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType &gt; &gt;</type>
+        <definition>using hgl::flat_matrix_hypergraph = typedef hypergraph&lt;flat_matrix_hypergraph_traits&lt; LayoutTag, DirectionalTag, VertexProperties, HyperedgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_matrix_hypergraph</name>
+        <qualifiedname>hgl::flat_matrix_hypergraph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for a hypergraph utilizing a flat incidence matrix representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2376" column="1" bodyfile="include/hgl/hypergraph.hpp" bodystart="2381" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gaf812a1ec3b6cb1dd2357856eb6fca431" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>Properties</declname>
+            <defname>Properties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classgl_1_1vertex__descriptor" kindref="compound">gl::vertex_descriptor</ref>&lt; Properties, IdType &gt;</type>
+        <definition>using hgl::vertex_descriptor = typedef gl::vertex_descriptor&lt;Properties, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>vertex_descriptor</name>
+        <qualifiedname>hgl::vertex_descriptor</qualifiedname>
+        <briefdescription>
+<para>Type alias adapting the standard graph vertex descriptor for hypergraphs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Because hypergraphs and standard graphs share the same fundamental vertex representation, this alias imports the <ref refid="classgl_1_1vertex__descriptor" kindref="compound">gl::vertex_descriptor</ref> type into the HGL module. It provides a type-safe wrapper combining a unique identifier with optional property data.</para>
+<para><blockquote><para><zwj/>[!WARNING] This class is not intended to be instantiated directly.</para>
+<para>Instead, <computeroutput>vertex_descriptor</computeroutput> objects should be retrieved from the <ref refid="classhgl_1_1hypergraph" kindref="compound">hgl::hypergraph</ref> class instance that owns the given vertex. </para>
+</blockquote></para>
+<sect3 id="group__HGL-Core_1example-usage-34">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1ga77919d30896c685114ed71eac61918d8" kindref="member">gl::io::verbose</ref><sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1gab8ba21a8686e70b303c0de4332a58e7f" kindref="member">gl::io::with_vertex_properties</ref>;<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kindref="member">vertex</ref><sp/>:<sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>.vertices())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">deg</ref><sp/>=<sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>.<ref refid="classhgl_1_1hypergraph_1aeac1030d663883b79f7fddc40e72245c" kindref="member">degree</ref>(<ref refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kindref="member">vertex</ref>);<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">deg</ref><sp/>==<sp/>0<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">uz</ref>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kindref="member">vertex</ref>-&gt;description<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Isolated<sp/>node&quot;</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kindref="member">vertex</ref>-&gt;description<sp/>=<sp/>std::format(</highlight><highlight class="stringliteral">&quot;Connected<sp/>to<sp/>{}<sp/>hyperedges&quot;</highlight><highlight class="normal">,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">deg</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Vertex<sp/>details:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" kindref="member">vertex</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para><orderedlist>
+<listitem><para>Stream manipulators inject persistent formatting state globally before iterating.</para>
+</listitem><listitem><para>Use the owning hypergraph to query topological information about the vertex.</para>
+</listitem><listitem><para>Safely access and modify the underlying properties via the <computeroutput>-&gt;</computeroutput> operator (assuming the vertex properties type contains a <computeroutput>description</computeroutput> member).</para>
+</listitem></orderedlist>
+</para>
+</sect3>
+<sect3 id="group__HGL-Core_1template-parameters-37">
+<title>Template Parameters</title>
+<para><table rows="3" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Properties   </para>
+</entry><entry thead="no" align='left'><para>The type of property data attached to the vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__HGL-Core_1gaa4d78a438caa013a20e3b9dbafc691ef" kindref="member">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The underlying integer type used for the IDs.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__HGL-Types_1gade4ef2c9829dbb140c1927ed0bf81b96" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+<sect3 id="group__HGL-Core_1see-also-50">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1vertex__descriptor" kindref="compound">gl::vertex_descriptor</ref> for the full definition of the type.</para>
+</listitem><listitem><para><ref refid="classhgl_1_1hyperedge__descriptor" kindref="compound">hyperedge_descriptor</ref> for the corresponding hyperedge wrapper class.</para>
+</listitem><listitem><para><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref> for the owning hypergraph class that manages vertex descriptors. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_elements.hpp" line="66" column="1" bodyfile="include/hgl/hypergraph_elements.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga3298d007ceaccb547febc3de2de8cab6" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::list_t&lt; LayoutTag, IdType &gt; &gt;</type>
+        <definition>using hgl::list_hypergraph_traits = typedef hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::list_t&lt;LayoutTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>list_hypergraph_traits</name>
+        <qualifiedname>hgl::list_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for <computeroutput><ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref></computeroutput> using a standard incidence list representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-40">
+<title>Template Parameters</title>
+<para><table rows="6" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>LayoutTag   </para>
+</entry><entry thead="no" align='left'><para>Memory orientation for the list structures.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1bidirectional__t" kindref="compound">bidirectional_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-layout-tag"><bold>c_hypergraph_layout_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the hypergraph is undirected or bf_directed.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-directional-tag"><bold>c_hypergraph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The integer type used for element identifiers.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="75" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gab210cd483c26ac8970e9a750ec140481" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::bidirectional_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::flat_list_t&lt; LayoutTag, IdType &gt; &gt;</type>
+        <definition>using hgl::flat_list_hypergraph_traits = typedef hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::flat_list_t&lt;LayoutTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_list_hypergraph_traits</name>
+        <qualifiedname>hgl::flat_list_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for <computeroutput><ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref></computeroutput> using a flattened incidence list representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-41">
+<title>Template Parameters</title>
+<para><table rows="6" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>LayoutTag   </para>
+</entry><entry thead="no" align='left'><para>Memory orientation for the flat list structures.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1bidirectional__t" kindref="compound">bidirectional_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-layout-tag"><bold>c_hypergraph_layout_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the hypergraph is undirected or bf_directed.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-directional-tag"><bold>c_hypergraph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The integer type used for element identifiers.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="98" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga31034eb0af18e107d685cd8b4d912368" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_asymmetric_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::hyperedge_major_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::matrix_t&lt; LayoutTag, IdType &gt; &gt;</type>
+        <definition>using hgl::matrix_hypergraph_traits = typedef hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::matrix_t&lt;LayoutTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>matrix_hypergraph_traits</name>
+        <qualifiedname>hgl::matrix_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for <computeroutput><ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref></computeroutput> using a standard incidence matrix representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-42">
+<title>Template Parameters</title>
+<para><table rows="6" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>LayoutTag   </para>
+</entry><entry thead="no" align='left'><para>Memory orientation (must be asymmetric).   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1hyperedge__major__t" kindref="compound">hyperedge_major_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-asymmetric-layout-tag"><bold>c_hypergraph_asymmetric_layout_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the hypergraph is undirected or bf_directed.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-directional-tag"><bold>c_hypergraph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The integer type used for element identifiers.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="121" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga49c09f458ab8aa042840efc656681426" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_asymmetric_layout_tag</type>
+            <declname>LayoutTag</declname>
+            <defname>LayoutTag</defname>
+            <defval>repr::hyperedge_major_t</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>undirected_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::flat_matrix_t&lt; LayoutTag, IdType &gt; &gt;</type>
+        <definition>using hgl::flat_matrix_hypergraph_traits = typedef hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, repr::flat_matrix_t&lt;LayoutTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_matrix_hypergraph_traits</name>
+        <qualifiedname>hgl::flat_matrix_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for <computeroutput><ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref></computeroutput> using a flattened incidence matrix representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-43">
+<title>Template Parameters</title>
+<para><table rows="6" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>LayoutTag   </para>
+</entry><entry thead="no" align='left'><para>Memory orientation (must be asymmetric).   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1hyperedge__major__t" kindref="compound">hyperedge_major_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-asymmetric-layout-tag"><bold>c_hypergraph_asymmetric_layout_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the hypergraph is undirected or bf_directed.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-directional-tag"><bold>c_hypergraph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The integer type used for element identifiers.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="144" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga9e772458434bb16f745e15d3b9d845bd" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t&lt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; undirected_t, VertexProperties, HyperedgeProperties, ReprTag &gt;</type>
+        <definition>using hgl::undirected_hypergraph_traits = typedef hypergraph_traits&lt;undirected_t, VertexProperties, HyperedgeProperties, ReprTag&gt;</definition>
+        <argsstring></argsstring>
+        <name>undirected_hypergraph_traits</name>
+        <qualifiedname>hgl::undirected_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for undirected hypergraph traits with configurable properties and representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-44">
+<title>Template Parameters</title>
+<para><table rows="4" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>ReprTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies the internal container representation for incidence.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1list__t" kindref="compound">repr::list_t&lt;&gt;</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag"><bold>c_hypergraph_repr_tag</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="163" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga56d9e6342dec8318532fed28d94f3a6f" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>HyperedgeProperties</declname>
+            <defname>HyperedgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t&lt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>hypergraph_traits&lt; bf_directed_t, VertexProperties, HyperedgeProperties, ReprTag &gt;</type>
+        <definition>using hgl::bf_directed_hypergraph_traits = typedef hypergraph_traits&lt;bf_directed_t, VertexProperties, HyperedgeProperties, ReprTag&gt;</definition>
+        <argsstring></argsstring>
+        <name>bf_directed_hypergraph_traits</name>
+        <qualifiedname>hgl::bf_directed_hypergraph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for bf-directed hypergraph traits with configurable properties and representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1template-parameters-45">
+<title>Template Parameters</title>
+<para><table rows="4" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>ReprTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies the internal container representation for incidence.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1list__t" kindref="compound">repr::list_t&lt;&gt;</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag"><bold>c_hypergraph_repr_tag</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="179" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gaa4d78a438caa013a20e3b9dbafc691ef" prot="public" static="no">
+        <type><ref refid="structgl_1_1empty__properties" kindref="compound">gl::empty_properties</ref></type>
+        <definition>using hgl::empty_properties = typedef gl::empty_properties</definition>
+        <argsstring></argsstring>
+        <name>empty_properties</name>
+        <qualifiedname>hgl::empty_properties</qualifiedname>
+        <briefdescription>
+<para>A stateless, empty structural tag representing an absence of properties.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><blockquote><para><zwj/>[!IMPORTANT]</para>
+<para>This type is used as a default <computeroutput>properties_type</computeroutput> for hypergraph components that do not require any user-defined data. It serves as a marker to indicate that the component is <emphasis>property-less</emphasis> and can be optimized accordingly. </para>
+</blockquote></para>
+<sect3 id="group__HGL-Core_1see-also-57">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1empty__properties" kindref="compound">gl::empty_properties</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="77" column="1" bodyfile="include/hgl/types.hpp" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga23ff0137c9f4b1bff65ce027ca16a5c2" prot="public" static="no">
+        <type><ref refid="structgl_1_1empty__properties__map" kindref="compound">gl::empty_properties_map</ref></type>
+        <definition>using hgl::empty_properties_map = typedef gl::empty_properties_map</definition>
+        <argsstring></argsstring>
+        <name>empty_properties_map</name>
+        <qualifiedname>hgl::empty_properties_map</qualifiedname>
+        <briefdescription>
+<para>A stateless, empty structural tag indicating that the absence of a property map container.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><blockquote><para><zwj/>[!NOTE]</para>
+<para>This type is used internally by the library to optimize storage for hypergraph components that have no properties. </para>
+</blockquote></para>
+<sect3 id="group__HGL-Core_1see-also-58">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1empty__properties__map" kindref="compound">gl::empty_properties_map</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="88" column="1" bodyfile="include/hgl/types.hpp" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga8bc26ca61d79dd7d2440f7c0b23374ae" prot="public" static="no">
+        <type><ref refid="structgl_1_1name__property" kindref="compound">gl::name_property</ref></type>
+        <definition>using hgl::name_property = typedef gl::name_property</definition>
+        <argsstring></argsstring>
+        <name>name_property</name>
+        <qualifiedname>hgl::name_property</qualifiedname>
+        <briefdescription>
+<para>A property struct providing a basic string-based naming facility.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1see-also-59">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1name__property" kindref="compound">gl::name_property</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="94" column="1" bodyfile="include/hgl/types.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1ga7f5e923d2421644c974233f6cf8bbfa0" prot="public" static="no">
+        <type><ref refid="classgl_1_1dynamic__properties" kindref="compound">gl::dynamic_properties</ref></type>
+        <definition>using hgl::dynamic_properties = typedef gl::dynamic_properties</definition>
+        <argsstring></argsstring>
+        <name>dynamic_properties</name>
+        <qualifiedname>hgl::dynamic_properties</qualifiedname>
+        <briefdescription>
+<para>A type-safe container for heterogeneous properties stored by string keys.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1see-also-60">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1dynamic__properties" kindref="compound">gl::dynamic_properties</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="100" column="1" bodyfile="include/hgl/types.hpp" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Core_1gab696396fd090f9419fa3ca74da45b03b" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_arithmetic</type>
+            <declname>WeightType</declname>
+            <defname>WeightType</defname>
+            <defval>double</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structgl_1_1weight__property" kindref="compound">gl::weight_property</ref>&lt; WeightType &gt;</type>
+        <definition>using hgl::weight_property = typedef gl::weight_property&lt;WeightType&gt;</definition>
+        <argsstring></argsstring>
+        <name>weight_property</name>
+        <qualifiedname>hgl::weight_property</qualifiedname>
+        <briefdescription>
+<para>A property struct providing arithmetic weight for hyperedges or vertices. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Core_1see-also-61">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1weight__property" kindref="compound">gl::weight_property</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="107" column="1" bodyfile="include/hgl/types.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__HGL-Core_1ga3d69ff0a4f49491c427051ac43280fb6" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType hgl::initial_id_v</definition>
+        <argsstring></argsstring>
+        <name>initial_id_v</name>
+        <qualifiedname>hgl::initial_id_v</qualifiedname>
+        <initializer>= gl::initial_id_v&lt;IdType&gt;</initializer>
+        <briefdescription>
+<para>A constant representing the initial ID value of 0 for hypergraph elements. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Core_1gae097db1fdd1be4558cb64e3aa2b3cd10" kindref="member">gl::initial_id_v</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="19" column="25" bodyfile="include/hgl/constants.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Core_1ga6d566a1f29434c26e03f4bf962d541a9" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr initial_id_t</type>
+        <definition>constexpr initial_id_t hgl::initial_id</definition>
+        <argsstring></argsstring>
+        <name>initial_id</name>
+        <qualifiedname>hgl::initial_id</qualifiedname>
+        <initializer>= gl::initial_id</initializer>
+        <briefdescription>
+<para>An <computeroutput>initial_id_t</computeroutput> tag constant that can be used to represent the initial ID value of 0 for hypergraph elements in a type-safe manner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" kindref="member">gl::initial_id</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="29" column="31" bodyfile="include/hgl/constants.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType hgl::invalid_id_v</definition>
+        <argsstring></argsstring>
+        <name>invalid_id_v</name>
+        <qualifiedname>hgl::invalid_id_v</qualifiedname>
+        <initializer>= gl::invalid_id_v&lt;IdType&gt;</initializer>
+        <briefdescription>
+<para>A constant representing the invalid ID value for hypergraph elements, defined as the maximum value of the specified ID type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">gl::invalid_id_v</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="35" column="25" bodyfile="include/hgl/constants.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Core_1ga75fe8c8b1a0b67e89b197e63d08816a6" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr invalid_id_t</type>
+        <definition>constexpr invalid_id_t hgl::invalid_id</definition>
+        <argsstring></argsstring>
+        <name>invalid_id</name>
+        <qualifiedname>hgl::invalid_id</qualifiedname>
+        <initializer>= gl::invalid_id</initializer>
+        <briefdescription>
+<para>An <computeroutput>invalid_id_t</computeroutput> tag constant that can be used to represent the invalid ID value for hypergraph elements in a type-safe manner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Core_1gab14fee6eb4a6d6c0833f947766b591db" kindref="member">gl::invalid_id</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/constants.hpp" line="45" column="31" bodyfile="include/hgl/constants.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Core_1ga0ebefcea7734558fab8a11c4e736a3fb" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr vertex_t</type>
+        <definition>constexpr vertex_t hgl::vertex</definition>
+        <argsstring></argsstring>
+        <name>vertex</name>
+        <qualifiedname>hgl::vertex</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>A constant instance of <computeroutput><ref refid="structhgl_1_1vertex__t" kindref="compound">vertex_t</ref></computeroutput> used for tagging and generic dispatching. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_elements.hpp" line="296" column="27" bodyfile="include/hgl/hypergraph_elements.hpp" bodystart="296" bodyend="296"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Core_1gae94336ecc13ee932feabf200ff550088" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr hyperedge_t</type>
+        <definition>constexpr hyperedge_t hgl::hyperedge</definition>
+        <argsstring></argsstring>
+        <name>hyperedge</name>
+        <qualifiedname>hgl::hyperedge</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>A constant instance of <computeroutput><ref refid="structhgl_1_1hyperedge__t" kindref="compound">hyperedge_t</ref></computeroutput> used for tagging and generic dispatching. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_elements.hpp" line="299" column="30" bodyfile="include/hgl/hypergraph_elements.hpp" bodystart="299" bodyend="299"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__HGL-Core_1gaba0f2ee9cfcdc31bbeb8705459d07940" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph_repr_tag</type>
+            <declname>TargetReprTag</declname>
+            <defname>TargetReprTag</defname>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>Hypergraph</declname>
+            <defname>Hypergraph</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto hgl::to</definition>
+        <argsstring>(Hypergraph &amp;&amp;source)</argsstring>
+        <name>to</name>
+        <qualifiedname>hgl::to</qualifiedname>
+        <param>
+          <type>Hypergraph &amp;&amp;</type>
+          <declname>source</declname>
+        </param>
+        <briefdescription>
+<para>Converts a hypergraph from one representation model to another. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts a hypergraph to a different representation type.</para>
+<para>Converts a hypergraph to a different representation type (e.g., from incidence list to incidence matrix).</para>
+<para>This function efficiently transforms a hypergraph&apos;s underlying memory representation (e.g., from a standard incidence list to a flattened incidence list) while preserving its exact topology, properties, and identifiers.</para>
+<sect3 id="group__HGL-Core_1template-parameters-35">
+<title>Template Parameters</title>
+<para><table rows="3" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>TargetReprTag   </para>
+</entry><entry thead="no" align='left'><para>The representation tag of the desired target representation (e.g., <computeroutput><ref refid="structhgl_1_1repr_1_1flat__list__t" kindref="compound">hgl::repr::flat_list_t</ref></computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag"><bold>c_hypergraph_repr_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Hypergraph   </para>
+</entry><entry thead="no" align='left'><para>The type of the source hypergraph, which will be automatically deduced from the function argument.   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to convert. After the operation it will be left in a valid, empty state. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A new hypergraph containing the moved data, structured according to <computeroutput>TargetReprTag</computeroutput>.</para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__HGL-Core_1see-also-46">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structhgl_1_1traits_1_1swap__repr__tag" kindref="compound">swap_repr_tag</ref> : For the trait used to resolve the target hypergraph type with the swapped representation tag.</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>TargetReprTag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The representation tag defining the target storage mechanism. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The concrete hypergraph type of the source. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to convert. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A new hypergraph matching the target representation type with identical topology and properties. </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="236" column="7" bodyfile="include/hgl/conversion.hpp" bodystart="236" bodyend="254" declfile="include/hgl/hypergraph.hpp" declline="116" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Core_1ga1b07a0a4d7f54bb813200bccf6e4bbd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__undirected__graph" kindref="compound">gl::traits::c_undirected_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>G</type>
+        <definition>G hgl::projection</definition>
+        <argsstring>(const traits::c_undirected_hypergraph auto &amp;h)</argsstring>
+        <name>projection</name>
+        <qualifiedname>hgl::projection</qualifiedname>
+        <param>
+          <type>const traits::c_undirected_hypergraph auto &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Computes the projection (clique expansion) of an <emphasis>undirected</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Projects the hypergraph onto a standard undirected graph. Each hyperedge in the hypergraph is expanded into a clique (a fully connected subgraph) connecting all of its incident vertices in the resulting graph. Duplicate edges generated by multiple hyperedges overlapping on the same vertices are collapsed into a single edge.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested target graph <computeroutput>G</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">gl::to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target standard graph type to construct. Must satisfy <ulink url="gl_concepts.md#gl-traits-c-undirected-graph"><bold>c_undirected_graph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source undirected hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A standard undirected graph representing the projection. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="276" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="276" bodyend="304"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Core_1ga7c6f12b13c0b66dc379766a1dd908e8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__directed__graph" kindref="compound">gl::traits::c_directed_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>G</type>
+        <definition>G hgl::projection</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;h)</argsstring>
+        <name>projection</name>
+        <qualifiedname>hgl::projection</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Computes the projection of a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Projects the hypergraph onto a standard directed graph. For each hyperedge, directed edges are created from every vertex in the hyperedge&apos;s tail (source) to every vertex in its head (destination). Duplicate edges generated by multiple hyperedges overlapping on the same vertices are collapsed into a single edge.</para>
+<para><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested target graph <computeroutput>G</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">gl::to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target standard graph type to construct. Must satisfy <ulink url="gl_concepts.md#gl-traits-c-directed-graph"><bold>c_directed_graph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source bf-directed hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A standard directed graph representing the projection. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="331" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="331" bodyend="352"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Core_1ga40762e8f5f556c29d5fa3f236092cebb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__undirected__graph" kindref="compound">gl::traits::c_undirected_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>G</type>
+        <definition>G hgl::incidence_graph</definition>
+        <argsstring>(const traits::c_undirected_hypergraph auto &amp;h)</argsstring>
+        <name>incidence_graph</name>
+        <qualifiedname>hgl::incidence_graph</qualifiedname>
+        <param>
+          <type>const traits::c_undirected_hypergraph auto &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Computes the bipartite incidence graph representation of an <emphasis>undirected</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts the hypergraph into a standard bipartite graph where both the original vertices and the original hyperedges are represented as standard graph vertices. Undirected edges are created between a vertex node and a hyperedge node if they are incident.</para>
+<para><blockquote><para><zwj/>[!NOTE] ID Shifting</para>
+<para>To ensure uniqueness in the resulting graph, the IDs of the hyperedge nodes are shifted by <computeroutput>h.n_vertices()</computeroutput>. For example, hyperedge ID <computeroutput>0</computeroutput> becomes vertex ID <computeroutput>h.n_vertices() + 0</computeroutput> in the resulting graph. </para>
+</blockquote><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested target graph <computeroutput>G</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">gl::to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target standard graph type to construct. Must satisfy <ulink url="gl_concepts.md#gl-traits-c-undirected-graph"><bold>c_undirected_graph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source undirected hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A standard undirected bipartite graph representing the incidence structure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="384" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="384" bodyend="401"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Core_1gacec4189a9baa4048b9a7475581fa350f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="conceptgl_1_1traits_1_1c__directed__graph" kindref="compound">gl::traits::c_directed_graph</ref></type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+        </templateparamlist>
+        <type>G</type>
+        <definition>G hgl::incidence_graph</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;h)</argsstring>
+        <name>incidence_graph</name>
+        <qualifiedname>hgl::incidence_graph</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Computes the bipartite incidence graph representation of a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts the hypergraph into a standard bipartite directed graph. Directed edges are created from original <emphasis>tail</emphasis> vertex nodes to the hyperedge nodes, and from the hyperedge nodes to the original <emphasis>head</emphasis> vertex nodes.</para>
+<para><blockquote><para><zwj/>[!NOTE] ID Shifting</para>
+<para>To ensure uniqueness in the resulting graph, the IDs of the hyperedge nodes are shifted by <computeroutput>h.n_vertices()</computeroutput>. For example, hyperedge ID <computeroutput>0</computeroutput> becomes vertex ID <computeroutput>h.n_vertices() + 0</computeroutput> in the resulting graph. </para>
+</blockquote><blockquote><para><zwj/>[!NOTE] Performance for Flat List Graphs</para>
+<para>If the requested target graph <computeroutput>G</computeroutput> satisfies <ulink url="gl_concepts.md#gl-traits-c-flat-list-graph"><bold>c_flat_list_graph</bold></ulink>, an optimized overload is automatically selected. It internally constructs a standard adjacency list graph first, and then utilizes the <ref refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kindref="member">gl::to</ref> conversion to flatten it. This is significantly faster than inserting edges one-by-one into a flat representation. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>G</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target standard graph type to construct. Must satisfy <ulink url="gl_concepts.md#gl-traits-c-directed-graph"><bold>c_directed_graph</bold></ulink>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source bf-directed hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A standard directed bipartite graph representing the incidence structure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="433" column="4" bodyfile="include/hgl/conversion.hpp" bodystart="433" bodyend="454"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Core_1ga61b813d5e525542cceae9504fe23f3f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>Hypergraph</declname>
+            <defname>Hypergraph</defname>
+          </param>
+        </templateparamlist>
+        <type>Hypergraph</type>
+        <definition>Hypergraph hgl::clone</definition>
+        <argsstring>(const Hypergraph &amp;source)</argsstring>
+        <name>clone</name>
+        <qualifiedname>hgl::clone</qualifiedname>
+        <param>
+          <type>const Hypergraph &amp;</type>
+          <declname>source</declname>
+        </param>
+        <briefdescription>
+<para>Creates a deep copy of a given hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Creates a deep copy of the given hypergraph.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The concrete hypergraph type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to clone. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A duplicated instance of the source hypergraph.</para>
+</simplesect>
+<parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph instance to clone. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed hypergraph containing identical vertices, hyperedges and properties (if applicable). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph.hpp" line="2309" column="13" bodyfile="include/hgl/hypergraph.hpp" bodystart="2309" bodyend="2311" declfile="include/hgl/hypergraph.hpp" declline="107" declcolumn="13"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Fundamental hypergraph data structures, element descriptors, and configuration tags. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This group establishes the primary user interface for the HGL module, centered around the highly configurable <ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref> class. It provides the core data types, such as vertex and hyperedge descriptors, required to safely navigate and manipulate graph elements.</para>
+<para>Furthermore, this module defines the declarative tags (e.g., directedness and backend implementation types) that dictate both the behavioral semantics and the underlying memory layout of the instantiated hypergraphs. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

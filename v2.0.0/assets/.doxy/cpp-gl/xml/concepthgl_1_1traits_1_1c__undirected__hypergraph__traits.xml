@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="concepthgl_1_1traits_1_1c__undirected__hypergraph__traits" kind="concept">
+    <compoundname>hgl::traits::c_undirected_hypergraph_traits</compoundname>
+    <includes refid="hypergraph__traits_8hpp" local="no">hgl/hypergraph_traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename TraitsType</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename TraitsType&gt;
+concept <ref refid="concepthgl_1_1traits_1_1c__undirected__hypergraph__traits" kindref="compound">hgl::traits::c_undirected_hypergraph_traits</ref> = 
+    c_instantiation_of&lt;TraitsType, hypergraph_traits&gt;
+    and std::same_as&lt;typename TraitsType::directional_tag, undirected_t&gt;    </initializer>
+    <briefdescription>
+<para>Validates if a type is an instantiation of <ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref> with an undirected configuration. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>TraitsType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/hgl/hypergraph_traits.hpp" line="234" column="1"/>
+  </compounddef>
+</doxygen>

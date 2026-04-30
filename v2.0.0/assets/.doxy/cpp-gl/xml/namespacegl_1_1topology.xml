@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1topology" kind="namespace" language="C++">
+    <compoundname>gl::topology</compoundname>
+    <sectiondef kind="func">
+      <member refid="group__GL-Topology_1gae2a960a9c81b1ea5df0c417fb9d07852" kind="function"><name>regular_binary_tree</name></member>
+      <member refid="group__GL-Topology_1ga26177d60a704ca8e5be99d476527e792" kind="function"><name>bidirectional_regular_binary_tree</name></member>
+      <member refid="group__GL-Topology_1ga0c92916bbeaf29884453c1f7f826360e" kind="function"><name>biclique</name></member>
+      <member refid="group__GL-Topology_1ga088a971ff5a8bf8e365aaddfe93724ea" kind="function"><name>clique</name></member>
+      <member refid="group__GL-Topology_1gac54a8f8b42bac51874475dd475d570c7" kind="function"><name>cycle</name></member>
+      <member refid="group__GL-Topology_1ga54ab80177618addc72bcbe60f26134cd" kind="function"><name>bidirectional_cycle</name></member>
+      <member refid="group__GL-Topology_1gaf7b745f5b1b8bcfb51eb5f097f3969b7" kind="function"><name>path</name></member>
+      <member refid="group__GL-Topology_1ga9fd3d043786182ef1d45601952b7881c" kind="function"><name>bidirectional_path</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/topology/binary_tree.hpp" line="17" column="1"/>
+  </compounddef>
+</doxygen>
