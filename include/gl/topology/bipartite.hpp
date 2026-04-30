@@ -10,7 +10,7 @@
 #include "gl/constants.hpp"
 #include "gl/conversion.hpp"
 #include "gl/graph.hpp"
-#include "gl/impl/impl_tags.hpp"
+#include "gl/repr_tags.hpp"
 
 namespace gl::topology {
 
@@ -55,8 +55,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType biclique(size_type n_vertices_a, size_type n_vertices_b) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(biclique<base_graph_type>(n_vertices_a, n_vertices_b));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(biclique<base_graph_type>(n_vertices_a, n_vertices_b));
 }
 
 } // namespace gl::topology

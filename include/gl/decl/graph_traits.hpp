@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gl/decl/impl_tags.hpp"
+#include "gl/decl/repr_tags.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/traits.hpp"
 
@@ -14,7 +14,7 @@ template <
     traits::c_graph_directional_tag DirectionalTag,
     traits::c_properties VertexProperties,
     traits::c_properties EdgeProperties,
-    traits::c_graph_impl_tag ImplTag,
+    traits::c_graph_repr_tag ReprTag,
     traits::c_id_type IdType>
 struct graph_traits;
 

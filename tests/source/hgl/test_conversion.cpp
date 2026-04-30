@@ -411,15 +411,15 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     // Define the three target graph models
     using list_graph = gl::graph<
-        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::list_t>>;
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::repr::list_t>>;
     using flat_list_graph = gl::graph<
-        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::flat_list_t>>;
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::repr::flat_list_t>>;
     using matrix_graph = gl::graph<
-        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::impl::matrix_t>>;
+        gl::directed_graph_traits<gl::empty_properties, gl::empty_properties, gl::repr::matrix_t>>;
     using flat_matrix_graph = gl::graph<gl::directed_graph_traits<
         gl::empty_properties,
         gl::empty_properties,
-        gl::impl::flat_matrix_t>>;
+        gl::repr::flat_matrix_t>>;
 
     SUBCASE("projection should produce directed edges from tails to heads for each hyperedge") {
         sut_type sut{4uz, 2uz};

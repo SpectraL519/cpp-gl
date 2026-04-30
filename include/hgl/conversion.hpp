@@ -304,10 +304,10 @@ template <gl::traits::c_undirected_graph G>
 }
 
 template <gl::traits::c_undirected_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G projection(const traits::c_undirected_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(projection<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -321,7 +321,7 @@ requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::fla
 /// >
 /// > If the requested target graph `G` satisfies [**c_flat_list_graph**](gl_concepts.md#gl-traits-c-flat-list-graph),
 /// > an optimized overload is automatically selected. It internally constructs a standard adjacency list graph
-/// > first, and then utilizes the @ref gl::to "to" conversion to flatten it. This is significantly faster than
+/// > first, and then utilizes the @ref gl::to conversion to flatten it. This is significantly faster than
 /// > inserting edges one-by-one into a flat representation.
 ///
 /// @tparam G The target standard graph type to construct. Must satisfy [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph).
@@ -352,10 +352,10 @@ template <gl::traits::c_directed_graph G>
 }
 
 template <gl::traits::c_directed_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G projection(const traits::c_bf_directed_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(projection<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(projection<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -401,10 +401,10 @@ template <gl::traits::c_undirected_graph G>
 }
 
 template <gl::traits::c_undirected_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G incidence_graph(const traits::c_undirected_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(incidence_graph<list_graph>(h));
 }
 
 /// @ingroup HGL-Core
@@ -454,10 +454,10 @@ template <gl::traits::c_directed_graph G>
 }
 
 template <gl::traits::c_directed_graph G>
-requires std::same_as<typename G::traits_type::implementation_tag, gl::impl::flat_list_t>
+requires std::same_as<typename G::traits_type::implementation_tag, gl::repr::flat_list_t>
 [[nodiscard]] G incidence_graph(const traits::c_bf_directed_hypergraph auto& h) {
-    using list_graph = gl::traits::swap_impl_tag_t<G, gl::impl::list_t>;
-    return gl::to<gl::impl::flat_list_t>(incidence_graph<list_graph>(h));
+    using list_graph = gl::traits::swap_repr_tag_t<G, gl::repr::list_t>;
+    return gl::to<gl::repr::flat_list_t>(incidence_graph<list_graph>(h));
 }
 
 } // namespace hgl

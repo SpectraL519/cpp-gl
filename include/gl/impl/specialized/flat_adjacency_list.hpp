@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gl/constants.hpp"
-#include "gl/decl/impl_tags.hpp"
+#include "gl/decl/repr_tags.hpp"
 #include "gl/graph_traits.hpp"
 #include "gl/impl/specialized/adjacency_list.hpp"
 #include "gl/types/flat_jagged_vector.hpp"
@@ -352,7 +352,7 @@ struct undirected_flat_adjacency_list {
 
 template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires traits::c_directed_edge<typename AdjacencyList::edge_type>
-     and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
+     and std::same_as<typename AdjacencyList::representation_tag, repr::flat_list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = directed_flat_adjacency_list<AdjacencyList>;
 
@@ -362,7 +362,7 @@ struct adjacency_list_impl_traits<AdjacencyList> {
 
 template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
 requires traits::c_undirected_edge<typename AdjacencyList::edge_type>
-     and std::same_as<typename AdjacencyList::implementation_tag, flat_list_t>
+     and std::same_as<typename AdjacencyList::representation_tag, repr::flat_list_t>
 struct adjacency_list_impl_traits<AdjacencyList> {
     using type = undirected_flat_adjacency_list<AdjacencyList>;
 

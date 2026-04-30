@@ -78,8 +78,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType regular_binary_tree(size_type depth) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
 }
 
 /// @ingroup GL-Topology
@@ -136,8 +136,8 @@ template <traits::c_graph GraphType>
 
 template <traits::c_flat_list_graph GraphType>
 [[nodiscard]] GraphType bidirectional_regular_binary_tree(size_type depth) {
-    using base_graph_type = traits::swap_impl_tag_t<GraphType, impl::list_t>;
-    return to<impl::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
+    using base_graph_type = traits::swap_repr_tag_t<GraphType, repr::list_t>;
+    return to<repr::flat_list_t>(bidirectional_regular_binary_tree<base_graph_type>(depth));
 }
 
 } // namespace gl::topology
