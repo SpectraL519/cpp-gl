@@ -25,7 +25,7 @@ struct flat_matrix_t;
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Validates if a type is one of the defined graph implementation tags.
 ///
 /// This concept is used to constrain template parameters that are expected to be

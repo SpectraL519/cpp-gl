@@ -15,23 +15,23 @@
 
 namespace gl::io {
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Type used for standard I/O stream custom index allocation (`std::ios_base::xalloc`).
 using index_type = int;
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Type used for storing custom option flags within standard I/O streams.
 using iword_type = long;
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Type representing the zero-indexed position of a specific option bit.
 using bit_position_type = unsigned;
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Base bit representing the a single position in an `iword` flag map.
 inline constexpr iword_type iword_bit = 1ul;
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief A custom stream manipulator for modifying formatting options on standard I/O streams.
 ///
 /// Utilizing `std::ios_base::xalloc` and the `iword` map, this class safely injects custom formatting
@@ -129,7 +129,7 @@ template <typename T>
 
 } // namespace detail
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Creates a stream manipulator that enables the specified option bits.
 /// @tparam Args Variadic template arguments representing the bits to set.
 /// @param bits The specific options/bits to enable.
@@ -139,7 +139,7 @@ template <typename... Args>
     return options_manip{detail::build_mask(bits...), 0ul};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Creates a stream manipulator that enables the specified option bits from a list.
 /// @tparam T The type of the bits.
 /// @param bits An initializer list containing the options/bits to enable.
@@ -149,7 +149,7 @@ template <typename T>
     return options_manip{detail::build_mask_from(bits), 0ul};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Creates a stream manipulator that disables the specified option bits.
 /// @tparam Args Variadic template arguments representing the bits to clear.
 /// @param bits The specific options/bits to disable.
@@ -159,7 +159,7 @@ template <typename... Args>
     return options_manip{0ul, detail::build_mask(bits...)};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Creates a stream manipulator that disables the specified option bits from a list.
 /// @tparam T The type of the bits.
 /// @param bits An initializer list containing the options/bits to disable.
@@ -169,7 +169,7 @@ template <typename T>
     return options_manip{0ul, detail::build_mask_from(bits)};
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Convenience wrapper to check if a specific option bit is set on the stream.
 /// @param stream The stream to check.
 /// @param bit_position The numeric position of the bit to verify.
@@ -180,7 +180,7 @@ template <typename T>
     return options_manip::is_option_set(stream, bit_position);
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Convenience wrapper to check if a specific enum-based option is set on the stream.
 /// @param stream The stream to check.
 /// @param bit The scoped enum value representing the bit to verify.
@@ -191,7 +191,7 @@ template <typename T>
     return options_manip::is_option_set(stream, bit);
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Convenience wrapper to check if a combined bitmask of options is set on the stream.
 /// @param stream The stream to check.
 /// @param bitmask The exact bitmask to verify.
@@ -200,7 +200,7 @@ template <typename T>
     return options_manip::are_options_set(stream, bitmask);
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Convenience wrapper to check if multiple specific options are simultaneously set.
 /// @tparam Args Variadic template arguments representing the bits.
 /// @param stream The stream to check.
@@ -211,7 +211,7 @@ template <typename... Args>
     return options_manip::are_options_set(stream, detail::build_mask(bits...));
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Convenience wrapper to check if multiple specific options from a list are simultaneously set.
 /// @tparam T The type of the elements in the initializer list.
 /// @param stream The stream to check.

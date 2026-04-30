@@ -20,7 +20,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A lightweight wrapper around a vertex identifier with optional properties.
 ///
 /// The `vertex_descriptor` class provides a type-safe and efficient way to represent

@@ -15,7 +15,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A descriptor structure holding the results of a Minimum Spanning Tree (MST) execution.
 ///
 /// @tparam G The type of the undirected graph. Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept.
@@ -40,7 +40,7 @@ struct mst_descriptor {
     weight_type weight = static_cast<weight_type>(0);
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with an edge-based priority queue.
 ///
 /// This implementation uses a standard binary heap (`std::priority_queue`) to store and sort edges based on their weight.
@@ -133,7 +133,7 @@ template <traits::c_undirected_graph G>
     return mst;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes the Minimum Spanning Tree (MST) of an undirected graph using Prim's algorithm with a vertex-based array heap.
 ///
 /// This variation maintains a heap of vertex IDs based on their minimum known connection cost.

@@ -13,7 +13,7 @@
 
 namespace gl::topology {
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a complete graph (clique).
 ///
 /// A complete graph is a simple graph in which every pair of distinct vertices is connected by an edge.

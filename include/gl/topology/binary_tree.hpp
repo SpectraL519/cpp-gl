@@ -30,7 +30,7 @@ constexpr size_type min_non_trivial_bin_tree_depth = 2uz;
 
 } // namespace detail
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular (regular) binary tree of a specified depth.
 ///
 /// A regular binary tree is a tree where all internal vertices have exactly two children
@@ -82,7 +82,7 @@ template <traits::c_flat_list_graph GraphType>
     return to<impl::flat_list_t>(regular_binary_tree<base_graph_type>(depth));
 }
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular binary tree with bidirectional edges.
 ///
 /// For directed graphs, this function ensures that for every parent-to-child edge,

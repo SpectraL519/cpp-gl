@@ -13,7 +13,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A constant representing the initial ID value of 0 for graph elements.
 /// @tparam IdType The type of the ID, which must satisfy the [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) concept.
 /// ### See Also
@@ -23,7 +23,7 @@ namespace gl {
 template <traits::c_id_type IdType>
 inline constexpr IdType initial_id_v{0};
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A helper type that can be implicitly converted to the initial ID value of 0 for any valid ID type.
 /// ### See Also
 /// - [**c_id_type**](gl_concepts.md#gl-traits-c-id-type)
@@ -37,7 +37,7 @@ struct initial_id_t {
     }
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief An `initial_id_t` tag constant that can be used to represent the initial ID value of 0 for graph elements in a type-safe manner.
 ///
 /// ### Example Usage
@@ -56,7 +56,7 @@ inline constexpr initial_id_t initial_id{};
 
 // --- invalid id ---
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A constant representing the invalid ID value for graph elements, defined as the maximum value of the specified ID type.
 /// @tparam IdType The type of the ID, which must satisfy the [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) concept.
 /// ### See Also
@@ -66,7 +66,7 @@ inline constexpr initial_id_t initial_id{};
 template <traits::c_id_type IdType>
 inline constexpr IdType invalid_id_v{std::numeric_limits<IdType>::max()};
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief A helper type that can be implicitly converted to the invalid ID value for any valid ID type.
 /// ### See Also
 /// - [**c_id_type**](gl_concepts.md#gl-traits-c-id-type)
@@ -95,7 +95,7 @@ struct invalid_id_t {
     }
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief An `invalid_id_t` tag constant that can be used to represent the invalid ID value for graph elements in a type-safe manner.
 ///
 /// ### Example Usage

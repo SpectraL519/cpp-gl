@@ -12,7 +12,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes a topological ordering of the vertices in a Directed Acyclic Graph (DAG).
 ///
 /// This implementation relies on Kahn's Algorithm. It utilizes the generic @ref gl::algorithm::bfs "bfs"

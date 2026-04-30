@@ -15,7 +15,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A descriptor structure holding the results of a single-source shortest path execution.
 ///
 /// ### Template Parameters
@@ -39,13 +39,13 @@ struct paths_descriptor {
     std::vector<distance_type> distances;
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief An alias for @ref gl::algorithm::paths_descriptor "paths_descriptor" that automatically deduces the appropriate distance type for the graph.
 /// @tparam G The type of the graph.
 template <traits::c_graph G>
 using paths_descriptor_type = paths_descriptor<G, vertex_distance_type<G>>;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Factory function to create an initialized paths descriptor sized for the given graph.
 /// @tparam G The type of the graph.
 /// @param graph The graph to size the descriptor against.
@@ -55,7 +55,7 @@ template <traits::c_graph G>
     return paths_descriptor_type<G>{graph.n_vertices()};
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Internal node structure for Dijkstra's algorithm to snapshot distances and preserve heap invariants.
 ///
 /// This structure is used in the @ref gl::algorithm::dijkstra_shortest_paths "dijkstra_shortest_paths" algorithm
@@ -74,7 +74,7 @@ struct dijkstra_search_node {
         distance; ///< The accumulated distance from the source to this vertex at the time of enqueueing.
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Computes the shortest paths from a single source vertex to all reachable vertices using Dijkstra's algorithm.
 ///
 /// This algorithm utilizes the generic @ref gl::algorithm::pfs "pfs" template using the dedicated
@@ -203,7 +203,7 @@ template <
     return paths;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Reconstructs the sequence of vertices forming a path to a specific target.
 ///
 /// This utility walks backward through a predecessor map, starting from the `vertex_id`

@@ -14,7 +14,7 @@
 
 namespace gl::topology {
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a complete bipartite graph (biclique).
 ///
 /// A complete bipartite graph is a graph whose vertices are partitioned into two disjoint

@@ -19,7 +19,7 @@ namespace gl {
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Utility trait type used to swap the implementation tag of a graph traits or graph type.
 /// ### See Also:
 /// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different implementations.
@@ -27,7 +27,7 @@ template <typename GT, traits::c_graph_impl_tag NewImplTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 struct swap_impl_tag;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Specialization of @ref gl::traits::swap_impl_tag "swap_impl_tag" for the @ref gl::graph_traits "graph_traits" type.
 template <
     traits::c_graph_directional_tag Dir,
@@ -40,7 +40,7 @@ struct swap_impl_tag<graph_traits<Dir, VP, EP, OldImplTag, IdType>, NewImplTag> 
     using type = graph_traits<Dir, VP, EP, NewImplTag, IdType>;
 };
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Specialization of @ref gl::traits::swap_impl_tag "swap_impl_tag" for the @ref gl::graph "graph" class.
 template <
     traits::c_graph_directional_tag Dir,
@@ -53,7 +53,7 @@ struct swap_impl_tag<graph<graph_traits<Dir, VP, EP, OldImplTag, IdType>>, NewIm
     using type = graph<graph_traits<Dir, VP, EP, NewImplTag, IdType>>;
 };
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Alias template for easier usage of the @ref gl::traits::swap_impl_tag "swap_impl_tag" trait to resolve the swapped type directly.
 /// ### See Also:
 /// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different implementations.
@@ -159,7 +159,7 @@ struct to_impl<impl::matrix_t, impl::flat_matrix_t> {
 
 } // namespace detail
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/conversion.hpp
 /// @brief Converts a graph from one implementation model to another.
 ///

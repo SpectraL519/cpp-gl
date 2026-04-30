@@ -15,7 +15,7 @@
 
 namespace gl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Primary graph traits structure that encapsulates all necessary type information for graph implementations.
 ///
 /// This structure serves as the central point for defining the properties and types associated with a graph,
@@ -73,7 +73,7 @@ struct graph_traits {
     using edge_properties_type = typename edge_type::properties_type;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with an adjacency list implementation.
 ///
 /// This alias simplifies the specification of graph traits for graphs that use an adjacency list representation,
@@ -93,7 +93,7 @@ template <
 using list_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::list_t, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with a flattened adjacency list implementation.
 ///
 /// This alias simplifies the specification of graph traits for graphs that use a flattened adjacency list representation,
@@ -113,7 +113,7 @@ template <
 using flat_list_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_list_t, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with an adjacency matrix implementation.
 ///
 /// This alias simplifies the specification of graph traits for graphs that use an adjacency matrix representation,
@@ -133,7 +133,7 @@ template <
 using matrix_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::matrix_t, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with a flattened adjacency matrix implementation.
 ///
 /// This alias simplifies the specification of graph traits for graphs that use a flattened adjacency matrix representation,
@@ -153,7 +153,7 @@ template <
 using flat_matrix_graph_traits =
     graph_traits<DirectionalTag, VertexProperties, EdgeProperties, impl::flat_matrix_t, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with an directed graph configuration.
 ///
 /// This alias simplifies the specification of graph traits for directed graphs, allowing users to easily define their
@@ -171,7 +171,7 @@ template <
 using directed_graph_traits =
     graph_traits<directed_t, VertexProperties, EdgeProperties, ImplTag, IdType>;
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @brief Type alias for graph traits with an undirected graph configuration.
 ///
 /// This alias simplifies the specification of graph traits for undirected graphs, allowing users to easily define their
@@ -191,7 +191,7 @@ using undirected_graph_traits =
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a list implementation.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
@@ -199,7 +199,7 @@ concept c_list_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::list_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a flattened adjacency list implementation.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
@@ -207,14 +207,14 @@ concept c_flat_list_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::flat_list_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with an adjacency list implementation (either standard or flattened).
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
 concept c_adjacency_list_graph_traits =
     c_list_graph_traits<TraitsType> or c_flat_list_graph_traits<TraitsType>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a matrix implementation.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
@@ -222,7 +222,7 @@ concept c_matrix_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::matrix_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a flattened adjacency matrix implementation.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
@@ -230,14 +230,14 @@ concept c_flat_matrix_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::implementation_tag, impl::flat_matrix_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a matrix implementation (either standard or flattened).
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
 concept c_adjacency_matrix_graph_traits =
     c_matrix_graph_traits<TraitsType> or c_flat_matrix_graph_traits<TraitsType>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with a directed graph configuration.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>
@@ -245,7 +245,7 @@ concept c_directed_graph_traits =
     c_instantiation_of<TraitsType, graph_traits>
     and std::same_as<typename TraitsType::directional_tag, directed_t>;
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept to validate if a type is an instantiation of @ref gl::graph_traits "graph_traits" with an undirected graph configuration.
 /// @tparam TraitsType The type to evaluate against the concept.
 template <typename TraitsType>

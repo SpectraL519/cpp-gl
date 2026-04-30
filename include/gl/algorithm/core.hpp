@@ -18,7 +18,7 @@ namespace gl::algorithm {
 
 // --- general types ---
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A tag type used to explicitly indicate the absence of a callback function.
 ///
 /// > [!NOTE] Performance vs. Empty Lambdas
@@ -30,7 +30,7 @@ namespace gl::algorithm {
 /// > and speeds up compilation times.
 struct empty_callback {};
 
-/// @ingroup GL GL-Algorithm GL-Types
+/// @ingroup GL-Algorithm GL-Types
 /// @brief Represents a generic tri-state decision for control flow.
 ///
 /// Used by custom predicates to determine how to proceed with a given item, execution step, or operation.
@@ -78,7 +78,7 @@ struct decision {
     eval value;
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Tag used to statically dictate whether an algorithm should return a constructed result or execute purely for side effects.
 ///
 /// > [!NOTE] Namespace Availability
@@ -96,7 +96,7 @@ enum class result_discriminator : bool {
 };
 using enum result_discriminator;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Resolves to the specified `ResultType` if `Result` is `ret`, otherwise resolves to `void`.
 ///
 /// ### See Also
@@ -105,7 +105,7 @@ using enum result_discriminator;
 template <result_discriminator Result, typename ResultType>
 using result_type = std::conditional_t<Result == algorithm::ret, ResultType, void>;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Resolves to the specified `ResultType` if `Result` is `ret`, otherwise resolves to `std::monostate`.
 ///
 /// Useful for returning dummy values from conditionally compiled algorithm branches.
@@ -119,13 +119,13 @@ using non_void_result_type =
 
 // --- traversal types ---
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Maps a vertex ID to its predecessor's ID in a traversal tree.
 /// @tparam GraphType The type of the graph being traversed.
 template <traits::c_graph GraphType>
 using predecessors_map = std::vector<typename GraphType::id_type>;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
 /// @tparam GraphType The type of the graph being searched.
 template <traits::c_graph GraphType>
@@ -155,7 +155,7 @@ struct search_node {
 
 // --- constants ---
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Constant representing the absence of a root vertex ID for a specific ID type.
 ///
 /// ### See Also
@@ -165,7 +165,7 @@ struct search_node {
 template <traits::c_id_type IdType>
 inline constexpr IdType no_root_v = invalid_id_v<IdType>;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Tag type providing an implicit conversion to the appropriate `no_root_v` for any numeric ID type.
 ///
 /// ### See Also
@@ -185,7 +185,7 @@ struct no_root_t {
     }
 };
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Global constant representing the absence of a root vertex.
 ///
 /// ### See Also

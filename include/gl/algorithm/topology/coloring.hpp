@@ -12,11 +12,11 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Alias for a container mapping vertex indices to their calculated binary (bipartite) colors.
 using bicoloring_type = std::vector<binary_color>;
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Attempts to compute a valid bipartite (2-color) coloring for the given graph.
 ///
 /// This algorithm utilizes the generic @ref gl::algorithm::bfs "bfs" template to traverse the graph and
@@ -113,7 +113,7 @@ template <
     return coloring;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Convenience wrapper for the @ref gl::algorithm::bipartite_coloring "bipartite_coloring" algorithm to check if a graph is bipartite without extracting the exact coloring map.
 /// @param graph The graph to evaluate.
 /// @return `true` if the graph is bipartite (2-colorable), `false` otherwise.
@@ -123,7 +123,7 @@ template <
     return bipartite_coloring(graph).has_value();
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Applies a computed range of binary colors to the property payload of each vertex in the graph.
 ///
 /// ### Template Parameters

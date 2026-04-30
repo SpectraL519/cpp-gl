@@ -14,7 +14,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Executes a concrete iterative Depth-First Search (DFS) traversal over the graph.
 ///
 /// This function utilizes the generic @ref gl::algorithm::dfs "dfs" template to perform a standard, stack-based traversal.
@@ -123,7 +123,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
         return pred_map;
 }
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Executes a concrete recursive Depth-First Search (DFS) traversal over the graph.
 ///
 /// This function relies on the generic @ref gl::algorithm::r_dfs "r_dfs" template. Instead of a

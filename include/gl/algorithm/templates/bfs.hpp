@@ -15,7 +15,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief A highly customizable, generic Breadth-First Search (BFS) algorithm engine.
 ///
 /// This template does not implement a specific algorithm (like finding a shortest path).

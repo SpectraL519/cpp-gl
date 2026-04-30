@@ -15,14 +15,14 @@
 namespace gl {
 namespace io {
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Tag type specifying that a file should be opened in strictly write (truncate) mode.
 ///
 /// When using this mode, the operation will intentionally throw an exception if the target file already exists
 /// to prevent accidental data overwrites.
 struct write {};
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Tag type specifying that a file should be opened in append mode.
 ///
 /// When using this mode, the operation will append data to an existing file. It will throw an exception
@@ -33,7 +33,7 @@ struct append {};
 
 namespace traits {
 
-/// @ingroup GL GL-Traits
+/// @ingroup GL-Traits
 /// @brief Concept checking if a provided type is a valid file I/O save mode.
 /// @see gl::io::write "write"
 /// @see gl::io::append "append"
@@ -112,7 +112,7 @@ requires(std::same_as<Mode, append>)
 
 } // namespace detail
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Serializes and saves a graph to a file.
 ///
 /// Saves the graph topology and optionally its properties using the Graph Specification Format (GSF).
@@ -141,7 +141,7 @@ void save(
     file << graph;
 }
 
-/// @ingroup GL GL-IO
+/// @ingroup GL-IO
 /// @brief Deserializes and loads a graph from a file.
 ///
 /// Instantiates a new graph populated with the topology and properties read from the target GSF file.

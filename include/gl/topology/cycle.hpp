@@ -13,7 +13,7 @@
 
 namespace gl::topology {
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a regular cycle graph (ring topology).
 ///
 /// A cycle graph consists of a single closed chain of vertices. Vertex \f$v_i\f$ is connected
@@ -49,7 +49,7 @@ template <traits::c_flat_list_graph GraphType>
     return to<impl::flat_list_t>(cycle<base_graph_type>(n_vertices));
 }
 
-/// @ingroup GL GL-Topology
+/// @ingroup GL-Topology
 /// @brief Generates a cycle graph with bidirectional edges.
 ///
 /// For directed graphs, this function creates a reciprocal edge for every forward edge

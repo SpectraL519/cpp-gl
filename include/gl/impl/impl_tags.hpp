@@ -13,7 +13,7 @@
 
 namespace gl::impl {
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the standard adjacency list graph implementation.
 struct list_t {
@@ -25,7 +25,7 @@ struct list_t {
     using type = adjacency_list<GraphTraits>;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the flattened adjacency list graph implementation.
 /// ### See Also
@@ -39,7 +39,7 @@ struct flat_list_t {
     using type = adjacency_list<GraphTraits>;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the standard adjacency matrix graph implementation.
 struct matrix_t {
@@ -51,7 +51,7 @@ struct matrix_t {
     using type = adjacency_matrix<GraphTraits>;
 };
 
-/// @ingroup GL GL-Core
+/// @ingroup GL-Core
 /// @headerfile gl/impl/impl_tags.hpp
 /// @brief Tag struct for the flattened adjacency matrix graph implementation.
 /// ### See Also

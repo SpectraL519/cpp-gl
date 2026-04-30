@@ -14,7 +14,7 @@
 
 namespace gl::algorithm {
 
-/// @ingroup GL GL-Algorithm
+/// @ingroup GL-Algorithm
 /// @brief Executes a concrete Breadth-First Search (BFS) traversal over the graph.
 ///
 /// This function utilizes the generic @ref gl::algorithm::bfs "bfs" template to perform a standard queue-based traversal.
