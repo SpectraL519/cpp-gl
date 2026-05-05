@@ -48,7 +48,7 @@ Formally, a graph $G = (V, E)$ consists of a set of vertices $V$ and a set of ed
 
 - [**directed_t**](../cpp-gl/structgl_1_1directed__t.md) : Specifies a **directed graph** configuration where edges are defined as ordered pairs $(u, v)$ such that $u, v \in V$. In this graph type, a connection from vertex $u$ to vertex $v$ is structurally distinct from a connection from $v$ to $u$, and the existence of one directed edge does not imply the existence of the other.
 
-- [**gl::undirected_t**](../cpp-gl/structgl_1_1undirected__t.md) : Edges are unordered pairs $\{u, v\}$ where $u, v \in V$. The library automatically manages the bidirectional nature of these connections, ensuring that an edge between $u$ and $v$ is recognized during both traversal and structural degree calculations regardless of the order of endpoints.
+- [**undirected_t**](../cpp-gl/structgl_1_1undirected__t.md) : Edges are unordered pairs $\{u, v\}$ where $u, v \in V$. The library automatically manages the bidirectional nature of these connections, ensuring that an edge between $u$ and $v$ is recognized during both traversal and structural degree calculations regardless of the order of endpoints.
 
 ### IDs vs. Descriptors
 

@@ -144,7 +144,7 @@ struct to_impl;
 /// - **Standard Range Support**: Exposes lightweight views compliant with C++20 `std::ranges`, enabling functional-style iteration and algorithms.
 ///
 /// ### Basic Definitions
-/// A hypergraph \f$G = (V, E)\f$ consists of a set of vertices \f$V\f$ and a set of hyperedges \f$E\f$.
+/// A hypergraph \f$H = (V, E)\f$ consists of a set of vertices \f$V\f$ and a set of hyperedges \f$E\f$.
 ///
 /// - For undirected graphs, a hyperedge is a subset of the vertex set. Formally \f$E \subseteq 2^V\f$ and \f$e \in E \implies e \subseteq V\f$.
 /// - For BF-directed graphs, a hyperedge is an ordered pair of disjoint subsets of the vertex set - the *tail* (sources) and *head* (targets) of the hyperedge.
