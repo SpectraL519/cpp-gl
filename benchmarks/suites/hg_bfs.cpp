@@ -1,20 +1,13 @@
-#include "gl/directional_tags.hpp"
-#include "gl/types/properties.hpp"
-#include "hgl/directional_tags.hpp"
 #include "runner.hpp"
 #include "suite.hpp"
 
-#include <gl/algorithm/traversal/breadth_first_search.hpp>
+#include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
-#include <gl/types/core.hpp>
 
 #include <benchmark/benchmark.h>
-#include <hgl/algorithm/traversal/breadth_first_search.hpp>
+#include <hgl/algorithm.hpp>
 #include <hgl/conversion.hpp>
 #include <hgl/hypergraph.hpp>
-#include <hgl/hypergraph_traits.hpp>
-#include <hgl/repr/layout_tags.hpp>
-#include <hgl/repr/repr_tags.hpp>
 
 namespace gl_bench::hg_bfs {
 
