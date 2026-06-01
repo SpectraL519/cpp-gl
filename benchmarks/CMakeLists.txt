@@ -35,7 +35,7 @@ add_executable(cpp-gl-bench
     source/runner.cpp
     suites/is_bipartite.cpp
     suites/hg_bfs.cpp
-    suites/hg_bbfs.cpp
+    suites/hg_b_bfs.cpp
 )
 
 target_compile_options(cpp-gl-bench PRIVATE
