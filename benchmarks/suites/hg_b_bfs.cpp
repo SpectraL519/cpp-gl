@@ -1,3 +1,4 @@
+#include "gl/algorithm/core.hpp"
 #include "runner.hpp"
 #include "suite.hpp"
 
@@ -8,39 +9,30 @@
 #include <hgl/hypergraph.hpp>
 
 #include <benchmark/benchmark.h>
+#include <sys/types.h>
 
 namespace gl_bench::hg_b_bfs {
 
-// --- BF-Directed Hypergraph Topology Generator ---
+// --- Hypergraph Topology Generator ---
 
-template <hgl::traits::c_hypergraph HypergraphType>
-HypergraphType gen_bf_chain_hypergraph(
-    const std::size_t num_hyperedges, const std::size_t layer_width
+template <hgl::traits::c_bf_directed_hypergraph HypergraphType>
+HypergraphType gen_bf_overlapping_chain_hypergraph(
+    const std::size_t n_hyperedges, const std::size_t layer_width, const std::size_t stride
 ) {
     using id_type = typename HypergraphType::id_type;
 
-    // A layered chain: Hyperedge `e` connects layer `e` (tail) to layer `e+1` (head).
-    const auto n_vertices = static_cast<id_type>((num_hyperedges + 1) * layer_width);
-    const auto n_hyperedges = static_cast<id_type>(num_hyperedges);
+    const auto n_vertices = static_cast<id_type>((n_hyperedges * stride) + layer_width);
+    HypergraphType hgraph{n_vertices, static_cast<id_type>(n_hyperedges)};
 
-    HypergraphType hgraph{n_vertices, n_hyperedges};
+    for (id_type e = 0; e < static_cast<id_type>(n_hyperedges); ++e) {
+        const auto tail_start = static_cast<id_type>(e * stride);
+        const auto tail_end = tail_start + static_cast<id_type>(layer_width);
 
-    for (id_type e = 0; e < n_hyperedges; ++e) {
-        std::vector<id_type> tail;
-        std::vector<id_type> head;
-        tail.reserve(layer_width);
-        head.reserve(layer_width);
+        const auto head_start = static_cast<id_type>((e * stride) + stride);
+        const auto head_end = head_start + static_cast<id_type>(layer_width);
 
-        const auto tail_start = static_cast<id_type>(e * layer_width);
-        const auto head_start = static_cast<id_type>((e + 1) * layer_width);
-
-        for (std::size_t k = 0; k < layer_width; ++k) {
-            tail.push_back(tail_start + static_cast<id_type>(k));
-            head.push_back(head_start + static_cast<id_type>(k));
-        }
-
-        hgraph.bind_tail(tail, e);
-        hgraph.bind_head(head, e);
+        hgraph.bind_tail(std::views::iota(tail_start, tail_end), e);
+        hgraph.bind_head(std::views::iota(head_start, head_end), e);
     }
 
     return hgraph;
@@ -50,20 +42,18 @@ HypergraphType gen_bf_chain_hypergraph(
 
 template <hgl::traits::c_bf_directed_hypergraph Hypergraph>
 void bm_hgl_backward_bfs(benchmark::State& state) {
+    using id_type = typename Hypergraph::id_type;
+
     const auto n_hedges = static_cast<std::size_t>(state.range(0));
     const auto layer_width = static_cast<std::size_t>(state.range(1));
+    const auto stride = static_cast<std::size_t>(state.range(2));
 
-    auto hg = gen_bf_chain_hypergraph<Hypergraph>(n_hedges, layer_width);
+    auto hg = gen_bf_overlapping_chain_hypergraph<Hypergraph>(n_hedges, layer_width, stride);
 
-    // Initial roots: All vertices in Layer 0
-    std::vector<typename Hypergraph::id_type> roots;
-    roots.reserve(layer_width);
-    for (std::size_t i = 0; i < layer_width; ++i) {
-        roots.push_back(static_cast<typename Hypergraph::id_type>(i));
-    }
+    auto roots = std::views::iota(id_type{0}, static_cast<id_type>(layer_width))
+               | std::ranges::to<std::vector<id_type>>();
 
     for (auto _ : state) {
-        // Run native B-BFS
         auto search_tree = hgl::algorithm::backward_bfs(hg, roots);
         benchmark::DoNotOptimize(search_tree);
     }
@@ -73,82 +63,85 @@ void bm_hgl_backward_bfs(benchmark::State& state) {
     state.counters["Incidences"] = static_cast<double>(n_hedges * layer_width * 2);
 }
 
-// --- GL Incidence Graph Backward BFS Equivalent ---
+// --- Incidence Graph Utilities ---
+
+/// @brief Executes a Backward BFS equivalent on an Incidence Graph.
+template <gl::traits::c_directed_graph IncidenceGraph>
+bool incidence_backward_bfs(
+    const IncidenceGraph& ig,
+    const std::vector<typename IncidenceGraph::id_type>& roots,
+    const typename IncidenceGraph::id_type original_n_vertices
+) {
+    using id_type = typename IncidenceGraph::id_type;
+
+    std::vector<bool> visited_v(original_n_vertices, false);
+    auto tail_unvisited =
+        ig.in_degree_map() | std::views::drop(original_n_vertices)
+        | std::ranges::to<std::vector<gl::size_type>>();
+
+    auto root_nodes =
+        roots | std::views::transform([](const id_type root_id) {
+            return gl::algorithm::search_node<IncidenceGraph>{root_id};
+        })
+        | std::ranges::to<std::vector>();
+
+    auto visit_vertex_pred = [&](id_type v) {
+        if (v < original_n_vertices)
+            return not visited_v[gl::to_idx(v)];
+        return true;
+    };
+
+    auto visit = [&](id_type v, id_type /*p*/) {
+        if (v < original_n_vertices)
+            visited_v[gl::to_idx(v)] = true;
+        return true;
+    };
+
+    auto enqueue_node_pred =
+        [&](id_type target_id, const auto& /*edge*/) -> gl::algorithm::decision {
+        if (target_id >= original_n_vertices) {
+            const auto he_idx = target_id - original_n_vertices;
+            return --tail_unvisited[gl::to_idx(he_idx)] == 0uz;
+        }
+        else {
+            return not visited_v[gl::to_idx(target_id)];
+        }
+    };
+
+    return gl::algorithm::bfs(ig, root_nodes, visit_vertex_pred, visit, enqueue_node_pred);
+}
+
+// --- GL Incidence Graph Backward BFS Benchmark ---
 
 template <
     hgl::traits::c_bf_directed_hypergraph Hypergraph,
     gl::traits::c_directed_graph IncidenceGraph>
 void bm_gl_incidence_backward_bfs(benchmark::State& state) {
-    using id_type = typename Hypergraph::id_type;
+    using id_type = typename IncidenceGraph::id_type;
 
     const auto n_hedges = static_cast<std::size_t>(state.range(0));
     const auto layer_width = static_cast<std::size_t>(state.range(1));
+    const auto stride = static_cast<std::size_t>(state.range(2));
 
-    // Memory Guard for Matrix Representations
     if constexpr (gl::traits::c_adjacency_matrix_graph<IncidenceGraph>) {
-        const auto n_vertices = (n_hedges + 1) * layer_width;
+        const auto n_vertices = (n_hedges * stride) + layer_width;
         const auto ig_vertices = n_vertices + n_hedges;
 
-        // Skip if matrix requires > 4.5 GB of contiguous RAM
-        if (ig_vertices > 35000) {
-            state.SkipWithError("Matrix requires > 4.5 GB of memory; skipping.");
+        // Hardcoded safety limit for ~16 GB of RAM (V_ig = 65,000)
+        if (ig_vertices > 65000) {
+            state.SkipWithError("Matrix requires > 16.0 GB of memory; skipping.");
             return;
         }
     }
 
-    auto hg = gen_bf_chain_hypergraph<Hypergraph>(n_hedges, layer_width);
+    auto hg = gen_bf_overlapping_chain_hypergraph<Hypergraph>(n_hedges, layer_width, stride);
     auto ig = hgl::incidence_graph<IncidenceGraph>(hg);
 
-    // Create the search nodes for the initial queue from Layer 0
-    std::vector<gl::algorithm::search_node<IncidenceGraph>> root_nodes;
-    root_nodes.reserve(layer_width);
-    for (std::size_t i = 0; i < layer_width; ++i) {
-        root_nodes.emplace_back(static_cast<typename IncidenceGraph::id_type>(i));
-    }
+    auto roots = std::views::iota(id_type{0}, static_cast<id_type>(layer_width))
+               | std::ranges::to<std::vector<id_type>>();
 
     for (auto _ : state) {
-        std::vector<bool> visited_v(hg.n_vertices(), false);
-        std::vector<gl::size_type> tail_unvisited(hg.n_hyperedges());
-
-        // The in-degree of a hyperedge node in a BF-directed incidence graph is exactly its tail size
-        for (std::size_t i = 0; i < hg.n_hyperedges(); ++i) {
-            tail_unvisited[i] = ig.in_degree(static_cast<id_type>(hg.n_vertices() + i));
-        }
-
-        // 1. Visit Vertex Predicate: Ignore already visited original vertices
-        auto visit_vertex_pred = [&](typename IncidenceGraph::id_type v) {
-            if (v < hg.n_vertices()) {
-                return not visited_v[v];
-            }
-            return true; // Hyperedge nodes bypass this check (handled by enqueue predicate)
-        };
-
-        // 2. Visit Callback: Mark original vertices as visited
-        auto visit =
-            [&](typename IncidenceGraph::id_type v, typename IncidenceGraph::id_type /*p*/) {
-                if (v < hg.n_vertices()) {
-                    visited_v[v] = true;
-                }
-                return true;
-            };
-
-        // 3. Enqueue Predicate: The Blocking B-Reachability Logic
-        auto enqueue_node_pred =
-            [&](typename IncidenceGraph::id_type target_id, const auto& /*edge*/) {
-                if (target_id >= hg.n_vertices()) {
-                    // If it's a hyperedge node, decrement its blocking counter
-                    const auto he_idx = target_id - hg.n_vertices();
-                    return static_cast<gl::algorithm::decision>(--tail_unvisited[he_idx] == 0);
-                }
-                else {
-                    // If it's a vertex node, enqueue only if unvisited
-                    return static_cast<gl::algorithm::decision>(not visited_v[target_id]);
-                }
-            };
-
-        // Execute the custom BFS logic over the incidence graph
-        bool completed =
-            gl::algorithm::bfs(ig, root_nodes, visit_vertex_pred, visit, enqueue_node_pred);
+        bool completed = incidence_backward_bfs(ig, roots, static_cast<id_type>(hg.n_vertices()));
         benchmark::DoNotOptimize(completed);
     }
 
@@ -163,14 +156,19 @@ void add_args(argon::argument_parser& parser) {
     parser.add_optional_argument<std::size_t>(group, "hg-b-bfs-e")
         .default_values(1000uz)
         .help("Number of BF-directed hyperedges");
-    parser.add_optional_argument<std::size_t>(group, "hg-b-bfs-width")
-        .default_values(100uz)
+    parser.add_optional_argument<std::size_t>(group, "hg-b-bfs-layer-width")
+        .default_values(10uz)
         .help("Number of vertices per layer (tail and head sizes)");
+    parser.add_optional_argument<std::size_t>(group, "hg-b-bfs-stride")
+        .default_values(2uz)
+        .help("Vertex shift between consecutive hyperedges (smaller = denser)");
 }
 
 void register_benchmarks(const argon::argument_parser& parser) {
     const auto n_hedges = static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-e"));
-    const auto layer_width = static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-width"));
+    const auto layer_width =
+        static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-layer-width"));
+    const auto stride = static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-stride"));
 
     // Standard Incidence Graphs MUST be directed for BF-Directed Hypergraphs
     using gl_list = gl::list_graph<gl::directed_t>;
@@ -191,43 +189,43 @@ void register_benchmarks(const argon::argument_parser& parser) {
         hgl::flat_matrix_hypergraph<hgl::repr::hyperedge_major_t, hgl::bf_directed_t>;
 
     benchmark::RegisterBenchmark("b_bfs/HGL/list", bm_hgl_backward_bfs<hgl_list>)
-        ->Args({n_hedges, layer_width})
+        ->Args({n_hedges, layer_width, stride})
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark("b_bfs/HGL/flat_list", bm_hgl_backward_bfs<hgl_flat_list>)
-        ->Args({n_hedges, layer_width})
+        ->Args({n_hedges, layer_width, stride})
         ->Unit(benchmark::kMillisecond);
 
     benchmark::RegisterBenchmark("b_bfs/HGL/matrix/v_major", bm_hgl_backward_bfs<hgl_v_matrix>)
-        ->Args({n_hedges, layer_width})
+        ->Args({n_hedges, layer_width, stride})
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark("b_bfs/HGL/matrix/e_major", bm_hgl_backward_bfs<hgl_e_matrix>)
-        ->Args({n_hedges, layer_width})
+        ->Args({n_hedges, layer_width, stride})
         ->Unit(benchmark::kMillisecond);
 
     benchmark::
         RegisterBenchmark("b_bfs/HGL/flat_matrix/v_major", bm_hgl_backward_bfs<hgl_v_flat_matrix>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
     benchmark::
         RegisterBenchmark("b_bfs/HGL/flat_matrix/e_major", bm_hgl_backward_bfs<hgl_e_flat_matrix>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
 
     benchmark::
         RegisterBenchmark("b_bfs/INCIDENCE/list", bm_gl_incidence_backward_bfs<hgl_list, gl_list>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
     benchmark::
         RegisterBenchmark("b_bfs/INCIDENCE/flat_list", bm_gl_incidence_backward_bfs<hgl_list, gl_flat_list>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
     benchmark::
         RegisterBenchmark("b_bfs/INCIDENCE/matrix", bm_gl_incidence_backward_bfs<hgl_list, gl_matrix>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
     benchmark::
         RegisterBenchmark("b_bfs/INCIDENCE/flat_matrix", bm_gl_incidence_backward_bfs<hgl_list, gl_flat_matrix>)
-            ->Args({n_hedges, layer_width})
+            ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
 }
 

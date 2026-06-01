@@ -13,28 +13,20 @@ namespace gl_bench::hg_bfs {
 
 // --- Hypergraph Topology Generator ---
 
-template <hgl::traits::c_hypergraph HypergraphType>
+template <hgl::traits::c_undirected_hypergraph HypergraphType>
 HypergraphType gen_sliding_window_hypergraph(
-    const std::size_t num_hyperedges, const std::size_t degree, const std::size_t stride
+    const std::size_t n_hyperedges, const std::size_t degree, const std::size_t stride
 ) {
     using id_type = typename HypergraphType::id_type;
 
     // V = (E - 1) * stride + degree
-    const auto n_vertices = static_cast<id_type>((num_hyperedges - 1) * stride + degree);
-    const auto n_hyperedges = static_cast<id_type>(num_hyperedges);
+    const auto n_vertices = static_cast<id_type>((n_hyperedges - 1) * stride + degree);
+    HypergraphType hgraph{n_vertices, static_cast<id_type>(n_hyperedges)};
 
-    HypergraphType hgraph{n_vertices, n_hyperedges};
-
-    for (id_type e = 0; e < n_hyperedges; ++e) {
-        std::vector<id_type> e_vertices;
-        e_vertices.reserve(degree);
-
-        const id_type start_v = static_cast<id_type>(e * stride);
-        for (std::size_t k = 0; k < degree; ++k) {
-            e_vertices.push_back(start_v + static_cast<id_type>(k));
-        }
-
-        hgraph.bind(e_vertices, e);
+    for (id_type e = 0; e < static_cast<id_type>(n_hyperedges); ++e) {
+        const auto start_v = static_cast<id_type>(e * stride);
+        const auto end_v = start_v + static_cast<id_type>(degree);
+        hgraph.bind(std::views::iota(start_v, end_v), e);
     }
 
     return hgraph;
@@ -74,10 +66,10 @@ void bm_gl_incidence_bfs(benchmark::State& state) {
         const auto n_vertices = (n_hedges - 1) * stride + he_size;
         const auto ig_vertices = n_vertices + n_hedges;
 
-        // If V_ig > 35,000, the matrix takes > 4.5 GB of contiguous RAM.
-        if (ig_vertices > 35000) {
-            state.SkipWithError("Matrix requires > 4.5 GB of memory; skipping.");
-            return; // MUST RETURN HERE to prevent std::bad_alloc
+        // Hardcoded safety limit for ~16 GB of RAM (V_ig = 65,000)
+        if (ig_vertices > 65000) {
+            state.SkipWithError("Matrix requires > 16.0 GB of memory; skipping.");
+            return;
         }
     }
 
