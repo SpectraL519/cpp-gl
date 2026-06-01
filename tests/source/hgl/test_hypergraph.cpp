@@ -5,7 +5,6 @@
 #include "testing/hgl/types.hpp"
 
 #include <gl/attributes/diagnostics.hpp>
-
 #include <hgl/directional_tags.hpp>
 #include <hgl/hypergraph.hpp>
 #include <hgl/hypergraph_traits.hpp>

@@ -3,11 +3,11 @@
 
 #include <gl/algorithm.hpp>
 #include <gl/graph.hpp>
-
-#include <benchmark/benchmark.h>
 #include <hgl/algorithm.hpp>
 #include <hgl/conversion.hpp>
 #include <hgl/hypergraph.hpp>
+
+#include <benchmark/benchmark.h>
 
 namespace gl_bench::hg_b_bfs {
 
