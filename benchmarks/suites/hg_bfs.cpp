@@ -16,7 +16,7 @@
 #include <hgl/repr/layout_tags.hpp>
 #include <hgl/repr/repr_tags.hpp>
 
-namespace gl_bench::hypergraph_bfs {
+namespace gl_bench::hg_bfs {
 
 // --- Hypergraph Topology Generator ---
 
@@ -180,4 +180,4 @@ bool _registered = []() {
 }();
 } // namespace
 
-} // namespace gl_bench::hypergraph_bfs
+} // namespace gl_bench::hg_bfs
