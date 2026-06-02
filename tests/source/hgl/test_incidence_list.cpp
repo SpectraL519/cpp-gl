@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <ranges>
+#include <stdexcept>
 
 namespace hgl_testing {
 
@@ -912,7 +913,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_bf_directed_vertex_major_incidence_list,
-    "binding methods should rebind the elements if they are already bound"
+    "binding methods should throw if they are already bound"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     constexpr auto vertex_id = constants::id1, hyperedge_id = constants::id2;
@@ -921,23 +922,33 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
     REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
 
-    // initial bind
+    // initial bind head
     sut.bind_head(vertex_id, hyperedge_id);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
     CHECK(sut.is_head(vertex_id, hyperedge_id));
     CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
 
     // rebind tail
+    CHECK_THROWS_AS(sut.bind_tail(vertex_id, hyperedge_id), std::logic_error);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+
+    // unbind
+    sut.unbind(vertex_id, hyperedge_id);
+    CHECK_FALSE(sut.are_bound(vertex_id, hyperedge_id));
+
+    // initial bind tail
     sut.bind_tail(vertex_id, hyperedge_id);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
     CHECK(sut.is_tail(vertex_id, hyperedge_id));
     CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
 
     // rebind head
-    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK_THROWS_AS(sut.bind_head(vertex_id, hyperedge_id), std::logic_error);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
-    CHECK(sut.is_head(vertex_id, hyperedge_id));
-    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
 }
 
 TEST_CASE_FIXTURE(
@@ -1045,32 +1056,34 @@ TEST_CASE_FIXTURE(
         CHECK(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
     }
 
-    // diagonal = tail, everything else is head
-    for (auto i = 0u; i < n_elements; i++) {
-        for (auto j = 0u; j <= i; j++) {
-            if (i == j)
-                sut.bind_tail(i, j);
-            else
-                sut.bind_head(i, j);
+    SUBCASE("mixed bind") {
+        // diagonal = tail, everything else is head
+        for (auto i = 0u; i < n_elements; i++) {
+            for (auto j = 0u; j <= i; j++) {
+                if (i == j)
+                    sut.bind_tail(i, j);
+                else
+                    sut.bind_head(i, j);
+            }
         }
-    }
 
-    const auto deg_map = sut.degree_map(n_elements);
-    const auto out_deg_map = sut.out_degree_map(n_elements);
-    const auto in_deg_map = sut.in_degree_map(n_elements);
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto out_deg_map = sut.out_degree_map(n_elements);
+        const auto in_deg_map = sut.in_degree_map(n_elements);
 
-    const auto esize_map = sut.hyperedge_size_map(n_elements);
-    const auto tsize_map = sut.tail_size_map(n_elements);
-    const auto hsize_map = sut.head_size_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto tsize_map = sut.tail_size_map(n_elements);
+        const auto hsize_map = sut.head_size_map(n_elements);
 
-    for (auto i = 0uz; i < n_elements; i++) {
-        CHECK_EQ(deg_map[i], i + 1uz);
-        CHECK_EQ(out_deg_map[i], 1uz);
-        CHECK_EQ(in_deg_map[i], i);
+        for (auto i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(out_deg_map[i], 1uz);
+            CHECK_EQ(in_deg_map[i], i);
 
-        CHECK_EQ(esize_map[i], n_elements - i);
-        CHECK_EQ(tsize_map[i], 1uz);
-        CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(tsize_map[i], 1uz);
+            CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+        }
     }
 }
 
@@ -1394,7 +1407,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_bf_directed_hyperedge_major_incidence_list,
-    "binding methods should rebind the elements if they are already bound"
+    "binding methods should throw if they are already bound"
 ) {
     sut_type sut{constants::n_vertices, constants::n_hyperedges};
     constexpr auto vertex_id = constants::id1, hyperedge_id = constants::id2;
@@ -1403,23 +1416,33 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
     REQUIRE_FALSE(sut.is_head(vertex_id, hyperedge_id));
 
-    // initial bind
+    // initial bind head
     sut.bind_head(vertex_id, hyperedge_id);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
     CHECK(sut.is_head(vertex_id, hyperedge_id));
     CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
 
     // rebind tail
+    CHECK_THROWS_AS(sut.bind_tail(vertex_id, hyperedge_id), std::logic_error);
+    CHECK(sut.are_bound(vertex_id, hyperedge_id));
+    CHECK(sut.is_head(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+
+    // unbind
+    sut.unbind(vertex_id, hyperedge_id);
+    CHECK_FALSE(sut.are_bound(vertex_id, hyperedge_id));
+
+    // initial bind tail
     sut.bind_tail(vertex_id, hyperedge_id);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
     CHECK(sut.is_tail(vertex_id, hyperedge_id));
     CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
 
     // rebind head
-    sut.bind_head(vertex_id, hyperedge_id);
+    CHECK_THROWS_AS(sut.bind_head(vertex_id, hyperedge_id), std::logic_error);
     CHECK(sut.are_bound(vertex_id, hyperedge_id));
-    CHECK(sut.is_head(vertex_id, hyperedge_id));
-    CHECK_FALSE(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK(sut.is_tail(vertex_id, hyperedge_id));
+    CHECK_FALSE(sut.is_head(vertex_id, hyperedge_id));
 }
 
 TEST_CASE_FIXTURE(
@@ -1526,32 +1549,34 @@ TEST_CASE_FIXTURE(
         CHECK(std::ranges::all_of(sut.tail_size_map(n_elements), is_zero));
     }
 
-    // diagonal = tail, everything else is head
-    for (auto i = 0u; i < n_elements; i++) {
-        for (auto j = 0u; j <= i; j++) {
-            if (i == j)
-                sut.bind_tail(i, j);
-            else
-                sut.bind_head(i, j);
+    SUBCASE("mixed bind") {
+        // diagonal = tail, everything else is head
+        for (auto i = 0u; i < n_elements; i++) {
+            for (auto j = 0u; j <= i; j++) {
+                if (i == j)
+                    sut.bind_tail(i, j);
+                else
+                    sut.bind_head(i, j);
+            }
         }
-    }
 
-    const auto deg_map = sut.degree_map(n_elements);
-    const auto out_deg_map = sut.out_degree_map(n_elements);
-    const auto in_deg_map = sut.in_degree_map(n_elements);
+        const auto deg_map = sut.degree_map(n_elements);
+        const auto out_deg_map = sut.out_degree_map(n_elements);
+        const auto in_deg_map = sut.in_degree_map(n_elements);
 
-    const auto esize_map = sut.hyperedge_size_map(n_elements);
-    const auto tsize_map = sut.tail_size_map(n_elements);
-    const auto hsize_map = sut.head_size_map(n_elements);
+        const auto esize_map = sut.hyperedge_size_map(n_elements);
+        const auto tsize_map = sut.tail_size_map(n_elements);
+        const auto hsize_map = sut.head_size_map(n_elements);
 
-    for (auto i = 0uz; i < n_elements; i++) {
-        CHECK_EQ(deg_map[i], i + 1uz);
-        CHECK_EQ(out_deg_map[i], 1uz);
-        CHECK_EQ(in_deg_map[i], i);
+        for (auto i = 0uz; i < n_elements; i++) {
+            CHECK_EQ(deg_map[i], i + 1uz);
+            CHECK_EQ(out_deg_map[i], 1uz);
+            CHECK_EQ(in_deg_map[i], i);
 
-        CHECK_EQ(esize_map[i], n_elements - i);
-        CHECK_EQ(tsize_map[i], 1uz);
-        CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+            CHECK_EQ(esize_map[i], n_elements - i);
+            CHECK_EQ(tsize_map[i], 1uz);
+            CHECK_EQ(hsize_map[i], n_elements - i - 1uz);
+        }
     }
 }
 
