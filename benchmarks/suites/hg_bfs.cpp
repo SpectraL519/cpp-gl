@@ -32,6 +32,22 @@ HypergraphType gen_sliding_window_hypergraph(
     return hgraph;
 }
 
+template <hgl::traits::c_undirected_hypergraph HypergraphType>
+requires hgl::traits::c_flat_list_hypergraph<HypergraphType>
+HypergraphType gen_sliding_window_hypergraph(
+    const std::size_t n_hyperedges, const std::size_t degree, const std::size_t stride
+) {
+    using traits_type = typename HypergraphType::traits_type;
+    using layout_tag = typename traits_type::layout_tag;
+
+    using list_repr_tag = hgl::repr::list_t<layout_tag>;
+    using list_hypergraph = hgl::traits::swap_repr_tag_t<HypergraphType, list_repr_tag>;
+
+    return hgl::to<typename traits_type::representation_tag>(
+        gen_sliding_window_hypergraph<list_hypergraph>(n_hyperedges, degree, stride)
+    );
+}
+
 // --- HGL Benchmark ---
 
 template <hgl::traits::c_undirected_hypergraph Hypergraph>
@@ -96,6 +112,8 @@ void add_args(argon::argument_parser& parser) {
     parser.add_optional_argument<std::size_t>(group, "hg-bfs-stride")
         .default_values(2uz)
         .help("Vertex shift between consecutive hyperedges (smaller = denser)");
+    parser.add_flag("hg-bfs-l").help("Execute the benchmark for list models");
+    parser.add_flag("hg-bfs-m").help("Execute the benchmark for matrix models");
 }
 
 void register_benchmarks(const argon::argument_parser& parser) {
@@ -119,41 +137,47 @@ void register_benchmarks(const argon::argument_parser& parser) {
     using hgl_e_flat_matrix =
         hgl::flat_matrix_hypergraph<hgl::repr::hyperedge_major_t, hgl::undirected_t>;
 
-    benchmark::RegisterBenchmark("bfs/HGL/list", bm_hgl_bfs<hgl_list>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("bfs/HGL/flat_list", bm_hgl_bfs<hgl_flat_list>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-
-    benchmark::RegisterBenchmark("bfs/HGL/matrix/v_major", bm_hgl_bfs<hgl_v_matrix>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("bfs/HGL/matrix/e_major", bm_hgl_bfs<hgl_e_matrix>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-
-    benchmark::RegisterBenchmark("bfs/HGL/flat_matrix/v_major", bm_hgl_bfs<hgl_v_flat_matrix>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("bfs/HGL/flat_matrix/e_major", bm_hgl_bfs<hgl_e_flat_matrix>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-
-    benchmark::RegisterBenchmark("bfs/INCIDENCE/list", bm_gl_incidence_bfs<hgl_list, gl_list>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-    benchmark::
-        RegisterBenchmark("bfs/INCIDENCE/flat_list", bm_gl_incidence_bfs<hgl_list, gl_flat_list>)
+    if (parser.value<bool>("hg-bfs-l")) {
+        benchmark::RegisterBenchmark("bfs/HGL/list", bm_hgl_bfs<hgl_list>)
             ->Args({n_hedges, he_size, stride})
             ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("bfs/INCIDENCE/matrix", bm_gl_incidence_bfs<hgl_list, gl_matrix>)
-        ->Args({n_hedges, he_size, stride})
-        ->Unit(benchmark::kMillisecond);
-    benchmark::
-        RegisterBenchmark("bfs/INCIDENCE/flat_matrix", bm_gl_incidence_bfs<hgl_list, gl_flat_matrix>)
+        benchmark::RegisterBenchmark("bfs/HGL/flat_list", bm_hgl_bfs<hgl_flat_list>)
             ->Args({n_hedges, he_size, stride})
             ->Unit(benchmark::kMillisecond);
+
+        benchmark::RegisterBenchmark("bfs/INCIDENCE/list", bm_gl_incidence_bfs<hgl_list, gl_list>)
+            ->Args({n_hedges, he_size, stride})
+            ->Unit(benchmark::kMillisecond);
+        benchmark::
+            RegisterBenchmark("bfs/INCIDENCE/flat_list", bm_gl_incidence_bfs<hgl_list, gl_flat_list>)
+                ->Args({n_hedges, he_size, stride})
+                ->Unit(benchmark::kMillisecond);
+    }
+
+    if (parser.value<bool>("hg-bfs-m")) {
+        benchmark::RegisterBenchmark("bfs/HGL/matrix/v_major", bm_hgl_bfs<hgl_v_matrix>)
+            ->Args({n_hedges, he_size, stride})
+            ->Unit(benchmark::kMillisecond);
+        benchmark::RegisterBenchmark("bfs/HGL/matrix/e_major", bm_hgl_bfs<hgl_e_matrix>)
+            ->Args({n_hedges, he_size, stride})
+            ->Unit(benchmark::kMillisecond);
+
+        benchmark::RegisterBenchmark("bfs/HGL/flat_matrix/v_major", bm_hgl_bfs<hgl_v_flat_matrix>)
+            ->Args({n_hedges, he_size, stride})
+            ->Unit(benchmark::kMillisecond);
+        benchmark::RegisterBenchmark("bfs/HGL/flat_matrix/e_major", bm_hgl_bfs<hgl_e_flat_matrix>)
+            ->Args({n_hedges, he_size, stride})
+            ->Unit(benchmark::kMillisecond);
+
+        benchmark::
+            RegisterBenchmark("bfs/INCIDENCE/matrix", bm_gl_incidence_bfs<hgl_list, gl_matrix>)
+                ->Args({n_hedges, he_size, stride})
+                ->Unit(benchmark::kMillisecond);
+        benchmark::
+            RegisterBenchmark("bfs/INCIDENCE/flat_matrix", bm_gl_incidence_bfs<hgl_list, gl_flat_matrix>)
+                ->Args({n_hedges, he_size, stride})
+                ->Unit(benchmark::kMillisecond);
+    }
 }
 
 namespace {
