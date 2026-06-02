@@ -21,14 +21,16 @@ HypergraphType gen_bf_overlapping_chain_hypergraph(
 ) {
     using id_type = typename HypergraphType::id_type;
 
-    const auto n_vertices = static_cast<id_type>((n_hyperedges * stride) + layer_width);
+    // V = maximum index reached by the last hyperedge's head.
+    const auto n_vertices = static_cast<id_type>((n_hyperedges - 1) * stride + 2 * layer_width);
+
     HypergraphType hgraph{n_vertices, static_cast<id_type>(n_hyperedges)};
 
     for (id_type e = 0; e < static_cast<id_type>(n_hyperedges); ++e) {
         const auto tail_start = static_cast<id_type>(e * stride);
         const auto tail_end = tail_start + static_cast<id_type>(layer_width);
 
-        const auto head_start = static_cast<id_type>((e * stride) + stride);
+        const auto head_start = tail_end;
         const auto head_end = head_start + static_cast<id_type>(layer_width);
 
         hgraph.bind_tail(std::views::iota(tail_start, tail_end), e);
