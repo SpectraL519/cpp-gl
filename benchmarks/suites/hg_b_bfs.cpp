@@ -1,4 +1,5 @@
 #include "gl/algorithm/core.hpp"
+#include "hgl/directional_tags.hpp"
 #include "runner.hpp"
 #include "suite.hpp"
 
@@ -180,7 +181,10 @@ void add_args(argon::argument_parser& parser) {
     parser.add_optional_argument<std::size_t>(group, "hg-b-bfs-stride")
         .default_values(2uz)
         .help("Vertex shift between consecutive hyperedges (smaller = denser)");
-    parser.add_flag("hg-b-bfs-l").help("Execute the benchmark for list models");
+    parser.add_flag("hg-b-bfs-l").help("Execute the benchmark for list models (bidirectional)");
+    parser.add_flag("hg-b-bfs-al")
+        .help("Execute the benchmark for asymmetric list models (WARNING: High execution times "
+              "expected)");
     parser.add_flag("hg-b-bfs-m").help("Execute the benchmark for matrix models");
 }
 
@@ -190,15 +194,21 @@ void register_benchmarks(const argon::argument_parser& parser) {
         static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-layer-width"));
     const auto stride = static_cast<int64_t>(parser.value<std::size_t>("hg-b-bfs-stride"));
 
-    // Standard Incidence Graphs MUST be directed for BF-Directed Hypergraphs
     using gl_list = gl::list_graph<gl::directed_t>;
     using gl_flat_list = gl::flat_list_graph<gl::directed_t>;
     using gl_matrix = gl::matrix_graph<gl::directed_t>;
     using gl_flat_matrix = gl::flat_matrix_graph<gl::directed_t>;
 
-    // BF-Directed Hypergraphs
     using hgl_list = hgl::list_hypergraph<hgl::repr::bidirectional_t, hgl::bf_directed_t>;
     using hgl_flat_list = hgl::flat_list_hypergraph<hgl::repr::bidirectional_t, hgl::bf_directed_t>;
+
+    using hgl_v_list = hgl::list_hypergraph<hgl::repr::vertex_major_t, hgl::bf_directed_t>;
+    using hgl_v_flat_list =
+        hgl::flat_list_hypergraph<hgl::repr::vertex_major_t, hgl::bf_directed_t>;
+
+    using hgl_e_list = hgl::list_hypergraph<hgl::repr::hyperedge_major_t, hgl::bf_directed_t>;
+    using hgl_e_flat_list =
+        hgl::flat_list_hypergraph<hgl::repr::hyperedge_major_t, hgl::bf_directed_t>;
 
     using hgl_v_matrix = hgl::matrix_hypergraph<hgl::repr::vertex_major_t, hgl::bf_directed_t>;
     using hgl_e_matrix = hgl::matrix_hypergraph<hgl::repr::hyperedge_major_t, hgl::bf_directed_t>;
@@ -209,10 +219,10 @@ void register_benchmarks(const argon::argument_parser& parser) {
         hgl::flat_matrix_hypergraph<hgl::repr::hyperedge_major_t, hgl::bf_directed_t>;
 
     if (parser.value<bool>("hg-b-bfs-l")) {
-        benchmark::RegisterBenchmark("b_bfs/HGL/list", bm_hgl_backward_bfs<hgl_list>)
+        benchmark::RegisterBenchmark("b_bfs/HGL/list/bidir", bm_hgl_backward_bfs<hgl_list>)
             ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
-        benchmark::RegisterBenchmark("b_bfs/HGL/flat_list", bm_hgl_backward_bfs<hgl_flat_list>)
+        benchmark::RegisterBenchmark("b_bfs/HGL/flat_list/bidir", bm_hgl_backward_bfs<hgl_flat_list>)
             ->Args({n_hedges, layer_width, stride})
             ->Unit(benchmark::kMillisecond);
 
@@ -222,6 +232,24 @@ void register_benchmarks(const argon::argument_parser& parser) {
                 ->Unit(benchmark::kMillisecond);
         benchmark::
             RegisterBenchmark("b_bfs/INCIDENCE/flat_list", bm_gl_incidence_backward_bfs<hgl_list, gl_flat_list>)
+                ->Args({n_hedges, layer_width, stride})
+                ->Unit(benchmark::kMillisecond);
+    }
+
+    if (parser.value<bool>("hg-b-bfs-al")) {
+        benchmark::RegisterBenchmark("bfs/HGL/list/v_major", bm_hgl_backward_bfs<hgl_v_list>)
+            ->Args({n_hedges, layer_width, stride})
+            ->Unit(benchmark::kMillisecond);
+        benchmark::
+            RegisterBenchmark("bfs/HGL/flat_list/v_major", bm_hgl_backward_bfs<hgl_v_flat_list>)
+                ->Args({n_hedges, layer_width, stride})
+                ->Unit(benchmark::kMillisecond);
+
+        benchmark::RegisterBenchmark("bfs/HGL/list/e_major", bm_hgl_backward_bfs<hgl_e_list>)
+            ->Args({n_hedges, layer_width, stride})
+            ->Unit(benchmark::kMillisecond);
+        benchmark::
+            RegisterBenchmark("bfs/HGL/flat_list/e_major", bm_hgl_backward_bfs<hgl_e_flat_list>)
                 ->Args({n_hedges, layer_width, stride})
                 ->Unit(benchmark::kMillisecond);
     }
