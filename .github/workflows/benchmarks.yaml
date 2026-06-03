@@ -43,4 +43,5 @@ jobs:
           ./build_bench/benchmarks/cpp-gl-bench \
             --benchmark_repetitions=1 --benchmark_display_aggregates_only=true \
             --bip-v 100 \
-            --hg-bfs-e 100 --hg-bfs-esize 5
+            --hg-bfs-l --hg-bfs-m --hg-bfs-e 100 --hg-bfs-esize 5 --hg-bfs-stride 2 \
+            --hg-b-bfs-l --hg-b-bfs-m --hg-b-bfs-e 100 --hg-b-bfs-layer-width 5 --hg-b-bfs-stride 2

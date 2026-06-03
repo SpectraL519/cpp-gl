@@ -1143,7 +1143,7 @@ public:
     /// @param is The source input stream.
     /// @param g The graph instance to populate.
     /// @return The stream reference for chaining.
-    gl_attr_force_inline friend std::istream& operator>>(std::istream& is, graph& g) {
+    friend gl_attr_force_inline std::istream& operator>>(std::istream& is, graph& g) {
         return g._gsf_read(is);
     }
 

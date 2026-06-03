@@ -407,7 +407,7 @@ public:
 
     // --- binding methods ---
 
-    gl_attr_force_inline void bind_tail(const id_type vertex_id, const id_type hyperedge_id) {
+    void bind_tail(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
 
         if (detail::contains(this->_head_storage[to_idx(major_id)], minor_id)) {
@@ -422,7 +422,7 @@ public:
         detail::unique_insert(this->_tail_storage, major_id, minor_id);
     }
 
-    gl_attr_force_inline void bind_head(const id_type vertex_id, const id_type hyperedge_id) {
+    void bind_head(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
 
         if (detail::contains(this->_tail_storage[to_idx(major_id)], minor_id)) {
@@ -437,7 +437,7 @@ public:
         detail::unique_insert(this->_head_storage, major_id, minor_id);
     }
 
-    gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
+    void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         this->_remove_no_align(this->_tail_storage, major_id, minor_id);
         this->_remove_no_align(this->_head_storage, major_id, minor_id);
