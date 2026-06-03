@@ -1975,7 +1975,7 @@ public:
     /// @param is The source input stream.
     /// @param g The hypergraph instance to populate.
     /// @return The stream reference for chaining.
-    friend gl_attr_force_inline std::istream& operator>>(std::istream& is, hypergraph& hg) {
+    gl_attr_force_inline friend std::istream& operator>>(std::istream& is, hypergraph& hg) {
         return hg._hgsf_read(is);
     }
 
