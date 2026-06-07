@@ -362,25 +362,39 @@ public:
 
     // --- binding methods ---
 
-    gl_attr_force_inline void bind_tail(
-        const id_type vertex_id, const id_type hyperedge_id
-    ) noexcept {
+    void bind_tail(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         const auto major_idx = to_idx(major_id);
-        this->_remove_no_align(this->_head_storage[major_idx], minor_id);
+
+        if (this->_contains(this->_head_storage[major_idx], minor_id)) {
+            throw std::logic_error(std::format(
+                "Tail and head sets must be disjoint: vertex {} is already bound to the head of "
+                "hyperedge {}.",
+                vertex_id,
+                hyperedge_id
+            ));
+        }
+
         this->_unique_insert(this->_tail_storage[major_idx], minor_id);
     }
 
-    gl_attr_force_inline void bind_head(
-        const id_type vertex_id, const id_type hyperedge_id
-    ) noexcept {
+    void bind_head(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         const auto major_idx = to_idx(major_id);
-        this->_remove_no_align(this->_tail_storage[major_idx], minor_id);
+
+        if (this->_contains(this->_tail_storage[major_idx], minor_id)) {
+            throw std::logic_error(std::format(
+                "Tail and head sets must be disjoint: vertex {} is already bound to the tail of "
+                "hyperedge {}.",
+                vertex_id,
+                hyperedge_id
+            ));
+        }
+
         this->_unique_insert(this->_head_storage[major_idx], minor_id);
     }
 
-    gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
+    void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         const auto major_idx = to_idx(major_id);
         this->_remove_no_align(this->_tail_storage[major_idx], minor_id);
@@ -763,14 +777,14 @@ public:
             return this->_e_list.are_bound(vertex_id, hyperedge_id);
     }
 
-    gl_attr_force_inline void bind_tail(const id_type vertex_id, const id_type hyperedge_id) noexcept
+    gl_attr_force_inline void bind_tail(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
     {
         this->_v_list.bind_tail(vertex_id, hyperedge_id);
         this->_e_list.bind_tail(vertex_id, hyperedge_id);
     }
 
-    gl_attr_force_inline void bind_head(const id_type vertex_id, const id_type hyperedge_id) noexcept
+    gl_attr_force_inline void bind_head(const id_type vertex_id, const id_type hyperedge_id)
     requires std::same_as<DirectionalTag, hgl::bf_directed_t>
     {
         this->_v_list.bind_head(vertex_id, hyperedge_id);

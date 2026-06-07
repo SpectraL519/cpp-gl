@@ -78,16 +78,10 @@ void register_benchmarks(const argon::argument_parser& parser) {
     const auto n_vertices = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
 
     // CPP-GL Adjacency List Benchmarks
-    using gl_list_u32 = gl::graph<gl::list_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint32_t>>;
-    using gl_list_u64 = gl::graph<gl::list_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint64_t>>;
+    using gl_list_u32 =
+        gl::list_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint32_t>;
+    using gl_list_u64 =
+        gl::list_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint64_t>;
 
     benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u32", bm_gl_is_bipartite<gl_list_u32>)
         ->Arg(n_vertices)
@@ -97,16 +91,10 @@ void register_benchmarks(const argon::argument_parser& parser) {
         ->Unit(benchmark::kMillisecond);
 
     // CPP-GL Flat Adjacency List Benchmarks
-    using gl_flat_list_u32 = gl::graph<gl::flat_list_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint32_t>>;
-    using gl_flat_list_u64 = gl::graph<gl::flat_list_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint64_t>>;
+    using gl_flat_list_u32 = gl::
+        flat_list_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint32_t>;
+    using gl_flat_list_u64 = gl::
+        flat_list_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint64_t>;
 
     benchmark::
         RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u32", bm_gl_is_bipartite<gl_flat_list_u32>)
@@ -118,16 +106,10 @@ void register_benchmarks(const argon::argument_parser& parser) {
             ->Unit(benchmark::kMillisecond);
 
     // CPP-GL Adjacency Matrix Benchmarks
-    using gl_matrix_u32 = gl::graph<gl::matrix_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint32_t>>;
-    using gl_matrix_u64 = gl::graph<gl::matrix_graph_traits<
-        gl::undirected_t,
-        gl::empty_properties,
-        gl::empty_properties,
-        std::uint64_t>>;
+    using gl_matrix_u32 = gl::
+        matrix_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint32_t>;
+    using gl_matrix_u64 = gl::
+        matrix_graph<gl::undirected_t, gl::empty_properties, gl::empty_properties, std::uint64_t>;
 
     benchmark::RegisterBenchmark("is_bipartite/CPP-GL/matrix/u32", bm_gl_is_bipartite<gl_matrix_u32>)
         ->Arg(n_vertices)
@@ -137,16 +119,16 @@ void register_benchmarks(const argon::argument_parser& parser) {
         ->Unit(benchmark::kMillisecond);
 
     // CPP-GL Flat Adjacency Matrix Benchmarks
-    using gl_flat_matrix_u32 = gl::graph<gl::flat_matrix_graph_traits<
+    using gl_flat_matrix_u32 = gl::flat_matrix_graph<
         gl::undirected_t,
         gl::empty_properties,
         gl::empty_properties,
-        std::uint32_t>>;
-    using gl_flat_matrix_u64 = gl::graph<gl::flat_matrix_graph_traits<
+        std::uint32_t>;
+    using gl_flat_matrix_u64 = gl::flat_matrix_graph<
         gl::undirected_t,
         gl::empty_properties,
         gl::empty_properties,
-        std::uint64_t>>;
+        std::uint64_t>;
 
     benchmark::
         RegisterBenchmark("is_bipartite/CPP-GL/flat_matrix/u32", bm_gl_is_bipartite<gl_flat_matrix_u32>)

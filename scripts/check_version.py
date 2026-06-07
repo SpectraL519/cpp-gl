@@ -1,6 +1,7 @@
 import argparse
 import re
 import sys
+import tomllib
 from pathlib import Path
 from collections.abc import Iterable
 
@@ -9,7 +10,7 @@ VERSION_REGEX = r"(\d+\.\d+(?:\.\d+)*)"
 
 
 def get_cmake_version(cmake_path: Path) -> str:
-    text = cmake_path.read_text()
+    text = cmake_path.read_text(encoding="utf-8")
     match = re.search(
         rf"project\s*\([^\)]*VERSION\s+{VERSION_REGEX}", text, re.IGNORECASE
     )
@@ -19,7 +20,7 @@ def get_cmake_version(cmake_path: Path) -> str:
 
 
 def get_doxy_version(doxyfile_path: Path) -> str:
-    text = doxyfile_path.read_text()
+    text = doxyfile_path.read_text(encoding="utf-8")
     match = re.search(
         rf'^\s*PROJECT_NUMBER\s*=\s*("?){VERSION_REGEX}\1', text, re.MULTILINE
     )
@@ -30,15 +31,28 @@ def get_doxy_version(doxyfile_path: Path) -> str:
     )
 
 
+def get_pyproject_version(pyproject_path: Path) -> str:
+    with pyproject_path.open("rb") as f:
+        data = tomllib.load(f)
+
+    try:
+        return data["project"]["version"]
+    except KeyError:
+        raise ValueError(
+            f"[pyproject.toml] Could not find [project.version] in {pyproject_path}"
+        )
+
+
 def all_equal(items: Iterable) -> bool:
     return len(set(items)) == 1
 
 
-def main(cmake: Path, doxygen: Path):
+def main(cmake: Path, doxygen: Path, pyproject: Path):
     try:
         project_versions = {
             "CMake": get_cmake_version(cmake),
             "Doxygen": get_doxy_version(doxygen),
+            "pyproject.toml": get_pyproject_version(pyproject),
         }
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -63,7 +77,7 @@ if __name__ == "__main__":
         "-c",
         "--cmake",
         type=Path,
-        default="CMakeLists.txt",
+        default=Path("CMakeLists.txt"),
         nargs=1,
         help="Path to the root CMake file",
     )
@@ -71,9 +85,17 @@ if __name__ == "__main__":
         "-d",
         "--doxygen",
         type=Path,
-        default="Doxyfile",
+        default=Path("Doxyfile"),
         nargs=1,
         help="Path to the Doxygen config file",
+    )
+    parser.add_argument(
+        "-p",
+        "--pyproject",
+        type=Path,
+        default=Path("pyproject.toml"),
+        nargs=1,
+        help="Path to the pyproject.toml file",
     )
 
     main(**vars(parser.parse_args()))

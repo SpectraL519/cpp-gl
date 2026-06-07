@@ -30,7 +30,7 @@ cmake -B build_bench -DBUILD_BENCHMARKS=ON -DBENCH_INCLUDE_BGL=ON -DCMAKE_BUILD_
 ```
 
 > [!NOTE]
-> 
+>
 > BGL comparative benchmarks are only defined for specific benchmark suites where a direct equivalent exists in Boost.
 
 <br/>

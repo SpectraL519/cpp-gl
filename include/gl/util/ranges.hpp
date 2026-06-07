@@ -65,7 +65,7 @@ template <std::ranges::forward_range R>
 ///
 /// > [!INFO] Time Complexity
 /// >
-/// > $O(N)$ where $N$ is the number of elements in the range.
+/// > \f$O(N)\f$ where $N$ is the number of elements in the range.
 template <std::ranges::forward_range R>
 [[nodiscard]] constexpr bool all_equal(
     R&& range, const std::ranges::range_value_t<R>& value

@@ -365,21 +365,37 @@ public:
 
     // --- binding methods ---
 
-    gl_attr_force_inline void bind_tail(
-        const id_type vertex_id, const id_type hyperedge_id
-    ) noexcept {
+    void bind_tail(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
+
+        if (this->_matrix[to_idx(major_id)][to_idx(minor_id)] == bf_incidence::forward) {
+            throw std::logic_error(std::format(
+                "Tail and head sets must be disjoint: vertex {} is already bound to the head of "
+                "hyperedge {}.",
+                vertex_id,
+                hyperedge_id
+            ));
+        }
+
         this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::backward;
     }
 
-    gl_attr_force_inline void bind_head(
-        const id_type vertex_id, const id_type hyperedge_id
-    ) noexcept {
+    void bind_head(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
+
+        if (this->_matrix[to_idx(major_id)][to_idx(minor_id)] == bf_incidence::backward) {
+            throw std::logic_error(std::format(
+                "Tail and head sets must be disjoint: vertex {} is already bound to the tail of "
+                "hyperedge {}.",
+                vertex_id,
+                hyperedge_id
+            ));
+        }
+
         this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::forward;
     }
 
-    gl_attr_force_inline void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
+    void unbind(const id_type vertex_id, const id_type hyperedge_id) noexcept {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
         this->_matrix[to_idx(major_id)][to_idx(minor_id)] = bf_incidence::none;
     }
