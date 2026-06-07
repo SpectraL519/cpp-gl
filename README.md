@@ -160,7 +160,13 @@ python scripts/format.py -m -exe clang-format-18
 
 ### Building the Documentation
 
-The documentation is generated using Doxygen (for XML extraction), a custom Python script for concept parsing, and MkDocs (via `mike` for versioning). The process is automated via a Makefile.
+The documentation build process utilizes the following toolchain:
+
+- **[Doxygen](https://www.doxygen.nl/)**: Extracts the initial C++ API structure and documentation into XML format.
+- **Concept Parser**: A [custom Python script](/docs/scripts/gen_concept_docs.py) processes the XML to generate dedicated concept documentation pages.
+- **[MkDoxy (Custom Fork)](https://github.com/SpectraL519/MkDoxy)**: Injects the Doxygen XML data directly into the MkDocs build lifecycle.
+- **[MkDocs](https://www.mkdocs.org/) & [Material Theme](https://squidfunk.github.io/mkdocs-material/)**: Renders the final, searchable static HTML website.
+- **[mike](https://github.com/jimporter/mike)**: Manages versioning, allowing multiple versions of the documentation to coexist and be deployed simultaneously.
 
 To build and serve the documentation locally:
 
