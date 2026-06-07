@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1algorithm" kind="namespace" language="C++">
+    <compoundname>gl::algorithm</compoundname>
+    <innerclass refid="structgl_1_1algorithm_1_1decision" prot="public">gl::algorithm::decision</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1dijkstra__search__node" prot="public">gl::algorithm::dijkstra_search_node</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1empty__callback" prot="public">gl::algorithm::empty_callback</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1mst__descriptor" prot="public">gl::algorithm::mst_descriptor</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1no__root__t" prot="public">gl::algorithm::no_root_t</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1paths__descriptor" prot="public">gl::algorithm::paths_descriptor</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1search__node" prot="public">gl::algorithm::search_node</innerclass>
+    <sectiondef kind="enum">
+      <member refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kind="enum"><name>result_discriminator</name></member>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <member refid="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" kind="typedef"><name>result_type</name></member>
+      <member refid="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" kind="typedef"><name>non_void_result_type</name></member>
+      <member refid="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" kind="typedef"><name>predecessors_map</name></member>
+      <member refid="group__GL-Algorithm_1ga209f641feca0451f9627fd067935daa7" kind="typedef"><name>paths_descriptor_type</name></member>
+      <member refid="group__GL-Algorithm_1gafe3650547f62e5b3efa5af18fccbfcad" kind="typedef"><name>bicoloring_type</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__GL-Algorithm_1gaa49c574ed607d45e2a55f9495cfb8494" kind="variable"><name>no_root_v</name></member>
+      <member refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kind="variable"><name>no_root</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__GL-Algorithm_1gaaa3d44e461049fdfa8df79ec58d1f75a" kind="function"><name>make_paths_descriptor</name></member>
+      <member refid="group__GL-Algorithm_1gaa94c7bbaa9f46fc9651d5f5cb035d38f" kind="function"><name>dijkstra_shortest_paths</name></member>
+      <member refid="group__GL-Algorithm_1ga7e05d262c7f9fef1127228f6f3232352" kind="function"><name>reconstruct_path</name></member>
+      <member refid="group__GL-Algorithm_1ga62cd7826c787963e2a27cd81392d0526" kind="function"><name>edge_heap_prim_mst</name></member>
+      <member refid="group__GL-Algorithm_1ga528fe265080e14aa5bd1320263e10419" kind="function"><name>vertex_heap_prim_mst</name></member>
+      <member refid="group__GL-Algorithm_1gac4a607f3430be982e54b98953a4e4093" kind="function"><name>bfs</name></member>
+      <member refid="group__GL-Algorithm_1ga092865c8a4a9965e4a281a32086ee496" kind="function"><name>dfs</name></member>
+      <member refid="group__GL-Algorithm_1ga0513c30f79cc2c4d3180d47cd799cad6" kind="function"><name>r_dfs</name></member>
+      <member refid="group__GL-Algorithm_1ga7367aa670e37c4bdcc5e0013a1452c34" kind="function"><name>pfs</name></member>
+      <member refid="group__GL-Algorithm_1gaabcae8a79a8e259d4966174f89387ce9" kind="function"><name>bipartite_coloring</name></member>
+      <member refid="group__GL-Algorithm_1ga082c497700699bf5047ab75b491bf965" kind="function"><name>is_bipartite</name></member>
+      <member refid="group__GL-Algorithm_1ga5320a6424759cf4e7263da147768c00d" kind="function"><name>apply_coloring</name></member>
+      <member refid="group__GL-Algorithm_1ga6de646913ccaa2744b18288436f5af8e" kind="function"><name>topological_sort</name></member>
+      <member refid="group__GL-Algorithm_1ga21f2ff00984ec8b2633ba522ece58e8d" kind="function"><name>breadth_first_search</name></member>
+      <member refid="group__GL-Algorithm_1ga18e38d53097cdafbcc1c0ed85d2aa190" kind="function"><name>depth_first_search</name></member>
+      <member refid="group__GL-Algorithm_1gaadd56e6c4109217e55318cdb6f99c7f3" kind="function"><name>recursive_depth_first_search</name></member>
+      <member refid="group__GL-Algorithm_1gab1fd9b558f402f9c5d5920a105add705" kind="function"><name>init_predecessors_map</name></member>
+      <member refid="group__GL-Algorithm_1ga2f23b38a7b9644b19b0cbef1eef9f1c0" kind="function"><name>is_reachable</name></member>
+      <member refid="group__GL-Algorithm_1ga59400b5122e402daef165e0704413ef3" kind="function"><name>init_node_range</name></member>
+      <member refid="group__GL-Algorithm_1gabd9c2d7018cfd243a5556cc1ba6f93c5" kind="function"><name>default_visit_vertex_predicate</name></member>
+      <member refid="group__GL-Algorithm_1ga5b43a8d3c7d9497c7832804f967ac721" kind="function"><name>default_visit_callback</name></member>
+      <member refid="group__GL-Algorithm_1gae47bb939d4207d7a2b667a0fbd3e1b16" kind="function"><name>default_enqueue_node_predicate</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/core.hpp" line="17" column="1"/>
+  </compounddef>
+</doxygen>

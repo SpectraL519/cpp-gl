@@ -1,0 +1,1137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1edge__descriptor" kind="class" language="C++" prot="public">
+    <compoundname>gl::edge_descriptor</compoundname>
+    <includes refid="edge__descriptor_8hpp" local="no">gl/edge_descriptor.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_graph_directional_tag</type>
+        <declname>DirectionalTag</declname>
+        <defname>DirectionalTag</defname>
+        <defval><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>Properties</declname>
+        <defname>Properties</defname>
+        <defval><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_id_type</type>
+        <declname>IdType</declname>
+        <defname>IdType</defname>
+        <defval><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref></defval>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgl_1_1edge__descriptor_1a309adb550f879b8a8a9a25b7e4b1de4b" prot="public" static="no">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref>&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">DirectionalTag</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Properties</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">IdType</ref> &gt;</type>
+        <definition>using gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::type =  edge_descriptor&lt;DirectionalTag, Properties, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>gl::edge_descriptor::type</qualifiedname>
+        <briefdescription>
+<para>The fully instantiated type of this edge descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="74" column="5" bodyfile="include/gl/edge_descriptor.hpp" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">IdType</ref></type>
+        <definition>using gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::id_type =  IdType</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>gl::edge_descriptor::id_type</qualifiedname>
+        <briefdescription>
+<para>The identifier type used for edges and vertices. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="76" column="5" bodyfile="include/gl/edge_descriptor.hpp" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1edge__descriptor_1a561c5e061de34babc00edd131ad3ae2e" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">DirectionalTag</ref></type>
+        <definition>using gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::directional_tag =  DirectionalTag</definition>
+        <argsstring></argsstring>
+        <name>directional_tag</name>
+        <qualifiedname>gl::edge_descriptor::directional_tag</qualifiedname>
+        <briefdescription>
+<para>The tag denoting whether the edge is directed or undirected. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="78" column="5" bodyfile="include/gl/edge_descriptor.hpp" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Properties</ref></type>
+        <definition>using gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::properties_type =  Properties</definition>
+        <argsstring></argsstring>
+        <name>properties_type</name>
+        <qualifiedname>gl::edge_descriptor::properties_type</qualifiedname>
+        <briefdescription>
+<para>The type of properties associated with the edge. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="80" column="5" bodyfile="include/gl/edge_descriptor.hpp" bodystart="80" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classgl_1_1edge__descriptor_1a6e15224b2d8003327a027302becf8427" prot="public" static="no" mutable="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">friend</ref></type>
+        <definition>friend gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::directional_tag</definition>
+        <argsstring></argsstring>
+        <name>directional_tag</name>
+        <qualifiedname>gl::edge_descriptor::directional_tag</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="82" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1edge__descriptor_1af70ecc1e74d6a1dae0e8f2f9ff8e2874" prot="private" static="no" mutable="no">
+        <type><ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+        <definition>id_type gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_id</definition>
+        <argsstring></argsstring>
+        <name>_id</name>
+        <qualifiedname>gl::edge_descriptor::_id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="367" column="13" bodyfile="include/gl/edge_descriptor.hpp" bodystart="367" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1edge__descriptor_1a654fed669734c3c9ba4231dcc84d5fa4" prot="private" static="no" mutable="no">
+        <type><ref refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kindref="member">homogeneous_pair</ref>&lt; <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref> &gt;</type>
+        <definition>homogeneous_pair&lt;id_type&gt; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_vertices</definition>
+        <argsstring></argsstring>
+        <name>_vertices</name>
+        <qualifiedname>gl::edge_descriptor::_vertices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="368" column="22" bodyfile="include/gl/edge_descriptor.hpp" bodystart="368" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1edge__descriptor_1ac403c34ccb430073c6d71dea34e39296" prot="private" static="no" mutable="no">
+        <type>std::conditional_t&lt; traits::c_empty_properties&lt; <ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> &gt;, <ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>, std::reference_wrapper&lt; <ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> &gt; &gt;</type>
+        <definition>std::conditional_t&lt; traits::c_empty_properties&lt;properties_type&gt;, empty_properties, std::reference_wrapper&lt;properties_type&gt; &gt; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_properties</definition>
+        <argsstring></argsstring>
+        <name>_properties</name>
+        <qualifiedname>gl::edge_descriptor::_properties</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="372" column="2" bodyfile="include/gl/edge_descriptor.hpp" bodystart="372" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a43500e9534e2e13c9718fdcbbf8b9383" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::edge_descriptor</definition>
+        <argsstring>()</argsstring>
+        <name>edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::edge_descriptor</qualifiedname>
+        <briefdescription>
+<para>Default constructor, initializes to an invalid edge. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="85" column="5" bodyfile="include/gl/edge_descriptor.hpp" bodystart="85" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ae1929a4daf9e254a54d2554d60170c2b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::edge_descriptor</definition>
+        <argsstring>(const id_type id, const id_type source, const id_type target)</argsstring>
+        <name>edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::edge_descriptor</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>target</declname>
+        </param>
+    <requiresclause>(traits::c_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Constructs an edge descriptor with the given IDs (for empty properties). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the edge. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the source vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>target</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the target vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="93" column="14" bodyfile="include/gl/edge_descriptor.hpp" bodystart="93" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aa598895411aa7c5e180448b6b7122613" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::edge_descriptor</definition>
+        <argsstring>(const id_type id, const id_type source, const id_type target, properties_type &amp;properties)</argsstring>
+        <name>edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::edge_descriptor</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>target</declname>
+        </param>
+        <param>
+          <type><ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> &amp;</type>
+          <declname>properties</declname>
+        </param>
+    <requiresclause>(traits::c_non_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Constructs an edge descriptor with the given IDs and properties. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the edge. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the source vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>target</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique identifier for the target vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>properties</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the property data to associate with this edge. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="102" column="14" bodyfile="include/gl/edge_descriptor.hpp" bodystart="102" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a4c33dc73ad888e501e9e42830c6ce2f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::edge_descriptor</definition>
+        <argsstring>(const edge_descriptor &amp;)=default</argsstring>
+        <name>edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::edge_descriptor</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Copy constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="126" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ab3a395a60e083ed39d646bf3934773c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+        <definition>edge_descriptor &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator=</definition>
+        <argsstring>(const edge_descriptor &amp;)=default</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::edge_descriptor::operator=</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Copy assignment operator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="128" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a543a15b3e018d3204eab2879640c2951" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::edge_descriptor</definition>
+        <argsstring>(edge_descriptor &amp;&amp;) noexcept=default</argsstring>
+        <name>edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::edge_descriptor</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>Move constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="131" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aa5e1c36f6cf0cf0c45b879dd2facf11d" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+        <definition>edge_descriptor &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator=</definition>
+        <argsstring>(edge_descriptor &amp;&amp;) noexcept=default</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::edge_descriptor::operator=</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>Move assignment operator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="133" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aa2e32367211e314e8e02158ca61dda60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::~edge_descriptor</definition>
+        <argsstring>()=default</argsstring>
+        <name>~edge_descriptor</name>
+        <qualifiedname>gl::edge_descriptor::~edge_descriptor</qualifiedname>
+        <briefdescription>
+<para>Destructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="136" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aff4c3bef8bb6042b8f3c7966b220ba22" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator==</definition>
+        <argsstring>(const edge_descriptor &amp;other) const noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::edge_descriptor::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+    <requiresclause>(traits::c_directed_edge&lt;type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Equality comparison operator for directed edges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The edge descriptor to compare against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if IDs and exact endpoint pairs match, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="141" column="11" bodyfile="include/gl/edge_descriptor.hpp" bodystart="141" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ab8cc5a7e7fede7b81c3fddb04643150a" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator==</definition>
+        <argsstring>(const edge_descriptor &amp;other) const noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::edge_descriptor::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+    <requiresclause>(traits::c_undirected_edge&lt;type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Equality comparison operator for undirected edges. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The edge descriptor to compare against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if IDs and endpoint pairs match (order independent), <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="150" column="11" bodyfile="include/gl/edge_descriptor.hpp" bodystart="150" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a6d58531ca9ce600dff359cb33ff998c8" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator bool</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator bool</name>
+        <qualifiedname>gl::edge_descriptor::operator bool</qualifiedname>
+        <briefdescription>
+<para>Boolean conversion operator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the edge is valid. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="160" column="7" bodyfile="include/gl/edge_descriptor.hpp" bodystart="160" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ab2c1444f49cf0fb4a37c18f7fb33aacd" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_directed</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>is_directed</name>
+        <qualifiedname>gl::edge_descriptor::is_directed</qualifiedname>
+        <briefdescription>
+<para>Checks if the edge represents a directed connection. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if <computeroutput>DirectionalTag</computeroutput> is <computeroutput><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref></computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="166" column="21" bodyfile="include/gl/edge_descriptor.hpp" bodystart="166" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ace7f6986bb69e43b83308cdf504e672b" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>constexpr bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_undirected</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>is_undirected</name>
+        <qualifiedname>gl::edge_descriptor::is_undirected</qualifiedname>
+        <briefdescription>
+<para>Checks if the edge represents an undirected connection. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if <computeroutput>DirectionalTag</computeroutput> is <computeroutput><ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref></computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="172" column="21" bodyfile="include/gl/edge_descriptor.hpp" bodystart="172" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a96ab0312821a282e21e6e3abab188b00" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_valid</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>is_valid</name>
+        <qualifiedname>gl::edge_descriptor::is_valid</qualifiedname>
+        <briefdescription>
+<para>Checks if the edge descriptor is valid. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the edge ID and both endpoints are not equal to <computeroutput>invalid_id</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="178" column="11" bodyfile="include/gl/edge_descriptor.hpp" bodystart="178" bodyend="181"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a2831eb4d9becfdaffce86795cead070b" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+        <definition>id_type gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::id</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>id</name>
+        <qualifiedname>gl::edge_descriptor::id</qualifiedname>
+        <briefdescription>
+<para>Returns the edge ID. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The underlying integer ID of the edge. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="185" column="15" bodyfile="include/gl/edge_descriptor.hpp" bodystart="185" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a5af59df945910ba892bb55d969ae369b" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kindref="member">homogeneous_pair</ref>&lt; <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref> &gt;</type>
+        <definition>homogeneous_pair&lt; id_type &gt; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::incident_vertices</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>incident_vertices</name>
+        <qualifiedname>gl::edge_descriptor::incident_vertices</qualifiedname>
+        <briefdescription>
+<para>Retrieves the endpoints of the edge as a pair. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A <computeroutput>homogeneous_pair</computeroutput> representing <computeroutput>(source, target)</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="191" column="24" bodyfile="include/gl/edge_descriptor.hpp" bodystart="191" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a53d41305a7ab839a63b38e598af6089c" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kindref="member">homogeneous_pair</ref>&lt; <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref> &gt;</type>
+        <definition>homogeneous_pair&lt; id_type &gt; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::incident_vertices_r</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>incident_vertices_r</name>
+        <qualifiedname>gl::edge_descriptor::incident_vertices_r</qualifiedname>
+        <briefdescription>
+<para>Retrieves the reversed endpoints of the edge as a pair. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A <computeroutput>homogeneous_pair</computeroutput> representing <computeroutput>(target, source)</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="198" column="24" bodyfile="include/gl/edge_descriptor.hpp" bodystart="198" bodyend="201"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a0dedc20bc6c05288603ca6899848a07d" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+        <definition>id_type gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::source</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>source</name>
+        <qualifiedname>gl::edge_descriptor::source</qualifiedname>
+        <briefdescription>
+<para>Returns the source vertex ID. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The underlying integer ID of the source vertex. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="205" column="15" bodyfile="include/gl/edge_descriptor.hpp" bodystart="205" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ae19416dc3a2f937d6eb9c1d91ef85e19" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+        <definition>id_type gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::target</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>target</name>
+        <qualifiedname>gl::edge_descriptor::target</qualifiedname>
+        <briefdescription>
+<para>Returns the target vertex ID. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The underlying integer ID of the target vertex. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="211" column="15" bodyfile="include/gl/edge_descriptor.hpp" bodystart="211" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a327aeac30133f5bcb68b3bf599aac538" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+        <definition>id_type gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::other</definition>
+        <argsstring>(const id_type vertex_id) const</argsstring>
+        <name>other</name>
+        <qualifiedname>gl::edge_descriptor::other</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Gets the other endpoint of the edge given one of its incident vertices. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of one incident vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The ID of the opposite vertex. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the provided <computeroutput>vertex_id</computeroutput> is not incident to this edge. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="219" column="14" bodyfile="include/gl/edge_descriptor.hpp" bodystart="219" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1abc177f8d6c38dbaa49fd3b795de1c250" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_incident_with</definition>
+        <argsstring>(const id_type vertex_id) const noexcept</argsstring>
+        <name>is_incident_with</name>
+        <qualifiedname>gl::edge_descriptor::is_incident_with</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific vertex is incident to this edge. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vertex ID to query. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the vertex is either the source or the target, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="232" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="232" bodyend="235"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a917ccebf4801ef26cd2447b69b6e97e0" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_incident_from</definition>
+        <argsstring>(const id_type vertex_id) const noexcept</argsstring>
+        <name>is_incident_from</name>
+        <qualifiedname>gl::edge_descriptor::is_incident_from</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Checks if the given vertex acts as the source for this edge. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vertex ID to query. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the vertex is the source (or any endpoint for undirected graphs). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="240" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="240" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ad57ab7f2dbe681a27362b593fd4188a4" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_incident_to</definition>
+        <argsstring>(const id_type vertex_id) const noexcept</argsstring>
+        <name>is_incident_to</name>
+        <qualifiedname>gl::edge_descriptor::is_incident_to</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" kindref="member">id_type</ref></type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Checks if the given vertex acts as the target for this edge. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vertex ID to query. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the vertex is the target (or any endpoint for undirected graphs). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="248" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="248" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ace481d0c7437a616a68f0485859498ed" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::is_loop</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>is_loop</name>
+        <qualifiedname>gl::edge_descriptor::is_loop</qualifiedname>
+        <briefdescription>
+<para>Checks if the edge is a self-loop. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the source and target are the same vertex, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="254" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="254" bodyend="256"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aed6514c3285a70147ae909af56b92f00" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> &amp;</type>
+        <definition>properties_type &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::properties</definition>
+        <argsstring>() const</argsstring>
+        <name>properties</name>
+        <qualifiedname>gl::edge_descriptor::properties</qualifiedname>
+    <requiresclause>(traits::c_non_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Returns a reference to the edge properties. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A reference to the associated <computeroutput>properties_type</computeroutput>. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::logic_error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the edge descriptor is invalid. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="261" column="23" bodyfile="include/gl/edge_descriptor.hpp" bodystart="261" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a5d1ace54935e39d9f38bc3777102a345" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> *</type>
+        <definition>properties_type * gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator-&gt;</definition>
+        <argsstring>() const</argsstring>
+        <name>operator-&gt;</name>
+        <qualifiedname>gl::edge_descriptor::operator-&gt;</qualifiedname>
+    <requiresclause>(traits::c_non_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Arrow operator for accessing properties. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A pointer to the associated <computeroutput>properties_type</computeroutput>. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::logic_error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the edge descriptor is invalid. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="271" column="23" bodyfile="include/gl/edge_descriptor.hpp" bodystart="271" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a2f48a471bd84f75e6744ae09d3d383e5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">properties_type</ref> &amp;</type>
+        <definition>properties_type &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::operator*</definition>
+        <argsstring>() const</argsstring>
+        <name>operator*</name>
+        <qualifiedname>gl::edge_descriptor::operator*</qualifiedname>
+    <requiresclause>(traits::c_non_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Dereference operator for accessing properties. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A reference to the associated <computeroutput>properties_type</computeroutput>. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::logic_error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the edge descriptor is invalid. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="281" column="23" bodyfile="include/gl/edge_descriptor.hpp" bodystart="281" bodyend="286"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1adf639de7008c541af7daf54a7307f8d5" prot="public" static="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></type>
+        <definition>static edge_descriptor gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::invalid</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>invalid</name>
+        <qualifiedname>gl::edge_descriptor::invalid</qualifiedname>
+    <requiresclause>(traits::c_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Returns an invalid edge descriptor (for empty properties). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>An <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> holding <computeroutput>invalid_id</computeroutput> for edge and vertex IDs. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="110" column="30" bodyfile="include/gl/edge_descriptor.hpp" bodystart="110" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a2262b00c5c0ff8d0d993eacf9752a7f2" prot="public" static="yes" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></type>
+        <definition>static edge_descriptor gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::invalid</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>invalid</name>
+        <qualifiedname>gl::edge_descriptor::invalid</qualifiedname>
+    <requiresclause>(traits::c_non_empty_properties&lt;properties_type&gt;)    </requiresclause>
+        <briefdescription>
+<para>Returns an invalid edge descriptor (for non-empty properties). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>An <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> holding <computeroutput>invalid_id</computeroutput> endpoints and empty properties. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="118" column="30" bodyfile="include/gl/edge_descriptor.hpp" bodystart="118" bodyend="123"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classgl_1_1edge__descriptor_1a0aa6bfe7df3be9a525be5a1e23c6d5ac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const edge_descriptor &amp;edge)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::edge_descriptor::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> &amp;</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+<para>Output stream operator for edge descriptors. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output stream. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The edge descriptor to write. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A reference to the output stream. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="292" column="12" bodyfile="include/gl/edge_descriptor.hpp" bodystart="292" bodyend="299"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a108c759d96a8d8c4f0b11c7c6d488d3a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">void</ref></type>
+        <definition>void gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_throw_invalid_access</definition>
+        <argsstring>() const</argsstring>
+        <name>_throw_invalid_access</name>
+        <qualifiedname>gl::edge_descriptor::_throw_invalid_access</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="302" column="11" bodyfile="include/gl/edge_descriptor.hpp" bodystart="302" bodyend="304"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1aa45bf87ca907c80ad016d1699889dd8a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">void</ref></type>
+        <definition>void gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_validate</definition>
+        <argsstring>() const</argsstring>
+        <name>_validate</name>
+        <qualifiedname>gl::edge_descriptor::_validate</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="306" column="11" bodyfile="include/gl/edge_descriptor.hpp" bodystart="306" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a22b2ca75b116dbc980512819a5896e3d" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_verbose_write</definition>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
+        <name>_verbose_write</name>
+        <qualifiedname>gl::edge_descriptor::_verbose_write</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, undirected_t&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="311" column="18" bodyfile="include/gl/edge_descriptor.hpp" bodystart="311" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a5ff1a36b0dfcc8c12a0035fcd2f7a05c" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_concise_write</definition>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
+        <name>_concise_write</name>
+        <qualifiedname>gl::edge_descriptor::_concise_write</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, undirected_t&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="326" column="18" bodyfile="include/gl/edge_descriptor.hpp" bodystart="326" bodyend="337"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1ae6e3a1f91380fb6f81bd52900eb4b049" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_verbose_write</definition>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
+        <name>_verbose_write</name>
+        <qualifiedname>gl::edge_descriptor::_verbose_write</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, directed_t&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="339" column="18" bodyfile="include/gl/edge_descriptor.hpp" bodystart="339" bodyend="352"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1edge__descriptor_1a3e89adc5190262b6417f5f4cbbbf7d48" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; gl::edge_descriptor&lt; DirectionalTag, Properties, IdType &gt;::_concise_write</definition>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
+        <name>_concise_write</name>
+        <qualifiedname>gl::edge_descriptor::_concise_write</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+    <requiresclause>std::same_as&lt;directional_tag, directed_t&gt;    </requiresclause>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="354" column="18" bodyfile="include/gl/edge_descriptor.hpp" bodystart="354" bodyend="365"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A lightweight wrapper representing a graph edge with its endpoints and optional properties. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> class provides a type-safe and efficient way to represent edges in both directed and undirected graph structures. It encapsulates the unique identifier of the edge, its source and target vertices, and optional property data.</para>
+<para><blockquote><para><zwj/>[!WARNING] This class is not intended to be instantiated directly.</para>
+<para>Instead, <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> objects should be retrieved from the <ref refid="classgl_1_1graph" kindref="compound">gl::graph</ref> class instance that owns the given edge. </para>
+</blockquote></para>
+<sect3 id="classgl_1_1edge__descriptor_1example-usage-15">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1ga77919d30896c685114ed71eac61918d8" kindref="member">gl::io::verbose</ref><sp/>&lt;&lt;<sp/><ref refid="group__GL-IO_1gab033686ba31f53bf0e07b1a9858a4973" kindref="member">gl::io::with_edge_properties</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref><sp/>:<sp/>graph.vertices())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">e</ref><sp/>:<sp/>graph.out_edges(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v</ref>))<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">e</ref>.is_loop())<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">e</ref>-&gt;weight<sp/>=<sp/>0.0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">e</ref>-&gt;weight<sp/>+=<sp/>1.5;<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">e</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>1. Retrieve edges using valid <computeroutput>graph</computeroutput> traversal methods like <computeroutput>out_edges()</computeroutput>.</para>
+<para>2. Utilize built-in edge utility methods to evaluate the edge type.</para>
+<para>3. Access and modify custom property fields via the arrow operator <computeroutput>-&gt;</computeroutput>.</para>
+<para>4. Print the detailed, formatted edge data using the applied stream manipulators. <emphasis>Example output:</emphasis> <computeroutput>[id: 12 | source: 3, target: 7 | weight: 1.5]</computeroutput></para>
+</sect3>
+<sect3 id="classgl_1_1edge__descriptor_1template-parameters-16">
+<title>Template Parameters</title>
+<para><table rows="4" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Tag specifying if the edge is directed or undirected.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-graph-directional-tag"><bold>c_graph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Properties   </para>
+</entry><entry thead="no" align='left'><para>The type of property data attached to the edge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The underlying integer type used for the IDs.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+<sect3 id="classgl_1_1edge__descriptor_1see-also-22">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1vertex__descriptor" kindref="compound">vertex_descriptor</ref> : For the corresponding vertex wrapper class.</para>
+</listitem><listitem><para><ref refid="classgl_1_1graph" kindref="compound">graph</ref> : For the owning graph class that manages edge descriptors. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/edge_descriptor.hpp" line="71" column="1" bodyfile="include/gl/edge_descriptor.hpp" bodystart="71" bodyend="373"/>
+    <listofallmembers>
+      <member refid="classgl_1_1edge__descriptor_1a5ff1a36b0dfcc8c12a0035fcd2f7a05c" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_concise_write</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a3e89adc5190262b6417f5f4cbbbf7d48" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_concise_write</name></member>
+      <member refid="classgl_1_1edge__descriptor_1af70ecc1e74d6a1dae0e8f2f9ff8e2874" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_id</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ac403c34ccb430073c6d71dea34e39296" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_properties</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a108c759d96a8d8c4f0b11c7c6d488d3a" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_throw_invalid_access</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aa45bf87ca907c80ad016d1699889dd8a" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_validate</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a22b2ca75b116dbc980512819a5896e3d" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_verbose_write</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ae6e3a1f91380fb6f81bd52900eb4b049" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_verbose_write</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a654fed669734c3c9ba4231dcc84d5fa4" prot="private" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>_vertices</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a561c5e061de34babc00edd131ad3ae2e" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>directional_tag</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a6e15224b2d8003327a027302becf8427" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>directional_tag</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a43500e9534e2e13c9718fdcbbf8b9383" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>edge_descriptor</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ae1929a4daf9e254a54d2554d60170c2b" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>edge_descriptor</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aa598895411aa7c5e180448b6b7122613" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>edge_descriptor</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a4c33dc73ad888e501e9e42830c6ce2f4" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>edge_descriptor</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a543a15b3e018d3204eab2879640c2951" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>edge_descriptor</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a2831eb4d9becfdaffce86795cead070b" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>id</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ab0d167ed9eaf522ec20a77bc7ba4c9a4" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>id_type</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a5af59df945910ba892bb55d969ae369b" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>incident_vertices</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a53d41305a7ab839a63b38e598af6089c" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>incident_vertices_r</name></member>
+      <member refid="classgl_1_1edge__descriptor_1adf639de7008c541af7daf54a7307f8d5" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>invalid</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a2262b00c5c0ff8d0d993eacf9752a7f2" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>invalid</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ab2c1444f49cf0fb4a37c18f7fb33aacd" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_directed</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a917ccebf4801ef26cd2447b69b6e97e0" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_incident_from</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ad57ab7f2dbe681a27362b593fd4188a4" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_incident_to</name></member>
+      <member refid="classgl_1_1edge__descriptor_1abc177f8d6c38dbaa49fd3b795de1c250" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_incident_with</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ace481d0c7437a616a68f0485859498ed" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_loop</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ace7f6986bb69e43b83308cdf504e672b" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_undirected</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a96ab0312821a282e21e6e3abab188b00" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>is_valid</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a6d58531ca9ce600dff359cb33ff998c8" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator bool</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a2f48a471bd84f75e6744ae09d3d383e5" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator*</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a5d1ace54935e39d9f38bc3777102a345" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator-&gt;</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a0aa6bfe7df3be9a525be5a1e23c6d5ac" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ab3a395a60e083ed39d646bf3934773c6" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator=</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aa5e1c36f6cf0cf0c45b879dd2facf11d" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator=</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aff4c3bef8bb6042b8f3c7966b220ba22" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator==</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ab8cc5a7e7fede7b81c3fddb04643150a" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>operator==</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a327aeac30133f5bcb68b3bf599aac538" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>other</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aed6514c3285a70147ae909af56b92f00" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>properties</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>properties_type</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a0dedc20bc6c05288603ca6899848a07d" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>source</name></member>
+      <member refid="classgl_1_1edge__descriptor_1ae19416dc3a2f937d6eb9c1d91ef85e19" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>target</name></member>
+      <member refid="classgl_1_1edge__descriptor_1a309adb550f879b8a8a9a25b7e4b1de4b" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>type</name></member>
+      <member refid="classgl_1_1edge__descriptor_1aa2e32367211e314e8e02158ca61dda60" prot="public" virt="non-virtual"><scope>gl::edge_descriptor</scope><name>~edge_descriptor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

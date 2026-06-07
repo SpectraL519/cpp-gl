@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1initial__id__t" kind="struct" language="C++" prot="public">
+    <compoundname>gl::initial_id_t</compoundname>
+    <includes refid="hgl_2constants_8hpp" local="no">hgl/constants.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1initial__id__t_1a462da903df157ca94c723870dc24714e" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::initial_id_t::operator IdType</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator IdType</name>
+        <qualifiedname>gl::initial_id_t::operator IdType</qualifiedname>
+        <briefdescription>
+<para>Implicitly converts to the initial ID value of 0 for any type that satisfies the <ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink> concept. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/constants.hpp" line="35" column="16" bodyfile="include/hgl/constants.hpp" bodystart="35" bodyend="37"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A helper type that can be implicitly converted to the initial ID value of 0 for any valid ID type. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structgl_1_1initial__id__t_1see-also-12">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gae097db1fdd1be4558cb64e3aa2b3cd10" kindref="member">initial_id_v</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" kindref="member">initial_id</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/constants.hpp" line="32" column="1" bodyfile="include/hgl/constants.hpp" bodystart="32" bodyend="38"/>
+    <listofallmembers>
+      <member refid="structgl_1_1initial__id__t_1a462da903df157ca94c723870dc24714e" prot="public" virt="non-virtual"><scope>gl::initial_id_t</scope><name>operator IdType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

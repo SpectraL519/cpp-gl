@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1graph_1_1concise__target__formatter" kind="struct" language="C++" prot="private">
+    <compoundname>gl::graph::concise_target_formatter</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1graph_1_1concise__target__formatter_1a28087ca6a7ee53fadf44f3a7a7d82dda" prot="public" static="no" mutable="no">
+        <type><ref refid="classgl_1_1graph_1a134a16ecceea32feb1712711ad619b02" kindref="member">edge_type</ref></type>
+        <definition>edge_type gl::graph&lt; GraphTraits &gt;::concise_target_formatter::edge</definition>
+        <argsstring></argsstring>
+        <name>edge</name>
+        <qualifiedname>gl::graph::concise_target_formatter::edge</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1232" column="19" bodyfile="include/gl/graph.hpp" bodystart="1232" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1graph_1_1concise__target__formatter_1ace4cd0d49981bc959812e8a5d9de9678" prot="public" static="no" mutable="no">
+        <type><ref refid="classgl_1_1graph_1a526bf2208be67d8cd71db482a02767e0" kindref="member">id_type</ref></type>
+        <definition>id_type gl::graph&lt; GraphTraits &gt;::concise_target_formatter::src_id</definition>
+        <argsstring></argsstring>
+        <name>src_id</name>
+        <qualifiedname>gl::graph::concise_target_formatter::src_id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1233" column="17" bodyfile="include/gl/graph.hpp" bodystart="1233" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1graph_1_1concise__target__formatter_1a7087478646e6c75ab12337566fe31751" prot="public" static="no" mutable="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::graph&lt; GraphTraits &gt;::concise_target_formatter::with_props</definition>
+        <argsstring></argsstring>
+        <name>with_props</name>
+        <qualifiedname>gl::graph::concise_target_formatter::with_props</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1234" column="14" bodyfile="include/gl/graph.hpp" bodystart="1234" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structgl_1_1graph_1_1concise__target__formatter_1aaaddef7b773f93d867fdedcf1c26d0fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const concise_target_formatter &amp;proxy)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::graph::concise_target_formatter::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> concise_target_formatter &amp;</type>
+          <declname>proxy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1236" column="16" bodyfile="include/gl/graph.hpp" bodystart="1236" bodyend="1243"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/graph.hpp" line="1231" column="5" bodyfile="include/gl/graph.hpp" bodystart="1231" bodyend="1244"/>
+    <listofallmembers>
+      <member refid="structgl_1_1graph_1_1concise__target__formatter_1a28087ca6a7ee53fadf44f3a7a7d82dda" prot="public" virt="non-virtual"><scope>gl::graph::concise_target_formatter</scope><name>edge</name></member>
+      <member refid="structgl_1_1graph_1_1concise__target__formatter_1aaaddef7b773f93d867fdedcf1c26d0fa" prot="public" virt="non-virtual"><scope>gl::graph::concise_target_formatter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="structgl_1_1graph_1_1concise__target__formatter_1ace4cd0d49981bc959812e8a5d9de9678" prot="public" virt="non-virtual"><scope>gl::graph::concise_target_formatter</scope><name>src_id</name></member>
+      <member refid="structgl_1_1graph_1_1concise__target__formatter_1a7087478646e6c75ab12337566fe31751" prot="public" virt="non-virtual"><scope>gl::graph::concise_target_formatter</scope><name>with_props</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

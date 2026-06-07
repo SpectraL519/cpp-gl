@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1empty__properties__map" kind="struct" language="C++" prot="public">
+    <compoundname>gl::empty_properties_map</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <briefdescription>
+<para>A stateless, empty structural tag indicating that the absence of a property map container. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para><zwj/>[!NOTE]</para>
+<para>This type is used internally by the library to optimize storage for graph components that have no properties. </para>
+</blockquote></para>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="34" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="34" bodyend="34"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

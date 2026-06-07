@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_1bad765b1a46afb70ecd9c6a8eab63aa" kind="dir">
+    <compoundname>include/gl/algorithm</compoundname>
+    <innerdir refid="dir_cb83c68a32e255d43c7a006e7435bc48">include/gl/algorithm/pathfinding</innerdir>
+    <innerdir refid="dir_cb0e42b77abb24908becedbe70217727">include/gl/algorithm/spanning_tree</innerdir>
+    <innerdir refid="dir_ee40734612f204c1e10fb6e8e5558939">include/gl/algorithm/templates</innerdir>
+    <innerdir refid="dir_e7d4219177810bb688142c2492e313d1">include/gl/algorithm/topology</innerdir>
+    <innerdir refid="dir_435b4eb4d2b7fc6c9cd298a3c4c2d851">include/gl/algorithm/traversal</innerdir>
+    <innerfile refid="gl_2algorithm_2core_8hpp">core.hpp</innerfile>
+    <innerfile refid="gl_2algorithm_2traits_8hpp">traits.hpp</innerfile>
+    <innerfile refid="gl_2algorithm_2util_8hpp">util.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/"/>
+  </compounddef>
+</doxygen>

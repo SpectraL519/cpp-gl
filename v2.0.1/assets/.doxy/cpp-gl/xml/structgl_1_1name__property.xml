@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1name__property" kind="struct" language="C++" prot="public">
+    <compoundname>gl::name_property</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1name__property_1a6ac331bad9810bd4dd051e5be093b8c9" prot="public" static="no">
+        <type>std::string</type>
+        <definition>using gl::name_property::value_type =  std::string</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <qualifiedname>gl::name_property::value_type</qualifiedname>
+        <briefdescription>
+<para>The underlying string type used for the name. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="40" column="5" bodyfile="include/gl/types/properties.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1name__property_1a1cda72e701fab2891b0a508f4339c8ab" prot="public" static="no" mutable="no">
+        <type><ref refid="structgl_1_1name__property_1a6ac331bad9810bd4dd051e5be093b8c9" kindref="member">value_type</ref></type>
+        <definition>value_type gl::name_property::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>gl::name_property::name</qualifiedname>
+        <briefdescription>
+<para>The stored name string. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="43" column="16" bodyfile="include/gl/types/properties.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1name__property_1ad6a0445598eb293e5dd1df34aa4dfdac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structgl_1_1name__property" kindref="compound">name_property</ref> &amp;</type>
+        <definition>name_property &amp; gl::name_property::operator=</definition>
+        <argsstring>(std::string_view name)</argsstring>
+        <name>operator=</name>
+        <qualifiedname>gl::name_property::operator=</qualifiedname>
+        <param>
+          <type>std::string_view</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+<para>Assigns a new name from a string view. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="46" column="19" bodyfile="include/gl/types/properties.hpp" bodystart="46" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1name__property_1a80e45c8ecfe920d53f8fff2b321062a6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::name_property::operator==</definition>
+        <argsstring>(const name_property &amp;) const =default</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::name_property::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="structgl_1_1name__property" kindref="compound">name_property</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="51" column="11"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1name__property_1a9ed6f584fd2d00ce9916593e57a46202" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>auto gl::name_property::operator&lt;=&gt;</definition>
+        <argsstring>(const name_property &amp;) const =default</argsstring>
+        <name>operator&lt;=&gt;</name>
+        <qualifiedname>gl::name_property::operator&lt;=&gt;</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="structgl_1_1name__property" kindref="compound">name_property</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="52" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1name__property_1aae603aede600f2d2958452b0f6f8d0fa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>bool gl::name_property::operator==</definition>
+        <argsstring>(const std::string_view name) const</argsstring>
+        <name>operator==</name>
+        <qualifiedname>gl::name_property::operator==</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> std::string_view</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="54" column="11" bodyfile="include/gl/types/properties.hpp" bodystart="54" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="structgl_1_1name__property_1a377ebfe0b30c173a83fefc4e3346905d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>auto gl::name_property::operator&lt;=&gt;</definition>
+        <argsstring>(const std::string_view name) const</argsstring>
+        <name>operator&lt;=&gt;</name>
+        <qualifiedname>gl::name_property::operator&lt;=&gt;</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> std::string_view</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="58" column="6" bodyfile="include/gl/types/properties.hpp" bodystart="58" bodyend="60"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structgl_1_1name__property_1aecfba6ceb982b55297a18bb706e72438" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const name_property &amp;property)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::name_property::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="structgl_1_1name__property" kindref="compound">name_property</ref> &amp;</type>
+          <declname>property</declname>
+        </param>
+        <briefdescription>
+<para>Serializes the name property to an output stream using quoted formatting. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="63" column="12" bodyfile="include/gl/types/properties.hpp" bodystart="63" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="friend" id="structgl_1_1name__property_1a9a2d3ea36edfa3638711640cc12dfe62" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::istream &amp;</type>
+        <definition>std::istream &amp; operator&gt;&gt;</definition>
+        <argsstring>(std::istream &amp;is, name_property &amp;property)</argsstring>
+        <name>operator&gt;&gt;</name>
+        <qualifiedname>gl::name_property::operator&gt;&gt;</qualifiedname>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type><ref refid="structgl_1_1name__property" kindref="compound">name_property</ref> &amp;</type>
+          <declname>property</declname>
+        </param>
+        <briefdescription>
+<para>Deserializes the name property from an input stream using quoted formatting. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="69" column="25" bodyfile="include/gl/types/properties.hpp" bodystart="69" bodyend="72"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A property struct providing a basic string-based naming facility. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="38" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="38" bodyend="73"/>
+    <listofallmembers>
+      <member refid="structgl_1_1name__property_1a1cda72e701fab2891b0a508f4339c8ab" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>name</name></member>
+      <member refid="structgl_1_1name__property_1aecfba6ceb982b55297a18bb706e72438" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator&lt;&lt;</name></member>
+      <member refid="structgl_1_1name__property_1a9ed6f584fd2d00ce9916593e57a46202" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator&lt;=&gt;</name></member>
+      <member refid="structgl_1_1name__property_1a377ebfe0b30c173a83fefc4e3346905d" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator&lt;=&gt;</name></member>
+      <member refid="structgl_1_1name__property_1ad6a0445598eb293e5dd1df34aa4dfdac" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator=</name></member>
+      <member refid="structgl_1_1name__property_1a80e45c8ecfe920d53f8fff2b321062a6" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator==</name></member>
+      <member refid="structgl_1_1name__property_1aae603aede600f2d2958452b0f6f8d0fa" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator==</name></member>
+      <member refid="structgl_1_1name__property_1a9a2d3ea36edfa3638711640cc12dfe62" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>operator&gt;&gt;</name></member>
+      <member refid="structgl_1_1name__property_1a6ac331bad9810bd4dd051e5be093b8c9" prot="public" virt="non-virtual"><scope>gl::name_property</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

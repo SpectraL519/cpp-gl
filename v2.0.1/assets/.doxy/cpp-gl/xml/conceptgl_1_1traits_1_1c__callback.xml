@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__callback" kind="concept">
+    <compoundname>gl::traits::c_callback</compoundname>
+    <includes refid="gl_2algorithm_2traits_8hpp" local="no">gl/algorithm/traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename F</type>
+      </param>
+      <param>
+        <type>typename ReturnType</type>
+      </param>
+      <param>
+        <type>typename...</type>
+        <declname>Args</declname>
+        <defname>Args</defname>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename F, typename ReturnType, typename... Args&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__callback" kindref="compound">gl::traits::c_callback</ref> =  std::is_invocable_r_v&lt;ReturnType, F, Args...&gt;    </initializer>
+    <briefdescription>
+<para>Concept checking if a type is callable with specific arguments and returns a specific type. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>F</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callable type. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ReturnType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The expected return type. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parameter types the callable must accept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/algorithm/traits.hpp" line="27" column="1"/>
+  </compounddef>
+</doxygen>

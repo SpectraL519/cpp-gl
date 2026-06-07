@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1hypergraph__traits" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::hypergraph_traits</compoundname>
+    <includes refid="hypergraph__traits_8hpp" local="no">hgl/hypergraph_traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_hypergraph_directional_tag</type>
+        <declname>DirectionalTag</declname>
+        <defname>DirectionalTag</defname>
+        <defval><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>VertexProperties</declname>
+        <defname>VertexProperties</defname>
+        <defval><ref refid="group__HGL-Core_1gaa4d78a438caa013a20e3b9dbafc691ef" kindref="member">empty_properties</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>HyperedgeProperties</declname>
+        <defname>HyperedgeProperties</defname>
+        <defval><ref refid="group__HGL-Core_1gaa4d78a438caa013a20e3b9dbafc691ef" kindref="member">empty_properties</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_hypergraph_repr_tag</type>
+        <declname>ReprTag</declname>
+        <defname>ReprTag</defname>
+        <defval><ref refid="structhgl_1_1repr_1_1list__t" kindref="compound">repr::list_t</ref>&lt;&gt;</defval>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a2c78c8124ecad9ae57893da44c428275" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">DirectionalTag</ref></type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::directional_tag =  DirectionalTag</definition>
+        <argsstring></argsstring>
+        <name>directional_tag</name>
+        <qualifiedname>hgl::hypergraph_traits::directional_tag</qualifiedname>
+        <briefdescription>
+<para>The directional tag indicating the hypergraph&apos;s orientation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="39" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a934a80fe1448504ca1060d57f25d0933" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">ReprTag</ref></type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::representation_tag =  ReprTag</definition>
+        <argsstring></argsstring>
+        <name>representation_tag</name>
+        <qualifiedname>hgl::hypergraph_traits::representation_tag</qualifiedname>
+        <briefdescription>
+<para>The representation tag defining the internal storage mechanism. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="41" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a895075cf97ec1f091fa9dd583c05f801" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> representation_tag::layout_tag</type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::layout_tag =  typename representation_tag::layout_tag</definition>
+        <argsstring></argsstring>
+        <name>layout_tag</name>
+        <qualifiedname>hgl::hypergraph_traits::layout_tag</qualifiedname>
+        <briefdescription>
+<para>The layout tag governing major/minor element ordering. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="43" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a70e49786bb56e6652ff294b9ba4df18e" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> representation_tag::id_type</type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::id_type =  typename representation_tag::id_type</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>hgl::hypergraph_traits::id_type</qualifiedname>
+        <briefdescription>
+<para>The integer type used for element identifiers. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="45" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1aa86c949d3ab93c511bd76d28aa00d19e" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1gaf812a1ec3b6cb1dd2357856eb6fca431" kindref="member">vertex_descriptor</ref>&lt; <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">VertexProperties</ref>, <ref refid="structhgl_1_1hypergraph__traits_1a70e49786bb56e6652ff294b9ba4df18e" kindref="member">id_type</ref> &gt;</type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::vertex_type =  vertex_descriptor&lt;VertexProperties, id_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>vertex_type</name>
+        <qualifiedname>hgl::hypergraph_traits::vertex_type</qualifiedname>
+        <briefdescription>
+<para>The fully resolved type representing a vertex descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="48" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a84306755453ba56c0eda595169a5adb1" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> <ref refid="classgl_1_1vertex__descriptor_1a08094a85e19bd59942c8e567889524c6" kindref="member">vertex_type::properties_type</ref></type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::vertex_properties_type =  typename vertex_type::properties_type</definition>
+        <argsstring></argsstring>
+        <name>vertex_properties_type</name>
+        <qualifiedname>hgl::hypergraph_traits::vertex_properties_type</qualifiedname>
+        <briefdescription>
+<para>The property payload type associated with vertices. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="50" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a10284b9e8d50551b48b69ac456ee1b44" prot="public" static="no">
+        <type><ref refid="classhgl_1_1hyperedge__descriptor" kindref="compound">hyperedge_descriptor</ref>&lt; <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">HyperedgeProperties</ref>, <ref refid="structhgl_1_1hypergraph__traits_1a70e49786bb56e6652ff294b9ba4df18e" kindref="member">id_type</ref> &gt;</type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::hyperedge_type =  hyperedge_descriptor&lt;HyperedgeProperties, id_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>hyperedge_type</name>
+        <qualifiedname>hgl::hypergraph_traits::hyperedge_type</qualifiedname>
+        <briefdescription>
+<para>The fully resolved type representing a hyperedge descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="53" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structhgl_1_1hypergraph__traits_1a249bc25b3f0271c390823b5fbdac6af6" prot="public" static="no">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> <ref refid="classhgl_1_1hyperedge__descriptor_1a82a59c94de6c4b3428e4190d0ae8c0fc" kindref="member">hyperedge_type::properties_type</ref></type>
+        <definition>using hgl::hypergraph_traits&lt; DirectionalTag, VertexProperties, HyperedgeProperties, ReprTag &gt;::hyperedge_properties_type =  typename hyperedge_type::properties_type</definition>
+        <argsstring></argsstring>
+        <name>hyperedge_properties_type</name>
+        <qualifiedname>hgl::hypergraph_traits::hyperedge_properties_type</qualifiedname>
+        <briefdescription>
+<para>The property payload type associated with hyperedges. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/hypergraph_traits.hpp" line="55" column="5" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Primary hypergraph traits structure that encapsulates all necessary type information for hypergraph representations. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This structure serves as the central point for defining the properties and types associated with a hypergraph, including directionality, element properties, as well as representation and identifier types. It provides a clean, extensible way to customize hypergraph behavior.</para>
+<sect3 id="structhgl_1_1hypergraph__traits_1template-parameters-39">
+<title>Template Parameters</title>
+<para><table rows="5" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the hypergraph is undirected or bf_directed.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1undirected__t" kindref="compound">undirected_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-directional-tag"><bold>c_hypergraph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each vertex.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>HyperedgeProperties   </para>
+</entry><entry thead="no" align='left'><para>The type of properties attached to each hyperedge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>ReprTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies the internal container representation for incidence.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structhgl_1_1repr_1_1list__t" kindref="compound">repr::list_t&lt;&gt;</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag"><bold>c_hypergraph_repr_tag</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/hgl/hypergraph_traits.hpp" line="37" column="1" bodyfile="include/hgl/hypergraph_traits.hpp" bodystart="37" bodyend="56"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1hypergraph__traits_1a2c78c8124ecad9ae57893da44c428275" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>directional_tag</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a249bc25b3f0271c390823b5fbdac6af6" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>hyperedge_properties_type</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a10284b9e8d50551b48b69ac456ee1b44" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>hyperedge_type</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a70e49786bb56e6652ff294b9ba4df18e" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>id_type</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a895075cf97ec1f091fa9dd583c05f801" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>layout_tag</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a934a80fe1448504ca1060d57f25d0933" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>representation_tag</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1a84306755453ba56c0eda595169a5adb1" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>vertex_properties_type</name></member>
+      <member refid="structhgl_1_1hypergraph__traits_1aa86c949d3ab93c511bd76d28aa00d19e" prot="public" virt="non-virtual"><scope>hgl::hypergraph_traits</scope><name>vertex_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

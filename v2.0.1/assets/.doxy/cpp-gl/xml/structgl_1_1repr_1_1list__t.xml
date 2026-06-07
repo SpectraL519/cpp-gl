@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1repr_1_1list__t" kind="struct" language="C++" prot="public">
+    <compoundname>gl::repr::list_t</compoundname>
+    <includes refid="gl_2repr__tags_8hpp" local="no">gl/repr_tags.hpp</includes>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1repr_1_1list__t_1a21b3817eb92e48c4f653dea6d5346e9b" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_instantiation_of&lt; <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref> &gt;</type>
+            <declname>GraphTraits</declname>
+            <defname>GraphTraits</defname>
+          </param>
+        </templateparamlist>
+        <type>impl::adjacency_list&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">GraphTraits</ref> &gt;</type>
+        <definition>using gl::repr::list_t::type =  impl::adjacency_list&lt;GraphTraits&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>gl::repr::list_t::type</qualifiedname>
+        <briefdescription>
+<para>Type alias for the adjacency list graph representation based on the provided graph traits. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphTraits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph traits for which to define the adjacency list type. Must be an instantiation of <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref> and have <computeroutput><ref refid="structgl_1_1repr_1_1list__t" kindref="compound">list_t</ref></computeroutput> as its representation tag. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/repr_tags.hpp" line="25" column="5" bodyfile="include/gl/repr_tags.hpp" bodystart="25" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Tag struct for the standard adjacency list graph representation. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/repr_tags.hpp" line="19" column="1" bodyfile="include/gl/repr_tags.hpp" bodystart="19" bodyend="26"/>
+    <listofallmembers>
+      <member refid="structgl_1_1repr_1_1list__t_1a21b3817eb92e48c4f653dea6d5346e9b" prot="public" virt="non-virtual"><scope>gl::repr::list_t</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

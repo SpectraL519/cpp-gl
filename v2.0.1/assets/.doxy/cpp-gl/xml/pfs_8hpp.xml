@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="pfs_8hpp" kind="file" language="C++">
+    <compoundname>pfs.hpp</compoundname>
+    <includes local="yes">gl/algorithm/core.hpp</includes>
+    <includes refid="gl_2algorithm_2traits_8hpp" local="yes">gl/algorithm/traits.hpp</includes>
+    <includes local="yes">gl/algorithm/util.hpp</includes>
+    <includes local="no">concepts</includes>
+    <includes local="no">queue</includes>
+    <includes local="no">ranges</includes>
+    <includedby refid="dijkstra_8hpp" local="yes">include/gl/algorithm/pathfinding/dijkstra.hpp</includedby>
+    <includedby refid="hgl_2algorithm_8hpp" local="yes">include/hgl/algorithm.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/templates/pfs.hpp</label>
+        <link refid="pfs_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>gl/algorithm/traits.hpp</label>
+        <link refid="gl_2algorithm_2traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>concepts</label>
+      </node>
+      <node id="4">
+        <label>functional</label>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/core.hpp</label>
+      </node>
+      <node id="5">
+        <label>gl/algorithm/util.hpp</label>
+      </node>
+      <node id="7">
+        <label>queue</label>
+      </node>
+      <node id="8">
+        <label>ranges</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>include/gl/algorithm/pathfinding/dijkstra.hpp</label>
+        <link refid="dijkstra_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/algorithm/templates/pfs.hpp</label>
+        <link refid="pfs_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1algorithm">gl::algorithm</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/templates/pfs.hpp"/>
+  </compounddef>
+</doxygen>

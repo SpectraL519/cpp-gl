@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;</compoundname>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="no">hgl/algorithm/core.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_bf_directed_hypergraph</type>
+        <declname>H</declname>
+        <defname>H</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4_1a02f2105520def7034988289f1482ad02" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref></type>
+        <definition>static auto hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;::target_hyperedges</definition>
+        <argsstring>(const H &amp;h, typename H::id_type v_id)</argsstring>
+        <name>target_hyperedges</name>
+        <qualifiedname>hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;::target_hyperedges</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">H</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> H::id_type</type>
+          <declname>v_id</declname>
+        </param>
+        <briefdescription>
+<para>Retrieves the hyperedges entering the given vertex (backward star). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="207" column="17" bodyfile="include/hgl/algorithm/core.hpp" bodystart="207" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4_1afa7c188f644207e508e03cccb1d4b6d9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">auto</ref></type>
+        <definition>static auto hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;::target_vertices</definition>
+        <argsstring>(const H &amp;h, typename H::id_type he_id)</argsstring>
+        <name>target_vertices</name>
+        <qualifiedname>hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;::target_vertices</qualifiedname>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">const</ref> <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">H</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">typename</ref> H::id_type</type>
+          <declname>he_id</declname>
+        </param>
+        <briefdescription>
+<para>Retrieves the vertices originating the given hyperedge (tail nodes). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="212" column="17" bodyfile="include/hgl/algorithm/core.hpp" bodystart="212" bodyend="214"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Traversal policy specialization for backward searches on BF-directed hypergraphs. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="205" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="205" bodyend="215"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4_1a02f2105520def7034988289f1482ad02" prot="public" virt="non-virtual"><scope>hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;</scope><name>target_hyperedges</name></member>
+      <member refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4_1afa7c188f644207e508e03cccb1d4b6d9" prot="public" virt="non-virtual"><scope>hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;</scope><name>target_vertices</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

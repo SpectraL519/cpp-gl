@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1traits_1_1swap__repr__tag_3_01hypergraph__traits_3_01Dir_00_01VP_00_01EP_00_01OldReprTag_01_4_00_01NewReprTag_01_4" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::traits::swap_repr_tag&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt;, NewReprTag &gt;</compoundname>
+    <includes refid="hgl_2conversion_8hpp" local="no">hgl/conversion.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_hypergraph_directional_tag</type>
+        <declname>Dir</declname>
+        <defname>Dir</defname>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>VP</declname>
+        <defname>VP</defname>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>EP</declname>
+        <defname>EP</defname>
+      </param>
+      <param>
+        <type>traits::c_hypergraph_repr_tag</type>
+        <declname>OldReprTag</declname>
+        <defname>OldReprTag</defname>
+      </param>
+      <param>
+        <type>traits::c_hypergraph_repr_tag</type>
+        <declname>NewReprTag</declname>
+        <defname>NewReprTag</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structhgl_1_1traits_1_1swap__repr__tag_3_01hypergraph__traits_3_01Dir_00_01VP_00_01EP_00_01OldReprTag_01_4_00_01NewReprTag_01_4_1ad6f80ed003e5187b943b4460cbb5f96b" prot="public" static="no">
+        <type><ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref>&lt; <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">Dir</ref>, <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">VP</ref>, <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">EP</ref>, <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">NewReprTag</ref> &gt;</type>
+        <definition>using hgl::traits::swap_repr_tag&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt;, NewReprTag &gt;::type =  hypergraph_traits&lt;Dir, VP, EP, NewReprTag&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>hgl::traits::swap_repr_tag&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt;, NewReprTag &gt;::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/conversion.hpp" line="43" column="5" bodyfile="include/hgl/conversion.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Specialization of <ref refid="structhgl_1_1traits_1_1swap__repr__tag" kindref="compound">swap_repr_tag</ref> for the <ref refid="structhgl_1_1hypergraph__traits" kindref="compound">hypergraph_traits</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/conversion.hpp" line="42" column="1" bodyfile="include/hgl/conversion.hpp" bodystart="42" bodyend="44"/>
+    <listofallmembers>
+      <member refid="structhgl_1_1traits_1_1swap__repr__tag_3_01hypergraph__traits_3_01Dir_00_01VP_00_01EP_00_01OldReprTag_01_4_00_01NewReprTag_01_4_1ad6f80ed003e5187b943b4460cbb5f96b" prot="public" virt="non-virtual"><scope>hgl::traits::swap_repr_tag&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt;, NewReprTag &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

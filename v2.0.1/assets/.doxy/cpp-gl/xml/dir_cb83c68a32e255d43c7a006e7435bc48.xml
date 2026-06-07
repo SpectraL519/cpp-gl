@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_cb83c68a32e255d43c7a006e7435bc48" kind="dir">
+    <compoundname>include/gl/algorithm/pathfinding</compoundname>
+    <innerfile refid="dijkstra_8hpp">dijkstra.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/pathfinding/"/>
+  </compounddef>
+</doxygen>

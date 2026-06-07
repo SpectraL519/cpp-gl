@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1util" kind="namespace" language="C++">
+    <compoundname>gl::util</compoundname>
+    <innerclass refid="structgl_1_1util_1_1concat__fn" prot="public">gl::util::concat_fn</innerclass>
+    <innerclass refid="classgl_1_1util_1_1concat__view" prot="public">gl::util::concat_view</innerclass>
+    <sectiondef kind="var">
+      <member refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kind="variable"><name>concat</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__GL-Util_1ga175f83b8e106986ae6f5c77666662f09" kind="function"><name>upow</name></member>
+      <member refid="group__GL-Util_1gaa99b4b62fb6b3d4ec4236de65a57caf3" kind="function"><name>upow_sum</name></member>
+      <member refid="group__GL-Util_1ga646a472962b93ce25906cd2935e49422" kind="function"><name>range_size</name></member>
+      <member refid="group__GL-Util_1gaec0f5842d50d907edfa9181802334269" kind="function"><name>is_constant</name></member>
+      <member refid="group__GL-Util_1ga27b14af97ffe14019ecac6cec881b8ff" kind="function"><name>all_equal</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/util/math.hpp" line="15" column="1"/>
+  </compounddef>
+</doxygen>

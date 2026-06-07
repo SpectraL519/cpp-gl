@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__empty__properties" kind="concept">
+    <compoundname>gl::traits::c_empty_properties</compoundname>
+    <includes refid="gl_2types_2properties_8hpp" local="no">gl/types/properties.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename T&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__empty__properties" kindref="compound">gl::traits::c_empty_properties</ref> =  c_properties&lt;T&gt; and std::same_as&lt;T, <ref refid="structgl_1_1empty__properties" kindref="compound">gl::empty_properties</ref>&gt;    </initializer>
+    <briefdescription>
+<para>Validates if a type is specifically the <ref refid="structgl_1_1empty__properties" kindref="compound">gl::empty_properties</ref> tag. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This concept is used to specialize behavior for graph components that do not carry any user-defined data.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/types/properties.hpp" line="269" column="1"/>
+  </compounddef>
+</doxygen>

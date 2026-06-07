@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1io" kind="namespace" language="C++">
+    <compoundname>gl::io</compoundname>
+    <innerclass refid="structgl_1_1io_1_1append" prot="public">gl::io::append</innerclass>
+    <innerclass refid="structgl_1_1io_1_1implicit__range__formatter" prot="public">gl::io::implicit_range_formatter</innerclass>
+    <innerclass refid="classgl_1_1io_1_1options__manip" prot="public">gl::io::options_manip</innerclass>
+    <innerclass refid="structgl_1_1io_1_1range__formatter" prot="public">gl::io::range_formatter</innerclass>
+    <innerclass refid="structgl_1_1io_1_1write" prot="public">gl::io::write</innerclass>
+    <sectiondef kind="typedef">
+      <member refid="group__GL-IO_1ga08c35c0ffe116790c8e63ecc88a1df88" kind="typedef"><name>index_type</name></member>
+      <member refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kind="typedef"><name>iword_type</name></member>
+      <member refid="group__GL-IO_1ga367a38e47adbd342d750d1c49a6e7e79" kind="typedef"><name>bit_position_type</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__GL-IO_1ga0c208cccd54ca98841b82c54a58503f6" kind="variable"><name>concise</name></member>
+      <member refid="group__GL-IO_1ga77919d30896c685114ed71eac61918d8" kind="variable"><name>verbose</name></member>
+      <member refid="group__GL-IO_1ga19f74dd0f86c1659798da4e9e082a190" kind="variable"><name>spec_fmt</name></member>
+      <member refid="group__GL-IO_1gab8ba21a8686e70b303c0de4332a58e7f" kind="variable"><name>with_vertex_properties</name></member>
+      <member refid="group__GL-IO_1ga9bc68cf5b957fc05e346c8b29691b78d" kind="variable"><name>without_vertex_properties</name></member>
+      <member refid="group__GL-IO_1gab033686ba31f53bf0e07b1a9858a4973" kind="variable"><name>with_edge_properties</name></member>
+      <member refid="group__GL-IO_1gaa7ca28526dcf2bc797725f0757d99809" kind="variable"><name>without_edge_properties</name></member>
+      <member refid="group__GL-IO_1gaa18fc35382156ea0900c8b796f68cdf6" kind="variable"><name>with_properties</name></member>
+      <member refid="group__GL-IO_1ga33bc78e618a67bc6f089009d540dff40" kind="variable"><name>without_properties</name></member>
+      <member refid="group__GL-IO_1gaf6cf51b075657c7834dcf7dc0e759598" kind="variable"><name>default_options</name></member>
+      <member refid="group__GL-IO_1gab810aac7325479902ed45c6bb2bce7f6" kind="variable"><name>iword_bit</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__GL-IO_1gaadfec936259d0346abe77aa52f3c2971" kind="function"><name>save</name></member>
+      <member refid="group__GL-IO_1gad9d361aaa6c57e3006741d8c5ca9bc34" kind="function"><name>load</name></member>
+      <member refid="group__GL-IO_1gafe2c3049d2e45d49e6188cd2f0dd28ac" kind="function"><name>set_options</name></member>
+      <member refid="group__GL-IO_1gac3e9c07bdd58d424db2ac6f49d42b46a" kind="function"><name>set_options</name></member>
+      <member refid="group__GL-IO_1ga0ac99b7c4feb0c19522b5ab5af6bdff4" kind="function"><name>clear_options</name></member>
+      <member refid="group__GL-IO_1ga8d94f60ad3c2c24a505a991d07965c9f" kind="function"><name>clear_options</name></member>
+      <member refid="group__GL-IO_1gaa5566abf34026939d427f225afd7c185" kind="function"><name>is_option_set</name></member>
+      <member refid="group__GL-IO_1ga54e12d7c44a90c51c92bbf30679dada0" kind="function"><name>is_option_set</name></member>
+      <member refid="group__GL-IO_1ga383aa593a7030b6f754906ddfff9b33a" kind="function"><name>are_options_set</name></member>
+      <member refid="group__GL-IO_1ga2b8039846092bfa92ab896c0811e8e73" kind="function"><name>are_options_set</name></member>
+      <member refid="group__GL-IO_1gaefa8a1a3908f13e101925968c4b10173" kind="function"><name>are_options_set</name></member>
+      <memberdef kind="function" id="io_2ranges_8hpp_1a5b05d13c8cb902f8361cbdfc63a1f5be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>gl::io::range_formatter</definition>
+        <argsstring>(R &amp;&amp;r) -&gt; range_formatter&lt; std::views::all_t&lt; R &gt; &gt;</argsstring>
+        <name>range_formatter</name>
+        <qualifiedname>gl::io::range_formatter</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="72" column="1" declfile="include/gl/io/ranges.hpp" declline="72" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="io_2ranges_8hpp_1a75c43f365a26de7f3bf5e42289cc3094" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>gl::io::range_formatter</definition>
+        <argsstring>(R &amp;&amp;r, std::string_view) -&gt; range_formatter&lt; std::views::all_t&lt; R &gt; &gt;</argsstring>
+        <name>range_formatter</name>
+        <qualifiedname>gl::io::range_formatter</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="76" column="1" declfile="include/gl/io/ranges.hpp" declline="76" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="io_2ranges_8hpp_1a509d1769e83baebfd3c17dc6691683c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>gl::io::range_formatter</definition>
+        <argsstring>(R &amp;&amp;r, std::string_view, std::string_view) -&gt; range_formatter&lt; std::views::all_t&lt; R &gt; &gt;</argsstring>
+        <name>range_formatter</name>
+        <qualifiedname>gl::io::range_formatter</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="80" column="1" declfile="include/gl/io/ranges.hpp" declline="80" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="io_2ranges_8hpp_1a536011f746896cb4bf6855da5c212f5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::range</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>gl::io::range_formatter</definition>
+        <argsstring>(R &amp;&amp;r, std::string_view, std::string_view, std::string_view) -&gt; range_formatter&lt; std::views::all_t&lt; R &gt; &gt;</argsstring>
+        <name>range_formatter</name>
+        <qualifiedname>gl::io::range_formatter</qualifiedname>
+        <param>
+          <type>R &amp;&amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <param>
+          <type>std::string_view</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="84" column="1" declfile="include/gl/io/ranges.hpp" declline="84" declcolumn="1"/>
+      </memberdef>
+      <member refid="group__GL-IO_1ga53e1e6926f47023bf3efb4c3841611d9" kind="function"><name>set_formatter</name></member>
+      <member refid="group__GL-IO_1ga94b8e7bd6b489233065d9f97a90257c6" kind="function"><name>multiline_set_formatter</name></member>
+      <member refid="group__GL-IO_1gad012ce9a8490b2ed3a6de9f9811e8094" kind="function"><name>implicit_range</name></member>
+      <member refid="group__GL-IO_1gac5f9de64ebe5ce3a325fa83dca6cca50" kind="function"><name>implicit_range</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/io/graph_fio.hpp" line="16" column="1"/>
+  </compounddef>
+</doxygen>

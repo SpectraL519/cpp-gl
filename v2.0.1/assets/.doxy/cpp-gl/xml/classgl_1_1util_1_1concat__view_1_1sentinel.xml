@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1util_1_1concat__view_1_1sentinel" kind="class" language="C++" prot="private">
+    <compoundname>gl::util::concat_view::sentinel</compoundname>
+    <templateparamlist>
+      <param>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <declname>Const</declname>
+        <defname>Const</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgl_1_1util_1_1concat__view_1_1sentinel_1aefc06a0d15d1fe5274d647fa06573664" prot="private" static="no">
+        <type>std::conditional_t&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> V2, V2 &gt;</type>
+        <definition>using gl::util::concat_view&lt; V1, V2 &gt;::sentinel&lt; Const &gt;::BaseV2 =  std::conditional_t&lt;Const, const V2, V2&gt;</definition>
+        <argsstring></argsstring>
+        <name>BaseV2</name>
+        <qualifiedname>gl::util::concat_view::sentinel::BaseV2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="213" column="9" bodyfile="include/gl/util/ranges.hpp" bodystart="213" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1util_1_1concat__view_1_1sentinel_1a57ae9d108c191831400ef1e874979cb1" prot="private" static="no" mutable="no">
+        <type>std::ranges::sentinel_t&lt; BaseV2 &gt;</type>
+        <definition>std::ranges::sentinel_t&lt;BaseV2&gt; gl::util::concat_view&lt; V1, V2 &gt;::sentinel&lt; Const &gt;::_end2</definition>
+        <argsstring></argsstring>
+        <name>_end2</name>
+        <qualifiedname>gl::util::concat_view::sentinel::_end2</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="226" column="33" bodyfile="include/gl/util/ranges.hpp" bodystart="226" bodyend="226"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classgl_1_1util_1_1concat__view_1_1sentinel_1acf1f8c8a8532623cda7d3f708fc97261" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">class</ref></type>
+        <definition>friend class concat_view</definition>
+        <argsstring></argsstring>
+        <name>concat_view</name>
+        <qualifiedname>gl::util::concat_view::sentinel::concat_view</qualifiedname>
+        <param>
+          <type><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></type>
+        </param>
+        <briefdescription>
+<para>A view concatenating two ranges sequentially (C++20 polyfill for C++26 <computeroutput>std::views::concat</computeroutput>).   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Util_1see-also-62">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">gl::util::concat_view</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="228" column="22" bodyfile="include/gl/util/ranges.hpp" bodystart="228" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1util_1_1concat__view_1_1sentinel_1a8fda62161ddc0c54d477451e81682951" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">class</ref></type>
+        <definition>friend class iterator&lt; Const &gt;</definition>
+        <argsstring></argsstring>
+        <name>iterator&lt; Const &gt;</name>
+        <qualifiedname>gl::util::concat_view::sentinel::iterator&lt; Const &gt;</qualifiedname>
+        <param>
+          <type>iterator&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">Const</ref> &gt;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="228" column="22" bodyfile="include/gl/util/ranges.hpp" bodystart="229" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1sentinel_1af092f9c7a6fdae31cad8b1a128cad902" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::util::concat_view&lt; V1, V2 &gt;::sentinel&lt; Const &gt;::sentinel</definition>
+        <argsstring>()=default</argsstring>
+        <name>sentinel</name>
+        <qualifiedname>gl::util::concat_view::sentinel::sentinel</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="216" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1sentinel_1ac0f20660eda6cf898e80192da4d61482" prot="public" static="no" constexpr="yes" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::util::concat_view&lt; V1, V2 &gt;::sentinel&lt; Const &gt;::sentinel</definition>
+        <argsstring>(std::ranges::sentinel_t&lt; BaseV2 &gt; end2)</argsstring>
+        <name>sentinel</name>
+        <qualifiedname>gl::util::concat_view::sentinel::sentinel</qualifiedname>
+        <param>
+          <type>std::ranges::sentinel_t&lt; BaseV2 &gt;</type>
+          <declname>end2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="218" column="28" bodyfile="include/gl/util/ranges.hpp" bodystart="218" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1util_1_1concat__view_1_1sentinel_1a7b7fb7808930bc5ff1080f4e59d500d3" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_view&lt; V1, V2 &gt;::sentinel&lt; Const &gt;::end2</definition>
+        <argsstring>() const</argsstring>
+        <name>end2</name>
+        <qualifiedname>gl::util::concat_view::sentinel::end2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="221" column="24" bodyfile="include/gl/util/ranges.hpp" bodystart="221" bodyend="223"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/util/ranges.hpp" line="211" column="5" bodyfile="include/gl/util/ranges.hpp" bodystart="211" bodyend="230"/>
+    <listofallmembers>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1a57ae9d108c191831400ef1e874979cb1" prot="private" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>_end2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1aefc06a0d15d1fe5274d647fa06573664" prot="private" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>BaseV2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1acf1f8c8a8532623cda7d3f708fc97261" prot="private" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>concat_view</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1a7b7fb7808930bc5ff1080f4e59d500d3" prot="public" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>end2</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1a8fda62161ddc0c54d477451e81682951" prot="private" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>iterator&lt; Const &gt;</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1af092f9c7a6fdae31cad8b1a128cad902" prot="public" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>sentinel</name></member>
+      <member refid="classgl_1_1util_1_1concat__view_1_1sentinel_1ac0f20660eda6cf898e80192da4d61482" prot="public" virt="non-virtual"><scope>gl::util::concat_view::sentinel</scope><name>sentinel</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__optional__decision__predicate" kind="concept">
+    <compoundname>gl::traits::c_optional_decision_predicate</compoundname>
+    <includes refid="gl_2algorithm_2traits_8hpp" local="no">gl/algorithm/traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename F</type>
+      </param>
+      <param>
+        <type>typename...</type>
+        <declname>Args</declname>
+        <defname>Args</defname>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename F, typename... Args&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__optional__decision__predicate" kindref="compound">gl::traits::c_optional_decision_predicate</ref> =  c_empty_callback&lt;F&gt; or c_decision_predicate&lt;F, Args...&gt;    </initializer>
+    <briefdescription>
+<para>Concept allowing either a valid decision predicate or the explicit absence of one. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/traits.hpp" line="52" column="1"/>
+  </compounddef>
+</doxygen>

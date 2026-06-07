@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_ee40734612f204c1e10fb6e8e5558939" kind="dir">
+    <compoundname>include/gl/algorithm/templates</compoundname>
+    <innerfile refid="gl_2algorithm_2templates_2bfs_8hpp">bfs.hpp</innerfile>
+    <innerfile refid="gl_2algorithm_2templates_2dfs_8hpp">dfs.hpp</innerfile>
+    <innerfile refid="pfs_8hpp">pfs.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/templates/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1045 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__GL-Core" kind="group">
+    <compoundname>GL-Core</compoundname>
+    <title>Core Graph Components</title>
+    <innerclass refid="structgl_1_1initial__id__t" prot="public">gl::initial_id_t</innerclass>
+    <innerclass refid="structgl_1_1invalid__id__t" prot="public">gl::invalid_id_t</innerclass>
+    <innerclass refid="structgl_1_1directed__t" prot="public">gl::directed_t</innerclass>
+    <innerclass refid="structgl_1_1undirected__t" prot="public">gl::undirected_t</innerclass>
+    <innerclass refid="classgl_1_1edge__descriptor" prot="public">gl::edge_descriptor</innerclass>
+    <innerclass refid="classgl_1_1graph" prot="public">gl::graph</innerclass>
+    <innerclass refid="structgl_1_1vertex__distance" prot="public">gl::vertex_distance</innerclass>
+    <innerclass refid="structgl_1_1vertex__distance_3_01GraphType_01_4" prot="public">gl::vertex_distance&lt; GraphType &gt;</innerclass>
+    <innerclass refid="structgl_1_1graph__traits" prot="public">gl::graph_traits</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1list__t" prot="public">gl::repr::list_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1flat__list__t" prot="public">gl::repr::flat_list_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1matrix__t" prot="public">gl::repr::matrix_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1flat__matrix__t" prot="public">gl::repr::flat_matrix_t</innerclass>
+    <innerclass refid="structgl_1_1empty__properties" prot="public">gl::empty_properties</innerclass>
+    <innerclass refid="structgl_1_1empty__properties__map" prot="public">gl::empty_properties_map</innerclass>
+    <innerclass refid="structgl_1_1name__property" prot="public">gl::name_property</innerclass>
+    <innerclass refid="classgl_1_1dynamic__properties" prot="public">gl::dynamic_properties</innerclass>
+    <innerclass refid="classgl_1_1binary__color" prot="public">gl::binary_color</innerclass>
+    <innerclass refid="structgl_1_1binary__color__property" prot="public">gl::binary_color_property</innerclass>
+    <innerclass refid="structgl_1_1weight__property" prot="public">gl::weight_property</innerclass>
+    <innerclass refid="classgl_1_1vertex__descriptor" prot="public">gl::vertex_descriptor</innerclass>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__GL-Core_1ga6f95a9a90c650cf51b53a701c89ec993" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>Properties</declname>
+            <defname>Properties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>edge_descriptor&lt; directed_t, Properties, IdType &gt;</type>
+        <definition>using gl::directed_edge = typedef edge_descriptor&lt;directed_t, Properties, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>directed_edge</name>
+        <qualifiedname>gl::directed_edge</qualifiedname>
+        <briefdescription>
+<para>Type alias for a directed edge descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-binds the <computeroutput>DirectionalTag</computeroutput> of <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> to <computeroutput><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref></computeroutput>.</para>
+<sect3 id="group__GL-Core_1template-parameters-17">
+<title>Template Parameters</title>
+<para><table rows="3" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Properties   </para>
+</entry><entry thead="no" align='left'><para>The type of property data attached to the edge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The underlying integer type used for the IDs.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="388" column="1" bodyfile="include/gl/edge_descriptor.hpp" bodystart="388" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga34f8a401d4114cfe6223d27eba549343" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>Properties</declname>
+            <defname>Properties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>edge_descriptor&lt; undirected_t, Properties, IdType &gt;</type>
+        <definition>using gl::undirected_edge = typedef edge_descriptor&lt;undirected_t, Properties, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>undirected_edge</name>
+        <qualifiedname>gl::undirected_edge</qualifiedname>
+        <briefdescription>
+<para>Type alias for an undirected edge descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-binds the <computeroutput>DirectionalTag</computeroutput> of <computeroutput><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref></computeroutput> to <computeroutput><ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref></computeroutput>.</para>
+<sect3 id="group__GL-Core_1template-parameters-18">
+<title>Template Parameters</title>
+<para><table rows="3" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Properties   </para>
+</entry><entry thead="no" align='left'><para>The type of property data attached to the edge.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The underlying integer type used for the IDs.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/edge_descriptor.hpp" line="403" column="1" bodyfile="include/gl/edge_descriptor.hpp" bodystart="403" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gab3d1bd2a8d2d0cdf55a38b461105e7b4" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_graph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; directed_graph_traits&lt; VertexProperties, EdgeProperties, ReprTag, IdType &gt; &gt;</type>
+        <definition>using gl::directed_graph = typedef graph&lt;directed_graph_traits&lt;VertexProperties, EdgeProperties, ReprTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>directed_graph</name>
+        <qualifiedname>gl::directed_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a directed graph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1429" column="1" bodyfile="include/gl/graph.hpp" bodystart="1430" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gaaa66a49c3f7da4a566a239b70c9ce76e" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_graph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; undirected_graph_traits&lt; VertexProperties, EdgeProperties, ReprTag, IdType &gt; &gt;</type>
+        <definition>using gl::undirected_graph = typedef graph&lt;undirected_graph_traits&lt;VertexProperties, EdgeProperties, ReprTag, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>undirected_graph</name>
+        <qualifiedname>gl::undirected_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a nundirected graph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1439" column="1" bodyfile="include/gl/graph.hpp" bodystart="1440" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gac023e62ecfdc5321d031b1bd82e7f09a" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; list_graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, IdType &gt; &gt;</type>
+        <definition>using gl::list_graph = typedef graph&lt;list_graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>list_graph</name>
+        <qualifiedname>gl::list_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a graph utilizing an adjacency list representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1449" column="1" bodyfile="include/gl/graph.hpp" bodystart="1450" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gaa64612473b5feae6107e45891b1f6301" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; matrix_graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, IdType &gt; &gt;</type>
+        <definition>using gl::matrix_graph = typedef graph&lt;matrix_graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>matrix_graph</name>
+        <qualifiedname>gl::matrix_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a graph utilizing an adjacency matrix representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1459" column="1" bodyfile="include/gl/graph.hpp" bodystart="1460" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga50d336595fabffe6acbd48b430f63487" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; flat_list_graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, IdType &gt; &gt;</type>
+        <definition>using gl::flat_list_graph = typedef graph&lt;flat_list_graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_list_graph</name>
+        <qualifiedname>gl::flat_list_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a graph utilizing a flattened adjacency list representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1469" column="1" bodyfile="include/gl/graph.hpp" bodystart="1470" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga43a77c5f8946e926790216fb3e27ff9d" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph&lt; flat_matrix_graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, IdType &gt; &gt;</type>
+        <definition>using gl::flat_matrix_graph = typedef graph&lt;flat_matrix_graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, IdType&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_matrix_graph</name>
+        <qualifiedname>gl::flat_matrix_graph</qualifiedname>
+        <briefdescription>
+<para>Convenience alias for defining a graph utilizing a flattened adjacency matrix representation model. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1479" column="1" bodyfile="include/gl/graph.hpp" bodystart="1480" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga8406242194997458e6b145b6dd579bf6" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>typename vertex_distance&lt; GraphType &gt;::type</type>
+        <definition>using gl::vertex_distance_type = typedef typename vertex_distance&lt;GraphType&gt;::type</definition>
+        <argsstring></argsstring>
+        <name>vertex_distance_type</name>
+        <qualifiedname>gl::vertex_distance_type</qualifiedname>
+        <briefdescription>
+<para>Convenience alias to retrieve the appropriate distance numeric type from a graph structure. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1507" column="1" bodyfile="include/gl/graph.hpp" bodystart="1507" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gaebea039051b14b8d59d94316d7afb7c6" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, repr::list_t, IdType &gt;</type>
+        <definition>using gl::list_graph_traits = typedef graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, repr::list_t, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>list_graph_traits</name>
+        <qualifiedname>gl::list_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with an adjacency list representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for graphs that use an adjacency list representation, allowing users to easily define their graph types with the desired properties and directionality while defaulting to the adjacency list representation.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters</para>
+<para>The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>ReprTag</computeroutput> parameter fixed to <ref refid="structgl_1_1repr_1_1list__t" kindref="compound">repr::list_t</ref>. This means that when using <computeroutput>list_graph_traits</computeroutput>, only the <computeroutput>DirectionalTag</computeroutput>, <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="93" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gaeaa8adf6fde1a59eb51ec9b6a97c1c0c" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, repr::flat_list_t, IdType &gt;</type>
+        <definition>using gl::flat_list_graph_traits = typedef graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, repr::flat_list_t, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_list_graph_traits</name>
+        <qualifiedname>gl::flat_list_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with a flattened adjacency list representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for graphs that use a flattened adjacency list representation, allowing users to easily define their graph types with the desired properties and directionality while defaulting to the flattened adjacency list representation.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters</para>
+<para>The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>ReprTag</computeroutput> parameter fixed to <ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">repr::flat_list_t</ref>. This means that when using <computeroutput>flat_list_graph_traits</computeroutput>, only the <computeroutput>DirectionalTag</computeroutput>, <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="113" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gab4582499dc6bfbbddafefcadd7c76e76" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, repr::matrix_t, IdType &gt;</type>
+        <definition>using gl::matrix_graph_traits = typedef graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, repr::matrix_t, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>matrix_graph_traits</name>
+        <qualifiedname>gl::matrix_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with an adjacency matrix representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for graphs that use an adjacency matrix representation, allowing users to easily define their graph types with the desired properties and directionality while defaulting to the adjacency matrix representation.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters</para>
+<para>The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>ReprTag</computeroutput> parameter fixed to <ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">repr::matrix_t</ref>. This means that when using <computeroutput>matrix_graph_traits</computeroutput>, only the <computeroutput>DirectionalTag</computeroutput>, <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="133" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga7701a4fd8c0a41c1ac210fa6fbc2e01b" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_directional_tag</type>
+            <declname>DirectionalTag</declname>
+            <defname>DirectionalTag</defname>
+            <defval>directed_t</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, repr::flat_matrix_t, IdType &gt;</type>
+        <definition>using gl::flat_matrix_graph_traits = typedef graph_traits&lt;DirectionalTag, VertexProperties, EdgeProperties, repr::flat_matrix_t, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_matrix_graph_traits</name>
+        <qualifiedname>gl::flat_matrix_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with a flattened adjacency matrix representation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for graphs that use a flattened adjacency matrix representation, allowing users to easily define their graph types with the desired properties and directionality while defaulting to the flattened adjacency matrix representation.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters</para>
+<para>The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>ReprTag</computeroutput> parameter fixed to <ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">repr::flat_matrix_t</ref>. This means that when using <computeroutput>flat_matrix_graph_traits</computeroutput>, only the <computeroutput>DirectionalTag</computeroutput>, <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="153" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="154" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga2700095d1d8a78a2ebdbbe69edbd356b" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_graph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; directed_t, VertexProperties, EdgeProperties, ReprTag, IdType &gt;</type>
+        <definition>using gl::directed_graph_traits = typedef graph_traits&lt;directed_t, VertexProperties, EdgeProperties, ReprTag, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>directed_graph_traits</name>
+        <qualifiedname>gl::directed_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with an directed graph configuration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for directed graphs, allowing users to easily define their graph types with the desired properties and representation while defaulting to a directed configuration.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>DirectionalTag</computeroutput> parameter fixed to <ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref>. This means that when using <computeroutput>directed_graph_traits</computeroutput>, only the <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, &apos;ReprTag&apos;, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="171" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gad7fff0aedf1b50f774d469b04556aaa9" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>VertexProperties</declname>
+            <defname>VertexProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_properties</type>
+            <declname>EdgeProperties</declname>
+            <defname>EdgeProperties</defname>
+            <defval>empty_properties</defval>
+          </param>
+          <param>
+            <type>traits::c_graph_repr_tag</type>
+            <declname>ReprTag</declname>
+            <defname>ReprTag</defname>
+            <defval>repr::list_t</defval>
+          </param>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+            <defval>default_id_type</defval>
+          </param>
+        </templateparamlist>
+        <type>graph_traits&lt; undirected_t, VertexProperties, EdgeProperties, ReprTag, IdType &gt;</type>
+        <definition>using gl::undirected_graph_traits = typedef graph_traits&lt;undirected_t, VertexProperties, EdgeProperties, ReprTag, IdType&gt;</definition>
+        <argsstring></argsstring>
+        <name>undirected_graph_traits</name>
+        <qualifiedname>gl::undirected_graph_traits</qualifiedname>
+        <briefdescription>
+<para>Type alias for graph traits with an undirected graph configuration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This alias simplifies the specification of graph traits for undirected graphs, allowing users to easily define their graph types with the desired properties and representation while defaulting to an undirected configuration.</para>
+<para><blockquote><para><zwj/>[!NOTE] Template parameters The template parameters for this alias are the same as those for <ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref>, with the <computeroutput>DirectionalTag</computeroutput> parameter fixed to <ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref>. This means that when using <computeroutput>undirected_graph_traits</computeroutput>, only the <computeroutput>VertexProperties</computeroutput>, <computeroutput>EdgeProperties</computeroutput>, &apos;ReprTag&apos;, and <computeroutput>IdType</computeroutput> parameters need to be specified. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="189" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="190" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gaf7e4e3592f5e3a0ed849d0a31294299e" prot="public" static="no">
+        <type>std::size_t</type>
+        <definition>using gl::size_type = typedef std::size_t</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <qualifiedname>gl::size_type</qualifiedname>
+        <briefdescription>
+<para>Type alias for the standard size type used throughout the library. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Used primarily for indices, counts, and sizes of graph components. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/core.hpp" line="24" column="1" bodyfile="include/gl/types/core.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" prot="public" static="no">
+        <type>std::uint32_t</type>
+        <definition>using gl::default_id_type = typedef std::uint32_t</definition>
+        <argsstring></argsstring>
+        <name>default_id_type</name>
+        <qualifiedname>gl::default_id_type</qualifiedname>
+        <briefdescription>
+<para>The default unsigned integer type used for vertex and edge identifiers. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/core.hpp" line="28" column="1" bodyfile="include/gl/types/core.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__GL-Core_1gafe3709083f15871498a724115b671d85" prot="public" static="no">
+        <type>typename binary_color::value</type>
+        <definition>using gl::bin_color_value = typedef typename binary_color::value</definition>
+        <argsstring></argsstring>
+        <name>bin_color_value</name>
+        <qualifiedname>gl::bin_color_value</qualifiedname>
+        <briefdescription>
+<para>Alias for the underlying <computeroutput><ref refid="classgl_1_1binary__color_1a744c928659592868b68241a6d324f3e0" kindref="member">binary_color::value</ref></computeroutput> enum. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/types/properties.hpp" line="212" column="1" bodyfile="include/gl/types/properties.hpp" bodystart="212" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__GL-Core_1gae097db1fdd1be4558cb64e3aa2b3cd10" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType gl::initial_id_v</definition>
+        <argsstring></argsstring>
+        <name>initial_id_v</name>
+        <qualifiedname>gl::initial_id_v</qualifiedname>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>A constant representing the initial ID value of 0 for graph elements. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>IdType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the ID, which must satisfy the <ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink> concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+<sect3 id="group__GL-Core_1see-also-11">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink></para>
+</listitem><listitem><para><ref refid="structgl_1_1initial__id__t" kindref="compound">initial_id_t</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" kindref="member">initial_id</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/constants.hpp" line="24" column="25" bodyfile="include/hgl/constants.hpp" bodystart="24" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr initial_id_t</type>
+        <definition>constexpr initial_id_t gl::initial_id</definition>
+        <argsstring></argsstring>
+        <name>initial_id</name>
+        <qualifiedname>gl::initial_id</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>An <computeroutput><ref refid="structgl_1_1initial__id__t" kindref="compound">initial_id_t</ref></computeroutput> tag constant that can be used to represent the initial ID value of 0 for graph elements in a type-safe manner. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Core_1example-usage-13">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vertex_id_t</ref><sp/>=<sp/>std::uint32_t;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vertex_id_t</ref><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v1</ref><sp/>=<sp/><ref refid="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" kindref="member">gl::initial_id</ref>;<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight></codeline>
+</programlisting></para>
+<para>1. The <computeroutput>initial_id</computeroutput> constant can be implicitly converted to the <computeroutput>v1</computeroutput>&apos;s type (<computeroutput>vertex_id_t</computeroutput>), resulting in <computeroutput>v1</computeroutput> being initialized to the value of 0.</para>
+</sect3>
+<sect3 id="group__GL-Core_1see-also-13">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gae097db1fdd1be4558cb64e3aa2b3cd10" kindref="member">initial_id_v</ref></para>
+</listitem><listitem><para><ref refid="structgl_1_1initial__id__t" kindref="compound">initial_id_t</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/constants.hpp" line="55" column="31" bodyfile="include/hgl/constants.hpp" bodystart="55" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType gl::invalid_id_v</definition>
+        <argsstring></argsstring>
+        <name>invalid_id_v</name>
+        <qualifiedname>gl::invalid_id_v</qualifiedname>
+        <initializer>{std::numeric_limits&lt;IdType&gt;::max()}</initializer>
+        <briefdescription>
+<para>A constant representing the invalid ID value for graph elements, defined as the maximum value of the specified ID type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>IdType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the ID, which must satisfy the <ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink> concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+<sect3 id="group__GL-Core_1see-also-14">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink></para>
+</listitem><listitem><para><ref refid="structgl_1_1invalid__id__t" kindref="compound">invalid_id_t</ref></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gab14fee6eb4a6d6c0833f947766b591db" kindref="member">invalid_id</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/constants.hpp" line="67" column="25" bodyfile="include/hgl/constants.hpp" bodystart="67" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__GL-Core_1gab14fee6eb4a6d6c0833f947766b591db" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr invalid_id_t</type>
+        <definition>constexpr invalid_id_t gl::invalid_id</definition>
+        <argsstring></argsstring>
+        <name>invalid_id</name>
+        <qualifiedname>gl::invalid_id</qualifiedname>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>An <computeroutput><ref refid="structgl_1_1invalid__id__t" kindref="compound">invalid_id_t</ref></computeroutput> tag constant that can be used to represent the invalid ID value for graph elements in a type-safe manner. </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__GL-Core_1example-usage-14">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vertex_id_t</ref><sp/>=<sp/>std::uint32_t;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vertex_id_t</ref><sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">v1</ref><sp/>=<sp/><ref refid="group__GL-Core_1gab14fee6eb4a6d6c0833f947766b591db" kindref="member">gl::invalid_id</ref>;<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight></codeline>
+</programlisting></para>
+<para>1. The <computeroutput>invalid_id</computeroutput> constant can be implicitly converted to the <computeroutput>v1</computeroutput>&apos;s type (<computeroutput>vertex_id_t</computeroutput>), resulting in <computeroutput>v1</computeroutput> being initialized to the maximum value of <computeroutput>vertex_id_t</computeroutput>, which represents an invalid ID.</para>
+</sect3>
+<sect3 id="group__GL-Core_1see-also-16">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink></para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">invalid_id_v</ref></para>
+</listitem><listitem><para><ref refid="structgl_1_1invalid__id__t" kindref="compound">invalid_id_t</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/constants.hpp" line="113" column="31" bodyfile="include/hgl/constants.hpp" bodystart="113" bodyend="113"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph_repr_tag</type>
+            <declname>TargetImplTag</declname>
+            <defname>TargetImplTag</defname>
+          </param>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>Graph</declname>
+            <defname>Graph</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto gl::to</definition>
+        <argsstring>(Graph &amp;&amp;source)</argsstring>
+        <name>to</name>
+        <qualifiedname>gl::to</qualifiedname>
+        <param>
+          <type>Graph &amp;&amp;</type>
+          <declname>source</declname>
+        </param>
+        <briefdescription>
+<para>Converts a graph from one representation model to another. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Friend declaration providing access for graph target conversions.</para>
+<para>This function efficiently transforms a graph&apos;s underlying memory representation (e.g., from a standard adjacency list to a flattened adjacency list) while preserving its exact topology, properties, and identifiers.</para>
+<sect3 id="group__GL-Core_1template-parameters-15">
+<title>Template Parameters</title>
+<para><table rows="3" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraints    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>TargetImplTag   </para>
+</entry><entry thead="no" align='left'><para>The representation tag of the desired target representation (e.g., <computeroutput><ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">gl::repr::flat_list_t</ref></computeroutput>)   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-graph-repr-tag"><bold>c_graph_repr_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Graph   </para>
+</entry><entry thead="no" align='left'><para>The type of the source graph, which will be automatically deduced from the function argument.   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph to convert. After the operation it will be left in a valid, empty state. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A new graph containing the moved data, structured according to <computeroutput>TargetImplTag</computeroutput>.</para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__GL-Core_1see-also-17">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1traits_1_1swap__repr__tag" kindref="compound">swap_repr_tag</ref> : For the trait used to resolve the target graph type with the swapped representation tag. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/conversion.hpp" line="180" column="7" bodyfile="include/hgl/conversion.hpp" bodystart="180" bodyend="198" declfile="include/gl/graph.hpp" declline="99" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Core_1gaad578b0d631bf84db9e783897a30fa66" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>Graph</declname>
+            <defname>Graph</defname>
+          </param>
+        </templateparamlist>
+        <type>Graph</type>
+        <definition>Graph gl::clone</definition>
+        <argsstring>(const Graph &amp;source)</argsstring>
+        <name>clone</name>
+        <qualifiedname>gl::clone</qualifiedname>
+        <param>
+          <type>const Graph &amp;</type>
+          <declname>source</declname>
+        </param>
+        <briefdescription>
+<para>Creates a deep copy of the given graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Friend declaration providing access for deep cloning.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>source</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph instance to clone. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A newly constructed graph containing identical vertices, edges and properties (if applicable). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1418" column="8" bodyfile="include/gl/graph.hpp" bodystart="1418" bodyend="1420" declfile="include/gl/graph.hpp" declline="96" declcolumn="8"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GL-Core_1ga5c529d546ea87d8129d3488168379902" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_graph</type>
+            <declname>GraphType</declname>
+            <defname>GraphType</defname>
+          </param>
+        </templateparamlist>
+        <type>vertex_distance_type&lt; GraphType &gt;</type>
+        <definition>vertex_distance_type&lt; GraphType &gt; gl::get_weight</definition>
+        <argsstring>(const typename GraphType::edge_type &amp;edge)</argsstring>
+        <name>get_weight</name>
+        <qualifiedname>gl::get_weight</qualifiedname>
+        <param>
+          <type>const typename GraphType::edge_type &amp;</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+<para>Helper utility to safely retrieve the weight payload of an edge. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Automatically returns a constant default if the graph representation carries no attached weight properties.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>GraphType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The underlying type of the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The edge descriptor to extract weight from. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The specified edge weight or the unweighted graph default (1). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1518" column="24" bodyfile="include/gl/graph.hpp" bodystart="1518" bodyend="1525"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Fundamental graph data structures, element descriptors, and configuration tags. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This group establishes the primary user interface for the library, centered around the highly configurable <ref refid="classgl_1_1graph" kindref="compound">graph</ref> class. It provides the core data types, such as vertex and edge descriptors, required to safely navigate and manipulate graph elements.</para>
+<para>Furthermore, this module defines the declarative tags (e.g., directedness and backend implementation types) that dictate both the behavioral semantics and the underlying memory layout of the instantiated graphs. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

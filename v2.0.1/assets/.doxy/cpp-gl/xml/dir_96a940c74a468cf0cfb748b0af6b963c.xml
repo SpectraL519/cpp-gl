@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_96a940c74a468cf0cfb748b0af6b963c" kind="dir">
+    <compoundname>include/hgl/algorithm/traversal</compoundname>
+    <innerfile refid="backward__search_8hpp">backward_search.hpp</innerfile>
+    <innerfile refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp">breadth_first_search.hpp</innerfile>
+    <innerfile refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp">depth_first_search.hpp</innerfile>
+    <innerfile refid="forward__search_8hpp">forward_search.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/traversal/"/>
+  </compounddef>
+</doxygen>

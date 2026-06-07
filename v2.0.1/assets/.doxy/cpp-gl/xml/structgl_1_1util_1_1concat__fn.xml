@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1util_1_1concat__fn" kind="struct" language="C++" prot="public">
+    <compoundname>gl::util::concat_fn</compoundname>
+    <includes refid="util_2ranges_8hpp" local="no">gl/util/ranges.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1util_1_1concat__fn_1a1189dd5ffc89f754e83a14347fa10bb4" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::ranges::viewable_range</type>
+            <declname>R1</declname>
+            <defname>R1</defname>
+          </param>
+          <param>
+            <type>std::ranges::viewable_range</type>
+            <declname>R2</declname>
+            <defname>R2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref> <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+        <definition>constexpr auto gl::util::concat_fn::operator()</definition>
+        <argsstring>(R1 &amp;&amp;r1, R2 &amp;&amp;r2) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>gl::util::concat_fn::operator()</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">R1</ref> &amp;&amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">R2</ref> &amp;&amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>Concatenates two viewable ranges into a <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first range. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>R2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the second range. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>r1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>r2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second range to concatenate. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput> that represents the concatenation of the two ranges. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/util/ranges.hpp" line="246" column="20" bodyfile="include/gl/util/ranges.hpp" bodystart="246" bodyend="250"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A function object for concatenating two viewable ranges into a <computeroutput><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref></computeroutput>. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structgl_1_1util_1_1concat__fn_1see-also-37">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1util_1_1concat__view" kindref="compound">concat_view</ref>: The view type that represents the concatenation of two ranges.</para>
+</listitem><listitem><para><ref refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kindref="member">concat</ref>: A compile-time constant instantiation of this function object for convenient use. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/util/ranges.hpp" line="238" column="1" bodyfile="include/gl/util/ranges.hpp" bodystart="238" bodyend="251"/>
+    <listofallmembers>
+      <member refid="structgl_1_1util_1_1concat__fn_1a1189dd5ffc89f754e83a14347fa10bb4" prot="public" virt="non-virtual"><scope>gl::util::concat_fn</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

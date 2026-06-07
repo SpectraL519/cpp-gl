@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__random__access__range__of" kind="concept">
+    <compoundname>gl::traits::c_random_access_range_of</compoundname>
+    <includes refid="hgl_2traits_8hpp" local="no">hgl/traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename R</type>
+      </param>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename R, typename T&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__random__access__range__of" kindref="compound">gl::traits::c_random_access_range_of</ref> = 
+    c_random_access_range&lt;R&gt; and std::same_as&lt;T, std::remove_cv_t&lt;std::ranges::range_value_t&lt;R&gt;&gt;&gt;    </initializer>
+    <briefdescription>
+<para>Concept checking if a type is a random access range containing a specific value type. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para><zwj/>[!NOTE] CV qualifiers</para>
+<para>This concept strips cv-qualifiers from the range&apos;s value type before comparison. </para>
+</blockquote><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the range. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The expected value type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/traits.hpp" line="128" column="1"/>
+  </compounddef>
+</doxygen>

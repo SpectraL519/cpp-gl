@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__graph__directional__tag" kind="concept">
+    <compoundname>gl::traits::c_graph_directional_tag</compoundname>
+    <includes refid="hgl_2directional__tags_8hpp" local="no">hgl/directional_tags.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename T&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__graph__directional__tag" kindref="compound">gl::traits::c_graph_directional_tag</ref> =  c_one_of&lt;T, directed_t, undirected_t&gt;    </initializer>
+    <briefdescription>
+<para>Validates if a type is a valid graph directional tag. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The valid graph directional tags are <ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref> and <ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref>. This concept is used to constrain template parameters that are intended to specify the directionality of a graph, ensuring that only valid tags can be used in such contexts.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to evaluate against the concept. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/gl/directional_tags.hpp" line="31" column="1"/>
+  </compounddef>
+</doxygen>

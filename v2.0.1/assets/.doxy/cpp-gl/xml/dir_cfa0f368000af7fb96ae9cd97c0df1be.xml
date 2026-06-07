@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_cfa0f368000af7fb96ae9cd97c0df1be" kind="dir">
+    <compoundname>include/gl/decl</compoundname>
+    <innerfile refid="decl_2graph__traits_8hpp">graph_traits.hpp</innerfile>
+    <innerfile refid="gl_2decl_2repr__tags_8hpp">repr_tags.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/decl/"/>
+  </compounddef>
+</doxygen>

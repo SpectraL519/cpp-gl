@@ -1,0 +1,432 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="graph__traits_8hpp" kind="file" language="C++">
+    <compoundname>graph_traits.hpp</compoundname>
+    <includes refid="decl_2graph__traits_8hpp" local="yes">gl/decl/graph_traits.hpp</includes>
+    <includes local="yes">gl/decl/repr_tags.hpp</includes>
+    <includes local="yes">gl/directional_tags.hpp</includes>
+    <includes refid="edge__descriptor_8hpp" local="yes">gl/edge_descriptor.hpp</includes>
+    <includes refid="gl_2types_2core_8hpp" local="yes">gl/types/core.hpp</includes>
+    <includedby refid="graph_8hpp" local="yes">include/gl/graph.hpp</includedby>
+    <includedby refid="adjacency__list_8hpp" local="yes">include/gl/impl/adjacency_list.hpp</includedby>
+    <includedby refid="specialized_2adjacency__list_8hpp" local="yes">include/gl/impl/specialized/adjacency_list.hpp</includedby>
+    <includedby refid="specialized_2adjacency__matrix_8hpp" local="yes">include/gl/impl/specialized/adjacency_matrix.hpp</includedby>
+    <includedby refid="flat__adjacency__list_8hpp" local="yes">include/gl/impl/specialized/flat_adjacency_list.hpp</includedby>
+    <includedby refid="flat__adjacency__matrix_8hpp" local="yes">include/gl/impl/specialized/flat_adjacency_matrix.hpp</includedby>
+    <incdepgraph>
+      <node id="7">
+        <label>gl/attributes/force_inline.hpp</label>
+        <link refid="force__inline_8hpp_source"/>
+      </node>
+      <node id="2">
+        <label>gl/decl/graph_traits.hpp</label>
+        <link refid="decl_2graph__traits_8hpp_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>gl/edge_descriptor.hpp</label>
+        <link refid="edge__descriptor_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/graph_traits.hpp</label>
+        <link refid="graph__traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>gl/io/options.hpp</label>
+        <link refid="options_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>gl/io/options_manip.hpp</label>
+        <link refid="options__manip_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>gl/io/ranges.hpp</label>
+        <link refid="io_2ranges_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>gl/types/core.hpp</label>
+        <link refid="gl_2types_2core_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>gl/types/properties.hpp</label>
+        <link refid="gl_2types_2properties_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>gl/vertex_descriptor.hpp</label>
+        <link refid="vertex__descriptor_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>any</label>
+      </node>
+      <node id="25">
+        <label>compare</label>
+      </node>
+      <node id="16">
+        <label>concepts</label>
+      </node>
+      <node id="17">
+        <label>cstddef</label>
+      </node>
+      <node id="18">
+        <label>cstdint</label>
+      </node>
+      <node id="26">
+        <label>format</label>
+      </node>
+      <node id="8">
+        <label>gl/constants.hpp</label>
+      </node>
+      <node id="3">
+        <label>gl/decl/repr_tags.hpp</label>
+      </node>
+      <node id="4">
+        <label>gl/directional_tags.hpp</label>
+      </node>
+      <node id="5">
+        <label>gl/traits.hpp</label>
+      </node>
+      <node id="23">
+        <label>iomanip</label>
+      </node>
+      <node id="11">
+        <label>iostream</label>
+      </node>
+      <node id="19">
+        <label>optional</label>
+      </node>
+      <node id="14">
+        <label>ranges</label>
+      </node>
+      <node id="24">
+        <label>unordered_map</label>
+      </node>
+      <node id="12">
+        <label>utility</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>include/gl/graph.hpp</label>
+        <link refid="graph_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/gl/graph_traits.hpp</label>
+        <link refid="graph__traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>include/gl/impl/adjacency_list.hpp</label>
+        <link refid="adjacency__list_8hpp_source"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>include/gl/impl/adjacency_matrix.hpp</label>
+        <link refid="adjacency__matrix_8hpp_source"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>include/gl/impl/specialized/adjacency_list.hpp</label>
+        <link refid="specialized_2adjacency__list_8hpp_source"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>include/gl/impl/specialized/adjacency_matrix.hpp</label>
+        <link refid="specialized_2adjacency__matrix_8hpp_source"/>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>include/gl/impl/specialized/flat_adjacency_list.hpp</label>
+        <link refid="flat__adjacency__list_8hpp_source"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>include/gl/impl/specialized/flat_adjacency_matrix.hpp</label>
+        <link refid="flat__adjacency__matrix_8hpp_source"/>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>include/gl/io/graph_fio.hpp</label>
+        <link refid="graph__fio_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>include/gl/repr_tags.hpp</label>
+        <link refid="gl_2repr__tags_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>include/gl/topology.hpp</label>
+        <link refid="topology_8hpp"/>
+      </node>
+      <node id="6">
+        <label>include/gl/topology/binary_tree.hpp</label>
+        <link refid="binary__tree_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>include/gl/topology/bipartite.hpp</label>
+        <link refid="bipartite_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>include/gl/topology/clique.hpp</label>
+        <link refid="clique_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>include/gl/topology/cycle.hpp</label>
+        <link refid="cycle_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>include/gl/topology/path.hpp</label>
+        <link refid="path_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+      <node id="12">
+        <label>include/hgl/algorithm/core.hpp</label>
+        <link refid="hgl_2algorithm_2core_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>include/hgl/algorithm/templates/bfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2bfs_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>include/hgl/algorithm/templates/dfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2dfs_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>include/hgl/algorithm/traversal/backward_search.hpp</label>
+        <link refid="backward__search_8hpp_source"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>include/hgl/algorithm/traversal/breadth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>include/hgl/algorithm/traversal/depth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>include/hgl/algorithm/traversal/forward_search.hpp</label>
+        <link refid="forward__search_8hpp_source"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>include/hgl/algorithm/util.hpp</label>
+        <link refid="hgl_2algorithm_2util_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>include/hgl/conversion.hpp</label>
+        <link refid="hgl_2conversion_8hpp"/>
+      </node>
+      <node id="4">
+        <label>include/hgl/io.hpp</label>
+        <link refid="hgl_2io_8hpp"/>
+      </node>
+      <node id="5">
+        <label>include/hgl/io/hypergraph_fio.hpp</label>
+        <link refid="hypergraph__fio_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structgl_1_1graph__traits" prot="public">gl::graph_traits</innerclass>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1traits">gl::traits</innernamespace>
+    <briefdescription>
+<para>Defines the primary graph traits structure and related type aliases for different graph configurations. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/graph_traits.hpp"/>
+  </compounddef>
+</doxygen>

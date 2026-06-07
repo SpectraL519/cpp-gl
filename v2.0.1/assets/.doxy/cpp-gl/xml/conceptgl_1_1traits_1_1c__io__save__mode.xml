@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__io__save__mode" kind="concept">
+    <compoundname>gl::traits::c_io_save_mode</compoundname>
+    <includes refid="graph__fio_8hpp" local="no">gl/io/graph_fio.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename T&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__io__save__mode" kindref="compound">gl::traits::c_io_save_mode</ref> =  traits::c_one_of&lt;T, io::write, io::append&gt;    </initializer>
+    <briefdescription>
+<para>Concept checking if a provided type is a valid file I/O save mode. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1io_1_1write" kindref="compound">gl::io::write</ref> &quot;write&quot; </para>
+</simplesect>
+<simplesect kind="see"><para><ref refid="structgl_1_1io_1_1append" kindref="compound">gl::io::append</ref> &quot;append&quot; </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <location file="include/gl/io/graph_fio.hpp" line="41" column="1"/>
+  </compounddef>
+</doxygen>

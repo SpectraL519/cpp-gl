@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl" kind="namespace" language="C++">
+    <compoundname>gl</compoundname>
+    <innerclass refid="classgl_1_1binary__color" prot="public">gl::binary_color</innerclass>
+    <innerclass refid="structgl_1_1binary__color__property" prot="public">gl::binary_color_property</innerclass>
+    <innerclass refid="structgl_1_1directed__t" prot="public">gl::directed_t</innerclass>
+    <innerclass refid="classgl_1_1dynamic__properties" prot="public">gl::dynamic_properties</innerclass>
+    <innerclass refid="classgl_1_1edge__descriptor" prot="public">gl::edge_descriptor</innerclass>
+    <innerclass refid="structgl_1_1empty__properties" prot="public">gl::empty_properties</innerclass>
+    <innerclass refid="structgl_1_1empty__properties__map" prot="public">gl::empty_properties_map</innerclass>
+    <innerclass refid="classgl_1_1flat__jagged__vector" prot="public">gl::flat_jagged_vector</innerclass>
+    <innerclass refid="classgl_1_1flat__matrix" prot="public">gl::flat_matrix</innerclass>
+    <innerclass refid="classgl_1_1graph" prot="public">gl::graph</innerclass>
+    <innerclass refid="structgl_1_1graph__traits" prot="public">gl::graph_traits</innerclass>
+    <innerclass refid="structgl_1_1initial__id__t" prot="public">gl::initial_id_t</innerclass>
+    <innerclass refid="structgl_1_1invalid__id__t" prot="public">gl::invalid_id_t</innerclass>
+    <innerclass refid="structgl_1_1name__property" prot="public">gl::name_property</innerclass>
+    <innerclass refid="structgl_1_1undirected__t" prot="public">gl::undirected_t</innerclass>
+    <innerclass refid="classgl_1_1vertex__descriptor" prot="public">gl::vertex_descriptor</innerclass>
+    <innerclass refid="structgl_1_1vertex__distance" prot="public">gl::vertex_distance</innerclass>
+    <innerclass refid="structgl_1_1vertex__distance_3_01GraphType_01_4" prot="public">gl::vertex_distance&lt; GraphType &gt;</innerclass>
+    <innerclass refid="structgl_1_1weight__property" prot="public">gl::weight_property</innerclass>
+    <innernamespace refid="namespacegl_1_1algorithm">gl::algorithm</innernamespace>
+    <innernamespace refid="namespacegl_1_1io">gl::io</innernamespace>
+    <innernamespace refid="namespacegl_1_1repr">gl::repr</innernamespace>
+    <innernamespace refid="namespacegl_1_1topology">gl::topology</innernamespace>
+    <innernamespace refid="namespacegl_1_1traits">gl::traits</innernamespace>
+    <innernamespace refid="namespacegl_1_1util">gl::util</innernamespace>
+    <sectiondef kind="typedef">
+      <member refid="group__GL-Core_1ga6f95a9a90c650cf51b53a701c89ec993" kind="typedef"><name>directed_edge</name></member>
+      <member refid="group__GL-Core_1ga34f8a401d4114cfe6223d27eba549343" kind="typedef"><name>undirected_edge</name></member>
+      <member refid="group__GL-Core_1gab3d1bd2a8d2d0cdf55a38b461105e7b4" kind="typedef"><name>directed_graph</name></member>
+      <member refid="group__GL-Core_1gaaa66a49c3f7da4a566a239b70c9ce76e" kind="typedef"><name>undirected_graph</name></member>
+      <member refid="group__GL-Core_1gac023e62ecfdc5321d031b1bd82e7f09a" kind="typedef"><name>list_graph</name></member>
+      <member refid="group__GL-Core_1gaa64612473b5feae6107e45891b1f6301" kind="typedef"><name>matrix_graph</name></member>
+      <member refid="group__GL-Core_1ga50d336595fabffe6acbd48b430f63487" kind="typedef"><name>flat_list_graph</name></member>
+      <member refid="group__GL-Core_1ga43a77c5f8946e926790216fb3e27ff9d" kind="typedef"><name>flat_matrix_graph</name></member>
+      <memberdef kind="typedef" id="graph_8hpp_1af2fcdfe7be412a68b3f43ab130ec20a2" prot="public" static="no">
+        <type>std::int64_t</type>
+        <definition>using gl::default_vertex_distance_type = typedef std::int64_t</definition>
+        <argsstring></argsstring>
+        <name>default_vertex_distance_type</name>
+        <qualifiedname>gl::default_vertex_distance_type</qualifiedname>
+        <briefdescription>
+<para>Default numeric type representing distances between vertices in unweighted graphs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph.hpp" line="1485" column="1" bodyfile="include/gl/graph.hpp" bodystart="1485" bodyend="-1"/>
+      </memberdef>
+      <member refid="group__GL-Core_1ga8406242194997458e6b145b6dd579bf6" kind="typedef"><name>vertex_distance_type</name></member>
+      <member refid="group__GL-Core_1gaebea039051b14b8d59d94316d7afb7c6" kind="typedef"><name>list_graph_traits</name></member>
+      <member refid="group__GL-Core_1gaeaa8adf6fde1a59eb51ec9b6a97c1c0c" kind="typedef"><name>flat_list_graph_traits</name></member>
+      <member refid="group__GL-Core_1gab4582499dc6bfbbddafefcadd7c76e76" kind="typedef"><name>matrix_graph_traits</name></member>
+      <member refid="group__GL-Core_1ga7701a4fd8c0a41c1ac210fa6fbc2e01b" kind="typedef"><name>flat_matrix_graph_traits</name></member>
+      <member refid="group__GL-Core_1ga2700095d1d8a78a2ebdbbe69edbd356b" kind="typedef"><name>directed_graph_traits</name></member>
+      <member refid="group__GL-Core_1gad7fff0aedf1b50f774d469b04556aaa9" kind="typedef"><name>undirected_graph_traits</name></member>
+      <member refid="group__GL-Core_1gaf7e4e3592f5e3a0ed849d0a31294299e" kind="typedef"><name>size_type</name></member>
+      <member refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kind="typedef"><name>default_id_type</name></member>
+      <member refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kind="typedef"><name>homogeneous_pair</name></member>
+      <member refid="group__GL-Core_1gafe3709083f15871498a724115b671d85" kind="typedef"><name>bin_color_value</name></member>
+    </sectiondef>
+    <sectiondef kind="var">
+      <member refid="group__GL-Core_1gae097db1fdd1be4558cb64e3aa2b3cd10" kind="variable"><name>initial_id_v</name></member>
+      <member refid="group__GL-Core_1ga0b5b16b0eeee224790faf616bf09b57c" kind="variable"><name>initial_id</name></member>
+      <member refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kind="variable"><name>invalid_id_v</name></member>
+      <member refid="group__GL-Core_1gab14fee6eb4a6d6c0833f947766b591db" kind="variable"><name>invalid_id</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group__GL-Core_1gae4d943aa51511609d40bc63f8c714b01" kind="function"><name>to</name></member>
+      <member refid="group__GL-Core_1gaad578b0d631bf84db9e783897a30fa66" kind="function"><name>clone</name></member>
+      <member refid="group__GL-Core_1ga5c529d546ea87d8129d3488168379902" kind="function"><name>get_weight</name></member>
+      <member refid="group__GL-Util_1ga26f34dd65c6c20358affba17b9f02f75" kind="function"><name>to_idx</name></member>
+      <member refid="group__GL-Util_1ga7d38806ec007262b76e8ef797674abc2" kind="function"><name>to_diff</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/core.hpp" line="17" column="1"/>
+  </compounddef>
+</doxygen>

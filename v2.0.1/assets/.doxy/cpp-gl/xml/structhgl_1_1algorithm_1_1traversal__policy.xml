@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structhgl_1_1algorithm_1_1traversal__policy" kind="struct" language="C++" prot="public">
+    <compoundname>hgl::algorithm::traversal_policy</compoundname>
+    <templateparamlist>
+      <param>
+        <type>traits::c_hypergraph</type>
+        <declname>H</declname>
+        <defname>H</defname>
+      </param>
+      <param>
+        <type><ref refid="group__HGL-Algorithm_1gafc7517c668a2769f8def4461e1e6cb60" kindref="member">traversal_direction</ref></type>
+        <declname>Dir</declname>
+        <defname>Dir</defname>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+<para>Policy defining how to extract incident hyperedges and target vertices during traversal. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This template is specialized based on the hypergraph&apos;s directionality to route standard traversal algorithms over the correct incidence structures (e.g., following tails to heads).</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Dir</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The direction of traversal. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="170" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="170" bodyend="-1"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

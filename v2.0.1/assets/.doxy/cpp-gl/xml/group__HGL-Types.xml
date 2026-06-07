@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__HGL-Types" kind="group">
+    <compoundname>HGL-Types</compoundname>
+    <title>Generic Types</title>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__HGL-Types_1ga02a2aefc5f41e92044c920a53f251220" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaf7e4e3592f5e3a0ed849d0a31294299e" kindref="member">gl::size_type</ref></type>
+        <definition>using hgl::size_type = typedef gl::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <qualifiedname>hgl::size_type</qualifiedname>
+        <briefdescription>
+<para>Type alias for the standard size type used throughout the library.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Used primarily for indices, counts, and sizes of hypergraph components. <simplesect kind="see"><para><ref refid="group__GL-Core_1gaf7e4e3592f5e3a0ed849d0a31294299e" kindref="member">gl::size_type</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="25" column="1" bodyfile="include/hgl/types.hpp" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Types_1gade4ef2c9829dbb140c1927ed0bf81b96" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">gl::default_id_type</ref></type>
+        <definition>using hgl::default_id_type = typedef gl::default_id_type</definition>
+        <argsstring></argsstring>
+        <name>default_id_type</name>
+        <qualifiedname>hgl::default_id_type</qualifiedname>
+        <briefdescription>
+<para>The default unsigned integer type used for vertex and hyperedge identifiers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">gl::default_id_type</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="30" column="1" bodyfile="include/hgl/types.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Types_1gaf96373b6c8ebdcbe60f6c3b693032869" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::semiregular</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classgl_1_1flat__jagged__vector" kindref="compound">gl::flat_jagged_vector</ref>&lt; T &gt;</type>
+        <definition>using hgl::flat_jagged_vector = typedef gl::flat_jagged_vector&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_jagged_vector</name>
+        <qualifiedname>hgl::flat_jagged_vector</qualifiedname>
+        <briefdescription>
+<para>A flattened 2D vector (jagged array) providing efficient storage for variable-length segments.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Types_1see-also-54">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1flat__jagged__vector" kindref="compound">gl::flat_jagged_vector</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="49" column="1" bodyfile="include/hgl/types.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Types_1ga3435911fe228c88c4474a2cb1bc9c5fa" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::semiregular</type>
+            <declname>T</declname>
+            <defname>T</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classgl_1_1flat__matrix" kindref="compound">gl::flat_matrix</ref>&lt; T &gt;</type>
+        <definition>using hgl::flat_matrix = typedef gl::flat_matrix&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>flat_matrix</name>
+        <qualifiedname>hgl::flat_matrix</qualifiedname>
+        <briefdescription>
+<para>A flattened 2D matrix providing efficient storage and uniform access for a rectangular grid of elements.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Types_1see-also-55">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="classgl_1_1flat__matrix" kindref="compound">gl::flat_matrix</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="56" column="1" bodyfile="include/hgl/types.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Types_1ga8e9e83caebb30747e771c756296c0769" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kindref="member">gl::homogeneous_pair</ref>&lt; T &gt;</type>
+        <definition>using hgl::homogeneous_pair = typedef gl::homogeneous_pair&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>homogeneous_pair</name>
+        <qualifiedname>hgl::homogeneous_pair</qualifiedname>
+        <briefdescription>
+<para>A type alias for a <computeroutput>std::pair</computeroutput> where both elements are of the exact same type.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Types_1see-also-56">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Types_1ga0b8d8c6d1e456770637a377f4dd8480d" kindref="member">gl::homogeneous_pair</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/types.hpp" line="63" column="1" bodyfile="include/hgl/types.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Independent, high-performance data structures and utility types. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This module houses a variety of general-purpose data structures and types. Though they are utilized natively by hypergraph implementations, these components are carefully decoupled from specific hypergraph logic, they can be seamlessly extracted and utilized in broader contexts. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

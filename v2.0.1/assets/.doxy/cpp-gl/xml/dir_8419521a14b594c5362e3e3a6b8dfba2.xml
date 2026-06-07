@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_8419521a14b594c5362e3e3a6b8dfba2" kind="dir">
+    <compoundname>include/hgl/impl</compoundname>
+    <innerfile refid="bf__incidence_8hpp">bf_incidence.hpp</innerfile>
+    <innerfile refid="flat__incidence__list_8hpp">flat_incidence_list.hpp</innerfile>
+    <innerfile refid="flat__incidence__matrix_8hpp">flat_incidence_matrix.hpp</innerfile>
+    <innerfile refid="incidence__list_8hpp">incidence_list.hpp</innerfile>
+    <innerfile refid="incidence__matrix_8hpp">incidence_matrix.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/impl/"/>
+  </compounddef>
+</doxygen>

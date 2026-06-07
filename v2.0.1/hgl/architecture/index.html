@@ -1,0 +1,2679 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="General-purpose Template Graph and Hypergraph Library for Modern C++">
+      
+      
+      
+      
+        <link rel="prev" href="../quick_start/">
+      
+      
+        <link rel="next" href="../conversions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/cpp-gl-hex.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Architecture & Basics - CPP-GL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M22%2012a10%2010%200%200%201-10%2010A10%2010%200%200%201%202%2012%2010%2010%200%200%201%2012%202a10%2010%200%200%201%2010%2010m-12%206%206-6-6-6-1.4%201.4%204.6%204.6-4.6%204.6z%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../style/logo.css">
+    
+      <link rel="stylesheet" href="../../style/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-basics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CPP-GL Documentation" class="md-header__button md-logo" aria-label="CPP-GL Documentation" data-md-component="logo">
+      
+  <img src="../../img/cpp-gl-hex.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CPP-GL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture & Basics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.04 7 9.54s-2.94 8.27-7 9.54c.95.3 1.95.46 3 .46a10 10 0 0 0 10-10A10 10 0 0 0 9 2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SpectraL519/cpp-gl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../gl/quick_start/" class="md-tabs__link">
+          
+  
+  
+  GL
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../quick_start/" class="md-tabs__link">
+          
+  
+  
+  HGL
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cpp-gl/modules/" class="md-tabs__link">
+          
+  
+  
+  API Index
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../license/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CPP-GL Documentation" class="md-nav__button md-logo" aria-label="CPP-GL Documentation" data-md-component="logo">
+      
+  <img src="../../img/cpp-gl-hex.png" alt="logo">
+
+    </a>
+    CPP-GL Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SpectraL519/cpp-gl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/topologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topologies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/traversal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concrete Traversals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/pathfinding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pathfinding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/spanning_trees/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanning Trees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/algorithms/topological_algs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topological Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gl/advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Topology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topologies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-IO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Traits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traits & Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HGL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HGL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hgl-module-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HGL Module Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-infrastructure-with-gl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Infrastructure with GL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#representation-layouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Representation &amp; Layouts
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Conversions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/traversal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concrete Traversals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hypergraph Properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-IO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Traits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traits & Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Index
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Index
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/annotated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classes & Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/hierarchy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Class Hierarchy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hgl-module-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HGL Module Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-infrastructure-with-gl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Infrastructure with GL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#representation-layouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Representation &amp; Layouts
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture-basics">Architecture &amp; Basics</h1>
+<h2 id="hgl-module-overview">HGL Module Overview</h2>
+<p>While standard graphs define edges as simple connections between exactly two vertices, <strong>hypergraphs</strong> generalize this concept. In a hypergraph, a hyperedge can connect an arbitrary number of vertices simultaneously.</p>
+<p>While higher-order connections can technically be modeled using standard bipartite graphs (a technique known as <em>star expansion</em>, where standard vertices are used to represent both the actual data elements and the connections between them), doing so pollutes the domain model. It forces developers to introduce artificial labels and boilerplate logic to distinguish between "true" vertices and "connection" vertices. This approach is not true to the natural structure of the relations and fundamentally complicates traversals, degree calculations, and property management.</p>
+<p>The <strong>HGL (Hypergraph Library)</strong> module solves this by treating <em>both</em> vertices and hyperedges as true, first-class topological entities. By natively supporting n-ary relationships, HGL is exceptionally powerful for modeling complex, multi-way interactions directly as they exist in the real world—such as chemical reaction networks (multiple reactants forming multiple products), collaboration networks (multiple authors co-authoring a single research paper), or complex set systems and multi-way database joins.</p>
+<p>This section explores the core architectural decisions of the HGL module:</p>
+<ul>
+<li><a href="#shared-infrastructure-with-gl">Shared Infrastructure with GL</a>: Understand the strict unidirectional dependency and structural relationship between the GL and HGL modules.</li>
+<li><a href="#core-concepts">Core Concepts</a>: Learn how the <code>hgl::hypergraph</code> template operates, how hyperedges differ mathematically from standard pairwise edges, and how to navigate generalized incidence.</li>
+<li><a href="#representation-layouts">Representation &amp; Layouts</a>: Discover the diverse memory models available for hypergraphs and how layout orientation impacts query performance.</li>
+</ul>
+<hr />
+<h2 id="shared-infrastructure-with-gl">Shared Infrastructure with GL</h2>
+<p>The HGL module is built upon the exact same zero-cost abstraction philosophy as the standard GL module. It strictly utilizes C++20 concepts and template metaprogramming, meaning that all configuration is resolved at compile time.</p>
+<p>Crucially, <strong>the HGL module is built strictly on top of the GL module.</strong> It acts as an architectural extension with a strict unidirectional dependency. HGL heavily relies on GL and directly reuses its core infrastructure—including ID types, type traits and concepts, I/O utilities, and underlying contiguous data structures (like <a href="../../cpp-gl/classgl_1_1flat__jagged__vector/"><strong>gl::flat_jagged_vector</strong></a> and <a href="../../cpp-gl/classgl_1_1flat__matrix/"><strong>gl::flat_matrix</strong></a>). Therefore, if you are familiar with the GL module, the HGL module's design language will feel immediately natural.</p>
+<p>Conversely, the GL module remains completely standalone and entirely unaware of the HGL module or any of its components. This strict separation ensures that projects requiring only standard graph capabilities can utilize the GL module without incurring any compile-time dependencies, structural complexity, or overhead from the generalized hypergraph extensions.</p>
+<hr />
+<h2 id="core-concepts">Core Concepts</h2>
+<h3 id="the-hglhypergraphtraits-template">The <code>hgl::hypergraph&lt;Traits&gt;</code> Template</h3>
+<p>The <a href="../../cpp-gl/classhgl_1_1hypergraph/"><strong>hgl::hypergraph</strong></a> class is the core element of the HGL module. Its entire structural and behavioral identity is dictated by the <a href="../../cpp-gl/structhgl_1_1hypergraph__traits/"><strong>hgl::hypergraph_traits</strong></a> struct, which configures:</p>
+<ol>
+<li><strong>Directionality</strong>: Undirected vs. BF-Directed.</li>
+<li><strong>Vertex Properties</strong>: The data payload attached to each vertex.</li>
+<li><strong>Hyperedge Properties</strong>: The data payload attached to each hyperedge.</li>
+<li><strong>Representation Tag</strong>: The underlying representation model of the hypergraph.<ul>
+<li>This tag dictates the data structure used for the incidence representation (e.g., Incidence List or Incidence Matrix).</li>
+<li>The representation tags can be further specialized with:<ul>
+<li><strong>Layout Tag:</strong> The memory layout of the data structure (e.g., Bidirectional (only for list models), Vertex-Major, or Hyperedge-Major).</li>
+<li><strong>Id Type:</strong> The integral type used for internal indexing (defaults to <code>std::uint32_t</code>).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>To reduce boilerplate, the library provides several generic type aliases for the most common configurations:</p>
+<ul>
+<li>
+<p>Based on the directional tag:</p>
+<ul>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-undirected_hypergraph"><strong>hgl::undirected_hypergraph<VP, HeP, ReprTag></strong></a></li>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-bf_directed_hypergraph"><strong>hgl::bf_directed_hypergraph<VP, HeP, ReprTag></strong></a></li>
+</ul>
+</li>
+<li>
+<p>Based on the representation tag:</p>
+<ul>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-list_hypergraph"><strong>hgl::list_hypergraph<LayoutTag, VP, HeP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-flat_list_hypergraph"><strong>hgl::flat_list_hypergraph<LayoutTag, VP, HeP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-matrix_hypergraph"><strong>hgl::matrix_hypergraph<LayoutTag, VP, HeP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__HGL-Core/#typedef-flat_matrix_hypergraph"><strong>hgl::flat_matrix_hypergraph<LayoutTag, VP, HeP, IdType></strong></a></li>
+</ul>
+</li>
+</ul>
+<h3 id="hypergraph-directionality">Hypergraph Directionality</h3>
+<p>The mathematical structure of the <a href="../../cpp-gl/classhgl_1_1hypergraph/"><strong>hgl::hypergraph</strong></a> class is defined by the injected directional tag:</p>
+<ul>
+<li>
+<p><a href="../../cpp-gl/structhgl_1_1undirected__t/"><strong>hgl::undirected_t</strong></a> : In an undirected hypergraph, a hyperedge is simply a mathematical <em>set</em> of incident vertices. There is no distinction between the "source" or "destination" of the connection.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/structhgl_1_1bf__directed__t/"><strong>hgl::bf_directed_t</strong></a> : Represents a <strong>Backward-Forward directed</strong> hypergraph. In this model, each hyperedge maps a distinct set of <em>tail</em> (source/backward) vertices to a distinct set of <em>head</em> (destination/forward) vertices. This model is extremely useful in scenarios like chemical reactions (reactants to products) or logic gates (multiple inputs to multiple outputs).</p>
+</li>
+</ul>
+<div align="center">
+<p><img alt="Hypergraph Examples Light" src="../../img/doc/light/hypergraph-examples.svg#only-light" width="700" />
+<img alt="Hypergraph Examples Dark" src="../../img/doc/dark/hypergraph-examples.svg#only-dark" width="700" /></p>
+</div>
+<h3 id="ids-vs-descriptors">IDs vs. Descriptors</h3>
+<p>Just like the GL module, HGL exposes a dual API utilizing raw <strong>IDs</strong> (<code>id_type</code>) and lightweight <strong>Descriptors</strong> (<a href="../../cpp-gl/group__HGL-Core/#typedef-vertex_descriptor"><strong>vertex_descriptor</strong></a> and <a href="../../cpp-gl/classhgl_1_1hyperedge__descriptor/"><strong>hyperedge_descriptor</strong></a>).</p>
+<p>In contrast to the GL module, both vertex and hyperedge descriptors bind only the element's ID and an optional reference to its property payload.</p>
+<div class="admonition note">
+<p class="admonition-title">API Performance</p>
+<p>If your algorithms only require topological information (like connectivity or degrees), prefer the ID-based API to avoid the slight overhead of constructing descriptors and binding property references.</p>
+</div>
+<h3 id="descriptor-lifetimes-and-invalidation">Descriptor Lifetimes and Invalidation</h3>
+<p>Because HGL prioritizes fast, cache-friendly contiguous memory allocations, operations that modify the hypergraph's topology may invalidate previously returned descriptors and IDs. Understanding the invalidation rules is critical for writing safe annd stable hypergraph mutating operations.</p>
+<h4 id="1-insertion-stability-adding-elements">1. Insertion Stability (Adding Elements)</h4>
+<p>When you add new vertices or hyperedges to the hypergraph, the library guarantees that existing IDs remain perfectly stable. However, descriptor stability depends entirely on your property configuration:</p>
+<ul>
+<li>
+<p><strong>Without Properties:</strong> If your hypergraph elements carry no properties (use <code>gl::empty_properties</code>), descriptors are <strong>completely insertion-stable</strong>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Because a <strong>property-less</strong> descriptors are essentially just a wrapper around an ID, there is zero overhead to using it instead of a raw ID, and it will never invalidate when new elements are added.</p>
+<p>This means that performing operations like the following are completely safe:
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">e1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">({</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">v2</span><span class="p">});</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">e2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">();</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind</span><span class="p">({</span><span class="n">v2</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">},</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span>
+</span></code></pre></div></p>
+</div>
+</li>
+<li>
+<p><strong>With Properties:</strong> If your hypergraph elements carry custom properties, adding new elements may trigger a memory reallocation in the underlying property storage containers. While the IDs remain valid, the memory references stored inside existing descriptors will dangle. Therefore, property-bound descriptors are <strong>not insertion-stable</strong>.</p>
+</li>
+</ul>
+<h4 id="2-erasure-stability-removing-elements">2. Erasure Stability (Removing Elements)</h4>
+<p>Because removing elements causes the internal memory to shift and tightly pack to prevent fragmentation, HGL elements are <strong>not erase-stable</strong>. The invalidation rules are symmetric for both element types:</p>
+<ul>
+<li><strong>Removing a Vertex:</strong> Invalidates all vertex IDs and vertex descriptors for vertices with higher IDs (they shift down). It also invalidates references to all properties associated with the vertices whose IDs shifted as a result of the removal operation.</li>
+<li><strong>Removing a Hyperedge:</strong> Invalidates all hyperedge IDs and hyperedge descriptors for hyperedges with higher IDs (they shift down). It also invalidates references to all properties associated with the hyperedges whose IDs shifted as a result of the removal operation.</li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Best Practice</p>
+<p>If you need to store references to hypergraph elements long-term, store the stable element IDs (<code>id_type</code>) assuming no erasures occur. Only fetch fresh descriptors via the available getters (e.g., <code>hg.vertex(id)</code> or <code>hg.hyperedge(id)</code>) at the moment you need to access or mutate the properties or once the entire hypergraph's structure has been initialized.</p>
+</div>
+<h3 id="incidence-operations">Incidence Operations</h3>
+<p>Because hyperedges connect sets of vertices rather than exactly two endpoints, constructing the topology requires generalized incidence operations. You can either construct a hyperedge and bind vertices to it incrementally, or supply the entire set of incident vertices upfront during creation.</p>
+<h4 id="undirected-hypergraphs">Undirected Hypergraphs</h4>
+<p>In an undirected hypergraph, you simply provide a collection of vertices that the hyperedge encompasses:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">e1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">({</span><span class="n">v0</span><span class="p">,</span><span class="w"> </span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">v2</span><span class="p">});</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">e2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">();</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (3)!</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind</span><span class="p">({</span><span class="n">v2</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">},</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (4)!</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">hg</span><span class="p">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (5)!</span>
+</span></code></pre></div>
+<ol>
+<li>Creates a hyperedge and instantly connects it to <code>v0</code>, <code>v1</code>, and <code>v2</code></li>
+<li>Creates an empty hyperedge that needs to be bound separately.</li>
+<li>Binds a single vertex to the given hyperedge.</li>
+<li>Binds a range of vertices to the specified hyperedge.</li>
+<li>Unbinds the vertex from the hyperedge.</li>
+</ol>
+<h4 id="bf-directed-hypergraphs">BF-Directed Hypergraphs</h4>
+<p>In a BF-directed hypergraph, you must explicitly distinguish between the <em>tail</em> (source) vertices and <em>head</em> (destination) vertices:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">e1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">({</span><span class="n">v0</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">v2</span><span class="p">});</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">e2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">add_hyperedge</span><span class="p">();</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind_tail</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (3)!</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind_tail</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">hg</span><span class="p">.</span><span class="n">bind_head</span><span class="p">({</span><span class="n">v3</span><span class="p">,</span><span class="w"> </span><span class="n">v4</span><span class="p">},</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (4)!</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">hg</span><span class="p">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span><span class="w"> </span><span class="c1">// (5)!</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">hg</span><span class="p">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span><span class="w"> </span><span class="n">e2</span><span class="p">);</span>
+</span></code></pre></div>
+<ol>
+<li>Creates a hyperedge where <code>v0</code> is the <em>tail</em> (source) vertex and the vertices <code>v1</code> and <code>v2</code> are the <em>head</em> (destinations).</li>
+<li>Creates an empty hyperedge that needs to be bound separately.</li>
+<li>Binds <code>v1</code> and <code>v2</code> to the <em>tail</em> of the hyperedge individually.</li>
+<li>Binds <code>v3</code> and <code>v4</code> to the <em>head</em> of the hyperedge simultaneously.</li>
+<li>Unbinds the given vertices from the hyperedge, regardless of whether they are tail-bound or head-bound. <br/> <strong>NOTE:</strong> A given vertex cannot belong to both tail and head of a single hyperedge at the same time.</li>
+</ol>
+<h3 id="basic-iteration">Basic Iteration</h3>
+<p>The <code>hgl::hypergraph</code> exposes standard <code>&lt;ranges&gt;</code>-compatible views for generalized traversals:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">vertices</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">hyperedge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">incident_hyperedges</span><span class="p">(</span><span class="n">vertex</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">adjacent_v</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">incident_vertices</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">            </span><span class="c1">// ...</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Iterates over all vertices in the hypergraph.</li>
+<li>Iterates over all hyperedges connected to a specific vertex.</li>
+<li>Iterates over all vertices contained within a specific hyperedge.</li>
+</ol>
+<p>While iterating over incident vertices or hyperedges is possible for both undirected and BF-directed hypergraphs, the BF-directed hypergraphs expose additional methods that allow you to iterate over tail-bound or head-bound elements specifically:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">tail_v</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">tail</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">in_hyperedge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hg</span><span class="p">.</span><span class="n">in_hyperedges</span><span class="p">(</span><span class="n">vertex</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Iterates over only the <em>tail</em> vertices of a BF-directed hyperedge.</li>
+<li>Iterates over only the <em>incoming</em> hyperedges of a vertex (such that the vertex belongs to the <em>head</em> of the hyperedge).</li>
+</ol>
+<hr />
+<h2 id="representation-layouts">Representation &amp; Layouts</h2>
+<p>Because hypergraphs are generalizations of graphs, their topological data cannot be stored the same way as standard graphs (Adjacency Models). Instead, CPP-HGL relies on <strong>Incidence Models</strong> to capture the higher-order connections between vertices and hyperedges. The HGL module categorizes its memory representations via the <code>ReprTag</code> and strictly controls their memory orientation with the <code>LayoutTag</code>.</p>
+<h3 id="fundamental-representations">Fundamental Representations</h3>
+<p>At their core, hypergraph data structures differ in how they map vertices to the hyperedges they belong to, or vice versa. The primary incidence models in the HGL module are based on the following architectures:</p>
+<ul>
+<li><strong>Incidence Lists</strong>: This model stores only the active incidence relationships. It works by mapping an element (e.g., a vertex) to a dynamic, list of its associated elements (e.g., the hyperedges it belongs to). This approach is highly space-efficient for sparse hypergraphs and allows rapid iteration over local incidence sets.</li>
+<li><strong>Incidence Matrices</strong>: This model allocates a full <span class="arithmatex">\(|V| \times |E|\)</span> 2D grid, where each cell represents a potential connection between a specific vertex and a specific hyperedge. While they consume significantly more memory (<span class="arithmatex">\(O(|V| \times |E|)\)</span>), they provide instant <span class="arithmatex">\(O(1)\)</span> incidence verification, making them ideal for dense, heavily interconnected hypergraphs.</li>
+</ul>
+<h3 id="representation-layouts-orientation">Representation Layouts (Orientation)</h3>
+<p>The <code>LayoutTag</code> dictates the <em>primary indexing dimension</em> of the incidence structure. Because hypergraphs map two distinctly different sets (<span class="arithmatex">\(V\)</span> and <span class="arithmatex">\(E\)</span>), changing the primary index massively impacts query speeds and memory footprints:</p>
+<ul>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1bidirectional__t/"><strong>bidirectional_t</strong></a>: Maintains <em>two</em> internal mappings simultaneously (Vertex-to-Hyperedges AND Hyperedge-to-Vertices). Offers optimal <span class="arithmatex">\(O(1)\)</span> access for both vertex degrees and hyperedge sizes, and fast iteration in both directions, at the cost of doubled memory consumption. <strong>(Compatible only with Incidence Lists)</strong>.</li>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1hyperedge__major__t/"><strong>hyperedge_major_t</strong></a>: The primary index is the Hyperedge. Querying the vertices within a specific hyperedge is instantaneous, but finding which hyperedges a vertex belongs to may require an expensive full-structure scan.</li>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1vertex__major__t/"><strong>vertex_major_t</strong></a>: The primary index is the Vertex. Querying the hyperedges connected to a specific vertex is instantaneous, but finding which vertices belong to a specific hyperedge may require an expensive, full-structure scan.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Matrices and Asymmetry</p>
+<p>Incidence matrices fundamentally represent an asymmetric <span class="arithmatex">\(|V| \times |E|\)</span> grid. Therefore, matrix representations strictly require an asymmetric layout (<code>vertex_major_t</code> or <code>hyperedge_major_t</code>), mapping rows to the major element and columns to the minor element.</p>
+</div>
+<h3 id="standard-models">Standard Models</h3>
+<p>Standard models are heap-allocated, nested structures (e.g., <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>) that prioritize flexibility and dynamic structural modification. Because the inner containers can grow independently, they handle topological changes gracefully.</p>
+<ul>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1list__t/"><strong>list_t</strong></a>: A standard Incidence List model implemented using traditional nested containers.</li>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1matrix__t/"><strong>matrix_t</strong></a>: A standard Incidence Matrix model implemented using traditional nested containers.</li>
+</ul>
+<div align="center">
+<p><img alt="Undirected Hypergraph Standard Representation Light" src="../../img/doc/light/undir-hypergraph-repr-std.svg#only-light" width="700" />
+<img alt="Undirected Hypergraph Standard Representation Dark" src="../../img/doc/dark/undir-hypergraph-repr-std.svg#only-dark" width="700" /></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">BF-Directed Representations</p>
+<p>The diagrams above illustrate standard representations for an <strong>undirected</strong> hypergraph. For <strong>BF-directed</strong> hypergraphs, the underlying architecture adapts to capture directionality:</p>
+<ul>
+<li><strong>Incidence List:</strong> The structure maintains separate inner containers to explicitly distinguish between tail-bound and head-bound incidence relationships.</li>
+<li><strong>Incidence Matrix:</strong> The cells of the matrix are no longer simple boolean indicators. Instead, they store specific directional states (conceptually mapped as <code>-1</code>, <code>0</code>, and <code>1</code>) to indicate whether a vertex is in the tail of the hyperedge, not connected, or in the head of the hyperedge, respectively.</li>
+</ul>
+</div>
+<h3 id="flat-models">Flat Models</h3>
+<p>To maximize cache locality, the flat representations map the logical 2D structures into contiguous 1D memory blocks. By keeping all incidence data tightly packed, these models provide the absolute maximum traversal speed. However, this cache-friendliness comes at a structural cost: modifying an inner segment often requires shifting the entire remainder of the flat container in memory.</p>
+<ul>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1flat__list__t/"><strong>flat_list_t</strong></a>: A flattened Incidence List model implemented using the generic <a href="../../cpp-gl/classgl_1_1flat__jagged__vector/"><strong>gl::flat_jagged_vector</strong></a> data structure.</li>
+<li><a href="../../cpp-gl/structhgl_1_1repr_1_1flat__matrix__t/"><strong>flat_matrix_t</strong></a>: A flattened Incidence Matrix model implemented using the generic <a href="../../cpp-gl/classgl_1_1flat__matrix/"><strong>gl::flat_matrix</strong></a> data structure.</li>
+</ul>
+<div align="center">
+<p><img alt="Undirected Hypergraph Flat Representation Light" src="../../img/doc/light/undir-hypergraph-repr-flat.svg#only-light" width="700" />
+<img alt="Undirected Hypergraph Flat Representation Dark" src="../../img/doc/dark/undir-hypergraph-repr-flat.svg#only-dark" width="700" /></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">BF-Directed Representations</p>
+<p>Similarly to the standard models, flat architectures seamlessly adapt to directionality. A BF-directed <em>Flat Incidence List</em> utilizes separated flat storage for tail and head incidence, preserving contiguous memory reads for specific directional traversals. Meanwhile, a <em>Flat Incidence Matrix</em> packs the tri-state directional indicators directly into its contiguous 1D grid layout.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Flat List Model Performance</p>
+<p>While the flat incidence list model is highly efficient for hypergraph storage and traversal, it is also highly inefficient to construct sequentially (element-by-element and incidence-by-incidence). The most efficient approach for utilizing flat list hypergraphs is to construct your hypergraph using the standard <code>list_t</code> model first, and then convert it into the <code>flat_list_t</code> model using the generic <a href="../../cpp-gl/group__HGL-Core/#function-to"><strong>hgl::to</strong></a> conversion function.</p>
+</div>
+<h3 id="operation-complexities">Operation Complexities</h3>
+<p>Because hypergraph performance is heavily dictated by the combination of the Representation Model (List vs. Matrix), the underlying Memory Strategy (Standard vs. Flat), and the Layout Tag (Bidirectional vs. Major), the complexities are grouped accordingly.</p>
+<p><em>Note: In the tables below, <span class="arithmatex">\(|V|\)</span> is the total vertex count, <span class="arithmatex">\(|E|\)</span> is the total hyperedge count, <span class="arithmatex">\(deg(v)\)</span> is the degree of a specific vertex, and <span class="arithmatex">\(|e|\)</span> is the size of a specific hyperedge. <span class="arithmatex">\(I\)</span> represents the total number of incidences across the entire hypergraph (<span class="arithmatex">\(I = \sum deg(v) = \sum |e|\)</span>).</em></p>
+<div class="admonition note">
+<p class="admonition-title">Directionality and Complexity</p>
+<p>For <strong>BF-directed</strong> hypergraphs, operations like <code>in_degree</code>, <code>out_degree</code>, <code>tail_vertices</code>, and <code>head_vertices</code> follow the exact same complexity class as their undirected counterparts (<code>degree</code>, <code>incident_vertices</code>). They merely operate on isolated sub-containers (in list models) or specific tri-state indicators (in matrix models), keeping the Big-O structurally identical.</p>
+</div>
+<h4 id="1-incidence-lists">1. Incidence Lists</h4>
+<p><strong>Topological Queries:</strong></p>
+<p>The complexities of topological queries is identical for standard (<code>list_t</code>) and flat (<code>flat_list_t</code>) Incidence List models.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Query Operation</th>
+<th style="text-align: left;">Bidirectional</th>
+<th style="text-align: left;">Vertex-Major</th>
+<th style="text-align: left;">Hyperedge-Major</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Check Incidence</strong> <span class="arithmatex">\((v, e)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\log(\min(deg(v), \vert e \vert)))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\log(deg(v)))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\log(\vert e \vert))\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Iterate Incident Hyperedges</strong> of <span class="arithmatex">\(v\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + I)\)</span> (Scan All)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Iterate Incident Vertices</strong> of <span class="arithmatex">\(e\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert e \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert + I)\)</span> (Scan All)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert e \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Get Degree</strong> of <span class="arithmatex">\(v\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + I)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Get Size</strong> of <span class="arithmatex">\(e\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert + I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structural Mutations (Standard Incidence List, <code>list_t</code>):</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Mutation Operation</th>
+<th style="text-align: left;">Bidirectional</th>
+<th style="text-align: left;">Vertex-Major</th>
+<th style="text-align: left;">Hyperedge-Major</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Add Vertex</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Vertex</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert + I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span> <em>(Major)</em></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert + I)\)</span> <em>(Minor)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert + I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + I)\)</span> <em>(Minor)</em></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> <em>(Major)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add Incidence</strong> (Bind)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v) + \vert e \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert e \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Incidence</strong> (Unbind)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v) + \vert e \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert e \vert)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structural Mutations (Flat Incidence List, <code>flat_list_t</code>):</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Mutation Operation</th>
+<th style="text-align: left;">Bidirectional</th>
+<th style="text-align: left;">Vertex-Major</th>
+<th style="text-align: left;">Hyperedge-Major</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Add Vertex</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Vertex</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert + I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + I)\)</span> <em>(Major)</em></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert + I)\)</span> <em>(Minor)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert + I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + I)\)</span> <em>(Minor)</em></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert + I)\)</span> <em>(Major)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add Incidence</strong> (Bind)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Incidence</strong> (Unbind)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(I)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>(Note: Adding/removing incidences in flat lists is always <span class="arithmatex">\(O(I)\)</span> because modifying any internal jagged segment requires shifting the remainder of the massive contiguous 1D data array).</em></p>
+<h4 id="2-incidence-matrices">2. Incidence Matrices</h4>
+<p><strong>Topological Queries:</strong></p>
+<p>The complexities of topological queries is identical for standard (<code>matrix_t</code>) and flat (<code>flat_matrix_t</code>) Incidence Matrix models.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Query Operation</th>
+<th style="text-align: left;">Vertex-Major <br/> (Rows: V, Cols: E)</th>
+<th style="text-align: left;">Hyperedge-Major <br/> (Rows: E, Cols: V)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Check Incidence</strong> <span class="arithmatex">\((v, e)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Iterate Incident Hyperedges</strong> of <span class="arithmatex">\(v\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> (Scan Row)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> (Scan Column)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Iterate Incident Vertices</strong> of <span class="arithmatex">\(e\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span> (Scan Column)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span> (Scan Row)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Get Degree</strong> of <span class="arithmatex">\(v\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> (Scan Row)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> (Scan Column)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Get Size</strong> of <span class="arithmatex">\(e\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span> (Scan Column)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span> (Scan Row)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structural Mutations:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Mutation Operation</th>
+<th style="text-align: left;"><code>matrix_t</code> (Standard)</th>
+<th style="text-align: left;"><code>flat_matrix_t</code> (Flat)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Add Vertex</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span> amortized if <code>vertex_major_t</code><br><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span> if <code>hyperedge_major_t</code></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span> if <code>vertex_major_t</code><br><span class="arithmatex">\(O(\vert V \vert)\)</span> amortized if <code>hyperedge_major_t</code></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Remove Vertex / Hyperedge</strong></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span> (Shift rows/cols)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert \cdot \vert E \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Add / Remove Incidence</strong> (Bind/Unbind)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Matrix Layouts and Cache Locality</p>
+<p>While the theoretical Big-O complexities appear identical across matrix layouts, <strong>real-world performance is heavily bound by cache locality.</strong> Matrices map one dimension to contiguous rows and the other to strided columns.</p>
+<ul>
+<li><strong>Query Direction:</strong> Choose the layout that aligns your most frequent traversal with contiguous memory reads. If your algorithm primarily iterates over the vertices within specific hyperedges, <code>hyperedge_major_t</code> will drastically outperform <code>vertex_major_t</code> by avoiding cache misses.</li>
+<li><strong>Dimension Imbalance:</strong> If your hypergraph is highly asymmetric (e.g., <span class="arithmatex">\(|V| \gg |E|\)</span>), scanning the larger dimension across strided memory can degrade performance. Align the major layout with the dimension you need to scan most efficiently.</li>
+</ul>
+</div>
+<h3 id="choosing-the-representation-layout">Choosing the Representation &amp; Layout</h3>
+<p>Selecting the optimal combination of Representation Model and Layout Tag requires balancing memory constraints, topology density, and your specific traversal patterns to achieve peak performance:</p>
+<ul>
+<li><strong><code>bidirectional_t</code> Lists (Default):</strong> The most versatile choice for general-purpose hypergraphs. Use this when your algorithms require fast, symmetric traversals (e.g., frequently oscillating between querying "which vertices belong to this hyperedge?" and "which hyperedges contain this vertex?"). It trades a doubled memory footprint for optimal <span class="arithmatex">\(O(1)\)</span> degree and size lookups, ensuring fluid bidirectional navigation.</li>
+<li><strong>Single-Major Lists (<code>hyperedge_major_t</code> / <code>vertex_major_t</code>):</strong> Ideal for massive, sparse datasets operating under strict memory limits. Use these layouts when your algorithm's traversal logic is heavily asymmetrical. For instance, if an algorithm strictly simulates isolated chemical reactions and rarely needs to compute a vertex's degree, <code>hyperedge_major_t</code> eliminates the redundant backward-mapping overhead.</li>
+<li><strong>Matrices (<code>matrix_t</code> / <code>flat_matrix_t</code>):</strong> Reserved for exceptionally dense hypergraphs where hyperedge sizes consistently approach <span class="arithmatex">\(|V|\)</span>. Choose a matrix representation only when absolute, instant <span class="arithmatex">\(O(1)\)</span> incidence verification (<code>are_incident(v, e)</code>) is the primary algorithmic bottleneck and the <span class="arithmatex">\(O(|V| \times |E|)\)</span> memory consumption is an acceptable trade-off.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy", "content.code.select", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../scripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

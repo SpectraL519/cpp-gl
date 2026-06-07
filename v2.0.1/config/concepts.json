@@ -1,0 +1,23 @@
+{
+    "index": {
+        "title": "Concepts API Reference",
+        "anchor": "concepts-api-reference",
+        "description": "This page serves as the central index for all C++20 concepts defined within the library."
+    },
+    "groups": {
+        "GL": {
+            "prefix": "gl::",
+            "filename": "gl_concepts.md",
+            "anchor": "gl-concepts-documentation",
+            "title": "GL Concepts",
+            "description": "This page documents the C++20 concepts defined within the GL module of the library."
+        },
+        "HGL": {
+            "prefix": "hgl::",
+            "filename": "hgl_concepts.md",
+            "anchor": "hgl-concepts-documentation",
+            "title": "HGL Concepts",
+            "description": "This page documents the C++20 concepts defined within the HGL module of the library."
+        }
+    }
+}

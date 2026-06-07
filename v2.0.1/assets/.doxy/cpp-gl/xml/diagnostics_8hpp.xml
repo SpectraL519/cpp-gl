@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="diagnostics_8hpp" kind="file" language="C++">
+    <compoundname>diagnostics.hpp</compoundname>
+    <includedby refid="specialized_2adjacency__matrix_8hpp" local="yes">include/gl/impl/specialized/adjacency_matrix.hpp</includedby>
+    <includedby refid="flat__adjacency__matrix_8hpp" local="yes">include/gl/impl/specialized/flat_adjacency_matrix.hpp</includedby>
+    <invincdepgraph>
+      <node id="1">
+        <label>include/gl/attributes/diagnostics.hpp</label>
+        <link refid="diagnostics_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>include/gl/graph.hpp</label>
+        <link refid="graph_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>include/gl/impl/adjacency_matrix.hpp</label>
+        <link refid="adjacency__matrix_8hpp_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/gl/impl/specialized/adjacency_matrix.hpp</label>
+        <link refid="specialized_2adjacency__matrix_8hpp_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>include/gl/impl/specialized/flat_adjacency_matrix.hpp</label>
+        <link refid="flat__adjacency__matrix_8hpp_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>include/gl/io/graph_fio.hpp</label>
+        <link refid="graph__fio_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>include/gl/repr_tags.hpp</label>
+        <link refid="gl_2repr__tags_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>include/gl/topology.hpp</label>
+        <link refid="topology_8hpp"/>
+      </node>
+      <node id="9">
+        <label>include/gl/topology/binary_tree.hpp</label>
+        <link refid="binary__tree_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>include/gl/topology/bipartite.hpp</label>
+        <link refid="bipartite_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>include/gl/topology/clique.hpp</label>
+        <link refid="clique_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>include/gl/topology/cycle.hpp</label>
+        <link refid="cycle_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>include/gl/topology/path.hpp</label>
+        <link refid="path_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+      <node id="15">
+        <label>include/hgl/algorithm/core.hpp</label>
+        <link refid="hgl_2algorithm_2core_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>include/hgl/algorithm/templates/bfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2bfs_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>include/hgl/algorithm/templates/dfs.hpp</label>
+        <link refid="hgl_2algorithm_2templates_2dfs_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>include/hgl/algorithm/traversal/backward_search.hpp</label>
+        <link refid="backward__search_8hpp_source"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>include/hgl/algorithm/traversal/breadth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2breadth__first__search_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>include/hgl/algorithm/traversal/depth_first_search.hpp</label>
+        <link refid="hgl_2algorithm_2traversal_2depth__first__search_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>include/hgl/algorithm/traversal/forward_search.hpp</label>
+        <link refid="forward__search_8hpp_source"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>include/hgl/algorithm/util.hpp</label>
+        <link refid="hgl_2algorithm_2util_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>include/hgl/conversion.hpp</label>
+        <link refid="hgl_2conversion_8hpp"/>
+      </node>
+      <node id="7">
+        <label>include/hgl/io.hpp</label>
+        <link refid="hgl_2io_8hpp"/>
+      </node>
+      <node id="8">
+        <label>include/hgl/io/hypergraph_fio.hpp</label>
+        <link refid="hypergraph__fio_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="diagnostics_8hpp_1a6bf196debe4057219fdaca8397e5ba3a" prot="public" static="no">
+        <name>GL_PRAGMA</name>
+        <param><defname>x</defname></param>
+        <initializer>_Pragma(#x)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/attributes/diagnostics.hpp" line="7" column="9" bodyfile="include/gl/attributes/diagnostics.hpp" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="diagnostics_8hpp_1a1a16f7f0481778c8cd6a2212dfe46650" prot="public" static="no">
+        <name>GL_SUPPRESS_WARNING_BEGIN</name>
+        <param><defname>w</defname></param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/attributes/diagnostics.hpp" line="37" column="9" bodyfile="include/gl/attributes/diagnostics.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="diagnostics_8hpp_1a788b8cce1423dac2574fc89301091d3f" prot="public" static="no">
+        <name>GL_SUPPRESS_WARNING_END</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/attributes/diagnostics.hpp" line="38" column="9" bodyfile="include/gl/attributes/diagnostics.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="diagnostics_8hpp_1a709aed917dd29ec6374cb4616d3da49e" prot="public" static="no">
+        <name>GL_SUPPRESS_GCC_WARNING_BEGIN</name>
+        <param><defname>w</defname></param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/attributes/diagnostics.hpp" line="39" column="9" bodyfile="include/gl/attributes/diagnostics.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="diagnostics_8hpp_1abff943bd44fb4155f797974861d09283" prot="public" static="no">
+        <name>GL_SUPPRESS_CLANG_WARNING_BEGIN</name>
+        <param><defname>w</defname></param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/attributes/diagnostics.hpp" line="40" column="9" bodyfile="include/gl/attributes/diagnostics.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/attributes/diagnostics.hpp"/>
+  </compounddef>
+</doxygen>

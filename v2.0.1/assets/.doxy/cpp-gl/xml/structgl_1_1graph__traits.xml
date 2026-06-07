@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1graph__traits" kind="struct" language="C++" prot="public">
+    <compoundname>gl::graph_traits</compoundname>
+    <includes refid="graph__traits_8hpp" local="no">gl/graph_traits.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_graph_directional_tag</type>
+        <declname>DirectionalTag</declname>
+        <defname>DirectionalTag</defname>
+        <defval><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>VertexProperties</declname>
+        <defname>VertexProperties</defname>
+        <defval><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_properties</type>
+        <declname>EdgeProperties</declname>
+        <defname>EdgeProperties</defname>
+        <defval><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_graph_repr_tag</type>
+        <declname>ReprTag</declname>
+        <defname>ReprTag</defname>
+        <defval><ref refid="structgl_1_1repr_1_1list__t" kindref="compound">repr::list_t</ref></defval>
+      </param>
+      <param>
+        <type>traits::c_id_type</type>
+        <declname>IdType</declname>
+        <defname>IdType</defname>
+        <defval><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref></defval>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1ae0a21a96e658cb665648553f56c7bab6" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">DirectionalTag</ref></type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::directional_tag =  DirectionalTag</definition>
+        <argsstring></argsstring>
+        <name>directional_tag</name>
+        <qualifiedname>gl::graph_traits::directional_tag</qualifiedname>
+        <briefdescription>
+<para>The tag indicating the graph&apos;s directionality (directed or undirected). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="59" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1a350de1cc0ad9d669a2625a3c7fcc8023" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">ReprTag</ref></type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::representation_tag =  ReprTag</definition>
+        <argsstring></argsstring>
+        <name>representation_tag</name>
+        <qualifiedname>gl::graph_traits::representation_tag</qualifiedname>
+        <briefdescription>
+<para>The tag indicating the graph&apos;s representation type (e.g., adjacency list, adjacency matrix). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="61" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1a382156ff5ab76efa3eea056431427b6e" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">IdType</ref></type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::id_type =  IdType</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>gl::graph_traits::id_type</qualifiedname>
+        <briefdescription>
+<para>The type of graph element indentifiers (i.e. vertex and edge IDs). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="63" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1a2b4c87827fe98e943f15207df10c3f53" prot="public" static="no">
+        <type><ref refid="classgl_1_1vertex__descriptor" kindref="compound">vertex_descriptor</ref>&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">VertexProperties</ref>, <ref refid="structgl_1_1graph__traits_1a382156ff5ab76efa3eea056431427b6e" kindref="member">id_type</ref> &gt;</type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::vertex_type =  vertex_descriptor&lt;VertexProperties, id_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>vertex_type</name>
+        <qualifiedname>gl::graph_traits::vertex_type</qualifiedname>
+        <briefdescription>
+<para>The vertex descriptor type associated with this graph, defined based on the specified vertex properties and identifier type. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="66" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1ad782e20368c526623df8771cb243e287" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> <ref refid="classgl_1_1vertex__descriptor_1a08094a85e19bd59942c8e567889524c6" kindref="member">vertex_type::properties_type</ref></type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::vertex_properties_type =  typename vertex_type::properties_type</definition>
+        <argsstring></argsstring>
+        <name>vertex_properties_type</name>
+        <qualifiedname>gl::graph_traits::vertex_properties_type</qualifiedname>
+        <briefdescription>
+<para>The type of properties associated with the vertex descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="68" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1ae77697f1ac53eac8cc2b62a87fcce5b1" prot="public" static="no">
+        <type><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref>&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">DirectionalTag</ref>, <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">EdgeProperties</ref>, <ref refid="structgl_1_1graph__traits_1a382156ff5ab76efa3eea056431427b6e" kindref="member">id_type</ref> &gt;</type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::edge_type =  edge_descriptor&lt;DirectionalTag, EdgeProperties, id_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>edge_type</name>
+        <qualifiedname>gl::graph_traits::edge_type</qualifiedname>
+        <briefdescription>
+<para>The edge descriptor type associated with this graph, defined based on the specified edge properties and identifier type. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="71" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1graph__traits_1a38a433148dd0d0623ee473673647d68a" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> <ref refid="classgl_1_1edge__descriptor_1ae82f3c6ecf72c650000f1ddfe2d8d4c5" kindref="member">edge_type::properties_type</ref></type>
+        <definition>using gl::graph_traits&lt; DirectionalTag, VertexProperties, EdgeProperties, ReprTag, IdType &gt;::edge_properties_type =  typename edge_type::properties_type</definition>
+        <argsstring></argsstring>
+        <name>edge_properties_type</name>
+        <qualifiedname>gl::graph_traits::edge_properties_type</qualifiedname>
+        <briefdescription>
+<para>The type of properties associated with the edge descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/graph_traits.hpp" line="73" column="5" bodyfile="include/gl/graph_traits.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Primary graph traits structure that encapsulates all necessary type information for graph representations. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This structure serves as the central point for defining the properties and types associated with a graph, including directionality, vertex and edge properties, as well as representation and identifier types. It is designed to be flexible and extensible, allowing users to customize their graph types by specifying different traits.</para>
+<sect3 id="structgl_1_1graph__traits_1template-parameters-20">
+<title>Template Parameters</title>
+<para><table rows="6" cols="4"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Default value   </para>
+</entry><entry thead="yes" align='left'><para>Constraints    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>DirectionalTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies whether the graph is directed or undirected.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-graph-directional-tag"><bold>c_graph_directional_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexProperties   </para>
+</entry><entry thead="no" align='left'><para>A type representing the properties associated with vertices in the graph.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EdgeProperties   </para>
+</entry><entry thead="no" align='left'><para>A type representing the properties associated with edges in the graph.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-properties"><bold>c_properties</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>ReprTag   </para>
+</entry><entry thead="no" align='left'><para>Specifies the graph representation type (e.g., adjacency list, adjacency matrix).   </para>
+</entry><entry thead="no" align='left'><para><ref refid="structgl_1_1repr_1_1list__t" kindref="compound">repr::list_t</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-graph-repr-tag"><bold>c_graph_repr_tag</bold></ulink>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>IdType   </para>
+</entry><entry thead="no" align='left'><para>The type used for vertex and edge identifiers.   </para>
+</entry><entry thead="no" align='left'><para><ref refid="group__GL-Core_1ga6bca6127f2ea26e28d1d91ffd6c02a05" kindref="member">default_id_type</ref>   </para>
+</entry><entry thead="no" align='left'><para><ulink url="gl_concepts.md#gl-traits-c-id-type"><bold>c_id_type</bold></ulink>   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+<sect3 id="structgl_1_1graph__traits_1see-also-26">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para>Available representation tags:<itemizedlist>
+<listitem><para><ref refid="structgl_1_1repr_1_1list__t" kindref="compound">repr::list_t</ref> : A standard adjacency list representation.</para>
+</listitem><listitem><para><ref refid="structgl_1_1repr_1_1flat__list__t" kindref="compound">repr::flat_list_t</ref> : A flattened adjacency list representation.</para>
+</listitem><listitem><para><ref refid="structgl_1_1repr_1_1matrix__t" kindref="compound">repr::matrix_t</ref> : A standard adjacency matrix representation.</para>
+</listitem><listitem><para><ref refid="structgl_1_1repr_1_1flat__matrix__t" kindref="compound">repr::flat_matrix_t</ref> : A flattened adjacency matrix representation.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><ref refid="structgl_1_1directed__t" kindref="compound">directed_t</ref>, <ref refid="structgl_1_1undirected__t" kindref="compound">undirected_t</ref> : For the directional tags used to specify graph directionality.</para>
+</listitem><listitem><para><ref refid="classgl_1_1vertex__descriptor" kindref="compound">vertex_descriptor</ref> : For the vertex descriptor type defined based on the graph traits.</para>
+</listitem><listitem><para><ref refid="classgl_1_1edge__descriptor" kindref="compound">edge_descriptor</ref> : For the edge descriptor type defined based on the graph traits.</para>
+</listitem><listitem><para><ref refid="structgl_1_1empty__properties" kindref="compound">empty_properties</ref> : For the default empty properties type used when no custom properties are needed.</para>
+</listitem><listitem><para>Convenience type aliases for the <computeroutput><ref refid="structgl_1_1graph__traits" kindref="compound">graph_traits</ref></computeroutput> type:<itemizedlist>
+<listitem><para><ref refid="group__GL-Core_1gaebea039051b14b8d59d94316d7afb7c6" kindref="member">list_graph_traits</ref>,</para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gaeaa8adf6fde1a59eb51ec9b6a97c1c0c" kindref="member">flat_list_graph_traits</ref>,</para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gab4582499dc6bfbbddafefcadd7c76e76" kindref="member">matrix_graph_traits</ref>,</para>
+</listitem><listitem><para><ref refid="group__GL-Core_1ga7701a4fd8c0a41c1ac210fa6fbc2e01b" kindref="member">flat_matrix_graph_traits</ref>,</para>
+</listitem><listitem><para><ref refid="group__GL-Core_1ga2700095d1d8a78a2ebdbbe69edbd356b" kindref="member">directed_graph_traits</ref>,</para>
+</listitem><listitem><para><ref refid="group__GL-Core_1gad7fff0aedf1b50f774d469b04556aaa9" kindref="member">undirected_graph_traits</ref> </para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/graph_traits.hpp" line="57" column="1" bodyfile="include/gl/graph_traits.hpp" bodystart="57" bodyend="74"/>
+    <listofallmembers>
+      <member refid="structgl_1_1graph__traits_1ae0a21a96e658cb665648553f56c7bab6" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>directional_tag</name></member>
+      <member refid="structgl_1_1graph__traits_1a38a433148dd0d0623ee473673647d68a" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>edge_properties_type</name></member>
+      <member refid="structgl_1_1graph__traits_1ae77697f1ac53eac8cc2b62a87fcce5b1" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>edge_type</name></member>
+      <member refid="structgl_1_1graph__traits_1a382156ff5ab76efa3eea056431427b6e" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>id_type</name></member>
+      <member refid="structgl_1_1graph__traits_1a350de1cc0ad9d669a2625a3c7fcc8023" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>representation_tag</name></member>
+      <member refid="structgl_1_1graph__traits_1ad782e20368c526623df8771cb243e287" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>vertex_properties_type</name></member>
+      <member refid="structgl_1_1graph__traits_1a2b4c87827fe98e943f15207df10c3f53" prot="public" virt="non-virtual"><scope>gl::graph_traits</scope><name>vertex_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1algorithm_1_1paths__descriptor" kind="struct" language="C++" prot="public">
+    <compoundname>gl::algorithm::paths_descriptor</compoundname>
+    <includes refid="dijkstra_8hpp" local="no">gl/algorithm/pathfinding/dijkstra.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>traits::c_graph</type>
+        <declname>G</declname>
+        <defname>G</defname>
+      </param>
+      <param>
+        <type>traits::c_arithmetic</type>
+        <declname>VertexDistanceType</declname>
+        <defname>VertexDistanceType</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgl_1_1algorithm_1_1paths__descriptor_1a532da8bce399a4477cfb139d7673d18d" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">typename</ref> G::id_type</type>
+        <definition>using gl::algorithm::paths_descriptor&lt; G, VertexDistanceType &gt;::id_type =  typename G::id_type</definition>
+        <argsstring></argsstring>
+        <name>id_type</name>
+        <qualifiedname>gl::algorithm::paths_descriptor::id_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="28" column="5" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgl_1_1algorithm_1_1paths__descriptor_1a6b6d25962c3a9debc137207138165a77" prot="public" static="no">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">VertexDistanceType</ref></type>
+        <definition>using gl::algorithm::paths_descriptor&lt; G, VertexDistanceType &gt;::distance_type =  VertexDistanceType</definition>
+        <argsstring></argsstring>
+        <name>distance_type</name>
+        <qualifiedname>gl::algorithm::paths_descriptor::distance_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="29" column="5" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1algorithm_1_1paths__descriptor_1afa47f74a57ecc95db5c423be99de6a26" prot="public" static="no" mutable="no">
+        <type><ref refid="group__GL-Algorithm_1gacf54af040a18c091c6d26c2776c49bf1" kindref="member">predecessors_map</ref>&lt; <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">G</ref> &gt;</type>
+        <definition>predecessors_map&lt;G&gt; gl::algorithm::paths_descriptor&lt; G, VertexDistanceType &gt;::predecessors</definition>
+        <argsstring></argsstring>
+        <name>predecessors</name>
+        <qualifiedname>gl::algorithm::paths_descriptor::predecessors</qualifiedname>
+        <briefdescription>
+<para>The predecessor map tracking the optimal path tree. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="37" column="22" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1algorithm_1_1paths__descriptor_1a2425c6723833148e3af200129dd910c3" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; distance_type &gt;</type>
+        <definition>std::vector&lt;distance_type&gt; gl::algorithm::paths_descriptor&lt; G, VertexDistanceType &gt;::distances</definition>
+        <argsstring></argsstring>
+        <name>distances</name>
+        <qualifiedname>gl::algorithm::paths_descriptor::distances</qualifiedname>
+        <briefdescription>
+<para>The accumulated shortest distances to each vertex from the source. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="39" column="17" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgl_1_1algorithm_1_1paths__descriptor_1aa23b14437990817165a9b9f91306a04c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gl::algorithm::paths_descriptor&lt; G, VertexDistanceType &gt;::paths_descriptor</definition>
+        <argsstring>(const size_type n_vertices)</argsstring>
+        <name>paths_descriptor</name>
+        <qualifiedname>gl::algorithm::paths_descriptor::paths_descriptor</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="group__GL-Core_1gaf7e4e3592f5e3a0ed849d0a31294299e" kindref="member">size_type</ref></type>
+          <declname>n_vertices</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a descriptor sized for the given number of vertices. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The total number of vertices in the graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="33" column="5" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="33" bodyend="34"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A descriptor structure holding the results of a single-source shortest path execution. </para>
+    </briefdescription>
+    <detaileddescription>
+<sect3 id="structgl_1_1algorithm_1_1paths__descriptor_1template-parameters">
+<title>Template Parameters</title>
+<para><table rows="3" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>G   </para>
+</entry><entry thead="no" align='left'><para>The type of the graph.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-graph"><bold>c_graph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VertexDistanceType   </para>
+</entry><entry thead="no" align='left'><para>The numeric type used to represent accumulated path weights/distances.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="gl_concepts.md#gl-traits-c-arithmetic"><bold>c_arithmetic</bold></ulink> concept.   </para>
+</entry></row>
+</table>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/algorithm/pathfinding/dijkstra.hpp" line="27" column="1" bodyfile="include/gl/algorithm/pathfinding/dijkstra.hpp" bodystart="27" bodyend="40"/>
+    <listofallmembers>
+      <member refid="structgl_1_1algorithm_1_1paths__descriptor_1a6b6d25962c3a9debc137207138165a77" prot="public" virt="non-virtual"><scope>gl::algorithm::paths_descriptor</scope><name>distance_type</name></member>
+      <member refid="structgl_1_1algorithm_1_1paths__descriptor_1a2425c6723833148e3af200129dd910c3" prot="public" virt="non-virtual"><scope>gl::algorithm::paths_descriptor</scope><name>distances</name></member>
+      <member refid="structgl_1_1algorithm_1_1paths__descriptor_1a532da8bce399a4477cfb139d7673d18d" prot="public" virt="non-virtual"><scope>gl::algorithm::paths_descriptor</scope><name>id_type</name></member>
+      <member refid="structgl_1_1algorithm_1_1paths__descriptor_1aa23b14437990817165a9b9f91306a04c" prot="public" virt="non-virtual"><scope>gl::algorithm::paths_descriptor</scope><name>paths_descriptor</name></member>
+      <member refid="structgl_1_1algorithm_1_1paths__descriptor_1afa47f74a57ecc95db5c423be99de6a26" prot="public" virt="non-virtual"><scope>gl::algorithm::paths_descriptor</scope><name>predecessors</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

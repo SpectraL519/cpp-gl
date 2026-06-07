@@ -1,0 +1,2637 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="group__HGL-Algorithm" kind="group">
+    <compoundname>HGL-Algorithm</compoundname>
+    <title>Hypergraph Algorithms</title>
+    <innerclass refid="structhgl_1_1algorithm_1_1search__node" prot="public">hgl::algorithm::search_node</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy" prot="public">hgl::algorithm::traversal_policy</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01Dir_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, Dir &gt;</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1forward_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, traversal_direction::forward &gt;</innerclass>
+    <innerclass refid="structhgl_1_1algorithm_1_1traversal__policy_3_01H_00_01traversal__direction_1_1backward_01_4" prot="public">hgl::algorithm::traversal_policy&lt; H, traversal_direction::backward &gt;</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__HGL-Algorithm_1gafc7517c668a2769f8def4461e1e6cb60" prot="public" static="no" strong="yes">
+        <type>bool</type>
+        <name>traversal_direction</name>
+        <qualifiedname>hgl::algorithm::traversal_direction</qualifiedname>
+        <enumvalue id="group__HGL-Algorithm_1ggafc7517c668a2769f8def4461e1e6cb60a965dbaac085fc891bfbbd4f9d145bbc8" prot="public">
+          <name>forward</name>
+          <briefdescription>
+<para>Traverse following the forward star (tail to head). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__HGL-Algorithm_1ggafc7517c668a2769f8def4461e1e6cb60a195fe59b6f103787a914aead0f3db502" prot="public">
+          <name>backward</name>
+          <briefdescription>
+<para>Traverse following the backward star (head to tail). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Specifies the direction of traversal for <emphasis>BF-directed</emphasis> hypergraphs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><blockquote><para><zwj/>[!IMPORTANT] API Note</para>
+<para><itemizedlist>
+<listitem><para>To ensure API simplicity, the <computeroutput>traversal_direction</computeroutput> is used for undirected hypergraphs as well by the generic traversal templates. However, due to the structural nature of undirected hypergraphs, both direction values implicitly yield the exact same traversal pattern for undirected hypergraphs.</para>
+</listitem><listitem><para>The library utilizes C++20&apos;s <computeroutput>using enum</computeroutput> feature for the <computeroutput>traversal_direction</computeroutput> enum type, allowing you to access these tags directly via <computeroutput><ref refid="group__HGL-Algorithm_1ggafc7517c668a2769f8def4461e1e6cb60a965dbaac085fc891bfbbd4f9d145bbc8" kindref="member">hgl::algorithm::forward</ref></computeroutput> and <computeroutput><ref refid="group__HGL-Algorithm_1ggafc7517c668a2769f8def4461e1e6cb60a195fe59b6f103787a914aead0f3db502" kindref="member">hgl::algorithm::backward</ref></computeroutput>. </para>
+</listitem></itemizedlist>
+</para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="155" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="155" bodyend="158"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" prot="public" static="no">
+        <type><ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">gl::algorithm::empty_callback</ref></type>
+        <definition>using hgl::algorithm::empty_callback = typedef gl::algorithm::empty_callback</definition>
+        <argsstring></argsstring>
+        <name>empty_callback</name>
+        <qualifiedname>hgl::algorithm::empty_callback</qualifiedname>
+        <briefdescription>
+<para>A tag type used to explicitly indicate the absence of a callback function.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-40">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">gl::algorithm::empty_callback</ref> : For a more detailed description. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="30" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" prot="public" static="no">
+        <type><ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">gl::algorithm::decision</ref></type>
+        <definition>using hgl::algorithm::decision = typedef gl::algorithm::decision</definition>
+        <argsstring></argsstring>
+        <name>decision</name>
+        <qualifiedname>hgl::algorithm::decision</qualifiedname>
+        <briefdescription>
+<para>Represents a generic tri-state decision for control flow.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-41">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="structgl_1_1algorithm_1_1decision" kindref="compound">gl::algorithm::decision</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="36" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" prot="public" static="no">
+        <type><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">gl::algorithm::result_discriminator</ref></type>
+        <definition>using hgl::algorithm::result_discriminator = typedef gl::algorithm::result_discriminator</definition>
+        <argsstring></argsstring>
+        <name>result_discriminator</name>
+        <qualifiedname>hgl::algorithm::result_discriminator</qualifiedname>
+        <briefdescription>
+<para>Tag used to statically dictate whether an algorithm should return a constructed result or execute purely for side effects.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-42">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga4c3a735fb0cb47c85d657fd764c1b471" kindref="member">gl::algorithm::result_discriminator</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="42" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga51d01bb512094dc0368656a1c1bdb1ac" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>typename ResultType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" kindref="member">gl::algorithm::result_type</ref>&lt; Result, ResultType &gt;</type>
+        <definition>using hgl::algorithm::result_type = typedef gl::algorithm::result_type&lt;Result, ResultType&gt;</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <qualifiedname>hgl::algorithm::result_type</qualifiedname>
+        <briefdescription>
+<para>Resolves to the specified <computeroutput>ResultType</computeroutput> if <computeroutput>Result</computeroutput> is <computeroutput>ret</computeroutput>, otherwise resolves to <computeroutput>void</computeroutput>.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-43">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga9902515e049b9319db6ec7feac804407" kindref="member">gl::algorithm::result_type</ref> : For the full type definition. </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="50" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga7c9c575739b21db63ec2e120f5392fa7" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>typename ResultType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" kindref="member">gl::algorithm::non_void_result_type</ref>&lt; Result, ResultType &gt;</type>
+        <definition>using hgl::algorithm::non_void_result_type = typedef gl::algorithm::non_void_result_type&lt;Result, ResultType&gt;</definition>
+        <argsstring></argsstring>
+        <name>non_void_result_type</name>
+        <qualifiedname>hgl::algorithm::non_void_result_type</qualifiedname>
+        <briefdescription>
+<para>Resolves to the specified <computeroutput>ResultType</computeroutput> if <computeroutput>Result</computeroutput> is <computeroutput>ret</computeroutput>, otherwise resolves to <computeroutput>std::monostate</computeroutput>.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="group__GL-Algorithm_1ga365512f30134759a12f4a52407241eb3" kindref="member">gl::algorithm::non_void_result_type</ref> : <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">For</ref> <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">the</ref> <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">full</ref> type <ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">definition</ref>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="56" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga74021cb0b6789fb62d750075d5253a2c" prot="public" static="no">
+        <type><ref refid="structgl_1_1algorithm_1_1no__root__t" kindref="compound">gl::algorithm::no_root_t</ref></type>
+        <definition>using hgl::algorithm::no_root_t = typedef gl::algorithm::no_root_t</definition>
+        <argsstring></argsstring>
+        <name>no_root_t</name>
+        <qualifiedname>hgl::algorithm::no_root_t</qualifiedname>
+        <briefdescription>
+<para>Tag type providing an implicit conversion to the appropriate <computeroutput>no_root_v</computeroutput> for any numeric ID type.   </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="see"><para><ref refid="structgl_1_1algorithm_1_1no__root__t" kindref="compound">gl::algorithm::no_root_t</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="68" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; search_node&lt; H &gt; &gt;</type>
+        <definition>using hgl::algorithm::search_tree = typedef std::vector&lt;search_node&lt;H&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>search_tree</name>
+        <qualifiedname>hgl::algorithm::search_tree</qualifiedname>
+        <briefdescription>
+<para>A flat, index-mapped representation of a hypergraph search tree. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The $i$-th element corresponds to the vertex with <computeroutput>id == i</computeroutput>. The tree topology is formed implicitly, as each <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref> stores the ID of its predecessor and the connecting hyperedge, enabling <formula id="43">$O(1)$</formula> lookups and and <formula id="48">$O(\vert V \vert)$</formula> path reconstruction.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph being searched. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="124" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="124" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="group__HGL-Algorithm_1ga0230547f9cea72dfd6d36f84ea30d87b" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>traits::c_id_type</type>
+            <declname>IdType</declname>
+            <defname>IdType</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr IdType</type>
+        <definition>constexpr IdType hgl::algorithm::no_root_v</definition>
+        <argsstring></argsstring>
+        <name>no_root_v</name>
+        <qualifiedname>hgl::algorithm::no_root_v</qualifiedname>
+        <initializer>= gl::algorithm::no_root_v&lt;IdType&gt;</initializer>
+        <briefdescription>
+<para>Constant representing the absence of a root vertex ID for a specific ID type.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-44">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1gaa49c574ed607d45e2a55f9495cfb8494" kindref="member">gl::algorithm::no_root_v</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="63" column="25" bodyfile="include/hgl/algorithm/core.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__HGL-Algorithm_1ga7f7d879663329e9be61e2327eadbd2a1" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr no_root_t</type>
+        <definition>constexpr no_root_t hgl::algorithm::no_root</definition>
+        <argsstring></argsstring>
+        <name>no_root</name>
+        <qualifiedname>hgl::algorithm::no_root</qualifiedname>
+        <initializer>= gl::algorithm::no_root</initializer>
+        <briefdescription>
+<para>Global constant representing the absence of a root vertex.   </para>
+        </briefdescription>
+        <detaileddescription>
+<sect3 id="group__HGL-Algorithm_1see-also-45">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-Algorithm_1ga6cad1c7e8e009478e2bfdcf00fad0479" kindref="member">gl::algorithm::no_root</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/core.hpp" line="74" column="28" bodyfile="include/hgl/algorithm/core.hpp" bodystart="74" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga306756e480ea27bb92cd9ace0483816e" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::max_degree</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>max_degree</name>
+        <qualifiedname>hgl::algorithm::max_degree</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the maximum degree among all vertices in a hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="19" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="19" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga5426b3e2467487540518b70bb0261ba4" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::min_degree</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>min_degree</name>
+        <qualifiedname>hgl::algorithm::min_degree</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the minimum degree among all vertices in a hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="26" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="26" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gabfd7cc21381a27819f269c845a683e30" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::max_out_degree</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>max_out_degree</name>
+        <qualifiedname>hgl::algorithm::max_out_degree</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the maximum out-degree among all vertices in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="33" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="33" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga1401798de59decaf68ac0833c9421149" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::min_out_degree</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>min_out_degree</name>
+        <qualifiedname>hgl::algorithm::min_out_degree</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the minimum out-degree among all vertices in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="41" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="41" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga5daec9b3c71228635dfb0c7d084e6691" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::max_in_degree</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>max_in_degree</name>
+        <qualifiedname>hgl::algorithm::max_in_degree</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the maximum in-degree among all vertices in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="49" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="49" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga853fc348436a36680b2e6d8b405d41ed" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::min_in_degree</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>min_in_degree</name>
+        <qualifiedname>hgl::algorithm::min_in_degree</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the minimum in-degree among all vertices in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="57" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="57" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga1953442fad2347e3ed29093e4267d527" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::rank</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>rank</name>
+        <qualifiedname>hgl::algorithm::rank</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the rank (maximum size of any hyperedge) of a hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="67" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="67" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga0c73c2f9653a4fc8a06dfb60f8a1cf01" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::corank</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>corank</name>
+        <qualifiedname>hgl::algorithm::corank</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the corank (minimum size of any hyperedge) of a hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="74" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="74" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gae00e405002cb3138f64d30668fe8a49a" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::max_tail_size</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>max_tail_size</name>
+        <qualifiedname>hgl::algorithm::max_tail_size</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the maximum tail size among all hyperedges in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="81" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="81" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga5b0874ce4615122eb02f8aa58ab71c66" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::min_tail_size</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>min_tail_size</name>
+        <qualifiedname>hgl::algorithm::min_tail_size</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the minimum tail size among all hyperedges in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="89" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="89" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaa59b3ed32f854dbd3360e4919a4f4760" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::max_head_size</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>max_head_size</name>
+        <qualifiedname>hgl::algorithm::max_head_size</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the maximum head size among all hyperedges in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="97" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="97" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaedf8756d4faa6b75a7e74955056a449b" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type hgl::algorithm::min_head_size</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>min_head_size</name>
+        <qualifiedname>hgl::algorithm::min_head_size</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the minimum head size among all hyperedges in a <emphasis>BF-directed</emphasis> hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="105" column="12" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="105" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaf2cf6bc753007cd445490df988ced514" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_regular</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_regular</name>
+        <qualifiedname>hgl::algorithm::is_regular</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given hypergraph is $k$-regular (all vertices have a degree of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="115" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="115" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga143ac25f2830ab6874cbc8e263a092d2" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_regular</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_regular</name>
+        <qualifiedname>hgl::algorithm::is_regular</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given hypergraph is structurally regular (all vertices have the same degree). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="123" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="123" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaa0615f999436126737dd4824f2e92190" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_out_regular</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_out_regular</name>
+        <qualifiedname>hgl::algorithm::is_out_regular</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is out-$k$-regular (all vertices have an out-degree of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="129" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="129" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga3574e4310ce6944dfd30a7991850556d" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_out_regular</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_out_regular</name>
+        <qualifiedname>hgl::algorithm::is_out_regular</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is out-regular (all vertices have the same out-degree). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="137" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="137" bodyend="140"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga300c96a16d01a4b8a1c29ca3fe2e1a2d" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_in_regular</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_in_regular</name>
+        <qualifiedname>hgl::algorithm::is_in_regular</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is in-$k$-regular (all vertices have an in-degree of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="144" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="144" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gac9f22cd8926573439ef7e5805cc9600c" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_in_regular</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_in_regular</name>
+        <qualifiedname>hgl::algorithm::is_in_regular</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is in-regular (all vertices have the same in-degree). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="152" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="152" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga92294c6e8c6e87ef2fb2b7ddf5f7b280" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_uniform</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_uniform</name>
+        <qualifiedname>hgl::algorithm::is_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given hypergraph is $k$-uniform (all hyperedges have a size of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="160" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="160" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga48efb1bdd8fa4f44f77939e708bbb7a4" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_uniform</definition>
+        <argsstring>(const traits::c_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_uniform</name>
+        <qualifiedname>hgl::algorithm::is_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given hypergraph is structurally uniform (all hyperedges have the exact same size). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="168" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="168" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gac3f1351cd7ee20e6702be1ef36cc7d3c" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_tail_uniform</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_tail_uniform</name>
+        <qualifiedname>hgl::algorithm::is_tail_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is tail-$k$-uniform (all hyperedges have a tail size of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="174" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="174" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gad4e1d5d4f794d3b9fd6b64d01c462141" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_tail_uniform</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_tail_uniform</name>
+        <qualifiedname>hgl::algorithm::is_tail_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is tail-uniform (all hyperedges have the exact same tail size). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="182" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="182" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga9764be5ed8609e74bbbca97588368108" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_head_uniform</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph, const size_type k) noexcept</argsstring>
+        <name>is_head_uniform</name>
+        <qualifiedname>hgl::algorithm::is_head_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const size_type</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is head-$k$-uniform (all hyperedges have a head size of $k$). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="189" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="189" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga9b9413ea6dc0070ce55b30cfe54ce13a" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_head_uniform</definition>
+        <argsstring>(const traits::c_bf_directed_hypergraph auto &amp;hypergraph) noexcept</argsstring>
+        <name>is_head_uniform</name>
+        <qualifiedname>hgl::algorithm::is_head_uniform</qualifiedname>
+        <param>
+          <type>const traits::c_bf_directed_hypergraph auto &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates whether the given <emphasis>BF-directed</emphasis> hypergraph is head-uniform (all hyperedges have the exact same head size). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/properties.hpp" line="197" column="7" bodyfile="include/hgl/algorithm/properties.hpp" bodystart="197" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga37f079f7da6f35c7524b6480655a3f5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traversal_direction</type>
+            <declname>Dir</declname>
+            <defname>Dir</defname>
+            <defval>traversal_direction::forward</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; search_node&lt; H &gt; &gt;</type>
+            <declname>InitQueueRangeType</declname>
+            <defname>InitQueueRangeType</defname>
+            <defval>std::vector&lt;search_node&lt;H&gt;&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>VisitPredicate</declname>
+            <defname>VisitPredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_decision_predicate&lt; typename H::id_type, typename H::id_type &gt;</type>
+            <declname>TraverseHePredicate</declname>
+            <defname>TraverseHePredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>EnqueuePredicate</declname>
+            <defname>EnqueuePredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool hgl::algorithm::bfs</definition>
+        <argsstring>(const H &amp;hypergraph, const InitQueueRangeType &amp;initial_queue_content, const VisitPredicate &amp;visit_pred={}, const VisitCallback &amp;visit={}, const TraverseHePredicate &amp;traverse_he_pred={}, const EnqueuePredicate &amp;enqueue_pred={}, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>bfs</name>
+        <qualifiedname>hgl::algorithm::bfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const InitQueueRangeType &amp;</type>
+          <declname>initial_queue_content</declname>
+        </param>
+        <param>
+          <type>const VisitPredicate &amp;</type>
+          <declname>visit_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const VisitCallback &amp;</type>
+          <declname>visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const TraverseHePredicate &amp;</type>
+          <declname>traverse_he_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const EnqueuePredicate &amp;</type>
+          <declname>enqueue_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>A highly customizable, generic Breadth-First Search (BFS) algorithm engine for hypergraphs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This template provides the strict structural execution of a queue-based Breadth-First Search over a hypergraph&apos;s topology. Because a hypergraph traversal inherently requires a two-step expansion (from a vertex to its incident hyperedges, and then to the adjacent vertices), this engine exposes specific hooks for both steps. Concrete algorithms are constructed by injecting logic into the provided callback and predicate hooks.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-25">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>.<ref refid="classhgl_1_1hypergraph_1a25caa05bc1e738de6165d0b61ec917b3" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">completed</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1ga37f079f7da6f35c7524b6480655a3f5a" kindref="member">hgl::algorithm::bfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hgl::algorithm::init_node_range&lt;H&gt;(<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id</ref>),<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">not</ref><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id];<sp/>},<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id]<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Visited<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Continue<sp/>search</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hgl::empty_callback{},<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">tgt_node</ref>)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">not</ref><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">tgt_node</ref>.vertex_id];<sp/>}<sp/></highlight><highlight class="comment">//<sp/>(6)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Provide an external state array to track the visited vertices.</para>
+<para>2. Initialize the search queue with a root <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search node</ref> representing the starting point.</para>
+<para>3. The <emphasis>visit predicate</emphasis> ensures vertices are not processed multiple times.</para>
+<para>4. The concrete vertex visiting logic - marks the vertex as visited and logs it to the console.</para>
+<para>5. Traverse all hyperedges unconditionally.</para>
+<para>6. The <emphasis>enqueue predicate</emphasis> filters out already visited adjacent vertices before they enter the queue.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-27">
+<title>Template Parameters</title>
+<para><table rows="10" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Dir   </para>
+</entry><entry thead="no" align='left'><para>The <ref refid="group__HGL-Algorithm_1gafc7517c668a2769f8def4461e1e6cb60" kindref="member">traversal direction</ref> (i.e., <computeroutput>forward</computeroutput> or <computeroutput>backward</computeroutput>). Relevant only for BF-directed hypergraphs.   </para>
+</entry><entry thead="no" align='left'><para>Defaults to <computeroutput>forward</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>InitQueueRangeType   </para>
+</entry><entry thead="no" align='left'><para>A forward range of <computeroutput><ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;</computeroutput> used to prime the BFS queue.   </para>
+</entry><entry thead="no" align='left'><para>Must be a <emphasis>forward range</emphasis> of <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitPredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a popped node should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed when a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>TraverseHePredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if an incident hyperedge should be traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, id_type) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueuePredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a target vertex should be enqueued via a specific hyperedge.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_queue_content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The initial set of search nodes to begin the traversal from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to filter nodes immediately after popping them from the queue. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Primary callback for node processing. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>traverse_he_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to determine if an incident hyperedge should be traversed. Returns a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to traverse the hyperedge,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip the hyperedge,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the BFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to determine if an adjacent vertex should be queued via a hyperedge. Returns a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to enqueue the vertex&apos;s search node,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip the node,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the BFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback executed prior to the primary visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback executed after all adjacent elements of the current node have been processed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the search completed normally, <computeroutput>false</computeroutput> if it was explicitly aborted via a callback.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/templates/bfs.hpp" line="95" column="6" bodyfile="include/hgl/algorithm/templates/bfs.hpp" bodystart="95" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gac6b3b6612fb3f928dc0eb735bf56283e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traversal_direction</type>
+            <declname>Dir</declname>
+            <defname>Dir</defname>
+            <defval>traversal_direction::forward</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; search_node&lt; H &gt; &gt;</type>
+            <declname>InitQueueRangeType</declname>
+            <defname>InitQueueRangeType</defname>
+            <defval>std::vector&lt;search_node&lt;H&gt;&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>VisitPredicate</declname>
+            <defname>VisitPredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>VisitCallback</declname>
+            <defname>VisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_decision_predicate&lt; typename H::id_type, typename H::id_type &gt;</type>
+            <declname>TraverseHePredicate</declname>
+            <defname>TraverseHePredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_decision_predicate&lt; const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>EnqueuePredicate</declname>
+            <defname>EnqueuePredicate</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool hgl::algorithm::dfs</definition>
+        <argsstring>(const H &amp;hypergraph, const InitQueueRangeType &amp;initial_queue_content, const VisitPredicate &amp;visit_pred={}, const VisitCallback &amp;visit={}, const TraverseHePredicate &amp;traverse_he_pred={}, const EnqueuePredicate &amp;enqueue_pred={}, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>dfs</name>
+        <qualifiedname>hgl::algorithm::dfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const InitQueueRangeType &amp;</type>
+          <declname>initial_queue_content</declname>
+        </param>
+        <param>
+          <type>const VisitPredicate &amp;</type>
+          <declname>visit_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const VisitCallback &amp;</type>
+          <declname>visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const TraverseHePredicate &amp;</type>
+          <declname>traverse_he_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const EnqueuePredicate &amp;</type>
+          <declname>enqueue_pred</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>A highly customizable, generic Depth-First Search (DFS) algorithm engine for hypergraphs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This template provides the strict structural execution of a stack-based Depth-First Search over a hypergraph&apos;s topology. Because a hypergraph traversal inherently requires a two-step expansion (from a vertex to its incident hyperedges, and then to the adjacent vertices), this engine exposes specific hooks for both steps. Concrete algorithms are constructed by injecting logic into the provided callback and predicate hooks.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-26">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;bool&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>.<ref refid="classhgl_1_1hypergraph_1a25caa05bc1e738de6165d0b61ec917b3" kindref="member">n_vertices</ref>(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">completed</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1gac6b3b6612fb3f928dc0eb735bf56283e" kindref="member">hgl::algorithm::dfs</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hgl::algorithm::init_node_range&lt;H&gt;(<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id</ref>),<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">not</ref><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id];<sp/>},<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>(4)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id]<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Visited<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Continue<sp/>search</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hgl::empty_callback{},<sp/></highlight><highlight class="comment">//<sp/>(5)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">tgt_node</ref>)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">not</ref><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">visited</ref>[<ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">tgt_node</ref>.vertex_id];<sp/>}<sp/></highlight><highlight class="comment">//<sp/>(6)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Provide an external state array to track the visited vertices.</para>
+<para>2. Initialize the search stack with a root <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search node</ref> representing the starting point.</para>
+<para>3. The <emphasis>visit predicate</emphasis> ensures vertices are not processed multiple times.</para>
+<para>4. The concrete vertex visiting logic - marks the vertex as visited and logs it to the console.</para>
+<para>5. Traverse all hyperedges unconditionally.</para>
+<para>6. The <emphasis>enqueue predicate</emphasis> filters out already visited adjacent vertices before they are pushed to the stack.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-28">
+<title>Template Parameters</title>
+<para><table rows="10" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Dir   </para>
+</entry><entry thead="no" align='left'><para>The <ref refid="group__HGL-Algorithm_1gafc7517c668a2769f8def4461e1e6cb60" kindref="member">traversal direction</ref> (i.e., <computeroutput>forward</computeroutput> or <computeroutput>backward</computeroutput>). Relevant only for BF-directed hypergraphs.   </para>
+</entry><entry thead="no" align='left'><para>Defaults to <computeroutput>forward</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>InitQueueRangeType   </para>
+</entry><entry thead="no" align='left'><para>A forward range of <computeroutput><ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;</computeroutput> used to prime the DFS stack.   </para>
+</entry><entry thead="no" align='left'><para>Must be a <emphasis>forward range</emphasis> of <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search nodes</ref>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitPredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a popped node should be processed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>VisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed when a vertex is officially visited.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; bool</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>TraverseHePredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if an incident hyperedge should be traversed.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- An <computeroutput>(id_type, id_type) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>EnqueuePredicate   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable deciding if a target vertex should be pushed to the stack via a specific hyperedge.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; decision</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before <computeroutput>VisitCallback</computeroutput>.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_queue_content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The initial set of search nodes to begin the traversal from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to filter nodes immediately after popping them from the stack. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Primary callback for node processing. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>traverse_he_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to determine if an incident hyperedge should be traversed. Returns a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to traverse the hyperedge,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip the hyperedge,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the DFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>enqueue_pred</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Predicate to determine if an adjacent vertex should be pushed to the stack via a hyperedge. Returns a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref>:<itemizedlist>
+<listitem><para><computeroutput>accept</computeroutput> to push the vertex&apos;s search node,</para>
+</listitem><listitem><para><computeroutput>reject</computeroutput> to skip the node,</para>
+</listitem><listitem><para><computeroutput>abort</computeroutput> to terminate the DFS entirely. </para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback executed prior to the primary visit logic. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback executed after all adjacent elements of the current node have been processed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the search completed normally, <computeroutput>false</computeroutput> if it was explicitly aborted via a callback.  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/templates/dfs.hpp" line="95" column="6" bodyfile="include/hgl/algorithm/templates/dfs.hpp" bodystart="95" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gae1e1c2ff69e20056d85cde2cd9343cad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_bf_directed_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; typename H::id_type &gt;</type>
+            <declname>RootRange</declname>
+            <defname>RootRange</defname>
+            <defval>std::vector&lt;typename H::id_type&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::backward_bfs</definition>
+        <argsstring>(const H &amp;hypergraph, const RootRange &amp;root_vertices, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>backward_bfs</name>
+        <qualifiedname>hgl::algorithm::backward_bfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const RootRange &amp;</type>
+          <declname>root_vertices</declname>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a Breadth-First B-Search (B-BFS) traversal over a bf-directed hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements B-reachability semantics using Breadth-First Search for BF-directed hypergraphs. Unlike a standard traversal (where reaching a single tail vertex is sufficient to traverse an outgoing hyperedge), a backward search (B-search) uses a blocking predicate. A hyperedge is only traversed, and its head vertices enqueued, after <bold>all</bold> of its tail (source) vertices have been visited.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-27">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;hgl::size_type&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref><sp/>=<sp/>{<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_1</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_2</ref><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1gae1e1c2ff69e20056d85cde2cd9343cad" kindref="member">hgl::algorithm::backward_bfs</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::backward_bfs&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes a B-BFS returning a search tree mapped to the components B-reachable from the specified roots.</para>
+<para>2. Executes a B-BFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-29">
+<title>Template Parameters</title>
+<para><table rows="6" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph"><bold>c_bf_directed_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>RootRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy <ulink url="gl_concepts.md#gl-traits-c-forward-range-of"><bold>c_forward_range_of</bold></ulink> over the hypergraph&apos;s <computeroutput>id_type</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bf-directed hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial vertex IDs to start the search from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/backward_search.hpp" line="64" column="13" bodyfile="include/hgl/algorithm/traversal/backward_search.hpp" bodystart="64" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga68918c01033aa663ba102c29bc00d834" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_bf_directed_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; typename H::id_type &gt;</type>
+            <declname>RootRange</declname>
+            <defname>RootRange</defname>
+            <defval>std::vector&lt;typename H::id_type&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::backward_dfs</definition>
+        <argsstring>(const H &amp;hypergraph, const RootRange &amp;root_vertices, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>backward_dfs</name>
+        <qualifiedname>hgl::algorithm::backward_dfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const RootRange &amp;</type>
+          <declname>root_vertices</declname>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a Depth-First B-Search (B-DFS) traversal over a bf-directed hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements B-reachability semantics using a stack-based Depth-First Search for BF-directed hypergraphs. Unlike a standard traversal (where reaching a single tail vertex is sufficient to traverse an outgoing hyperedge), a backward search (B-search) uses a blocking predicate. A hyperedge is only traversed, and its head vertices enqueued, after <bold>all</bold> of its tail (source) vertices have been visited.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-28">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;hgl::size_type&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref><sp/>=<sp/>{<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_1</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_2</ref><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1ga68918c01033aa663ba102c29bc00d834" kindref="member">hgl::algorithm::backward_dfs</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::backward_dfs&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes a B-DFS returning a search tree mapped to the components B-reachable from the specified roots.</para>
+<para>2. Executes a B-DFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-30">
+<title>Template Parameters</title>
+<para><table rows="6" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph"><bold>c_bf_directed_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>RootRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy <ulink url="gl_concepts.md#gl-traits-c-forward-range-of"><bold>c_forward_range_of</bold></ulink> over the hypergraph&apos;s <computeroutput>id_type</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before officially visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bf-directed hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial vertex IDs to start the search from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before officially visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/backward_search.hpp" line="145" column="13" bodyfile="include/hgl/algorithm/traversal/backward_search.hpp" bodystart="145" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gad3069e211020fd934b7216ba9fb850c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::breadth_first_search</definition>
+        <argsstring>(const H &amp;hypergraph, const typename H::id_type root_vertex_id=no_root, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>breadth_first_search</name>
+        <qualifiedname>hgl::algorithm::breadth_first_search</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const typename H::id_type</type>
+          <declname>root_vertex_id</declname>
+          <defval>no_root</defval>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a concrete Breadth-First Search (BFS) traversal over the hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function utilizes the generic <ref refid="group__HGL-Algorithm_1ga37f079f7da6f35c7524b6480655a3f5a" kindref="member">bfs</ref> template to perform a standard queue-based traversal. It automatically manages the visited states (for both vertices and hyperedges), search tree tracking, and queue initialization.</para>
+<para>If a specific <computeroutput>root_vertex_id</computeroutput> is provided, the algorithm explores only the connected component reachable from that root. If <computeroutput>no_root</computeroutput> is used, it iteratively ensures that every disconnected component in the entire hypergraph is fully traversed.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-29">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>=<sp/><ref refid="group__HGL-Algorithm_1gad3069e211020fd934b7216ba9fb850c4" kindref="member">hgl::algorithm::breadth_first_search</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::breadth_first_search&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Algorithm_1ga7f7d879663329e9be61e2327eadbd2a1" kindref="member">hgl::algorithm::no_root</ref>,<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes a standard BFS returning a search tree mapped to the components reachable from <computeroutput>start_id</computeroutput>.</para>
+<para>2. Executes a BFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+<para>3. Passing <computeroutput>no_root</computeroutput> forces the algorithm to iterate over all vertices, ensuring disjoint components are traversed.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-31">
+<title>Template Parameters</title>
+<para><table rows="5" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the vertex to start the search from. If <computeroutput>no_root</computeroutput>, searches the entire hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/breadth_first_search.hpp" line="63" column="13" bodyfile="include/hgl/algorithm/traversal/breadth_first_search.hpp" bodystart="63" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga707fd07612a7fb4f74055b86980cef79" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::depth_first_search</definition>
+        <argsstring>(const H &amp;hypergraph, const typename H::id_type root_vertex_id=no_root, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>depth_first_search</name>
+        <qualifiedname>hgl::algorithm::depth_first_search</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const typename H::id_type</type>
+          <declname>root_vertex_id</declname>
+          <defval>no_root</defval>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a concrete Depth-First Search (DFS) traversal over the hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function utilizes the generic <ref refid="group__HGL-Algorithm_1gac6b3b6612fb3f928dc0eb735bf56283e" kindref="member">dfs</ref> template to perform a standard stack-based traversal. It automatically manages the visited states (for both vertices and hyperedges), search tree tracking, and stack initialization.</para>
+<para>If a specific <computeroutput>root_vertex_id</computeroutput> is provided, the algorithm explores only the connected component reachable from that root. If <computeroutput>no_root</computeroutput> is used, it iteratively ensures that every disconnected component in the entire hypergraph is fully traversed.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-30">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>=<sp/><ref refid="group__HGL-Algorithm_1ga707fd07612a7fb4f74055b86980cef79" kindref="member">hgl::algorithm::depth_first_search</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::depth_first_search&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Algorithm_1ga7f7d879663329e9be61e2327eadbd2a1" kindref="member">hgl::algorithm::no_root</ref>,<sp/></highlight><highlight class="comment">//<sp/>(3)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes a standard DFS returning a search tree mapped to the components reachable from <computeroutput>start_id</computeroutput>.</para>
+<para>2. Executes a DFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+<para>3. Passing <computeroutput>no_root</computeroutput> forces the algorithm to iterate over all vertices, ensuring disjoint components are traversed.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-32">
+<title>Template Parameters</title>
+<para><table rows="5" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-hypergraph"><bold>c_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the vertex to start the search from. If <computeroutput>no_root</computeroutput>, searches the entire hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/depth_first_search.hpp" line="63" column="13" bodyfile="include/hgl/algorithm/traversal/depth_first_search.hpp" bodystart="63" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaf39ec652e158c9be639c3bc406105adb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_bf_directed_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; typename H::id_type &gt;</type>
+            <declname>RootRange</declname>
+            <defname>RootRange</defname>
+            <defval>std::vector&lt;typename H::id_type&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::forward_bfs</definition>
+        <argsstring>(const H &amp;hypergraph, const RootRange &amp;root_vertices, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>forward_bfs</name>
+        <qualifiedname>hgl::algorithm::forward_bfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const RootRange &amp;</type>
+          <declname>root_vertices</declname>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a Breadth-First F-Search (F-BFS) traversal over a bf-directed hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements F-reachability semantics using Breadth-First Search for BF-directed hypergraphs. Unlike a standard backward traversal (where reaching a single head vertex is sufficient to traverse an incoming hyperedge), a forward search (F-search) uses a blocking predicate. A hyperedge is only traversed, and its tail vertices enqueued, after <bold>all</bold> of its head (destination) vertices have been visited.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-31">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;hgl::size_type&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref><sp/>=<sp/>{<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_1</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_2</ref><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1gaf39ec652e158c9be639c3bc406105adb" kindref="member">hgl::algorithm::forward_bfs</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::forward_bfs&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes an F-BFS returning a search tree mapped to the components F-reachable from the specified roots.</para>
+<para>2. Executes an F-BFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-33">
+<title>Template Parameters</title>
+<para><table rows="6" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph"><bold>c_bf_directed_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>RootRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy <ulink url="gl_concepts.md#gl-traits-c-forward-range-of"><bold>c_forward_range_of</bold></ulink> over the hypergraph&apos;s <computeroutput>id_type</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before officially visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bf-directed hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial vertex IDs to start the search from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before officially visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/forward_search.hpp" line="64" column="13" bodyfile="include/hgl/algorithm/traversal/forward_search.hpp" bodystart="64" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga6fa35b24e5bb4a1bda5ca490a1e982d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+            <defval>ret</defval>
+          </param>
+          <param>
+            <type>traits::c_bf_directed_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>traits::c_forward_range_of&lt; typename H::id_type &gt;</type>
+            <declname>RootRange</declname>
+            <defname>RootRange</defname>
+            <defval>std::vector&lt;typename H::id_type&gt;</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PreVisitCallback</declname>
+            <defname>PreVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+          <param>
+            <type>traits::c_optional_callback&lt; void, const search_node&lt; H &gt; &amp; &gt;</type>
+            <declname>PostVisitCallback</declname>
+            <defname>PostVisitCallback</defname>
+            <defval>empty_callback</defval>
+          </param>
+        </templateparamlist>
+        <type>result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::forward_dfs</definition>
+        <argsstring>(const H &amp;hypergraph, const RootRange &amp;root_vertices, const PreVisitCallback &amp;pre_visit={}, const PostVisitCallback &amp;post_visit={})</argsstring>
+        <name>forward_dfs</name>
+        <qualifiedname>hgl::algorithm::forward_dfs</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const RootRange &amp;</type>
+          <declname>root_vertices</declname>
+        </param>
+        <param>
+          <type>const PreVisitCallback &amp;</type>
+          <declname>pre_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>const PostVisitCallback &amp;</type>
+          <declname>post_visit</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Executes a Depth-First F-Search (F-DFS) traversal over a bf-directed hypergraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements F-reachability semantics using a stack-based Depth-First Search for BF-directed hypergraphs. Unlike a standard backward traversal (where reaching a single head vertex is sufficient to traverse an incoming hyperedge), a forward search (F-search) uses a blocking predicate. A hyperedge is only traversed, and its tail vertices pushed to the stack, after <bold>all</bold> of its head (destination) vertices have been officially visited.</para>
+<sect3 id="group__HGL-Algorithm_1example-usage-32">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;hgl::size_type&gt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref><sp/>=<sp/>{<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_1</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">start_id_2</ref><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref><sp/>=<sp/><ref refid="group__HGL-Algorithm_1ga6fa35b24e5bb4a1bda5ca490a1e982d3" kindref="member">hgl::algorithm::forward_dfs</ref>(<ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>);<sp/></highlight><highlight class="comment">//<sp/>(1)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hgl::algorithm::forward_dfs&lt;hgl::algorithm::noret&gt;(<sp/></highlight><highlight class="comment">//<sp/>(2)!</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classhgl_1_1hypergraph" kindref="compound">hypergraph</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">roots</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Pre-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>)<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Post-visit:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__HGL-Core_1ga77dee4b09be0b885cee92aebc2b59c26" kindref="member">node</ref>.vertex_id<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>1. Executes an F-DFS returning a search tree mapped to the components F-reachable from the specified roots.</para>
+<para>2. Executes an F-DFS purely for side-effects (callbacks) without allocating memory for a search tree.</para>
+</sect3>
+<sect3 id="group__HGL-Algorithm_1template-parameters-34">
+<title>Template Parameters</title>
+<para><table rows="6" cols="3"><row>
+<entry thead="yes" align='left'><para>Parameter   </para>
+</entry><entry thead="yes" align='left'><para>Description   </para>
+</entry><entry thead="yes" align='left'><para>Constraint    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>Result   </para>
+</entry><entry thead="no" align='left'><para>Controls whether the algorithm builds and returns a search tree (<computeroutput>ret</computeroutput>) or evaluates purely for side effects (<computeroutput>noret</computeroutput>).   </para>
+</entry><entry thead="no" align='left'><para>Must be a valid <ref refid="group__HGL-Algorithm_1gabfb1ea647307b8f1978dad74701c2576" kindref="member">result_discriminator</ref> enum value.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>H   </para>
+</entry><entry thead="no" align='left'><para>The type of the hypergraph being searched.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy the <ulink url="hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph"><bold>c_bf_directed_hypergraph</bold></ulink> concept.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>RootRange   </para>
+</entry><entry thead="no" align='left'><para>The type of the container providing the initial roots to enqueue.   </para>
+</entry><entry thead="no" align='left'><para>Must satisfy <ulink url="gl_concepts.md#gl-traits-c-forward-range-of"><bold>c_forward_range_of</bold></ulink> over the hypergraph&apos;s <computeroutput>id_type</computeroutput>.    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PreVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed immediately before officially visiting a vertex.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='left'><para>PostVisitCallback   </para>
+</entry><entry thead="no" align='left'><para>Type of the callable executed after all adjacent elements are evaluated.   </para>
+</entry><entry thead="no" align='left'><para>Must be one of:<linebreak/>
+- A <computeroutput>(const <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>&lt;H&gt;&amp;) -&gt; void</computeroutput> callable<linebreak/>
+- An <ref refid="group__HGL-Algorithm_1ga7fb98e8e8039f4a24048ea1cb4cd027c" kindref="member">empty_callback</ref>   </para>
+</entry></row>
+</table>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bf-directed hypergraph to traverse. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>root_vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A range of initial vertex IDs to start the search from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pre_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed immediately before officially visiting the vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>post_visit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hook executed after all adjacent hyperedges and target vertices of the current node have been evaluated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="group__HGL-Algorithm_1ga124c4abcaaf0f7943cf1e09a906f7df3" kindref="member">search_tree</ref> if <computeroutput>Result == ret</computeroutput>, otherwise nothing (<computeroutput>void</computeroutput>).  <hideparams/>  </para>
+</simplesect>
+</para>
+</sect3>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/traversal/forward_search.hpp" line="145" column="13" bodyfile="include/hgl/algorithm/traversal/forward_search.hpp" bodystart="145" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga6387e710f35f5d55e65e4f0e47d55385" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+        </templateparamlist>
+        <type>non_void_result_type&lt; Result, search_tree&lt; H &gt; &gt;</type>
+        <definition>non_void_result_type&lt; Result, search_tree&lt; H &gt; &gt; hgl::algorithm::init_search_tree</definition>
+        <argsstring>(const H &amp;hypergraph)</argsstring>
+        <name>init_search_tree</name>
+        <qualifiedname>hgl::algorithm::init_search_tree</qualifiedname>
+        <param>
+          <type>const H &amp;</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+<para>Initializes a search tree based on the static result discriminator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The compilation tag determining if the tree should actually be built. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hypergraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The hypergraph instance to size the search tree against. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A fully sized and initialized <computeroutput>search_tree</computeroutput> if <computeroutput>Result == ret</computeroutput>, otherwise a dummy <computeroutput>std::monostate</computeroutput>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="22" column="24" bodyfile="include/hgl/algorithm/util.hpp" bodystart="22" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gab366aea50e2ab6f854626a3c354592c9" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hgl::algorithm::is_reachable</definition>
+        <argsstring>(const traits::c_search_tree auto &amp;tree, traits::c_id_type auto vertex_id) noexcept</argsstring>
+        <name>is_reachable</name>
+        <qualifiedname>hgl::algorithm::is_reachable</qualifiedname>
+        <param>
+          <type>const traits::c_search_tree auto &amp;</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>traits::c_id_type auto</type>
+          <declname>vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific vertex was reached during the traversal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tree</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The computed search tree resulting from a traversal. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The identifier of the vertex to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the vertex has a valid predecessor in the tree, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="37" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="37" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga12637e8123b5d9e9d175ece9c2f6e3f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; search_node&lt; H &gt; &gt;</type>
+        <definition>std::vector&lt; search_node&lt; H &gt; &gt; hgl::algorithm::init_node_range</definition>
+        <argsstring>(typename H::id_type root_vertex_id)</argsstring>
+        <name>init_node_range</name>
+        <qualifiedname>hgl::algorithm::init_node_range</qualifiedname>
+        <param>
+          <type>typename H::id_type</type>
+          <declname>root_vertex_id</declname>
+        </param>
+        <briefdescription>
+<para>Initializes a container with a starting set of root search nodes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>root_vertex_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ID of the starting vertex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>std::vector</computeroutput> containing a single root <ref refid="structhgl_1_1algorithm_1_1search__node" kindref="compound">search_node</ref>. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="49" column="15" bodyfile="include/hgl/algorithm/util.hpp" bodystart="49" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gab541a7c6652ff19b019febb7c904ea7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto hgl::algorithm::default_visit_predicate</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited_v)</argsstring>
+        <name>default_visit_predicate</name>
+        <qualifiedname>hgl::algorithm::default_visit_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited_v</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda predicate that checks if a popped search node has already been visited. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited_v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate that returns <computeroutput>true</computeroutput> if the vertex in the node has not been visited, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="61" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="61" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga864afc824dfce07a6489e442e6ba95f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>result_discriminator</type>
+            <declname>Result</declname>
+            <defname>Result</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto hgl::algorithm::default_visit_callback</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited_v, non_void_result_type&lt; Result, search_tree&lt; H &gt; &gt; &amp;pred_map)</argsstring>
+        <name>default_visit_callback</name>
+        <qualifiedname>hgl::algorithm::default_visit_callback</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited_v</declname>
+        </param>
+        <param>
+          <type>non_void_result_type&lt; Result, search_tree&lt; H &gt; &gt; &amp;</type>
+          <declname>pred_map</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda callback executed upon officially visiting a vertex. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Marks the vertex as visited. If <computeroutput>Result == ret</computeroutput>, it also records the search node into the provided search tree.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The compilation tag dictating whether to populate the search tree. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited_v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pred_map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the search tree being populated (or a dummy if <computeroutput>Result == noret</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable callback returning <computeroutput>true</computeroutput> to unconditionally continue the traversal.  <hideparams/>  </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="79" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="79" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1ga81081790f8e1f195d77fad7ff5271ed1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>auto</type>
+        <definition>auto hgl::algorithm::default_traverse_hyperedge_predicate</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited_he)</argsstring>
+        <name>default_traverse_hyperedge_predicate</name>
+        <qualifiedname>hgl::algorithm::default_traverse_hyperedge_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited_he</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda predicate that tracks traversed hyperedges to prevent redundant exploration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Records hyperedges as they are encountered and rejects any that have already been traversed during the search.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited_he</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited hyperedges. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate returning a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref> (<computeroutput>accept</computeroutput> if not previously visited, <computeroutput>reject</computeroutput> if already visited). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="98" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="98" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gae6af3580796cc8889cbcd3cae08c22f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>auto</type>
+        <definition>auto hgl::algorithm::blocking_traverse_hyperedge_predicate</definition>
+        <argsstring>(std::vector&lt; size_type &gt; &amp;counter_map)</argsstring>
+        <name>blocking_traverse_hyperedge_predicate</name>
+        <qualifiedname>hgl::algorithm::blocking_traverse_hyperedge_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; size_type &gt; &amp;</type>
+          <declname>counter_map</declname>
+        </param>
+        <briefdescription>
+<para>Generates a lambda predicate that blocks hyperedge traversal until its associated counter reaches zero. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This predicate is particularly useful in topological sorting or multi-dependency algorithms for <emphasis>BF-directed</emphasis> hypergraphs, where a hyperedge should only be evaluated once all of its dependencies (e.g., all vertices in its tail) have been saturated or visited.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>counter_map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to an array of size or dependency counters mapped to hyperedge IDs. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate returning a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref> (<computeroutput>accept</computeroutput> if the decremented counter reaches 0, <computeroutput>reject</computeroutput> otherwise). </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="120" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="120" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="group__HGL-Algorithm_1gaf2eeae405488c08180f26b8e76c258d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>traits::c_hypergraph</type>
+            <declname>H</declname>
+            <defname>H</defname>
+          </param>
+          <param>
+            <type>bool</type>
+            <declname>AsResult</declname>
+            <defname>AsResult</defname>
+            <defval>false</defval>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto hgl::algorithm::default_enqueue_predicate</definition>
+        <argsstring>(std::vector&lt; bool &gt; &amp;visited_v)</argsstring>
+        <name>default_enqueue_predicate</name>
+        <qualifiedname>hgl::algorithm::default_enqueue_predicate</qualifiedname>
+        <param>
+          <type>std::vector&lt; bool &gt; &amp;</type>
+          <declname>visited_v</declname>
+        </param>
+        <briefdescription>
+<para>Generates a default lambda predicate that checks if a node corresponding to an adjacent vertex should be enqueued. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>H</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the hypergraph. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>AsResult</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, the generated predicate returns a <ref refid="group__HGL-Algorithm_1ga762b634ab4f8c8451c4cbca6c2fe4908" kindref="member">decision</ref> instead of a raw boolean. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visited_v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A reference to the boolean array tracking visited vertices. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A callable predicate that returns <computeroutput>true</computeroutput> (or <computeroutput>decision::accept</computeroutput>) if the adjacent vertex has not been visited. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/hgl/algorithm/util.hpp" line="135" column="8" bodyfile="include/hgl/algorithm/util.hpp" bodystart="135" bodyend="140"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Generic hypergraph algorithms, search templates, and related utilities. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This module provides hypergraph-specific algorithmic templates and implementations (such as forward and backward searches) designed to natively navigate the complex, high-order structure of hyperedges. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

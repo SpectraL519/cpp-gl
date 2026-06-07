@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="prim__mst_8hpp" kind="file" language="C++">
+    <compoundname>prim_mst.hpp</compoundname>
+    <includes local="yes">gl/algorithm/util.hpp</includes>
+    <includes local="yes">gl/constants.hpp</includes>
+    <includes local="no">numeric</includes>
+    <includes local="no">queue</includes>
+    <includedby refid="hgl_2algorithm_8hpp" local="yes">include/hgl/algorithm.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/spanning_tree/prim_mst.hpp</label>
+        <link refid="prim__mst_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/util.hpp</label>
+      </node>
+      <node id="3">
+        <label>gl/constants.hpp</label>
+      </node>
+      <node id="4">
+        <label>numeric</label>
+      </node>
+      <node id="5">
+        <label>queue</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/spanning_tree/prim_mst.hpp</label>
+        <link refid="prim__mst_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structgl_1_1algorithm_1_1mst__descriptor" prot="public">gl::algorithm::mst_descriptor</innerclass>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1algorithm">gl::algorithm</innernamespace>
+    <briefdescription>
+<para>Concrete implementations of Prim&apos;s Minimum Spanning Tree (MST) algorithm. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/spanning_tree/prim_mst.hpp"/>
+  </compounddef>
+</doxygen>

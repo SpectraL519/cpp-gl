@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="coloring_8hpp" kind="file" language="C++">
+    <compoundname>coloring.hpp</compoundname>
+    <includes local="yes">gl/algorithm/core.hpp</includes>
+    <includes local="yes">gl/algorithm/templates/bfs.hpp</includes>
+    <includedby refid="hgl_2algorithm_8hpp" local="yes">include/hgl/algorithm.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/topology/coloring.hpp</label>
+        <link refid="coloring_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/core.hpp</label>
+      </node>
+      <node id="3">
+        <label>gl/algorithm/templates/bfs.hpp</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/topology/coloring.hpp</label>
+        <link refid="coloring_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1algorithm">gl::algorithm</innernamespace>
+    <briefdescription>
+<para>Algorithms for detecting and computing graph colorings. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/topology/coloring.hpp"/>
+  </compounddef>
+</doxygen>

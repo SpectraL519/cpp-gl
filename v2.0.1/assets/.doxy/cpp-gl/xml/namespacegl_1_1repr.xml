@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacegl_1_1repr" kind="namespace" language="C++">
+    <compoundname>gl::repr</compoundname>
+    <innerclass refid="structgl_1_1repr_1_1flat__list__t" prot="public">gl::repr::flat_list_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1flat__matrix__t" prot="public">gl::repr::flat_matrix_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1list__t" prot="public">gl::repr::list_t</innerclass>
+    <innerclass refid="structgl_1_1repr_1_1matrix__t" prot="public">gl::repr::matrix_t</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/decl/repr_tags.hpp" line="14" column="1"/>
+  </compounddef>
+</doxygen>

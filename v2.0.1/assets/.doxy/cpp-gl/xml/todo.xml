@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="todo" kind="page">
+    <compoundname>todo</compoundname>
+    <title>TODO</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term>Member <ref refid="group__GL-IO_1ga94b8e7bd6b489233065d9f97a90257c6" kindref="member">gl::io::multiline_set_formatter</ref>  (R &amp;&amp;range)</term></varlistentry>
+<listitem><para><anchor id="todo_1_todo000003"/>Add an indent_width parameter </para>
+</listitem>
+<varlistentry><term>Member <ref refid="group__GL-Util_1gab0f9de06fb9591214af73942a4c37929" kindref="member">gl::util::concat</ref>  </term></varlistentry>
+<listitem><para><anchor id="todo_1_todo000005"/>Replace with <computeroutput>std::views::concat</computeroutput> (C++26).  </para>
+</listitem>
+<varlistentry><term>Class <ref refid="classgl_1_1util_1_1concat__view" kindref="compound">gl::util::concat_view&lt; V1, V2 &gt;</ref>  </term></varlistentry>
+<listitem><para><anchor id="todo_1_todo000004"/>Replace with <computeroutput>std::views::concat</computeroutput> (C++26).  </para>
+</listitem>
+<varlistentry><term>Member <ref refid="group__HGL-Util_1ga2376286fe8ad2ea5024b1c278e84b8f5" kindref="member">hgl::util::concat</ref>  </term></varlistentry>
+<listitem><para><anchor id="todo_1_todo000008"/>Replace with <computeroutput>std::views::concat</computeroutput> (C++26). </para>
+</listitem>
+</variablelist>
+</para>
+    </detaileddescription>
+    <location file="todo"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="358.161" height="149.746" viewBox="0 0 358.161 149.746" fill="#ffffff">
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000038146974 149.746)" font-size="11.9552" font-family="Computer Modern" font-weight="bold"><tspan y="-132.454" x="52.69 62.85192 70.32392 74.43651 80.976009 86.953609 93.086627 100.558628 106.536228 118.12081 126.20253 129.9445 135.25261">AdjacencyList</tspan></text>
+<path transform="matrix(1,0,0,-1,22.876008,47.720994)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-17.00804-9.92134H17.008063V9.92134H-17.00804Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-100.627" x="18.227">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-99.132999" x="23.056">1</tspan></text>
+<path transform="matrix(1,0,0,-1,22.876008,76.465999)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-17.00804-9.92134H17.008063V9.92134H-17.00804Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-71.882" x="18.227">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-70.388" x="23.056">2</tspan></text>
+<path transform="matrix(1,0,0,-1,22.876008,105.211)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-17.00804-9.92134H17.008063V9.92134H-17.00804Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-43.137" x="18.227">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-41.643" x="23.056">3</tspan></text>
+<path transform="matrix(1,0,0,-1,22.876008,133.956)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-17.00804-9.92134H17.008063V9.92134H-17.00804Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-14.392" x="18.227">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .0000076293949 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-12.898001" x="23.056">4</tspan></text>
+<path transform="matrix(1,0,0,-1,74.298007,47.721)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="57.9">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="62.8813">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="67.71">2</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="72.179 76.61236">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="81.246">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="85.715007">}</tspan></text>
+<path transform="matrix(1,0,0,-1,120.051,47.721)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="103.653">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="108.6343">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="113.463">3</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="117.932 122.36536">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="126.999">2</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="131.468">}</tspan></text>
+<path transform="matrix(1,0,0,-1,165.804,47.721)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="149.406">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="154.3873">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="159.216">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="163.685 168.11837">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-98.03999" x="172.752">3</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-99.534" x="177.221">}</tspan></text>
+<path transform="matrix(1,0,0,-1,74.298007,76.466)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="57.9">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="62.8813">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-69.295" x="67.71">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="72.179 76.61236">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-69.295" x="81.246">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="85.716">}</tspan></text>
+<path transform="matrix(1,0,0,-1,120.051,76.466)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="103.653">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="108.6343">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-69.295" x="113.463">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="117.932 122.36536">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-69.295" x="126.999">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="131.469">}</tspan></text>
+<path transform="matrix(1,0,0,-1,74.298007,105.211)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-42.044" x="57.9">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-42.044" x="62.8813">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-40.55" x="67.71">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-42.044" x="72.18 76.61336">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-40.55" x="81.246">2</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-42.044" x="85.716">}</tspan></text>
+<path transform="matrix(1,0,0,-1,74.298007,133.956)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="57.9">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="62.8813">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-11.805" x="67.71">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="72.18 76.61336">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-11.805" x="81.246">3</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="85.716">}</tspan></text>
+<path transform="matrix(1,0,0,-1,120.051,133.956)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-22.67754-9.92134H22.677529V9.92134H-22.67754Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="103.653">{</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="108.6343">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-11.805" x="113.463">2</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="117.933 122.366359">,e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-11.805" x="126.999">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-13.299" x="131.469">}</tspan></text>
+<path transform="matrix(1,0,0,-1,96.577,105.012)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-56.69382 57.29137H-49.06711"/>
+<path transform="matrix(1,0,0,-1,45.044805,47.72063)" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,45.044805,47.72063)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,96.577,105.012)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-56.69382 28.54605H-49.06711"/>
+<path transform="matrix(1,0,0,-1,45.044805,76.46595)" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,45.044805,76.46595)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,96.577,105.012)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-56.69382-.19925H-49.06711"/>
+<path transform="matrix(1,0,0,-1,45.044805,105.21125)" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,45.044805,105.21125)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,96.577,105.012)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-56.69382-28.94456H-49.06711"/>
+<path transform="matrix(1,0,0,-1,45.044805,133.95656)" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<path transform="matrix(1,0,0,-1,45.044805,133.95656)" stroke-width=".79701" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M5.44046 0 1.28699 1.5706 2.66432 0 1.28699-1.5706Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 -.000015258789 149.746)" font-size="11.9552" font-family="Computer Modern" font-weight="bold"><tspan y="-132.454" x="241.865 252.02693 259.49894 263.6115 270.151 276.1286 282.26164 289.73365 295.71125 307.29585 320.05204 326.59153 331.8279 337.3273 341.06929">AdjacencyMatrix</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-112.165" x="257.157">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 0 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-110.67" x="261.98603">1</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-112.165" x="283.067">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-110.67" x="287.896">2</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-112.165" x="308.977">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-110.67" x="313.806">3</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-112.165" x="334.887">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-110.67" x="339.71699">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000015258789 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-92.123" x="231.446">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000015258789 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-90.629" x="236.275">1</tspan></text>
+<path transform="matrix(1,0,0,-1,261.80604,56.225)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000030517579 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-91.03" x="257.932">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,287.71604,56.225)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-92.123" x="283.162">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-90.629" x="287.801">1</tspan></text>
+<path transform="matrix(1,0,0,-1,313.62705,56.225)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-92.123" x="309.072">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-90.629" x="313.711">2</tspan></text>
+<path transform="matrix(1,0,0,-1,339.53706,56.225)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-92.123" x="334.983">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-90.629" x="339.621">3</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000045776369 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-71.882" x="231.446">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000045776369 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-70.388" x="236.275">2</tspan></text>
+<path transform="matrix(1,0,0,-1,261.80607,76.465999)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-71.882" x="257.252">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-70.388" x="261.89103">1</tspan></text>
+<path transform="matrix(1,0,0,-1,287.71607,76.465999)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="283.842">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,313.62709,76.465999)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000061035159 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-70.789" x="309.752">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,339.53709,76.465999)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-71.882" x="334.983">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-70.388" x="339.621">4</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000076293948 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-51.641" x="231.446">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000076293948 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-50.147" x="236.275">3</tspan></text>
+<path transform="matrix(1,0,0,-1,261.8061,96.70699)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.746)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-51.641" x="257.252">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.746)" font-size="6.9738" font-family="Computer Modern"><tspan y="-50.147" x="261.89103">2</tspan></text>
+<path transform="matrix(1,0,0,-1,287.7161,96.70699)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-50.548" x="283.842">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,313.6261,96.70699)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .000091552738 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-50.548" x="309.752">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,339.5371,96.70699)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00012207031 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-50.548" x="335.662">&#x2212;</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00010681152 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-31.4" x="231.446">v</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00010681152 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-29.906" x="236.275">4</tspan></text>
+<path transform="matrix(1,0,0,-1,261.80613,116.94799)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00012207031 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-31.4" x="257.252">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00012207031 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-29.906" x="261.89103">3</tspan></text>
+<path transform="matrix(1,0,0,-1,287.71614,116.94799)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00015258789 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-31.4" x="283.162">e</tspan></text>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00015258789 149.74599)" font-size="6.9738" font-family="Computer Modern"><tspan y="-29.906" x="287.801">4</tspan></text>
+<path transform="matrix(1,0,0,-1,313.62614,116.94799)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00012207031 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-30.307" x="309.752">&#x2212;</tspan></text>
+<path transform="matrix(1,0,0,-1,339.53715,116.94799)" stroke-width=".3985" stroke-linecap="butt" stroke-miterlimit="10" stroke-linejoin="miter" fill="none" stroke="#ffffff" d="M-12.75597-9.92134H12.75598V9.92134H-12.75597Z"/>
+<text xml:space="preserve" transform="matrix(1 0 -0 1 .00015258789 149.74599)" font-size="9.9626" font-family="Computer Modern" font-style="italic"><tspan y="-30.307" x="335.662">&#x2212;</tspan></text>
+</svg>

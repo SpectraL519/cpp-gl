@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="conceptgl_1_1traits_1_1c__graph" kind="concept">
+    <compoundname>gl::traits::c_graph</compoundname>
+    <includes refid="graph_8hpp" local="no">gl/graph.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename G</type>
+      </param>
+    </templateparamlist>
+    <initializer>template&lt;typename G&gt;
+concept <ref refid="conceptgl_1_1traits_1_1c__graph" kindref="compound">gl::traits::c_graph</ref> =  c_instantiation_of&lt;G, graph&gt;    </initializer>
+    <briefdescription>
+<para>Concept checking if a type is an instantiation of the generic <ref refid="classgl_1_1graph" kindref="compound">gl::graph</ref> graph class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/graph.hpp" line="36" column="1"/>
+  </compounddef>
+</doxygen>

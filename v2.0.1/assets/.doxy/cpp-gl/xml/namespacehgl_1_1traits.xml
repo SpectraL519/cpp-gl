@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacehgl_1_1traits" kind="namespace" language="C++">
+    <compoundname>hgl::traits</compoundname>
+    <innerclass refid="structhgl_1_1traits_1_1swap__repr__tag" prot="public">hgl::traits::swap_repr_tag</innerclass>
+    <innerclass refid="structhgl_1_1traits_1_1swap__repr__tag_3_01hypergraph_3_01hypergraph__traits_3_01Dir_00_01VP_00_5680b44d408a91533b00c1a8cd4feb1c" prot="public">hgl::traits::swap_repr_tag&lt; hypergraph&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt; &gt;, NewReprTag &gt;</innerclass>
+    <innerclass refid="structhgl_1_1traits_1_1swap__repr__tag_3_01hypergraph__traits_3_01Dir_00_01VP_00_01EP_00_01OldReprTag_01_4_00_01NewReprTag_01_4" prot="public">hgl::traits::swap_repr_tag&lt; hypergraph_traits&lt; Dir, VP, EP, OldReprTag &gt;, NewReprTag &gt;</innerclass>
+    <sectiondef kind="typedef">
+      <member refid="group__HGL-Traits_1ga97b54bfc25e85e354efd1e9dc7290c45" kind="typedef"><name>swap_repr_tag_t</name></member>
+    </sectiondef>
+    <briefdescription>
+<para>Traits and concepts for the HGL module. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This namespace contains the definitions of all hypergraph-specifc concepts and type traits used to constrain library types and pulls in all standard graph traits, concept checkers, and metaprogramming utilities from <computeroutput>gl::traits</computeroutput>. Because hypergraphs share the same underlying implementation design and mechanisms as standard graphs, they seamlessly reuse the same fundamental C++20 concepts.</para>
+<para><blockquote><para><zwj/>[!NOTE]</para>
+<para>To get a detailed overview of these shared utilities, please refer to the GL module&apos;s <ref refid="group__GL-Traits" kindref="compound">Traits &amp; Concepts</ref> documentation page. </para>
+</blockquote></para>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/core.hpp" line="128" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_c5eea9bccd937d2a7d22b2a641da6258" kind="dir">
+    <compoundname>include/hgl/algorithm</compoundname>
+    <innerdir refid="dir_8c2d0e552a9bbaa73682304b3d4b0247">include/hgl/algorithm/templates</innerdir>
+    <innerdir refid="dir_96a940c74a468cf0cfb748b0af6b963c">include/hgl/algorithm/traversal</innerdir>
+    <innerfile refid="hgl_2algorithm_2core_8hpp">core.hpp</innerfile>
+    <innerfile refid="hgl_2algorithm_2properties_8hpp">properties.hpp</innerfile>
+    <innerfile refid="hgl_2algorithm_2util_8hpp">util.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/algorithm/"/>
+  </compounddef>
+</doxygen>

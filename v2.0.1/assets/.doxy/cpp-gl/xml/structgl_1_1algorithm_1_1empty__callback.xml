@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1algorithm_1_1empty__callback" kind="struct" language="C++" prot="public">
+    <compoundname>gl::algorithm::empty_callback</compoundname>
+    <includes refid="hgl_2algorithm_2core_8hpp" local="no">hgl/algorithm/core.hpp</includes>
+    <briefdescription>
+<para>A tag type used to explicitly indicate the absence of a callback function. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para><zwj/>[!NOTE] Performance vs. Empty Lambdas</para>
+<para>Passing <computeroutput><ref refid="structgl_1_1algorithm_1_1empty__callback" kindref="compound">empty_callback</ref>{}</computeroutput> is <bold>not</bold> the same as passing an empty lambda (e.g., <computeroutput>[]{}</computeroutput>). Using this explicit tag type allows internal algorithms to use compile-time checks to completely eliminate the callback invocation branch at compile time. This guarantees strict zero-cost abstractions, vastly improves performance in unoptimized/debug builds, and speeds up compilation times. </para>
+</blockquote></para>
+    </detaileddescription>
+    <location file="include/gl/algorithm/core.hpp" line="31" column="1" bodyfile="include/hgl/algorithm/core.hpp" bodystart="31" bodyend="31"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

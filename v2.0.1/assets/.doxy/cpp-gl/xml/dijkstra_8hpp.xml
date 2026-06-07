@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dijkstra_8hpp" kind="file" language="C++">
+    <compoundname>dijkstra.hpp</compoundname>
+    <includes local="yes">gl/algorithm/core.hpp</includes>
+    <includes refid="pfs_8hpp" local="yes">gl/algorithm/templates/pfs.hpp</includes>
+    <includes local="yes">gl/algorithm/util.hpp</includes>
+    <includes local="yes">gl/constants.hpp</includes>
+    <includes refid="gl_2types_2core_8hpp" local="yes">gl/types/core.hpp</includes>
+    <includedby refid="hgl_2algorithm_8hpp" local="yes">include/hgl/algorithm.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/pathfinding/dijkstra.hpp</label>
+        <link refid="dijkstra_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>gl/algorithm/templates/pfs.hpp</label>
+        <link refid="pfs_8hpp_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>gl/algorithm/traits.hpp</label>
+        <link refid="gl_2algorithm_2traits_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>gl/attributes/force_inline.hpp</label>
+        <link refid="force__inline_8hpp_source"/>
+      </node>
+      <node id="11">
+        <label>gl/types/core.hpp</label>
+        <link refid="gl_2types_2core_8hpp"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>concepts</label>
+      </node>
+      <node id="13">
+        <label>cstddef</label>
+      </node>
+      <node id="14">
+        <label>cstdint</label>
+      </node>
+      <node id="5">
+        <label>functional</label>
+      </node>
+      <node id="2">
+        <label>gl/algorithm/core.hpp</label>
+      </node>
+      <node id="6">
+        <label>gl/algorithm/util.hpp</label>
+      </node>
+      <node id="10">
+        <label>gl/constants.hpp</label>
+      </node>
+      <node id="15">
+        <label>optional</label>
+      </node>
+      <node id="8">
+        <label>queue</label>
+      </node>
+      <node id="9">
+        <label>ranges</label>
+      </node>
+      <node id="16">
+        <label>utility</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>include/gl/algorithm/pathfinding/dijkstra.hpp</label>
+        <link refid="dijkstra_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/hgl/algorithm.hpp</label>
+        <link refid="hgl_2algorithm_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structgl_1_1algorithm_1_1paths__descriptor" prot="public">gl::algorithm::paths_descriptor</innerclass>
+    <innerclass refid="structgl_1_1algorithm_1_1dijkstra__search__node" prot="public">gl::algorithm::dijkstra_search_node</innerclass>
+    <innernamespace refid="namespacegl">gl</innernamespace>
+    <innernamespace refid="namespacegl_1_1algorithm">gl::algorithm</innernamespace>
+    <briefdescription>
+<para>Concrete implementation of Dijkstra&apos;s single-source shortest path algorithm and path reconstruction utilities. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/gl/algorithm/pathfinding/dijkstra.hpp"/>
+  </compounddef>
+</doxygen>

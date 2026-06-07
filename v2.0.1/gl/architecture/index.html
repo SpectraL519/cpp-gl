@@ -1,0 +1,2557 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="General-purpose Template Graph and Hypergraph Library for Modern C++">
+      
+      
+      
+      
+        <link rel="prev" href="../quick_start/">
+      
+      
+        <link rel="next" href="../topologies/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/cpp-gl-hex.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Architecture & Basics - CPP-GL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M22%2012a10%2010%200%200%201-10%2010A10%2010%200%200%201%202%2012%2010%2010%200%200%201%2012%202a10%2010%200%200%201%2010%2010m-12%206%206-6-6-6-1.4%201.4%204.6%204.6-4.6%204.6z%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../style/logo.css">
+    
+      <link rel="stylesheet" href="../../style/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-basics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CPP-GL Documentation" class="md-header__button md-logo" aria-label="CPP-GL Documentation" data-md-component="logo">
+      
+  <img src="../../img/cpp-gl-hex.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CPP-GL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture & Basics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.04 7 9.54s-2.94 8.27-7 9.54c.95.3 1.95.46 3 .46a10 10 0 0 0 10-10A10 10 0 0 0 9 2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SpectraL519/cpp-gl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../quick_start/" class="md-tabs__link">
+          
+  
+  
+  GL
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hgl/quick_start/" class="md-tabs__link">
+          
+  
+  
+  HGL
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cpp-gl/modules/" class="md-tabs__link">
+          
+  
+  
+  API Index
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../license/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CPP-GL Documentation" class="md-nav__button md-logo" aria-label="CPP-GL Documentation" data-md-component="logo">
+      
+  <img src="../../img/cpp-gl-hex.png" alt="logo">
+
+    </a>
+    CPP-GL Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SpectraL519/cpp-gl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gl-module-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GL Module Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-representation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Representation Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties-custom-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties &amp; Custom Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topologies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/traversal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concrete Traversals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/pathfinding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pathfinding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/spanning_trees/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanning Trees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/topological_algs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topological Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Topology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topologies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-IO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Traits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traits & Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__GL-Util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HGL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HGL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/conversions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Conversions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/algorithms/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/algorithms/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/algorithms/traversal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concrete Traversals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/algorithms/properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hypergraph Properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hgl/io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-IO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I/O Utility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Traits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traits & Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/group__HGL-Util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Index
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Index
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/annotated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classes & Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/hierarchy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Class Hierarchy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp-gl/files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gl-module-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GL Module Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-representation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Representation Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties-custom-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties &amp; Custom Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture-basics">Architecture &amp; Basics</h1>
+<h2 id="gl-module-overview">GL Module Overview</h2>
+<p>The <strong>GL (Graph Library)</strong> module is engineered around a singular philosophy: provide zero-cost abstractions that do not compromise on flexibility or ergonomics. By strictly utilizing C++20 concepts and template metaprogramming, the library ensures that all configuration—from memory layout to element payloads—is resolved at compile time.</p>
+<p>This section explores the core architectural decisions of the GL module:</p>
+<ul>
+<li><a href="#core-concepts">Core Concepts</a>: Learn how the <code>gl::graph</code> template operates, the difference between IDs and descriptors, and how to navigate topologies.</li>
+<li><a href="#graph-representation-models">Graph Representation Models</a>: Understand the diverse memory models available and their performance characteristics.</li>
+<li><a href="#properties-custom-data">Properties &amp; Custom Data</a>: Discover how to inject arbitrary data directly into your graph elements with strict type safety.</li>
+</ul>
+<hr />
+<h2 id="core-concepts">Core Concepts</h2>
+<h3 id="the-glgraphtraits-template">The <code>gl::graph&lt;Traits&gt;</code> Template</h3>
+<p>At the heart of the library is the <a href="../../cpp-gl/classgl_1_1graph/"><strong>gl::graph</strong></a> class. Unlike traditional object-oriented designs that rely on virtual inheritance, CPP-GL uses a policy-based design. A single template parameter, <code>GraphTraits</code>, dictates the graph's entire structural and behavioral identity.</p>
+<p>The <a href="../../cpp-gl/structgl_1_1graph__traits/"><strong>gl::graph_traits</strong></a> struct configures five key policies:</p>
+<ol>
+<li><strong>Directionality</strong>: Directed vs. Undirected.</li>
+<li><strong>Vertex Properties</strong>: The data payload attached to each vertex.</li>
+<li><strong>Edge Properties</strong>: The data payload attached to each edge.</li>
+<li><strong>Representation Tag</strong>: The underlying memory layout (e.g., Adjacency List).</li>
+<li><strong>ID Type</strong>: The integer type used for internal indexing (defaults to <code>std::uint32_t</code>).</li>
+</ol>
+<p>To reduce boilerplate, the library provides several generic type aliases for the most common configurations:</p>
+<ul>
+<li>
+<p>Based on the directional tag:</p>
+<ul>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-directed_graph"><strong>gl::directed_graph<VP, EP, ReprTag, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-undirected_graph"><strong>gl::undirected_graph<VP, EP, ReprTag, IdType></strong></a></li>
+</ul>
+</li>
+<li>
+<p>Based on the representation tag:</p>
+<ul>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-list_graph"><strong>gl::list_graph<Dir, VP, EP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-flat_list_graph"><strong>gl::flat_list_graph<Dir, VP, EP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-matrix_graph"><strong>gl::matrix_graph<Dir, VP, EP, IdType></strong></a></li>
+<li><a href="../../cpp-gl/group__GL-Core/#typedef-flat_matrix_graph"><strong>gl::flat_matrix_graph<Dir, VP, EP, IdType></strong></a></li>
+</ul>
+</li>
+</ul>
+<h3 id="graph-directionality">Graph Directionality</h3>
+<p>The directional behavior of a graph is governed by injecting a dedicated directional tag into the graph's traits. This configuration dictates the type of the graph and the mathematical nature of its edge set and influences how traversal and degree calculations are performed.</p>
+<p>Formally, a graph <span class="arithmatex">\(G = (V, E)\)</span> consists of a set of vertices <span class="arithmatex">\(V\)</span> and a set of edges <span class="arithmatex">\(E\)</span>:</p>
+<ul>
+<li>
+<p><a href="../../cpp-gl/structgl_1_1directed__t/"><strong>directed_t</strong></a> : Specifies a <strong>directed graph</strong> configuration where edges are defined as ordered pairs <span class="arithmatex">\((u, v)\)</span> such that <span class="arithmatex">\(u, v \in V\)</span>. In this graph type, a connection from vertex <span class="arithmatex">\(u\)</span> to vertex <span class="arithmatex">\(v\)</span> is structurally distinct from a connection from <span class="arithmatex">\(v\)</span> to <span class="arithmatex">\(u\)</span>, and the existence of one directed edge does not imply the existence of the other.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/structgl_1_1undirected__t/"><strong>undirected_t</strong></a> : Edges are unordered pairs <span class="arithmatex">\(\{u, v\}\)</span> where <span class="arithmatex">\(u, v \in V\)</span>. The library automatically manages the bidirectional nature of these connections, ensuring that an edge between <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> is recognized during both traversal and structural degree calculations regardless of the order of endpoints.</p>
+</li>
+</ul>
+<h3 id="ids-vs-descriptors">IDs vs. Descriptors</h3>
+<p>The library exposes a dual API to balance raw performance with ergonomic property access:</p>
+<ul>
+<li>
+<p><strong>IDs</strong> (<code>id_type</code>): Raw integers used to uniquely identify vertices and edges. Methods suffixing in <code>_ids</code> (e.g., <code>vertex_ids</code>, <code>neighbor_ids</code>) operate strictly on these identifiers.</p>
+</li>
+<li>
+<p><strong>Descriptors</strong>: Lightweight wrapper objects providing a higher-level interface for graph elements:</p>
+<ul>
+<li>
+<p><a href="../../cpp-gl/classgl_1_1vertex__descriptor/"><strong>vertex_descriptor</strong></a>: Binds a vertex ID with an optional reference to its property payload.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/classgl_1_1edge__descriptor/"><strong>edge_descriptor</strong></a>: Binds an edge ID, the IDs of its source and target vertices, and an optional reference to its property payload.</p>
+</li>
+</ul>
+<p>Descriptors are returned by non-suffixed traversal methods (e.g., <code>vertices</code>, <code>neighbors</code>, <code>out_edges</code>).</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">API Performance</p>
+<p>If your algorithms only require topological information (like connectivity or degrees), prefer the ID-based API to avoid the slight overhead of constructing descriptors and binding property references.</p>
+</div>
+<h3 id="descriptor-lifetimes-and-invalidation">Descriptor Lifetimes and Invalidation</h3>
+<p>Because CPP-GL prioritizes cache-friendly contiguous memory, operations that modify the graph's topology may invalidate previously returned descriptors. Understanding these rules is critical for writing safe and stable graph mutations.</p>
+<h4 id="1-insertion-stability-adding-elements">1. Insertion Stability (Adding Elements)</h4>
+<p>When you add new vertices or edges to the graph, the library guarantees that existing IDs remain perfectly stable. However, descriptor stability depends entirely on your property configuration:</p>
+<ul>
+<li>
+<p><strong>Without Properties:</strong> If your graph elements carry no properties (use <a href="../../cpp-gl/structgl_1_1empty__properties/"><strong>gl::empty_properties</strong></a>), descriptors are <strong>completely insertion-stable</strong>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Because a property-less vertex descriptor is essentially just a wrapper around an ID, there is zero overhead to using it instead of a raw ID, and it will never invalidate when new elements are added.</p>
+<p>This means that performing operations like the following are completely safe:
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">e1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">v2</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">v3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_vertex</span><span class="p">();</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">e2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">);</span>
+</span></code></pre></div></p>
+</div>
+</li>
+<li>
+<p><strong>With Properties:</strong> If your graph elements carry custom properties, adding new elements may trigger a memory reallocation in the underlying property vectors. While the IDs remain valid, the memory references stored inside existing descriptors will dangle. Therefore, property-bound descriptors are <strong>not insertion-stable</strong>.</p>
+</li>
+</ul>
+<h4 id="2-erasure-stability-removing-elements">2. Erasure Stability (Removing Elements)</h4>
+<p>Because removing elements causes the internal memory to shift and pack tightly to prevent fragmentation, descriptors and IDs are <strong>not erase-stable</strong>:</p>
+<ul>
+<li>
+<p><strong>Without Properties:</strong> Invalidates all previously stored edge descriptors and edge IDs (as higher IDs shift down). Vertex descriptors remain completely valid.</p>
+</li>
+<li>
+<p><strong>Removing a Vertex:</strong> Invalidates both vertex and edge descriptors, as well as all IDs.</p>
+</li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Best Practice: Store IDs, not Descriptors</p>
+<p>As a general architectural rule: if your algorithm modifies the graph topology, or if you need to store references to graph elements long-term, store the stable element IDs (id_type). Fetch fresh descriptors via <code>graph.vertex(id)</code> or <code>graph.edge(...)</code> only at the exact moment you need to access or mutate the properties.</p>
+</div>
+<h3 id="edge-endpoints-incidence">Edge Endpoints &amp; Incidence</h3>
+<p>The <a href="../../cpp-gl/classgl_1_1edge__descriptor/"><strong>edge_descriptor</strong></a> class provides a rich interface for querying endpoint connectivity and incidence without needing to reference the parent graph:</p>
+<ul>
+<li><strong><code>.source()</code></strong>: Returns the ID of the vertex where the edge begins.</li>
+<li><strong><code>.target()</code></strong>: Returns the ID of the vertex where the edge ends.</li>
+<li><strong><code>.other(vertex_id)</code></strong>: Given one incident vertex ID, returns the opposite endpoint.</li>
+<li><strong><code>.is_incident_with(vertex_id)</code></strong>: Returns <code>true</code> if the given vertex is either the source or the target.</li>
+<li><strong><code>.is_loop()</code></strong>: Returns <code>true</code> if the source and target are the exact same vertex.</li>
+</ul>
+<h3 id="basic-iteration">Basic Iteration</h3>
+<p>The <a href="../../cpp-gl/classgl_1_1graph/"><strong>gl::graph</strong></a> provides STL-compatible, lazily evaluated views for seamless traversal using range-based for loops or <code>&lt;ranges&gt;</code> algorithms:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">vertices</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">edge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">out_edges</span><span class="p">(</span><span class="n">vertex</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="c1">// ...</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">neighbor_id</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">neighbor_ids</span><span class="p">(</span><span class="n">source_id</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (3)!</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Iterate over all vertex descriptors in the graph.</li>
+<li>Iterate over all edges leaving the current vertex.</li>
+<li>Iterate over the neighbor IDs of a specific vertex</li>
+</ol>
+<hr />
+<h2 id="graph-representation-models">Graph Representation Models</h2>
+<p>Choosing the correct memory layout is critical for algorithmic performance. CPP-GL abstracts this choice entirely behind the <code>ReprTag</code>, allowing you to swap layouts without altering a single line of traversal code.</p>
+<h3 id="fundamental-representations">Fundamental Representations</h3>
+<p>At their core, graph data structures differ in how they map vertices to their connections. While the library may expand to include other formats (such as CSR, Edge Lists, or Incidence Matrices), the primary models are based on the following architectures:</p>
+<p>Consider the following graph:</p>
+<div align="center">
+<p><img alt="Undirected Graph Light" src="../../img/doc/light/undir-graph.svg#only-light" width="300" />
+<img alt="Undirected Graph Dark" src="../../img/doc/dark/undir-graph.svg#only-dark" width="300" /></p>
+</div>
+<ul>
+<li><strong>Adjacency Lists</strong>: This model stores only the vertices and the edges that actively exist in the graph. By mapping each vertex to a dynamic list of its immediate neighbors, this approach is highly space-efficient for sparse graphs and allows rapid iteration over local neighborhoods.</li>
+<li><strong>Adjacency Matrices</strong>: This model allocates a full <span class="arithmatex">\(\vert V \vert \times \vert V \vert\)</span> grid, where each cell represents a potential connection. While they consume significantly more memory (<span class="arithmatex">\(O(\vert V \vert^2)\)</span>), they provide instant <span class="arithmatex">\(O(1)\)</span> edge-existence lookups, making them ideal for dense networks.</li>
+</ul>
+<h3 id="available-representation-models">Available Representation Models</h3>
+<p>CPP-GL currently categorizes its memory layouts into two primary families based on their underlying memory allocation strategy.</p>
+<div class="admonition note">
+<p class="admonition-title">All representation model tag types are defined in the <code>gl::repr</code> namespace.</p>
+</div>
+<h4 id="standard-models">Standard Models</h4>
+<p>Heap-allocated, nested structures that prioritize flexibility and dynamic structural modification.</p>
+<ul>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1list__t/"><strong>list_t</strong></a>: A standard Adjacency List model implemented using traditional nested containers (e.g., <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>).</li>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1matrix__t/"><strong>matrix_t</strong></a>: A standard Adjacency Matrix model implemented using traditional nested containers.</li>
+</ul>
+<h3 id="flat-models">Flat Models</h3>
+<p>Contiguous 1D memory blocks that prioritize cache locality and maximum traversal speed over modification speed.</p>
+<ul>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1flat__list__t/"><strong>flat_list_t</strong></a>: A flattened Adjacency List model implemented using the generic <a href="../../cpp-gl/classgl_1_1flat__jagged__vector/"><strong>flat_jagged_vector</strong></a> data structure.</li>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1flat__matrix__t/"><strong>flat_matrix_t</strong></a>: A flattened Adjacency Matrix model implemented using the generic <a href="../../cpp-gl/classgl_1_1flat__matrix/"><strong>flat_matrix</strong></a> data structure.</li>
+</ul>
+<h3 id="topology-support-simple-graphs-and-multigraphs">Topology Support: Simple Graphs and Multigraphs</h3>
+<p>The chosen representation model strictly dictates the graph's capability to store multiple edges between the exact same pair of vertices:</p>
+<ul>
+<li><strong>Simple Graphs</strong> allow at most one edge between any distinct pair of vertices.</li>
+<li><strong>Multigraphs</strong> allow multiedges (multiple connections between a given pair of vertices <span class="arithmatex">\((u, v)\)</span>).</li>
+</ul>
+<p>Adjacency Matrix models use a single, distinct cell for any given <span class="arithmatex">\((u, v)\)</span> pair. Because of this, they inherently enforce a <strong>simple graph</strong> topology.</p>
+<p>Adjacency List models append edges sequentially, inherently supporting <strong>multigraphs</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Adjacency Lists and Simple Graphs</p>
+<p>It is entirely possible to represent a simple graph using a list-based model. However, the data structure itself will not prevent the insertion of duplicate edges. Hence, when using a model capable of representing multigraphs to represent a simple graph, the responsibility of ensuring no multiedges are added to the graph falls entirely on the user.</p>
+</div>
+<h3 id="edge-aware-representations">Edge-Aware Representations</h3>
+<p>Traditional graph data structures often store only boolean values or raw weights. However, the core models currently implemented in CPP-GL are explicitly <strong>edge-aware</strong>.</p>
+<p>Being "edge-aware" means that the internal representation stores the specific <code>edge_id</code> alongside the topological connection. This architecture guarantees that the set of edge IDs remains a tightly packed, contiguous sequence (from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(\vert E \vert - 1\)</span>). This allows users to store custom edge properties in standard, flat <code>std::vector</code>s and access them with instant <span class="arithmatex">\(O(1)\)</span> performance directly using the <code>edge_id</code>, eliminating the need for expensive secondary map lookups.</p>
+<div class="admonition note">
+<p class="admonition-title">Edge-Unaware Representations</p>
+<p>Future iterations of the library may introduce <strong>edge-unaware</strong> representations for maximum memory efficiency, such as a packed boolean adjacency matrices where the edge ID is calculated mathematically as <span class="arithmatex">\(u \times \vert V \vert + v\)</span>, rather than explicitly stored in memory.</p>
+</div>
+<h4 id="standard-memory-models">Standard Memory Models</h4>
+<p>The standard model implementations utilize traditional, nested 2D containers (e.g., <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>).</p>
+<p>These models are highly flexible. Because the inner containers can grow independently, they handle structural modifications, like adding vertices or edges, gracefully. The trade-off is that the memory is fragmented across the heap, which can lead to cache misses during heavy graph traversals.</p>
+<div align="center">
+<p><img alt="Undirected Graph Standard Representation" src="../../img/doc/light/undir-graph-repr-std.svg#only-light" width="700" />
+<img alt="Undirected Graph Standard Representation" src="../../img/doc/dark/undir-graph-repr-std.svg#only-dark" width="700" /></p>
+</div>
+<h4 id="flat-memory-models">Flat Memory Models</h4>
+<p>To maximize cache locality, the flat representations map the logical 2D structures into contiguous 1D memory blocks.</p>
+<p>By keeping all vertex and edge data in adjacent memory blocks, these models provide the absolute maximum traversal speed. However, this cache-friendliness comes at a structural cost: because all data is packed tightly, modifying an inner segment (such as adding a new edge to a vertex's list) requires shifting the entire remainder of the flat container in memory - unlike standard models, which only shift the localized inner container. Furthermore, modifications that exceed the pre-allocated contiguous capacity (like adding vertices) often require an expensive reallocation of the entire underlying memory block.</p>
+<div align="center">
+<p><img alt="Undirected Graph Flat Representation" src="../../img/doc/light/undir-graph-repr-flat.svg#only-light" width="700" />
+<img alt="Undirected Graph Flat Representation" src="../../img/doc/dark/undir-graph-repr-flat.svg#only-dark" width="700" /></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Flat List Model Performance</p>
+<p>While the flat adjacency list model is highly efficient for graph storage and traversal, it is highly inefficient to construct element-by-element. The most efficient approach for utilizing flat list graphs is to construct your graph using the standard list model first, and then convert it into the flat list model using the generic <a href="../../cpp-gl/group__GL-Core/#function-to"><strong>gl::to</strong></a> conversion function. This exact methodology is utilized internally by the <a href="../topologies/"><strong>graph topology generators</strong></a> defined within the library.</p>
+</div>
+<h3 id="operation-complexities">Operation Complexities</h3>
+<p>Depending on the chosen representation model, the computational complexity of standard graph operations will differ. The table below outlines these complexities.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Operation</th>
+<th style="text-align: left;">Standard List</th>
+<th style="text-align: left;">Flat List</th>
+<th style="text-align: left;">Standard Matrix</th>
+<th style="text-align: left;">Flat Matrix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Add Vertex</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert^2)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Remove Vertex</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert^2)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert^2)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Add Edge</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span> amortized</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Remove Edge</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Check Edge Exists</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Iterate Out-Edges</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Iterate In-Edges <br/> (Undirected Graphs)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(deg(v))\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Iterate In-Edges <br/> (Directed Graphs)</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Iterate All Edges</td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert + \vert E \vert)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert^2)\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(O(\vert V \vert^2)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="choosing-the-layout">Choosing the Layout</h3>
+<p>Selecting the right <code>ReprTag</code> is a balance of your specific operational needs - use:</p>
+<ul>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1list__t/"><strong>list_t</strong></a> for highly dynamic, sparse graphs where the topology changes frequently.</li>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1flat__list__t/"><strong>flat_list_t</strong></a> for static, sparse graphs where traversal speed and cache locality are paramount.</li>
+<li><a href="../../cpp-gl/structgl_1_1repr_1_1matrix__t/"><strong>matrix_t</strong></a> (or <a href="../../cpp-gl/structgl_1_1repr_1_1flat__matrix__t/"><strong>flat_matrix_t</strong></a> if structure is entirely static) for highly dense graphs (where <span class="arithmatex">\(\vert E \vert \approx \vert V \vert^2\)</span>) when instant <span class="arithmatex">\(O(1)\)</span> edge lookups are strictly required and memory footprint is not a bottleneck.</li>
+</ul>
+<hr />
+<h2 id="properties-custom-data">Properties &amp; Custom Data</h2>
+<p>To make the library useful for real-world applications (like game development or network analysis), CPP-GL allows you to seamlessly inject arbitrary data directly into vertices and edges.</p>
+<h3 id="injection-and-access">Injection and Access</h3>
+<p>Properties are defined via the <code>VertexProperties</code> and <code>EdgeProperties</code> template parameters of <a href="../../cpp-gl/structgl_1_1graph__traits/"><strong>gl::graph_traits</strong></a>. If a graph has no properties, it utilizes the zero-overhead <a href="../../cpp-gl/structgl_1_1empty__properties/"><strong>gl::empty_properties</strong></a> tag.</p>
+<p>When custom properties are defined, they can be accessed and mutated through three primary interfaces:</p>
+<ol>
+<li>
+<p><strong>Descriptor Access:</strong> If you hold a valid vertex or edge descriptor, you can interact with its payload directly using the overloaded arrow (<code>-&gt;</code>) and dereference (<code>*</code>) operators, or explicitly via the <code>.properties()</code> method.</p>
+</li>
+<li>
+<p><strong>Direct ID Lookups:</strong> You can fetch mutable property references directly from the graph using an element's raw ID via <code>graph.vertex_properties(id)</code> and <code>graph.edge_properties(id)</code>.</p>
+</li>
+<li>
+<p><strong>Global Property Maps:</strong> For algorithms that require viewing or iterating over all payloads simultaneously, you can retrieve a lazily-evaluated, random-access view of the entire underlying property collection via <code>graph.vertex_properties_map()</code> and <code>graph.edge_properties_map()</code>.</p>
+</li>
+</ol>
+<h3 id="built-in-properties">Built-In Properties</h3>
+<p>The library includes several robust, ready-to-use property structures, including:</p>
+<ul>
+<li>
+<p><a href="../../cpp-gl/structgl_1_1name__property/"><strong>gl::name_property</strong></a>: Injects a simple quoted std::string identifier mapped to the element.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/structgl_1_1weight__property/"><strong>gl::weight_property</strong></a>: Injects an arithmetic weight field (defaults to double). Used extensively by pathfinding and MST algorithms.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/structgl_1_1binary__color__property/"><strong>gl::binary_color_property</strong></a>: Injects a lightweight, byte-sized state indicator (Black, White, Unset). It is specifically designed to support graph coloring algorithms, bipartition checks, and cycle detection.</p>
+</li>
+<li>
+<p><a href="../../cpp-gl/classgl_1_1dynamic__properties/"><strong>gl::dynamic_properties</strong></a>: Injects a type-safe container for heterogeneous properties stored via string keys. This allows for the dynamic attachment and retrieval of arbitrary, type-erased (std::any) data at runtime without requiring compile-time knowledge.</p>
+</li>
+</ul>
+<h3 id="injecting-custom-property-types">Injecting Custom Property Types</h3>
+<p>CPP-GL's concepts only require that your custom property type is <em>semiregular</em> (default constructible and copyable). This allows you to attach custom, complex property types directly into the graph without requiring associative look-up tables.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">GameNode</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">hit_points</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">is_safe_zone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">};</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">using</span><span class="w"> </span><span class="n">traits_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">::</span><span class="n">directed_graph_traits</span><span class="o">&lt;</span><span class="n">GameNode</span><span class="p">,</span><span class="w"> </span><span class="n">gl</span><span class="o">::</span><span class="n">weight_property</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">gl</span><span class="o">::</span><span class="n">graph</span><span class="o">&lt;</span><span class="n">traits_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="k">auto</span><span class="w"> </span><span class="n">v1_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_vertex_with</span><span class="p">(</span><span class="n">GameNode</span><span class="p">{</span><span class="s">&quot;Spawn Point&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">999</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">}).</span><span class="n">id</span><span class="p">();</span><span class="w"> </span><span class="c1">// (3)!</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">v2_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">add_vertex_with</span><span class="p">(</span><span class="n">GameNode</span><span class="p">{</span><span class="s">&quot;Enemy Camp&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">}).</span><span class="n">id</span><span class="p">();</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">graph</span><span class="p">[</span><span class="n">v2_id</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">hit_points</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="c1">// (4)!</span>
+</span></code></pre></div>
+<ol>
+<li>Define a custom vertex/node data payload.</li>
+<li>Inject the custom properties into the graph. Here <code>GameNode</code> represents the vertex properties and <code>gl::weight_property&lt;int&gt;</code> the edge properties.</li>
+<li>Add vertices and store their IDs (<strong>NOTE:</strong> Property-holding descriptors are not insertion-stable).</li>
+<li>Fetch a fresh vertex descriptor using the <code>[]</code> operator to safely access or mutate the property.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy", "content.code.select", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../scripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

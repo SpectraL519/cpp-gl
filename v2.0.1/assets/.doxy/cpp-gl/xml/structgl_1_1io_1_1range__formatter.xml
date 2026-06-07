@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1io_1_1range__formatter" kind="struct" language="C++" prot="public">
+    <compoundname>gl::io::range_formatter</compoundname>
+    <includes refid="io_2ranges_8hpp" local="no">gl/io/ranges.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>std::ranges::range</type>
+        <declname>R</declname>
+        <defname>R</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1io_1_1range__formatter_1a9f6d12b3a1d6cb7b2e11eb976664b65c" prot="public" static="no" mutable="no">
+        <type>R</type>
+        <definition>R gl::io::range_formatter&lt; R &gt;::range</definition>
+        <argsstring></argsstring>
+        <name>range</name>
+        <qualifiedname>gl::io::range_formatter::range</qualifiedname>
+        <briefdescription>
+<para>The underlying range view being formatted. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="42" column="7" bodyfile="include/gl/io/ranges.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1io_1_1range__formatter_1a5a6970069b16c6c83301f3d079501fe5" prot="public" static="no" mutable="no">
+        <type>std::string_view</type>
+        <definition>std::string_view gl::io::range_formatter&lt; R &gt;::sep</definition>
+        <argsstring></argsstring>
+        <name>sep</name>
+        <qualifiedname>gl::io::range_formatter::sep</qualifiedname>
+        <initializer>= &quot;, &quot;</initializer>
+        <briefdescription>
+<para>The string separating each element. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="44" column="22" bodyfile="include/gl/io/ranges.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1io_1_1range__formatter_1aff34450d72e5c780628e24633270ebd2" prot="public" static="no" mutable="no">
+        <type>std::string_view</type>
+        <definition>std::string_view gl::io::range_formatter&lt; R &gt;::open</definition>
+        <argsstring></argsstring>
+        <name>open</name>
+        <qualifiedname>gl::io::range_formatter::open</qualifiedname>
+        <initializer>= &quot;[&quot;</initializer>
+        <briefdescription>
+<para>The opening string/bracket. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="46" column="22" bodyfile="include/gl/io/ranges.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1io_1_1range__formatter_1acf1c7bc1161a2821e5aac5e3e5850ffb" prot="public" static="no" mutable="no">
+        <type>std::string_view</type>
+        <definition>std::string_view gl::io::range_formatter&lt; R &gt;::close</definition>
+        <argsstring></argsstring>
+        <name>close</name>
+        <qualifiedname>gl::io::range_formatter::close</qualifiedname>
+        <initializer>= &quot;]&quot;</initializer>
+        <briefdescription>
+<para>The closing string/bracket. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="48" column="22" bodyfile="include/gl/io/ranges.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structgl_1_1io_1_1range__formatter_1a6e77f9423c6d5ebc6984a259873363c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, range_formatter formatter)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::io::range_formatter::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">range_formatter</ref></type>
+          <declname>formatter</declname>
+        </param>
+        <briefdescription>
+<para>Serializes the formatted range to an output stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target output stream. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>formatter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The configured formatter instance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The stream reference for chaining. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="54" column="12" bodyfile="include/gl/io/ranges.hpp" bodystart="54" bodyend="65"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A customizable stream proxy for formatting and printing C++ ranges. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This struct acts as a wrapper around any <computeroutput>std::ranges::range</computeroutput>, allowing it to be piped into a standard output stream with configurable separators and bounding characters.</para>
+<sect3 id="structgl_1_1io_1_1range__formatter_1example-usage-17">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vec</ref><sp/>=<sp/>{1,<sp/>2,<sp/>3};</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref>{<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vec</ref>}<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/><ref refid="structgl_1_1io_1_1range__formatter" kindref="compound">gl::io::range_formatter</ref>{<ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">vec</ref>,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>|<sp/>&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;&lt;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;&gt;&quot;</highlight><highlight class="normal">}<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para><bold>Output:</bold> <programlisting filename=".text"><codeline><highlight class="normal">[1,<sp/>2,<sp/>3]</highlight></codeline>
+<codeline><highlight class="normal">&lt;1<sp/>|<sp/>2<sp/>|<sp/>3&gt;</highlight></codeline>
+</programlisting></para>
+</sect3>
+<sect3 id="structgl_1_1io_1_1range__formatter_1see-also-27">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ref refid="group__GL-IO_1ga53e1e6926f47023bf3efb4c3841611d9" kindref="member">set_formatter</ref></para>
+</listitem><listitem><para><ref refid="group__GL-IO_1ga94b8e7bd6b489233065d9f97a90257c6" kindref="member">multiline_set_formatter</ref></para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>R</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The specific type of the range being formatted. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/io/ranges.hpp" line="40" column="1" bodyfile="include/gl/io/ranges.hpp" bodystart="40" bodyend="66"/>
+    <listofallmembers>
+      <member refid="structgl_1_1io_1_1range__formatter_1acf1c7bc1161a2821e5aac5e3e5850ffb" prot="public" virt="non-virtual"><scope>gl::io::range_formatter</scope><name>close</name></member>
+      <member refid="structgl_1_1io_1_1range__formatter_1aff34450d72e5c780628e24633270ebd2" prot="public" virt="non-virtual"><scope>gl::io::range_formatter</scope><name>open</name></member>
+      <member refid="structgl_1_1io_1_1range__formatter_1a6e77f9423c6d5ebc6984a259873363c9" prot="public" virt="non-virtual"><scope>gl::io::range_formatter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="structgl_1_1io_1_1range__formatter_1a9f6d12b3a1d6cb7b2e11eb976664b65c" prot="public" virt="non-virtual"><scope>gl::io::range_formatter</scope><name>range</name></member>
+      <member refid="structgl_1_1io_1_1range__formatter_1a5a6970069b16c6c83301f3d079501fe5" prot="public" virt="non-virtual"><scope>gl::io::range_formatter</scope><name>sep</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,350 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classgl_1_1io_1_1options__manip" kind="class" language="C++" prot="public">
+    <compoundname>gl::io::options_manip</compoundname>
+    <includes refid="options__manip_8hpp" local="no">gl/io/options_manip.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgl_1_1io_1_1options__manip_1a81b554445c7ef3738f3555049a15e084" prot="private" static="no" mutable="no">
+        <type><ref refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kindref="member">iword_type</ref></type>
+        <definition>iword_type gl::io::options_manip::_set_mask</definition>
+        <argsstring></argsstring>
+        <name>_set_mask</name>
+        <qualifiedname>gl::io::options_manip::_set_mask</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="107" column="16" bodyfile="include/gl/io/options_manip.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgl_1_1io_1_1options__manip_1afb8a702567be02d8c129730c7f75199d" prot="private" static="no" mutable="no">
+        <type><ref refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kindref="member">iword_type</ref></type>
+        <definition>iword_type gl::io::options_manip::_clear_mask</definition>
+        <argsstring></argsstring>
+        <name>_clear_mask</name>
+        <qualifiedname>gl::io::options_manip::_clear_mask</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="108" column="16" bodyfile="include/gl/io/options_manip.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1a9e9aed09813cde2fd2d12a9c3416ea39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gl::io::options_manip::options_manip</definition>
+        <argsstring>()=delete</argsstring>
+        <name>options_manip</name>
+        <qualifiedname>gl::io::options_manip::options_manip</qualifiedname>
+        <briefdescription>
+<para>Default constructor is disabled. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="43" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1a94b1822772b4e172c10d54c9aa7fbb97" prot="public" static="no" constexpr="yes" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">constexpr</ref></type>
+        <definition>constexpr gl::io::options_manip::options_manip</definition>
+        <argsstring>(iword_type set_mask, iword_type clear_mask=0ul)</argsstring>
+        <name>options_manip</name>
+        <qualifiedname>gl::io::options_manip::options_manip</qualifiedname>
+        <param>
+          <type><ref refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kindref="member">iword_type</ref></type>
+          <declname>set_mask</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kindref="member">iword_type</ref></type>
+          <declname>clear_mask</declname>
+          <defval>0ul</defval>
+        </param>
+        <briefdescription>
+<para>Constructs a manipulator with specific state masks. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>set_mask</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bitmask of options to enable. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>clear_mask</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bitmask of options to disable (defaults to 0). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="48" column="24" bodyfile="include/gl/io/options_manip.hpp" bodystart="48" bodyend="49"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classgl_1_1io_1_1options__manip_1af478adda27386151d3d9c26a63c798bb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const options_manip &amp;manip)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::io::options_manip::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1io_1_1options__manip" kindref="compound">options_manip</ref> &amp;</type>
+          <declname>manip</declname>
+        </param>
+        <briefdescription>
+<para>Applies the manipulator&apos;s formatting masks to an output stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target output stream. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>manip</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The manipulator containing the masks to apply. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The stream reference for chaining. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="55" column="12" bodyfile="include/gl/io/options_manip.hpp" bodystart="55" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="friend" id="classgl_1_1io_1_1options__manip_1aa3cfd7e157afe7c76313ca6269fde825" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::istream &amp;</type>
+        <definition>std::istream &amp; operator&gt;&gt;</definition>
+        <argsstring>(std::istream &amp;is, const options_manip &amp;manip)</argsstring>
+        <name>operator&gt;&gt;</name>
+        <qualifiedname>gl::io::options_manip::operator&gt;&gt;</qualifiedname>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">const</ref> <ref refid="classgl_1_1io_1_1options__manip" kindref="compound">options_manip</ref> &amp;</type>
+          <declname>manip</declname>
+        </param>
+        <briefdescription>
+<para>Applies the manipulator&apos;s formatting masks to an input stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>is</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target input stream. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>manip</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The manipulator containing the masks to apply. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The stream reference for chaining. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="65" column="25" bodyfile="include/gl/io/options_manip.hpp" bodystart="65" bodyend="69"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1a7d0321905db1ffb5334f44b212615021" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>static bool gl::io::options_manip::is_option_set</definition>
+        <argsstring>(std::ios_base &amp;stream, bit_position_type bit_position)</argsstring>
+        <name>is_option_set</name>
+        <qualifiedname>gl::io::options_manip::is_option_set</qualifiedname>
+        <param>
+          <type>std::ios_base &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-IO_1ga367a38e47adbd342d750d1c49a6e7e79" kindref="member">bit_position_type</ref></type>
+          <declname>bit_position</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific option bit is currently enabled on the given stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bit_position</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The numeric position of the bit to verify. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the specified bit is set, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="75" column="19" bodyfile="include/gl/io/options_manip.hpp" bodystart="75" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1abaaa412d68e6d20f3b1584078016f490" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>static bool gl::io::options_manip::is_option_set</definition>
+        <argsstring>(std::ios_base &amp;stream, traits::c_enum auto bit)</argsstring>
+        <name>is_option_set</name>
+        <qualifiedname>gl::io::options_manip::is_option_set</qualifiedname>
+        <param>
+          <type>std::ios_base &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type>traits::c_enum <ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">auto</ref></type>
+          <declname>bit</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific enum-based option is currently enabled on the given stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The scoped enum value representing the bit to verify. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the specified bit is set, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="85" column="19" bodyfile="include/gl/io/options_manip.hpp" bodystart="85" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1a476aa00705a1db4dad40396fe768ae4e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-Core_1gaaae078e2ee09bb6b088baac9cb8f23c9" kindref="member">bool</ref></type>
+        <definition>static bool gl::io::options_manip::are_options_set</definition>
+        <argsstring>(std::ios_base &amp;stream, iword_type bitmask)</argsstring>
+        <name>are_options_set</name>
+        <qualifiedname>gl::io::options_manip::are_options_set</qualifiedname>
+        <param>
+          <type>std::ios_base &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="group__GL-IO_1ga404d65bf5ef346598100059b24ac044b" kindref="member">iword_type</ref></type>
+          <declname>bitmask</declname>
+        </param>
+        <briefdescription>
+<para>Checks if a specific sequence of bits matches the exact stream state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bitmask</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The bitmask to verify against the stream&apos;s state. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if all bits within the mask are strictly set, <computeroutput>false</computeroutput> otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="95" column="19" bodyfile="include/gl/io/options_manip.hpp" bodystart="95" bodyend="99"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="classgl_1_1io_1_1options__manip_1a4415116edd28caddd605838add93071e" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__GL-IO_1ga08c35c0ffe116790c8e63ecc88a1df88" kindref="member">index_type</ref></type>
+        <definition>static index_type gl::io::options_manip::_iostream_property_map_index</definition>
+        <argsstring>()</argsstring>
+        <name>_iostream_property_map_index</name>
+        <qualifiedname>gl::io::options_manip::_iostream_property_map_index</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/options_manip.hpp" line="102" column="25" bodyfile="include/gl/io/options_manip.hpp" bodystart="102" bodyend="105"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A custom stream manipulator for modifying formatting options on standard I/O streams. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Utilizing <computeroutput>std::ios_base::xalloc</computeroutput> and the <computeroutput>iword</computeroutput> map, this class safely injects custom formatting state directly into C++ standard streams. It acts as an intermediate proxy object produced by functions like <ref refid="group__GL-IO_1gafe2c3049d2e45d49e6188cd2f0dd28ac" kindref="member">set_options</ref> and <ref refid="group__GL-IO_1ga0ac99b7c4feb0c19522b5ab5af6bdff4" kindref="member">clear_options</ref>. </para>
+    </detaileddescription>
+    <location file="include/gl/io/options_manip.hpp" line="40" column="1" bodyfile="include/gl/io/options_manip.hpp" bodystart="40" bodyend="109"/>
+    <listofallmembers>
+      <member refid="classgl_1_1io_1_1options__manip_1afb8a702567be02d8c129730c7f75199d" prot="private" virt="non-virtual"><scope>gl::io::options_manip</scope><name>_clear_mask</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a4415116edd28caddd605838add93071e" prot="private" virt="non-virtual"><scope>gl::io::options_manip</scope><name>_iostream_property_map_index</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a81b554445c7ef3738f3555049a15e084" prot="private" virt="non-virtual"><scope>gl::io::options_manip</scope><name>_set_mask</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a476aa00705a1db4dad40396fe768ae4e" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>are_options_set</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a7d0321905db1ffb5334f44b212615021" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>is_option_set</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1abaaa412d68e6d20f3b1584078016f490" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>is_option_set</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1af478adda27386151d3d9c26a63c798bb" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1aa3cfd7e157afe7c76313ca6269fde825" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a9e9aed09813cde2fd2d12a9c3416ea39" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>options_manip</name></member>
+      <member refid="classgl_1_1io_1_1options__manip_1a94b1822772b4e172c10d54c9aa7fbb97" prot="public" virt="non-virtual"><scope>gl::io::options_manip</scope><name>options_manip</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

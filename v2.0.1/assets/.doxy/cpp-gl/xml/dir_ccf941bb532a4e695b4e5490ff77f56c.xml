@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_ccf941bb532a4e695b4e5490ff77f56c" kind="dir">
+    <compoundname>include/hgl</compoundname>
+    <innerdir refid="dir_c5eea9bccd937d2a7d22b2a641da6258">include/hgl/algorithm</innerdir>
+    <innerdir refid="dir_8368b15857b8f93930510cf7068127b6">include/hgl/decl</innerdir>
+    <innerdir refid="dir_8419521a14b594c5362e3e3a6b8dfba2">include/hgl/impl</innerdir>
+    <innerdir refid="dir_20ac247ca5cfd58bbf1dd6fd77942fc7">include/hgl/io</innerdir>
+    <innerdir refid="dir_e5528d3ed04ddd122cb0665c34ebe369">include/hgl/repr</innerdir>
+    <innerfile refid="hgl_2algorithm_8hpp">algorithm.hpp</innerfile>
+    <innerfile refid="hgl_2constants_8hpp">constants.hpp</innerfile>
+    <innerfile refid="hgl_2conversion_8hpp">conversion.hpp</innerfile>
+    <innerfile refid="hgl_2directional__tags_8hpp">directional_tags.hpp</innerfile>
+    <innerfile refid="hypergraph_8hpp">hypergraph.hpp</innerfile>
+    <innerfile refid="hypergraph__elements_8hpp">hypergraph_elements.hpp</innerfile>
+    <innerfile refid="hypergraph__traits_8hpp">hypergraph_traits.hpp</innerfile>
+    <innerfile refid="hgl_2io_8hpp">io.hpp</innerfile>
+    <innerfile refid="hgl_2traits_8hpp">traits.hpp</innerfile>
+    <innerfile refid="types_8hpp">types.hpp</innerfile>
+    <innerfile refid="hgl_2util_8hpp">util.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/hgl/"/>
+  </compounddef>
+</doxygen>

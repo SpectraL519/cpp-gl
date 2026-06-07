@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structgl_1_1io_1_1implicit__range__formatter" kind="struct" language="C++" prot="public">
+    <compoundname>gl::io::implicit_range_formatter</compoundname>
+    <includes refid="io_2ranges_8hpp" local="no">gl/io/ranges.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>std::integral</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgl_1_1io_1_1implicit__range__formatter_1a4603a787da2f7e894509c1b5d5be8c83" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T gl::io::implicit_range_formatter&lt; T &gt;::first</definition>
+        <argsstring></argsstring>
+        <name>first</name>
+        <qualifiedname>gl::io::implicit_range_formatter::first</qualifiedname>
+        <briefdescription>
+<para>The starting bound of the range. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="176" column="7" bodyfile="include/gl/io/ranges.hpp" bodystart="176" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgl_1_1io_1_1implicit__range__formatter_1a6fb924202ae342bce25b8e887cc856eb" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T gl::io::implicit_range_formatter&lt; T &gt;::last</definition>
+        <argsstring></argsstring>
+        <name>last</name>
+        <qualifiedname>gl::io::implicit_range_formatter::last</qualifiedname>
+        <briefdescription>
+<para>The exclusive ending bound of the range. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="178" column="7" bodyfile="include/gl/io/ranges.hpp" bodystart="178" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="structgl_1_1io_1_1implicit__range__formatter_1aa7f3afb4b101856732eed03737c2fb6b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, implicit_range_formatter proxy)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <qualifiedname>gl::io::implicit_range_formatter::operator&lt;&lt;</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="structgl_1_1io_1_1implicit__range__formatter" kindref="compound">implicit_range_formatter</ref></type>
+          <declname>proxy</declname>
+        </param>
+        <briefdescription>
+<para>Serializes the implicit range to an output stream. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target output stream. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>proxy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The implicit range proxy. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The stream reference for chaining. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/gl/io/ranges.hpp" line="184" column="12" bodyfile="include/gl/io/ranges.hpp" bodystart="184" bodyend="195"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A proxy object for concisely formatting large contiguous numeric ranges. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Instead of iterating and printing every element of a massive sequence, this formatter intelligently truncates the output using an ellipsis (e.g., <computeroutput>{0, ..., 99}</computeroutput>).</para>
+<sect3 id="structgl_1_1io_1_1implicit__range__formatter_1example-usage-18">
+<title>Example Usage</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>gl::io::implicit_range_formatter&lt;int&gt;{0,<sp/>100}<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>gl::io::implicit_range_formatter&lt;int&gt;{5,<sp/>8}<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para><bold>Output:</bold> <programlisting filename=".text"><codeline><highlight class="normal">{0,<sp/>...,<sp/>99}</highlight></codeline>
+<codeline><highlight class="normal">{5,<sp/>...,<sp/>7}</highlight></codeline>
+</programlisting></para>
+</sect3>
+<sect3 id="structgl_1_1io_1_1implicit__range__formatter_1see-also-30">
+<title>See Also</title>
+<para><itemizedlist>
+<listitem><para><ulink url="group__GL-IO.md#function-implicit_range"><bold>implicit_range(first, last, inclusive)</bold></ulink></para>
+</listitem><listitem><para><ulink url="group__GL-IO.md#function-implicit_range_1"><bold>implicit_range(last, inclusive)</bold></ulink></para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The integral numeric type of the range bounds. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+</sect3>
+    </detaileddescription>
+    <location file="include/gl/io/ranges.hpp" line="174" column="1" bodyfile="include/gl/io/ranges.hpp" bodystart="174" bodyend="196"/>
+    <listofallmembers>
+      <member refid="structgl_1_1io_1_1implicit__range__formatter_1a4603a787da2f7e894509c1b5d5be8c83" prot="public" virt="non-virtual"><scope>gl::io::implicit_range_formatter</scope><name>first</name></member>
+      <member refid="structgl_1_1io_1_1implicit__range__formatter_1a6fb924202ae342bce25b8e887cc856eb" prot="public" virt="non-virtual"><scope>gl::io::implicit_range_formatter</scope><name>last</name></member>
+      <member refid="structgl_1_1io_1_1implicit__range__formatter_1aa7f3afb4b101856732eed03737c2fb6b" prot="public" virt="non-virtual"><scope>gl::io::implicit_range_formatter</scope><name>operator&lt;&lt;</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
