@@ -228,8 +228,10 @@ public:
     /// @brief Integral type used to identify vertices and edges.
     using id_type = typename traits_type::id_type;
 
-    /// @brief The descriptor type representing a vertex.
+    /// @brief The descriptor type representing a vertex of the graph.
     using vertex_type = typename traits_type::vertex_type;
+    /// @brief The descriptor type representing an immutable vertex of the graph.
+    using const_vertex_type = typename traits_type::const_vertex_type;
     /// @brief Type representing the properties attached to a vertex.
     using vertex_properties_type = typename traits_type::vertex_properties_type;
     /// @brief Type mapping vertex IDs to their respective properties.
@@ -238,16 +240,39 @@ public:
         empty_properties_map,
         std::vector<vertex_properties_type>>;
 
-    /// @brief The descriptor type representing an edge.
+    template <typename Self>
+    using deduced_vertex_properties_type = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        const vertex_properties_type,
+        vertex_properties_type>;
+
+    template <typename Self>
+    using deduced_vertex_type = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        const_vertex_type,
+        vertex_type>;
+
+    /// @brief The descriptor type representing an edge of the graph.
     using edge_type = typename traits_type::edge_type;
+    /// @brief The descriptor type representing an immutable edge of the graph.
+    using const_edge_type = typename traits_type::const_edge_type;
     /// @brief Type representing the properties attached to an edge.
     using edge_properties_type = typename traits_type::edge_properties_type;
-
     /// @brief Type mapping edge IDs to their respective properties.
     using edge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<edge_properties_type>,
         empty_properties_map,
         std::vector<edge_properties_type>>;
+
+    template <typename Self>
+    using deduced_edge_properties_type = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        const edge_properties_type,
+        edge_properties_type>;
+
+    template <typename Self>
+    using deduced_edge_type = std::
+        conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const_edge_type, edge_type>;
 
     /// @brief Default constructor creates an empty graph.
     graph() = default;
@@ -294,9 +319,9 @@ public:
         const auto new_vertex_id = static_cast<id_type>(this->_n_vertices++);
 
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_descriptor{new_vertex_id, this->_vertex_properties.emplace_back()};
+            return vertex_type{new_vertex_id, this->_vertex_properties.emplace_back()};
         else
-            return vertex_descriptor{new_vertex_id};
+            return vertex_type{new_vertex_id};
     }
 
     /// @brief Adds a new vertex with the given properties to the graph.
@@ -307,7 +332,7 @@ public:
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         this->_impl.add_vertex();
-        return vertex_descriptor{
+        return vertex_type{
             static_cast<id_type>(this->_n_vertices++),
             this->_vertex_properties.emplace_back(std::move(properties))
         };
@@ -408,53 +433,67 @@ public:
     }
 
     /// @brief Returns a vertex descriptor bounds-checked by ID.
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the vertex.
-    /// @return The corresponding vertex descriptor.
+    /// @return The corresponding vertex descriptor (const or mutable).
     /// @throws std::invalid_argument If the ID is invalid.
-    [[nodiscard]] vertex_type vertex(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
-        return this->vertex_unchecked(vertex_id);
+    template <typename Self>
+    [[nodiscard]] deduced_vertex_type<Self> vertex(this Self&& self, const id_type vertex_id) {
+        self._verify_vertex_id(vertex_id);
+        return self.vertex_unchecked(vertex_id);
     }
 
     /// @brief Returns a vertex descriptor bounds-checked by ID (alias for `vertex`).
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
     /// @throws std::invalid_argument If the ID is invalid.
-    [[nodiscard]] gl_attr_force_inline vertex_type at(const id_type vertex_id) const {
-        return this->vertex(vertex_id);
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> at(
+        this Self&& self, const id_type vertex_id
+    ) {
+        return self.vertex(vertex_id);
     }
 
     /// @brief Returns a vertex descriptor without bounds checking.
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
     ///
     /// > [!WARNING] Undefined Behavior
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
-    [[nodiscard]] gl_attr_force_inline vertex_type vertex_unchecked(const id_type vertex_id
-    ) const noexcept {
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> vertex_unchecked(
+        this Self&& self, const id_type vertex_id
+    ) {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return vertex_descriptor{vertex_id, this->_vertex_properties[vertex_id]};
+            return deduced_vertex_type<Self>{vertex_id, self._vertex_properties[vertex_id]};
         else
-            return vertex_descriptor{vertex_id};
+            return deduced_vertex_type<Self>{vertex_id};
     }
 
     /// @brief Returns a vertex descriptor without bounds checking (array access style).
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
     ///
     /// > [!WARNING] Undefined Behavior
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
-    [[nodiscard]] gl_attr_force_inline vertex_type operator[](const id_type vertex_id
-    ) const noexcept {
-        return this->vertex_unchecked(vertex_id);
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> operator[](
+        this Self&& self, const id_type vertex_id
+    ) noexcept {
+        return self.vertex_unchecked(vertex_id);
     }
 
     /// @brief Returns a lazily evaluated view of all vertex descriptors in the graph.
+    /// @param self The explicit object parameter.
     /// @return A view yielding descriptors for every vertex.
-    [[nodiscard]] gl_attr_force_inline auto vertices() const noexcept {
-        return this->vertex_ids() | std::views::transform(this->_create_vertex_descriptor());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto vertices(this Self&& self) noexcept {
+        return self.vertex_ids() | std::views::transform(self._create_vertex_descriptor());
     }
 
     /// @brief Returns a lazily evaluated view of all active vertex IDs in the graph.
@@ -465,21 +504,25 @@ public:
 
     /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
     /// @copydetails detail::graph_doc_anchors::neighbors()
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto neighbors(const id_type vertex_id) const {
-        return this->neighbor_ids(vertex_id)
-             | std::views::transform(this->_create_vertex_descriptor());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto neighbors(this Self&& self, const id_type vertex_id) {
+        return self.neighbor_ids(vertex_id)
+             | std::views::transform(self._create_vertex_descriptor());
     }
 
     /// @brief Retrieves the neighbor vertex descriptors for a specific vertex.
     /// @copydetails detail::graph_doc_anchors::neighbors()
+    /// @param self The explicit object parameter.
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto neighbors(vertex_type vertex) const {
-        return this->neighbors(vertex.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto neighbors(this Self&& self, vertex_type vertex) {
+        return self.neighbors(vertex.id());
     }
 
     /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
@@ -503,21 +546,25 @@ public:
 
     /// @brief Retrieves the predecessor vertex IDs for a vertex.
     /// @copydetails detail::graph_doc_anchors::predecessors()
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto predecessors(const id_type vertex_id) const {
-        return this->predecessor_ids(vertex_id)
-             | std::views::transform(this->_create_vertex_descriptor());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto predecessors(this Self&& self, const id_type vertex_id) {
+        return self.predecessor_ids(vertex_id)
+             | std::views::transform(self._create_vertex_descriptor());
     }
 
     /// @brief Retrieves the predecessor vertex descriptors (incoming edges) for a vertex.
     /// @copydetails detail::graph_doc_anchors::predecessors()
+    /// @param self The explicit object parameter.
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto predecessors(vertex_type vertex) const {
-        return this->predecessors(vertex.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto predecessors(this Self&& self, vertex_type vertex) {
+        return self.predecessors(vertex.id());
     }
 
     /// @brief Retrieves the predecessor vertex IDs for a vertex.
@@ -541,21 +588,25 @@ public:
 
     /// @brief Retrieves the successor vertex IDs for a vertex.
     /// @copydetails detail::graph_doc_anchors::successors()
+    /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto successors(const id_type vertex_id) const {
-        return this->successor_ids(vertex_id)
-             | std::views::transform(this->_create_vertex_descriptor());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto successors(this Self&& self, const id_type vertex_id) {
+        return self.successor_ids(vertex_id)
+             | std::views::transform(self._create_vertex_descriptor());
     }
 
     /// @brief Retrieves the successor vertex descriptors (outgoing edges) for a vertex.
     /// @copydetails detail::graph_doc_anchors::successors()
+    /// @param self The explicit object parameter.
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex descriptors.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto successors(vertex_type vertex) const {
-        return this->successors(vertex.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto successors(this Self&& self, vertex_type vertex) {
+        return self.successors(vertex.id());
     }
 
     /// @brief Retrieves the successor vertex IDs for a vertex.
@@ -578,23 +629,28 @@ public:
     }
 
     /// @brief Retrieves a mutable reference to a vertex's properties.
+    /// @param self The explicit object parameter.
     /// @param id The ID of the vertex.
     /// @return A reference to the properties attached to the vertex.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline vertex_properties_type& vertex_properties(const id_type id
-    ) const
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline deduced_vertex_properties_type<Self>& vertex_properties(
+        this Self&& self, const id_type id
+    )
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        this->_verify_vertex_id(id);
-        return this->_vertex_properties[id];
+        self._verify_vertex_id(id);
+        return self._vertex_properties[id];
     }
 
     /// @brief Retrieves a random-access view over all vertex properties in the graph.
+    /// @param self The explicit object parameter.
     /// @return A view mapping each active vertex index to its property.
-    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map() const noexcept
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map(this Self&& self) noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        return std::views::all(this->_vertex_properties);
+        return std::views::all(self._vertex_properties);
     }
 
     // --- degree getters ---
@@ -1212,17 +1268,19 @@ private:
 
     // --- transformations ---
 
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self&&) noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
-        return [](const id_type id) { return vertex_type{id}; };
+        return [](const id_type id) { return deduced_vertex_type<Self>{id}; };
     }
 
-    gl_attr_force_inline auto _create_vertex_descriptor() const noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self&& self) noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
-        return [&pmap = this->_vertex_properties](const id_type id) {
-            return vertex_type{id, pmap[to_idx(id)]};
+        return [&pmap = self._vertex_properties](const id_type id) {
+            return deduced_vertex_type<Self>{id, pmap[to_idx(id)]};
         };
     }
 
@@ -1400,10 +1458,7 @@ private:
 
     implementation_type _impl{};
 
-    /// @todo Replace mutability with proper const-correct getter overloads to ensure thread safety guarantees associated with the const qualifier
-    [[no_unique_address]] mutable vertex_properties_map_type _vertex_properties{};
-
-    /// @todo Replace mutability with proper const-correct getter overloads to ensure thread safety guarantees associated with the const qualifier
+    [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
     [[no_unique_address]] mutable edge_properties_map_type _edge_properties{};
 };
 

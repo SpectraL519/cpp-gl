@@ -13,6 +13,8 @@
 #include "gl/edge_descriptor.hpp"
 #include "gl/types/core.hpp"
 
+#include <type_traits>
+
 namespace gl {
 
 /// @ingroup GL-Core
@@ -62,15 +64,19 @@ struct graph_traits {
     /// @brief The type of graph element indentifiers (i.e. vertex and edge IDs).
     using id_type = IdType;
 
-    /// @brief The vertex descriptor type associated with this graph, defined based on the specified vertex properties and identifier type.
-    using vertex_type = vertex_descriptor<VertexProperties, id_type>;
     /// @brief The type of properties associated with the vertex descriptor.
-    using vertex_properties_type = typename vertex_type::properties_type;
+    using vertex_properties_type = std::remove_cvref_t<VertexProperties>;
+    /// @brief The descriptor type representing a vertex of a graph.
+    using vertex_type = vertex_descriptor<vertex_properties_type, id_type>;
+    /// @brief The descriptor type representing an immutable vertex of a graph.
+    using const_vertex_type = vertex_descriptor<const vertex_properties_type, id_type>;
 
-    /// @brief The edge descriptor type associated with this graph, defined based on the specified edge properties and identifier type.
-    using edge_type = edge_descriptor<DirectionalTag, EdgeProperties, id_type>;
     /// @brief The type of properties associated with the edge descriptor.
-    using edge_properties_type = typename edge_type::properties_type;
+    using edge_properties_type = std::remove_cvref_t<EdgeProperties>;
+    /// @brief The descriptor type representing an edge of a graph.
+    using edge_type = edge_descriptor<DirectionalTag, edge_properties_type, id_type>;
+    /// @brief The descriptor type representing an immutable edge of a graph.
+    using const_edge_type = edge_descriptor<DirectionalTag, const edge_properties_type, id_type>;
 };
 
 /// @ingroup GL-Core
