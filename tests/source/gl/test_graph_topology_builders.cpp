@@ -4,6 +4,7 @@
 #include <gl/topology.hpp>
 
 #include <cstddef>
+#include <print>
 
 namespace gl_testing {
 
@@ -175,7 +176,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent graph topology builders tests", GraphType, graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::const_vertex_type;
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
@@ -208,7 +208,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // verify that all vertices from A are connected to all vertices from B and vice versa
         CHECK(std::ranges::all_of(
             vertices_a | std::views::take(constants::n_elements_top),
-            [&](const vertex_type& source) {
+            [&](const auto& source) {
                 return std::ranges::all_of(vertices_b, [&](const auto& vertex) {
                     return biclique.has_edge(source, vertex) and biclique.has_edge(vertex, source);
                 });
