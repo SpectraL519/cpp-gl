@@ -90,11 +90,19 @@ concept c_flat_matrix_graph =
 template <typename G>
 concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 
+/// @ingroup GL-Traits
+/// @brief Concept checking if a type is a mutable or immutable vertex descriptor associated with the given graph.
+/// @tparam V The type of the vertex descriptor.
+/// @tparam G The type of the graph.
 template <typename V, typename G>
 concept c_graph_vertex =
     c_graph<G>
     and c_one_of<std::remove_cvref_t<V>, typename G::vertex_type, typename G::const_vertex_type>;
 
+/// @ingroup GL-Traits
+/// @brief Concept checking if a type is a mutable or immutable edge descriptor associated with the given graph.
+/// @tparam E The type of the edge descriptor.
+/// @tparam G The type of the graph.
 template <typename E, typename G>
 concept c_graph_edge =
     c_graph<G>
@@ -415,6 +423,7 @@ public:
     }
 
     /// @brief Removes a range of vertices using their descriptors.
+    /// @tparam VertexRng A forward range type containing graph's vertex descriptors.
     /// @param vertex_rng A sized range containing the descriptors of vertices to remove.
     /// @throws std::invalid_argument If any vertex descriptor is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
@@ -513,7 +522,7 @@ public:
         return std::views::iota(initial_id_v<id_type>, this->_n_vertices);
     }
 
-    /// @brief Retrieves the neighbor vertex IDs for a specific vertex.
+    /// @brief Retrieves the neighbor vertex descriptors for a specific vertex.
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the source vertex.
@@ -558,7 +567,7 @@ public:
         return this->neighbor_ids(vertex.id());
     }
 
-    /// @brief Retrieves the predecessor vertex IDs for a vertex.
+    /// @brief Retrieves the predecessor vertex descriptors (incoming edges) for a vertex.
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the target vertex.
@@ -604,7 +613,7 @@ public:
         return this->predecessor_ids(vertex.id());
     }
 
-    /// @brief Retrieves the successor vertex IDs for a vertex.
+    /// @brief Retrieves the successor vertex descriptors (outgoing edges) for a vertex.
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param self The explicit object parameter.
     /// @param vertex_id The ID of the source vertex.
@@ -856,6 +865,7 @@ public:
     }
 
     /// @brief Dispatches multiple edge insertions connecting one source to many targets.
+    /// @tparam TargetRng A sized range type containing graph's vertex descriptors.
     /// @param source The source vertex descriptor.
     /// @param target_rng A sized range of target vertex descriptors.
     /// @throws std::invalid_argument If any vertex ID is invalid.
@@ -956,7 +966,7 @@ public:
     /// @brief Retrieves an edge (if it exists) connecting the source to the target.
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
-    /// @return `true` if an edge exists, `false` otherwise.
+    /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
     /// @throws std::invalid_argument If either vertex ID is invalid.
     [[nodiscard]] std::optional<edge_type> edge(const id_type source_id, const id_type target_id)
         const {
@@ -970,7 +980,7 @@ public:
     /// @brief Retrieves an edge (if it exists) connecting the source to the target.
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
-    /// @return `true` if an edge exists, `false` otherwise.
+    /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
     /// @throws std::invalid_argument If either vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline std::optional<edge_type> edge(
         traits::c_graph_vertex<graph> auto source, traits::c_graph_vertex<graph> auto target
@@ -1016,7 +1026,7 @@ public:
             return this->_impl.incident_edges(vertex_id);
     }
 
-    /// @brief Retrieves all incident with a vertex.
+    /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incident edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
