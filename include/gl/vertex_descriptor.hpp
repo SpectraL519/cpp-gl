@@ -93,6 +93,7 @@ public:
 
     /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
     /// @tparam NonConstProps The non-const property type.
+    /// @param other The vertex descriptor to convert from.
     template <typename NonConstProperties>
     requires(std::same_as<Properties, const NonConstProperties>)
     vertex_descriptor(const vertex_descriptor<NonConstProperties, IdType>& other) noexcept

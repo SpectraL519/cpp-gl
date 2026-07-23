@@ -105,6 +105,18 @@ public:
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(source, target), _properties(properties) {}
 
+    /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
+    /// @tparam NonConstProps The non-const property type.
+    /// @param other The edge descriptor to convert from.
+    template <typename NonConstProperties>
+    requires(std::same_as<Properties, const NonConstProperties>)
+    edge_descriptor(const edge_descriptor<NonConstProperties, IdType>& other) noexcept
+    : _id(other.id()), _vertices(other._vertices) {
+        if constexpr (traits::c_non_empty_properties<Properties>) {
+            this->_properties = other.properties();
+        }
+    }
+
     /// @brief Returns an invalid edge descriptor (for empty properties).
     /// @return An `edge_descriptor` holding `invalid_id` for edge and vertex IDs.
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept

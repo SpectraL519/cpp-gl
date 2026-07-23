@@ -39,13 +39,13 @@ concept c_graph = c_instantiation_of<G, graph>;
 /// @brief Concept checking if a graph is directed.
 /// @see gl::directed_t "directed_t" : For the directional tag used to specify directed graph configuration.
 template <typename G>
-concept c_directed_graph = c_graph<G> and c_directed_edge<typename G::edge_type>;
+concept c_directed_graph = c_graph<G> and std::same_as<typename G::directional_tag, directed_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph is undirected.
 /// @see gl::undirected_t "undirected_t" : For the directional tag used to specify undirected graph configuration.
 template <typename G>
-concept c_undirected_graph = c_graph<G> and c_undirected_edge<typename G::edge_type>;
+concept c_undirected_graph = c_graph<G> and std::same_as<typename G::directional_tag, undirected_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes the standard adjacency list representation.
@@ -252,23 +252,6 @@ public:
     using const_vertex_type = typename traits_type::const_vertex_type;
     /// @brief Type representing the properties attached to a vertex.
     using vertex_properties_type = typename traits_type::vertex_properties_type;
-    /// @brief Type mapping vertex IDs to their respective properties.
-    using vertex_properties_map_type = std::conditional_t<
-        traits::c_empty_properties<vertex_properties_type>,
-        empty_properties_map,
-        std::vector<vertex_properties_type>>;
-
-    template <typename Self>
-    using deduced_vertex_properties_type = std::conditional_t<
-        std::is_const_v<std::remove_reference_t<Self>>,
-        const vertex_properties_type,
-        vertex_properties_type>;
-
-    template <typename Self>
-    using deduced_vertex_type = std::conditional_t<
-        std::is_const_v<std::remove_reference_t<Self>>,
-        const_vertex_type,
-        vertex_type>;
 
     /// @brief The descriptor type representing an edge of the graph.
     using edge_type = typename traits_type::edge_type;
@@ -276,11 +259,28 @@ public:
     using const_edge_type = typename traits_type::const_edge_type;
     /// @brief Type representing the properties attached to an edge.
     using edge_properties_type = typename traits_type::edge_properties_type;
-    /// @brief Type mapping edge IDs to their respective properties.
-    using edge_properties_map_type = std::conditional_t<
-        traits::c_empty_properties<edge_properties_type>,
+
+private:
+    template <typename Self>
+    using deduced_vertex_type = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        const_vertex_type,
+        vertex_type>;
+
+    template <typename Self>
+    using deduced_vertex_properties_type = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        const vertex_properties_type,
+        vertex_properties_type>;
+
+    using vertex_properties_map_type = std::conditional_t<
+        traits::c_empty_properties<vertex_properties_type>,
         empty_properties_map,
-        std::vector<edge_properties_type>>;
+        std::vector<vertex_properties_type>>;
+
+    template <typename Self>
+    using deduced_edge_type = std::
+        conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const_edge_type, edge_type>;
 
     template <typename Self>
     using deduced_edge_properties_type = std::conditional_t<
@@ -288,10 +288,12 @@ public:
         const edge_properties_type,
         edge_properties_type>;
 
-    template <typename Self>
-    using deduced_edge_type = std::
-        conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const_edge_type, edge_type>;
+    using edge_properties_map_type = std::conditional_t<
+        traits::c_empty_properties<edge_properties_type>,
+        empty_properties_map,
+        std::vector<edge_properties_type>>;
 
+public:
     /// @brief Default constructor creates an empty graph.
     graph() = default;
 
@@ -1263,8 +1265,6 @@ public:
     friend struct detail::to_impl;
 
 private:
-    using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
-
     graph(const graph& other) = default;
 
     // --- element validation ---
@@ -1330,6 +1330,8 @@ private:
     }
 
     // --- I/O utility ---
+
+    using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
     struct concise_target_formatter {
         edge_type edge;
