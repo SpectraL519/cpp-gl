@@ -17,12 +17,11 @@
 
 namespace gl::impl::specialized {
 
-template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(traits::c_directed_edge<typename AdjacencyList::edge_type>)
+template <traits::c_flat_list_graph_traits GraphTraits>
 struct directed_flat_adjacency_list {
-    using impl_type = AdjacencyList;
+    using traits_type = GraphTraits;
+    using impl_type = adjacency_list<traits_type>;
     using id_type = typename impl_type::id_type;
-    using edge_type = typename impl_type::edge_type;
     using item_type = incidence_item<id_type>;
 
     // --- vertex modifiers ---
@@ -145,7 +144,7 @@ struct directed_flat_adjacency_list {
             self._list.push_back(to_idx(source_id), {target_id, edge_id});
     }
 
-    gl_attr_force_inline static void remove_edge(impl_type& self, const edge_type& edge) {
+    gl_attr_force_inline static void remove_edge(impl_type& self, const auto& edge) {
         const auto edge_src = to_idx(edge.source());
         auto segment = self._list[edge_src];
         const auto it = detail::strict_find<item_type>(segment, edge);
@@ -155,18 +154,23 @@ struct directed_flat_adjacency_list {
 
     // --- edge getters ---
 
+    template <typename EdgeType = typename impl_type::traits_type::edge_type>
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
         const impl_type& self, id_type vertex_id
     ) {
-        return util::concat(self.in_edges(vertex_id), self.out_edges(vertex_id));
+        return util::concat(
+            self.template in_edges<EdgeType>(vertex_id),
+            self.template out_edges<EdgeType>(vertex_id)
+        );
     }
 
+    template <typename EdgeType = typename impl_type::traits_type::edge_type>
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
         const impl_type& self, id_type vertex_id, auto& edge_properties_map
     ) {
         return util::concat(
-            self.in_edges(vertex_id, edge_properties_map),
-            self.out_edges(vertex_id, edge_properties_map)
+            self.template in_edges<EdgeType>(vertex_id, edge_properties_map),
+            self.template out_edges<EdgeType>(vertex_id, edge_properties_map)
         );
     }
 
@@ -186,12 +190,11 @@ struct directed_flat_adjacency_list {
     }
 };
 
-template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires(traits::c_undirected_edge<typename AdjacencyList::edge_type>)
+template <traits::c_flat_list_graph_traits GraphTraits>
 struct undirected_flat_adjacency_list {
-    using impl_type = AdjacencyList;
+    using traits_type = GraphTraits;
+    using impl_type = adjacency_list<traits_type>;
     using id_type = typename impl_type::id_type;
-    using edge_type = typename impl_type::edge_type;
     using item_type = incidence_item<id_type>;
 
     // --- vertex modifiers ---
@@ -308,7 +311,7 @@ struct undirected_flat_adjacency_list {
         }
     }
 
-    static void remove_edge(impl_type& self, const edge_type& edge) {
+    static void remove_edge(impl_type& self, const auto& edge) {
         const auto src_idx = to_idx(edge.source());
         const auto tgt_idx = to_idx(edge.target());
 
@@ -331,16 +334,18 @@ struct undirected_flat_adjacency_list {
 
     // --- edge getters ---
 
+    template <typename EdgeType = typename impl_type::traits_type::edge_type>
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
         const impl_type& self, id_type vertex_id
     ) {
-        return self.out_edges(vertex_id);
+        return self.template out_edges<EdgeType>(vertex_id);
     }
 
+    template <typename EdgeType = typename impl_type::traits_type::edge_type>
     [[nodiscard]] gl_attr_force_inline static auto incident_edges(
         const impl_type& self, id_type vertex_id, auto& edge_properties_map
     ) {
-        return self.out_edges(vertex_id, edge_properties_map);
+        return self.template out_edges<EdgeType>(vertex_id, edge_properties_map);
     }
 
     [[nodiscard]] gl_attr_force_inline static auto in_edges(
@@ -350,21 +355,12 @@ struct undirected_flat_adjacency_list {
     }
 };
 
-template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires traits::c_directed_edge<typename AdjacencyList::edge_type>
-     and std::same_as<typename AdjacencyList::representation_tag, repr::flat_list_t>
-struct adjacency_list_impl_traits<AdjacencyList> {
-    using type = directed_flat_adjacency_list<AdjacencyList>;
-
-    template <typename ItemType>
-    using storage_type = flat_jagged_vector<ItemType>;
-};
-
-template <traits::c_instantiation_of<adjacency_list> AdjacencyList>
-requires traits::c_undirected_edge<typename AdjacencyList::edge_type>
-     and std::same_as<typename AdjacencyList::representation_tag, repr::flat_list_t>
-struct adjacency_list_impl_traits<AdjacencyList> {
-    using type = undirected_flat_adjacency_list<AdjacencyList>;
+template <traits::c_flat_list_graph_traits GraphTraits>
+struct adjacency_list_impl_traits<GraphTraits> {
+    using type = std::conditional_t<
+        traits::c_directed_graph_traits<GraphTraits>,
+        directed_flat_adjacency_list<GraphTraits>,
+        undirected_flat_adjacency_list<GraphTraits>>;
 
     template <typename ItemType>
     using storage_type = flat_jagged_vector<ItemType>;
