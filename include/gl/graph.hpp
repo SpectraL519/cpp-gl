@@ -459,7 +459,7 @@ public:
     /// @return The corresponding vertex descriptor (const or mutable).
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
-    [[nodiscard]] deduced_vertex_type<Self> vertex(this Self&& self, const id_type vertex_id) {
+    [[nodiscard]] deduced_vertex_type<Self> vertex(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
         return self.vertex_unchecked(vertex_id);
     }
@@ -470,7 +470,7 @@ public:
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> at(
-        this Self&& self, const id_type vertex_id
+        this Self& self, const id_type vertex_id
     ) {
         return self.vertex(vertex_id);
     }
@@ -484,7 +484,7 @@ public:
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> vertex_unchecked(
-        this Self&& self, const id_type vertex_id
+        this Self& self, const id_type vertex_id
     ) {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
             return deduced_vertex_type<Self>{vertex_id, self._vertex_properties[vertex_id]};
@@ -501,7 +501,7 @@ public:
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> operator[](
-        this Self&& self, const id_type vertex_id
+        this Self& self, const id_type vertex_id
     ) noexcept {
         return self.vertex_unchecked(vertex_id);
     }
@@ -648,7 +648,7 @@ public:
     /// @throws std::invalid_argument If the vertex ID is invalid.
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline deduced_vertex_properties_type<Self>& vertex_properties(
-        this Self&& self, const id_type id
+        this Self& self, const id_type id
     )
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
@@ -1293,14 +1293,14 @@ private:
     // --- transformations ---
 
     template <typename Self>
-    gl_attr_force_inline auto _create_vertex_descriptor(this Self&&) noexcept
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self&) noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return [](const id_type id) { return deduced_vertex_type<Self>{id}; };
     }
 
     template <typename Self>
-    gl_attr_force_inline auto _create_vertex_descriptor(this Self&& self) noexcept
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self& self) noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = self._vertex_properties](const id_type id) {

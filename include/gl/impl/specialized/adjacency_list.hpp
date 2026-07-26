@@ -63,11 +63,11 @@ public:
 
     // --- degree getters ---
 
-    [[nodiscard]] gl_attr_force_inline size_type degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline size_type degree(this const auto& self, id_type vertex_id) {
         return self.in_degree(vertex_id) + self.out_degree(vertex_id);
     }
 
-    [[nodiscard]] size_type in_degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] size_type in_degree(this const auto& self, id_type vertex_id) {
         size_type in_deg = 0uz;
         for (const auto& out_edges : self._list)
             in_deg += static_cast<size_type>(
@@ -77,11 +77,12 @@ public:
         return in_deg;
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type out_degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline size_type
+    out_degree(this const auto& self, id_type vertex_id) {
         return self._list[to_idx(vertex_id)].size();
     }
 
-    [[nodiscard]] std::vector<size_type> degree_map(this auto&& self) {
+    [[nodiscard]] std::vector<size_type> degree_map(this const auto& self) {
         std::vector<size_type> degree_map(self._list.size(), 0uz);
 
         for (auto idx = 0uz; idx < self._list.size(); ++idx) {
@@ -93,7 +94,7 @@ public:
         return degree_map;
     }
 
-    [[nodiscard]] std::vector<size_type> in_degree_map(this auto&& self) {
+    [[nodiscard]] std::vector<size_type> in_degree_map(this const auto& self) {
         std::vector<size_type> in_degree_map(self._list.size(), 0uz);
 
         for (const auto& inc_edges : self._list)
@@ -103,7 +104,8 @@ public:
         return in_degree_map;
     }
 
-    [[nodiscard]] gl_attr_force_inline std::vector<size_type> out_degree_map(this auto&& self) {
+    [[nodiscard]] gl_attr_force_inline std::vector<size_type> out_degree_map(this const auto& self
+    ) {
         return self._list | std::views::transform([](auto&& inc_edges) { return inc_edges.size(); })
              | std::ranges::to<std::vector<size_type>>();
     }
@@ -111,13 +113,13 @@ public:
     // --- edge modifiers ---
 
     gl_attr_force_inline void add_edge(
-        this auto&& self, id_type edge_id, id_type source_id, id_type target_id
+        this auto& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
         self._list[to_idx(source_id)].emplace_back(target_id, edge_id);
     }
 
     void add_edges_from(
-        this auto&& self,
+        this auto& self,
         const traits::c_forward_range_of<id_type> auto& edge_ids,
         id_type source_id,
         const traits::c_forward_range_of<id_type> auto& target_ids
@@ -137,7 +139,7 @@ public:
 protected:
     // --- vertex modifiers ---
 
-    std::vector<id_type> _remove_vertex_impl(this auto&& self, id_type vertex_id) {
+    std::vector<id_type> _remove_vertex_impl(this auto& self, id_type vertex_id) {
         const auto vertex_idx = to_idx(vertex_id);
 
         auto removed_edges =
@@ -167,14 +169,14 @@ protected:
 
     // --- edge modifiers ---
 
-    gl_attr_force_inline void _remove_edge_impl(this auto&& self, const auto& edge) {
+    gl_attr_force_inline void _remove_edge_impl(this auto& self, const auto& edge) {
         auto& inc_edges = self._list[to_idx(edge.source())];
         inc_edges.erase(detail::strict_find<item_type>(inc_edges, edge));
     }
 
     // --- edge getters ---
 
-    [[nodiscard]] auto _in_edges_impl(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] auto _in_edges_impl(this const auto& self, id_type vertex_id) {
         std::vector<item_type> in_edges;
         for (id_type src_id = initial_id; src_id < self._list.size(); ++src_id) {
             auto in_edges_view =
@@ -200,22 +202,24 @@ public:
 
     // --- degree getters ---
 
-    [[nodiscard]] size_type degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] size_type degree(this const auto& self, id_type vertex_id) {
         size_type degree = 0uz;
         for (auto item : self._list[to_idx(vertex_id)])
             degree += 1uz + static_cast<size_type>(item.vertex_id == vertex_id);
         return degree;
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type in_degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline size_type
+    in_degree(this const auto& self, id_type vertex_id) {
         return self.degree(vertex_id);
     }
 
-    [[nodiscard]] gl_attr_force_inline size_type out_degree(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline size_type
+    out_degree(this const auto& self, id_type vertex_id) {
         return self.degree(vertex_id);
     }
 
-    [[nodiscard]] std::vector<size_type> degree_map(this auto&& self) {
+    [[nodiscard]] std::vector<size_type> degree_map(this const auto& self) {
         std::vector<size_type> degree_map;
         degree_map.reserve(self._list.size());
         for (id_type id = initial_id; id < self._list.size(); ++id)
@@ -223,18 +227,19 @@ public:
         return degree_map;
     }
 
-    [[nodiscard]] gl_attr_force_inline std::vector<size_type> in_degree_map(this auto&& self) {
+    [[nodiscard]] gl_attr_force_inline std::vector<size_type> in_degree_map(this const auto& self) {
         return self.degree_map();
     }
 
-    [[nodiscard]] gl_attr_force_inline std::vector<size_type> out_degree_map(this auto&& self) {
+    [[nodiscard]] gl_attr_force_inline std::vector<size_type> out_degree_map(this const auto& self
+    ) {
         return self.degree_map();
     }
 
     // --- edge modifiers ---
 
     gl_attr_force_inline void add_edge(
-        this auto&& self, id_type edge_id, id_type source_id, id_type target_id
+        this auto& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
         self._list[to_idx(source_id)].emplace_back(target_id, edge_id);
         if (target_id != source_id)
@@ -242,7 +247,7 @@ public:
     }
 
     void add_edges_from(
-        this auto&& self,
+        this auto& self,
         const traits::c_forward_range_of<id_type> auto& edge_ids,
         id_type source_id,
         const traits::c_forward_range_of<id_type> auto& target_ids
@@ -265,7 +270,7 @@ public:
 protected:
     // --- vertex modifiers ---
 
-    std::vector<id_type> _remove_vertex_impl(this auto&& self, id_type vertex_id) {
+    std::vector<id_type> _remove_vertex_impl(this auto& self, id_type vertex_id) {
         const auto vertex_idx = to_idx(vertex_id);
 
         for (auto item : self._list[vertex_idx]) {
@@ -288,7 +293,7 @@ protected:
 
     // --- edge modifiers ---
 
-    void _remove_edge_impl(this auto&& self, const auto& edge) {
+    void _remove_edge_impl(this auto& self, const auto& edge) {
         auto& inc_edges_first = self._list[to_idx(edge.source())];
         auto& inc_edges_second = self._list[to_idx(edge.target())];
 
@@ -299,7 +304,9 @@ protected:
 
     // --- edge getters ---
 
-    [[nodiscard]] gl_attr_force_inline auto _in_edges_impl(this auto&& self, id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline auto _in_edges_impl(
+        this const auto& self, id_type vertex_id
+    ) {
         return std::views::all(self._list[to_idx(vertex_id)]);
     }
 };
