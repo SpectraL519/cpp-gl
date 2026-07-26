@@ -32,7 +32,7 @@ struct incidence_item {
     id_type vertex_id;
     id_type edge_id;
 
-    [[nodiscard]] bool operator==(const incidence_item&) const = default;
+    [[nodiscard]] constexpr bool operator==(const incidence_item&) const noexcept = default;
 };
 
 namespace detail {
@@ -59,6 +59,7 @@ public:
     using traits_type = GraphTraits;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
+    using storage_type = std::vector<std::vector<item_type>>;
 
     // --- degree getters ---
 
@@ -128,6 +129,11 @@ public:
             inc_edges_source.emplace_back(target_id, edge_id);
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool
+    operator==(const directed_adjacency_list&, const directed_adjacency_list&) = default;
+
 protected:
     // --- vertex modifiers ---
 
@@ -190,6 +196,7 @@ public:
     using traits_type = GraphTraits;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
+    using storage_type = std::vector<std::vector<item_type>>;
 
     // --- degree getters ---
 
@@ -250,6 +257,11 @@ public:
         }
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool
+    operator==(const undirected_adjacency_list&, const undirected_adjacency_list&) = default;
+
 protected:
     // --- vertex modifiers ---
 
@@ -293,22 +305,19 @@ protected:
 };
 
 template <traits::c_adjacency_list_graph_traits GraphTraits>
-struct adjacency_list_impl_traits {
+struct adjacency_list_base {
     using type = void;
-
-    template <typename ItemType>
-    using storage_type = void;
 };
 
+template <traits::c_adjacency_list_graph_traits GraphTraits>
+using adjacency_list_base_t = typename adjacency_list_base<GraphTraits>::type;
+
 template <traits::c_list_graph_traits GraphTraits>
-struct adjacency_list_impl_traits<GraphTraits> {
+struct adjacency_list_base<GraphTraits> {
     using type = std::conditional_t<
         traits::c_directed_graph_traits<GraphTraits>,
         directed_adjacency_list<GraphTraits>,
         undirected_adjacency_list<GraphTraits>>;
-
-    template <typename ItemType>
-    using storage_type = std::vector<std::vector<ItemType>>;
 };
 
 } // namespace specialized

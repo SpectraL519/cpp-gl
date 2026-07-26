@@ -1292,13 +1292,15 @@ private:
 
     // --- transformations ---
 
-    gl_attr_force_inline auto _create_vertex_descriptor(this auto&&) noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self&&) noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
         return [](const id_type id) { return deduced_vertex_type<Self>{id}; };
     }
 
-    gl_attr_force_inline auto _create_vertex_descriptor(this auto&& self) noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_vertex_descriptor(this Self&& self) noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = self._vertex_properties](const id_type id) {

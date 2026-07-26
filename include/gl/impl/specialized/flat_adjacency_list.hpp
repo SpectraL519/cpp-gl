@@ -23,6 +23,7 @@ public:
     using traits_type = GraphTraits;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
+    using storage_type = flat_jagged_vector<item_type>;
 
     // --- degree getters ---
 
@@ -85,6 +86,11 @@ public:
             self._list.emplace_back(to_idx(source_id), target_id, edge_id);
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool
+    operator==(const directed_flat_adjacency_list&, const directed_flat_adjacency_list&) = default;
+
 protected:
     // --- vertex modifiers ---
 
@@ -97,7 +103,7 @@ protected:
             | std::ranges::to<std::vector>();
 
         // rebuild the graph (faster then shifting the entire data block for each removed edge)
-        typename adjacency_list_impl_traits<traits_type>::storage_type new_list;
+        storage_type new_list{};
         new_list.reserve_segments(self._list.size() - 1uz);
         new_list.reserve_data(self._list.data_size() - self._list[vertex_idx].size());
 
@@ -154,6 +160,7 @@ public:
     using traits_type = GraphTraits;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
+    using storage_type = flat_jagged_vector<item_type>;
 
     // --- degree getters ---
 
@@ -209,6 +216,12 @@ public:
         }
     }
 
+    // --- comparison ---
+
+    [[nodiscard]] friend bool
+    operator==(const undirected_flat_adjacency_list&, const undirected_flat_adjacency_list&) =
+        default;
+
 protected:
     // --- vertex modifiers ---
 
@@ -221,7 +234,7 @@ protected:
             | std::ranges::to<std::vector>();
 
         // rebuild the graph (faster then shifting the entire data block for each removed edge)
-        typename adjacency_list_impl_traits<traits_type>::storage_type new_list;
+        storage_type new_list{};
         new_list.reserve_segments(self._list.size() - 1uz);
         new_list.reserve_data(self._list.data_size() - self._list[vertex_idx].size());
 
@@ -272,14 +285,11 @@ protected:
 };
 
 template <traits::c_flat_list_graph_traits GraphTraits>
-struct adjacency_list_impl_traits<GraphTraits> {
+struct adjacency_list_base<GraphTraits> {
     using type = std::conditional_t<
         traits::c_directed_graph_traits<GraphTraits>,
         directed_flat_adjacency_list<GraphTraits>,
         undirected_flat_adjacency_list<GraphTraits>>;
-
-    template <typename ItemType>
-    using storage_type = flat_jagged_vector<ItemType>;
 };
 
 } // namespace gl::impl::specialized

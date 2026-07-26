@@ -30,8 +30,14 @@ namespace impl {
 template <traits::c_adjacency_matrix_graph_traits GraphTraits>
 class adjacency_matrix final {
 public:
-    using traits_type = GraphTraits;
-    using id_type = typename traits_type::id_type;
+    using representation_tag = typename GraphTraits::representation_tag;
+    using id_type = typename GraphTraits::id_type;
+
+    using vertex_type = typename GraphTraits::vertex_type;
+    using edge_type = typename GraphTraits::edge_type;
+
+    using adjacency_storage_type = typename specialized::adjacency_matrix_impl_traits<
+        adjacency_matrix>::template storage_type<id_type>;
 
     adjacency_matrix() = default;
 
@@ -117,7 +123,7 @@ public:
         specialized_impl::add_edges_from(*this, edge_ids, source_id, target_ids);
     }
 
-    void remove_edge(const auto& edge) {
+    void remove_edge(const edge_type& edge) {
         specialized_impl::remove_edge(*this, edge);
         for (auto&& row : this->_matrix)
             for (auto& edge_id : row)
@@ -125,7 +131,7 @@ public:
                     edge_id--;
     }
 
-    std::vector<id_type> remove_edges(const traits::c_range auto& edges) {
+    std::vector<id_type> remove_edges(const traits::c_range_of<edge_type> auto& edges) {
         for (const auto& edge : edges)
             specialized_impl::remove_edge(*this, edge);
         auto removed_edge_ids =
@@ -141,83 +147,79 @@ public:
         return specialized_impl::get_entry(*this, source_id, target_id) != invalid_id;
     }
 
-    [[nodiscard]] bool has_edge(const auto& edge) const {
+    [[nodiscard]] bool has_edge(const edge_type& edge) const {
         return specialized_impl::get_entry(*this, edge.source(), edge.target()) == edge.id();
     }
 
-    template <typename EdgeType>
-    [[nodiscard]] std::optional<EdgeType> edge(id_type source_id, id_type target_id) const
-    requires(traits::c_has_empty_properties<EdgeType>)
+    [[nodiscard]] std::optional<edge_type> edge(id_type source_id, id_type target_id) const
+    requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::nullopt;
-        return std::make_optional<EdgeType>(edge_id, source_id, target_id);
+        return std::make_optional<edge_type>(edge_id, source_id, target_id);
     }
 
-    [[nodiscard]] std::optional<EdgeType> edge(
+    [[nodiscard]] std::optional<edge_type> edge(
         id_type source_id, id_type target_id, auto& edge_properties_map
     ) const
-    requires(traits::c_has_non_empty_properties<EdgeType>)
+    requires(traits::c_has_non_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
             return std::nullopt;
-        return std::make_optional<EdgeType>(
+        return std::make_optional<edge_type>(
             edge_id, source_id, target_id, edge_properties_map[to_idx(edge_id)]
         );
     }
 
-    [[nodiscard]] std::vector<EdgeType> edges(id_type source_id, id_type target_id) const
-    requires(traits::c_has_empty_properties<EdgeType>)
+    [[nodiscard]] std::vector<edge_type> edges(id_type source_id, id_type target_id) const
+    requires(traits::c_has_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
-            return std::vector<EdgeType>();
-        return std::vector<EdgeType>{
-            EdgeType{edge_id, source_id, target_id}
+            return std::vector<edge_type>();
+        return std::vector<edge_type>{
+            edge_type{edge_id, source_id, target_id}
         };
     }
 
-    [[nodiscard]] std::vector<EdgeType> edges(
+    [[nodiscard]] std::vector<edge_type> edges(
         id_type source_id, id_type target_id, auto& edge_properties_map
     ) const
-    requires(traits::c_has_non_empty_properties<EdgeType>)
+    requires(traits::c_has_non_empty_properties<edge_type>)
     {
         const auto edge_id = specialized_impl::get_entry(*this, source_id, target_id);
         if (edge_id == invalid_id)
-            return std::vector<EdgeType>();
-        return std::vector<EdgeType>{
-            EdgeType{edge_id, source_id, target_id, edge_properties_map[to_idx(edge_id)]}
+            return std::vector<edge_type>();
+        return std::vector<edge_type>{
+            edge_type{edge_id, source_id, target_id, edge_properties_map[to_idx(edge_id)]}
         };
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto incident_edges(id_type vertex_id) const
-    requires(traits::c_has_empty_properties<EdgeType>)
+    requires(traits::c_has_empty_properties<edge_type>)
     {
         return specialized_impl::incident_edges(*this, vertex_id);
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto incident_edges(
         id_type vertex_id, auto& edge_properties_map
     ) const
-    requires(traits::c_has_non_empty_properties<EdgeType>)
+    requires(traits::c_has_non_empty_properties<edge_type>)
     {
         return specialized_impl::incident_edges(*this, vertex_id, edge_properties_map);
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id) const
-    requires(traits::c_has_empty_properties<EdgeType>)
+    requires(traits::c_has_empty_properties<edge_type>)
     {
         return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](auto source_id) {
                    return specialized_impl::get_entry(*this, source_id, vertex_id) != invalid_id;
                })
              | std::views::transform([this, vertex_id](auto source_id) {
-                   return EdgeType{
+                   return edge_type{
                        specialized_impl::get_entry(*this, source_id, vertex_id),
                        source_id,
                        vertex_id
@@ -225,10 +227,9 @@ public:
                });
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto in_edges(id_type vertex_id, auto& edge_properties_map)
         const
-    requires(traits::c_has_non_empty_properties<EdgeType>)
+    requires(traits::c_has_non_empty_properties<edge_type>)
     {
         return std::views::iota(initial_id_v<id_type>, this->_matrix.size())
              | std::views::filter([this, vertex_id](auto source_id) {
@@ -236,15 +237,14 @@ public:
                })
              | std::views::transform([this, vertex_id, &edge_properties_map](auto source_id) {
                    const auto edge_id = specialized_impl::get_entry(*this, source_id, vertex_id);
-                   return EdgeType{
+                   return edge_type{
                        edge_id, source_id, vertex_id, edge_properties_map[to_idx(edge_id)]
                    };
                });
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto out_edges(id_type vertex_id) const
-    requires(traits::c_has_empty_properties<EdgeType>)
+    requires(traits::c_has_empty_properties<edge_type>)
     {
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](auto entry) {
@@ -253,14 +253,13 @@ public:
                })
              | std::views::transform([vertex_id](auto entry) {
                    auto [target_id, edge_id] = entry;
-                   return EdgeType{edge_id, vertex_id, static_cast<id_type>(target_id)};
+                   return edge_type{edge_id, vertex_id, static_cast<id_type>(target_id)};
                });
     }
 
-    template <typename EdgeType>
     [[nodiscard]] gl_attr_force_inline auto out_edges(id_type vertex_id, auto& edge_properties_map)
         const
-    requires(traits::c_has_non_empty_properties<EdgeType>)
+    requires(traits::c_has_non_empty_properties<edge_type>)
     {
         return this->_matrix[to_idx(vertex_id)] | std::views::enumerate
              | std::views::filter([](auto entry) {
@@ -269,7 +268,7 @@ public:
                })
              | std::views::transform([vertex_id, &edge_properties_map](auto entry) {
                    const auto [target_id, edge_id] = entry;
-                   return EdgeType{
+                   return edge_type{
                        edge_id,
                        vertex_id,
                        static_cast<id_type>(target_id),
@@ -293,10 +292,8 @@ public:
 #endif
 
 private:
-    using impl_traits = specialized::adjacency_matrix_impl_traits<adjacency_matrix>;
-    using specialized_impl = typename impl_traits::type;
-    using adjacency_storage_type = typename impl_traits::template storage_type<id_type>;
-
+    using specialized_impl =
+        typename specialized::adjacency_matrix_impl_traits<adjacency_matrix>::type;
     friend specialized_impl;
 
     void _remap_element_ids(std::vector<id_type>& removed_edge_ids) {

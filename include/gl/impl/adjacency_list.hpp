@@ -28,11 +28,13 @@ struct to_impl;
 namespace impl {
 
 template <traits::c_adjacency_list_graph_traits GraphTraits>
-class adjacency_list final : public specialized::adjacency_list_impl_traits<GraphTraits>::type {
+class adjacency_list final : public specialized::adjacency_list_base_t<GraphTraits> {
 public:
     using traits_type = GraphTraits;
+    using base_type = specialized::adjacency_list_base_t<traits_type>;
     using id_type = typename traits_type::id_type;
-    using item_type = specialized::incidence_item<id_type>;
+    using item_type = typename base_type::item_type;
+    using storage_type = typename base_type::storage_type;
 
     adjacency_list() = default;
 
@@ -264,6 +266,8 @@ public:
 
     // --- friend declarations ---
 
+    friend base_type;
+
     template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
     friend struct gl::detail::to_impl;
 
@@ -272,11 +276,6 @@ public:
 #endif
 
 private:
-    using impl_traits = specialized::adjacency_list_impl_traits<GraphTraits>;
-    using adjacency_storage_type = typename impl_traits::template storage_type<item_type>;
-
-    friend typename impl_traits::type;
-
     void _remap_element_ids(id_type removed_vertex_id, std::vector<id_type>& removed_edge_ids) {
         std::ranges::sort(removed_edge_ids);
         removed_edge_ids.erase(
@@ -298,7 +297,7 @@ private:
         }
     }
 
-    adjacency_storage_type _list{};
+    storage_type _list{};
 };
 
 } // namespace impl
