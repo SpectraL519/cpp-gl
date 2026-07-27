@@ -36,7 +36,12 @@ template <typename G>
 concept c_graph = c_instantiation_of<std::remove_cvref_t<G>, graph>;
 
 /// @ingroup GL-Traits
-/// @brief Concept checking if a type is a mutable instantiation of the generic @ref "gl::graph" graph class.
+/// @brief Concept checking if a type is a constant type instantiation of the generic @ref "gl::graph" graph class.
+template <typename G>
+concept c_const_graph = c_graph<G> and std::is_const_v<std::remove_reference_t<G>>;
+
+/// @ingroup GL-Traits
+/// @brief Concept checking if a type is a mutable type instantiation of the generic @ref "gl::graph" graph class.
 template <typename G>
 concept c_mut_graph = c_graph<G> and not std::is_const_v<std::remove_reference_t<G>>;
 
@@ -46,6 +51,43 @@ concept c_mut_graph = c_graph<G> and not std::is_const_v<std::remove_reference_t
 /// @brief Extracts the underlying unqualified graph type by removing reference and cv-qualifiers.
 template <traits::c_graph G>
 using graph_val_t = std::remove_cvref_t<G>;
+
+/// @ingroup GL-Core
+/// @brief Resolves the identifier type associated with the given graph type.
+template <traits::c_graph G>
+using id_t = typename graph_val_t<G>::id_type;
+
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the graph's constness.
+template <traits::c_graph G>
+using vertex_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    typename graph_val_t<G>::const_vertex_type,
+    typename graph_val_t<G>::vertex_type>;
+
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate vertex properties type (mutable or const) based on the graph's constness.
+template <traits::c_graph G>
+using vertex_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    const typename graph_val_t<G>::vertex_properties_type,
+    typename graph_val_t<G>::vertex_properties_type>;
+
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate edge descriptor type (mutable or const) based on the graph's constness.
+template <traits::c_graph G>
+using edge_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    typename graph_val_t<G>::const_edge_type,
+    typename graph_val_t<G>::edge_type>;
+
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate edge properties type (mutable or const) based on the graph's constness.
+template <traits::c_graph G>
+using edge_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    const typename graph_val_t<G>::edge_properties_type,
+    typename graph_val_t<G>::edge_properties_type>;
 
 namespace traits {
 
@@ -132,43 +174,6 @@ concept c_graph_edge =
         typename graph_val_t<G>::const_edge_type>;
 
 } // namespace traits
-
-/// @ingroup GL-Core
-/// @brief Resolves the identifier type associated with the given graph type.
-template <traits::c_graph G>
-using id_t = typename graph_val_t<G>::id_type;
-
-/// @ingroup GL-Core
-/// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the graph's constness.
-template <traits::c_graph G>
-using vertex_t = std::conditional_t<
-    std::is_const_v<std::remove_reference_t<G>>,
-    typename graph_val_t<G>::const_vertex_type,
-    typename graph_val_t<G>::vertex_type>;
-
-/// @ingroup GL-Core
-/// @brief Resolves the appropriate vertex properties type (mutable or const) based on the graph's constness.
-template <traits::c_graph G>
-using vertex_properties_t = std::conditional_t<
-    std::is_const_v<std::remove_reference_t<G>>,
-    const typename graph_val_t<G>::vertex_properties_type,
-    typename graph_val_t<G>::vertex_properties_type>;
-
-/// @ingroup GL-Core
-/// @brief Resolves the appropriate edge descriptor type (mutable or const) based on the graph's constness.
-template <traits::c_graph G>
-using edge_t = std::conditional_t<
-    std::is_const_v<std::remove_reference_t<G>>,
-    typename graph_val_t<G>::const_edge_type,
-    typename graph_val_t<G>::edge_type>;
-
-/// @ingroup GL-Core
-/// @brief Resolves the appropriate edge properties type (mutable or const) based on the graph's constness.
-template <traits::c_graph G>
-using edge_properties_t = std::conditional_t<
-    std::is_const_v<std::remove_reference_t<G>>,
-    const typename graph_val_t<G>::edge_properties_type,
-    typename graph_val_t<G>::edge_properties_type>;
 
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
@@ -451,17 +456,13 @@ public:
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         auto vertex_ids = vertex_id_rng | std::ranges::to<std::vector>();
-        // Sort in descending order to prevent index shifting bugs during erasure
+        // Sort in descending order and remove duplicates to prevent index shifting bugs during erasure
         std::ranges::sort(vertex_ids, std::greater<>{});
-        // Remove duplicate IDs
         vertex_ids.erase(std::ranges::unique(vertex_ids).begin(), vertex_ids.end());
 
-        // Because the IDs are sorted descending, verifying the first (largest) ID
-        // implicitly guarantees all smaller IDs are also within bounds.
         if (not vertex_ids.empty())
             this->_verify_vertex_id(vertex_ids.front());
 
-        // Remove vertices from largest ID to smallest ID
         for (auto vertex_id : vertex_ids)
             this->_remove_vertex_impl(vertex_id);
     }
@@ -498,7 +499,7 @@ public:
 
     /// @brief Returns a vertex descriptor bounds-checked by ID.
     /// @param vertex_id The ID of the vertex.
-    /// @return The corresponding vertex descriptor (const or mutable).
+    /// @return The corresponding vertex descriptor.
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
     [[nodiscard]] vertex_t<Self> vertex(this Self& self, const id_type vertex_id) {
@@ -1103,7 +1104,7 @@ public:
     /// @return A view representing the set of outgoing edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     template <typename Self>
-    [[nodiscard]] inline auto out_edges(this Self& self, const id_type vertex_id) {
+    [[nodiscard]] auto out_edges(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             return self._impl.template out_edges<edge_t<Self>>(vertex_id, self._edge_properties);
@@ -1126,9 +1127,7 @@ public:
     /// @return A reference to the properties attached to the edge.
     /// @throws std::invalid_argument If the edge ID is invalid.
     template <typename Self>
-    [[nodiscard]] gl_attr_force_inline edge_properties_t<Self>& edge_properties(
-        this Self& self, const id_type id
-    )
+    [[nodiscard]] edge_properties_t<Self>& edge_properties(this Self& self, const id_type id)
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
         if (id >= self._n_edges)

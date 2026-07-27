@@ -7,7 +7,7 @@
 #include "gl/constants.hpp"
 #include "gl/decl/repr_tags.hpp"
 #include "gl/graph_traits.hpp"
-#include "gl/impl/specialized/adjacency_list.hpp"
+#include "gl/impl/base/adjacency_list.hpp"
 #include "gl/types/flat_jagged_vector.hpp"
 
 #include <algorithm>
@@ -15,7 +15,7 @@
 #include <ranges>
 #include <vector>
 
-namespace gl::impl::specialized {
+namespace gl::impl {
 
 template <traits::c_flat_list_graph_traits GraphTraits>
 class directed_flat_adjacency_list {
@@ -300,4 +300,4 @@ struct adjacency_list_base<GraphTraits> {
         undirected_flat_adjacency_list<GraphTraits>>;
 };
 
-} // namespace gl::impl::specialized
+} // namespace gl::impl

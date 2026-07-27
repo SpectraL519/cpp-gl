@@ -6,8 +6,8 @@
 
 #include "gl/attributes/force_inline.hpp"
 #include "gl/constants.hpp"
-#include "gl/impl/specialized/adjacency_matrix.hpp"
-#include "gl/impl/specialized/flat_adjacency_matrix.hpp"
+#include "gl/impl/base/adjacency_matrix.hpp"
+#include "gl/impl/base/flat_adjacency_matrix.hpp"
 #include "gl/types/core.hpp"
 
 #ifdef GL_TESTING
@@ -28,10 +28,10 @@ struct to_impl;
 namespace impl {
 
 template <traits::c_adjacency_matrix_graph_traits GraphTraits>
-class adjacency_matrix final : public specialized::adjacency_matrix_base_t<GraphTraits> {
+class adjacency_matrix final : public adjacency_matrix_base_t<GraphTraits> {
 public:
     using traits_type = GraphTraits;
-    using base_type = specialized::adjacency_matrix_base_t<traits_type>;
+    using base_type = adjacency_matrix_base_t<traits_type>;
     using representation_tag = typename traits_type::representation_tag;
     using id_type = typename traits_type::id_type;
 

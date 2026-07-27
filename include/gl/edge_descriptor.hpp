@@ -147,23 +147,29 @@ public:
     /// @brief Destructor.
     ~edge_descriptor() = default;
 
-    /// @brief Equality comparison operator for directed edges.
+    /// @brief Cross-type equality comparison operator for directed edges.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The edge descriptor to compare against.
     /// @return `true` if IDs and exact endpoint pairs match, `false` otherwise.
-    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(traits::c_directed_edge<type>)
-    {
-        return this->_id == other._id and (this->_vertices == other._vertices);
+    template <traits::c_properties OtherProperties>
+    requires(traits::c_directed_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] bool operator==(
+        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+    ) const noexcept {
+        return this->_id == other.id() and (this->_vertices == other.incident_vertices());
     }
 
-    /// @brief Equality comparison operator for undirected edges.
+    /// @brief Cross-type equality comparison operator for undirected edges.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The edge descriptor to compare against.
     /// @return `true` if IDs and endpoint pairs match (order independent), `false` otherwise.
-    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(traits::c_undirected_edge<type>)
-    {
-        return this->_id == other._id
-           and (this->_vertices == other._vertices
+    template <traits::c_properties OtherProperties>
+    requires(traits::c_undirected_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] bool operator==(
+        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+    ) const noexcept {
+        return this->_id == other.id()
+           and (this->_vertices == other.incident_vertices()
                 or (this->_vertices == other.incident_vertices_r()));
     }
 

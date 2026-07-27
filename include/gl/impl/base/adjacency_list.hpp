@@ -23,8 +23,6 @@ namespace gl::impl {
 template <traits::c_adjacency_list_graph_traits GraphTraits>
 class adjacency_list;
 
-namespace specialized {
-
 template <traits::c_id_type IdType>
 struct incidence_item {
     using id_type = IdType;
@@ -326,7 +324,5 @@ struct adjacency_list_base<GraphTraits> {
         directed_adjacency_list<GraphTraits>,
         undirected_adjacency_list<GraphTraits>>;
 };
-
-} // namespace specialized
 
 } // namespace gl::impl

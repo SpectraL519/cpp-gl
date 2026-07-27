@@ -138,6 +138,7 @@ public:
     /// @param other The vertex descriptor to compare against.
     /// @return `true` if both descriptors hold the same ID, `false` otherwise.
     template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] gl_attr_force_inline bool operator==(
         const vertex_descriptor<OtherProperties, IdType>& other
     ) const noexcept {
@@ -149,6 +150,7 @@ public:
     /// @param other The vertex descriptor to compare against.
     /// @return The strong ordering result based on the underlying IDs.
     template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
         const vertex_descriptor<OtherProperties, IdType>& other
     ) const noexcept {

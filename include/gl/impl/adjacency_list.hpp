@@ -6,8 +6,8 @@
 
 #include "gl/constants.hpp"
 #include "gl/graph_traits.hpp"
-#include "gl/impl/specialized/adjacency_list.hpp"
-#include "gl/impl/specialized/flat_adjacency_list.hpp"
+#include "gl/impl/base/adjacency_list.hpp"
+#include "gl/impl/base/flat_adjacency_list.hpp"
 #include "gl/types/core.hpp"
 
 #ifdef GL_TESTING
@@ -28,10 +28,10 @@ struct to_impl;
 namespace impl {
 
 template <traits::c_adjacency_list_graph_traits GraphTraits>
-class adjacency_list final : public specialized::adjacency_list_base_t<GraphTraits> {
+class adjacency_list final : public adjacency_list_base_t<GraphTraits> {
 public:
     using traits_type = GraphTraits;
-    using base_type = specialized::adjacency_list_base_t<traits_type>;
+    using base_type = adjacency_list_base_t<traits_type>;
     using id_type = typename traits_type::id_type;
     using item_type = typename base_type::item_type;
     using storage_type = typename base_type::storage_type;
