@@ -40,8 +40,14 @@ concept c_graph = c_instantiation_of<std::remove_cvref_t<G>, graph>;
 template <typename G>
 concept c_mut_graph = c_graph<G> and not std::is_const_v<std::remove_reference_t<G>>;
 
-template <c_graph G>
+} // namespace traits
+
+/// @ingroup GL-Core
+/// @brief Extracts the underlying unqualified graph type by removing reference and cv-qualifiers.
+template <traits::c_graph G>
 using graph_val_t = std::remove_cvref_t<G>;
+
+namespace traits {
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph is directed.
@@ -127,32 +133,42 @@ concept c_graph_edge =
 
 } // namespace traits
 
+/// @ingroup GL-Core
+/// @brief Resolves the identifier type associated with the given graph type.
 template <traits::c_graph G>
-using id_t = typename traits::graph_val_t<G>::id_type;
+using id_t = typename graph_val_t<G>::id_type;
 
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the graph's constness.
 template <traits::c_graph G>
 using vertex_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<G>>,
-    typename traits::graph_val_t<G>::const_vertex_type,
-    typename traits::graph_val_t<G>::vertex_type>;
+    typename graph_val_t<G>::const_vertex_type,
+    typename graph_val_t<G>::vertex_type>;
 
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate vertex properties type (mutable or const) based on the graph's constness.
 template <traits::c_graph G>
 using vertex_properties_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<G>>,
-    const typename traits::graph_val_t<G>::vertex_properties_type,
-    typename traits::graph_val_t<G>::vertex_properties_type>;
+    const typename graph_val_t<G>::vertex_properties_type,
+    typename graph_val_t<G>::vertex_properties_type>;
 
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate edge descriptor type (mutable or const) based on the graph's constness.
 template <traits::c_graph G>
 using edge_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<G>>,
-    typename traits::graph_val_t<G>::const_edge_type,
-    typename traits::graph_val_t<G>::edge_type>;
+    typename graph_val_t<G>::const_edge_type,
+    typename graph_val_t<G>::edge_type>;
 
+/// @ingroup GL-Core
+/// @brief Resolves the appropriate edge properties type (mutable or const) based on the graph's constness.
 template <traits::c_graph G>
 using edge_properties_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<G>>,
-    const typename traits::graph_val_t<G>::edge_properties_type,
-    typename traits::graph_val_t<G>::edge_properties_type>;
+    const typename graph_val_t<G>::edge_properties_type,
+    typename graph_val_t<G>::edge_properties_type>;
 
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
@@ -434,15 +450,19 @@ public:
     /// @throws std::invalid_argument If any vertex ID in the range is invalid.
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
-        // TODO: optimize
-        // sorts the ids in a descending order and removes duplicate ids
-        std::set<id_type, std::greater<>> vertex_id_set(
-            std::ranges::begin(vertex_id_rng), std::ranges::end(vertex_id_rng)
-        );
-        if (not vertex_id_set.empty())
-            this->_verify_vertex_id(*vertex_id_set.begin());
+        auto vertex_ids = vertex_id_rng | std::ranges::to<std::vector>();
+        // Sort in descending order to prevent index shifting bugs during erasure
+        std::ranges::sort(vertex_ids, std::greater<>{});
+        // Remove duplicate IDs
+        vertex_ids.erase(std::ranges::unique(vertex_ids).begin(), vertex_ids.end());
 
-        for (auto vertex_id : vertex_id_set)
+        // Because the IDs are sorted descending, verifying the first (largest) ID
+        // implicitly guarantees all smaller IDs are also within bounds.
+        if (not vertex_ids.empty())
+            this->_verify_vertex_id(vertex_ids.front());
+
+        // Remove vertices from largest ID to smallest ID
+        for (auto vertex_id : vertex_ids)
             this->_remove_vertex_impl(vertex_id);
     }
 
