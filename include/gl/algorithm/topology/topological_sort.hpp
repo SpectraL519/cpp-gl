@@ -61,13 +61,13 @@ namespace gl::algorithm {
 /// @hideparams
 template <
     traits::c_directed_graph G,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
-[[nodiscard]] std::optional<std::vector<typename G::id_type>> topological_sort(
-    const G& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+[[nodiscard]] std::optional<std::vector<id_t<G>>> topological_sort(
+    G&& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
-    using id_type = typename G::id_type;
-    using edge_type = typename G::edge_type;
+    using id_type = id_t<G>;
+    using edge_type = edge_t<G>;
 
     // prepare the vertex in degree map
     std::vector<size_type> in_degree_map = graph.in_degree_map();

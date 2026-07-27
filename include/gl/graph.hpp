@@ -33,32 +33,43 @@ namespace traits {
 /// @ingroup GL-Traits
 /// @brief Concept checking if a type is an instantiation of the generic @ref "gl::graph" graph class.
 template <typename G>
-concept c_graph = c_instantiation_of<G, graph>;
+concept c_graph = c_instantiation_of<std::remove_cvref_t<G>, graph>;
+
+/// @ingroup GL-Traits
+/// @brief Concept checking if a type is a mutable instantiation of the generic @ref "gl::graph" graph class.
+template <typename G>
+concept c_mut_graph = c_graph<G> and not std::is_const_v<std::remove_reference_t<G>>;
+
+template <c_graph G>
+using graph_val_t = std::remove_cvref_t<G>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph is directed.
 /// @see gl::directed_t "directed_t" : For the directional tag used to specify directed graph configuration.
 template <typename G>
-concept c_directed_graph = c_graph<G> and std::same_as<typename G::directional_tag, directed_t>;
+concept c_directed_graph =
+    c_graph<G> and std::same_as<typename graph_val_t<G>::directional_tag, directed_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph is undirected.
 /// @see gl::undirected_t "undirected_t" : For the directional tag used to specify undirected graph configuration.
 template <typename G>
-concept c_undirected_graph = c_graph<G> and std::same_as<typename G::directional_tag, undirected_t>;
+concept c_undirected_graph =
+    c_graph<G> and std::same_as<typename graph_val_t<G>::directional_tag, undirected_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes the standard adjacency list representation.
 /// @see gl::repr::list_t "list_t" : For the representation tag used to specify the standard adjacency list representation.
 template <typename G>
-concept c_list_graph = c_graph<G> and std::same_as<typename G::representation_tag, repr::list_t>;
+concept c_list_graph =
+    c_graph<G> and std::same_as<typename graph_val_t<G>::representation_tag, repr::list_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes the flattened adjacency list representation.
 /// @see gl::repr::flat_list_t "flat_list_t" : For the representation tag used to specify the flattened adjacency list representation.
 template <typename G>
 concept c_flat_list_graph =
-    c_graph<G> and std::same_as<typename G::representation_tag, repr::flat_list_t>;
+    c_graph<G> and std::same_as<typename graph_val_t<G>::representation_tag, repr::flat_list_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes any list-based adjacency representation.
@@ -73,14 +84,14 @@ concept c_adjacency_list_graph = c_list_graph<G> or c_flat_list_graph<G>;
 /// @see gl::repr::matrix_t "matrix_t" : For the representation tag used to specify the standard adjacency matrix representation.
 template <typename G>
 concept c_matrix_graph =
-    c_graph<G> and std::same_as<typename G::representation_tag, repr::matrix_t>;
+    c_graph<G> and std::same_as<typename graph_val_t<G>::representation_tag, repr::matrix_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes the flattened adjacency matrix representation.
 /// @see gl::repr::flat_matrix_t "flat_matrix_t" : For the representation tag used to specify the flattened adjacency matrix representation.
 template <typename G>
 concept c_flat_matrix_graph =
-    c_graph<G> and std::same_as<typename G::representation_tag, repr::flat_matrix_t>;
+    c_graph<G> and std::same_as<typename graph_val_t<G>::representation_tag, repr::flat_matrix_t>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a graph utilizes any matrix-based adjacency representation.
@@ -97,7 +108,10 @@ concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 template <typename V, typename G>
 concept c_graph_vertex =
     c_graph<G>
-    and c_one_of<std::remove_cvref_t<V>, typename G::vertex_type, typename G::const_vertex_type>;
+    and c_one_of<
+        std::remove_cvref_t<V>,
+        typename graph_val_t<G>::vertex_type,
+        typename graph_val_t<G>::const_vertex_type>;
 
 /// @ingroup GL-Traits
 /// @brief Concept checking if a type is a mutable or immutable edge descriptor associated with the given graph.
@@ -106,14 +120,45 @@ concept c_graph_vertex =
 template <typename E, typename G>
 concept c_graph_edge =
     c_graph<G>
-    and c_one_of<std::remove_cvref_t<E>, typename G::edge_type, typename G::const_edge_type>;
+    and c_one_of<
+        std::remove_cvref_t<E>,
+        typename graph_val_t<G>::edge_type,
+        typename graph_val_t<G>::const_edge_type>;
 
 } // namespace traits
+
+template <traits::c_graph G>
+using id_t = typename traits::graph_val_t<G>::id_type;
+
+template <traits::c_graph G>
+using vertex_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    typename traits::graph_val_t<G>::const_vertex_type,
+    typename traits::graph_val_t<G>::vertex_type>;
+
+template <traits::c_graph G>
+using vertex_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    const typename traits::graph_val_t<G>::vertex_properties_type,
+    typename traits::graph_val_t<G>::vertex_properties_type>;
+
+template <traits::c_graph G>
+using edge_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    typename traits::graph_val_t<G>::const_edge_type,
+    typename traits::graph_val_t<G>::edge_type>;
+
+template <traits::c_graph G>
+using edge_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<G>>,
+    const typename traits::graph_val_t<G>::edge_properties_type,
+    typename traits::graph_val_t<G>::edge_properties_type>;
 
 template <traits::c_graph Graph>
 [[nodiscard]] Graph clone(const Graph& source);
 
 template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
+requires(not std::is_lvalue_reference_v<Graph>)
 [[nodiscard]] auto to(Graph&& source);
 
 namespace detail {
@@ -239,10 +284,6 @@ public:
     /// @brief Type tag indicating the underlying representation model.
     using representation_tag = typename traits_type::representation_tag;
 
-    /// @brief The underlying representation type matching the directional tag.
-    using implementation_type = typename representation_tag::template type<traits_type>;
-    friend implementation_type;
-
     /// @brief Integral type used to identify vertices and edges.
     using id_type = typename traits_type::id_type;
 
@@ -261,32 +302,13 @@ public:
     using edge_properties_type = typename traits_type::edge_properties_type;
 
 private:
-    template <typename Self>
-    using deduced_vertex_type = std::conditional_t<
-        std::is_const_v<std::remove_reference_t<Self>>,
-        const_vertex_type,
-        vertex_type>;
-
-    template <typename Self>
-    using deduced_vertex_properties_type = std::conditional_t<
-        std::is_const_v<std::remove_reference_t<Self>>,
-        const vertex_properties_type,
-        vertex_properties_type>;
+    using implementation_type = typename representation_tag::template type<traits_type>;
+    friend implementation_type;
 
     using vertex_properties_map_type = std::conditional_t<
         traits::c_empty_properties<vertex_properties_type>,
         empty_properties_map,
         std::vector<vertex_properties_type>>;
-
-    template <typename Self>
-    using deduced_edge_type = std::
-        conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const_edge_type, edge_type>;
-
-    template <typename Self>
-    using deduced_edge_properties_type = std::conditional_t<
-        std::is_const_v<std::remove_reference_t<Self>>,
-        const edge_properties_type,
-        edge_properties_type>;
 
     using edge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<edge_properties_type>,
@@ -459,7 +481,7 @@ public:
     /// @return The corresponding vertex descriptor (const or mutable).
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
-    [[nodiscard]] deduced_vertex_type<Self> vertex(this Self& self, const id_type vertex_id) {
+    [[nodiscard]] vertex_t<Self> vertex(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
         return self.vertex_unchecked(vertex_id);
     }
@@ -469,9 +491,7 @@ public:
     /// @return The corresponding vertex descriptor.
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
-    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> at(
-        this Self& self, const id_type vertex_id
-    ) {
+    [[nodiscard]] gl_attr_force_inline vertex_t<Self> at(this Self& self, const id_type vertex_id) {
         return self.vertex(vertex_id);
     }
 
@@ -483,13 +503,13 @@ public:
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     template <typename Self>
-    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> vertex_unchecked(
+    [[nodiscard]] gl_attr_force_inline vertex_t<Self> vertex_unchecked(
         this Self& self, const id_type vertex_id
     ) {
         if constexpr (traits::c_non_empty_properties<vertex_properties_type>)
-            return deduced_vertex_type<Self>{vertex_id, self._vertex_properties[vertex_id]};
+            return vertex_t<Self>{vertex_id, self._vertex_properties[vertex_id]};
         else
-            return deduced_vertex_type<Self>{vertex_id};
+            return vertex_t<Self>{vertex_id};
     }
 
     /// @brief Returns a vertex descriptor without bounds checking (array access style).
@@ -500,7 +520,7 @@ public:
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     template <typename Self>
-    [[nodiscard]] gl_attr_force_inline deduced_vertex_type<Self> operator[](
+    [[nodiscard]] gl_attr_force_inline vertex_t<Self> operator[](
         this Self& self, const id_type vertex_id
     ) noexcept {
         return self.vertex_unchecked(vertex_id);
@@ -508,7 +528,7 @@ public:
 
     /// @brief Returns a lazily evaluated view of all vertex descriptors in the graph.
     /// @return A view yielding descriptors for every vertex.
-    [[nodiscard]] gl_attr_force_inline auto vertices(this auto&& self) noexcept {
+    [[nodiscard]] gl_attr_force_inline auto vertices(this auto& self) noexcept {
         return self.vertex_ids() | std::views::transform(self._create_vertex_descriptor());
     }
 
@@ -523,7 +543,7 @@ public:
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto neighbors(this auto&& self, const id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline auto neighbors(this auto& self, const id_type vertex_id) {
         return self.neighbor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
     }
@@ -534,7 +554,7 @@ public:
     /// @return A view of all adjacent vertex descriptors.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto neighbors(
-        this auto&& self, traits::c_graph_vertex<graph> auto vertex
+        this auto& self, traits::c_graph_vertex<graph> auto vertex
     ) {
         return self.neighbors(vertex.id());
     }
@@ -564,7 +584,7 @@ public:
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto predecessors(this auto&& self, const id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline auto predecessors(this auto& self, const id_type vertex_id) {
         return self.predecessor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
     }
@@ -575,7 +595,7 @@ public:
     /// @return A view of all predecessor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     [[nodiscard]] gl_attr_force_inline auto predecessors(
-        this auto&& self, traits::c_graph_vertex<graph> auto vertex
+        this auto& self, traits::c_graph_vertex<graph> auto vertex
     ) {
         return self.predecessors(vertex.id());
     }
@@ -606,7 +626,7 @@ public:
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex descriptors.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline auto successors(this auto&& self, const id_type vertex_id) {
+    [[nodiscard]] gl_attr_force_inline auto successors(this auto& self, const id_type vertex_id) {
         return self.successor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
     }
@@ -617,7 +637,7 @@ public:
     /// @return A view of all successor vertex descriptors.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto successors(
-        this auto&& self, traits::c_graph_vertex<graph> auto vertex
+        this auto& self, traits::c_graph_vertex<graph> auto vertex
     ) {
         return self.successors(vertex.id());
     }
@@ -647,7 +667,7 @@ public:
     /// @return A reference to the properties attached to the vertex.
     /// @throws std::invalid_argument If the vertex ID is invalid.
     template <typename Self>
-    [[nodiscard]] gl_attr_force_inline deduced_vertex_properties_type<Self>& vertex_properties(
+    [[nodiscard]] gl_attr_force_inline vertex_properties_t<Self>& vertex_properties(
         this Self& self, const id_type id
     )
     requires(traits::c_non_empty_properties<vertex_properties_type>)
@@ -658,7 +678,7 @@ public:
 
     /// @brief Retrieves a random-access view over all vertex properties in the graph.
     /// @return A view mapping each active vertex index to its property.
-    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map(this auto&& self) noexcept
+    [[nodiscard]] gl_attr_force_inline auto vertex_properties_map(this auto& self) noexcept
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return std::views::all(self._vertex_properties);
@@ -949,13 +969,17 @@ public:
     /// @param target_id The target vertex ID.
     /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
     /// @throws std::invalid_argument If either vertex ID is invalid.
-    [[nodiscard]] std::optional<edge_type> edge(const id_type source_id, const id_type target_id)
-        const {
-        this->_verify_vertex_ids(source_id, target_id);
+    template <typename Self>
+    [[nodiscard]] std::optional<edge_t<Self>> edge(
+        this Self& self, const id_type source_id, const id_type target_id
+    ) {
+        self._verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.edge(source_id, target_id, this->_edge_properties);
+            return self._impl.template edge<edge_t<Self>>(
+                source_id, target_id, self._edge_properties
+            );
         else
-            return this->_impl.edge(source_id, target_id);
+            return self._impl.template edge<edge_t<Self>>(source_id, target_id);
     }
 
     /// @brief Retrieves an edge (if it exists) connecting the source to the target.
@@ -963,10 +987,13 @@ public:
     /// @param target The target vertex descriptor.
     /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
     /// @throws std::invalid_argument If either vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline std::optional<edge_type> edge(
-        traits::c_graph_vertex<graph> auto source, traits::c_graph_vertex<graph> auto target
-    ) const {
-        return this->edge(source.id(), target.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline std::optional<edge_t<Self>> edge(
+        this Self& self,
+        traits::c_graph_vertex<graph> auto source,
+        traits::c_graph_vertex<graph> auto target
+    ) {
+        return self.edge(source.id(), target.id());
     }
 
     /// @brief Retrieves all parallel edges connecting the source to the target.
@@ -974,14 +1001,17 @@ public:
     /// @param target_id The target vertex ID.
     /// @return A vector populated with the descriptors of all edges linking the two vertices.
     /// @throws std::invalid_argument If either vertex ID is invalid.
-    [[nodiscard]] inline std::vector<edge_type> edges(
-        const id_type source_id, const id_type target_id
-    ) const {
-        this->_verify_vertex_ids(source_id, target_id);
+    template <typename Self>
+    [[nodiscard]] inline std::vector<edge_t<Self>> edges(
+        this Self& self, const id_type source_id, const id_type target_id
+    ) {
+        self._verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.edges(source_id, target_id, this->_edge_properties);
+            return self._impl.template edges<edge_t<Self>>(
+                source_id, target_id, self._edge_properties
+            );
         else
-            return this->_impl.edges(source_id, target_id);
+            return self._impl.template edges<edge_t<Self>>(source_id, target_id);
     }
 
     /// @brief Retrieves all parallel edges connecting the source to the target.
@@ -989,94 +1019,110 @@ public:
     /// @param target The target vertex descriptor.
     /// @return A vector populated with the descriptors of all edges linking the two vertices.
     /// @throws std::invalid_argument If either vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline std::vector<edge_type> edges(
-        traits::c_graph_vertex<graph> auto source, traits::c_graph_vertex<graph> auto target
-    ) const {
-        return this->edges(source.id(), target.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline std::vector<edge_t<Self>> edges(
+        this Self& self,
+        traits::c_graph_vertex<graph> auto source,
+        traits::c_graph_vertex<graph> auto target
+    ) {
+        return self.edges(source.id(), target.id());
     }
 
     /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incident edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] inline auto incident_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
+    template <typename Self>
+    [[nodiscard]] inline auto incident_edges(this Self& self, const id_type vertex_id) {
+        self._verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.incident_edges(vertex_id, this->_edge_properties);
+            return self._impl.template incident_edges<edge_t<Self>>(
+                vertex_id, self._edge_properties
+            );
         else
-            return this->_impl.incident_edges(vertex_id);
+            return self._impl.template incident_edges<edge_t<Self>>(vertex_id);
     }
 
     /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incident edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto incident_edges(traits::c_graph_vertex<graph> auto vertex
-    ) const {
-        return this->incident_edges(vertex.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto incident_edges(
+        this Self& self, traits::c_graph_vertex<graph> auto vertex
+    ) {
+        return self.incident_edges(vertex.id());
     }
 
     /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incoming edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] inline auto in_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
+    template <typename Self>
+    [[nodiscard]] inline auto in_edges(this Self& self, const id_type vertex_id) {
+        self._verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.in_edges(vertex_id, this->_edge_properties);
+            return self._impl.template in_edges<edge_t<Self>>(vertex_id, self._edge_properties);
         else
-            return this->_impl.in_edges(vertex_id);
+            return self._impl.template in_edges<edge_t<Self>>(vertex_id);
     }
 
     /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incoming edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto in_edges(traits::c_graph_vertex<graph> auto vertex
-    ) const {
-        return this->in_edges(vertex.id());
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline auto in_edges(
+        this Self& self, traits::c_graph_vertex<graph> auto vertex
+    ) {
+        return self.in_edges(vertex.id());
     }
 
     /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of outgoing edges.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] inline auto out_edges(const id_type vertex_id) const {
-        this->_verify_vertex_id(vertex_id);
+    template <typename Self>
+    [[nodiscard]] inline auto out_edges(this Self& self, const id_type vertex_id) {
+        self._verify_vertex_id(vertex_id);
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
-            return this->_impl.out_edges(vertex_id, this->_edge_properties);
+            return self._impl.template out_edges<edge_t<Self>>(vertex_id, self._edge_properties);
         else
-            return this->_impl.out_edges(vertex_id);
+            return self._impl.template out_edges<edge_t<Self>>(vertex_id);
     }
 
     /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of outgoing edges.
     /// @throws std::invalid_argument If the vertex descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto out_edges(traits::c_graph_vertex<graph> auto vertex
-    ) const {
-        return this->out_edges(vertex.id());
+    [[nodiscard]] gl_attr_force_inline auto out_edges(
+        this auto& self, traits::c_graph_vertex<graph> auto vertex
+    ) {
+        return self.out_edges(vertex.id());
     }
 
     /// @brief Retrieves a mutable reference to an edge's properties.
     /// @param id The ID of the edge.
     /// @return A reference to the properties attached to the edge.
     /// @throws std::invalid_argument If the edge ID is invalid.
-    [[nodiscard]] edge_properties_type& edge_properties(const id_type id) const
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline edge_properties_t<Self>& edge_properties(
+        this Self& self, const id_type id
+    )
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
-        if (id >= this->_n_edges)
+        if (id >= self._n_edges)
             throw std::invalid_argument(std::format("Got invalid edge id [{}]", id));
 
-        return this->_edge_properties[id];
+        return self._edge_properties[id];
     }
 
     /// @brief Retrieves a view over all edge properties in the graph.
     /// @return A view mapping each active edge index to its property.
-    [[nodiscard]] gl_attr_force_inline auto edge_properties_map() const noexcept
+    [[nodiscard]] gl_attr_force_inline auto edge_properties_map(this auto& self) noexcept
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
-        return std::views::all(this->_edge_properties);
+        return std::views::all(self._edge_properties);
     }
 
     // --- adjacency and incidence methods ---
@@ -1237,6 +1283,7 @@ public:
 
     /// @brief Friend declaration providing access for graph target conversions.
     template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
+    requires(not std::is_lvalue_reference_v<Graph>)
     friend auto to(Graph&& source);
 
     /// @brief Internal friend structure for `to` conversion operations.
@@ -1296,7 +1343,7 @@ private:
     gl_attr_force_inline auto _create_vertex_descriptor(this Self&) noexcept
     requires(traits::c_empty_properties<vertex_properties_type>)
     {
-        return [](const id_type id) { return deduced_vertex_type<Self>{id}; };
+        return [](const id_type id) { return vertex_t<Self>{id}; };
     }
 
     template <typename Self>
@@ -1304,7 +1351,7 @@ private:
     requires(traits::c_non_empty_properties<vertex_properties_type>)
     {
         return [&pmap = self._vertex_properties](const id_type id) {
-            return deduced_vertex_type<Self>{id, pmap[to_idx(id)]};
+            return vertex_t<Self>{id, pmap[to_idx(id)]};
         };
     }
 
@@ -1312,9 +1359,10 @@ private:
 
     using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
+    template <traits::c_graph G>
     struct concise_target_formatter {
-        edge_type edge;
-        id_type src_id;
+        edge_t<G> edge;
+        id_t<G> src_id;
         bool with_props;
 
         friend std::ostream& operator<<(std::ostream& os, const concise_target_formatter& proxy) {
@@ -1338,16 +1386,16 @@ private:
         return os;
     }
 
-    std::ostream& _concise_write(std::ostream& os) const {
+    template <typename Self>
+    std::ostream& _concise_write(this Self&& self, std::ostream& os) {
         using enum io::detail::option_bit;
 
-        for (auto src : this->vertices()) {
+        for (auto src : self.vertices()) {
             auto tgts = std::views::transform(
-                this->out_edges(src.id()),
-                [src_id = src.id(),
-                 with_props = io::is_option_set(os, with_connection_properties)](const auto& edge) {
-                    return concise_target_formatter{edge, src_id, with_props};
-                }
+                self.out_edges(src.id()),
+                [src_id = src.id(), with_props = io::is_option_set(os, with_connection_properties)](
+                    const edge_t<Self>& edge
+                ) { return concise_target_formatter<Self>{edge, src_id, with_props}; }
             );
             os << src << " : " << io::range_formatter(tgts) << '\n';
         }
@@ -1485,7 +1533,7 @@ private:
     implementation_type _impl{};
 
     [[no_unique_address]] vertex_properties_map_type _vertex_properties{};
-    [[no_unique_address]] mutable edge_properties_map_type _edge_properties{};
+    [[no_unique_address]] edge_properties_map_type _edge_properties{};
 };
 
 // --- general graph utility ---
@@ -1567,7 +1615,7 @@ using default_vertex_distance_type = std::int64_t;
 
 /// @ingroup GL-Core
 /// @brief Utility trait to resolve the underlying distance or weight numeric type for a graph.
-template <traits::c_graph GraphType>
+template <traits::c_graph G>
 struct vertex_distance {
     /// @brief Resolves to the default distance type if no specific weight property is detected.
     using type = default_vertex_distance_type;
@@ -1575,31 +1623,31 @@ struct vertex_distance {
 
 /// @ingroup GL-Core
 /// @brief Specialization resolving the specific weight type when edge properties contain weight attributes.
-template <traits::c_graph GraphType>
-requires(traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
-struct vertex_distance<GraphType> {
+template <traits::c_graph G>
+requires(traits::c_weight_properties_type<edge_properties_t<G>>)
+struct vertex_distance<G> {
     /// @brief Resolves to the `weight_type` inherently mapped to the graph's edges.
-    using type = typename GraphType::edge_properties_type::weight_type;
+    using type = typename edge_properties_t<G>::weight_type;
 };
 
 /// @ingroup GL-Core
 /// @brief Convenience alias to retrieve the appropriate distance numeric type from a graph structure.
-template <traits::c_graph GraphType>
-using vertex_distance_type = typename vertex_distance<GraphType>::type;
+template <traits::c_graph G>
+using vertex_distance_t = typename vertex_distance<G>::type;
 
 /// @ingroup GL-Core
 /// @brief Helper utility to safely retrieve the weight payload of an edge.
 ///
 /// Automatically returns a constant default if the graph representation carries no attached weight properties.
 ///
-/// @tparam GraphType The underlying type of the graph.
+/// @tparam G The underlying type of the graph.
 /// @param edge The edge descriptor to extract weight from.
 /// @return The specified edge weight or the unweighted graph default (1).
-template <traits::c_graph GraphType>
-[[nodiscard]] gl_attr_force_inline vertex_distance_type<GraphType> get_weight(
-    const typename GraphType::edge_type& edge
+template <traits::c_graph G>
+[[nodiscard]] gl_attr_force_inline vertex_distance_t<G> get_weight(
+    const traits::c_graph_edge<G> auto& edge
 ) {
-    if constexpr (traits::c_weight_properties_type<typename GraphType::edge_properties_type>)
+    if constexpr (traits::c_weight_properties_type<edge_properties_t<G>>)
         return edge.properties().weight;
     else
         return static_cast<default_vertex_distance_type>(1ll);

@@ -25,7 +25,7 @@ namespace gl::algorithm {
 /// | VertexDistanceType | The numeric type used to represent accumulated path weights/distances. | Must satisfy the [**c_arithmetic**](gl_concepts.md#gl-traits-c-arithmetic) concept. |
 template <traits::c_graph G, traits::c_arithmetic VertexDistanceType>
 struct paths_descriptor {
-    using id_type = typename G::id_type;
+    using id_type = id_t<G>;
     using distance_type = VertexDistanceType;
 
     /// @brief Constructs a descriptor sized for the given number of vertices.
@@ -43,7 +43,7 @@ struct paths_descriptor {
 /// @brief An alias for @ref gl::algorithm::paths_descriptor "paths_descriptor" that automatically deduces the appropriate distance type for the graph.
 /// @tparam G The type of the graph.
 template <traits::c_graph G>
-using paths_descriptor_type = paths_descriptor<G, vertex_distance_type<G>>;
+using paths_descriptor_type = paths_descriptor<G, vertex_distance_t<G>>;
 
 /// @ingroup GL-Algorithm
 /// @brief Factory function to create an initialized paths descriptor sized for the given graph.
@@ -66,11 +66,11 @@ template <traits::c_graph G>
 template <traits::c_graph G>
 struct dijkstra_search_node {
     /// @brief The type of the vertex ID.
-    using id_type = typename G::id_type;
+    using id_type = id_t<G>;
 
     id_type vertex_id; ///< @brief The ID of the vertex represented by this node.
     id_type pred_id; ///< The ID of the predecessor vertex used to reach this node.
-    vertex_distance_type<G>
+    vertex_distance_t<G>
         distance; ///< The accumulated distance from the source to this vertex at the time of enqueueing.
 };
 
@@ -126,17 +126,14 @@ struct dijkstra_search_node {
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 [[nodiscard]] paths_descriptor_type<G> dijkstra_shortest_paths(
-    const G& graph,
-    typename G::id_type source_id,
-    PreVisitCallback pre_visit = {},
-    PostVisitCallback post_visit = {}
+    G&& graph, id_t<G> source_id, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
-    using id_type = typename G::id_type;
-    using edge_type = typename G::edge_type;
-    using distance_type = vertex_distance_type<G>;
+    using id_type = id_t<G>;
+    using edge_type = edge_t<G>;
+    using distance_type = vertex_distance_t<G>;
 
     auto paths = make_paths_descriptor<G>(graph);
 

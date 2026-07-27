@@ -75,15 +75,13 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,
-    traits::c_optional_predicate<typename G::id_type> VisitVertexPredicate = empty_callback,
-    traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
-        empty_callback,
-    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueNodePred = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
+    traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
+    traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 bool bfs(
-    const G& graph,
+    G&& graph,
     const InitQueueRangeType& initial_queue_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
@@ -101,7 +99,7 @@ bool bfs(
 
     // search the graph
     while (not q.empty()) {
-        const search_node node = q.front();
+        const auto node = q.front();
         q.pop();
 
         if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)

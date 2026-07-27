@@ -169,7 +169,7 @@ struct to_impl<repr::matrix_t, repr::flat_matrix_t> {
 /// | Parameter     | Description | Constraints |
 /// | :------------ | :---------- | :---------- |
 /// | TargetImplTag | The representation tag of the desired target representation (e.g., `gl::repr::flat_list_t`) | [**c_graph_repr_tag**](gl_concepts.md#gl-traits-c-graph-repr-tag) |
-/// | Graph         | The type of the source graph, which will be automatically deduced from the function argument. | [**c_graph**](gl_concepts.md#gl-traits-c-graph) |
+/// | Graph         | The type of the source graph, which will be automatically deduced from the function argument. | [**c_graph**](gl_concepts.md#gl-traits-c-graph) and must **NOT** be an Lvalue reference |
 ///
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new graph containing the moved data, structured according to `TargetImplTag`.
@@ -177,6 +177,7 @@ struct to_impl<repr::matrix_t, repr::flat_matrix_t> {
 /// ### See Also
 /// - @ref gl::traits::swap_repr_tag "swap_repr_tag" : For the trait used to resolve the target graph type with the swapped representation tag.
 template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
+requires(not std::is_lvalue_reference_v<Graph>)
 [[nodiscard]] auto to(Graph&& source) {
     using source_traits = typename Graph::traits_type;
     using source_impl_tag = typename source_traits::representation_tag;
@@ -192,7 +193,7 @@ template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
     target._n_edges = std::exchange(source._n_edges, 0uz);
     target._vertex_properties = std::move(source._vertex_properties);
     target._edge_properties = std::move(source._edge_properties);
-    source._impl = typename Graph::implementation_type();
+    source._impl = typename Graph::implementation_type{};
 
     return target;
 }

@@ -90,20 +90,15 @@ template <
     typename InitQueueRangeType = std::vector<search_node<G>>,
     typename NodeType = std::ranges::range_value_t<InitQueueRangeType>,
     traits::c_optional_predicate<NodeType> VisitVertexPredicate = empty_callback,
-    traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
+    traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
+    traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
+    traits::c_optional_callback<NodeType, id_t<G>, id_t<G>, const edge_t<G>&> MakeNodeCallback =
         empty_callback,
-    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueNodePred = empty_callback,
-    traits::c_optional_callback<
-        NodeType,
-        typename G::id_type,
-        typename G::id_type,
-        const typename G::edge_type&> MakeNodeCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 requires traits::c_predicate<PQCmp, NodeType, NodeType>
 bool pfs(
-    const G& graph,
+    G&& graph,
     const PQCmp& pq_cmp,
     const InitQueueRangeType& initial_queue_content,
     VisitVertexPredicate visit_vertex_pred = {},
@@ -152,7 +147,7 @@ bool pfs(
                 }
                 else {
                     static_assert(
-                        std::constructible_from<NodeType, typename G::id_type, typename G::id_type>,
+                        std::constructible_from<NodeType, id_t<G>, id_t<G>>,
                         "[gl::algorithm::pfs] Custom NodeType provided without a MakeNodeCallback. "
                         "The NodeType must be constructible from (target_id, pred_id), or you must "
                         "provide a MakeNodeCallback!"

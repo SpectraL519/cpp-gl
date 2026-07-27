@@ -78,16 +78,16 @@ namespace gl::algorithm {
 template <
     result_discriminator Result = ret,
     traits::c_graph G,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 result_type<Result, predecessors_map<G>> depth_first_search(
-    const G& graph,
-    const typename G::id_type root_vertex_id = no_root,
+    G&& graph,
+    const id_t<G> root_vertex_id = no_root,
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
     std::vector<bool> visited(graph.n_vertices(), false);
-    std::vector<typename G::id_type> sources(graph.n_vertices());
+    std::vector<id_t<G>> sources(graph.n_vertices());
 
     auto pred_map = init_predecessors_map<Result>(graph);
 
@@ -178,16 +178,16 @@ result_type<Result, predecessors_map<G>> depth_first_search(
 template <
     result_discriminator Result = ret,
     traits::c_graph G,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 result_type<Result, predecessors_map<G>> recursive_depth_first_search(
-    const G& graph,
-    const typename G::id_type root_vertex_id = no_root,
+    G&& graph,
+    const id_t<G> root_vertex_id = no_root,
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
     std::vector<bool> visited(graph.n_vertices(), false);
-    std::vector<typename G::id_type> sources(graph.n_vertices());
+    std::vector<id_t<G>> sources(graph.n_vertices());
 
     auto pred_map = init_predecessors_map<Result>(graph);
 

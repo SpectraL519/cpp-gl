@@ -22,11 +22,11 @@ namespace gl::algorithm {
 template <traits::c_undirected_graph G>
 struct mst_descriptor {
     /// @brief The type of the graph.
-    using graph_type = G;
+    using graph_type = traits::graph_val_t<G>;
     /// @brief The type of the edges stored in the graph.
-    using edge_type = typename graph_type::edge_type;
+    using edge_type = edge_t<G>;
     /// @brief The numeric type used to represent accumulated tree weights.
-    using weight_type = vertex_distance_type<graph_type>;
+    using weight_type = vertex_distance_t<graph_type>;
 
     /// @brief Constructs a descriptor sized to hold the resulting tree edges.
     /// @param n_vertices The total number of vertices in the graph.
@@ -77,9 +77,9 @@ struct mst_descriptor {
 /// - @ref gl::algorithm::vertex_heap_prim_mst "vertex_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
 /// @hideparams
 template <traits::c_undirected_graph G>
-[[nodiscard]] mst_descriptor<G> edge_heap_prim_mst(const G& graph, typename G::id_type root_id) {
+[[nodiscard]] mst_descriptor<G> edge_heap_prim_mst(G&& graph, id_t<G> root_id) {
     // type definitions
-    using edge_type = typename G::edge_type;
+    using edge_type = edge_t<G>;
 
     struct edge_comparator {
         [[nodiscard]] gl_attr_force_inline bool operator()(
@@ -160,7 +160,7 @@ template <traits::c_undirected_graph G>
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
-/// | G | The type of the undirected graph being traversed. | Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept and its @ref gl::vertex_distance_type "distance type" must satisfy [**c_has_numeric_limits_max**](gl_concepts.md#gl-traits-c-has-numeric-limits-max).
+/// | G | The type of the undirected graph being traversed. | Must satisfy the [**c_undirected_graph**](gl_concepts.md#gl-traits-c-undirected-graph) concept and its @ref gl::vertex_distance_t "distance type" must satisfy [**c_has_numeric_limits_max**](gl_concepts.md#gl-traits-c-has-numeric-limits-max).
 ///
 /// @param graph The undirected graph to evaluate.
 /// @param root_id The starting vertex ID for the MST calculation. Defaults to the graph's `initial_id` if `invalid_id` is passed.
@@ -169,12 +169,12 @@ template <traits::c_undirected_graph G>
 /// - @ref gl::algorithm::edge_heap_prim_mst "edge_heap_prim_mst" For the vertex-heap variant of the Prim's MST finding algorithm.
 /// @hideparams
 template <traits::c_undirected_graph G>
-requires(traits::c_has_numeric_limits_max<vertex_distance_type<G>>)
-[[nodiscard]] mst_descriptor<G> vertex_heap_prim_mst(const G& graph, typename G::id_type root_id) {
+requires(traits::c_has_numeric_limits_max<vertex_distance_t<G>>)
+[[nodiscard]] mst_descriptor<G> vertex_heap_prim_mst(G&& graph, id_t<G> root_id) {
     // type definitions
-    using id_type = typename G::id_type;
-    using edge_type = typename G::edge_type;
-    using distance_type = vertex_distance_type<G>;
+    using id_type = id_t<G>;
+    using edge_type = edge_t<G>;
+    using distance_type = vertex_distance_t<G>;
 
     // Prepare the necessary utility
     const auto n_vertices = graph.n_vertices();

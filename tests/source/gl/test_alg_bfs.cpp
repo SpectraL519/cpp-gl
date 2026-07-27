@@ -176,8 +176,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     using graph_type = GraphType;
 
     const auto graph = gl::topology::regular_binary_tree<graph_type>(constants::depth);
-    const auto pred_map =
-        gl::algorithm::breadth_first_search<gl::algorithm::ret, graph_type>(graph);
+    const auto pred_map = gl::algorithm::breadth_first_search<gl::algorithm::ret>(graph);
 
     // verify the predecessors of each vertex
     REQUIRE_EQ(pred_map.size(), graph.n_vertices());

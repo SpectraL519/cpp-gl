@@ -74,15 +74,13 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitStackRangeType = std::vector<search_node<G>>,
-    traits::c_optional_predicate<typename G::id_type> VisitVertexPredicate = empty_callback,
-    traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback =
-        empty_callback,
-    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&>
-        EnqueueNodePred = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
+    traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
+    traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 bool dfs(
-    const G& graph,
+    G&& graph,
     const InitStackRangeType& initial_stack_content,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
@@ -187,15 +185,15 @@ bool dfs(
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_optional_predicate<typename G::id_type> VisitVertexPredicate,
-    traits::c_optional_predicate<typename G::id_type, typename G::id_type> VisitCallback,
-    traits::c_decision_predicate<typename G::id_type, const typename G::edge_type&> EnqueueNodePred,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_predicate<id_t<G>> VisitVertexPredicate,
+    traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback,
+    traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred,
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 void r_dfs(
-    const G& graph,
-    const typename G::id_type vertex_id,
-    const typename G::id_type pred_id,
+    G&& graph,
+    const id_t<G> vertex_id,
+    const id_t<G> pred_id,
     VisitVertexPredicate visit_vertex_pred,
     VisitCallback visit,
     EnqueueNodePred enqueue_node_pred,
