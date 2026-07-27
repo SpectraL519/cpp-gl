@@ -12,6 +12,7 @@
 
 #include <any>
 #include <iomanip>
+#include <type_traits>
 #include <unordered_map>
 
 namespace gl {
@@ -256,7 +257,7 @@ namespace traits {
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
-concept c_properties = std::semiregular<T>;
+concept c_properties = std::semiregular<std::remove_cv_t<T>>;
 
 /// @ingroup GL-Traits
 /// @brief Validates if a type is specifically the @ref gl::empty_properties tag.
@@ -266,7 +267,8 @@ concept c_properties = std::semiregular<T>;
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
-concept c_empty_properties = c_properties<T> and std::same_as<T, gl::empty_properties>;
+concept c_empty_properties =
+    c_properties<T> and std::same_as<std::remove_cv_t<T>, gl::empty_properties>;
 
 /// @ingroup GL-Traits
 /// @brief Validates if a property type contains actual user-defined data.

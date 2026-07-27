@@ -105,6 +105,18 @@ public:
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _vertices(source, target), _properties(properties) {}
 
+    /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
+    /// @tparam NonConstProps The non-const property type.
+    /// @param other The edge descriptor to convert from.
+    template <typename NonConstProperties>
+    requires(std::same_as<Properties, const NonConstProperties>)
+    edge_descriptor(const edge_descriptor<NonConstProperties, IdType>& other) noexcept
+    : _id(other.id()), _vertices(other._vertices) {
+        if constexpr (traits::c_non_empty_properties<Properties>) {
+            this->_properties = other.properties();
+        }
+    }
+
     /// @brief Returns an invalid edge descriptor (for empty properties).
     /// @return An `edge_descriptor` holding `invalid_id` for edge and vertex IDs.
     [[nodiscard]] gl_attr_force_inline static edge_descriptor invalid() noexcept
@@ -135,23 +147,29 @@ public:
     /// @brief Destructor.
     ~edge_descriptor() = default;
 
-    /// @brief Equality comparison operator for directed edges.
+    /// @brief Cross-type equality comparison operator for directed edges.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The edge descriptor to compare against.
     /// @return `true` if IDs and exact endpoint pairs match, `false` otherwise.
-    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(traits::c_directed_edge<type>)
-    {
-        return this->_id == other._id and (this->_vertices == other._vertices);
+    template <traits::c_properties OtherProperties>
+    requires(traits::c_directed_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] bool operator==(
+        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+    ) const noexcept {
+        return this->_id == other.id() and (this->_vertices == other.incident_vertices());
     }
 
-    /// @brief Equality comparison operator for undirected edges.
+    /// @brief Cross-type equality comparison operator for undirected edges.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The edge descriptor to compare against.
     /// @return `true` if IDs and endpoint pairs match (order independent), `false` otherwise.
-    [[nodiscard]] bool operator==(const edge_descriptor& other) const noexcept
-    requires(traits::c_undirected_edge<type>)
-    {
-        return this->_id == other._id
-           and (this->_vertices == other._vertices
+    template <traits::c_properties OtherProperties>
+    requires(traits::c_undirected_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] bool operator==(
+        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+    ) const noexcept {
+        return this->_id == other.id()
+           and (this->_vertices == other.incident_vertices()
                 or (this->_vertices == other.incident_vertices_r()));
     }
 

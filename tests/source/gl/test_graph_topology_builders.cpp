@@ -4,6 +4,7 @@
 #include <gl/topology.hpp>
 
 #include <cstddef>
+#include <print>
 
 namespace gl_testing {
 
@@ -47,9 +48,8 @@ namespace predicate {
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_fully_connected(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
-        return std::ranges::all_of(graph.vertices(), [&](const vertex_type& target) {
+    return [&graph](const auto& source) {
+        return std::ranges::all_of(graph.vertices(), [&](const auto& target) {
             return source == target or graph.has_edge(source, target);
         });
     };
@@ -57,9 +57,8 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
-        return std::ranges::none_of(graph.vertices(), [&](const vertex_type& target) {
+    return [&graph](const auto& source) {
+        return std::ranges::none_of(graph.vertices(), [&](const auto& target) {
             return graph.has_edge(source, target);
         });
     };
@@ -69,8 +68,7 @@ template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_not_connected_to_any_from(
     const GraphType& graph, const auto& vertex_it_range
 ) {
-    using vertex_type = typename GraphType::vertex_type;
-    return [&](const vertex_type& source) {
+    return [&](const auto& source) {
         return std::ranges::none_of(vertex_it_range, [&](const auto& vertex) {
             return vertex != source
                and (graph.has_edge(source, vertex) or graph.has_edge(vertex, source));
@@ -81,8 +79,7 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_next_only(const GraphType& graph) {
     using id_type = typename GraphType::id_type;
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
+    return [&graph](const auto& source) {
         const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.n_vertices());
         const auto next_vertex = graph[next_vertex_id];
 
@@ -95,8 +92,7 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_prev_only(const GraphType& graph) {
     using id_type = typename GraphType::id_type;
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
+    return [&graph](const auto& source) {
         const auto prev_vertex_id =
             static_cast<id_type>((source.id() + graph.n_vertices() - 1uz) % graph.n_vertices());
         const auto prev_vertex = graph[prev_vertex_id];
@@ -110,8 +106,7 @@ template <gl::traits::c_graph GraphType>
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_vertex_connected_to_id_adjacent(const GraphType& graph) {
     using id_type = typename GraphType::id_type;
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
+    return [&graph](const auto& source) {
         const auto next_vertex_id = static_cast<id_type>((source.id() + 1uz) % graph.n_vertices());
         const auto next_vertex = graph[next_vertex_id];
 
@@ -128,8 +123,7 @@ template <gl::traits::c_graph GraphType>
 
 template <gl::traits::c_graph GraphType>
 [[nodiscard]] auto is_connected_to_binary_chlidren(const GraphType& graph) {
-    using vertex_type = typename GraphType::vertex_type;
-    return [&graph](const vertex_type& source) {
+    return [&graph](const auto& source) {
         const auto target_ids = gl::topology::detail::get_bintree_target_ids(source.id());
 
         if (target_ids.first >= graph.n_vertices())
@@ -182,7 +176,6 @@ TEST_CASE_TEMPLATE_DEFINE(
     "directional_tag-independent graph topology builders tests", GraphType, graph_type_template
 ) {
     using graph_type = GraphType;
-    using vertex_type = typename graph_type::vertex_type;
 
     SUBCASE("clique(n_vertices) should build a fully connected graph of size n_vertices") {
         const auto clique = gl::topology::clique<graph_type>(constants::n_elements_top);
@@ -215,7 +208,7 @@ TEST_CASE_TEMPLATE_DEFINE(
         // verify that all vertices from A are connected to all vertices from B and vice versa
         CHECK(std::ranges::all_of(
             vertices_a | std::views::take(constants::n_elements_top),
-            [&](const vertex_type& source) {
+            [&](const auto& source) {
                 return std::ranges::all_of(vertices_b, [&](const auto& vertex) {
                     return biclique.has_edge(source, vertex) and biclique.has_edge(vertex, source);
                 });

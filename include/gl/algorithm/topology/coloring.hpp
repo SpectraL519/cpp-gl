@@ -62,13 +62,11 @@ using bicoloring_type = std::vector<binary_color>;
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_optional_callback<void, typename G::id_type> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, typename G::id_type> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
-    const G& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
+    G&& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
-    using edge_type = typename G::edge_type;
-
     bicoloring_type coloring(graph.n_vertices(), binary_color::value::unset);
     for (const auto root_id : graph.vertex_ids()) {
         if (coloring[root_id].is_set())
@@ -82,7 +80,7 @@ template <
             init_node_range<G>(root_id),
             empty_callback{}, // visit predicate
             empty_callback{}, // visit callback
-            [&coloring](typename G::id_type vertex_id, const edge_type& in_edge)
+            [&coloring](id_t<G> vertex_id, const edge_t<G>& in_edge)
                 -> decision { // enqueue predicate
                 if (in_edge.is_loop())
                     return decision::abort; // graph is not bipartite
@@ -119,7 +117,7 @@ template <
 /// @return `true` if the graph is bipartite (2-colorable), `false` otherwise.
 /// ### See Also
 /// - @ref gl::algorithm::apply_coloring "apply_coloring"
-[[nodiscard]] gl_attr_force_inline bool is_bipartite(const traits::c_graph auto& graph) {
+[[nodiscard]] gl_attr_force_inline bool is_bipartite(traits::c_graph auto&& graph) {
     return bipartite_coloring(graph).has_value();
 }
 
@@ -129,7 +127,7 @@ template <
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
-/// | G | The type of the graph to modify. Must have compatible color properties. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept, and its properties must satisfy [**c_binary_color_properties_type**](gl_concepts.md#gl-traits-c-binary-color-properties-type). |
+/// | G | The type of the graph to modify. Must have compatible color properties. | Must satisfy the [**c_mut_graph**](gl_concepts.md#gl-traits-c-mut-graph) concept, and its properties must satisfy [**c_binary_color_properties_type**](gl_concepts.md#gl-traits-c-binary-color-properties-type). |
 /// | ColorRange | The type of the range containing the computed colors. | Must satisfy the [**c_sized_range_of**](gl_concepts.md#gl-traits-c-sized-range-of) concept for `binary_color`. |
 ///
 /// @param graph The mutable graph instance whose properties will be updated.
@@ -138,8 +136,8 @@ template <
 /// ### See Also
 /// - @ref gl::algorithm::bipartite_coloring "bipartite_coloring"
 /// - @ref gl::algorithm::is_bipartite "is_bipartite"
-template <traits::c_graph G, traits::c_sized_range_of<binary_color> ColorRange>
-requires(traits::c_binary_color_properties_type<typename G::vertex_properties_type>)
+template <traits::c_mut_graph G, traits::c_sized_range_of<binary_color> ColorRange>
+requires(traits::c_binary_color_properties_type<vertex_properties_t<G>>)
 bool apply_coloring(G& graph, const ColorRange& color_range) {
     if (std::ranges::size(color_range) != graph.n_vertices())
         return false;

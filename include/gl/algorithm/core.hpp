@@ -122,15 +122,15 @@ using non_void_result_type =
 /// @ingroup GL-Algorithm
 /// @brief Maps a vertex ID to its predecessor's ID in a traversal tree.
 /// @tparam GraphType The type of the graph being traversed.
-template <traits::c_graph GraphType>
-using predecessors_map = std::vector<typename GraphType::id_type>;
+template <traits::c_graph G>
+using predecessors_map = std::vector<id_t<G>>;
 
 /// @ingroup GL-Algorithm
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
 /// @tparam GraphType The type of the graph being searched.
-template <traits::c_graph GraphType>
+template <traits::c_graph G>
 struct search_node {
-    using id_type = typename GraphType::id_type;
+    using id_type = id_t<G>;
 
     /// @brief Constructs a search node acting as a root (predecessor is itself).
     /// @param vertex_id The ID of the vertex.

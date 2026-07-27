@@ -87,11 +87,11 @@ void bm_hgl_backward_bfs(benchmark::State& state) {
 /// @brief Executes a Backward BFS equivalent on an Incidence Graph.
 template <gl::traits::c_directed_graph IncidenceGraph>
 bool incidence_backward_bfs(
-    const IncidenceGraph& ig,
-    const std::vector<typename IncidenceGraph::id_type>& roots,
-    const typename IncidenceGraph::id_type original_n_vertices
+    IncidenceGraph&& ig,
+    const std::vector<gl::id_t<IncidenceGraph>>& roots,
+    const gl::size_type original_n_vertices
 ) {
-    using id_type = typename IncidenceGraph::id_type;
+    using id_type = gl::id_t<IncidenceGraph>;
 
     std::vector<bool> visited_v(original_n_vertices, false);
     auto tail_unvisited =

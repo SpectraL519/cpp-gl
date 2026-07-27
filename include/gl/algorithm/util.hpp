@@ -53,8 +53,7 @@ template <traits::c_id_type IdType>
 template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<G>> InitRangeType = std::vector<search_node<G>>>
-[[nodiscard]] gl_attr_force_inline InitRangeType init_node_range(typename G::id_type root_vertex_id
-) {
+[[nodiscard]] gl_attr_force_inline InitRangeType init_node_range(id_t<G> root_vertex_id) {
     return InitRangeType{search_node<G>{root_vertex_id}};
 }
 
@@ -78,7 +77,7 @@ template <traits::c_graph G, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
     std::vector<bool>& visited, non_void_result_type<Result, predecessors_map<G>>& pred_map
 ) {
-    using id_type = typename G::id_type;
+    using id_type = id_t<G>;
     return [&](id_type vertex_id, id_type pred_id) {
         const auto vertex_idx = to_idx(vertex_id);
         visited[vertex_idx] = true;
@@ -97,7 +96,7 @@ template <traits::c_graph G, result_discriminator Result>
 template <traits::c_graph G, bool AsDecision = false>
 [[nodiscard]] gl_attr_force_inline auto default_enqueue_node_predicate(std::vector<bool>& visited) {
     using return_t = std::conditional_t<AsDecision, decision, bool>;
-    return [&](typename G::id_type vertex_id, const typename G::edge_type&) -> return_t {
+    return [&](id_t<G> vertex_id, const edge_t<G>&) -> return_t {
         return not visited[to_idx(vertex_id)];
     };
 }

@@ -27,7 +27,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     static_assert(gl::traits::c_weight_properties_type<typename sut_type::edge_properties_type>);
 
     SUBCASE("should throw if there is an edge with a negative weight") {
-        const auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
+        auto sut = gl::topology::clique<sut_type>(constants::n_elements_alg);
         sut.edge(constants::v1_id, constants::v2_id)->properties().weight =
             -static_cast<weight_type>(constants::n_elements_alg);
 

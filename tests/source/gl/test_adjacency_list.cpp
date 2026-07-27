@@ -119,7 +119,7 @@ constexpr gl::size_type n_inc_edges_for_fully_connected_vertex = constants::n_el
 template <typename SutType>
 struct test_directed_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
-    using edge_type = typename sut_type::edge_type;
+    using edge_type = typename sut_type::traits_type::edge_type;
 
     edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;
@@ -466,7 +466,7 @@ TEST_CASE_TEMPLATE_INSTANTIATE(
 template <typename SutType>
 struct test_undirected_adjacency_list : public test_adjacency_list {
     using sut_type = SutType;
-    using edge_type = typename sut_type::edge_type;
+    using edge_type = typename sut_type::traits_type::edge_type;
 
     edge_type add_edge(const auto source_id, const auto target_id) {
         const auto new_edge_id = this->next_edge_id++;

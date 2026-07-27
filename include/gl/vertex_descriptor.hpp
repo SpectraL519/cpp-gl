@@ -91,6 +91,18 @@ public:
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
+    /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
+    /// @tparam NonConstProps The non-const property type.
+    /// @param other The vertex descriptor to convert from.
+    template <typename NonConstProperties>
+    requires(std::same_as<Properties, const NonConstProperties>)
+    vertex_descriptor(const vertex_descriptor<NonConstProperties, IdType>& other) noexcept
+    : _id(other.id()) {
+        if constexpr (traits::c_non_empty_properties<Properties>) {
+            this->_properties = other.properties();
+        }
+    }
+
     /// @brief Returns an invalid vertex descriptor (for empty properties).
     /// @return A `vertex_descriptor` holding the `invalid_id`.
     [[nodiscard]] gl_attr_force_inline static vertex_descriptor invalid() noexcept
@@ -121,21 +133,28 @@ public:
     /// @brief Destructor.
     ~vertex_descriptor() = default;
 
-    /// @brief Equality comparison operator.
+    /// @brief Cross-type equality comparison operator.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The vertex descriptor to compare against.
     /// @return `true` if both descriptors hold the same ID, `false` otherwise.
-    [[nodiscard]] gl_attr_force_inline bool operator==(const vertex_descriptor& other
+    template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] gl_attr_force_inline bool operator==(
+        const vertex_descriptor<OtherProperties, IdType>& other
     ) const noexcept {
-        return this->_id == other._id;
+        return this->_id == other.id();
     }
 
-    /// @brief Three-way comparison operator.
+    /// @brief Cross-type three-way comparison operator.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The vertex descriptor to compare against.
     /// @return The strong ordering result based on the underlying IDs.
+    template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
-        const vertex_descriptor& other
+        const vertex_descriptor<OtherProperties, IdType>& other
     ) const noexcept {
-        return this->_id <=> other._id;
+        return this->_id <=> other.id();
     }
 
     /// @brief Boolean conversion operator.
