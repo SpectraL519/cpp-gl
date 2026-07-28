@@ -16,7 +16,15 @@
 #include <fstream>
 #include <initializer_list>
 
-namespace hgl::io {
+namespace hgl {
+
+namespace traits {
+
+using gl::traits::c_io_save_mode;
+
+} // namespace traits
+
+namespace io {
 
 /// @ingroup HGL-IO
 /// @copybrief gl::io::append
@@ -86,4 +94,5 @@ template <traits::c_hypergraph HypergraphType>
     return hypergraph;
 }
 
-} // namespace hgl::io
+} // namespace io
+} // namespace hgl

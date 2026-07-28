@@ -39,6 +39,12 @@ using gl::to_idx;
 /// @see gl::to_diff
 using gl::to_diff;
 
+namespace traits {
+
+using gl::traits::c_id_type;
+
+} // namespace traits
+
 // --- generic data structures ---
 
 /// @ingroup HGL-Types
@@ -105,5 +111,17 @@ using dynamic_properties = gl::dynamic_properties;
 /// - @ref gl::weight_property : For the full type definition.
 template <traits::c_arithmetic WeightType = double>
 using weight_property = gl::weight_property<WeightType>;
+
+namespace traits {
+
+using gl::traits::c_binary_color_properties_type;
+using gl::traits::c_empty_properties;
+using gl::traits::c_has_empty_properties;
+using gl::traits::c_has_non_empty_properties;
+using gl::traits::c_non_empty_properties;
+using gl::traits::c_properties;
+using gl::traits::c_weight_properties_type;
+
+} // namespace traits
 
 } // namespace hgl

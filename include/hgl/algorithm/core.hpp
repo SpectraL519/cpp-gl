@@ -127,6 +127,15 @@ using search_tree = std::vector<search_node<H>>;
 
 namespace traits {
 
+using gl::traits::c_callback;
+using gl::traits::c_decision_predicate;
+using gl::traits::c_empty_callback;
+using gl::traits::c_optional_callback;
+using gl::traits::c_optional_decision_predicate;
+using gl::traits::c_optional_predicate;
+using gl::traits::c_predicate;
+
+
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::search_node "search_node"s).
 /// @tparam T The type to evaluate against the concept.

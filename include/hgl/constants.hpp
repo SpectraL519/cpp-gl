@@ -9,6 +9,7 @@
 
 #include "gl/constants.hpp"
 #include "hgl/traits.hpp"
+#include "hgl/types.hpp"
 
 namespace hgl {
 
