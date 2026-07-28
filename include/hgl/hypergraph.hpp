@@ -36,7 +36,65 @@ namespace traits {
 /// @brief Concept checking if a type is an instantiation of the generic @ref hgl::hypergraph "hypergraph" class.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
-concept c_hypergraph = c_instantiation_of<H, hypergraph>;
+concept c_hypergraph = c_instantiation_of<std::remove_cvref_t<H>, hypergraph>;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a constant instantiation of the generic @ref hgl::hypergraph "hypergraph" class.
+/// @tparam H The type to evaluate against the concept.
+template <typename H>
+concept c_const_hypergraph = c_hypergraph<H> and std::is_const_v<std::remove_reference_t<H>>;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a mutable instantiation of the generic @ref hgl::hypergraph "hypergraph" class.
+/// @tparam H The type to evaluate against the concept.
+template <typename H>
+concept c_mut_hypergraph = c_hypergraph<H> and not std::is_const_v<std::remove_reference_t<H>>;
+
+} // namespace traits
+
+// /// @ingroup HGL-Core
+// /// @brief Extracts the underlying unqualified hypergraph type by removing reference and cv-qualifiers.
+// template <traits::c_hypergraph H>
+// using hypergraph_val_t = std::remove_cvref_t<H>;
+
+// /// @ingroup HGL-Core
+// /// @brief Resolves the identifier type associated with the given hypergraph type.
+// template <traits::c_hypergraph H>
+// using id_t = typename hypergraph_val_t<H>::id_type;
+
+// /// @ingroup HGL-Core
+// /// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the hypergraph's constness.
+// template <traits::c_hypergraph H>
+// using vertex_t = std::conditional_t<
+//     std::is_const_v<std::remove_reference_t<H>>,
+//     typename hypergraph_val_t<H>::const_vertex_type,
+//     typename hypergraph_val_t<H>::vertex_type>;
+
+// /// @ingroup HGL-Core
+// /// @brief Resolves the appropriate vertex properties type (mutable or const) based on the hypergraph's constness.
+// template <traits::c_hypergraph H>
+// using vertex_properties_t = std::conditional_t<
+//     std::is_const_v<std::remove_reference_t<H>>,
+//     const typename hypergraph_val_t<H>::vertex_properties_type,
+//     typename hypergraph_val_t<H>::vertex_properties_type>;
+
+// /// @ingroup HGL-Core
+// /// @brief Resolves the appropriate hyperedge descriptor type (mutable or const) based on the hypergraph's constness.
+// template <traits::c_hypergraph H>
+// using hyperedge_t = std::conditional_t<
+//     std::is_const_v<std::remove_reference_t<H>>,
+//     typename hypergraph_val_t<H>::const_hyperedge_type,
+//     typename hypergraph_val_t<H>::hyperedge_type>;
+
+// /// @ingroup HGL-Core
+// /// @brief Resolves the appropriate hyperedge properties type (mutable or const) based on the hypergraph's constness.
+// template <traits::c_hypergraph H>
+// using hyperedge_properties_t = std::conditional_t<
+//     std::is_const_v<std::remove_reference_t<H>>,
+//     const typename hypergraph_val_t<H>::hyperedge_properties_type,
+//     typename hypergraph_val_t<H>::hyperedge_properties_type>;
+
+namespace traits {
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph is undirected.
