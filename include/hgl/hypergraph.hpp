@@ -508,7 +508,7 @@ public:
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding `vertex_descriptor`.
     /// @throws std::invalid_argument If the vertex ID is invalid.
-    [[nodiscard]] gl_attr_force_inline vertex_type at(vertex_t, const id_type vertex_id) const {
+    [[nodiscard]] gl_attr_force_inline vertex_type at(vertex_tag, const id_type vertex_id) const {
         return this->vertex(vertex_id);
     }
 
@@ -540,7 +540,7 @@ public:
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline vertex_type
-    operator[](vertex_t, const id_type vertex_id) const {
+    operator[](vertex_tag, const id_type vertex_id) const {
         return this->vertex_unchecked(vertex_id);
     }
 
@@ -956,7 +956,7 @@ public:
     /// @return The corresponding hyperedge descriptor.
     /// @throws std::invalid_argument If the hyperedge ID is invalid.
     [[nodiscard]] gl_attr_force_inline hyperedge_type
-    at(hyperedge_t, const id_type hyperedge_id) const {
+    at(hyperedge_tag, const id_type hyperedge_id) const {
         return this->hyperedge(hyperedge_id);
     }
 
@@ -989,7 +989,7 @@ public:
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
     [[nodiscard]] gl_attr_force_inline hyperedge_type
-    operator[](hyperedge_t, const id_type hyperedge_id) const {
+    operator[](hyperedge_tag, const id_type hyperedge_id) const {
         return this->hyperedge_unchecked(hyperedge_id);
     }
 

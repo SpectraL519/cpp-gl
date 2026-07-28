@@ -14,16 +14,15 @@
 #include <concepts>
 
 namespace hgl {
-
 namespace repr {
 
 /// @ingroup HGL-Core
 /// @brief Layout tag designating vertices as the primary structural dimension of the incidence representation.
 struct vertex_major_t {
     /// @brief The major element type for this layout.
-    using major_element = vertex_t;
+    using major_element = vertex_tag;
     /// @brief The minor element type for this layout.
-    using minor_element = hyperedge_t;
+    using minor_element = hyperedge_tag;
 
     /// @brief Retrieves the major element from the provided arguments based on the layout rules.
     template <std::regular T>
@@ -55,9 +54,9 @@ struct vertex_major_t {
 /// @brief Layout tag designating hyperedges as the primary structural dimension of the incidence representation.
 struct hyperedge_major_t {
     /// @brief The major element type for this layout.
-    using major_element = hyperedge_t;
+    using major_element = hyperedge_tag;
     /// @brief The minor element type for this layout.
-    using minor_element = vertex_t;
+    using minor_element = vertex_tag;
 
     /// @brief Retrieves the major element from the provided arguments based on the layout rules.
     template <std::regular T>
@@ -116,17 +115,4 @@ concept c_hypergraph_asymmetric_layout_tag =
     c_one_of<T, repr::vertex_major_t, repr::hyperedge_major_t>;
 
 } // namespace traits
-
-/// @ingroup HGL-Traits
-/// @brief Extracts the major element tag type associated with a specific asymmetric layout.
-/// @tparam LT The asymmetric layout tag type.
-template <traits::c_hypergraph_asymmetric_layout_tag LT>
-using major_element_t = typename LT::major_element;
-
-/// @ingroup HGL-Traits
-/// @brief Extracts the minor element tag type associated with a specific asymmetric layout.
-/// @tparam LT The asymmetric layout tag type.
-template <traits::c_hypergraph_asymmetric_layout_tag LT>
-using minor_element_t = typename LT::minor_element;
-
 } // namespace hgl

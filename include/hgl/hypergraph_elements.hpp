@@ -285,29 +285,29 @@ private:
 
 /// @ingroup HGL-Core
 /// @brief Tag type representing a vertex element in a hypergraph.
-struct vertex_t {};
+struct vertex_tag {};
 
 /// @ingroup HGL-Core
 /// @brief Tag type representing a hyperedge element in a hypergraph.
-struct hyperedge_t {};
+struct hyperedge_tag {};
 
 /// @ingroup HGL-Core
-/// @brief A constant instance of `vertex_t` used for tagging and generic dispatching.
-inline constexpr vertex_t vertex{};
+/// @brief A constant instance of `vertex_tag` used for tagging and generic dispatching.
+inline constexpr vertex_tag vertex{};
 /// @ingroup HGL-Core
-/// @brief A constant instance of `hyperedge_t` used for tagging and generic dispatching.
-inline constexpr hyperedge_t hyperedge{};
+/// @brief A constant instance of `hyperedge_tag` used for tagging and generic dispatching.
+inline constexpr hyperedge_tag hyperedge{};
 
 namespace traits {
 
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid hypergraph element tag.
 ///
-/// The valid hypergraph element tags are @ref hgl::vertex_t "vertex_t" and @ref hgl::hyperedge_t "hyperedge_t".
+/// The valid hypergraph element tags are @ref hgl::vertex_tag "vertex_tag" and @ref hgl::hyperedge_tag "hyperedge_tag".
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
-concept c_hypergraph_element_tag = c_one_of<T, vertex_t, hyperedge_t>;
+concept c_hypergraph_element_tag = c_one_of<T, vertex_tag, hyperedge_tag>;
 
 } // namespace traits
 } // namespace hgl
