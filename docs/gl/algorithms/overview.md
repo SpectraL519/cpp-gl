@@ -52,7 +52,7 @@ For convenience, `decision` implicitly constructs from a boolean, where `true` m
 
 ### The Search Node
 
-By default, the active container of a search engine stores [**gl::algorithm::search_node<G>**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md) structures. This is a lightweight pair containing:
+By default, the active container of a search engine stores [**gl::algorithm::search_node**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md) structures. This is a lightweight pair containing:
 
 1. `vertex_id`: The vertex currently being visited.
 2. `pred_id`: The vertex from which this current vertex was reached (its parent in the traversal tree).

@@ -87,7 +87,7 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     typename PQCmp,
-    typename InitQueueRangeType = std::vector<search_node<G>>,
+    typename InitQueueRangeType = std::vector<search_node<graph_val_t<G>>>,
     typename NodeType = std::ranges::range_value_t<InitQueueRangeType>,
     traits::c_optional_predicate<NodeType> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,

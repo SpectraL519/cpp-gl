@@ -52,9 +52,10 @@ template <traits::c_id_type IdType>
 /// @return A container initialized with a single @ref search_node for the root vertex.
 template <
     traits::c_graph G,
-    traits::c_forward_range_of<search_node<G>> InitRangeType = std::vector<search_node<G>>>
+    traits::c_forward_range_of<search_node<graph_val_t<G>>> InitRangeType =
+        std::vector<search_node<graph_val_t<G>>>>
 [[nodiscard]] gl_attr_force_inline InitRangeType init_node_range(id_t<G> root_vertex_id) {
-    return InitRangeType{search_node<G>{root_vertex_id}};
+    return InitRangeType{search_node<graph_val_t<G>>{root_vertex_id}};
 }
 
 /// @ingroup GL-Algorithm

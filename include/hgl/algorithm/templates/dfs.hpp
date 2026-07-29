@@ -57,13 +57,13 @@ namespace hgl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | Dir | The @ref hgl::algorithm::traversal_direction "traversal direction" (i.e., `forward` or `backward`). Relevant only for BF-directed hypergraphs. | Defaults to `forward`. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) concept. |
-/// | InitQueueRangeType | A forward range of `search_node<H>` used to prime the DFS stack. | Must be a *forward range* of @ref hgl::algorithm::search_node "search nodes". |
-/// | VisitPredicate | Type of the callable deciding if a popped node should be processed. | Must be one of:<br/>- A `(const search_node<H>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- A `(const search_node<H>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | InitQueueRangeType | A forward range of `search_node<hypergraph_val_t<H>>` used to prime the DFS stack. | Must be a *forward range* of @ref hgl::algorithm::search_node "search nodes". |
+/// | VisitPredicate | Type of the callable deciding if a popped node should be processed. | Must be one of:<br/>- A `(const search_node<hypergraph_val_t<H>>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- A `(const search_node<hypergraph_val_t<H>>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 /// | TraverseHePredicate | Type of the callable deciding if an incident hyperedge should be traversed. | Must be one of:<br/>- An `(id_type, id_type) -> decision` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | EnqueuePredicate | Type of the callable deciding if a target vertex should be pushed to the stack via a specific hyperedge. | Must be one of:<br/>- A `(const search_node<H>&) -> decision` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | EnqueuePredicate | Type of the callable deciding if a target vertex should be pushed to the stack via a specific hyperedge. | Must be one of:<br/>- A `(const search_node<hypergraph_val_t<H>>&) -> decision` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(const search_node<hypergraph_val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<hypergraph_val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The hypergraph to traverse.
 /// @param initial_queue_content The initial set of search nodes to begin the traversal from.
@@ -84,16 +84,21 @@ namespace hgl::algorithm {
 template <
     traversal_direction Dir = traversal_direction::forward,
     traits::c_hypergraph H,
-    traits::c_forward_range_of<search_node<H>> InitQueueRangeType = std::vector<search_node<H>>,
-    traits::c_optional_predicate<const search_node<H>&> VisitPredicate = empty_callback,
-    traits::c_optional_predicate<const search_node<H>&> VisitCallback = empty_callback,
-    traits::c_optional_decision_predicate<typename H::id_type, typename H::id_type>
-        TraverseHePredicate = empty_callback,
-    traits::c_decision_predicate<const search_node<H>&> EnqueuePredicate = empty_callback,
-    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_forward_range_of<search_node<hypergraph_val_t<H>>> InitQueueRangeType =
+        std::vector<search_node<hypergraph_val_t<H>>>,
+    traits::c_optional_predicate<const search_node<hypergraph_val_t<H>>&> VisitPredicate =
+        empty_callback,
+    traits::c_optional_predicate<const search_node<hypergraph_val_t<H>>&> VisitCallback =
+        empty_callback,
+    traits::c_optional_decision_predicate<id_t<H>, id_t<H>> TraverseHePredicate = empty_callback,
+    traits::c_decision_predicate<const search_node<hypergraph_val_t<H>>&> EnqueuePredicate =
+        empty_callback,
+    traits::c_optional_callback<void, const search_node<hypergraph_val_t<H>>&> PreVisitCallback =
+        empty_callback,
+    traits::c_optional_callback<void, const search_node<hypergraph_val_t<H>>&> PostVisitCallback =
+        empty_callback>
 bool dfs(
-    const H& hypergraph,
+    H&& hypergraph,
     const InitQueueRangeType& initial_queue_content,
     const VisitPredicate& visit_pred = {},
     const VisitCallback& visit = {},
@@ -107,7 +112,7 @@ bool dfs(
     if (std::ranges::empty(initial_queue_content))
         return false;
 
-    std::stack<search_node<H>> s;
+    std::stack<search_node<hypergraph_val_t<H>>> s;
     for (const auto& node : initial_queue_content)
         s.push(node);
 
@@ -139,7 +144,7 @@ bool dfs(
                 if (target_id == curr_node.vertex_id)
                     continue;
 
-                search_node<H> tgt_node{target_id, curr_node.vertex_id, he_id};
+                search_node<hypergraph_val_t<H>> tgt_node{target_id, curr_node.vertex_id, he_id};
                 const auto enqueue = enqueue_pred(tgt_node);
                 if (enqueue == decision::abort)
                     return false;

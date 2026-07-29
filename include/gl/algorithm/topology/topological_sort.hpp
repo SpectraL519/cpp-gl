@@ -73,7 +73,7 @@ template <
     std::vector<size_type> in_degree_map = graph.in_degree_map();
 
     // prepare the initial queue content (source vertices)
-    std::vector<search_node<G>> source_vertex_list;
+    std::vector<search_node<graph_val_t<G>>> source_vertex_list;
     source_vertex_list.reserve(graph.n_vertices());
     for (const auto id : graph.vertex_ids())
         if (in_degree_map[to_idx(id)] == 0uz)

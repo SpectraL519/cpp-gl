@@ -102,7 +102,7 @@ namespace traits {
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_undirected_hypergraph =
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, undirected_t>;
+    c_hypergraph<H> and std::same_as<typename hypergraph_val_t<H>::directional_tag, undirected_t>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph is backward-forward (bf) directed.
@@ -110,49 +110,53 @@ concept c_undirected_hypergraph =
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_bf_directed_hypergraph =
-    c_hypergraph<H> and std::same_as<typename H::directional_tag, bf_directed_t>;
+    c_hypergraph<H> and std::same_as<typename hypergraph_val_t<H>::directional_tag, bf_directed_t>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a standard incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_list_repr<typename H::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_list_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a flattened incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_flat_list_repr<typename H::representation_tag>;
+    c_hypergraph<H>
+    and c_hypergraph_flat_list_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses any incidence list representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_list_repr<typename H::representation_tag>;
+    c_hypergraph<H>
+    and c_hypergraph_incidence_list_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a standard incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_matrix_repr<typename H::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a flattened incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_flat_matrix_repr<typename H::representation_tag>;
+    c_hypergraph<H>
+    and c_hypergraph_flat_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses any incidence matrix representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_incidence_matrix_repr<typename H::representation_tag>;
+    c_hypergraph<H>
+    and c_hypergraph_incidence_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a type is a mutable or immutable vertex descriptor associated with the given hypergraph.

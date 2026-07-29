@@ -74,7 +74,8 @@ namespace gl::algorithm {
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_forward_range_of<search_node<G>> InitQueueRangeType = std::vector<search_node<G>>,
+    traits::c_forward_range_of<search_node<graph_val_t<G>>> InitQueueRangeType =
+        std::vector<search_node<graph_val_t<G>>>,
     traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
     traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
@@ -93,7 +94,7 @@ bool bfs(
         return false;
 
     // prepare the node queue
-    std::queue<search_node<G>> q;
+    std::queue<search_node<graph_val_t<G>>> q;
     for (const auto& node : initial_queue_content)
         q.push(node);
 
