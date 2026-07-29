@@ -940,7 +940,7 @@ public:
     /// @param hyperedge The descriptor of the hyperedge to remove.
     /// @throws std::invalid_argument If the ID is invalid.
     /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
-    gl_attr_force_inline void remove_hyperedge(hyperedge_type hyperedge) {
+    gl_attr_force_inline void remove_hyperedge(traits::c_hyperedge<hypergraph> auto hyperedge) {
         this->remove_hyperedge(hyperedge.id());
     }
 
@@ -948,14 +948,17 @@ public:
     /// @param hyperedge_id_rng A forward range containing the IDs of hyperedges to remove.
     /// @throws std::invalid_argument If any hyperedge ID in the range is invalid.
     /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
-    void remove_hyperedges_from(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
-        // sorts ids in a descending n_vertices and removes duplicate ids
-        std::set<id_type, std::greater<id_type>> hyperedge_id_set(
-            std::ranges::begin(hyperedge_id_rng), std::ranges::end(hyperedge_id_rng)
-        );
+    void remove_hyperedges(const traits::c_forward_range_of<id_type> auto& hyperedge_id_rng) {
+        auto hyperedge_ids = hyperedge_id_rng | std::ranges::to<std::vector>();
+        // Sort in descending order and remove duplicates to prevent index shifting bugs during erasure
+        std::ranges::sort(hyperedge_ids, std::greater<>{});
+        hyperedge_ids.erase(std::ranges::unique(hyperedge_ids).begin(), hyperedge_ids.end());
+
+        if (not hyperedge_ids.empty())
+            this->_verify_hyperedge_id(hyperedge_ids.front());
 
         // TODO: optimize
-        for (const auto hyperedge_id : hyperedge_id_set)
+        for (const auto hyperedge_id : hyperedge_ids)
             this->_remove_hyperedge_impl(hyperedge_id);
     }
 
@@ -963,16 +966,10 @@ public:
     /// @param hyperedge_id_rng A forward range containing the descriptors of hyperedges to remove.
     /// @throws std::invalid_argument If any hyperedge ID in the range is invalid.
     /// @copydetails detail::hypergraph_doc_anchors::remove_hyperedge_wrn()
-    void remove_hyperedges_from(const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+    gl_attr_force_inline void remove_hyperedges(
+        const traits::c_hyperedge_forward_range<hypergraph> auto& hyperedge_rng
     ) {
-        // sort hyperedges in a descending n_vertices (by id) and removes duplicate ids
-        std::set<hyperedge_type, std::greater<hyperedge_type>> hyperedge_set(
-            std::ranges::begin(hyperedge_rng), std::ranges::end(hyperedge_rng)
-        );
-
-        // TODO: optimize
-        for (const auto& hyperedge : hyperedge_set)
-            this->_remove_hyperedge_impl(hyperedge.id());
+        this->remove_hyperedges(hyperedge_rng | std::views::transform(util::to_id));
     }
 
     // --- hyperedge getters ---
@@ -987,7 +984,9 @@ public:
     /// @brief Checks if the hyperedge referenced by the provided descriptor exists in the hypergraph.
     /// @param hyperedge The descriptor to check.
     /// @return `true` if the hyperedge exists, `false` otherwise.
-    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(hyperedge_type hyperedge) const {
+    [[nodiscard]] gl_attr_force_inline bool has_hyperedge(
+        traits::c_hyperedge<hypergraph> auto hyperedge
+    ) const {
         return this->has_hyperedge(hyperedge.id());
     }
 
@@ -995,9 +994,10 @@ public:
     /// @param hyperedge_id The ID of the hyperedge.
     /// @return The corresponding hyperedge descriptor.
     /// @throws std::invalid_argument If the hyperedge ID is invalid.
-    [[nodiscard]] hyperedge_type hyperedge(const id_type hyperedge_id) const {
-        this->_verify_hyperedge_id(hyperedge_id);
-        return this->hyperedge_unchecked(hyperedge_id);
+    template <typename Self>
+    [[nodiscard]] hyperedge_t<Self> hyperedge(this Self& self, const id_type hyperedge_id) {
+        self._verify_hyperedge_id(hyperedge_id);
+        return self.hyperedge_unchecked(hyperedge_id);
     }
 
     /// @brief Returns a descriptor of the hyperedge with the given *bounds-checked* ID.
@@ -1011,9 +1011,11 @@ public:
     /// @param hyperedge_id The ID of the hyperedge.
     /// @return The corresponding hyperedge descriptor.
     /// @throws std::invalid_argument If the hyperedge ID is invalid.
-    [[nodiscard]] gl_attr_force_inline hyperedge_type
-    at(hyperedge_tag, const id_type hyperedge_id) const {
-        return this->hyperedge(hyperedge_id);
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline hyperedge_t<Self> at(
+        this Self& self, hyperedge_tag, const id_type hyperedge_id
+    ) {
+        return self.hyperedge(hyperedge_id);
     }
 
     /// @brief Returns a descriptor of the hyperedge with the given ID without bounds checking.
@@ -1023,12 +1025,14 @@ public:
     /// > [!WARNING] Undefined Behavior
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
-    [[nodiscard]] gl_attr_force_inline hyperedge_type hyperedge_unchecked(const id_type hyperedge_id
-    ) const {
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline hyperedge_t<Self> hyperedge_unchecked(
+        this Self& self, const id_type hyperedge_id
+    ) {
         if constexpr (traits::c_non_empty_properties<hyperedge_properties_type>)
-            return hyperedge_type{hyperedge_id, this->_hyperedge_properties[hyperedge_id]};
+            return hyperedge_t<Self>{hyperedge_id, self._hyperedge_properties[hyperedge_id]};
         else
-            return hyperedge_type{hyperedge_id};
+            return hyperedge_t<Self>{hyperedge_id};
     }
 
     /// @brief Returns a descriptor of the hyperedge with the given ID without bounds checking.
@@ -1044,15 +1048,17 @@ public:
     /// > [!WARNING] Undefined Behavior
     /// >
     /// > No bounds checking is performed. Passing an invalid ID results in Undefined Behavior.
-    [[nodiscard]] gl_attr_force_inline hyperedge_type
-    operator[](hyperedge_tag, const id_type hyperedge_id) const {
-        return this->hyperedge_unchecked(hyperedge_id);
+    template <typename Self>
+    [[nodiscard]] gl_attr_force_inline hyperedge_t<Self> operator[](
+        this Self& self, hyperedge_tag, const id_type hyperedge_id
+    ) const {
+        return self.hyperedge_unchecked(hyperedge_id);
     }
 
     /// @brief Returns a lazily evaluated, random-access view of all hyperedge descriptors in the hypergraph.
     /// @return A view yielding descriptors for every hyperedge.
-    [[nodiscard]] gl_attr_force_inline auto hyperedges() const noexcept {
-        return this->hyperedge_ids() | std::views::transform(this->_create_hyperedge_descriptor());
+    [[nodiscard]] gl_attr_force_inline auto hyperedges(this auto& self) noexcept {
+        return this->hyperedge_ids() | std::views::transform(self._create_hyperedge_descriptor());
     }
 
     /// @brief Returns a lazily evaluated, random-access view of all active hyperedge IDs in the hypergraph.
@@ -1101,7 +1107,7 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either descriptor is invalid.
     gl_attr_force_inline void bind(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -1141,7 +1147,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind(
-        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng, hyperedge_type hyperedge
+        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng,
+        traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -1154,7 +1161,9 @@ public:
     /// @param hyperedge_id The ID of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     template <traits::c_vertex<hypergraph> V>
-    gl_attr_force_inline void bind(std::initializer_list<V> vertices, hyperedge_type hyperedge)
+    gl_attr_force_inline void bind(
+        std::initializer_list<V> vertices, traits::c_hyperedge<hypergraph> auto hyperedge
+    )
     requires std::same_as<directional_tag, undirected_t>
     {
         this->bind(std::views::all(vertices), hyperedge);
@@ -1194,7 +1203,7 @@ public:
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind(
         traits::c_vertex<hypergraph> auto vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        const traits::c_hyperedge_forward_range<hypergraph> auto& hyperedge_rng
     )
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -1202,11 +1211,13 @@ public:
     }
 
     /// @brief Binds a single vertex to a list of hyperedges in an undirected hypergraph.
+    /// @tparam E The hyperedge descriptor type.
     /// @param vertex_id The descriptor of the vertex.
     /// @param hyperedge_id_rng An initializer list of hyperedge descriptors.
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
+    template <traits::c_hyperedge<hypergraph> E>
     gl_attr_force_inline void bind(
-        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<hyperedge_type> hyperedges
+        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<E> hyperedges
     )
     requires std::same_as<directional_tag, undirected_t>
     {
@@ -1230,7 +1241,7 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either descriptor is invalid.
     gl_attr_force_inline void bind_tail(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1270,7 +1281,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_tail(
-        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng, hyperedge_type hyperedge
+        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng,
+        traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1283,7 +1295,9 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     template <traits::c_vertex<hypergraph> V>
-    gl_attr_force_inline void bind_tail(std::initializer_list<V> vertices, hyperedge_type hyperedge)
+    gl_attr_force_inline void bind_tail(
+        std::initializer_list<V> vertices, traits::c_hyperedge<hypergraph> auto hyperedge
+    )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         this->bind_tail(std::views::all(vertices), hyperedge);
@@ -1323,7 +1337,7 @@ public:
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_tail(
         traits::c_vertex<hypergraph> auto vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        const traits::c_hyperedge_forward_range<hypergraph> auto& hyperedge_rng
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1331,11 +1345,13 @@ public:
     }
 
     /// @brief Binds a single vertex to the *tail* of a range of hyperedges in a BF-directed hypergraph.
+    /// @tparam E The hyperedge descriptor type.
     /// @param vertex The descriptor of the vertex.
     /// @param hyperedges An initializer list of hyperedge descriptors.
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
+    template <traits::c_hyperedge<hypergraph> E>
     gl_attr_force_inline void bind_tail(
-        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<hyperedge_type> hyperedges
+        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<E> hyperedges
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1359,7 +1375,7 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either descriptor is invalid.
     gl_attr_force_inline void bind_head(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1399,7 +1415,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     gl_attr_force_inline void bind_head(
-        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng, hyperedge_type hyperedge
+        const traits::c_vertex_forward_range<hypergraph> auto& vertex_rng,
+        traits::c_hyperedge<hypergraph> auto hyperedge
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1412,7 +1429,9 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @throws std::invalid_argument If either the hyperedge descriptor or any of the vertex descriptors is invalid.
     template <traits::c_vertex<hypergraph> V>
-    gl_attr_force_inline void bind_head(std::initializer_list<V> vertices, hyperedge_type hyperedge)
+    gl_attr_force_inline void bind_head(
+        std::initializer_list<V> vertices, traits::c_hyperedge<hypergraph> auto hyperedge
+    )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         this->bind_head(std::views::all(vertices), hyperedge);
@@ -1452,7 +1471,7 @@ public:
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
     gl_attr_force_inline void bind_head(
         traits::c_vertex<hypergraph> auto vertex,
-        const traits::c_forward_range_of<hyperedge_type> auto& hyperedge_rng
+        const traits::c_hyperedge_forward_range<hypergraph> auto& hyperedge_rng
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1460,11 +1479,13 @@ public:
     }
 
     /// @brief Binds a single vertex to the *head* of a range of hyperedges in a BF-directed hypergraph.
+    /// @tparam E The hyperedge descriptor type.
     /// @param vertex The descriptor of the vertex.
     /// @param hyperedges An initializer list of hyperedge descriptors.
     /// @throws std::invalid_argument If either the vertex descriptor or any of the hyperedge descriptors is invalid.
+    template <traits::c_hyperedge<hypergraph> E>
     gl_attr_force_inline void bind_head(
-        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<hyperedge_type> hyperedges
+        traits::c_vertex<hypergraph> auto vertex, std::initializer_list<E> hyperedges
     )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1484,7 +1505,7 @@ public:
     /// @param vertex The descriptor of the vertex.
     /// @param hyperedge The descriptor of the hyperedge.
     gl_attr_force_inline void unbind(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     ) {
         this->unbind(vertex.id(), hyperedge.id());
     }
@@ -1511,7 +1532,7 @@ public:
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
     /// @return `true` if the vertex belongs to the hyperedge, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool are_incident(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     ) const {
         return this->are_incident(vertex.id(), hyperedge.id());
     }
@@ -1539,7 +1560,7 @@ public:
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
     /// @return `true` if the vertex is in the *tail* set of the hyperedge, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool is_tail(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     ) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1569,7 +1590,7 @@ public:
     /// @param hyperedge The `hyperedge_descriptor` mapping to the hyperedge.
     /// @return `true` if the vertex is in the *head* set of the hyperedge, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool is_head(
-        traits::c_vertex<hypergraph> auto vertex, hyperedge_type hyperedge
+        traits::c_vertex<hypergraph> auto vertex, traits::c_hyperedge<hypergraph> auto hyperedge
     ) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
@@ -1810,7 +1831,7 @@ public:
     /// @return A view representing the set of incident vertices.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
     [[nodiscard]] gl_attr_force_inline auto incident_vertices(
-        this auto& self, hyperedge_type hyperedge
+        this auto& self, traits::c_hyperedge<hypergraph> auto hyperedge
     ) {
         return self.incident_vertices(hyperedge.id());
     }
@@ -1828,7 +1849,9 @@ public:
     /// @param hyperedge The hyperedge descriptor.
     /// @return A view representing the set of incident vertex IDs.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(hyperedge_type hyperedge) const {
+    [[nodiscard]] gl_attr_force_inline auto incident_vertex_ids(
+        traits::c_hyperedge<hypergraph> auto hyperedge
+    ) const {
         return this->incident_vertex_ids(hyperedge.id());
     }
 
@@ -1853,7 +1876,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @return The size of the hyperedge.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline size_type hyperedge_size(hyperedge_type hyperedge) const {
+    [[nodiscard]] gl_attr_force_inline size_type
+    hyperedge_size(traits::c_hyperedge<hypergraph> auto hyperedge) const {
         return this->hyperedge_size(hyperedge.id());
     }
 
@@ -1878,7 +1902,9 @@ public:
     /// @param hyperedge The hyperedge descriptor.
     /// @return A view representing the set of the hyperedge's tail vertices.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto tail(this auto& self, hyperedge_type hyperedge)
+    [[nodiscard]] gl_attr_force_inline auto tail(
+        this auto& self, traits::c_hyperedge<hypergraph> auto hyperedge
+    )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return self.tail(hyperedge.id());
@@ -1899,7 +1925,8 @@ public:
     /// @param hyperedge The hypepredge descriptor.
     /// @return A view representing the set of the hyperedge's tail vertex IDs.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto tail_ids(hyperedge_type hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto tail_ids(traits::c_hyperedge<hypergraph> auto hyperedge
+    ) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return this->tail_ids(hyperedge.id());
@@ -1920,7 +1947,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @return The size of the hyperedge's *tail* set.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline size_type tail_size(hyperedge_type hyperedge) const
+    [[nodiscard]] gl_attr_force_inline size_type
+    tail_size(traits::c_hyperedge<hypergraph> auto hyperedge) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return this->tail_size(hyperedge.id());
@@ -1949,7 +1977,9 @@ public:
     /// @param hyperedge The hyperedge descriptor.
     /// @return A view representing the set of the hyperedge's head vertices.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto head(this auto& self, hyperedge_type hyperedge)
+    [[nodiscard]] gl_attr_force_inline auto head(
+        this auto& self, traits::c_hyperedge<hypergraph> auto hyperedge
+    )
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return self.head(hyperedge.id());
@@ -1970,7 +2000,8 @@ public:
     /// @param hyperedge The hypepredge descriptor.
     /// @return A view representing the set of the hyperedge's head vertex IDs.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline auto head_ids(hyperedge_type hyperedge) const
+    [[nodiscard]] gl_attr_force_inline auto head_ids(traits::c_hyperedge<hypergraph> auto hyperedge
+    ) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return this->head_ids(hyperedge.id());
@@ -1991,7 +2022,8 @@ public:
     /// @param hyperedge The descriptor of the hyperedge.
     /// @return The size of the hyperedge's *head* set.
     /// @throws std::invalid_argument If the hyperedge descriptor is invalid.
-    [[nodiscard]] gl_attr_force_inline size_type head_size(hyperedge_type hyperedge) const
+    [[nodiscard]] gl_attr_force_inline size_type
+    head_size(traits::c_hyperedge<hypergraph> auto hyperedge) const
     requires(std::same_as<directional_tag, bf_directed_t>)
     {
         return this->head_size(hyperedge.id());
@@ -2034,7 +2066,7 @@ public:
         /// @brief The hypergraph owning the hyperedge.
         const hypergraph& hg;
         /// @brief The hyperedge to be formatted.
-        const hyperedge_type hyperedge;
+        const_hyperedge_type hyperedge; // ???
 
         /// @brief Stream insertion operator for undirected hyperedges.
         friend std::ostream& operator<<(std::ostream& os, const hyperedge_formatter& proxy)
@@ -2091,7 +2123,8 @@ public:
     /// @brief Returns a formatter object that safely encapsulates a hyperedge for stream output.
     /// @param hyperedge The hyperedge to format.
     /// @return A @ref hyperedge_formatter structure prepared for standard stream insertion.
-    [[nodiscard]] hyperedge_formatter display(hyperedge_type hyperedge) const {
+    [[nodiscard]] hyperedge_formatter display(traits::c_hyperedge<hypergraph> auto hyperedge
+    ) const {
         return hyperedge_formatter{*this, hyperedge};
     }
 
@@ -2192,17 +2225,19 @@ private:
             this->_hyperedge_properties.erase(this->_hyperedge_properties.begin() + hyperedge_id);
     }
 
-    gl_attr_force_inline auto _create_hyperedge_descriptor() const noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_hyperedge_descriptor(this Self&) const noexcept
     requires(traits::c_empty_properties<hyperedge_properties_type>)
     {
-        return [](const id_type id) { return hyperedge_type{id}; };
+        return [](const id_type id) { return hyperedge_t<Self>{id}; };
     }
 
-    gl_attr_force_inline auto _create_hyperedge_descriptor() const noexcept
+    template <typename Self>
+    gl_attr_force_inline auto _create_hyperedge_descriptor(this Self& self) const noexcept
     requires(traits::c_non_empty_properties<hyperedge_properties_type>)
     {
-        return [&pmap = this->_hyperedge_properties](const id_type id) {
-            return hyperedge_type{id, pmap[to_idx(id)]};
+        return [&pmap = self._hyperedge_properties](const id_type id) {
+            return hyperedge_t<Self>{id, pmap[to_idx(id)]};
         };
     }
 

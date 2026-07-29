@@ -1365,6 +1365,7 @@ private:
 
     using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
+    // TODO: Use const_edge_type directly???
     template <traits::c_graph G>
     struct concise_target_formatter {
         edge_t<G> edge;

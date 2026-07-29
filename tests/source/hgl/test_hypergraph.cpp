@@ -511,12 +511,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("remove_hyperedges_from(ids) should properly remove elements at given indices "
+    SUBCASE("remove_hyperedges(ids) should properly remove elements at given indices "
             "(ignoring duplicate indices)") {
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
-        sut.remove_hyperedges_from(
+        sut.remove_hyperedges(
             std::vector<hgl::default_id_type>{constants::id1, constants::id3, constants::id1}
         );
 
@@ -524,14 +524,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
     }
 
-    SUBCASE("remove_hyperedges_from(hyperedges) should properly remove elements at given indices "
+    SUBCASE("remove_hyperedges(hyperedges) should properly remove elements at given indices "
             "(ignoring duplicate hyperedges)") {
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
         const auto he1 = sut.hyperedge(constants::id1);
         const auto he3 = sut.hyperedge(constants::id3);
-        sut.remove_hyperedges_from(std::vector<hyperedge_type>{he1, he3, he1});
+        sut.remove_hyperedges(std::vector<hyperedge_type>{he1, he3, he1});
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
