@@ -52,47 +52,47 @@ concept c_mut_hypergraph = c_hypergraph<H> and not std::is_const_v<std::remove_r
 
 } // namespace traits
 
-// /// @ingroup HGL-Core
-// /// @brief Extracts the underlying unqualified hypergraph type by removing reference and cv-qualifiers.
-// template <traits::c_hypergraph H>
-// using hypergraph_val_t = std::remove_cvref_t<H>;
+/// @ingroup HGL-Core
+/// @brief Extracts the underlying unqualified hypergraph type by removing reference and cv-qualifiers.
+template <traits::c_hypergraph H>
+using hypergraph_val_t = std::remove_cvref_t<H>;
 
-// /// @ingroup HGL-Core
-// /// @brief Resolves the identifier type associated with the given hypergraph type.
-// template <traits::c_hypergraph H>
-// using id_t = typename hypergraph_val_t<H>::id_type;
+/// @ingroup HGL-Core
+/// @brief Resolves the identifier type associated with the given hypergraph type.
+template <traits::c_hypergraph H>
+using id_t = typename hypergraph_val_t<H>::id_type;
 
-// /// @ingroup HGL-Core
-// /// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the hypergraph's constness.
-// template <traits::c_hypergraph H>
-// using vertex_t = std::conditional_t<
-//     std::is_const_v<std::remove_reference_t<H>>,
-//     typename hypergraph_val_t<H>::const_vertex_type,
-//     typename hypergraph_val_t<H>::vertex_type>;
+/// @ingroup HGL-Core
+/// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the hypergraph's constness.
+template <traits::c_hypergraph H>
+using vertex_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<H>>,
+    typename hypergraph_val_t<H>::const_vertex_type,
+    typename hypergraph_val_t<H>::vertex_type>;
 
-// /// @ingroup HGL-Core
-// /// @brief Resolves the appropriate vertex properties type (mutable or const) based on the hypergraph's constness.
-// template <traits::c_hypergraph H>
-// using vertex_properties_t = std::conditional_t<
-//     std::is_const_v<std::remove_reference_t<H>>,
-//     const typename hypergraph_val_t<H>::vertex_properties_type,
-//     typename hypergraph_val_t<H>::vertex_properties_type>;
+/// @ingroup HGL-Core
+/// @brief Resolves the appropriate vertex properties type (mutable or const) based on the hypergraph's constness.
+template <traits::c_hypergraph H>
+using vertex_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<H>>,
+    const typename hypergraph_val_t<H>::vertex_properties_type,
+    typename hypergraph_val_t<H>::vertex_properties_type>;
 
-// /// @ingroup HGL-Core
-// /// @brief Resolves the appropriate hyperedge descriptor type (mutable or const) based on the hypergraph's constness.
-// template <traits::c_hypergraph H>
-// using hyperedge_t = std::conditional_t<
-//     std::is_const_v<std::remove_reference_t<H>>,
-//     typename hypergraph_val_t<H>::const_hyperedge_type,
-//     typename hypergraph_val_t<H>::hyperedge_type>;
+/// @ingroup HGL-Core
+/// @brief Resolves the appropriate hyperedge descriptor type (mutable or const) based on the hypergraph's constness.
+template <traits::c_hypergraph H>
+using hyperedge_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<H>>,
+    typename hypergraph_val_t<H>::const_hyperedge_type,
+    typename hypergraph_val_t<H>::hyperedge_type>;
 
-// /// @ingroup HGL-Core
-// /// @brief Resolves the appropriate hyperedge properties type (mutable or const) based on the hypergraph's constness.
-// template <traits::c_hypergraph H>
-// using hyperedge_properties_t = std::conditional_t<
-//     std::is_const_v<std::remove_reference_t<H>>,
-//     const typename hypergraph_val_t<H>::hyperedge_properties_type,
-//     typename hypergraph_val_t<H>::hyperedge_properties_type>;
+/// @ingroup HGL-Core
+/// @brief Resolves the appropriate hyperedge properties type (mutable or const) based on the hypergraph's constness.
+template <traits::c_hypergraph H>
+using hyperedge_properties_t = std::conditional_t<
+    std::is_const_v<std::remove_reference_t<H>>,
+    const typename hypergraph_val_t<H>::hyperedge_properties_type,
+    typename hypergraph_val_t<H>::hyperedge_properties_type>;
 
 namespace traits {
 
@@ -294,33 +294,38 @@ public:
     /// @brief Type tag indicating the underlying representation model.
     using representation_tag = typename traits_type::representation_tag;
 
-    /// @brief The underlying representation type matching the directional tag.
-    using representation_type =
-        typename representation_tag::template representation_type<directional_tag>;
-
     /// @brief Integral type used to identify vertices and hyperedges.
     using id_type = typename traits_type::id_type;
 
     /// @brief The descriptor type representing a vertex.
     using vertex_type = typename traits_type::vertex_type;
+    /// @brief The descriptor type representing an immutable vertex.
+    using const_vertex_type = typename traits_type::const_vertex_type;
     /// @brief The user-defined property payload type associated with vertices.
     using vertex_properties_type = typename traits_type::vertex_properties_type;
-    /// @brief The container type used for storing the vertex properties mapping.
+
+    /// @brief The descriptor type representing a hyperedge.
+    using hyperedge_type = typename traits_type::hyperedge_type;
+    /// @brief The descriptor type representing an immutable hyperedge.
+    using const_hyperedge_type = typename traits_type::const_hyperedge_type;
+    /// @brief The user-defined property payload type associated with hyperedges.
+    using hyperedge_properties_type = typename traits_type::hyperedge_properties_type;
+
+private:
+    using representation_type =
+        typename representation_tag::template representation_type<directional_tag>;
+
     using vertex_properties_map_type = std::conditional_t<
         traits::c_empty_properties<vertex_properties_type>,
         empty_properties_map,
         std::vector<vertex_properties_type>>;
 
-    /// @brief The descriptor type representing a hyperedge.
-    using hyperedge_type = typename traits_type::hyperedge_type;
-    /// @brief The user-defined property payload type associated with hyperedges.
-    using hyperedge_properties_type = typename traits_type::hyperedge_properties_type;
-    /// @brief The container type used for storing hyperedge properties mapping.
     using hyperedge_properties_map_type = std::conditional_t<
         traits::c_empty_properties<hyperedge_properties_type>,
         empty_properties_map,
         std::vector<hyperedge_properties_type>>;
 
+public:
     /// @brief Constructs a hypergraph with the given number of vertices and hyperedges (empty by default).
     /// @param n_vertices The initial number of vertices.
     /// @param n_hyperedges The initial number of hyperedges.

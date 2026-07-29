@@ -2,9 +2,6 @@
 // This file is part of the CPP-GL project (https://github.com/SpectraL519/cpp-gl).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file hgl/repr/layout_tags.hpp
-/// @brief Defines layout tags that dictate the memory orientation and primary indexing of incidence structures.
-
 #pragma once
 
 #include "hgl/hypergraph_elements.hpp"

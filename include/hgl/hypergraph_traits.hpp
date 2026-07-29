@@ -44,15 +44,19 @@ struct hypergraph_traits {
     /// @brief The integer type used for element identifiers.
     using id_type = typename representation_tag::id_type;
 
-    /// @brief The fully resolved type representing a vertex descriptor.
-    using vertex_type = vertex_descriptor<VertexProperties, id_type>;
     /// @brief The property payload type associated with vertices.
-    using vertex_properties_type = typename vertex_type::properties_type;
+    using vertex_properties_type = std::remove_cvref_t<VertexProperties>;
+    /// @brief The descriptor type representing a vertex of a hypergraph.
+    using vertex_type = vertex_descriptor<vertex_properties_type, id_type>;
+    /// @brief The descriptor type representing an immutable vertex of a hypergraph.
+    using const_vertex_type = vertex_descriptor<const vertex_properties_type, id_type>;
 
-    /// @brief The fully resolved type representing a hyperedge descriptor.
-    using hyperedge_type = hyperedge_descriptor<HyperedgeProperties, id_type>;
     /// @brief The property payload type associated with hyperedges.
-    using hyperedge_properties_type = typename hyperedge_type::properties_type;
+    using hyperedge_properties_type = std::remove_cvref_t<HyperedgeProperties>;
+    /// @brief The descriptor type representing an hyperedge of a hypergraph.
+    using hyperedge_type = hyperedge_descriptor<hyperedge_properties_type, id_type>;
+    /// @brief The descriptor type representing an immutable hyperedge of a hypergraph.
+    using const_hyperedge_type = hyperedge_descriptor<const hyperedge_properties_type, id_type>;
 };
 
 /// @ingroup HGL-Core
