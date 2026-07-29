@@ -22,7 +22,7 @@ namespace gl::algorithm {
 template <traits::c_undirected_graph G>
 struct mst_descriptor {
     /// @brief The type of the graph.
-    using graph_type = graph_val_t<G>;
+    using graph_type = val_t<G>;
     /// @brief The type of the edges stored in the graph.
     using edge_type = edge_t<G>;
     /// @brief The numeric type used to represent accumulated tree weights.

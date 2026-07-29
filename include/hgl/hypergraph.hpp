@@ -55,44 +55,44 @@ concept c_mut_hypergraph = c_hypergraph<H> and not std::is_const_v<std::remove_r
 /// @ingroup HGL-Core
 /// @brief Extracts the underlying unqualified hypergraph type by removing reference and cv-qualifiers.
 template <traits::c_hypergraph H>
-using hypergraph_val_t = std::remove_cvref_t<H>;
+using val_t = std::remove_cvref_t<H>;
 
 /// @ingroup HGL-Core
 /// @brief Resolves the identifier type associated with the given hypergraph type.
 template <traits::c_hypergraph H>
-using id_t = typename hypergraph_val_t<H>::id_type;
+using id_t = typename val_t<H>::id_type;
 
 /// @ingroup HGL-Core
 /// @brief Resolves the appropriate vertex descriptor type (mutable or const) based on the hypergraph's constness.
 template <traits::c_hypergraph H>
 using vertex_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<H>>,
-    typename hypergraph_val_t<H>::const_vertex_type,
-    typename hypergraph_val_t<H>::vertex_type>;
+    typename val_t<H>::const_vertex_type,
+    typename val_t<H>::vertex_type>;
 
 /// @ingroup HGL-Core
 /// @brief Resolves the appropriate vertex properties type (mutable or const) based on the hypergraph's constness.
 template <traits::c_hypergraph H>
 using vertex_properties_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<H>>,
-    const typename hypergraph_val_t<H>::vertex_properties_type,
-    typename hypergraph_val_t<H>::vertex_properties_type>;
+    const typename val_t<H>::vertex_properties_type,
+    typename val_t<H>::vertex_properties_type>;
 
 /// @ingroup HGL-Core
 /// @brief Resolves the appropriate hyperedge descriptor type (mutable or const) based on the hypergraph's constness.
 template <traits::c_hypergraph H>
 using hyperedge_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<H>>,
-    typename hypergraph_val_t<H>::const_hyperedge_type,
-    typename hypergraph_val_t<H>::hyperedge_type>;
+    typename val_t<H>::const_hyperedge_type,
+    typename val_t<H>::hyperedge_type>;
 
 /// @ingroup HGL-Core
 /// @brief Resolves the appropriate hyperedge properties type (mutable or const) based on the hypergraph's constness.
 template <traits::c_hypergraph H>
 using hyperedge_properties_t = std::conditional_t<
     std::is_const_v<std::remove_reference_t<H>>,
-    const typename hypergraph_val_t<H>::hyperedge_properties_type,
-    typename hypergraph_val_t<H>::hyperedge_properties_type>;
+    const typename val_t<H>::hyperedge_properties_type,
+    typename val_t<H>::hyperedge_properties_type>;
 
 namespace traits {
 
@@ -102,7 +102,7 @@ namespace traits {
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_undirected_hypergraph =
-    c_hypergraph<H> and std::same_as<typename hypergraph_val_t<H>::directional_tag, undirected_t>;
+    c_hypergraph<H> and std::same_as<typename val_t<H>::directional_tag, undirected_t>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph is backward-forward (bf) directed.
@@ -110,53 +110,49 @@ concept c_undirected_hypergraph =
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_bf_directed_hypergraph =
-    c_hypergraph<H> and std::same_as<typename hypergraph_val_t<H>::directional_tag, bf_directed_t>;
+    c_hypergraph<H> and std::same_as<typename val_t<H>::directional_tag, bf_directed_t>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a standard incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_list_hypergraph =
-    c_hypergraph<H> and c_hypergraph_list_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_list_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a flattened incidence list representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_list_hypergraph =
-    c_hypergraph<H>
-    and c_hypergraph_flat_list_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_flat_list_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses any incidence list representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_list_hypergraph =
-    c_hypergraph<H>
-    and c_hypergraph_incidence_list_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_incidence_list_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a standard incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_matrix_hypergraph =
-    c_hypergraph<H> and c_hypergraph_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_matrix_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses a flattened incidence matrix representation.
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_flat_matrix_hypergraph =
-    c_hypergraph<H>
-    and c_hypergraph_flat_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_flat_matrix_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a hypergraph uses any incidence matrix representation (standard or flattened).
 /// @tparam H The type to evaluate against the concept.
 template <typename H>
 concept c_incidence_matrix_hypergraph =
-    c_hypergraph<H>
-    and c_hypergraph_incidence_matrix_repr<typename hypergraph_val_t<H>::representation_tag>;
+    c_hypergraph<H> and c_hypergraph_incidence_matrix_repr<typename val_t<H>::representation_tag>;
 
 /// @ingroup HGL-Traits
 /// @brief Concept checking if a type is a mutable or immutable vertex descriptor associated with the given hypergraph.
@@ -167,8 +163,8 @@ concept c_vertex =
     c_hypergraph<H>
     and c_one_of<
         std::remove_cvref_t<V>,
-        typename hypergraph_val_t<H>::vertex_type,
-        typename hypergraph_val_t<H>::const_vertex_type>;
+        typename val_t<H>::vertex_type,
+        typename val_t<H>::const_vertex_type>;
 
 template <typename R, typename H>
 concept c_vertex_forward_range = c_forward_range<R> and c_vertex<std::ranges::range_value_t<R>, H>;
@@ -182,8 +178,8 @@ concept c_hyperedge =
     c_hypergraph<H>
     and c_one_of<
         std::remove_cvref_t<E>,
-        typename hypergraph_val_t<H>::hyperedge_type,
-        typename hypergraph_val_t<H>::const_hyperedge_type>;
+        typename val_t<H>::hyperedge_type,
+        typename val_t<H>::const_hyperedge_type>;
 
 template <typename R, typename H>
 concept c_hyperedge_forward_range =

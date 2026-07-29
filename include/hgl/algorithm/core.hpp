@@ -121,7 +121,7 @@ struct search_node {
 ///
 /// @tparam H The type of the hypergraph being searched.
 template <traits::c_hypergraph H>
-using search_tree = std::vector<search_node<hypergraph_val_t<H>>>;
+using search_tree = std::vector<search_node<val_t<H>>>;
 
 } // namespace algorithm
 
@@ -185,12 +185,12 @@ struct traversal_policy;
 template <traits::c_undirected_hypergraph H, traversal_direction Dir>
 struct traversal_policy<H, Dir> {
     /// @brief Retrieves the hyperedges incident to the given vertex.
-    static auto target_hyperedges(const hypergraph_val_t<H>& h, id_t<H> v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.incident_hyperedge_ids(v_id);
     }
 
     /// @brief Retrieves the vertices incident to the given hyperedge.
-    static auto target_vertices(const hypergraph_val_t<H>& h, id_t<H> he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.incident_vertex_ids(he_id);
     }
 };
@@ -200,12 +200,12 @@ struct traversal_policy<H, Dir> {
 template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::forward> {
     /// @brief Retrieves the hyperedges originating from the given vertex (forward star).
-    static auto target_hyperedges(const hypergraph_val_t<H>& h, id_t<H> v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.out_hyperedge_ids(v_id); // forward star
     }
 
     /// @brief Retrieves the vertices targeted by the given hyperedge (head nodes).
-    static auto target_vertices(const hypergraph_val_t<H>& h, id_t<H> he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.head_ids(he_id);
     }
 };
@@ -215,12 +215,12 @@ struct traversal_policy<H, traversal_direction::forward> {
 template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::backward> {
     /// @brief Retrieves the hyperedges entering the given vertex (backward star).
-    static auto target_hyperedges(const hypergraph_val_t<H>& h, id_t<H> v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.in_hyperedge_ids(v_id); // backward star
     }
 
     /// @brief Retrieves the vertices originating the given hyperedge (tail nodes).
-    static auto target_vertices(const hypergraph_val_t<H>& h, id_t<H> he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.tail_ids(he_id);
     }
 };
