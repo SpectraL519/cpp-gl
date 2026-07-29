@@ -114,8 +114,6 @@ struct test_graph {
 
 using vertex_id_list = std::vector<gl::default_id_type>;
 
-inline constexpr auto get_id = [](auto&& element) -> gl::default_id_type { return element.id(); };
-
 TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_graph_traits_template) {
     using fixture_type = test_graph<TraitsType>;
     using sut_type = typename fixture_type::sut_type;
@@ -139,7 +137,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{constants::n_elements};
 
         REQUIRE(std::ranges::equal(
-            sut.vertices() | std::views::transform(get_id), constants::vertex_id_view
+            sut.vertices() | std::views::transform(gl::util::to_id), constants::vertex_id_view
         ));
 
         REQUIRE(std::ranges::equal(sut.vertex_ids(), constants::vertex_id_view));
@@ -360,7 +358,7 @@ TEST_CASE_TEMPLATE_DEFINE("common graph structure tests", TraitsType, common_gra
         sut_type sut{constants::n_elements};
 
         CHECK(std::ranges::equal(
-            sut.vertices(), constants::vertex_id_view, std::ranges::equal_to{}, get_id
+            sut.vertices(), constants::vertex_id_view, std::ranges::equal_to{}, gl::util::to_id
         ));
     }
 
@@ -1226,7 +1224,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             ++i;
             return result;
         },
-        get_id
+        gl::util::to_id
     ));
 }
 
@@ -1299,7 +1297,7 @@ TEST_CASE_TEMPLATE_DEFINE(
             ++i;
             return result;
         },
-        get_id
+        gl::util::to_id
     ));
 }
 

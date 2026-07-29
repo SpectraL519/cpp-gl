@@ -475,9 +475,7 @@ public:
     template <typename VertexRng>
     requires(traits::c_forward_range<VertexRng> and traits::c_vertex<std::ranges::range_value_t<VertexRng>, graph>)
     gl_attr_force_inline void remove_vertices(const VertexRng& vertex_rng) {
-        this->remove_vertices(
-            vertex_rng | std::views::transform([](const auto& v) { return v.id(); })
-        );
+        this->remove_vertices(vertex_rng | std::views::transform(util::to_id));
     }
 
     // --- vertex getters ---
@@ -892,8 +890,6 @@ public:
     template <typename TargetRng>
     requires(traits::c_sized_range<TargetRng> and traits::c_vertex<std::ranges::range_value_t<TargetRng>, graph>)
     void add_edges_from(traits::c_vertex<graph> auto source, const TargetRng& target_rng) {
-        using rng_vertex_type = std::ranges::range_value_t<TargetRng>;
-
         this->_verify_vertex_id(source.id());
         for (auto target : target_rng)
             this->_verify_vertex_id(target.id());
@@ -903,9 +899,8 @@ public:
         this->_impl.add_edges_from(
             std::views::iota(static_cast<id_type>(prev_n_edges), this->_n_edges),
             source.id(),
-            target_rng | std::views::transform(&rng_vertex_type::id)
+            target_rng | std::views::transform(util::to_id)
         );
-
 
         if constexpr (traits::c_non_empty_properties<edge_properties_type>)
             this->_edge_properties.resize(this->_n_edges);

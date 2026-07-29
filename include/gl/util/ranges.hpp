@@ -13,6 +13,10 @@
 namespace gl::util {
 
 /// @ingroup GL-Util
+/// @brief A transformation callback that returns a descriptor's ID.
+inline constexpr auto to_id = [](const auto& descriptor) { return descriptor.id(); };
+
+/// @ingroup GL-Util
 /// @brief Safely determines the size of a range.
 ///
 /// This function returns the size of a range if it is a sized range, otherwise it computes the

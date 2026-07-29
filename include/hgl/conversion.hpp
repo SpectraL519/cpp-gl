@@ -225,7 +225,7 @@ struct to_impl<repr::list_t<LayoutTag>, repr::flat_list_t<LayoutTag>> {
 /// | Parameter | Description | Constraint |
 /// | :-------- | :---------- | :--------- |
 /// | TargetReprTag | The representation tag of the desired target representation (e.g., `hgl::repr::flat_list_t`). | [**c_hypergraph_repr_tag**](hgl_concepts.md#hgl-traits-c-hypergraph-repr-tag) |
-/// | Hypergraph | The type of the source hypergraph, which will be automatically deduced from the function argument. | [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) |
+/// | Hypergraph | The type of the source hypergraph, which will be automatically deduced from the function argument. | [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) and must **NOT** be an Lvalue reference |
 ///
 /// @param source The hypergraph to convert. After the operation it will be left in a valid, empty state.
 /// @return A new hypergraph containing the moved data, structured according to `TargetReprTag`.
@@ -233,6 +233,7 @@ struct to_impl<repr::list_t<LayoutTag>, repr::flat_list_t<LayoutTag>> {
 /// ### See Also
 /// - @ref hgl::traits::swap_repr_tag "swap_repr_tag" : For the trait used to resolve the target hypergraph type with the swapped representation tag.
 template <traits::c_hypergraph_repr_tag TargetReprTag, traits::c_hypergraph Hypergraph>
+requires(not std::is_lvalue_reference_v<Hypergraph>)
 [[nodiscard]] auto to(Hypergraph&& source) {
     using source_traits = typename Hypergraph::traits_type;
     using source_impl_tag = typename source_traits::representation_tag;

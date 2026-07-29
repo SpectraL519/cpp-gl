@@ -101,8 +101,7 @@ public:
             this->_remove_edge_impl(edge);
 
         auto removed_edge_ids =
-            edges | std::views::transform([](const auto& edge) { return edge.id(); })
-            | std::ranges::to<std::vector>();
+            edges | std::views::transform(util::to_id) | std::ranges::to<std::vector>();
         this->_remap_element_ids(invalid_id, removed_edge_ids);
         return removed_edge_ids;
     }
