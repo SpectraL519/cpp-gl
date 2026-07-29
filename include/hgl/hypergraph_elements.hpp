@@ -131,6 +131,18 @@ public:
     requires(traits::c_non_empty_properties<properties_type>)
     : _id(id), _properties(properties) {}
 
+    /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
+    /// @tparam MutProperties The mutable property type.
+    /// @param other The hyperedge descriptor to convert from.
+    template <typename MutProperties>
+    requires(std::same_as<Properties, const MutProperties>)
+    hyperedge_descriptor(const hyperedge_descriptor<MutProperties, IdType>& other) noexcept
+    : _id(other.id()) {
+        if constexpr (traits::c_non_empty_properties<Properties>) {
+            this->_properties = other.properties();
+        }
+    }
+
     /// @brief Returns a special descriptor representing an invalid or uninitialized property-less hyperedge.
     /// @return An invalid `hyperedge_descriptor`.
     [[nodiscard]] gl_attr_force_inline static hyperedge_descriptor invalid() noexcept
@@ -162,25 +174,32 @@ public:
     ~hyperedge_descriptor() = default;
 
     /// @brief Compares two hyperedge descriptors for equality.
+    /// @tparam OtherProperties The property type of the other descriptor.
     /// @param other The descriptor to compare against.
     /// @return `true` if both descriptors hold the same ID, `false` otherwise.
-    [[nodiscard]] bool operator==(const hyperedge_descriptor& other) const noexcept {
-        return this->_id == other._id;
+    template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] bool operator==(const hyperedge_descriptor<OtherProperties, id_type>& other
+    ) const noexcept {
+        return this->_id == other.id();
+    }
+
+    /// @brief Compares two hyperedge descriptors to establish a strict ordering based on their IDs.
+    /// @tparam OtherProperties The property type of the other descriptor.
+    /// @param other The descriptor to compare against.
+    /// @return The result of the three-way comparison between the underlying IDs.
+    template <traits::c_properties OtherProperties>
+    requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
+    [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
+        const hyperedge_descriptor<OtherProperties, id_type>& other
+    ) const noexcept {
+        return this->_id <=> other.id();
     }
 
     /// @brief Contextually converts the descriptor to a boolean.
     /// @return `true` if the descriptor is valid, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline operator bool() const noexcept {
         return this->is_valid();
-    }
-
-    /// @brief Compares two hyperedge descriptors to establish a strict ordering based on their IDs.
-    /// @param other The descriptor to compare against.
-    /// @return The result of the three-way comparison between the underlying IDs.
-    [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
-        const hyperedge_descriptor& other
-    ) const noexcept {
-        return this->_id <=> other._id;
     }
 
     /// @brief Checks if the descriptor represents a valid hyperedge.

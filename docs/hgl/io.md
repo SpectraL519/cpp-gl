@@ -14,7 +14,7 @@ At its core, the library overloads the standard `operator<<` for the [**hgl::hyp
 
 > [!NOTE] Hyperedge Formatting
 >
-> Because a hyperedge descriptor is a simple wrapper for the hyperedge's ID and optional properties, printing it directly would result in the exact same format as for vertex descriptors. In order to print the hyperedge as the set(s) of its incident vertices, you need to use the dedicated [**display**](../cpp-gl/classhgl_1_1hypergraph.md#function-display) method of the `hypergraph` class.
+> Because a hyperedge descriptor is a simple wrapper for the hyperedge's ID and optional properties, printing it directly would result in the exact same format as for vertex descriptors. In order to print the hyperedge as the set(s) of its incident vertices, you need to use the dedicated [**fmt**](../cpp-gl/classhgl_1_1hypergraph.md#function-fmt) method of the `hypergraph` class.
 
 ```cpp
 #include <hgl/hypergraph.hpp>
@@ -27,7 +27,7 @@ int main() {
     auto v0 = hg.vertex(0);
 
     std::cout << "Vertex: " << v0 << '\n'; // (1)!
-    std::cout << "Hyperedge: " << hg.display(e1) << '\n'; // (2)!
+    std::cout << "Hyperedge: " << hg.fmt(e1) << '\n'; // (2)!
     std::cout << "Hypergraph:\n" << hg << '\n'; // (3)!
 }
 ```

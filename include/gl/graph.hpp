@@ -1365,11 +1365,9 @@ private:
 
     using fmt_traits = io::detail::graph_fmt_traits<directional_tag>;
 
-    // TODO: Use const_edge_type directly???
-    template <traits::c_graph G>
     struct concise_target_formatter {
-        edge_t<G> edge;
-        id_t<G> src_id;
+        const_edge_type edge;
+        id_type src_id;
         bool with_props;
 
         friend std::ostream& operator<<(std::ostream& os, const concise_target_formatter& proxy) {
@@ -1393,16 +1391,16 @@ private:
         return os;
     }
 
-    template <typename Self>
-    std::ostream& _concise_write(this Self&& self, std::ostream& os) {
+    std::ostream& _concise_write(this auto&& self, std::ostream& os) {
         using enum io::detail::option_bit;
 
         for (auto src : self.vertices()) {
             auto tgts = std::views::transform(
                 self.out_edges(src.id()),
-                [src_id = src.id(), with_props = io::is_option_set(os, with_connection_properties)](
-                    const edge_t<Self>& edge
-                ) { return concise_target_formatter<Self>{edge, src_id, with_props}; }
+                [src_id = src.id(),
+                 with_props = io::is_option_set(os, with_connection_properties)](const auto& edge) {
+                    return concise_target_formatter{edge, src_id, with_props};
+                }
             );
             os << src << " : " << io::range_formatter(tgts) << '\n';
         }

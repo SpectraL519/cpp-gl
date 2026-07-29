@@ -92,11 +92,11 @@ public:
     : _id(id), _properties(properties) {}
 
     /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
-    /// @tparam NonConstProps The non-const property type.
+    /// @tparam MutProperties The mutable property type.
     /// @param other The vertex descriptor to convert from.
-    template <typename NonConstProperties>
-    requires(std::same_as<Properties, const NonConstProperties>)
-    vertex_descriptor(const vertex_descriptor<NonConstProperties, IdType>& other) noexcept
+    template <typename MutProperties>
+    requires(std::same_as<Properties, const MutProperties>)
+    vertex_descriptor(const vertex_descriptor<MutProperties, IdType>& other) noexcept
     : _id(other.id()) {
         if constexpr (traits::c_non_empty_properties<Properties>) {
             this->_properties = other.properties();
@@ -140,7 +140,7 @@ public:
     template <traits::c_properties OtherProperties>
     requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] gl_attr_force_inline bool operator==(
-        const vertex_descriptor<OtherProperties, IdType>& other
+        const vertex_descriptor<OtherProperties, id_type>& other
     ) const noexcept {
         return this->_id == other.id();
     }
@@ -152,7 +152,7 @@ public:
     template <traits::c_properties OtherProperties>
     requires(std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] gl_attr_force_inline std::strong_ordering operator<=>(
-        const vertex_descriptor<OtherProperties, IdType>& other
+        const vertex_descriptor<OtherProperties, id_type>& other
     ) const noexcept {
         return this->_id <=> other.id();
     }
