@@ -106,11 +106,11 @@ public:
     : _id(id), _vertices(source, target), _properties(properties) {}
 
     /// @brief Implicit converting constructor from a non-const descriptor to a const descriptor.
-    /// @tparam NonConstProps The non-const property type.
+    /// @tparam MutProperties The mutable property type.
     /// @param other The edge descriptor to convert from.
-    template <typename NonConstProperties>
-    requires(std::same_as<Properties, const NonConstProperties>)
-    edge_descriptor(const edge_descriptor<NonConstProperties, IdType>& other) noexcept
+    template <typename MutProperties>
+    requires(std::same_as<Properties, const MutProperties>)
+    edge_descriptor(const edge_descriptor<MutProperties, id_type>& other) noexcept
     : _id(other.id()), _vertices(other._vertices) {
         if constexpr (traits::c_non_empty_properties<Properties>) {
             this->_properties = other.properties();
@@ -154,7 +154,7 @@ public:
     template <traits::c_properties OtherProperties>
     requires(traits::c_directed_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] bool operator==(
-        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+        const edge_descriptor<DirectionalTag, OtherProperties, id_type>& other
     ) const noexcept {
         return this->_id == other.id() and (this->_vertices == other.incident_vertices());
     }
@@ -166,7 +166,7 @@ public:
     template <traits::c_properties OtherProperties>
     requires(traits::c_undirected_edge<type> and std::same_as<std::remove_cv_t<properties_type>, std::remove_cv_t<OtherProperties>>)
     [[nodiscard]] bool operator==(
-        const edge_descriptor<DirectionalTag, OtherProperties, IdType>& other
+        const edge_descriptor<DirectionalTag, OtherProperties, id_type>& other
     ) const noexcept {
         return this->_id == other.id()
            and (this->_vertices == other.incident_vertices()

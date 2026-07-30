@@ -46,8 +46,8 @@ namespace hgl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | Result | Controls whether the algorithm builds and returns a search tree (`ret`) or evaluates purely for side effects (`noret`). | Must be a valid @ref hgl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before visiting a vertex. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The hypergraph to traverse.
 /// @param root_vertex_id The ID of the vertex to start the search from. If `no_root`, searches the entire hypergraph.
@@ -58,11 +58,13 @@ namespace hgl::algorithm {
 template <
     result_discriminator Result = ret,
     traits::c_hypergraph H,
-    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PreVisitCallback =
+        empty_callback,
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
+        empty_callback>
 result_type<Result, search_tree<H>> depth_first_search(
-    const H& hypergraph,
-    const typename H::id_type root_vertex_id = no_root,
+    H&& hypergraph,
+    const id_t<H> root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {

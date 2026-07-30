@@ -46,8 +46,8 @@ namespace hgl::algorithm {
 /// | Result | Controls whether the algorithm builds and returns a search tree (`ret`) or evaluates purely for side effects (`noret`). | Must be a valid @ref hgl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_bf_directed_hypergraph**](hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph) concept. |
 /// | RootRange | The type of the container providing the initial roots to enqueue. | Must satisfy [**c_forward_range_of**](gl_concepts.md#gl-traits-c-forward-range-of) over the hypergraph's `id_type`. |
-/// | PreVisitCallback | Type of the callable executed immediately before visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before visiting a vertex. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The bf-directed hypergraph to traverse.
 /// @param root_vertices A range of initial vertex IDs to start the search from.
@@ -58,24 +58,25 @@ namespace hgl::algorithm {
 template <
     result_discriminator Result = ret,
     traits::c_bf_directed_hypergraph H,
-    traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
-    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_forward_range_of<id_t<H>> RootRange = std::vector<id_t<H>>,
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PreVisitCallback =
+        empty_callback,
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
+        empty_callback>
 result_type<Result, search_tree<H>> backward_bfs(
-    const H& hypergraph,
+    H&& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using id_type = typename H::id_type;
-
     std::vector<bool> visited_vertices(hypergraph.n_vertices(), false);
     auto tail_unvisited = hypergraph.tail_size_map() | std::ranges::to<std::vector>();
 
     auto stree = init_search_tree<Result>(hypergraph);
     auto root_queue =
-        root_vertices
-        | std::views::transform([](const id_type root_id) { return search_node<H>{root_id}; });
+        root_vertices | std::views::transform([](const id_t<H> root_id) {
+            return search_node<val_t<H>>{root_id};
+        });
 
     // clang-format off
 
@@ -127,8 +128,8 @@ result_type<Result, search_tree<H>> backward_bfs(
 /// | Result | Controls whether the algorithm builds and returns a search tree (`ret`) or evaluates purely for side effects (`noret`). | Must be a valid @ref hgl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_bf_directed_hypergraph**](hgl_concepts.md#hgl-traits-c-bf-directed-hypergraph) concept. |
 /// | RootRange | The type of the container providing the initial roots to enqueue. | Must satisfy [**c_forward_range_of**](gl_concepts.md#gl-traits-c-forward-range-of) over the hypergraph's `id_type`. |
-/// | PreVisitCallback | Type of the callable executed immediately before officially visiting a vertex. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<H>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before officially visiting a vertex. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The bf-directed hypergraph to traverse.
 /// @param root_vertices A range of initial vertex IDs to start the search from.
@@ -139,24 +140,25 @@ result_type<Result, search_tree<H>> backward_bfs(
 template <
     result_discriminator Result = ret,
     traits::c_bf_directed_hypergraph H,
-    traits::c_forward_range_of<typename H::id_type> RootRange = std::vector<typename H::id_type>,
-    traits::c_optional_callback<void, const search_node<H>&> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, const search_node<H>&> PostVisitCallback = empty_callback>
+    traits::c_forward_range_of<id_t<H>> RootRange = std::vector<id_t<H>>,
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PreVisitCallback =
+        empty_callback,
+    traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
+        empty_callback>
 result_type<Result, search_tree<H>> backward_dfs(
-    const H& hypergraph,
+    H&& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},
     const PostVisitCallback& post_visit = {}
 ) {
-    using id_type = typename H::id_type;
-
     std::vector<bool> visited_vertices(hypergraph.n_vertices(), false);
     auto tail_unvisited = hypergraph.tail_size_map() | std::ranges::to<std::vector>();
 
     auto stree = init_search_tree<Result>(hypergraph);
     auto root_queue =
-        root_vertices
-        | std::views::transform([](const id_type root_id) { return search_node<H>{root_id}; });
+        root_vertices | std::views::transform([](const id_t<H> root_id) {
+            return search_node<val_t<H>>{root_id};
+        });
 
     // clang-format off
 

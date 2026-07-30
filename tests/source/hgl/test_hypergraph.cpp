@@ -50,8 +50,6 @@ using add_properties = hgl::hypergraph_traits<
     Properties,
     typename HypergraphTraits::representation_tag>;
 
-inline constexpr auto get_id = [](auto&& element) -> hgl::default_id_type { return element.id(); };
-
 TEST_CASE_TEMPLATE_DEFINE(
     "hypergraph structure tests", HypergraphTraits, hypergraph_traits_template
 ) {
@@ -73,7 +71,9 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
         REQUIRE_EQ(sut.n_hyperedges(), 0uz);
 
-        REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
+        REQUIRE(
+            rng::equal(sut.vertices() | vw::transform(hgl::util::to_id), constants::vertex_ids_view)
+        );
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
 
         CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::invalid_argument);
@@ -86,12 +86,15 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_vertices(), constants::n_vertices);
         REQUIRE_EQ(sut.n_hyperedges(), constants::n_hyperedges);
 
-        REQUIRE(rng::equal(sut.vertices() | vw::transform(get_id), constants::vertex_ids_view));
+        REQUIRE(
+            rng::equal(sut.vertices() | vw::transform(hgl::util::to_id), constants::vertex_ids_view)
+        );
         REQUIRE(rng::equal(sut.vertex_ids(), constants::vertex_ids_view));
         CHECK_THROWS_AS(discard(sut.vertex(constants::out_of_rng_vid)), std::invalid_argument);
 
-        REQUIRE(rng::equal(sut.hyperedges() | vw::transform(get_id), constants::hyperedge_ids_view)
-        );
+        REQUIRE(rng::equal(
+            sut.hyperedges() | vw::transform(hgl::util::to_id), constants::hyperedge_ids_view
+        ));
         REQUIRE(rng::equal(sut.hyperedge_ids(), constants::hyperedge_ids_view));
         CHECK_THROWS_AS(discard(sut.hyperedge(constants::out_of_rng_eid)), std::invalid_argument);
     }
@@ -508,12 +511,12 @@ TEST_CASE_TEMPLATE_DEFINE(
         );
     }
 
-    SUBCASE("remove_hyperedges_from(ids) should properly remove elements at given indices "
+    SUBCASE("remove_hyperedges(ids) should properly remove elements at given indices "
             "(ignoring duplicate indices)") {
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
-        sut.remove_hyperedges_from(
+        sut.remove_hyperedges(
             std::vector<hgl::default_id_type>{constants::id1, constants::id3, constants::id1}
         );
 
@@ -521,14 +524,14 @@ TEST_CASE_TEMPLATE_DEFINE(
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
     }
 
-    SUBCASE("remove_hyperedges_from(hyperedges) should properly remove elements at given indices "
+    SUBCASE("remove_hyperedges(hyperedges) should properly remove elements at given indices "
             "(ignoring duplicate hyperedges)") {
         constexpr auto n_hyperedges = constants::n_hyperedges + 1uz;
 
         sut_type sut{0uz, n_hyperedges};
         const auto he1 = sut.hyperedge(constants::id1);
         const auto he3 = sut.hyperedge(constants::id3);
-        sut.remove_hyperedges_from(std::vector<hyperedge_type>{he1, he3, he1});
+        sut.remove_hyperedges(std::vector<hyperedge_type>{he1, he3, he1});
 
         constexpr auto expected_n_hyperedges = n_hyperedges - 2uz;
         REQUIRE_EQ(sut.n_hyperedges(), expected_n_hyperedges);
@@ -898,7 +901,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                         sut.incident_hyperedges(vertex_id),
                         expected_hyperedges,
                         std::equal_to{},
-                        get_id
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.degree(vertex_id), expected_hyperedges.size());
                 }
@@ -922,12 +925,15 @@ TEST_CASE_TEMPLATE_DEFINE(
                         sut.incident_hyperedges(vertex_id),
                         expected_hyperedges,
                         std::equal_to{},
-                        get_id
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.degree(vertex_id), expected_hyperedges.size());
 
                     CHECK(std::ranges::equal(
-                        sut.in_hyperedges(vertex_id), expected_in_hyperedges, std::equal_to{}, get_id
+                        sut.in_hyperedges(vertex_id),
+                        expected_in_hyperedges,
+                        std::equal_to{},
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.in_degree(vertex_id), expected_in_hyperedges.size());
 
@@ -935,7 +941,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                         sut.out_hyperedges(vertex_id),
                         expected_out_hyperedges,
                         std::equal_to{},
-                        get_id
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.out_degree(vertex_id), expected_out_hyperedges.size());
                 }
@@ -951,7 +957,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.incident_hyperedges(vertex_id),
                     std::vector<hgl::default_id_type>{constants::id2, constants::id4},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.degree(vertex_id), 2uz);
             }
@@ -964,7 +970,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.incident_hyperedges(vertex_id),
                     std::vector<hgl::default_id_type>{constants::id2, constants::id4},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.degree(vertex_id), 2uz);
 
@@ -972,7 +978,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.in_hyperedges(vertex_id),
                     std::vector<hgl::default_id_type>{constants::id2},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.in_degree(vertex_id), 1uz);
 
@@ -980,7 +986,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.out_hyperedges(vertex_id),
                     std::vector<hgl::default_id_type>{constants::id4},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.out_degree(vertex_id), 1uz);
             }
@@ -1031,7 +1037,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                         sut.incident_vertices(hyperedge_id),
                         expected_vertices,
                         std::equal_to{},
-                        get_id
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_vertices.size());
                 }
@@ -1055,17 +1061,23 @@ TEST_CASE_TEMPLATE_DEFINE(
                         sut.incident_vertices(hyperedge_id),
                         expected_vertices,
                         std::equal_to{},
-                        get_id
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.hyperedge_size(hyperedge_id), expected_vertices.size());
 
                     CHECK(std::ranges::equal(
-                        sut.head(hyperedge_id), expected_head_vertices, std::equal_to{}, get_id
+                        sut.head(hyperedge_id),
+                        expected_head_vertices,
+                        std::equal_to{},
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.head_size(hyperedge_id), expected_head_vertices.size());
 
                     CHECK(std::ranges::equal(
-                        sut.tail(hyperedge_id), expected_tail_vertices, std::equal_to{}, get_id
+                        sut.tail(hyperedge_id),
+                        expected_tail_vertices,
+                        std::equal_to{},
+                        hgl::util::to_id
                     ));
                     CHECK_EQ(sut.tail_size(hyperedge_id), expected_tail_vertices.size());
                 }
@@ -1081,7 +1093,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.incident_vertices(hyperedge_id),
                     std::vector<hgl::default_id_type>{constants::id1, constants::id3},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.hyperedge_size(hyperedge_id), 2uz);
             }
@@ -1094,7 +1106,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.incident_vertices(hyperedge_id),
                     std::vector<hgl::default_id_type>{constants::id1, constants::id3},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.hyperedge_size(hyperedge_id), 2uz);
 
@@ -1102,7 +1114,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.head(hyperedge_id),
                     std::vector<hgl::default_id_type>{constants::id1},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.head_size(hyperedge_id), 1uz);
 
@@ -1110,7 +1122,7 @@ TEST_CASE_TEMPLATE_DEFINE(
                     sut.tail(hyperedge_id),
                     std::vector<hgl::default_id_type>{constants::id3},
                     std::equal_to{},
-                    get_id
+                    hgl::util::to_id
                 ));
                 CHECK_EQ(sut.tail_size(hyperedge_id), 1uz);
             }

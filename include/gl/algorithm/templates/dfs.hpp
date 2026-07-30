@@ -73,7 +73,8 @@ namespace gl::algorithm {
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_forward_range_of<search_node<G>> InitStackRangeType = std::vector<search_node<G>>,
+    traits::c_forward_range_of<search_node<val_t<G>>> InitStackRangeType =
+        std::vector<search_node<val_t<G>>>,
     traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
     traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
@@ -92,7 +93,7 @@ bool dfs(
         return false;
 
     // prepare the node stack
-    std::stack<search_node<G>> s;
+    std::stack<search_node<val_t<G>>> s;
     for (const auto& node : initial_stack_content)
         s.push(node);
 

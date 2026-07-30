@@ -74,9 +74,9 @@ struct graph_traits {
     /// @brief The type of properties associated with the edge descriptor.
     using edge_properties_type = std::remove_cvref_t<EdgeProperties>;
     /// @brief The descriptor type representing an edge of a graph.
-    using edge_type = edge_descriptor<DirectionalTag, edge_properties_type, id_type>;
+    using edge_type = edge_descriptor<directional_tag, edge_properties_type, id_type>;
     /// @brief The descriptor type representing an immutable edge of a graph.
-    using const_edge_type = edge_descriptor<DirectionalTag, const edge_properties_type, id_type>;
+    using const_edge_type = edge_descriptor<directional_tag, const edge_properties_type, id_type>;
 };
 
 /// @ingroup GL-Core

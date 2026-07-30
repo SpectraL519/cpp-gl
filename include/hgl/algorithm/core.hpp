@@ -81,7 +81,7 @@ inline constexpr no_root_t no_root = gl::algorithm::no_root;
 template <traits::c_hypergraph H>
 struct search_node {
     /// @brief The identifier type of the hypergraph elements.
-    using id_type = typename H::id_type;
+    using id_type = id_t<H>;
 
     /// @brief Default constructor creates an invalid node.
     search_node() = default;
@@ -121,11 +121,53 @@ struct search_node {
 ///
 /// @tparam H The type of the hypergraph being searched.
 template <traits::c_hypergraph H>
-using search_tree = std::vector<search_node<H>>;
+using search_tree = std::vector<search_node<val_t<H>>>;
 
 } // namespace algorithm
 
 namespace traits {
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a given type is the empty_callback tag.
+/// ### See Also
+/// - [**c_empty_callback**](gl_concepts.md#gl-traits-c-empty-callback) : For the full concept documentation in the GL module.
+using gl::traits::c_empty_callback;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is callable with specific arguments and returns a specific type.
+/// ### See Also
+/// - [**c_callback**](gl_concepts.md#gl-traits-c-callback) : For the full concept documentation in the GL module.
+using gl::traits::c_callback;
+
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid callback or the explicit absence of one through the use of empty_callback.
+/// ### See Also
+/// - [**c_optional_callback**](gl_concepts.md#gl-traits-c-optional-callback) : For the full concept documentation in the GL module.
+using gl::traits::c_optional_callback;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a boolean predicate callable with specific arguments.
+/// ### See Also
+/// - [**c_predicate**](gl_concepts.md#gl-traits-c-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid boolean predicate or the explicit absence of one through the use of empty_callback.
+/// ### See Also
+/// - [**c_optional_predicate**](gl_concepts.md#gl-traits-c-optional-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_optional_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a predicate returning a decision.
+/// ### See Also
+/// - [**c_decision_predicate**](gl_concepts.md#gl-traits-c-decision-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_decision_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid decision predicate or the explicit absence of one.
+/// ### See Also
+/// - [**c_optional_decision_predicate**](gl_concepts.md#gl-traits-c-optional-decision-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_optional_decision_predicate;
 
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::search_node "search_node"s).
@@ -174,12 +216,12 @@ struct traversal_policy;
 template <traits::c_undirected_hypergraph H, traversal_direction Dir>
 struct traversal_policy<H, Dir> {
     /// @brief Retrieves the hyperedges incident to the given vertex.
-    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.incident_hyperedge_ids(v_id);
     }
 
     /// @brief Retrieves the vertices incident to the given hyperedge.
-    static auto target_vertices(const H& h, typename H::id_type he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.incident_vertex_ids(he_id);
     }
 };
@@ -189,12 +231,12 @@ struct traversal_policy<H, Dir> {
 template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::forward> {
     /// @brief Retrieves the hyperedges originating from the given vertex (forward star).
-    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.out_hyperedge_ids(v_id); // forward star
     }
 
     /// @brief Retrieves the vertices targeted by the given hyperedge (head nodes).
-    static auto target_vertices(const H& h, typename H::id_type he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.head_ids(he_id);
     }
 };
@@ -204,12 +246,12 @@ struct traversal_policy<H, traversal_direction::forward> {
 template <traits::c_bf_directed_hypergraph H>
 struct traversal_policy<H, traversal_direction::backward> {
     /// @brief Retrieves the hyperedges entering the given vertex (backward star).
-    static auto target_hyperedges(const H& h, typename H::id_type v_id) {
+    static auto target_hyperedges(const val_t<H>& h, id_t<H> v_id) {
         return h.in_hyperedge_ids(v_id); // backward star
     }
 
     /// @brief Retrieves the vertices originating the given hyperedge (tail nodes).
-    static auto target_vertices(const H& h, typename H::id_type he_id) {
+    static auto target_vertices(const val_t<H>& h, id_t<H> he_id) {
         return h.tail_ids(he_id);
     }
 };

@@ -50,7 +50,7 @@ For a single popped node in `bfs`, `dfs`, or `pfs`, the execution flow looks exa
 
 ## Custom Node Injection (PFS)
 
-While BFS and DFS templates strictly operate on the lightweight [**gl::algorithm::search_node<G>**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md), the Priority-First Search template often requires tracking dynamic state alongside the vertex ID.
+While BFS and DFS templates strictly operate on the lightweight [**gl::algorithm::search_node**](../../cpp-gl/structgl_1_1algorithm_1_1search__node.md), the Priority-First Search template often requires tracking dynamic state alongside the vertex ID.
 
 For instance, in Dijkstra's algorithm, the priority queue must sort nodes based on their accumulated distance from the starting point. You cannot sort based purely on the vertex ID.
 
