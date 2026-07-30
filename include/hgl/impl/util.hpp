@@ -4,9 +4,7 @@
 
 #pragma once
 
-#include "hgl/hypergraph_elements.hpp"
-#include "hgl/traits.hpp"
-#include "hgl/types.hpp"
+#include "hgl/repr/layout_tags.hpp"
 
 #include <concepts>
 

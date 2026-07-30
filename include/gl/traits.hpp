@@ -179,23 +179,6 @@ concept c_random_access_range_of_cv =
     c_random_access_range<R> and std::same_as<T, std::ranges::range_value_t<R>>;
 
 /// @ingroup GL-Traits
-/// @brief Concept checking if a range provides valid const iterators via `cbegin()` and `cend()`.
-/// @tparam R The type of the range.
-template <typename R>
-concept c_const_range = requires(R& r) {
-    std::ranges::cbegin(r);
-    std::ranges::cend(r);
-};
-
-/// @ingroup GL-Traits
-/// @brief Concept checking if dereferencing an iterator yields a const reference.
-/// @tparam T The iterator type to check.
-template <typename T>
-concept c_const_iterator = requires(T iter) {
-    { *iter } -> std::same_as<const std::remove_cvref_t<decltype(*iter)>&>;
-};
-
-/// @ingroup GL-Traits
 /// @brief Concept checking if a type supports three-way comparison and equality operators.
 /// @tparam T The type to check.
 template <typename T>

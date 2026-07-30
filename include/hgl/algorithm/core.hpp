@@ -127,16 +127,47 @@ using search_tree = std::vector<search_node<val_t<H>>>;
 
 namespace traits {
 
-// TODO: add doc comments
-
-using gl::traits::c_callback;
-using gl::traits::c_decision_predicate;
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a given type is the empty_callback tag.
+/// ### See Also
+/// - [**c_empty_callback**](gl_concepts.md#gl-traits-c-empty-callback) : For the full concept documentation in the GL module.
 using gl::traits::c_empty_callback;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is callable with specific arguments and returns a specific type.
+/// ### See Also
+/// - [**c_callback**](gl_concepts.md#gl-traits-c-callback) : For the full concept documentation in the GL module.
+using gl::traits::c_callback;
+
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid callback or the explicit absence of one through the use of empty_callback.
+/// ### See Also
+/// - [**c_optional_callback**](gl_concepts.md#gl-traits-c-optional-callback) : For the full concept documentation in the GL module.
 using gl::traits::c_optional_callback;
-using gl::traits::c_optional_decision_predicate;
-using gl::traits::c_optional_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a boolean predicate callable with specific arguments.
+/// ### See Also
+/// - [**c_predicate**](gl_concepts.md#gl-traits-c-predicate) : For the full concept documentation in the GL module.
 using gl::traits::c_predicate;
 
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid boolean predicate or the explicit absence of one through the use of empty_callback.
+/// ### See Also
+/// - [**c_optional_predicate**](gl_concepts.md#gl-traits-c-optional-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_optional_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a type is a predicate returning a decision.
+/// ### See Also
+/// - [**c_decision_predicate**](gl_concepts.md#gl-traits-c-decision-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_decision_predicate;
+
+/// @ingroup HGL-Traits
+/// @brief Concept allowing either a valid decision predicate or the explicit absence of one.
+/// ### See Also
+/// - [**c_optional_decision_predicate**](gl_concepts.md#gl-traits-c-optional-decision-predicate) : For the full concept documentation in the GL module.
+using gl::traits::c_optional_decision_predicate;
 
 /// @ingroup HGL-Traits
 /// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::search_node "search_node"s).

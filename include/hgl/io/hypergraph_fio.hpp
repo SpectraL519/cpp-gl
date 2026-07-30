@@ -20,6 +20,10 @@ namespace hgl {
 
 namespace traits {
 
+/// @ingroup HGL-Traits
+/// @brief Concept checking if a provided type is a valid file I/O save mode.
+/// ### See Also
+/// - [**c_io_save_mode**](gl_concepts.md#gl-traits-c-io-save-mode) : For the full concept documentation in the GL module.
 using gl::traits::c_io_save_mode;
 
 } // namespace traits

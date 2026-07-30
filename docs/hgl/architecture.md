@@ -22,6 +22,12 @@ The HGL module is built upon the exact same zero-cost abstraction philosophy as 
 
 Crucially, **the HGL module is built strictly on top of the GL module.** It acts as an architectural extension with a strict unidirectional dependency. HGL heavily relies on GL and directly reuses its core infrastructure—including ID types, type traits and concepts, I/O utilities, and underlying contiguous data structures (like [**gl::flat_jagged_vector**](../cpp-gl/classgl_1_1flat__jagged__vector.md) and [**gl::flat_matrix**](../cpp-gl/classgl_1_1flat__matrix.md)). Therefore, if you are familiar with the GL module, the HGL module's design language will feel immediately natural.
 
+> [!IMPORTANT]
+>
+> The HGL module imports all generic elements (such as type traits, concepts, functions, etc.) from the `gl` namespaces to the `hgl` namespaces. The documentation for these imported elements is available in the [GL module's documentation page](../cpp-gl/group__GL.md).
+>
+> **NOTE:** Only elements that are **NOT graph-specific** are imported.
+
 Conversely, the GL module remains completely standalone and entirely unaware of the HGL module or any of its components. This strict separation ensures that projects requiring only standard graph capabilities can utilize the GL module without incurring any compile-time dependencies, structural complexity, or overhead from the generalized hypergraph extensions.
 
 ---

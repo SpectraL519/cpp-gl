@@ -171,13 +171,20 @@ The documentation build process utilizes the following toolchain:
 To build and serve the documentation locally:
 
 ```bash
-make serve-docs
+make serve-docs # automatically builds and serves the documentation page using the `dev` tag
 ```
 
 To clean the documentation build directories:
 ```bash
 make clean-docs
 ```
+
+> [!TIP]
+>
+> If your local `gh-branches` is out of sync with the `origin/gh-pages` branch, you can run the following command to force sync it to match the state of the origin branch:
+> ```bash
+> make sync-gh-pages
+> ```
 
 > [!NOTE]
 >

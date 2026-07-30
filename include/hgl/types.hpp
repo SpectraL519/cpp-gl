@@ -41,6 +41,10 @@ using gl::to_diff;
 
 namespace traits {
 
+/// @ingroup HGL-Traits
+/// @brief Concept defining the requirements for an identifier type.
+/// ### See Also
+/// - [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) : For the full concept documentation in the GL module.
 using gl::traits::c_id_type;
 
 } // namespace traits
@@ -114,12 +118,46 @@ using weight_property = gl::weight_property<WeightType>;
 
 namespace traits {
 
+/// @ingroup HGL-Traits
+/// @brief Requirements for properties that support binary coloring algorithms.
+/// ### See Also
+/// - [**c_binary_color_properties_type**](gl_concepts.md#gl-traits-c-binary-color-properties-type) : For the full concept documentation in the GL module.
 using gl::traits::c_binary_color_properties_type;
+
+/// @ingroup HGL-Traits
+/// @brief Validates if a type is specifically the empty properties tag.
+/// ### See Also
+/// - [**c_empty_properties**](gl_concepts.md#gl-traits-c-empty-properties) : For the full concept documentation in the GL module.
 using gl::traits::c_empty_properties;
+
+/// @ingroup HGL-Traits
+/// @brief Checks if a type or component has a nested `properties_type` that is the empty properties tag.
+/// ### See Also
+/// - [**c_has_empty_properties**](gl_concepts.md#gl-traits-c-has-empty-properties) : For the full concept documentation in the GL module.
 using gl::traits::c_has_empty_properties;
+
+/// @ingroup HGL-Traits
+/// @brief Checks if a type or component has a nested `properties_type` that is not the empty properties tag.
+/// ### See Also
+/// - [**c_has_non_empty_properties**](gl_concepts.md#gl-traits-c-has-non_empty_properties) : For the full concept documentation in the GL module.
 using gl::traits::c_has_non_empty_properties;
+
+/// @ingroup HGL-Traits
+/// @brief Validates if a property type contains actual user-defined data.
+/// ### See Also
+/// - [**c_non_empty_properties**](gl_concepts.md#gl-traits-c-non_empty_properties) : For the full concept documentation in the GL module.
 using gl::traits::c_non_empty_properties;
+
+/// @ingroup HGL-Traits
+/// @brief Defines the minimal requirements for a type to be used as a property.
+/// ### See Also
+/// - [**c_properties**](gl_concepts.md#gl-traits-c-properties) : For the full concept documentation in the GL module.
 using gl::traits::c_properties;
+
+/// @ingroup HGL-Traits
+/// @brief Requirements for properties that support arithmetic weight values.
+/// ### See Also
+/// - [**c_weight_properties_type**](gl_concepts.md#gl-traits-c-weight-properties_type) : For the full concept documentation in the GL module.
 using gl::traits::c_weight_properties_type;
 
 } // namespace traits
