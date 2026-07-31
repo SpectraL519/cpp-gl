@@ -134,8 +134,8 @@ using predecessors_map = std::vector<id_t<G>>;
 /// @ingroup GL-Algorithm
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
 /// @tparam G The type of the graph being searched.
-/// @tparam Extension An optional payload type attached to the node for state tracking (must satisfy `std::regular`).
-template <traits::c_graph G, std::regular Extension = empty_extension>
+/// @tparam Extension An optional payload type attached to the node for state tracking (must satisfy `std::semiregular`).
+template <traits::c_graph G, std::semiregular Extension = empty_extension>
 struct search_node {
     using id_type = id_t<G>;
     using extension_type = Extension;
@@ -144,12 +144,29 @@ struct search_node {
     id_type pred_id = invalid_id; ///< The ID of the predecessor from which this vertex was reached.
     [[no_unique_address]] extension_type ext = {}; ///< Custom state-tracking payload.
 
+    /// @brief Creates a search node acting as the root of a search tree (predecessor is itself).
+    /// @param vertex_id The ID of the root vertex.
+    /// @param ext An optional state-tracking extension payload.
+    /// @return A fully initialized root search node.
+    [[nodiscard]] gl_attr_force_inline static search_node root(
+        id_type vertex_id, extension_type ext = {}
+    ) {
+        return search_node{vertex_id, vertex_id, std::move(ext)};
+    }
+
     /// @brief Checks if this node is the root of a search tree.
     /// @return `true` if the node is valid and `vertex_id == pred_id`, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
         return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
     }
 };
+
+template <traits::c_graph G, std::semiregular Extension = empty_extension>
+[[nodiscard]] gl_attr_force_inline search_node<val_t<G>, Extension> root_node(
+    id_t<G> root_id, Extension ext = {}
+) {
+    return std::array{search_node<val_t<G>, Extension>(root_id, root_id, std::move(ext))};
+}
 
 // --- constants ---
 

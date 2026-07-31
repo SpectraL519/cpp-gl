@@ -23,8 +23,8 @@ namespace gl::algorithm {
 /// specific logic into the provided callback hooks.
 ///
 /// > [!NOTE] True Post-Order Traversal
-/// > If a `PostVisitCallback` is provided, this engine automatically utilizes a stateful stack
-/// > frame to guarantee a true post-order traversal (the callback fires only after the entire
+/// > If a non-empty `PostVisitCallback` is provided, this engine automatically utilizes a stateful
+/// > stack frame to guarantee a true post-order traversal (the callback fires only after the entire
 /// > subtree of a node has been fully explored). If the callback is omitted (using `empty_callback`),
 /// > the engine bypasses frame tracking entirely for maximum performance.
 ///
@@ -58,7 +58,7 @@ namespace gl::algorithm {
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
-/// | InitStackRangeType | The type of the container providing the initial roots to push to the stack. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
+/// | InitNodesType | The type of the container providing the initial roots to push to the stack. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
 /// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the stack. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
@@ -66,7 +66,7 @@ namespace gl::algorithm {
 /// | PostVisitCallback | Type of the callable executed after a node's subtree is fully explored. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
-/// @param initial_stack_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the DFS stack.
+/// @param initial_nodes A range of initial @ref gl::algorithm::search_node "search nodes" to seed the DFS stack.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire DFS immediately aborts.
 /// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
@@ -79,7 +79,7 @@ namespace gl::algorithm {
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_forward_range_of<search_node<val_t<G>>> InitStackRangeType =
+    traits::c_forward_range_of<search_node<val_t<G>>> InitNodesType =
         std::vector<search_node<val_t<G>>>,
     traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
@@ -88,19 +88,19 @@ template <
     traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 bool dfs(
     G&& graph,
-    const InitStackRangeType& initial_stack_content,
+    const InitNodesType& initial_nodes,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueNodePred enqueue_node_pred = {},
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
-    if (std::ranges::empty(initial_stack_content))
+    if (std::ranges::empty(initial_nodes))
         return false;
 
     if constexpr (traits::c_empty_callback<PostVisitCallback>) { // stateless stack
         std::stack<search_node<val_t<G>>> s;
-        for (const auto& node : initial_stack_content)
+        for (const auto& node : initial_nodes)
             s.push(node);
 
         while (not s.empty()) {
@@ -137,7 +137,7 @@ bool dfs(
         using stateful_node_t = search_node<val_t<G>, dfs_extension>;
         std::stack<stateful_node_t> s;
 
-        for (const auto& node : initial_stack_content)
+        for (const auto& node : initial_nodes)
             s.emplace(node.vertex_id, node.pred_id); // Initialize as unexpanded
 
         while (not s.empty()) {

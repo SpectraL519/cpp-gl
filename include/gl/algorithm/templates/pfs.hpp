@@ -61,7 +61,7 @@ namespace gl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | PQCmp | The comparator used to order elements within the priority queue. | Must be a `(NodeType, NodeType) -> bool` callable. |
-/// | InitQueueRangeType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range`. |
+/// | InitNodesType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range`. |
 /// | NodeType | The type of the node stored in the priority queue. | Extracted implicitly. Must be constructible from `(id_type, id_type)` unless `MakeNodeCallback` is provided. |
 /// | VisitVertexPredicate | Decides if a popped node should be processed. | Must be one of:<br/>- `(NodeType) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Executed when a vertex is officially visited. | Must be one of:<br/>- `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
@@ -72,7 +72,7 @@ namespace gl::algorithm {
 ///
 /// @param graph The graph to traverse.
 /// @param pq_cmp The comparator instance used to determine priority (highest priority is popped first).
-/// @param initial_queue_content A range of initial nodes to seed the priority queue.
+/// @param initial_nodes A range of initial nodes to seed the priority queue.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a node. If it returns `false`, the node is skipped (often used for late-rejection in Dijkstra).
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire PFS immediately aborts.
 /// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
@@ -87,8 +87,8 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     typename PQCmp,
-    typename InitQueueRangeType = std::vector<search_node<val_t<G>>>,
-    typename NodeType = std::ranges::range_value_t<InitQueueRangeType>,
+    typename InitNodesType = std::vector<search_node<val_t<G>>>,
+    typename NodeType = std::ranges::range_value_t<InitNodesType>,
     traits::c_optional_predicate<NodeType> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
     traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
@@ -100,7 +100,7 @@ requires traits::c_predicate<PQCmp, NodeType, NodeType>
 bool pfs(
     G&& graph,
     const PQCmp& pq_cmp,
-    const InitQueueRangeType& initial_queue_content,
+    const InitNodesType& initial_nodes,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueNodePred enqueue_node_pred = {},
@@ -108,14 +108,14 @@ bool pfs(
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
-    if (std::ranges::empty(initial_queue_content))
+    if (std::ranges::empty(initial_nodes))
         return false;
 
     // prepare the node queue
     using queue_type = std::priority_queue<NodeType, std::vector<NodeType>, PQCmp>;
     queue_type q(pq_cmp);
 
-    for (const auto& node : initial_queue_content)
+    for (const auto& node : initial_nodes)
         q.push(node);
 
     // search the graph
