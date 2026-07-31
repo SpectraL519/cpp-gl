@@ -34,7 +34,7 @@ namespace gl::algorithm {
 ///     [](const auto& lhs, const auto& rhs) { // (2)!
 ///         return lhs.vertex_id > rhs.vertex_id;
 ///     },
-///     gl::algorithm::init_node_range<graph_type>(start_id), // (3)!
+///     std::array{gl::algorithm::root_node<G>(start_vertex_id)}, // (3)!
 ///     gl::algorithm::default_visit_vertex_predicate(visited // (4)!
 ///     [&](auto v, auto p) { // (5)!
 ///         std::cout << "Priority visited vertex " << v << '\n';
@@ -61,7 +61,7 @@ namespace gl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | PQCmp | The comparator used to order elements within the priority queue. | Must be a `(NodeType, NodeType) -> bool` callable. |
-/// | InitNodesType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range`. |
+/// | InitNodeRngType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range`. |
 /// | NodeType | The type of the node stored in the priority queue. | Extracted implicitly. Must be constructible from `(id_type, id_type)` unless `MakeNodeCallback` is provided. |
 /// | VisitVertexPredicate | Decides if a popped node should be processed. | Must be one of:<br/>- `(NodeType) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Executed when a vertex is officially visited. | Must be one of:<br/>- `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
@@ -87,8 +87,8 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     typename PQCmp,
-    typename InitNodesType = std::vector<search_node<val_t<G>>>,
-    typename NodeType = std::ranges::range_value_t<InitNodesType>,
+    typename InitNodeRngType = std::vector<search_node<val_t<G>>>,
+    typename NodeType = std::ranges::range_value_t<InitNodeRngType>,
     traits::c_optional_predicate<NodeType> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
     traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
@@ -100,7 +100,7 @@ requires traits::c_predicate<PQCmp, NodeType, NodeType>
 bool pfs(
     G&& graph,
     const PQCmp& pq_cmp,
-    const InitNodesType& initial_nodes,
+    const InitNodeRngType& initial_nodes,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueNodePred enqueue_node_pred = {},

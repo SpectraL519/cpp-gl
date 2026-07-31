@@ -45,19 +45,6 @@ template <traits::c_id_type IdType>
 }
 
 /// @ingroup GL-Algorithm
-/// @brief Initializes a search container with the starting root vertex.
-/// @tparam G The type of the graph.
-/// @tparam Extension The optional state-tracking payload type.
-/// @param root_id The ID of the root vertex.
-/// @param ext An optional state payload to attach to the root node.
-/// @return A zero-allocation `std::array` initialized with a single @ref search_node for the root vertex.
-template <traits::c_graph G, std::semiregular Extension = empty_extension>
-[[nodiscard]] gl_attr_force_inline auto init_node_range(id_t<G> root_id, Extension ext = {}) {
-    using node_type = search_node<val_t<G>, Extension>;
-    return std::array{node_type::root(root_id, std::move(ext))};
-}
-
-/// @ingroup GL-Algorithm
 /// @brief Generates a default lambda predicate that checks if a vertex has not yet been visited.
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @return A callable predicate evaluating to `true` if the vertex is unvisited.

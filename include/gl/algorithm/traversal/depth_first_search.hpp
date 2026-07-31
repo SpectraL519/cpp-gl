@@ -96,7 +96,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
     if (root_vertex_id != no_root) {
         dfs(
             graph,
-            init_node_range<G>(root_vertex_id),
+            std::array{gl::algorithm::root_node<G>(root_vertex_id)},
             default_visit_vertex_predicate(visited),
             default_visit_callback<G, Result>(visited, pred_map),
             default_enqueue_node_predicate<G, true>(visited),
@@ -108,7 +108,7 @@ result_type<Result, predecessors_map<G>> depth_first_search(
         for (const auto root_id : graph.vertex_ids())
             dfs(
                 graph,
-                init_node_range<G>(root_id),
+                std::array{gl::algorithm::root_node<G>(root_id)},
                 default_visit_vertex_predicate(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
                 default_enqueue_node_predicate<G, true>(visited),

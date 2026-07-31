@@ -21,29 +21,39 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::deque<id_type> expected_previsit_order;
+    std::vector<id_type> expected_previsit_order, expected_postvisit_order;
 
     SUBCASE("empty graph") {
         graph = gl::topology::clique<graph_type>(0uz);
         expected_previsit_order = {};
+        expected_postvisit_order = {};
     }
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
         expected_previsit_order = {0};
+        expected_postvisit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
-        for (auto id = constants::v2_id; id < constants::n_elements_alg; id++)
-            expected_previsit_order.push_front(id);
-        expected_previsit_order.push_front(constants::v1_id);
+
+        expected_previsit_order.push_back(constants::v1_id);
+        for (auto i = constants::n_elements_alg; i > constants::v2_id; i--)
+            expected_previsit_order.push_back(static_cast<id_type>(i - 1));
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
     }
 
     SUBCASE("path graph") {
         graph = gl::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
+
         for (auto id = constants::v1_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
     }
 
     SUBCASE("biclique") {
@@ -58,12 +68,27 @@ TEST_CASE_TEMPLATE_DEFINE(
         */
         graph = gl::topology::biclique<graph_type>(3uz, 2uz);
         expected_previsit_order = {0, 4, 2, 3, 1};
+        expected_postvisit_order = {1, 3, 2, 4, 0};
+    }
+
+    SUBCASE("regular binary tree") {
+        /*
+        Depth = 3 (7 vertices: 0 to 6)
+        [s: <stack state without already visited vertices>]
+        -> root = 0 -> connected to left (1), right (2). [s: 2 1]
+        -> pop 2 -> connected to left (5), right (6). [s: 6 5 1]
+        -> pop 6 (leaf) -> pop 5 (leaf)
+        -> pop 1 -> connected to left (3), right (4). [s: 4 3]
+        -> pop 4 (leaf) -> pop 3 (leaf)
+        */
+        graph = gl::topology::regular_binary_tree<graph_type>(3uz);
+        expected_previsit_order = {0, 2, 6, 5, 1, 4, 3};
+        expected_postvisit_order = {6, 5, 2, 4, 3, 1, 0};
     }
 
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
-
-    std::deque<id_type> expected_postvisit_order = expected_previsit_order;
+    CAPTURE(expected_postvisit_order);
 
     std::vector<id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
@@ -80,7 +105,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     );
 
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
-    // CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+    CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
     CHECK(std::ranges::all_of(
         graph.vertices(), std::identity{}, vertex_visited_projection<vertex_type>{}
     ));
@@ -122,30 +147,41 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     graph_type graph;
     id_type root_vertex_id;
-    std::deque<id_type> expected_previsit_order;
+    std::vector<id_type> expected_previsit_order, expected_postvisit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
         root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
+        expected_postvisit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
         root_vertex_id = constants::v3_id;
 
-        for (auto id = constants::v1_id; id < constants::n_elements_alg; id++) {
+        expected_previsit_order.push_back(constants::v3_id);
+        for (auto i = constants::n_elements_alg; i > constants::v1_id; i--) {
+            const auto id = static_cast<id_type>(i - 1);
             if (id != constants::v3_id)
-                expected_previsit_order.push_front(id);
+                expected_previsit_order.push_back(id);
         }
-        expected_previsit_order.push_front(constants::v3_id);
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
+    }
+
+    SUBCASE("regular binary tree") {
+        graph = gl::topology::regular_binary_tree<graph_type>(3uz);
+        root_vertex_id = 0;
+        expected_previsit_order = {0, 2, 6, 5, 1, 4, 3};
+        expected_postvisit_order = {6, 5, 2, 4, 3, 1, 0};
     }
 
     CAPTURE(graph);
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
-
-    std::deque<id_type> expected_postvisit_order = expected_previsit_order;
+    CAPTURE(expected_postvisit_order);
 
     std::vector<id_type> previsit_order, postvisit_order;
     gl::algorithm::depth_first_search<gl::algorithm::noret>(
@@ -160,7 +196,7 @@ TEST_CASE_TEMPLATE_DEFINE(
     );
 
     CHECK(std::ranges::equal(previsit_order, expected_previsit_order));
-    // CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
+    CHECK(std::ranges::equal(postvisit_order, expected_postvisit_order));
 }
 
 TEST_CASE_TEMPLATE_INSTANTIATE(
@@ -214,28 +250,36 @@ TEST_CASE_TEMPLATE_DEFINE(
     using vertex_type = typename GraphType::vertex_type;
 
     graph_type graph;
-    std::vector<id_type> expected_previsit_order;
+    std::vector<id_type> expected_previsit_order, expected_postvisit_order;
 
     SUBCASE("empty graph") {
         graph = gl::topology::clique<graph_type>(0uz);
         expected_previsit_order = {};
+        expected_postvisit_order = {};
     }
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
         expected_previsit_order = {0};
+        expected_postvisit_order = {0};
     }
 
     SUBCASE("clique") {
         graph = gl::topology::clique<graph_type>(constants::n_elements_alg);
         for (auto id = constants::v1_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
     }
 
     SUBCASE("path graph") {
         graph = gl::topology::bidirectional_path<graph_type>(constants::n_elements_alg);
         for (auto id = constants::v1_id; id < constants::n_elements_alg; id++)
             expected_previsit_order.push_back(id);
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
     }
 
     SUBCASE("biclique") {
@@ -251,17 +295,27 @@ TEST_CASE_TEMPLATE_DEFINE(
         */
         graph = gl::topology::biclique<graph_type>(3uz, 2uz);
         expected_previsit_order = {0, 3, 1, 4, 2};
+        expected_postvisit_order = {2, 4, 1, 3, 0};
+    }
+
+    SUBCASE("regular binary tree") {
+        /*
+        Depth = 3 (7 vertices: 0 to 6)
+        -> root = 0 -> recursively calls left child (1)
+        -> 1 -> recursively calls left child (3)
+        -> 3 is leaf -> returns -> 1 calls right child (4)
+        -> 4 is leaf -> returns -> 1 returns -> 0 calls right child (2)
+        -> 2 -> recursively calls left child (5)
+        -> 5 is leaf -> returns -> 2 calls right child (6)
+        */
+        graph = gl::topology::regular_binary_tree<graph_type>(3uz);
+        expected_previsit_order = {0, 1, 3, 4, 2, 5, 6};
+        expected_postvisit_order = {3, 4, 1, 5, 6, 2, 0};
     }
 
     CAPTURE(graph);
     CAPTURE(expected_previsit_order);
-
-    /*
-    post visit order should be reverse of pre visit order
-    because the algorithm will search the graph recursively and call
-    post visit after return from the recursive call
-    */
-    const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
+    CAPTURE(expected_postvisit_order);
 
     std::vector<id_type> previsit_order, postvisit_order;
     const auto vertex_properties = graph.vertex_properties_map();
@@ -320,12 +374,13 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     graph_type graph;
     id_type root_vertex_id = gl::invalid_id;
-    std::vector<id_type> expected_previsit_order;
+    std::vector<id_type> expected_previsit_order, expected_postvisit_order;
 
     SUBCASE("single vertex graph") {
         graph = gl::topology::clique<graph_type>(1uz);
         root_vertex_id = constants::v1_id;
         expected_previsit_order = {0};
+        expected_postvisit_order = {0};
     }
 
     SUBCASE("clique") {
@@ -337,18 +392,22 @@ TEST_CASE_TEMPLATE_DEFINE(
             if (id != constants::v3_id)
                 expected_previsit_order.push_back(id);
         }
+
+        expected_postvisit_order = expected_previsit_order;
+        std::ranges::reverse(expected_postvisit_order);
+    }
+
+    SUBCASE("regular binary tree") {
+        graph = gl::topology::regular_binary_tree<graph_type>(3uz);
+        root_vertex_id = 0;
+        expected_previsit_order = {0, 1, 3, 4, 2, 5, 6};
+        expected_postvisit_order = {3, 4, 1, 5, 6, 2, 0};
     }
 
     CAPTURE(graph);
     CAPTURE(root_vertex_id);
     CAPTURE(expected_previsit_order);
-
-    /*
-    post visit order should be reverse of pre visit order
-    because the algorithm will search the graph recursively and call
-    post visit after return from the recursive call
-    */
-    const auto expected_postvisit_order = std::views::reverse(expected_previsit_order);
+    CAPTURE(expected_postvisit_order);
 
     std::vector<id_type> previsit_order, postvisit_order;
     gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(

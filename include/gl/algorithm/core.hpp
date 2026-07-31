@@ -135,6 +135,8 @@ using predecessors_map = std::vector<id_t<G>>;
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
 /// @tparam G The type of the graph being searched.
 /// @tparam Extension An optional payload type attached to the node for state tracking (must satisfy `std::semiregular`).
+/// ### See Also
+/// - @ref gl::algorithm::root_node "gl::algorithm::root_node" : For the full definition of the root search node builder function.
 template <traits::c_graph G, std::semiregular Extension = empty_extension>
 struct search_node {
     using id_type = id_t<G>;
@@ -165,7 +167,7 @@ template <traits::c_graph G, std::semiregular Extension = empty_extension>
 [[nodiscard]] gl_attr_force_inline search_node<val_t<G>, Extension> root_node(
     id_t<G> root_id, Extension ext = {}
 ) {
-    return std::array{search_node<val_t<G>, Extension>(root_id, root_id, std::move(ext))};
+    return search_node<val_t<G>, Extension>{root_id, root_id, std::move(ext)};
 }
 
 // --- constants ---
