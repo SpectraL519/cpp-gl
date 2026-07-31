@@ -100,7 +100,7 @@ bool incidence_backward_bfs(
 
     auto root_nodes =
         roots | std::views::transform([](const id_type root_id) {
-            return gl::algorithm::search_node<gl::val_t<IncidenceGraph>>{root_id};
+            return gl::algorithm::root_node<IncidenceGraph>(root_id);
         })
         | std::ranges::to<std::vector>();
 
