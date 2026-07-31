@@ -30,6 +30,12 @@ namespace gl::algorithm {
 /// > and speeds up compilation times.
 struct empty_callback {};
 
+/// @ingroup GL-Algorithm
+/// @brief A tag type used to explicitly indicate the absence of a state-tracking extension in a search node.
+/// ### See Also
+/// - @ref gl::algorithm::search_node "search_node" : For the definition of the algorithm search node type.
+struct empty_extension {};
+
 /// @ingroup GL-Algorithm GL-Types
 /// @brief Represents a generic tri-state decision for control flow.
 ///
@@ -127,30 +133,22 @@ using predecessors_map = std::vector<id_t<G>>;
 
 /// @ingroup GL-Algorithm
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack).
-/// @tparam GraphType The type of the graph being searched.
-template <traits::c_graph G>
+/// @tparam G The type of the graph being searched.
+/// @tparam Extension An optional payload type attached to the node for state tracking (must satisfy `std::regular`).
+template <traits::c_graph G, std::regular Extension = empty_extension>
 struct search_node {
     using id_type = id_t<G>;
+    using extension_type = Extension;
 
-    /// @brief Constructs a search node acting as a root (predecessor is itself).
-    /// @param vertex_id The ID of the vertex.
-    search_node(id_type vertex_id) : vertex_id(vertex_id), pred_id(vertex_id) {}
-
-    /// @brief Constructs a search node with an explicit predecessor.
-    /// @param vertex_id The ID of the vertex.
-    /// @param pred_id The ID of the vertex's predecessor.
-    search_node(id_type vertex_id, id_type pred_id) : vertex_id(vertex_id), pred_id(pred_id) {}
+    id_type vertex_id = invalid_id; ///< The ID of the vertex currently being searched.
+    id_type pred_id = invalid_id; ///< The ID of the predecessor from which this vertex was reached.
+    [[no_unique_address]] extension_type ext = {}; ///< Custom state-tracking payload.
 
     /// @brief Checks if this node is the root of a search tree.
-    /// @return `true` if the node is valid and its predecessor is itself, `false` otherwise.
+    /// @return `true` if the node is valid and `vertex_id == pred_id`, `false` otherwise.
     [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
         return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
     }
-
-    /// @brief The ID of the vertex currently being searched.
-    id_type vertex_id;
-    /// @brief The ID of the predecessor from which this vertex was reached.
-    id_type pred_id;
 };
 
 // --- constants ---
