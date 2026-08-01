@@ -57,7 +57,7 @@ namespace hgl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | Dir | The @ref hgl::algorithm::traversal_direction "traversal direction" (i.e., `forward` or `backward`). Relevant only for BF-directed hypergraphs. | Defaults to `forward`. |
 /// | H | The type of the hypergraph being searched. | Must satisfy the [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph) concept. |
-/// | InitQueueRangeType | A forward range of `search_node<val_t<H>>` used to prime the BFS queue. | Must be a *forward range* of @ref hgl::algorithm::search_node "search nodes". |
+/// | InitNodeRngType | A forward range of `search_node<val_t<H>>` used to prime the BFS queue. | Must be a *forward range* of @ref hgl::algorithm::search_node "search nodes". |
 /// | VisitPredicate | Type of the callable deciding if a popped node should be processed. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> bool` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 /// | TraverseHePredicate | Type of the callable deciding if an incident hyperedge should be traversed. | Must be one of:<br/>- An `(id_type, id_type) -> decision` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
@@ -66,7 +66,7 @@ namespace hgl::algorithm {
 /// | PostVisitCallback | Type of the callable executed after all adjacent elements are evaluated. | Must be one of:<br/>- A `(const search_node<val_t<H>>&) -> void` callable<br/>- An @ref hgl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param hypergraph The hypergraph to traverse.
-/// @param initial_queue_content The initial set of search nodes to begin the traversal from.
+/// @param init_nodes The initial set of search nodes to begin the traversal from.
 /// @param visit_pred Predicate to filter nodes immediately after popping them from the queue.
 /// @param visit Primary callback for node processing.
 /// @param traverse_he_pred Predicate to determine if an incident hyperedge should be traversed. Returns a @ref hgl::algorithm::decision "decision":
@@ -84,7 +84,7 @@ namespace hgl::algorithm {
 template <
     traversal_direction Dir = traversal_direction::forward,
     traits::c_hypergraph H,
-    traits::c_forward_range_of<search_node<val_t<H>>> InitQueueRangeType =
+    traits::c_forward_range_of<search_node<val_t<H>>> InitNodeRngType =
         std::vector<search_node<val_t<H>>>,
     traits::c_optional_predicate<const search_node<val_t<H>>&> VisitPredicate = empty_callback,
     traits::c_optional_predicate<const search_node<val_t<H>>&> VisitCallback = empty_callback,
@@ -96,7 +96,7 @@ template <
         empty_callback>
 bool bfs(
     H&& hypergraph,
-    const InitQueueRangeType& initial_queue_content,
+    const InitNodeRngType& init_nodes,
     const VisitPredicate& visit_pred = {},
     const VisitCallback& visit = {},
     const TraverseHePredicate& traverse_he_pred = {},
@@ -106,11 +106,11 @@ bool bfs(
 ) {
     using policy = traversal_policy<H, Dir>;
 
-    if (std::ranges::empty(initial_queue_content))
+    if (std::ranges::empty(init_nodes))
         return false;
 
     std::queue<search_node<val_t<H>>> q;
-    for (const auto& node : initial_queue_content)
+    for (const auto& node : init_nodes)
         q.push(node);
 
     while (not q.empty()) {
