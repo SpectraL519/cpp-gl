@@ -139,22 +139,16 @@ using predecessors_map = std::vector<id_t<G>>;
 /// - @ref gl::algorithm::root_node "gl::algorithm::root_node" : For the full definition of the root search node builder function.
 template <traits::c_graph G, std::semiregular Extension = empty_extension>
 struct search_node {
+    /// @brief The underlying value type of the graph being searched.
+    using graph_type = val_t<G>;
+    /// @brief The integral type used to identify vertices in the graph.
     using id_type = id_t<G>;
+    /// @brief The type of the custom state-tracking payload attached to this node.
     using extension_type = Extension;
 
     id_type vertex_id = invalid_id; ///< The ID of the vertex currently being searched.
     id_type pred_id = invalid_id; ///< The ID of the predecessor from which this vertex was reached.
     [[no_unique_address]] extension_type ext = {}; ///< Custom state-tracking payload.
-
-    /// @brief Creates a search node acting as the root of a search tree (predecessor is itself).
-    /// @param vertex_id The ID of the root vertex.
-    /// @param ext An optional state-tracking extension payload.
-    /// @return A fully initialized root search node.
-    [[nodiscard]] gl_attr_force_inline static search_node root(
-        id_type vertex_id, extension_type ext = {}
-    ) {
-        return search_node{vertex_id, vertex_id, std::move(ext)};
-    }
 
     /// @brief Checks if this node is the root of a search tree.
     /// @return `true` if the node is valid and `vertex_id == pred_id`, `false` otherwise.
@@ -163,6 +157,17 @@ struct search_node {
     }
 };
 
+/// @ingroup GL-Algorithm
+/// @brief Free function builder that creates a search node acting as the root of a search tree.
+///
+/// This utility provides clean, unambiguous aggregate initialization semantics for root nodes
+/// (where the vertex is strictly its own predecessor) at algorithmic call sites.
+///
+/// @tparam G The type of the graph being searched.
+/// @tparam Extension The type of the custom state-tracking payload attached to the node.
+/// @param root_id The ID of the root vertex.
+/// @param ext An optional state-tracking extension payload.
+/// @return A fully initialized @ref gl::algorithm::search_node "search_node" acting as a root.
 template <traits::c_graph G, std::semiregular Extension = empty_extension>
 [[nodiscard]] gl_attr_force_inline search_node<val_t<G>, Extension> root_node(
     id_t<G> root_id, Extension ext = {}
