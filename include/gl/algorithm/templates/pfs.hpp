@@ -34,8 +34,8 @@ namespace gl::algorithm {
 ///     [](const auto& lhs, const auto& rhs) { // (2)!
 ///         return lhs.vertex_id > rhs.vertex_id;
 ///     },
-///     gl::algorithm::init_node_range<graph_type>(start_id), // (3)!
-///     gl::algorithm::default_visit_vertex_predicate(visited // (4)!
+///     std::array{gl::algorithm::root_node<graph_type>(start_vertex_id)}, // (3)!
+///     gl::algorithm::default_visit_vertex_predicate(visited), // (4)!
 ///     [&](auto v, auto p) { // (5)!
 ///         std::cout << "Priority visited vertex " << v << '\n';
 ///         return true; // Continue search
@@ -61,8 +61,8 @@ namespace gl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | PQCmp | The comparator used to order elements within the priority queue. | Must be a `(NodeType, NodeType) -> bool` callable. |
-/// | InitQueueRangeType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range`. |
-/// | NodeType | The type of the node stored in the priority queue. | Extracted implicitly. Must be constructible from `(id_type, id_type)` unless `MakeNodeCallback` is provided. |
+/// | InitNodeRngType | The container providing the initial roots to enqueue. | Must satisfy `std::ranges::forward_range` and yield a @ref gl::algorithm::search_node "search_node". |
+/// | NodeType | The exact search node type extracted implicitly from the range. | Must strictly match `search_node<val_t<G>, Extension>`. |
 /// | VisitVertexPredicate | Decides if a popped node should be processed. | Must be one of:<br/>- `(NodeType) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Executed when a vertex is officially visited. | Must be one of:<br/>- `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | EnqueueNodePred | Decides if a node corresponding to an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
@@ -72,14 +72,14 @@ namespace gl::algorithm {
 ///
 /// @param graph The graph to traverse.
 /// @param pq_cmp The comparator instance used to determine priority (highest priority is popped first).
-/// @param initial_queue_content A range of initial nodes to seed the priority queue.
+/// @param initial_nodes A range of initial @ref gl::algorithm::search_node "search nodes" to seed the priority queue.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a node. If it returns `false`, the node is skipped (often used for late-rejection in Dijkstra).
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire PFS immediately aborts.
 /// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
 /// - `accept` to enqueue,
 /// - `reject` to skip,
 /// - `abort` to terminate the PFS entirely.
-/// @param make_node Factory callback to construct a custom `NodeType` prior to enqueueing. Defaults to invoking the `NodeType(target_id, pred_id)` constructor.
+/// @param make_node Factory callback to construct a custom node prior to enqueueing (useful for computing extensions like cumulative weights). Defaults to injecting a default-extended `search_node`.
 /// @param pre_visit Hook executed immediately before the `visit` callback.
 /// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated.
 /// @return `true` if the queue was exhausted naturally, `false` if the search was aborted early by a callback or predicate.
@@ -87,8 +87,8 @@ namespace gl::algorithm {
 template <
     traits::c_graph G,
     typename PQCmp,
-    typename InitQueueRangeType = std::vector<search_node<val_t<G>>>,
-    typename NodeType = std::ranges::range_value_t<InitQueueRangeType>,
+    typename InitNodeRngType = std::vector<search_node<val_t<G>>>,
+    typename NodeType = std::ranges::range_value_t<InitNodeRngType>,
     traits::c_optional_predicate<NodeType> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
     traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
@@ -96,11 +96,11 @@ template <
         empty_callback,
     traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
     traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
-requires traits::c_predicate<PQCmp, NodeType, NodeType>
+requires(traits::c_predicate<PQCmp, NodeType, NodeType> and traits::c_instantiation_of<NodeType, search_node> and std::same_as<typename NodeType::graph_type, val_t<G>>)
 bool pfs(
     G&& graph,
     const PQCmp& pq_cmp,
-    const InitQueueRangeType& initial_queue_content,
+    const InitNodeRngType& initial_nodes,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueNodePred enqueue_node_pred = {},
@@ -108,14 +108,14 @@ bool pfs(
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
-    if (std::ranges::empty(initial_queue_content))
+    if (std::ranges::empty(initial_nodes))
         return false;
 
     // prepare the node queue
     using queue_type = std::priority_queue<NodeType, std::vector<NodeType>, PQCmp>;
     queue_type q(pq_cmp);
 
-    for (const auto& node : initial_queue_content)
+    for (const auto& node : initial_nodes)
         q.push(node);
 
     // search the graph
@@ -142,18 +142,10 @@ bool pfs(
                 return false;
 
             if (enqueue) {
-                if constexpr (not traits::c_empty_callback<MakeNodeCallback>) {
+                if constexpr (not traits::c_empty_callback<MakeNodeCallback>)
                     q.push(make_node(target_vertex_id, node.vertex_id, edge));
-                }
-                else {
-                    static_assert(
-                        std::constructible_from<NodeType, id_t<G>, id_t<G>>,
-                        "[gl::algorithm::pfs] Custom NodeType provided without a MakeNodeCallback. "
-                        "The NodeType must be constructible from (target_id, pred_id), or you must "
-                        "provide a MakeNodeCallback!"
-                    );
-                    q.emplace(target_vertex_id, node.vertex_id);
-                }
+                else
+                    q.push(NodeType{target_vertex_id, node.vertex_id});
             }
         }
 

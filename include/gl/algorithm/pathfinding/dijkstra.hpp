@@ -56,31 +56,12 @@ template <traits::c_graph G>
 }
 
 /// @ingroup GL-Algorithm
-/// @brief Internal node structure for Dijkstra's algorithm to snapshot distances and preserve heap invariants.
-///
-/// This structure is used in the @ref gl::algorithm::dijkstra_shortest_paths "dijkstra_shortest_paths" algorithm
-/// to capture the state of a vertex at the moment it is enqueued, ensuring that the priority queue remains stable
-/// even if the global distance map is updated during traversal.
-///
-/// @tparam G The type of the graph. Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept.
-template <traits::c_graph G>
-struct dijkstra_search_node {
-    /// @brief The type of the vertex ID.
-    using id_type = id_t<G>;
-
-    id_type vertex_id; ///< @brief The ID of the vertex represented by this node.
-    id_type pred_id; ///< The ID of the predecessor vertex used to reach this node.
-    vertex_distance_t<G>
-        distance; ///< The accumulated distance from the source to this vertex at the time of enqueueing.
-};
-
-/// @ingroup GL-Algorithm
 /// @brief Computes the shortest paths from a single source vertex to all reachable vertices using Dijkstra's algorithm.
 ///
-/// This algorithm utilizes the generic @ref gl::algorithm::pfs "pfs" template using the dedicated
-/// @ref gl::algorithm::dijkstra_search_node "serch node type" to perform a priority-first search based
-/// on accumulated edge weights. It strictly requires non-negative edge weights; if a negative weight is
-/// encountered during traversal, the algorithm immediately throws an exception.
+/// This algorithm utilizes the generic @ref gl::algorithm::pfs "pfs" template using a state-extended
+/// @ref gl::algorithm::search_node "search node" to snapshot accumulated edge weights upon enqueuing.
+/// It strictly requires non-negative edge weights; if a negative weight is encountered during traversal,
+/// the algorithm immediately throws an exception.
 ///
 /// ### Example Usage
 /// ```cpp
@@ -135,6 +116,12 @@ template <
     using edge_type = edge_t<G>;
     using distance_type = vertex_distance_t<G>;
 
+    struct dijkstra_ext {
+        distance_type distance{};
+    };
+
+    using node_type = search_node<val_t<G>, dijkstra_ext>;
+
     auto paths = make_paths_descriptor<G>(graph);
 
     paths.predecessors[source_id] = source_id;
@@ -143,19 +130,16 @@ template <
     std::optional<edge_type> negative_edge;
 
     // Seed the queue with the custom snapshot node
-    std::vector<dijkstra_search_node<G>> init_queue{
-        {source_id, source_id, distance_type{}}
-    };
+    std::vector<node_type> init_queue{root_node<G, dijkstra_ext>(source_id)};
 
     pfs(
         graph,
-        [](const dijkstra_search_node<G>& lhs, const dijkstra_search_node<G>& rhs
-        ) { // pq comparator
-            return lhs.distance > rhs.distance;
+        [](const node_type& lhs, const node_type& rhs) { // pq comparator
+            return lhs.ext.distance > rhs.ext.distance;
         },
         init_queue,
-        [&paths](const dijkstra_search_node<G>& node) { // visit_vertex_pred (stale node rejection)
-            return node.distance <= paths.distances[to_idx(node.vertex_id)];
+        [&paths](const node_type& node) { // visit_vertex_pred (stale node rejection)
+            return node.ext.distance <= paths.distances[to_idx(node.vertex_id)];
         },
         empty_callback{}, // visit callback
         [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
@@ -181,7 +165,7 @@ template <
             return false;
         },
         [&paths](id_type target_id, id_type pred_id, const edge_type&) { // make_node callback
-            return dijkstra_search_node<G>{target_id, pred_id, paths.distances[to_idx(target_id)]};
+            return node_type{target_id, pred_id, {paths.distances[to_idx(target_id)]}};
         },
         pre_visit,
         post_visit

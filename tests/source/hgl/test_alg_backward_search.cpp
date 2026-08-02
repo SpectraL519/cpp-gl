@@ -16,7 +16,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     using hypergraph_type = hgl::hypergraph<HypergraphTraitsType>;
     using id_type = typename hypergraph_type::id_type;
-    using node_type = hgl::algorithm::search_node<hypergraph_type>;
+    using tree_type = hgl::algorithm::search_tree<hypergraph_type>;
+    using tree_node_type = typename tree_type::node;
 
     hypergraph_type hypergraph;
     std::vector<id_type> root_vertices;
@@ -99,18 +100,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         hgl::algorithm::backward_bfs<hgl::algorithm::ret>(hypergraph, root_vertices);
 
     const auto ret_pred_map =
-        search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
+        search_tree.nodes | std::views::transform(&tree_node_type::pred_id)
+        | std::ranges::to<std::vector>();
     const auto ret_in_hyperedges =
-        search_tree | std::views::transform(&node_type::hyperedge_id)
+        search_tree.nodes | std::views::transform(&tree_node_type::hyperedge_id)
         | std::ranges::to<std::vector>();
 
     CHECK_EQ(ret_pred_map, expected_pred_map);
     CHECK_EQ(ret_in_hyperedges, expected_in_hyperedges);
     CHECK(std::ranges::all_of(expected_visit_order, [&search_tree](const auto v_id) {
-        return hgl::algorithm::is_reachable(search_tree, v_id);
+        return search_tree.is_reachable(v_id);
     }));
     CHECK(std::ranges::all_of(unreachable_vertices, [&search_tree](const auto v_id) {
-        return not hgl::algorithm::is_reachable(search_tree, v_id);
+        return not search_tree.is_reachable(v_id);
     }));
 }
 
@@ -155,12 +157,14 @@ TEST_CASE_TEMPLATE_DEFINE(
 ) {
     using hypergraph_type = hgl::hypergraph<HypergraphTraitsType>;
     using id_type = typename hypergraph_type::id_type;
-    using node_type = hgl::algorithm::search_node<hypergraph_type>;
+    using tree_type = hgl::algorithm::search_tree<hypergraph_type>;
+    using tree_node_type = typename tree_type::node;
 
     hypergraph_type hypergraph;
     std::vector<id_type> root_vertices;
 
-    std::vector<id_type> expected_visit_order;
+    std::vector<id_type> expected_previsit_order;
+    std::vector<id_type> expected_postvisit_order;
     std::vector<id_type> expected_pred_map;
     std::vector<id_type> expected_in_hyperedges;
     std::vector<id_type> unreachable_vertices;
@@ -186,7 +190,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     SUBCASE("single root v0 (immediate halt)") {
         root_vertices = {0u};
-        expected_visit_order = {0u};
+        expected_previsit_order = {0u};
+        expected_postvisit_order = {0u};
         expected_pred_map.resize(n_vertices, hgl::invalid_id);
         expected_pred_map[0uz] = 0u;
         expected_in_hyperedges.resize(n_vertices, hgl::invalid_id);
@@ -203,7 +208,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         // Pop v0 -> unlocks e0 -> pushes v2.
         // Pop v2 -> unlocks e1 -> pushes v3, v4(visited).
         // Pop v3 -> no outgoing.
-        expected_visit_order = {1u, 4u, 0u, 2u, 3u};
+        expected_previsit_order = {1u, 4u, 0u, 2u, 3u};
+        expected_postvisit_order = {4u, 1u, 3u, 2u, 0u};
 
         // v0->v0(root), v1->v1(root), v2->v0 (via e0), v3->v2 (via e1), v4->v1 (via e2)
         expected_pred_map = {0u, 1u, 0u, 2u, 1u};
@@ -214,7 +220,8 @@ TEST_CASE_TEMPLATE_DEFINE(
 
     CAPTURE(hypergraph);
     CAPTURE(root_vertices);
-    CAPTURE(expected_visit_order);
+    CAPTURE(expected_previsit_order);
+    CAPTURE(expected_postvisit_order);
     CAPTURE(expected_pred_map);
     CAPTURE(expected_in_hyperedges);
     CAPTURE(unreachable_vertices);
@@ -237,8 +244,8 @@ TEST_CASE_TEMPLATE_DEFINE(
         [&](const auto& node) { postvisit_order.push_back(node.vertex_id); }
     );
 
-    CHECK_EQ(previsit_order, expected_visit_order);
-    CHECK_EQ(postvisit_order, expected_visit_order);
+    CHECK_EQ(previsit_order, expected_previsit_order);
+    CHECK_EQ(postvisit_order, expected_postvisit_order);
     CHECK_EQ(noret_pred_map, expected_pred_map);
     CHECK_EQ(noret_in_hyperedges, expected_in_hyperedges);
 
@@ -248,18 +255,19 @@ TEST_CASE_TEMPLATE_DEFINE(
         hgl::algorithm::backward_dfs<hgl::algorithm::ret>(hypergraph, root_vertices);
 
     const auto ret_pred_map =
-        search_tree | std::views::transform(&node_type::pred_id) | std::ranges::to<std::vector>();
+        search_tree.nodes | std::views::transform(&tree_node_type::pred_id)
+        | std::ranges::to<std::vector>();
     const auto ret_in_hyperedges =
-        search_tree | std::views::transform(&node_type::hyperedge_id)
+        search_tree.nodes | std::views::transform(&tree_node_type::hyperedge_id)
         | std::ranges::to<std::vector>();
 
     CHECK_EQ(ret_pred_map, expected_pred_map);
     CHECK_EQ(ret_in_hyperedges, expected_in_hyperedges);
-    CHECK(std::ranges::all_of(expected_visit_order, [&search_tree](const auto v_id) {
-        return hgl::algorithm::is_reachable(search_tree, v_id);
+    CHECK(std::ranges::all_of(expected_previsit_order, [&search_tree](const auto v_id) {
+        return search_tree.is_reachable(v_id);
     }));
     CHECK(std::ranges::all_of(unreachable_vertices, [&search_tree](const auto v_id) {
-        return not hgl::algorithm::is_reachable(search_tree, v_id);
+        return not search_tree.is_reachable(v_id);
     }));
 }
 

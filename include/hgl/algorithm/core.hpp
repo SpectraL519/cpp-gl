@@ -30,6 +30,13 @@ namespace algorithm {
 using empty_callback = gl::algorithm::empty_callback;
 
 /// @ingroup HGL-Algorithm
+/// @copybrief gl::algorithm::empty_extension
+/// ### See Also
+/// - @ref gl::algorithm::empty_extension : For the original GL module's type documentation.
+/// - @ref hgl::algorithm::search_node : For the definition of the algorithm search node type.
+using empty_extension = gl::algorithm::empty_extension;
+
+/// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::decision
 /// ### See Also
 /// - @ref gl::algorithm::decision : For the full type definition.
@@ -78,31 +85,17 @@ inline constexpr no_root_t no_root = gl::algorithm::no_root;
 /// @ingroup HGL-Algorithm
 /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack) for hypergraph traversals.
 /// @tparam H The type of the hypergraph being searched. Must satisfy [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph).
-template <traits::c_hypergraph H>
+/// @tparam Extension An optional payload type attached to the node for state tracking (must satisfy `std::semiregular`).
+/// ### See Also
+/// - @ref hgl::algorithm::root_node "hgl::algorithm::root_node" : For the full definition of the root search node builder function.
+template <traits::c_hypergraph H, std::semiregular Extension = empty_extension>
 struct search_node {
+    /// @brief The underlying value type of the hypergraph being searched.
+    using hypergraph_type = val_t<H>;
     /// @brief The identifier type of the hypergraph elements.
     using id_type = id_t<H>;
-
-    /// @brief Default constructor creates an invalid node.
-    search_node() = default;
-
-    /// @brief Constructs a *root* search node (predecessor is itself, no incident hyperedge).
-    /// @param vertex_id The ID of the root vertex.
-    search_node(id_type vertex_id)
-    : vertex_id(vertex_id), pred_id(vertex_id), hyperedge_id(invalid_id) {}
-
-    /// @brief Constructs a search node with an explicit predecessor vertex and the connecting hyperedge.
-    /// @param vertex_id The ID of the currently reached vertex.
-    /// @param pred_id The ID of the predecessor vertex from which this vertex was reached.
-    /// @param hyperedge_id The ID of the hyperedge connecting the predecessor to this vertex.
-    search_node(id_type vertex_id, id_type pred_id, id_type hyperedge_id)
-    : vertex_id(vertex_id), pred_id(pred_id), hyperedge_id(hyperedge_id) {}
-
-    /// @brief Checks if this node is the root of a search tree.
-    /// @return `true` if the node is valid and its predecessor is itself, `false` otherwise.
-    [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
-        return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
-    }
+    /// @brief The type of the custom state-tracking payload attached to this node.
+    using extension_type = Extension;
 
     /// @brief The ID of the current vertex.
     id_type vertex_id = invalid_id;
@@ -110,18 +103,94 @@ struct search_node {
     id_type pred_id = invalid_id;
     /// @brief The ID of the hyperedge via which this vertex was reached from the predecessor.
     id_type hyperedge_id = invalid_id;
+    /// @brief Custom state-tracking payload.
+    [[no_unique_address]] extension_type ext = {};
+
+    /// @brief Checks if this node is the root of a search tree.
+    /// @return `true` if the node is valid and its predecessor is itself, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
+        return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
+    }
+
+    /// @brief Explicitly converts this node to a search node with a different extension type.
+    ///
+    /// This allows for safe, seamless slicing and up-casting between stateful and stateless
+    /// search nodes during algorithm execution. The new extension is default-initialized.
+    ///
+    /// @tparam OtherExt The target extension type.
+    /// @return A new search node preserving the topology but with the target extension type.
+    template <std::semiregular OtherExt>
+    requires(not std::same_as<Extension, OtherExt>)
+    [[nodiscard]] gl_attr_force_inline explicit operator search_node<H, OtherExt>() const noexcept {
+        return search_node<H, OtherExt>{this->vertex_id, this->pred_id, this->hyperedge_id};
+    }
 };
+
+/// @ingroup HGL-Algorithm
+/// @brief Free function builder that creates a search node acting as the root of a search tree.
+///
+/// This utility provides clean, unambiguous aggregate initialization semantics for root nodes
+/// (where the vertex is strictly its own predecessor, and the connecting hyperedge is invalid)
+/// at algorithmic call sites.
+///
+/// @tparam H The type of the hypergraph being searched.
+/// @tparam Extension The type of the custom state-tracking payload attached to the node.
+/// @param root_id The ID of the root vertex.
+/// @param ext An optional state-tracking extension payload.
+/// @return A fully initialized @ref hgl::algorithm::search_node "search_node" acting as a root.
+template <traits::c_hypergraph H, std::semiregular Extension = empty_extension>
+[[nodiscard]] gl_attr_force_inline search_node<val_t<H>, Extension> root_node(
+    id_t<H> root_id, Extension ext = {}
+) {
+    return search_node<val_t<H>, Extension>{root_id, root_id, invalid_id, std::move(ext)};
+}
 
 /// @ingroup HGL-Algorithm
 /// @brief A flat, index-mapped representation of a hypergraph search tree.
 ///
-/// The $i$-th element corresponds to the vertex with `id == i`. The tree topology is formed implicitly,
-/// as each @ref hgl::algorithm::search_node "search_node" stores the ID of its predecessor and the
-/// connecting hyperedge, enabling \f$O(1)\f$ lookups and and \f$O(\vert V \vert)\f$ path reconstruction.
+/// This structure is a simple wrapper around a `std::vector` of nodes, storing the
+/// resulting topology of a hypergraph traversal. The $i$-th element in the `nodes`
+/// vector implicitly corresponds to the vertex with `id == i`.
 ///
-/// @tparam H The type of the hypergraph being searched.
+/// @tparam H The type of the hypergraph being searched. Must satisfy [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph).
 template <traits::c_hypergraph H>
-using search_tree = std::vector<search_node<val_t<H>>>;
+struct search_tree {
+    /// @brief The underlying hypergraph type.
+    using hypergraph_type = val_t<H>;
+    /// @brief The identifier type of the hypergraph elements.
+    using id_type = id_t<H>;
+
+    /// @brief Represents a static link in the traversal tree.
+    struct node {
+        id_type pred_id = invalid_id; ///< The ID of the predecessor vertex.
+        id_type hyperedge_id = invalid_id; ///< The ID of the connecting hyperedge.
+    };
+
+    /// @brief Default constructor creating an empty search tree.
+    search_tree() = default;
+
+    /// @brief Constructs a search tree allocated for a specific number of vertices.
+    /// @param n_vertices The total number of vertices in the hypergraph.
+    explicit search_tree(const std::size_t n_vertices) : nodes(n_vertices) {}
+
+    /// @brief Checks if a specific vertex was reached during the traversal.
+    /// @param vertex_id The ID of the vertex to check.
+    /// @return `true` if the vertex has a valid assigned predecessor, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_reachable(const id_type vertex_id) const noexcept {
+        return this->nodes[vertex_id].pred_id != invalid_id;
+    }
+
+    /// @brief Checks if a specific vertex acts as a root in the search tree.
+    /// @param vertex_id The ID of the vertex to check.
+    /// @return `true` if the vertex is its own predecessor, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_root(const id_type vertex_id) const noexcept {
+        const auto pred = this->nodes[vertex_id].pred_id;
+        return pred != invalid_id and pred == vertex_id;
+    }
+
+    /// @brief The underlying container mapping vertex IDs to their traversal tree nodes.
+    std::vector<node> nodes;
+};
 
 } // namespace algorithm
 
@@ -168,14 +237,6 @@ using gl::traits::c_decision_predicate;
 /// ### See Also
 /// - [**c_optional_decision_predicate**](gl_concepts.md#gl-traits-c-optional-decision-predicate) : For the full concept documentation in the GL module.
 using gl::traits::c_optional_decision_predicate;
-
-/// @ingroup HGL-Traits
-/// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::search_node "search_node"s).
-/// @tparam T The type to evaluate against the concept.
-template <typename T>
-concept c_search_tree =
-    c_random_access_range<T>
-    and c_instantiation_of<std::ranges::range_value_t<T>, algorithm::search_node>;
 
 } // namespace traits
 

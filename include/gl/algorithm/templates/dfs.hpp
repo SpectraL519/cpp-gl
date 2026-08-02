@@ -22,13 +22,19 @@ namespace gl::algorithm {
 /// Concrete algorithms (like cycle detection or topological sorting) are built by injecting
 /// specific logic into the provided callback hooks.
 ///
+/// > [!NOTE] True Post-Order Traversal
+/// > If a non-empty `PostVisitCallback` is provided, this engine automatically utilizes a stateful
+/// > stack frame to guarantee a true post-order traversal (the callback fires only after the entire
+/// > subtree of a node has been fully explored). If the callback is omitted (using `empty_callback`),
+/// > the engine bypasses frame tracking entirely for maximum performance.
+///
 /// ### Example Usage
 /// ```cpp
 /// std::vector<bool> visited(graph.n_vertices(), false); // (1)!
 ///
 /// bool completed = gl::algorithm::dfs(
 ///     graph,
-///     gl::algorithm::init_node_range<graph_type>(start_id), // (2)!
+///     std::array{gl::algorithm::root_node<G>(start_vertex_id)}, // (2)!
 ///     gl::algorithm::default_visit_vertex_predicate(visited), // (3)!
 ///     [&](auto v, auto p) { // (4)!
 ///         std::cout << "Visited vertex " << v << '\n';
@@ -52,15 +58,15 @@ namespace gl::algorithm {
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
-/// | InitStackRangeType | The type of the container providing the initial roots to push to the stack. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
+/// | InitNodeRngType | The type of the container providing the initial roots to push to the stack. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
 /// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the stack. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 /// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after a node's subtree is fully explored. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
-/// @param initial_stack_content A range of initial @ref gl::algorithm::search_node "search nodes" to seed the DFS stack.
+/// @param initial_nodes A range of initial @ref gl::algorithm::search_node "search nodes" to seed the DFS stack.
 /// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
 /// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire DFS immediately aborts.
 /// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
@@ -68,12 +74,12 @@ namespace gl::algorithm {
 /// - `reject` to skip,
 /// - `abort` to terminate the DFS entirely.
 /// @param pre_visit Hook executed immediately before the `visit` callback.
-/// @param post_visit Hook executed after all adjacent edges of the current vertex have been evaluated.
+/// @param post_visit Hook executed after the current vertex's children have been exhaustively processed (true post-order).
 /// @return `true` if the stack was exhausted naturally, `false` if the search was aborted early.
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_forward_range_of<search_node<val_t<G>>> InitStackRangeType =
+    traits::c_forward_range_of<search_node<val_t<G>>> InitNodeRngType =
         std::vector<search_node<val_t<G>>>,
     traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
     traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
@@ -82,48 +88,91 @@ template <
     traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
 bool dfs(
     G&& graph,
-    const InitStackRangeType& initial_stack_content,
+    const InitNodeRngType& initial_nodes,
     VisitVertexPredicate visit_vertex_pred = {},
     VisitCallback visit = {},
     EnqueueNodePred enqueue_node_pred = {},
     PreVisitCallback pre_visit = {},
     PostVisitCallback post_visit = {}
 ) {
-    if (std::ranges::empty(initial_stack_content))
+    if (std::ranges::empty(initial_nodes))
         return false;
 
-    // prepare the node stack
-    std::stack<search_node<val_t<G>>> s;
-    for (const auto& node : initial_stack_content)
-        s.push(node);
+    if constexpr (traits::c_empty_callback<PostVisitCallback>) { // stateless stack
+        std::stack<search_node<val_t<G>>> s;
+        for (const auto& node : initial_nodes)
+            s.push(node);
 
-    // search the graph
-    while (not s.empty()) {
-        const auto node = s.top();
-        s.pop();
+        while (not s.empty()) {
+            const auto node = s.top();
+            s.pop();
 
-        if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
-            if (not visit_vertex_pred(node.vertex_id))
-                continue;
+            if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
+                if (not visit_vertex_pred(node.vertex_id))
+                    continue;
 
-        if constexpr (not traits::c_empty_callback<PreVisitCallback>)
-            pre_visit(node.vertex_id);
+            if constexpr (not traits::c_empty_callback<PreVisitCallback>)
+                pre_visit(node.vertex_id);
 
-        if constexpr (not traits::c_empty_callback<VisitCallback>)
-            if (not visit(node.vertex_id, node.pred_id))
-                return false;
+            if constexpr (not traits::c_empty_callback<VisitCallback>)
+                if (not visit(node.vertex_id, node.pred_id))
+                    return false;
 
-        for (const auto& edge : graph.out_edges(node.vertex_id)) {
-            const auto target_vertex_id = edge.other(node.vertex_id);
-            const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
-            if (enqueue == decision::abort)
-                return false;
-            if (enqueue)
-                s.emplace(target_vertex_id, node.vertex_id);
+            for (const auto& edge : graph.out_edges(node.vertex_id)) {
+                const auto target_vertex_id = edge.other(node.vertex_id);
+                const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
+                if (enqueue == decision::abort)
+                    return false;
+                if (enqueue)
+                    s.emplace(target_vertex_id, node.vertex_id);
+            }
         }
+    }
+    else { // statefull stack
 
-        if constexpr (not traits::c_empty_callback<PostVisitCallback>)
-            post_visit(node.vertex_id);
+        struct dfs_extension {
+            bool expanded = false; // Indicated if all of the node's children have been visited
+        };
+
+        using stateful_node_t = search_node<val_t<G>, dfs_extension>;
+        std::stack<stateful_node_t> s;
+
+        for (const auto& node : initial_nodes)
+            s.emplace(node.vertex_id, node.pred_id); // Initialize as unexpanded
+
+        while (not s.empty()) {
+            auto curr_node = s.top();
+            s.pop();
+
+            if (curr_node.ext.expanded) {
+                post_visit(curr_node.vertex_id);
+            }
+            else {
+                if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
+                    if (not visit_vertex_pred(curr_node.vertex_id))
+                        continue;
+
+                if constexpr (not traits::c_empty_callback<PreVisitCallback>)
+                    pre_visit(curr_node.vertex_id);
+
+                if constexpr (not traits::c_empty_callback<VisitCallback>)
+                    if (not visit(curr_node.vertex_id, curr_node.pred_id))
+                        return false;
+
+                // Push parent back marked as expanded to wait for children
+                curr_node.ext.expanded = true;
+                s.push(curr_node);
+
+                for (const auto& edge : graph.out_edges(curr_node.vertex_id)) {
+                    const auto target_vertex_id = edge.other(curr_node.vertex_id);
+                    const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
+                    if (enqueue == decision::abort)
+                        return false;
+                    if (enqueue)
+                        s.emplace(target_vertex_id, curr_node.vertex_id);
+                }
+            }
+        }
     }
 
     return true;

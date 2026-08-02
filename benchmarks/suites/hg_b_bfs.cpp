@@ -69,8 +69,7 @@ void bm_hgl_backward_bfs(benchmark::State& state) {
 
     auto hg = gen_bf_overlapping_chain_hypergraph<Hypergraph>(n_hedges, layer_width, stride);
 
-    auto roots = std::views::iota(id_type{0}, static_cast<id_type>(layer_width))
-               | std::ranges::to<std::vector<id_type>>();
+    auto roots = std::views::iota(id_type{0}, static_cast<id_type>(layer_width));
 
     for (auto _ : state) {
         auto search_tree = hgl::algorithm::backward_bfs(hg, roots);
@@ -100,7 +99,7 @@ bool incidence_backward_bfs(
 
     auto root_nodes =
         roots | std::views::transform([](const id_type root_id) {
-            return gl::algorithm::search_node<gl::val_t<IncidenceGraph>>{root_id};
+            return gl::algorithm::root_node<IncidenceGraph>(root_id);
         })
         | std::ranges::to<std::vector>();
 

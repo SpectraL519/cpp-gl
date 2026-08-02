@@ -45,20 +45,6 @@ template <traits::c_id_type IdType>
 }
 
 /// @ingroup GL-Algorithm
-/// @brief Initializes a search container with the starting root vertex.
-/// @tparam G The type of the graph.
-/// @tparam InitRangeType The underlying container type for the container.
-/// @param root_vertex_id The ID of the starting vertex.
-/// @return A container initialized with a single @ref search_node for the root vertex.
-template <
-    traits::c_graph G,
-    traits::c_forward_range_of<search_node<val_t<G>>> InitRangeType =
-        std::vector<search_node<val_t<G>>>>
-[[nodiscard]] gl_attr_force_inline InitRangeType init_node_range(id_t<G> root_vertex_id) {
-    return InitRangeType{search_node<val_t<G>>{root_vertex_id}};
-}
-
-/// @ingroup GL-Algorithm
 /// @brief Generates a default lambda predicate that checks if a vertex has not yet been visited.
 /// @param visited A reference to the boolean array tracking visited vertices.
 /// @return A callable predicate evaluating to `true` if the vertex is unvisited.
