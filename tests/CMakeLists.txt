@@ -57,3 +57,8 @@ add_test_target(gl "${GL_SOURCE_DIRS}" "${GL_DATA_DIR}" GL_TESTING)
 set(HGL_SOURCE_DIRS "source/hgl" ${SOURCE_DIRS})
 set(HGL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/hgl")
 add_test_target(hgl "${HGL_SOURCE_DIRS}" "${HGL_DATA_DIR}" HGL_TESTING)
+
+# SGL target
+set(SGL_SOURCE_DIRS "source/sgl" ${SOURCE_DIRS})
+set(SGL_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data/sgl")
+add_test_target(sgl "${SGL_SOURCE_DIRS}" "${SGL_DATA_DIR}" SGL_TESTING)
