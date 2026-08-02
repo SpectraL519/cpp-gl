@@ -238,22 +238,6 @@ using gl::traits::c_decision_predicate;
 /// - [**c_optional_decision_predicate**](gl_concepts.md#gl-traits-c-optional-decision-predicate) : For the full concept documentation in the GL module.
 using gl::traits::c_optional_decision_predicate;
 
-/// @ingroup HGL-Traits
-/// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::search_node "search_node"s).
-/// @tparam T The type to evaluate against the concept.
-template <typename T>
-concept c_search_tree =
-    c_random_access_range<T>
-    and c_instantiation_of<std::ranges::range_value_t<T>, algorithm::search_node>;
-
-// /// @ingroup HGL-Traits
-// /// @brief Validates if a type is a valid hypergraph search tree (a random access range of @ref hgl::algorithm::tree_node "tree_node"s).
-// /// @tparam T The type to evaluate against the concept.
-// template <typename T>
-// concept c_search_tree =
-//     c_random_access_range<T>
-//     and c_instantiation_of<std::ranges::range_value_t<T>, algorithm::tree_node>;
-
 } // namespace traits
 
 namespace algorithm {
