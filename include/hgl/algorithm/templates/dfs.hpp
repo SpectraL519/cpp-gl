@@ -162,11 +162,11 @@ bool dfs(
     }
     else { // stateful stack
 
-        struct dfs_ext {
+        struct dfs_extension {
             bool expanded = false;
         };
 
-        using stateful_node_t = search_node<val_t<H>, dfs_ext>;
+        using stateful_node_t = search_node<val_t<H>, dfs_extension>;
         std::stack<stateful_node_t> s;
 
         for (const auto& node : init_nodes)

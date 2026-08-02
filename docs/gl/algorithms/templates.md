@@ -17,12 +17,12 @@ The library provides four primary traversal engines.
 
 The true power of the generic templates lies in their callback/predicate hooks. Every iteration of the engine loop rigidly follows a defined sequence. By injecting custom callbacks (or omitting them via the [**empty_callback**](../../cpp-gl/structgl_1_1algorithm_1_1empty__callback.md)), you dictate the algorithm's behavior.
 
-### Execution Flowchart
+### Standard Execution Flow (`bfs`, `pfs`, and stateless `dfs`)
 
-For a single popped node in `bfs`, `dfs`, or `pfs`, the execution flow looks exactly like this:
+For a single popped node in standard traversal templates, the execution flow looks exactly like this:
 
 1. **`visit_vertex_pred(node)`**
-   Evaluated immediately after popping the node. If it returns `false`, the node is skipped entirely, and the loop moves to the next node. *(Commonly used for late-rejection of stale elements in Priority Queues).*
+   Evaluated immediately after popping the node. If it returns `false`, the node is skipped entirely, and the loop moves to the next node. *(Commonly used for late-rejection of stale elements in Priority Queues or filtering already-visited vertices).*
 
 2. **`pre_visit(vertex_id)`**
    A state-modification hook executed right before the vertex is officially marked as "visited".
@@ -45,8 +45,36 @@ For a single popped node in `bfs`, `dfs`, or `pfs`, the execution flow looks exa
 
         If the target was accepted, this hook allows you to construct a custom object to push into the search frontier.
 
-5. **`post_visit(vertex_id)`**
+5. **`post_visit(vertex_id)`** *(BFS/PFS only)*
    Executed after all adjacent edges have been evaluated and processed.
+
+### True Post-Order Execution (Iterative `dfs`)
+
+In a standard stack-based DFS, nodes are popped and discarded *before* their children are pushed. This makes executing a true post-order callback (after a node's entire subtree has been exhaustively explored) impossible with a naive implementation.
+
+The CPP-GL `dfs` template solves this using a zero-cost abstraction:
+
+- **Stateless Fast-Path:** If you pass an `empty_callback` for the `post_visit` hook, the engine compiles down to the standard execution flow described above, maximizing performance.
+- **Stateful Stack-Frame:** If a valid `post_visit` callback is provided, the engine implicitly wraps the search nodes with a `dfs_extension` payload containing an `expanded` boolean flag.
+
+When utilizing the stateful stack, the execution loop shifts to a two-phase lifecycle:
+
+1. **Phase 1 (First Encounter):** The node is popped. Because `expanded == false`, the engine executes `visit_vertex_pred`, `pre_visit`, and `visit`. It then **marks the node as expanded and pushes it back onto the stack**, followed by pushing all of its valid children on top.
+2. **Phase 2 (Subtree Exhausted):** Because the parent was pushed beneath its children, it surfaces again only after its entire subtree has been popped and processed. The engine pops it, sees `expanded == true`, and executes the `post_visit` callback.
+
+### Recursive Execution (`r_dfs`)
+
+The recursive DFS template (`r_dfs`) avoids standard container wrappers entirely and maps the generic callback sequence directly to the C++ call stack. Because of the nature of function calls, `r_dfs` achieves true post-order execution naturally without requiring stateful wrapper nodes.
+
+Its execution flow operates as follows:
+
+1. **Entry:** `visit_vertex_pred`, `pre_visit`, and `visit` are executed immediately upon entering the function.
+2. **Recurse:** The engine iterates over outgoing edges. If `enqueue_node_pred` accepts a target, the engine immediately calls `r_dfs` nested within the current loop.
+3. **Exit:** After the edge loop completes (meaning all recursive child calls have unwound), `post_visit` is naturally executed before the current function frame returns to its caller.
+
+> [!WARNING] Aborting Recursive Searches
+>
+> The generic generic `abort` mechanisms (like returning `false` from `visit`) do not work the same way in `r_dfs`. Returning from a nested recursive call only unwinds a single stack frame. If you need to instantly terminate a deep `r_dfs` traversal, you must utilize external state (e.g., throwing a custom exception or checking a global cancellation flag in your predicates).
 
 ## Custom Node Injection (PFS)
 
@@ -93,18 +121,3 @@ gl::algorithm::pfs( // (5)!
         return path_node{target_id, source_id, new_dist};
     }
 );
-```
-
-1. Define a custom stateful node tracking the distance accumulated so far.
-2. Initialize a global distance map with "infinity", setting the start vertex distance to 0.
-3. Define the priority comparator for a distance-based Min-Heap.
-4. Setup the initial range containing the root node.
-5. Run the Priority-First Search engine.
-6. Define an empty vertex visit predicate and vertex visit callback.
-7. Define the node enqueue predicate to only enqueue nodes that could yield paths shorter than those already discovered.
-8. Define the callback which constructs a stateful node for the algorithm queue.
-9. Update the global distance map to reflect the newly discovered shorter path.
-
-> [!NOTE] Algorithm Desing
->
-> The example above is very similar, though not the same, to how the Dijkstra's algorithm implementation is designed within the library.

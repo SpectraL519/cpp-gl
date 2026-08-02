@@ -42,9 +42,9 @@ Because **BF-directed hypergraphs** distinguish between *tail* (source) and *hea
 
 The true power of the generic templates lies in their callback and predicate hooks. Every iteration of the engine loop rigidly follows a defined sequence. By injecting custom callbacks (or omitting them via the imported [**empty_callback**](../../cpp-gl/group__HGL-Algorithm.md#typedef-empty_callback)), you dictate the algorithm's exact behavior.
 
-### Execution Flowchart
+### Standard Execution Flow (`bfs` and stateless `dfs`)
 
-For a single popped `curr_node` in the `bfs` or `dfs` templates, the execution flow looks exactly like this:
+For a single popped node in the standard traversal templates, the execution flow looks exactly like this:
 
 1. **`visit_pred(curr_node)`**
    Evaluated immediately after popping the node. If it returns `false`, the node is skipped entirely, and the loop moves to the next node in the queue or stack.
@@ -59,7 +59,7 @@ For a single popped `curr_node` in the `bfs` or `dfs` templates, the execution f
    The engine queries the `traversal_policy` for the target hyperedges. For each `he_id`:
 
    - **`traverse_he_pred(he_id, curr_node.vertex_id)`**
-     Evaluates whether the hyperedge should be traversed. Returns a `decision`:
+     Evaluates whether the hyperedge should be traversed. Returns a [**decision**](../../cpp-gl/structgl_1_1algorithm_1_1decision.md):
      - `abort`: Kills the entire algorithm.
      - `reject`: Ignores this hyperedge and moves to the next.
      - `accept`: Proceeds to evaluate the hyperedge's vertices.
@@ -68,17 +68,31 @@ For a single popped `curr_node` in the `bfs` or `dfs` templates, the execution f
    If the hyperedge was accepted, the engine queries the `traversal_policy` for the target vertices within that hyperedge. For each `target_id` (skipping the one we just came from):
 
    - **`enqueue_pred(tgt_node)`**
-     Evaluates whether the newly constructed `tgt_node` (containing the `target_id`, `curr_node.vertex_id`, and `he_id`) should be pushed to the active container. Returns a `decision`:
+     Evaluates whether the newly constructed `tgt_node` (containing the `target_id`, `curr_node.vertex_id`, and `he_id`) should be pushed to the active container. Returns a [**decision**](../../cpp-gl/structgl_1_1algorithm_1_1decision.md):
      - `abort`: Kills the entire algorithm.
      - `reject`: Ignores this specific target vertex.
      - `accept`: Pushes the `tgt_node` to the queue or stack.
 
-6. **`post_visit(curr_node)`**
+6. **`post_visit(curr_node)`** *(BFS only)*
    Executed after all adjacent hyperedges and their target vertices have been evaluated and processed.
+
+### True Post-Order Execution (Iterative `dfs`)
+
+In a standard stack-based DFS, nodes are popped and discarded *before* their children are pushed. This makes executing a true post-order callback (firing only after a node's entire subtree has been exhaustively explored) impossible with a naive implementation.
+
+The HGL `dfs` template solves this using a zero-cost abstraction:
+
+- **Stateless Fast-Path:** If you pass an `empty_callback` for the `post_visit` hook, the engine compiles down to the standard execution flow described above, maximizing performance.
+- **Stateful Stack-Frame:** If a valid `post_visit` callback is provided, the engine implicitly wraps the search nodes with a `dfs_extension` payload containing an `expanded` boolean flag.
+
+When utilizing the stateful stack, the execution loop shifts to a two-phase lifecycle:
+
+1. **Phase 1 (First Encounter):** The node is popped. Because `expanded == false`, the engine executes `visit_pred`, `pre_visit`, and `visit`. It then **marks the node as expanded and pushes it back onto the stack**, followed by executing the two-step hyperedge/vertex expansion to push all of its valid children on top.
+2. **Phase 2 (Subtree Exhausted):** Because the parent was pushed beneath its children, it surfaces again only after its entire subtree has been popped and processed. The engine pops it, sees `expanded == true`, slices it back to its stateless base representation, and executes the `post_visit` callback.
 
 ## Customizing the Traversal
 
-By wiring up these 6 hooks, you can build highly specific reachability algorithms. For instance, to ensure we do not get stuck in infinite loops, we need to track both visited vertices and visited hyperedges.
+By wiring up these hooks, you can build highly specific reachability algorithms. For instance, to ensure we do not get stuck in infinite loops, we need to track both visited vertices and visited hyperedges.
 
 ### Example: Custom Forward BFS Engine
 
@@ -91,12 +105,9 @@ By wiring up these 6 hooks, you can build highly specific reachability algorithm
 std::vector<bool> visited_v(hg.n_vertices(), false); // (1)!
 std::vector<bool> visited_he(hg.n_hyperedges(), false);
 
-using search_node = hgl::algorithm::search_node<decltype(hg)>;
-std::vector<search_node> init_nodes = {search_node{start_id}}; // (2)!
-
-bool success = hgl::algorithm::bfs<hgl::algorithm::forward>( // (3)!
+bool success = hgl::algorithm::bfs<hgl::algorithm::forward>( // (2)!
     hg,
-    init_nodes,
+    std::array{hgl::algorithm::root_node<decltype(hg)>(start_id)}, // (3)!
     [&](const auto& node) { return not visited_v[node.vertex_id]; }, // (4)!
     [&](const auto& node) { // (5)!
         visited_v[node.vertex_id] = true;
@@ -116,8 +127,8 @@ bool success = hgl::algorithm::bfs<hgl::algorithm::forward>( // (3)!
 ```
 
 1. Initialize state-tracking vectors for both vertices and hyperedges.
-2. Set up the initial queue range with a root node.
-3. Explicitly invoke the template with `traversal_direction::forward` (the default, but explicitly shown here for clarity).
+2. Explicitly invoke the template with `traversal_direction::forward` (the default, but explicitly shown here for clarity).
+3. Set up the initial queue range with a root node.
 4. **`visit_pred`**: Reject nodes in the queue if they were already visited by an earlier, faster branch.
 5. **`visit`**: Mark the vertex as visited.
 6. **`traverse_he_pred`**: Check if the hyperedge was already traversed. If not, mark it traversed and `accept` it. Returning a `decision` type here is required by the generic engines.
