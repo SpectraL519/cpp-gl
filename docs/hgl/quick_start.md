@@ -37,14 +37,14 @@ int main() {
     hg.add_hyperedge({v1, v2}, {v3})->weight = 5.0;
 
     std::vector<hgl::default_id_type> roots = {0u};
-    auto search_tree = hgl::algorithm::backward_bfs(hg, roots); // (7)!
+    auto search_tree = hgl::algorithm::backward_bfs(hg, roots); // (6)!
 
-    if (hgl::algorithm::is_reachable(search_tree, 3u)) // (8)!
+    if (search_tree.is_reachable(3u)) // (7)!
         std::cout << "Target is B-reachable from the Source.\n\n";
     else
         std::cout << "Target is NOT B-reachable from the Source.\n\n";
 
-    std::cout << hgl::io::verbose << hgl::io::with_properties; // (9)!
+    std::cout << hgl::io::verbose << hgl::io::with_properties; // (8)!
     std::cout << "Hypergraph Topology:\n" << hg << '\n';
 
     return 0;
@@ -57,7 +57,7 @@ int main() {
 4. Retrieve stable vertex descriptors using `.vertex(id)` to assign property payloads safely.
 5. BF-directed hyperedges connect a set of *tail* vertices to a set of *head* vertices. An edge can be added using vertex IDs or descriptors. <br/> **NOTE:** You can alternatively instantiate the hypergraph with a given number of hyperedges and simply *bind* vertices to them using the dedicated binding methods. <br/> **IMPORTANT:** Property Access Safety <br/> Assigning properties inline via the returned descriptor is safe here because the temporary descriptor is immediately discarded, meaning no dangling references are kept. The same bahaviour can be achieved using the `add_hyperedge_with` methods.
 6. Execute a Breadth-First Backward Search (B-BFS) to compute B-reachability semantics from the source vertex.
-7. Query the resulting search tree to validate if the Target vertex was successfully reached.
+7. Query the resulting search tree to validate if the target vertex was successfully reached.
 8. Standard GL stream manipulators inject persistent formatting state to output the hypergraph's structure in a verbose format, including the element properties.
 
 **Output:**

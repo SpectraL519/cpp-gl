@@ -63,7 +63,7 @@ template <
         empty_callback,
     traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
         empty_callback>
-result_type<Result, search_tree<H>> forward_bfs(
+result_type<Result, search_tree<val_t<H>>> forward_bfs(
     H&& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},
@@ -144,7 +144,7 @@ template <
         empty_callback,
     traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
         empty_callback>
-result_type<Result, search_tree<H>> forward_dfs(
+result_type<Result, search_tree<val_t<H>>> forward_dfs(
     H&& hypergraph,
     const RootRange& root_vertices,
     const PreVisitCallback& pre_visit = {},

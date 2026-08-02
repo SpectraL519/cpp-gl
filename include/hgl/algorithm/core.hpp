@@ -148,71 +148,49 @@ template <traits::c_hypergraph H, std::semiregular Extension = empty_extension>
 /// @ingroup HGL-Algorithm
 /// @brief A flat, index-mapped representation of a hypergraph search tree.
 ///
-/// The $i$-th element corresponds to the vertex with `id == i`. The tree topology is formed implicitly,
-/// as each @ref hgl::algorithm::search_node "search_node" stores the ID of its predecessor and the
-/// connecting hyperedge, enabling \f$O(1)\f$ lookups and and \f$O(\vert V \vert)\f$ path reconstruction.
+/// This structure is a simple wrapper around a `std::vector` of nodes, storing the
+/// resulting topology of a hypergraph traversal. The $i$-th element in the `nodes`
+/// vector implicitly corresponds to the vertex with `id == i`.
 ///
-/// @tparam H The type of the hypergraph being searched.
+/// @tparam H The type of the hypergraph being searched. Must satisfy [**c_hypergraph**](hgl_concepts.md#hgl-traits-c-hypergraph).
 template <traits::c_hypergraph H>
-using search_tree = std::vector<search_node<val_t<H>>>;
+struct search_tree {
+    /// @brief The underlying hypergraph type.
+    using hypergraph_type = val_t<H>;
+    /// @brief The identifier type of the hypergraph elements.
+    using id_type = id_t<H>;
 
-// --- traversal types ---
+    /// @brief Represents a static link in the traversal tree.
+    struct node {
+        id_type pred_id = invalid_id; ///< The ID of the predecessor vertex.
+        id_type hyperedge_id = invalid_id; ///< The ID of the connecting hyperedge.
+    };
 
-// /// @ingroup HGL-Algorithm
-// /// @brief Represents an active node in a search container (e.g., a BFS queue or DFS stack) for hypergraph traversals.
-// // ... (your existing search_node definition stays exactly as is) ...
+    /// @brief Default constructor creating an empty search tree.
+    search_tree() = default;
 
-// /// @ingroup HGL-Algorithm
-// /// @brief Represents a static link in a hypergraph traversal tree.
-// ///
-// /// Unlike @ref hgl::algorithm::search_node "search_node", this structure is optimized
-// /// for index-mapped storage as a final algorithmic result. It deliberately omits the
-// /// redundant `vertex_id` (which is implicitly the index in the array) and any dynamic
-// /// traversal extensions.
-// ///
-// /// @tparam H The type of the hypergraph being searched.
-// template <traits::c_hypergraph H>
-// struct tree_node {
-//     /// @brief The identifier type of the hypergraph elements.
-//     using id_type = id_t<H>;
+    /// @brief Constructs a search tree allocated for a specific number of vertices.
+    /// @param n_vertices The total number of vertices in the hypergraph.
+    explicit search_tree(const std::size_t n_vertices) : nodes(n_vertices) {}
 
-//     /// @brief The ID of the predecessor from which this vertex was reached.
-//     id_type pred_id = invalid_id;
-//     /// @brief The ID of the hyperedge via which this vertex was reached.
-//     id_type hyperedge_id = invalid_id;
+    /// @brief Checks if a specific vertex was reached during the traversal.
+    /// @param vertex_id The ID of the vertex to check.
+    /// @return `true` if the vertex has a valid assigned predecessor, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_reachable(const id_type vertex_id) const noexcept {
+        return this->nodes[vertex_id].pred_id != invalid_id;
+    }
 
-//     /// @brief Checks if this node represents a reachable root.
-//     /// @param current_vertex_id The index of this node in the search tree.
-//     /// @return `true` if it's a valid root, `false` otherwise.
-//     [[nodiscard]] gl_attr_force_inline bool is_root(const id_type current_vertex_id) const noexcept {
-//         return this->pred_id != invalid_id and this->pred_id == current_vertex_id;
-//     }
-// };
+    /// @brief Checks if a specific vertex acts as a root in the search tree.
+    /// @param vertex_id The ID of the vertex to check.
+    /// @return `true` if the vertex is its own predecessor, `false` otherwise.
+    [[nodiscard]] gl_attr_force_inline bool is_root(const id_type vertex_id) const noexcept {
+        const auto pred = this->nodes[vertex_id].pred_id;
+        return pred != invalid_id and pred == vertex_id;
+    }
 
-// /// @ingroup HGL-Algorithm
-// /// @brief A flat, index-mapped representation of a hypergraph search tree.
-// ///
-// /// The $i$-th element corresponds to the vertex with `id == i`. The tree topology is formed implicitly,
-// /// as each @ref hgl::algorithm::tree_node "tree_node" stores the ID of its predecessor and the
-// /// connecting hyperedge, enabling $O(1)$ lookups and $O(|V|)$ path reconstruction.
-// ///
-// /// @tparam H The type of the hypergraph being searched.
-// template <traits::c_hypergraph H>
-// using search_tree = std::vector<tree_node<val_t<H>>>;
-
-// ??? Use a struct instead ???
-// struct search_tree {
-//     struct node {
-//         pred_id;
-//         hyperedge_id;
-//     };
-
-//     std::vector<node> nodes;
-
-//     bool is_root(i) const {
-//         return this->nodes[i].pred_id == i;
-//     }
-// }
+    /// @brief The underlying container mapping vertex IDs to their traversal tree nodes.
+    std::vector<node> nodes;
+};
 
 } // namespace algorithm
 

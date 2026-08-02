@@ -23,20 +23,9 @@ template <result_discriminator Result, traits::c_hypergraph H>
 init_search_tree(H&& hypergraph) {
     using return_t = non_void_result_type<Result, search_tree<val_t<H>>>;
     if constexpr (Result == ret)
-        return return_t(hypergraph.n_vertices());
+        return return_t{hypergraph.n_vertices()};
     else
-        return return_t();
-}
-
-/// @ingroup HGL-Algorithm
-/// @brief Checks if a specific vertex was reached during the traversal.
-/// @param tree The computed search tree resulting from a traversal.
-/// @param vertex_id The identifier of the vertex to check.
-/// @return `true` if the vertex has a valid predecessor in the tree, `false` otherwise.
-[[nodiscard]] gl_attr_force_inline bool is_reachable(
-    const traits::c_search_tree auto& tree, traits::c_id_type auto vertex_id
-) noexcept {
-    return tree[to_idx(vertex_id)].pred_id != invalid_id;
+        return return_t{};
 }
 
 /// @ingroup HGL-Algorithm
@@ -59,18 +48,17 @@ template <traits::c_hypergraph H>
 /// @tparam H The type of the hypergraph.
 /// @tparam Result The compilation tag dictating whether to populate the search tree.
 /// @param visited_v A reference to the boolean array tracking visited vertices.
-/// @param pred_map A reference to the search tree being populated (or a dummy if `Result == noret`).
+/// @param stree A reference to the search tree being populated (or a dummy if `Result == noret`).
 /// @return A callable callback returning `true` to unconditionally continue the traversal.
 /// @hideparams
 template <traits::c_hypergraph H, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited_v, non_void_result_type<Result, search_tree<val_t<H>>>& pred_map
+    std::vector<bool>& visited_v, non_void_result_type<Result, search_tree<val_t<H>>>& stree
 ) {
     return [&](const search_node<val_t<H>>& node) {
-        const auto vertex_idx = to_idx(node.vertex_id);
-        visited_v[vertex_idx] = true;
+        visited_v[node.vertex_id] = true;
         if constexpr (Result == ret)
-            pred_map[vertex_idx] = node;
+            stree.nodes[node.vertex_id] = {node.pred_id, node.hyperedge_id};
         return true;
     };
 }

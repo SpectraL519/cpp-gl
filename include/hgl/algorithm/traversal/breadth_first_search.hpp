@@ -62,7 +62,7 @@ template <
         empty_callback,
     traits::c_optional_callback<void, const search_node<val_t<H>>&> PostVisitCallback =
         empty_callback>
-result_type<Result, search_tree<H>> breadth_first_search(
+result_type<Result, search_tree<val_t<H>>> breadth_first_search(
     H&& hypergraph,
     const id_t<H> root_vertex_id = no_root,
     const PreVisitCallback& pre_visit = {},
