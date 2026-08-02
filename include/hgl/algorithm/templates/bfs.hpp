@@ -28,7 +28,7 @@ namespace hgl::algorithm {
 ///
 /// bool completed = hgl::algorithm::bfs(
 ///     hypergraph,
-///     hgl::algorithm::init_node_range<H>(start_id), // (2)!
+///     std::array{hgl::algorithm::root_node<H>(start_id)}, // (2)!
 ///     [&](const auto& node) { return not visited[node.vertex_id]; }, // (3)!
 ///     [&](const auto& node) { // (4)!
 ///         visited[node.vertex_id] = true;

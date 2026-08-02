@@ -30,6 +30,13 @@ namespace algorithm {
 using empty_callback = gl::algorithm::empty_callback;
 
 /// @ingroup HGL-Algorithm
+/// @copybrief gl::algorithm::empty_extension
+/// ### See Also
+/// - @ref gl::algorithm::empty_extension : For the original GL module's type documentation.
+/// - @ref hgl::algorithm::search_node : For the definition of the algorithm search node type.
+using empty_extension = gl::algorithm::empty_extension;
+
+/// @ingroup HGL-Algorithm
 /// @copybrief gl::algorithm::decision
 /// ### See Also
 /// - @ref gl::algorithm::decision : For the full type definition.

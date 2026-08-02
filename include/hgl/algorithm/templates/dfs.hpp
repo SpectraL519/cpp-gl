@@ -170,14 +170,14 @@ bool dfs(
         std::stack<stateful_node_t> s;
 
         for (const auto& node : init_nodes)
-            s.push(stateful_node_t{node});
+            s.push(stateful_node_t(node));
 
         while (not s.empty()) {
             auto curr_node = s.top();
             s.pop();
 
             // Reconstruct the stateless base node to safely satisfy the callback concepts
-            const stateless_node_t base_node{curr_node};
+            const stateless_node_t base_node(curr_node);
 
             if (curr_node.ext.expanded) {
                 post_visit(base_node);
@@ -218,7 +218,7 @@ bool dfs(
                         if (enqueue == decision::abort)
                             return false;
                         if (enqueue)
-                            s.push(stateful_node_t{tgt_base});
+                            s.push(stateful_node_t(tgt_base));
                     }
                 }
             }

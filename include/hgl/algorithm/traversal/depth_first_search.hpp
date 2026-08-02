@@ -78,7 +78,7 @@ result_type<Result, search_tree<H>> depth_first_search(
     if (root_vertex_id != no_root) {
         dfs(
             hypergraph,
-            init_node_range<H>(root_vertex_id),
+            std::array{root_node<H>(root_vertex_id)},
             default_visit_predicate<H>(visited_vertices),
             default_visit_callback<H, Result>(visited_vertices, stree),
             default_traverse_hyperedge_predicate(visited_hyperedges),
@@ -91,7 +91,7 @@ result_type<Result, search_tree<H>> depth_first_search(
         for (const auto root_id : hypergraph.vertex_ids())
             dfs(
                 hypergraph,
-                init_node_range<H>(root_id),
+                std::array{root_node<H>(root_id)},
                 default_visit_predicate<H>(visited_vertices),
                 default_visit_callback<H, Result>(visited_vertices, stree),
                 default_traverse_hyperedge_predicate(visited_hyperedges),

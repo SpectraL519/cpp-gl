@@ -74,9 +74,8 @@ result_type<Result, search_tree<H>> forward_bfs(
 
     auto stree = init_search_tree<Result>(hypergraph);
     auto root_queue =
-        root_vertices | std::views::transform([](const id_t<H> root_id) {
-            return search_node<val_t<H>>{root_id};
-        });
+        root_vertices
+        | std::views::transform([](const id_t<H> root_id) { return root_node<H>(root_id); });
 
     // clang-format off
 
@@ -156,9 +155,8 @@ result_type<Result, search_tree<H>> forward_dfs(
 
     auto stree = init_search_tree<Result>(hypergraph);
     auto root_queue =
-        root_vertices | std::views::transform([](const id_t<H> root_id) {
-            return search_node<val_t<H>>{root_id};
-        });
+        root_vertices
+        | std::views::transform([](const id_t<H> root_id) { return root_node<H>(root_id); });
 
     // clang-format off
 

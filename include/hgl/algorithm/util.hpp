@@ -40,18 +40,6 @@ init_search_tree(H&& hypergraph) {
 }
 
 /// @ingroup HGL-Algorithm
-/// @brief Initializes a container with a starting set of root search nodes.
-/// @tparam H The type of the hypergraph.
-/// @param root_vertex_id The ID of the starting vertex.
-/// @return A `std::vector` containing a single root @ref hgl::algorithm::search_node "search_node".
-template <traits::c_hypergraph H>
-[[nodiscard]] gl_attr_force_inline std::vector<search_node<val_t<H>>> init_node_range(
-    id_t<H> root_vertex_id
-) {
-    return {search_node<val_t<H>>{root_vertex_id}};
-}
-
-/// @ingroup HGL-Algorithm
 /// @brief Generates a default lambda predicate that checks if a popped search node has already been visited.
 /// @tparam H The type of the hypergraph.
 /// @param visited_v A reference to the boolean array tracking visited vertices.
