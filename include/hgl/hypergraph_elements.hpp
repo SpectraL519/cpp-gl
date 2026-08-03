@@ -32,7 +32,7 @@ namespace hgl {
 ///
 /// ### Example Usage
 /// ```cpp
-/// std::cout << gl::io::verbose << gl::io::with_vertex_properties; // (1)!
+/// std::cout << hgl::io::verbose << hgl::io::with_vertex_properties; // (1)!
 ///
 /// for (const auto& vertex : hypergraph.vertices()) {
 ///     const auto deg = hypergraph.degree(vertex); // (2)!
@@ -79,7 +79,7 @@ using vertex_descriptor = gl::vertex_descriptor<Properties, IdType>;
 ///
 /// ### Example Usage
 /// ```cpp
-/// std::cout << gl::io::verbose << gl::io::with_hyperedge_properties; // (1)!
+/// std::cout << hgl::io::verbose << gl::io::with_hyperedge_properties; // (1)!
 ///
 /// for (const auto& hyperedge : hypergraph.hyperedges()) {
 ///     const auto size = hypergraph.hyperedge_size(hyperedge); // (2)!
