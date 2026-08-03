@@ -97,9 +97,9 @@ result_type<Result, predecessors_map<G>> depth_first_search(
         dfs(
             graph,
             std::array{gl::algorithm::root_node<G>(root_vertex_id)},
-            default_visit_vertex_predicate(visited),
+            default_visit_predicate<G>(visited),
             default_visit_callback<G, Result>(visited, pred_map),
-            default_enqueue_node_predicate<G, true>(visited),
+            default_enqueue_predicate<G, true>(visited),
             pre_visit,
             post_visit
         );
@@ -109,9 +109,9 @@ result_type<Result, predecessors_map<G>> depth_first_search(
             dfs(
                 graph,
                 std::array{gl::algorithm::root_node<G>(root_id)},
-                default_visit_vertex_predicate(visited),
+                default_visit_predicate<G>(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
-                default_enqueue_node_predicate<G, true>(visited),
+                default_enqueue_predicate<G, true>(visited),
                 pre_visit,
                 post_visit
             );
@@ -194,11 +194,10 @@ result_type<Result, predecessors_map<G>> recursive_depth_first_search(
     if (root_vertex_id != no_root) {
         r_dfs(
             graph,
-            root_vertex_id,
-            root_vertex_id, // pred_id
-            default_visit_vertex_predicate(visited),
+            root_node<G>(root_vertex_id),
+            default_visit_predicate<G>(visited),
             default_visit_callback<G, Result>(visited, pred_map),
-            default_enqueue_node_predicate<G>(visited),
+            default_enqueue_predicate<G>(visited),
             pre_visit,
             post_visit
         );
@@ -207,11 +206,10 @@ result_type<Result, predecessors_map<G>> recursive_depth_first_search(
         for (const auto& root_id : graph.vertex_ids())
             r_dfs(
                 graph,
-                root_id,
-                root_id, // pred_id
-                default_visit_vertex_predicate(visited),
+                root_node<G>(root_id),
+                default_visit_predicate<G>(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
-                default_enqueue_node_predicate<G>(visited),
+                default_enqueue_predicate<G>(visited),
                 pre_visit,
                 post_visit
             );

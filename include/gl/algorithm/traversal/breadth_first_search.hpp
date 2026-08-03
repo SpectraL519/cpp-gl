@@ -89,9 +89,9 @@ result_type<Result, predecessors_map<G>> breadth_first_search(
         bfs(
             graph,
             std::array{gl::algorithm::root_node<G>(root_vertex_id)},
-            default_visit_vertex_predicate(visited),
+            default_visit_predicate<G>(visited),
             default_visit_callback<G, Result>(visited, pred_map),
-            default_enqueue_node_predicate<G, true>(visited),
+            default_enqueue_predicate<G, true>(visited),
             pre_visit,
             post_visit
         );
@@ -101,9 +101,9 @@ result_type<Result, predecessors_map<G>> breadth_first_search(
             bfs(
                 graph,
                 std::array{gl::algorithm::root_node<G>(root_id)},
-                default_visit_vertex_predicate(visited),
+                default_visit_predicate<G>(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
-                default_enqueue_node_predicate<G, true>(visited),
+                default_enqueue_predicate<G, true>(visited),
                 pre_visit,
                 post_visit
             );

@@ -155,6 +155,19 @@ struct search_node {
     [[nodiscard]] gl_attr_force_inline bool is_root() const noexcept {
         return this->vertex_id != invalid_id and this->vertex_id == this->pred_id;
     }
+
+    /// @brief Explicitly converts this node to a search node with a different extension type.
+    ///
+    /// This allows for safe, seamless slicing and up-casting between stateful and stateless
+    /// search nodes during algorithm execution. The new extension is default-initialized.
+    ///
+    /// @tparam OtherExt The target extension type.
+    /// @return A new search node preserving the topology but with the target extension type.
+    template <std::semiregular OtherExt>
+    requires(not std::same_as<Extension, OtherExt>)
+    [[nodiscard]] gl_attr_force_inline explicit operator search_node<G, OtherExt>() const noexcept {
+        return search_node<G, OtherExt>{this->vertex_id, this->pred_id};
+    }
 };
 
 /// @ingroup GL-Algorithm
