@@ -66,15 +66,22 @@ template <traits::c_graph G>
 /// @hideparams
 template <traits::c_graph G, result_discriminator Result>
 [[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited_v, non_void_result_type<Result, predecessors_map<G>>& pred_map
+    std::vector<bool>& visited_v,
+    [[maybe_unused]] non_void_result_type<Result, predecessors_map<G>>& pred_map
 ) {
-    return [&visited_v, &pred_map](const search_node<val_t<G>> node) {
-        const auto vertex_idx = to_idx(node.vertex_id);
-        visited_v[vertex_idx] = true;
-        if constexpr (Result == ret)
+    if constexpr (Result == ret)
+        return [&visited_v, &pred_map](const search_node<val_t<G>> node) {
+            const auto vertex_idx = to_idx(node.vertex_id);
+            visited_v[vertex_idx] = true;
             pred_map[vertex_idx] = node.pred_id;
-        return true;
-    };
+            return true;
+        };
+    else
+        return [&visited_v](const search_node<val_t<G>> node) {
+            const auto vertex_idx = to_idx(node.vertex_id);
+            visited_v[vertex_idx] = true;
+            return true;
+        };
 }
 
 /// @ingroup GL-Algorithm
