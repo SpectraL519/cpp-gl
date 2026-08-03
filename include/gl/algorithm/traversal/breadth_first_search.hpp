@@ -58,8 +58,8 @@ namespace gl::algorithm {
 /// | :-------- | :--- | :--- |
 /// | Result | Discriminator dictating if the algorithm should return a predecessor map (`ret`) or `void` (`noret`). | Must be a valid @ref gl::algorithm::result_discriminator "result_discriminator" enum value. |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
 /// @param root_vertex_id The starting vertex for the search. Defaults to @ref gl::algorithm::no_root "no_root" to traverse the entire graph.
@@ -70,8 +70,8 @@ namespace gl::algorithm {
 template <
     result_discriminator Result = ret,
     traits::c_graph G,
-    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, search_node<val_t<G>>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PostVisitCallback = empty_callback>
 result_type<Result, predecessors_map<G>> breadth_first_search(
     G&& graph,
     const id_t<G> root_vertex_id = no_root,
@@ -89,9 +89,9 @@ result_type<Result, predecessors_map<G>> breadth_first_search(
         bfs(
             graph,
             std::array{gl::algorithm::root_node<G>(root_vertex_id)},
-            default_visit_vertex_predicate(visited),
+            default_visit_predicate<G>(visited),
             default_visit_callback<G, Result>(visited, pred_map),
-            default_enqueue_node_predicate<G, true>(visited),
+            default_enqueue_predicate<G, true>(visited),
             pre_visit,
             post_visit
         );
@@ -101,9 +101,9 @@ result_type<Result, predecessors_map<G>> breadth_first_search(
             bfs(
                 graph,
                 std::array{gl::algorithm::root_node<G>(root_id)},
-                default_visit_vertex_predicate(visited),
+                default_visit_predicate<G>(visited),
                 default_visit_callback<G, Result>(visited, pred_map),
-                default_enqueue_node_predicate<G, true>(visited),
+                default_enqueue_predicate<G, true>(visited),
                 pre_visit,
                 post_visit
             );

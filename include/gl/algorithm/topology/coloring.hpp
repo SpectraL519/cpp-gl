@@ -49,8 +49,8 @@ using bicoloring_type = std::vector<binary_color>;
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to evaluate.
 /// @param pre_visit Hook executed immediately before the internal visit logic.
@@ -62,8 +62,8 @@ using bicoloring_type = std::vector<binary_color>;
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, search_node<val_t<G>>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PostVisitCallback = empty_callback>
 [[nodiscard]] std::optional<bicoloring_type> bipartite_coloring(
     G&& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
@@ -80,15 +80,13 @@ template <
             std::array{gl::algorithm::root_node<G>(root_id)},
             empty_callback{}, // visit predicate
             empty_callback{}, // visit callback
-            [&coloring](id_t<G> vertex_id, const edge_t<G>& in_edge)
+            [&coloring](search_node<val_t<G>> node, const edge_t<G>&)
                 -> decision { // enqueue predicate
-                if (in_edge.is_loop())
+                if (node.vertex_id == node.pred_id)
                     return decision::abort; // graph is not bipartite
 
-                const auto pred_id = in_edge.other(vertex_id);
-
-                auto& v_color = coloring[to_idx(vertex_id)];
-                auto p_color = coloring[to_idx(pred_id)];
+                auto& v_color = coloring[to_idx(node.vertex_id)];
+                auto p_color = coloring[to_idx(node.pred_id)];
 
                 if (v_color == p_color)
                     return decision::abort; // graph is not bipartite

@@ -30,9 +30,9 @@ namespace gl::algorithm {
 /// bool completed = gl::algorithm::bfs(
 ///     graph,
 ///     std::array{gl::algorithm::root_node<G>(start_vertex_id)}, // (2)!
-///     gl::algorithm::default_visit_vertex_predicate(visited), // (3)!
-///     [&](auto v, auto p) { // (4)!
-///         std::cout << "Visited vertex " << v << '\n';
+///     gl::algorithm::default_visit_predicate<G>(visited), // (3)!
+///     [&](const auto& node) { // (4)!
+///         std::cout << "Visited vertex " << node.vertex_id << '\n';
 ///         return true; // Continue search
 ///     },
 ///     gl::algorithm::default_enqueue_node_predicate<graph_type, true>(visited) // (5)!
@@ -41,30 +41,30 @@ namespace gl::algorithm {
 ///
 /// 1\. Tracks discovered vertices.
 ///
-/// 2\. Initializes the search queue with the starting vertex.
+/// 2\. Initializes the search queue with the starting search node.
 ///
-/// 3\. Predicate ensuring we don't process a vertex if it was already marked visited.
+/// 3\. Predicate ensuring we don't process a node if its vertex was already marked visited.
 ///
-/// 4\. The main visit callback. Here we just print the ID. Returning `false` would abort the search.
+/// 4\. The main visit callback receiving the full search node. Returning `false` would abort the search.
 ///
-/// 5\. Predicate ensuring we only enqueue adjacent vertices that haven't been visited yet, returning a @ref gl::algorithm::decision "decision".
+/// 5\. Predicate evaluating newly constructed target nodes to ensure we only enqueue unvisited vertices, returning a @ref gl::algorithm::decision "decision".
 ///
 /// ### Template Parameters
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
 /// | InitNodeRngType | The type of the container providing the initial roots to enqueue. | Must be a *forward range* of @ref gl::algorithm::search_node "search nodes". |
-/// | VisitVertexPredicate | Type of the callable deciding if a popped vertex should be processed. | Must be one of:<br/>- An `(id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | VisitCallback | Type of the callable executed when a vertex is officially visited. | Must be one of:<br/>- An `(id_type, id_type) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | EnqueueNodePred | Type of the callable deciding if a node corresponding to an adjacent vertex should be pushed to the queue. | Must be one of:<br/>- An `(id_type, const edge_type&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- An `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | VisitPredicate | Type of the callable deciding if a popped node should be processed. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | VisitCallback | Type of the callable executed when a node is officially visited. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> bool` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | EnqueuePredicate | Type of the callable deciding if a target node should be pushed to the queue. | Must be one of:<br/>- A `(search_node<val_t<G>>, const edge_t<G>&) -> decision` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to traverse.
 /// @param initial_nodes A range of initial @ref gl::algorithm::search_node "search nodes" to seed the BFS queue.
-/// @param visit_vertex_pred Predicate evaluated immediately after popping a vertex. If it returns `false`, the vertex is skipped.
-/// @param visit Callback invoked when a vertex is officially visited. If it returns `false`, the entire BFS immediately aborts.
-/// @param enqueue_node_pred Predicate evaluated for each outgoing edge. Returns a @ref gl::algorithm::decision "decision":
+/// @param visit_pred Predicate evaluated immediately after popping a node. If it returns `false`, the node is skipped.
+/// @param visit Callback invoked when a node is officially visited. If it returns `false`, the entire BFS immediately aborts.
+/// @param enqueue_pred Predicate evaluated for each outgoing edge and target node. Returns a @ref gl::algorithm::decision "decision":
 /// - `accept` to enqueue,
 /// - `reject` to skip,
 /// - `abort` to terminate the BFS entirely.
@@ -76,19 +76,20 @@ template <
     traits::c_graph G,
     traits::c_forward_range_of<search_node<val_t<G>>> InitNodeRngType =
         std::vector<search_node<val_t<G>>>,
-    traits::c_optional_predicate<id_t<G>> VisitVertexPredicate = empty_callback,
-    traits::c_optional_predicate<id_t<G>, id_t<G>> VisitCallback = empty_callback,
-    traits::c_decision_predicate<id_t<G>, const edge_t<G>&> EnqueueNodePred = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+    traits::c_optional_predicate<search_node<val_t<G>>> VisitPredicate = empty_callback,
+    traits::c_optional_predicate<search_node<val_t<G>>> VisitCallback = empty_callback,
+    traits::c_decision_predicate<search_node<val_t<G>>, const edge_t<G>&> EnqueuePredicate =
+        empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PostVisitCallback = empty_callback>
 bool bfs(
     G&& graph,
     const InitNodeRngType& initial_nodes,
-    VisitVertexPredicate visit_vertex_pred = {},
-    VisitCallback visit = {},
-    EnqueueNodePred enqueue_node_pred = {},
-    PreVisitCallback pre_visit = {},
-    PostVisitCallback post_visit = {}
+    const VisitPredicate& visit_pred = {},
+    const VisitCallback& visit = {},
+    const EnqueuePredicate& enqueue_pred = {},
+    const PreVisitCallback& pre_visit = {},
+    const PostVisitCallback& post_visit = {}
 ) {
     if (std::ranges::empty(initial_nodes))
         return false;
@@ -100,31 +101,32 @@ bool bfs(
 
     // search the graph
     while (not q.empty()) {
-        const auto node = q.front();
+        const auto curr_node = q.front();
         q.pop();
 
-        if constexpr (not traits::c_empty_callback<VisitVertexPredicate>)
-            if (not visit_vertex_pred(node.vertex_id))
+        if constexpr (not traits::c_empty_callback<VisitPredicate>)
+            if (not visit_pred(curr_node))
                 continue;
 
         if constexpr (not traits::c_empty_callback<PreVisitCallback>)
-            pre_visit(node.vertex_id);
+            pre_visit(curr_node);
 
         if constexpr (not traits::c_empty_callback<VisitCallback>)
-            if (not visit(node.vertex_id, node.pred_id))
+            if (not visit(curr_node))
                 return false;
 
-        for (const auto& edge : graph.out_edges(node.vertex_id)) {
-            const auto target_vertex_id = edge.other(node.vertex_id);
-            const auto enqueue = enqueue_node_pred(target_vertex_id, edge);
+        for (const auto& edge : graph.out_edges(curr_node.vertex_id)) {
+            search_node<val_t<G>> tgt_node{edge.other(curr_node.vertex_id), curr_node.vertex_id};
+            const auto enqueue = enqueue_pred(tgt_node, edge);
+
             if (enqueue == decision::abort)
                 return false;
             if (enqueue)
-                q.emplace(target_vertex_id, node.vertex_id);
+                q.push(tgt_node);
         }
 
         if constexpr (not traits::c_empty_callback<PostVisitCallback>)
-            post_visit(node.vertex_id);
+            post_visit(curr_node);
     }
 
     return true;

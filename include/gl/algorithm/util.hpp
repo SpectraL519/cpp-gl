@@ -45,46 +45,56 @@ template <traits::c_id_type IdType>
 }
 
 /// @ingroup GL-Algorithm
-/// @brief Generates a default lambda predicate that checks if a vertex has not yet been visited.
-/// @param visited A reference to the boolean array tracking visited vertices.
-/// @return A callable predicate evaluating to `true` if the vertex is unvisited.
-[[nodiscard]] gl_attr_force_inline auto default_visit_vertex_predicate(std::vector<bool>& visited) {
-    return [&](traits::c_id_type auto vertex_id) -> bool { return not visited[to_idx(vertex_id)]; };
-}
-
-/// @ingroup GL-Algorithm
-/// @brief Generates a default lambda callback that marks a vertex as visited and updates the predecessor map.
+/// @brief Generates a default lambda predicate that checks if a popped search node has already been visited.
 /// @tparam G The type of the graph.
-/// @tparam Result The static discriminator indicating if the predecessor map should be updated.
-/// @param visited A reference to the boolean array tracking visited vertices.
-/// @param pred_map A reference to the active predecessor map.
-/// @return A callable callback that executes state updates upon visiting a vertex.
-/// @hideparams
-template <traits::c_graph G, result_discriminator Result>
-[[nodiscard]] gl_attr_force_inline auto default_visit_callback(
-    std::vector<bool>& visited, non_void_result_type<Result, predecessors_map<G>>& pred_map
-) {
-    using id_type = id_t<G>;
-    return [&](id_type vertex_id, id_type pred_id) {
-        const auto vertex_idx = to_idx(vertex_id);
-        visited[vertex_idx] = true;
-        if constexpr (Result == ret)
-            pred_map[vertex_idx] = pred_id;
-        return true;
+/// @param visited_v A reference to the boolean array tracking visited vertices.
+/// @return A callable predicate evaluating to `true` if the vertex in the node is unvisited.
+template <traits::c_graph G>
+[[nodiscard]] gl_attr_force_inline auto default_visit_predicate(std::vector<bool>& visited_v) {
+    return [&visited_v](const search_node<val_t<G>> node) -> bool {
+        return not visited_v[to_idx(node.vertex_id)];
     };
 }
 
 /// @ingroup GL-Algorithm
-/// @brief Generates a default lambda predicate that checks if a node corresponding to an adjacent vertex should be enqueued into the search container.
+/// @brief Generates a default lambda callback that marks a node's vertex as visited and updates the predecessor map.
+/// @tparam G The type of the graph.
+/// @tparam Result The static discriminator indicating if the predecessor map should be updated.
+/// @param visited_v A reference to the boolean array tracking visited vertices.
+/// @param pred_map A reference to the active predecessor map.
+/// @return A callable callback that executes state updates upon officially visiting a node.
+/// @hideparams
+template <traits::c_graph G, result_discriminator Result>
+[[nodiscard]] gl_attr_force_inline auto default_visit_callback(
+    std::vector<bool>& visited_v,
+    [[maybe_unused]] non_void_result_type<Result, predecessors_map<G>>& pred_map
+) {
+    if constexpr (Result == ret)
+        return [&visited_v, &pred_map](const search_node<val_t<G>> node) {
+            const auto vertex_idx = to_idx(node.vertex_id);
+            visited_v[vertex_idx] = true;
+            pred_map[vertex_idx] = node.pred_id;
+            return true;
+        };
+    else
+        return [&visited_v](const search_node<val_t<G>> node) {
+            const auto vertex_idx = to_idx(node.vertex_id);
+            visited_v[vertex_idx] = true;
+            return true;
+        };
+}
+
+/// @ingroup GL-Algorithm
+/// @brief Generates a default lambda predicate that checks if a newly constructed target node should be enqueued.
 /// @tparam G The type of the graph.
 /// @tparam AsDecision If `true`, the generated predicate returns a @ref gl::algorithm::decision "decision" instead of a raw boolean.
-/// @param visited A reference to the boolean array tracking visited vertices.
-/// @return A callable predicate that returns `true` (or `decision::accept`) if the adjacent vertex has not been visited.
+/// @param visited_v A reference to the boolean array tracking visited vertices.
+/// @return A callable predicate that returns `true` (or `decision::accept`) if the target node's vertex has not been visited.
 template <traits::c_graph G, bool AsDecision = false>
-[[nodiscard]] gl_attr_force_inline auto default_enqueue_node_predicate(std::vector<bool>& visited) {
+[[nodiscard]] gl_attr_force_inline auto default_enqueue_predicate(std::vector<bool>& visited_v) {
     using return_t = std::conditional_t<AsDecision, decision, bool>;
-    return [&](id_t<G> vertex_id, const edge_t<G>&) -> return_t {
-        return not visited[to_idx(vertex_id)];
+    return [&visited_v](const search_node<val_t<G>> tgt_node, const edge_t<G>&) -> return_t {
+        return return_t(not visited_v[to_idx(tgt_node.vertex_id)]);
     };
 }
 

@@ -63,12 +63,12 @@ TEST_CASE_TEMPLATE_DEFINE(
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         gl::algorithm::no_root,
-        [&](const gl::default_id_type vertex_id) { // previsit
-            previsit_order.push_back(vertex_id);
+        [&](const auto node) { // previsit
+            previsit_order.push_back(node.vertex_id);
         },
-        [&](const gl::default_id_type vertex_id) { // postvisit
-            postvisit_order.push_back(vertex_id);
-            vertex_properties[vertex_id].visited = true;
+        [&](const auto node) { // postvisit
+            postvisit_order.push_back(node.vertex_id);
+            vertex_properties[node.vertex_id].visited = true;
         }
     );
 
@@ -144,11 +144,11 @@ TEST_CASE_TEMPLATE_DEFINE(
     gl::algorithm::breadth_first_search<gl::algorithm::noret>(
         graph,
         root_vertex_id,
-        [&](const gl::default_id_type vertex_id) { // previsit
-            previsit_order.push_back(vertex_id);
+        [&](const auto node) { // previsit
+            previsit_order.push_back(node.vertex_id);
         },
-        [&](const gl::default_id_type vertex_id) { // postvisit
-            postvisit_order.push_back(vertex_id);
+        [&](const auto node) { // postvisit
+            postvisit_order.push_back(node.vertex_id);
         }
     );
 

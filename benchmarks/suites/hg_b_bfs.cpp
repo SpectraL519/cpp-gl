@@ -91,6 +91,7 @@ bool incidence_backward_bfs(
     const gl::size_type original_n_vertices
 ) {
     using id_type = gl::id_t<IncidenceGraph>;
+    using node_type = gl::algorithm::search_node<gl::val_t<IncidenceGraph>>;
 
     std::vector<bool> visited_v(original_n_vertices, false);
     auto tail_unvisited =
@@ -103,30 +104,29 @@ bool incidence_backward_bfs(
         })
         | std::ranges::to<std::vector>();
 
-    auto visit_vertex_pred = [&](id_type v) {
-        if (v < original_n_vertices)
-            return not visited_v[gl::to_idx(v)];
+    auto visit_pred = [&](node_type node) {
+        if (node.vertex_id < original_n_vertices)
+            return not visited_v[node.vertex_id];
         return true;
     };
 
-    auto visit = [&](id_type v, id_type /*p*/) {
-        if (v < original_n_vertices)
-            visited_v[gl::to_idx(v)] = true;
+    auto visit = [&](node_type node) {
+        if (node.vertex_id < original_n_vertices)
+            visited_v[node.vertex_id] = true;
         return true;
     };
 
-    auto enqueue_node_pred =
-        [&](id_type target_id, const auto& /*edge*/) -> gl::algorithm::decision {
-        if (target_id >= original_n_vertices) {
-            const auto he_idx = target_id - original_n_vertices;
-            return --tail_unvisited[gl::to_idx(he_idx)] == 0uz;
+    auto enqueue_pred = [&](node_type tgt_node, const auto& /*edge*/) -> gl::algorithm::decision {
+        if (tgt_node.vertex_id >= original_n_vertices) {
+            const auto he_idx = tgt_node.vertex_id - original_n_vertices;
+            return --tail_unvisited[he_idx] == 0uz;
         }
         else {
-            return not visited_v[gl::to_idx(target_id)];
+            return not visited_v[tgt_node.vertex_id];
         }
     };
 
-    return gl::algorithm::bfs(ig, root_nodes, visit_vertex_pred, visit, enqueue_node_pred);
+    return gl::algorithm::bfs(ig, root_nodes, visit_pred, visit, enqueue_pred);
 }
 
 // --- GL Incidence Graph Backward BFS Benchmark ---

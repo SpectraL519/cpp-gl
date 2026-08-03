@@ -51,8 +51,8 @@ namespace gl::algorithm {
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the directed graph being traversed. | Must satisfy the [**c_directed_graph**](gl_concepts.md#gl-traits-c-directed-graph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before a vertex is pushed into the sort order. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The directed graph to evaluate.
 /// @param pre_visit Hook executed immediately before the internal sort logic processes a vertex.
@@ -61,8 +61,8 @@ namespace gl::algorithm {
 /// @hideparams
 template <
     traits::c_directed_graph G,
-    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, search_node<val_t<G>>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PostVisitCallback = empty_callback>
 [[nodiscard]] std::optional<std::vector<id_t<G>>> topological_sort(
     G&& graph, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
@@ -86,15 +86,15 @@ template <
         graph,
         source_vertex_list,
         empty_callback{}, // visit predicate
-        [&topological_order](id_type vertex_id, id_type) { // visit callback
-            topological_order.push_back(vertex_id);
+        [&topological_order](search_node<val_t<G>> node) { // visit callback
+            topological_order.push_back(node.vertex_id);
             return true;
         },
-        [&in_degree_map](id_type vertex_id, const edge_type& in_edge)
+        [&in_degree_map](search_node<val_t<G>> node, const edge_type& in_edge)
             -> decision { // enqueue predicate
             if (in_edge.is_loop())
                 return false;
-            return --in_degree_map[to_idx(vertex_id)] == 0uz;
+            return --in_degree_map[node.vertex_id] == 0uz;
         },
         pre_visit,
         post_visit

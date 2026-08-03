@@ -57,7 +57,7 @@ By default, the active container of a search engine stores [**gl::algorithm::sea
 1. `vertex_id`: The vertex currently being visited.
 2. `pred_id`: The vertex from which this current vertex was reached (its parent in the traversal tree).
 
-If a vertex is the starting point of a search, its `pred_id` is set to itself, making it a "root" node. The library provides the [**gl::algorithm::no_root**](../../cpp-gl/group__GL-Algorithm.md#variable-no_root) tag to explicitly identify states where a node lacks a predecessor.
+If a vertex is the starting point of a search, its `pred_id` is set to itself, making it a "root" node.
 
 ### The Result Discriminator
 
