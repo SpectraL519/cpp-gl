@@ -134,11 +134,11 @@ bool dfs(
     }
     else { // stateful stack
 
-        struct dfs_ext {
+        struct dfs_extension {
             bool expanded = false; // Indicates if all of the node's children have been visited
         };
 
-        using stateful_node_t = search_node<val_t<G>, dfs_ext>;
+        using stateful_node_t = search_node<val_t<G>, dfs_extension>;
         std::stack<stateful_node_t> s;
 
         for (const auto& node : initial_nodes)

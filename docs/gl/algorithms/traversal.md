@@ -42,7 +42,7 @@ auto pred_map = gl::algorithm::breadth_first_search(graph, start_id); // (1)!
 gl::algorithm::breadth_first_search<gl::algorithm::noret>( // (2)!
     graph,
     gl::algorithm::no_root, // (3)!
-    [](auto v) { std::cout << "Discovered: " << v << '\n'; } // (4)!
+    [](auto node) { std::cout << "Discovered: " << node.vertex_id << '\n'; } // (4)!
 );
 ```
 
@@ -75,8 +75,8 @@ The [**recursive_depth_first_search**](../../cpp-gl/group__GL-Algorithm.md#funct
 gl::algorithm::recursive_depth_first_search<gl::algorithm::noret>(
     graph,
     start_id,
-    [](auto v) { std::cout << "Entering subtree of: " << v << '\n'; }, // (1)!
-    [](auto v) { std::cout << "Exiting subtree of: " << v << '\n'; }   // (2)!
+    [](auto node) { std::cout << "Entering subtree of: " << node.vertex_id << '\n'; }, // (1)!
+    [](auto node) { std::cout << "Exiting subtree of: " << node.vertex_id << '\n'; }   // (2)!
 );
 ```
 
