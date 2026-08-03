@@ -95,8 +95,8 @@ template <traits::c_graph G>
 /// | Parameter | Description | Constraint |
 /// | :-------- | :--- | :--- |
 /// | G | The type of the graph being traversed. Must define a valid distance/weight property. | Must satisfy the [**c_graph**](gl_concepts.md#gl-traits-c-graph) concept. |
-/// | PreVisitCallback | Type of the callable executed immediately before a vertex is officially visited. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
-/// | PostVisitCallback | Type of the callable executed after all adjacent edges of a vertex are evaluated. | Must be one of:<br/>- `(id_type) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PreVisitCallback | Type of the callable executed immediately before `VisitCallback`. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
+/// | PostVisitCallback | Type of the callable executed after all adjacent edges are evaluated. | Must be one of:<br/>- A `(search_node<val_t<G>>) -> void` callable<br/>- An @ref gl::algorithm::empty_callback "empty_callback" |
 ///
 /// @param graph The graph to evaluate.
 /// @param source_id The starting vertex ID for the shortest path calculation.
@@ -107,8 +107,8 @@ template <traits::c_graph G>
 /// @hideparams
 template <
     traits::c_graph G,
-    traits::c_optional_callback<void, id_t<G>> PreVisitCallback = empty_callback,
-    traits::c_optional_callback<void, id_t<G>> PostVisitCallback = empty_callback>
+    traits::c_optional_callback<void, search_node<val_t<G>>> PreVisitCallback = empty_callback,
+    traits::c_optional_callback<void, search_node<val_t<G>>> PostVisitCallback = empty_callback>
 [[nodiscard]] paths_descriptor_type<G> dijkstra_shortest_paths(
     G&& graph, id_t<G> source_id, PreVisitCallback pre_visit = {}, PostVisitCallback post_visit = {}
 ) {
@@ -142,9 +142,8 @@ template <
             return node.ext.distance <= paths.distances[to_idx(node.vertex_id)];
         },
         empty_callback{}, // visit callback
-        [&paths, &negative_edge](id_type vertex_id, const edge_type& in_edge)
+        [&paths, &negative_edge](search_node<val_t<G>> node, const edge_type& in_edge)
             -> decision { // enqueue predicate
-            const auto pred_id = in_edge.other(vertex_id);
             const auto edge_weight = get_weight<G>(in_edge);
 
             if (edge_weight < 0) {
@@ -152,13 +151,13 @@ template <
                 return decision::abort;
             }
 
-            const auto new_distance = paths.distances[to_idx(pred_id)] + edge_weight;
-            auto& v_pred = paths.predecessors[to_idx(vertex_id)];
-            auto& v_dist = paths.distances[to_idx(vertex_id)];
+            const auto new_distance = paths.distances[node.pred_id] + edge_weight;
+            auto& v_pred = paths.predecessors[node.vertex_id];
+            auto& v_dist = paths.distances[node.vertex_id];
 
             if (v_pred == invalid_id or new_distance < v_dist) {
                 v_dist = new_distance;
-                v_pred = pred_id;
+                v_pred = node.pred_id;
                 return true;
             }
 
