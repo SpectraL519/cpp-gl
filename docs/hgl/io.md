@@ -166,7 +166,7 @@ hyperedges:
 
 ## Hypergraph Specification Format (HGSF)
 
-For disk storage and network transmission, HGL utilizes the **Hypergraph Specification Format (HGSF)**. This is a lightweight, flat text format triggered by the `hgl::io::spec_fmt` manipulator.
+For storage purposes, HGL utilizes the **Hypergraph Specification Format (HGSF)**. This is a lightweight, flat text format triggered by the `hgl::io::spec_fmt` manipulator.
 
 ### Format Structure
 

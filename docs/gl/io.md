@@ -158,8 +158,7 @@ type: directed, |V| = 5, |E| = 12
 
 ## Graph Specification Format (GSF)
 
-<!-- TODO: reword -->
-For disk storage and network transmission, CPP-GL defines the **Graph Specification Format (GSF)**. This format is triggered by the [**gl::io::spec_fmt**](../cpp-gl/group__GL-IO.md#variable-spec_fmt) manipulator and is designed to be easily parseable.
+For storage purposes, CPP-GL defines the **Graph Specification Format (GSF)**. This format is triggered by the [**gl::io::spec_fmt**](../cpp-gl/group__GL-IO.md#variable-spec_fmt) manipulator and is designed to be easily parseable.
 
 ### Format Structure
 
