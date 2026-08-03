@@ -1382,19 +1382,25 @@ private:
 
     std::ostream& _verbose_write(std::ostream& os) const {
         os << "type: " << fmt_traits::type << ", |V| = " << this->_n_vertices
-           << ", |E| = " << this->_n_edges << '\n';
+           << ", |E| = " << this->_n_edges;
+
         for (auto vertex : this->vertices()) {
-            os << "- " << vertex << "\n  " << fmt_traits::out_edges << ":\n";
+            os << "\n- " << vertex << "\n  " << fmt_traits::out_edges << ":";
             for (const auto& edge : this->out_edges(vertex.id()))
-                os << "\t- " << edge << '\n';
+                os << "\n\t- " << edge;
         }
         return os;
     }
 
     std::ostream& _concise_write(this auto&& self, std::ostream& os) {
         using enum io::detail::option_bit;
+        bool first = true;
 
         for (auto src : self.vertices()) {
+            if (not first)
+                os << '\n';
+            first = false;
+
             auto tgts = std::views::transform(
                 self.out_edges(src.id()),
                 [src_id = src.id(),
@@ -1402,7 +1408,7 @@ private:
                     return concise_target_formatter{edge, src_id, with_props};
                 }
             );
-            os << src << " : " << io::range_formatter(tgts) << '\n';
+            os << src << " : " << io::range_formatter(tgts);
         }
 
         return os;
@@ -1417,12 +1423,12 @@ private:
         // print graph metadata
         os << traits::c_directed_edge<edge_type> << ' ' << this->_n_vertices << ' '
            << this->_n_edges << ' ' << static_cast<int>(with_v_props) << ' '
-           << static_cast<int>(with_e_props) << '\n';
+           << static_cast<int>(with_e_props);
 
         if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_v_props)
                 for (auto vertex : this->vertices())
-                    os << vertex.properties() << '\n';
+                    os << '\n' << vertex.properties();
 
         if constexpr (traits::c_writable<edge_properties_type>) {
             if (with_e_props) {
@@ -1431,8 +1437,9 @@ private:
                         if constexpr (std::same_as<directional_tag, undirected_t>)
                             if (edge.other(vertex_id) > vertex_id)
                                 continue; // deduplicate edges
-                        os << edge.source() << ' ' << edge.target() << ' ' << edge.properties()
-                           << '\n';
+
+                        os << '\n'
+                           << edge.source() << ' ' << edge.target() << ' ' << edge.properties();
                     }
                 };
 
@@ -1448,7 +1455,8 @@ private:
                 if constexpr (std::same_as<directional_tag, undirected_t>)
                     if (edge.other(vertex_id) > vertex_id)
                         continue; // deduplicate edges
-                os << edge.source() << ' ' << edge.target() << '\n';
+
+                os << '\n' << edge.source() << ' ' << edge.target();
             }
         };
 
