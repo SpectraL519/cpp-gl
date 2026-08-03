@@ -2251,30 +2251,29 @@ private:
         using fmt_traits = io::detail::hypergraph_fmt_traits<directional_tag>;
 
         os << "type: " << fmt_traits::type << ", |V| = " << this->_n_vertices
-           << ", |E| = " << this->_n_hyperedges << '\n';
+           << ", |E| = " << this->_n_hyperedges;
 
-        os << "vertices: ";
+        os << "\nvertices: ";
         if constexpr (traits::c_writable<vertex_properties_type>) {
             if (io::is_option_set(os, with_vertex_properties)) {
-                os << '\n';
                 for (const auto& vertex : this->vertices())
-                    os << "  - " << vertex << '\n';
+                    os << "\n  - " << vertex;
             }
             else {
-                os << io::implicit_range(this->_n_vertices) << '\n';
+                os << io::implicit_range(this->_n_vertices);
             }
         }
         else {
-            os << io::implicit_range(this->_n_vertices) << '\n';
+            os << io::implicit_range(this->_n_vertices);
         }
 
         if (this->_n_hyperedges == 0uz) {
-            os << "hyperedges: {}";
+            os << "\nhyperedges: {}";
         }
         else {
-            os << "hyperedges:\n";
+            os << "\nhyperedges:";
             for (const auto& edge : this->hyperedges())
-                os << "  - " << this->fmt(edge) << '\n';
+                os << "\n  - " << this->fmt(edge);
         }
 
         return os;
@@ -2286,23 +2285,23 @@ private:
         os << "V = ";
         if constexpr (traits::c_writable<vertex_properties_type>) {
             if (io::is_option_set(os, with_vertex_properties))
-                os << io::multiline_set_formatter(this->vertices()) << '\n';
+                os << io::multiline_set_formatter(this->vertices());
             else
-                os << io::implicit_range(this->_n_vertices) << '\n';
+                os << io::implicit_range(this->_n_vertices);
         }
         else {
-            os << io::implicit_range(this->_n_vertices) << '\n';
+            os << io::implicit_range(this->_n_vertices);
         }
 
         if (this->_n_hyperedges == 0uz) {
-            os << "E = {}\n";
+            os << "\nE = {}";
         }
         else {
             auto hyperedges = std::views::transform(this->hyperedges(), [this](auto hyperedge) {
                 return this->fmt(hyperedge);
             });
 
-            os << "E = " << io::multiline_set_formatter(hyperedges) << '\n';
+            os << "\nE = " << io::multiline_set_formatter(hyperedges);
         }
 
         return os;
@@ -2317,17 +2316,17 @@ private:
 
         // print hypergraph metadata
         os << fmt_traits::discriminator << ' ' << this->_n_vertices << ' ' << this->_n_hyperedges
-           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props)
-           << '\n';
+           << ' ' << static_cast<int>(with_v_props) << ' ' << static_cast<int>(with_he_props);
 
         if constexpr (traits::c_writable<vertex_properties_type>)
             if (with_v_props)
                 for (const auto& vertex : this->vertices())
-                    os << vertex.properties() << '\n';
+                    os << '\n' << vertex.properties();
 
         for (const auto& hyperedge : this->hyperedges()) {
-            const auto he_id = hyperedge.id();
+            os << '\n';
 
+            const auto he_id = hyperedge.id();
             if constexpr (std::same_as<directional_tag, undirected_t>) {
                 os << this->hyperedge_size(he_id);
                 for (const auto v : this->incident_vertex_ids(he_id))
@@ -2345,8 +2344,6 @@ private:
                 if (with_he_props)
                     os << ' ' << hyperedge.properties();
             }
-
-            os << '\n';
         }
 
         return os;
