@@ -8,10 +8,11 @@
 
 namespace hgl::impl {
 
-enum class bf_incidence : std::int8_t {
-    none = 0, // v not in E
-    backward = -1, // v in Tail(E)
-    forward = 1, // v in Head(E)
+enum class bf_incidence : std::uint8_t {
+    none = 0, // 00
+    backward = 1 << 0, // 01: Tail
+    forward = 1 << 1, // 10: Head
+    both = backward | forward // 11
 };
 
 [[nodiscard]] constexpr bool bf_is_incident(const bf_incidence i) noexcept {
@@ -19,11 +20,11 @@ enum class bf_incidence : std::int8_t {
 }
 
 [[nodiscard]] constexpr bool bf_is_tail(const bf_incidence i) noexcept {
-    return i == bf_incidence::backward;
+    return (std::to_underlying(i) & std::to_underlying(bf_incidence::backward)) != 0;
 }
 
 [[nodiscard]] constexpr bool bf_is_head(const bf_incidence i) noexcept {
-    return i == bf_incidence::forward;
+    return (std::to_underlying(i) & std::to_underlying(bf_incidence::forward)) != 0;
 }
 
 } // namespace hgl::impl
