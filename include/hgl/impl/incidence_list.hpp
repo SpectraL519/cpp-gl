@@ -235,9 +235,9 @@ private:
     major_storage_type _major_storage;
 };
 
-template <traits::c_hypergraph_list_repr ReprTag>
+template <disjointness Disjointness, traits::c_hypergraph_list_repr ReprTag>
 requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
-class incidence_list<hgl::bf_directed_t, ReprTag> final {
+class incidence_list<hgl::bf_directed_t<Disjointness>, ReprTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
     using representation_tag = ReprTag;

@@ -21,14 +21,19 @@ struct undirected_t {
     using type = std::type_identity_t<undirected_t>;
 };
 
+enum class disjointness : bool { enforced = true, relaxed = false };
+
 /// @ingroup HGL-Core
 /// @brief Tag type specifying that a hypergraph is backward-forward (BF) directed.
 ///
 /// In a BF-directed hypergraph, each hyperedge maps a distinct set of *tail* vertices (origins)
 /// to a distinct set of *head* vertices (destinations).
+template <disjointness Disjointness = disjointness::enforced>
 struct bf_directed_t {
     /// @brief Self type identity for internal metaprogramming use.
     using type = std::type_identity_t<bf_directed_t>;
+
+    static constexpr bool is_disjoint = std::to_underlying(Disjointness);
 };
 
 namespace traits {
@@ -42,7 +47,8 @@ namespace traits {
 ///
 /// @tparam T The type to evaluate against the concept.
 template <typename T>
-concept c_hypergraph_directional_tag = c_one_of<T, undirected_t, bf_directed_t>;
+concept c_hypergraph_directional_tag =
+    std::same_as<T, undirected_t> or c_instantiation_of<bf_directed_t>;
 
 } // namespace traits
 

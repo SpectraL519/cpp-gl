@@ -281,9 +281,9 @@ private:
     storage_type _storage;
 };
 
-template <traits::c_hypergraph_flat_list_repr ReprTag>
+template <disjointness Disjointness, traits::c_hypergraph_flat_list_repr ReprTag>
 requires traits::c_hypergraph_asymmetric_layout_tag<typename ReprTag::layout_tag>
-class flat_incidence_list<hgl::bf_directed_t, ReprTag> final {
+class flat_incidence_list<hgl::bf_directed_t<Disjointness>, ReprTag> final {
 public:
     using directional_tag = hgl::bf_directed_t;
     using representation_tag = ReprTag;
@@ -410,14 +410,15 @@ public:
     void bind_tail(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
 
-        if (detail::contains(this->_head_storage[to_idx(major_id)], minor_id)) {
-            throw std::logic_error(std::format(
-                "Tail and head sets must be disjoint: vertex {} is already bound to the head of "
-                "hyperedge {}.",
-                vertex_id,
-                hyperedge_id
-            ));
-        }
+        if constexpr (directional_tag::is_disjoint)
+            if (detail::contains(this->_head_storage[to_idx(major_id)], minor_id))
+                throw std::logic_error(std::format(
+                    "Tail and head sets must be disjoint: vertex {} is already bound to the head "
+                    "of "
+                    "hyperedge {}.",
+                    vertex_id,
+                    hyperedge_id
+                ));
 
         detail::unique_insert(this->_tail_storage, major_id, minor_id);
     }
@@ -425,14 +426,15 @@ public:
     void bind_head(const id_type vertex_id, const id_type hyperedge_id) {
         const auto [major_id, minor_id] = layout_tag::majmin(vertex_id, hyperedge_id);
 
-        if (detail::contains(this->_tail_storage[to_idx(major_id)], minor_id)) {
-            throw std::logic_error(std::format(
-                "Tail and head sets must be disjoint: vertex {} is already bound to the tail of "
-                "hyperedge {}.",
-                vertex_id,
-                hyperedge_id
-            ));
-        }
+        if constexpr (directional_tag::is_disjoint)
+            if (detail::contains(this->_tail_storage[to_idx(major_id)], minor_id))
+                throw std::logic_error(std::format(
+                    "Tail and head sets must be disjoint: vertex {} is already bound to the tail "
+                    "of "
+                    "hyperedge {}.",
+                    vertex_id,
+                    hyperedge_id
+                ));
 
         detail::unique_insert(this->_head_storage, major_id, minor_id);
     }
