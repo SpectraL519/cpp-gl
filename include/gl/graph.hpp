@@ -300,6 +300,9 @@ public:
     /// @brief Traits type specifying the behavior and representation.
     using traits_type = GraphTraits;
 
+    /// @brief The tag indicating the active API validation and safety policy.
+    using api_policy_tag = typename traits_type::api_policy_tag;
+
     /// @brief Type tag specifying the directionality of the graph.
     using directional_tag = typename traits_type::directional_tag;
     /// @brief Type tag indicating the underlying representation model.
@@ -1118,8 +1121,9 @@ public:
     [[nodiscard]] edge_properties_t<Self>& edge_properties(this Self& self, const id_type id)
     requires(traits::c_non_empty_properties<edge_properties_type>)
     {
-        if (id >= self._n_edges)
-            throw std::invalid_argument(std::format("Got invalid edge id [{}]", id));
+        if constexpr (std::same_as<api_policy_tag, api::strict_t>)
+            if (id >= self._n_edges)
+                throw std::invalid_argument(std::format("Got invalid edge id [{}]", id));
 
         return self._edge_properties[id];
     }
@@ -1302,23 +1306,26 @@ private:
     // --- element validation ---
 
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
-        if (not this->has_vertex(vertex_id))
-            throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
+        if constexpr (std::same_as<api_policy_tag, api::strict_t>)
+            if (not this->has_vertex(vertex_id))
+                throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
     gl_attr_force_inline void _verify_vertex_ids(const std::same_as<id_type> auto... vertex_ids
     ) const {
-        (this->_verify_vertex_id(vertex_ids), ...);
+        if constexpr (std::same_as<api_policy_tag, api::strict_t>)
+            (this->_verify_vertex_id(vertex_ids), ...);
     }
 
     void _verify_edge(const edge_type& edge) const {
-        if (not this->_is_valid_edge(edge))
-            throw std::invalid_argument(std::format(
-                "Got invalid edge [id = {}, vertices = ({}, {})]",
-                edge.id(),
-                edge.source(),
-                edge.target()
-            ));
+        if constexpr (std::same_as<api_policy_tag, api::strict_t>)
+            if (not this->_is_valid_edge(edge))
+                throw std::invalid_argument(std::format(
+                    "Got invalid edge [id = {}, vertices = ({}, {})]",
+                    edge.id(),
+                    edge.source(),
+                    edge.target()
+                ));
     }
 
     [[nodiscard]] bool _is_valid_edge(const edge_type& edge) const noexcept {

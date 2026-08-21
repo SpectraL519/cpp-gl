@@ -35,16 +35,23 @@ struct incidence_item {
 
 namespace detail {
 
-template <traits::c_instantiation_of<incidence_item> AdjListItem>
-[[nodiscard]] auto strict_find(traits::c_range_of<AdjListItem> auto& edge_list, const auto& edge) {
+// TODO: rename to find_edge or sth
+template <
+    traits::c_instantiation_of<incidence_item> AdjListItem,
+    traits::c_api_policy_tag ApiPolicyTag>
+[[nodiscard]] auto find_edge_entry(
+    traits::c_range_of<AdjListItem> auto& edge_list, const auto& edge
+) {
     const auto it = std::ranges::find(edge_list, edge.id(), &AdjListItem::edge_id);
-    if (it == edge_list.end())
-        throw std::invalid_argument(std::format(
-            "Got invalid edge [id = {} | vertices = ({}, {})]",
-            edge.id(),
-            edge.source(),
-            edge.target()
-        ));
+
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+        if (it == edge_list.end())
+            throw std::invalid_argument(std::format(
+                "Got invalid edge [id = {} | vertices = ({}, {})]",
+                edge.id(),
+                edge.source(),
+                edge.target()
+            ));
 
     return it;
 }
@@ -55,6 +62,7 @@ template <traits::c_list_graph_traits GraphTraits>
 class directed_adjacency_list {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
     using storage_type = std::vector<std::vector<item_type>>;
@@ -169,7 +177,7 @@ protected:
 
     gl_attr_force_inline void _remove_edge_impl(this auto& self, const auto& edge) {
         auto& inc_edges = self._list[to_idx(edge.source())];
-        inc_edges.erase(detail::strict_find<item_type>(inc_edges, edge));
+        inc_edges.erase(detail::find_edge_entry<item_type, api_policy_tag>(inc_edges, edge));
     }
 
     // --- edge getters ---
@@ -194,6 +202,7 @@ template <traits::c_list_graph_traits GraphTraits>
 class undirected_adjacency_list {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
     using storage_type = std::vector<std::vector<item_type>>;
@@ -295,9 +304,13 @@ protected:
         auto& inc_edges_first = self._list[to_idx(edge.source())];
         auto& inc_edges_second = self._list[to_idx(edge.target())];
 
-        inc_edges_first.erase(detail::strict_find<item_type>(inc_edges_first, edge));
+        inc_edges_first.erase(
+            detail::find_edge_entry<item_type, api_policy_tag>(inc_edges_first, edge)
+        );
         if (not edge.is_loop())
-            inc_edges_second.erase(detail::strict_find<item_type>(inc_edges_second, edge));
+            inc_edges_second.erase(
+                detail::find_edge_entry<item_type, api_policy_tag>(inc_edges_second, edge)
+            );
     }
 
     // --- edge getters ---

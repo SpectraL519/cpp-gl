@@ -21,6 +21,7 @@ template <traits::c_flat_list_graph_traits GraphTraits>
 class directed_flat_adjacency_list {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
     using storage_type = flat_jagged_vector<item_type>;
@@ -134,7 +135,7 @@ protected:
     gl_attr_force_inline void _remove_edge_impl(this auto& self, const auto& edge) {
         const auto edge_src = to_idx(edge.source());
         auto segment = self._list[edge_src];
-        const auto it = detail::strict_find<item_type>(segment, edge);
+        const auto it = detail::find_edge_entry<item_type, api_policy_tag>(segment, edge);
         const auto pos = static_cast<size_type>(std::distance(segment.begin(), it));
         self._list.erase(edge_src, pos);
     }
@@ -161,6 +162,7 @@ template <traits::c_flat_list_graph_traits GraphTraits>
 class undirected_flat_adjacency_list {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using item_type = incidence_item<id_type>;
     using storage_type = flat_jagged_vector<item_type>;
@@ -270,14 +272,14 @@ protected:
         // remove from the source segment
         {
             auto inc_edges = self._list[src_idx];
-            const auto it = detail::strict_find<item_type>(inc_edges, edge);
+            const auto it = detail::find_edge_entry<item_type, api_policy_tag>(inc_edges, edge);
             const auto pos = static_cast<size_type>(std::distance(inc_edges.begin(), it));
             self._list.erase(src_idx, pos);
         }
 
         if (not edge.is_loop()) {
             auto inc_edges = self._list[tgt_idx];
-            const auto it = detail::strict_find<item_type>(inc_edges, edge);
+            const auto it = detail::find_edge_entry<item_type, api_policy_tag>(inc_edges, edge);
             const auto pos = static_cast<size_type>(std::distance(inc_edges.begin(), it));
             self._list.erase(tgt_idx, pos);
         }

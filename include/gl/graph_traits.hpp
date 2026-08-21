@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "gl/api.hpp"
 #include "gl/decl/graph_traits.hpp"
 #include "gl/decl/repr_tags.hpp"
 #include "gl/directional_tags.hpp"
@@ -21,8 +22,8 @@ namespace gl {
 /// @brief Primary graph traits structure that encapsulates all necessary type information for graph representations.
 ///
 /// This structure serves as the central point for defining the properties and types associated with a graph,
-/// including directionality, vertex and edge properties, as well as representation and identifier types. It is designed
-/// to be flexible and extensible, allowing users to customize their graph types by specifying different traits.
+/// including directionality, vertex and edge properties, API validation policy, as well as representation and identifier types.
+/// It is designed to be flexible and extensible, allowing users to customize their graph types by specifying different traits.
 ///
 /// ### Template Parameters
 /// | Parameter        | Description | Default value | Constraints |
@@ -31,6 +32,7 @@ namespace gl {
 /// | VertexProperties | A type representing the properties associated with vertices in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
 /// | EdgeProperties   | A type representing the properties associated with edges in the graph. | @ref gl::empty_properties "empty_properties" | [**c_properties**](gl_concepts.md#gl-traits-c-properties) |
 /// | ReprTag          | Specifies the graph representation type (e.g., adjacency list, adjacency matrix). | @ref gl::repr::list_t "repr::list_t" | [**c_graph_repr_tag**](gl_concepts.md#gl-traits-c-graph-repr-tag) |
+/// | ApiPolicyTag     | Specifies the API safety and validation policy. | @ref gl::api::strict_t "api::strict_t" | [**c_api_policy_tag**](gl_concepts.md#gl-traits-c-api-policy-tag) |
 /// | IdType           | The type used for vertex and edge identifiers. | @ref gl::default_id_type "default_id_type" | [**c_id_type**](gl_concepts.md#gl-traits-c-id-type) |
 ///
 /// ### See Also
@@ -40,6 +42,7 @@ namespace gl {
 ///   - @ref gl::repr::matrix_t "repr::matrix_t" : A standard adjacency matrix representation.
 ///   - @ref gl::repr::flat_matrix_t "repr::flat_matrix_t" : A flattened adjacency matrix representation.
 /// - @ref gl::directed_t "directed_t", @ref gl::undirected_t "undirected_t" : For the directional tags used to specify graph directionality.
+/// - @ref gl::api::strict_t "api::strict_t", @ref gl::api::relaxed_t "api::relaxed_t" : For tags configuring API validation logic.
 /// - @ref gl::vertex_descriptor "vertex_descriptor" : For the vertex descriptor type defined based on the graph traits.
 /// - @ref gl::edge_descriptor "edge_descriptor" : For the edge descriptor type defined based on the graph traits.
 /// - @ref gl::empty_properties "empty_properties" : For the default empty properties type used when no custom properties are needed.
@@ -55,12 +58,15 @@ template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_repr_tag ReprTag = repr::list_t,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 struct graph_traits {
     /// @brief The tag indicating the graph's directionality (directed or undirected).
     using directional_tag = DirectionalTag;
     /// @brief The tag indicating the graph's representation type (e.g., adjacency list, adjacency matrix).
     using representation_tag = ReprTag;
+    /// @brief The tag indicating the active API validation and safety policy.
+    using api_policy_tag = ApiPolicyTag;
     /// @brief The type of graph element indentifiers (i.e. vertex and edge IDs).
     using id_type = IdType;
 
@@ -90,14 +96,15 @@ struct graph_traits {
 /// >
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `ReprTag` parameter fixed to @ref gl::repr::list_t "repr::list_t". This means that when using `list_graph_traits`,
-/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, and `IdType` parameters need to be specified.
+/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using list_graph_traits =
-    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, repr::list_t, IdType>;
+    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, repr::list_t, ApiPolicyTag, IdType>;
 
 /// @ingroup GL-Core
 /// @brief Type alias for graph traits with a flattened adjacency list representation.
@@ -110,14 +117,20 @@ using list_graph_traits =
 /// >
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `ReprTag` parameter fixed to @ref gl::repr::flat_list_t "repr::flat_list_t". This means that when using `flat_list_graph_traits`,
-/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, and `IdType` parameters need to be specified.
+/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using flat_list_graph_traits =
-    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, repr::flat_list_t, IdType>;
+using flat_list_graph_traits = graph_traits<
+    DirectionalTag,
+    VertexProperties,
+    EdgeProperties,
+    repr::flat_list_t,
+    ApiPolicyTag,
+    IdType>;
 
 /// @ingroup GL-Core
 /// @brief Type alias for graph traits with an adjacency matrix representation.
@@ -130,14 +143,20 @@ using flat_list_graph_traits =
 /// >
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `ReprTag` parameter fixed to @ref gl::repr::matrix_t "repr::matrix_t". This means that when using `matrix_graph_traits`,
-/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, and `IdType` parameters need to be specified.
+/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using matrix_graph_traits =
-    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, repr::matrix_t, IdType>;
+using matrix_graph_traits = graph_traits<
+    DirectionalTag,
+    VertexProperties,
+    EdgeProperties,
+    repr::matrix_t,
+    ApiPolicyTag,
+    IdType>;
 
 /// @ingroup GL-Core
 /// @brief Type alias for graph traits with a flattened adjacency matrix representation.
@@ -150,14 +169,20 @@ using matrix_graph_traits =
 /// >
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `ReprTag` parameter fixed to @ref gl::repr::flat_matrix_t "repr::flat_matrix_t". This means that when using `flat_matrix_graph_traits`,
-/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, and `IdType` parameters need to be specified.
+/// > only the `DirectionalTag`, `VertexProperties`, `EdgeProperties`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using flat_matrix_graph_traits =
-    graph_traits<DirectionalTag, VertexProperties, EdgeProperties, repr::flat_matrix_t, IdType>;
+using flat_matrix_graph_traits = graph_traits<
+    DirectionalTag,
+    VertexProperties,
+    EdgeProperties,
+    repr::flat_matrix_t,
+    ApiPolicyTag,
+    IdType>;
 
 /// @ingroup GL-Core
 /// @brief Type alias for graph traits with an directed graph configuration.
@@ -168,14 +193,15 @@ using flat_matrix_graph_traits =
 /// > [!NOTE] Template parameters
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `DirectionalTag` parameter fixed to @ref gl::directed_t "directed_t". This means that when using `directed_graph_traits`,
-/// > only the `VertexProperties`, `EdgeProperties`, 'ReprTag', and `IdType` parameters need to be specified.
+/// > only the `VertexProperties`, `EdgeProperties`, `ReprTag`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_repr_tag ReprTag = repr::list_t,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using directed_graph_traits =
-    graph_traits<directed_t, VertexProperties, EdgeProperties, ReprTag, IdType>;
+    graph_traits<directed_t, VertexProperties, EdgeProperties, ReprTag, ApiPolicyTag, IdType>;
 
 /// @ingroup GL-Core
 /// @brief Type alias for graph traits with an undirected graph configuration.
@@ -186,14 +212,15 @@ using directed_graph_traits =
 /// > [!NOTE] Template parameters
 /// > The template parameters for this alias are the same as those for @ref gl::graph_traits "graph_traits", with the
 /// > `DirectionalTag` parameter fixed to @ref gl::undirected_t "undirected_t". This means that when using `undirected_graph_traits`,
-/// > only the `VertexProperties`, `EdgeProperties`, 'ReprTag', and `IdType` parameters need to be specified.
+/// > only the `VertexProperties`, `EdgeProperties`, `ReprTag`, `ApiPolicyTag`, and `IdType` parameters need to be specified.
 template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_repr_tag ReprTag = repr::list_t,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using undirected_graph_traits =
-    graph_traits<undirected_t, VertexProperties, EdgeProperties, ReprTag, IdType>;
+    graph_traits<undirected_t, VertexProperties, EdgeProperties, ReprTag, ApiPolicyTag, IdType>;
 
 namespace traits {
 

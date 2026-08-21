@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "gl/api.hpp"
 #include "gl/decl/repr_tags.hpp"
 #include "gl/directional_tags.hpp"
 #include "gl/traits.hpp"
@@ -15,6 +16,7 @@ template <
     traits::c_properties VertexProperties,
     traits::c_properties EdgeProperties,
     traits::c_graph_repr_tag ReprTag,
+    traits::c_api_policy_tag ApiPolicyTag,
     traits::c_id_type IdType>
 struct graph_traits;
 

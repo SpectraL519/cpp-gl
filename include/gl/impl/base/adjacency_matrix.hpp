@@ -27,29 +27,35 @@ class adjacency_matrix;
 
 namespace detail {
 
-[[nodiscard]] auto& strict_get(auto& id_matrix, const auto& edge) {
+// TODO: rename to get_edge_id or sth
+template <traits::c_api_policy_tag ApiPolicyTag>
+[[nodiscard]] auto& get_edge_entry(auto& id_matrix, const auto& edge) {
     // get the edge and validate the address
     const auto [source_id, target_id] = edge.incident_vertices();
     auto& edge_id = id_matrix[to_idx(source_id)][to_idx(target_id)];
-    if (edge.id() != edge_id)
-        throw std::invalid_argument(std::format(
-            "Got invalid edge [id = {} | vertices = ({}, {})]", edge.id(), source_id, target_id
-        ));
+
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+        if (edge.id() != edge_id)
+            throw std::invalid_argument(std::format(
+                "Got invalid edge [id = {} | vertices = ({}, {})]", edge.id(), source_id, target_id
+            ));
 
     return edge_id;
 }
 
-template <traits::c_id_type IdType>
+template <traits::c_api_policy_tag ApiPolicyTag, traits::c_id_type IdType>
 inline void check_edge_override(
     const auto& id_matrix, const IdType source_id, const IdType target_id
 ) {
-    if (const auto edge_id = id_matrix[to_idx(source_id)][to_idx(target_id)]; edge_id != invalid_id)
-        throw std::logic_error(std::format(
-            "Cannot override an existing edge: [id = {}, vertices = ({}, {})]",
-            edge_id,
-            source_id,
-            target_id
-        ));
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+        if (const auto edge_id = id_matrix[to_idx(source_id)][to_idx(target_id)];
+            edge_id != invalid_id)
+            throw std::logic_error(std::format(
+                "Cannot override an existing edge: [id = {}, vertices = ({}, {})]",
+                edge_id,
+                source_id,
+                target_id
+            ));
 }
 
 } // namespace detail
@@ -58,6 +64,7 @@ template <traits::c_matrix_graph_traits GraphTraits>
 class directed_adjacency_matrix {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using vertex_type = typename traits_type::vertex_type;
     using edge_type = typename traits_type::edge_type;
@@ -158,7 +165,7 @@ public:
     gl_attr_force_inline void add_edge(
         this auto& self, id_type edge_id, id_type source_id, id_type target_id
     ) {
-        detail::check_edge_override(self._matrix, source_id, target_id);
+        detail::check_edge_override<api_policy_tag>(self._matrix, source_id, target_id);
         self._matrix[to_idx(source_id)][to_idx(target_id)] = edge_id;
     }
 
@@ -169,7 +176,7 @@ public:
         const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
-            detail::check_edge_override(self._matrix, source_id, target_id);
+            detail::check_edge_override<api_policy_tag>(self._matrix, source_id, target_id);
 
         auto& matrix_source_row = self._matrix[to_idx(source_id)];
         for (auto [edge_id, target_id] : std::views::zip(edge_ids, target_ids))
@@ -226,7 +233,7 @@ protected:
     // --- edge modifiers ---
 
     gl_attr_force_inline void _remove_edge_impl(this auto& self, const auto& edge) {
-        detail::strict_get(self._matrix, edge) = invalid_id;
+        detail::get_edge_entry<api_policy_tag>(self._matrix, edge) = invalid_id;
     }
 
     // --- edge getters ---
@@ -241,6 +248,7 @@ template <traits::c_matrix_graph_traits GraphTraits>
 class undirected_adjacency_matrix {
 public:
     using traits_type = GraphTraits;
+    using api_policy_tag = typename traits_type::api_policy_tag;
     using id_type = typename traits_type::id_type;
     using vertex_type = typename traits_type::vertex_type;
     using edge_type = typename traits_type::edge_type;
@@ -318,7 +326,7 @@ public:
     // --- edge modifiers ---
 
     void add_edge(this auto& self, id_type edge_id, id_type source_id, id_type target_id) {
-        detail::check_edge_override(self._matrix, source_id, target_id);
+        detail::check_edge_override<api_policy_tag>(self._matrix, source_id, target_id);
 
         const auto source_idx = to_idx(source_id);
         const auto target_idx = to_idx(target_id);
@@ -335,7 +343,7 @@ public:
         const traits::c_forward_range_of<id_type> auto& target_ids
     ) {
         for (const auto target_id : target_ids)
-            detail::check_edge_override(self._matrix, source_id, target_id);
+            detail::check_edge_override<api_policy_tag>(self._matrix, source_id, target_id);
 
         const auto source_idx = to_idx(source_id);
         auto& matrix_source_row = self._matrix[source_idx];
@@ -396,10 +404,10 @@ protected:
 
     void _remove_edge_impl(this auto& self, const auto& edge) {
         if (edge.is_loop()) {
-            detail::strict_get(self._matrix, edge) = invalid_id;
+            detail::get_edge_entry<api_policy_tag>(self._matrix, edge) = invalid_id;
         }
         else {
-            detail::strict_get(self._matrix, edge) = invalid_id;
+            detail::get_edge_entry<api_policy_tag>(self._matrix, edge) = invalid_id;
             self._matrix[to_idx(edge.target())][to_idx(edge.source())] = invalid_id;
         }
     }
