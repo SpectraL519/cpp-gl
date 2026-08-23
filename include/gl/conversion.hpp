@@ -23,7 +23,7 @@ namespace traits {
 /// @brief Utility trait type used to swap the representation tag of a graph traits or graph type.
 /// ### See Also:
 /// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different representations.
-template <typename GT, traits::c_graph_repr_tag NewImplTag>
+template <typename GT, traits::c_graph_repr_tag NewReprTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
 struct swap_repr_tag;
 
@@ -33,11 +33,12 @@ template <
     traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
-    traits::c_graph_repr_tag OldImplTag,
-    traits::c_graph_repr_tag NewImplTag,
+    traits::c_graph_repr_tag OldReprTag,
+    traits::c_graph_repr_tag NewReprTag,
+    traits::c_api_policy_tag ApiPolicyTag,
     traits::c_id_type IdType>
-struct swap_repr_tag<graph_traits<Dir, VP, EP, OldImplTag, IdType>, NewImplTag> {
-    using type = graph_traits<Dir, VP, EP, NewImplTag, IdType>;
+struct swap_repr_tag<graph_traits<Dir, VP, EP, OldReprTag, ApiPolicyTag, IdType>, NewReprTag> {
+    using type = graph_traits<Dir, VP, EP, NewReprTag, ApiPolicyTag, IdType>;
 };
 
 /// @ingroup GL-Traits
@@ -46,26 +47,27 @@ template <
     traits::c_graph_directional_tag Dir,
     traits::c_properties VP,
     traits::c_properties EP,
-    traits::c_graph_repr_tag OldImplTag,
-    traits::c_graph_repr_tag NewImplTag,
+    traits::c_graph_repr_tag OldReprTag,
+    traits::c_graph_repr_tag NewReprTag,
+    traits::c_api_policy_tag ApiPolicyTag,
     traits::c_id_type IdType>
-struct swap_repr_tag<graph<graph_traits<Dir, VP, EP, OldImplTag, IdType>>, NewImplTag> {
-    using type = graph<graph_traits<Dir, VP, EP, NewImplTag, IdType>>;
+struct swap_repr_tag<graph<graph_traits<Dir, VP, EP, OldReprTag, ApiPolicyTag, IdType>>, NewReprTag> {
+    using type = graph<graph_traits<Dir, VP, EP, NewReprTag, ApiPolicyTag, IdType>>;
 };
 
 /// @ingroup GL-Traits
 /// @brief Alias template for easier usage of the @ref gl::traits::swap_repr_tag "swap_repr_tag" trait to resolve the swapped type directly.
 /// ### See Also:
 /// - @ref gl::to "to" : For the function that utilizes this trait to perform graph conversions between different representations.
-template <typename GT, traits::c_graph_repr_tag NewImplTag>
+template <typename GT, traits::c_graph_repr_tag NewReprTag>
 requires c_graph<GT> or c_instantiation_of<GT, graph_traits>
-using swap_repr_tag_t = typename swap_repr_tag<GT, NewImplTag>::type;
+using swap_repr_tag_t = typename swap_repr_tag<GT, NewReprTag>::type;
 
 } // namespace traits
 
 namespace detail {
 
-template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
+template <traits::c_graph_repr_tag TargetReprTag, traits::c_graph_repr_tag SourceReprTag>
 struct to_impl {
     template <typename TargetGraph, typename SourceGraph>
     static void convert(TargetGraph& target, SourceGraph& source) {
@@ -168,26 +170,26 @@ struct to_impl<repr::matrix_t, repr::flat_matrix_t> {
 /// ### Template Parameters
 /// | Parameter     | Description | Constraints |
 /// | :------------ | :---------- | :---------- |
-/// | TargetImplTag | The representation tag of the desired target representation (e.g., `gl::repr::flat_list_t`) | [**c_graph_repr_tag**](gl_concepts.md#gl-traits-c-graph-repr-tag) |
+/// | TargetReprTag | The representation tag of the desired target representation (e.g., `gl::repr::flat_list_t`) | [**c_graph_repr_tag**](gl_concepts.md#gl-traits-c-graph-repr-tag) |
 /// | Graph         | The type of the source graph, which will be automatically deduced from the function argument. | [**c_graph**](gl_concepts.md#gl-traits-c-graph) and must **NOT** be an Lvalue reference |
 ///
 /// @param source The graph to convert. After the operation it will be left in a valid, empty state.
-/// @return A new graph containing the moved data, structured according to `TargetImplTag`.
+/// @return A new graph containing the moved data, structured according to `TargetReprTag`.
 ///
 /// ### See Also
 /// - @ref gl::traits::swap_repr_tag "swap_repr_tag" : For the trait used to resolve the target graph type with the swapped representation tag.
-template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph Graph>
+template <traits::c_graph_repr_tag TargetReprTag, traits::c_graph Graph>
 requires(not std::is_lvalue_reference_v<Graph>)
 [[nodiscard]] auto to(Graph&& source) {
     using source_traits = typename Graph::traits_type;
     using source_impl_tag = typename source_traits::representation_tag;
 
-    using target_traits = traits::swap_repr_tag_t<source_traits, TargetImplTag>;
+    using target_traits = traits::swap_repr_tag_t<source_traits, TargetReprTag>;
     using target_graph = graph<target_traits>;
 
     target_graph target;
 
-    detail::to_impl<TargetImplTag, source_impl_tag>::convert(target, source);
+    detail::to_impl<TargetReprTag, source_impl_tag>::convert(target, source);
 
     target._n_vertices = std::exchange(source._n_vertices, 0uz);
     target._n_edges = std::exchange(source._n_edges, 0uz);

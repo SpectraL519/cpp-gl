@@ -23,7 +23,7 @@ namespace gl::impl {
 
 namespace detail {
 
-template <traits::c_id_type IdType, traits::c_api_policy_tag ApiPolicyTag>
+template <traits::c_api_policy_tag ApiPolicyTag, traits::c_id_type IdType>
 [[nodiscard]] auto& get_edge_entry(flat_matrix<IdType>& id_matrix, const auto& edge) {
     // get the edge and validate the address
     const auto [source_id, target_id] = edge.incident_vertices();
