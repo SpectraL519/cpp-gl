@@ -1,5 +1,6 @@
 #include "doctest.h"
 #include "testing/common/functional.hpp"
+#include "testing/gl/api.hpp"
 #include "testing/gl/constants.hpp"
 #include "testing/gl/types.hpp"
 

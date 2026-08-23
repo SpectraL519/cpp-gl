@@ -507,13 +507,14 @@ public:
         return self.vertex_unchecked(vertex_id);
     }
 
-    /// @brief Returns a vertex descriptor bounds-checked by ID (alias for `vertex`).
+    /// @brief Returns a vertex descriptor bounds-checked by ID.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
     /// @throws std::invalid_argument If the ID is invalid.
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline vertex_t<Self> at(this Self& self, const id_type vertex_id) {
-        return self.vertex(vertex_id);
+        self.template _verify_vertex_id<false>(vertex_id);
+        return self.vertex_unchecked(vertex_id);
     }
 
     /// @brief Returns a vertex descriptor without bounds checking.
@@ -1305,16 +1306,18 @@ private:
 
     // --- element validation ---
 
+    template <bool FollowApiPolicy = true>
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
-        if constexpr (std::same_as<api_policy_tag, api::strict_t>)
+        if constexpr (not FollowApiPolicy or std::same_as<api_policy_tag, api::strict_t>)
             if (not this->has_vertex(vertex_id))
                 throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
+    template <bool FollowApiPolicy = true>
     gl_attr_force_inline void _verify_vertex_ids(const std::same_as<id_type> auto... vertex_ids
     ) const {
         if constexpr (std::same_as<api_policy_tag, api::strict_t>)
-            (this->_verify_vertex_id(vertex_ids), ...);
+            (this->_verify_vertex_id<FollowApiPolicy>(vertex_ids), ...);
     }
 
     void _verify_edge(const edge_type& edge) const {
