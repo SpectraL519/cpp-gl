@@ -23,8 +23,6 @@ namespace hgl {
 /// > To get a detailed overview of these shared utilities, please refer to the GL module's @ref GL-Util documentation page.
 namespace util {
 
-// TODO: add doc comments
-
 using gl::util::all_equal;
 using gl::util::is_constant;
 using gl::util::range_size;

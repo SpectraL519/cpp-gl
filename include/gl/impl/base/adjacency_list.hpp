@@ -35,7 +35,6 @@ struct incidence_item {
 
 namespace detail {
 
-// TODO: rename to find_edge or sth
 template <
     traits::c_instantiation_of<incidence_item> AdjListItem,
     traits::c_api_policy_tag ApiPolicyTag>
@@ -44,7 +43,7 @@ template <
 ) {
     const auto it = std::ranges::find(edge_list, edge.id(), &AdjListItem::edge_id);
 
-    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>) {
         if (it == edge_list.end())
             throw std::invalid_argument(std::format(
                 "Got invalid edge [id = {} | vertices = ({}, {})]",
@@ -52,6 +51,10 @@ template <
                 edge.source(),
                 edge.target()
             ));
+    }
+    else {
+        [[assume(it != edge_list.end())]];
+    }
 
     return it;
 }

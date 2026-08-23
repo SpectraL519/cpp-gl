@@ -29,11 +29,15 @@ template <traits::c_api_policy_tag ApiPolicyTag, traits::c_id_type IdType>
     const auto [source_id, target_id] = edge.incident_vertices();
     auto& edge_id = id_matrix[to_idx(source_id), to_idx(target_id)];
 
-    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>) {
         if (edge.id() != edge_id)
             throw std::invalid_argument(std::format(
                 "Got invalid edge [id = {} | vertices = ({}, {})]", edge.id(), source_id, target_id
             ));
+    }
+    else {
+        [[assume(edge.id() == edge_id)]];
+    }
 
     return edge_id;
 }
@@ -42,7 +46,7 @@ template <traits::c_api_policy_tag ApiPolicyTag, traits::c_id_type IdType>
 inline void check_edge_override(
     const flat_matrix<IdType>& id_matrix, const IdType source_id, const IdType target_id
 ) {
-    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>)
+    if constexpr (std::same_as<ApiPolicyTag, api::strict_t>) {
         if (const auto edge_id = id_matrix[to_idx(source_id), to_idx(target_id)];
             edge_id != invalid_id)
             throw std::logic_error(std::format(
@@ -51,6 +55,10 @@ inline void check_edge_override(
                 source_id,
                 target_id
             ));
+    }
+    else {
+        [[assume(id_matrix[to_idx(source_id), to_idx(target_id)] == invalid_id)]];
+    }
 }
 
 } // namespace detail
