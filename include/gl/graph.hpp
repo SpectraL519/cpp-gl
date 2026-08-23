@@ -150,6 +150,20 @@ template <typename G>
 concept c_adjacency_matrix_graph = c_matrix_graph<G> or c_flat_matrix_graph<G>;
 
 /// @ingroup GL-Traits
+/// @brief Concept checking if a graph operates under the strict API validation policy.
+/// @see gl::api::strict_t "strict_t" : For the policy tag used to specify safe, bounds-checked graph configurations.
+template <typename G>
+concept c_strict_graph =
+    c_graph<G> and std::same_as<typename val_t<G>::api_policy_tag, api::strict_t>;
+
+/// @ingroup GL-Traits
+/// @brief Concept checking if a graph operates under the relaxed API validation policy.
+/// @see gl::api::relaxed_t "relaxed_t" : For the policy tag used to specify zero-cost, unchecked graph configurations.
+template <typename G>
+concept c_relaxed_graph =
+    c_graph<G> and std::same_as<typename val_t<G>::api_policy_tag, api::relaxed_t>;
+
+/// @ingroup GL-Traits
 /// @brief Concept checking if a type is a mutable or immutable vertex descriptor associated with the given graph.
 /// @tparam V The type of the vertex descriptor.
 /// @tparam G The type of the graph.
@@ -1305,8 +1319,31 @@ public:
     template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
     friend struct detail::to_impl;
 
+    template <traits::c_graph G>
+    friend auto as_strict(G&&) noexcept;
+
+    template <traits::c_graph G>
+    friend auto as_relaxed(G&&) noexcept;
+
 private:
     graph(const graph& other) = default;
+
+    // O(1) Heterogeneous move constructor for safely swapping API policies.
+    template <traits::c_api_policy_tag OtherApiPolicy>
+    explicit graph(
+        graph<graph_traits<
+            directional_tag,
+            vertex_properties_type,
+            edge_properties_type,
+            representation_tag,
+            OtherApiPolicy,
+            id_type>>&& other
+    ) noexcept
+    : _n_vertices(std::exchange(other._n_vertices, 0uz)),
+      _n_edges(std::exchange(other._n_edges, 0uz)),
+      _impl(std::move(other._impl)),
+      _vertex_properties(std::move(other._vertex_properties)),
+      _edge_properties(std::move(other._edge_properties)) {}
 
     // --- element validation ---
 

@@ -74,6 +74,19 @@ void add_args(argon::argument_parser& parser) {
         .help("Number of vertices for a single set in bipartite generation");
 }
 
+template <typename StrictGraph>
+void register_is_bipartite_benchmark(const std::string& base_name, int64_t n_vertices) {
+    using RelaxedGraph = gl::traits::make_relaxed_t<StrictGraph>;
+
+    benchmark::RegisterBenchmark(base_name + "/strict", bm_gl_is_bipartite<StrictGraph>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+
+    benchmark::RegisterBenchmark(base_name + "/relaxed", bm_gl_is_bipartite<RelaxedGraph>)
+        ->Arg(n_vertices)
+        ->Unit(benchmark::kMillisecond);
+}
+
 void register_benchmarks(const argon::argument_parser& parser) {
     const auto n_vertices = static_cast<int64_t>(parser.value<std::size_t>("bip-v"));
 

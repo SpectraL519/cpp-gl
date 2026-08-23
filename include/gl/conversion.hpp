@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "gl/api.hpp"
 #include "gl/decl/repr_tags.hpp"
 #include "gl/graph.hpp"
 #include "gl/repr_tags.hpp"
@@ -16,6 +17,8 @@
 #include <utility>
 
 namespace gl {
+
+// --- representation conversion ---
 
 namespace traits {
 
@@ -198,6 +201,131 @@ requires(not std::is_lvalue_reference_v<Graph>)
     source._impl = typename Graph::implementation_type{};
 
     return target;
+}
+
+// --- API policy conversion ---
+
+namespace traits {
+
+/// @ingroup GL-Traits
+/// @brief Utility trait type used to swap the API policy tag of a graph or graph traits type.
+template <typename GT, traits::c_api_policy_tag NewApiPolicyTag>
+requires(c_graph<GT> or c_instantiation_of<GT, graph_traits>)
+struct swap_api_policy_tag;
+
+/// @ingroup GL-Traits
+/// @brief Specialization of `swap_api_policy_tag` for `graph_traits`.
+template <
+    traits::c_graph_directional_tag Dir,
+    traits::c_properties VP,
+    traits::c_properties EP,
+    traits::c_graph_repr_tag ReprTag,
+    traits::c_api_policy_tag OldApiPolicyTag,
+    traits::c_api_policy_tag NewApiPolicyTag,
+    traits::c_id_type IdType>
+struct swap_api_policy_tag<
+    graph_traits<Dir, VP, EP, ReprTag, OldApiPolicyTag, IdType>,
+    NewApiPolicyTag> {
+    using type = graph_traits<Dir, VP, EP, ReprTag, NewApiPolicyTag, IdType>;
+};
+
+/// @ingroup GL-Traits
+/// @brief Specialization of `swap_api_policy_tag` for the `graph` class.
+template <
+    traits::c_graph_directional_tag Dir,
+    traits::c_properties VP,
+    traits::c_properties EP,
+    traits::c_graph_repr_tag ReprTag,
+    traits::c_api_policy_tag OldApiPolicyTag,
+    traits::c_api_policy_tag NewApiPolicyTag,
+    traits::c_id_type IdType>
+struct swap_api_policy_tag<
+    graph<graph_traits<Dir, VP, EP, ReprTag, OldApiPolicyTag, IdType>>,
+    NewApiPolicyTag> {
+    using type = graph<graph_traits<Dir, VP, EP, ReprTag, NewApiPolicyTag, IdType>>;
+};
+
+/// @ingroup GL-Traits
+/// @brief Convenience alias to resolve the swapped API policy type.
+template <typename GT, traits::c_api_policy_tag NewApiPolicyTag>
+using swap_api_policy_tag_t = typename swap_api_policy_tag<GT, NewApiPolicyTag>::type;
+
+/// @ingroup GL-Traits
+/// @brief Convenience alias to transform a graph or traits type into its strict API equivalent.
+template <typename GT>
+using make_strict_t = traits::swap_api_policy_tag_t<GT, api::strict_t>;
+
+/// @ingroup GL-Traits
+/// @brief Convenience alias to transform a graph or traits type into its relaxed API equivalent.
+template <typename GT>
+using make_relaxed_t = traits::swap_api_policy_tag_t<GT, api::relaxed_t>;
+
+} // namespace traits
+
+/// @ingroup GL-Core
+/// @brief O(1) zero-cost conversion of a graph to the strict API policy.
+///
+/// Moves the underlying graph memory into a structurally identical graph governed by `api::strict_t`.
+///
+/// @param g The relaxed graph to convert (must be moved).
+/// @return A strict graph instance taking ownership of the original graph's memory.
+template <traits::c_graph Graph>
+requires(not std::is_lvalue_reference_v<Graph>)
+[[nodiscard]] gl_attr_force_inline auto as_strict(Graph&& g) noexcept {
+    return traits::make_strict_t<val_t<Graph>>(std::move(g));
+}
+
+/// @ingroup GL-Core
+/// @brief O(1) zero-cost conversion of a graph to the relaxed API policy.
+///
+/// Moves the underlying graph memory into a structurally identical graph governed by `api::relaxed_t`.
+///
+/// @param g The strict graph to convert (must be moved).
+/// @return A relaxed graph instance taking ownership of the original graph's memory.
+template <traits::c_graph Graph>
+requires(not std::is_lvalue_reference_v<Graph>)
+[[nodiscard]] gl_attr_force_inline auto as_relaxed(Graph&& g) noexcept {
+    return traits::make_relaxed_t<val_t<Graph>>(std::move(g));
+}
+
+/// @ingroup GL-Core
+/// @brief Temporarily executes a callable using a relaxed graph policy.
+///
+/// For strict graphs, this function performs a zero-cost $O(1)$ move of the source graph into a relaxed graph,
+/// passes it to the provided function, and mathematically guarantees the original graph is perfectly
+/// restored (moved back) after execution, even if an exception is thrown.
+///
+/// For graphs that are already relaxed, the callable is simply invoked directly with zero overhead.
+///
+/// ### See Also
+/// - @ref gl::as_relaxed "as_relaxed" : The underlying explicit conversion function.
+/// - @ref gl::traits::make_relaxed_t "make_relaxed_t" : The trait defining the relaxed target type.
+///
+/// @param g The graph to temporarily relax.
+/// @param func A callable (e.g., a lambda) that accepts a reference to the relaxed graph.
+/// @return The return value resulting from the provided callable.
+template <traits::c_graph Graph, typename Func>
+requires(not std::is_const_v<Graph>) and std::invocable<Func, traits::make_relaxed_t<Graph>&>
+constexpr decltype(auto) with_relaxed(Graph& g, Func&& func) {
+    if constexpr (traits::c_relaxed_graph<Graph>) {
+        return std::forward<Func>(func)(g);
+    }
+    else {
+        using relaxed_type = traits::make_relaxed_t<Graph>;
+
+        struct restorer {
+            Graph& original;
+            relaxed_type& relaxed;
+
+            ~restorer() {
+                this->original = gl::as_strict(std::move(this->relaxed));
+            }
+        };
+
+        relaxed_type relaxed_g = gl::as_relaxed(std::move(g));
+        restorer r{g, relaxed_g};
+        return std::forward<Func>(func)(relaxed_g);
+    }
 }
 
 } // namespace gl
