@@ -1581,9 +1581,10 @@ template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_repr_tag ReprTag = repr::list_t,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using directed_graph =
-    graph<directed_graph_traits<VertexProperties, EdgeProperties, ReprTag, IdType>>;
+    graph<directed_graph_traits<VertexProperties, EdgeProperties, ReprTag, ApiPolicyTag, IdType>>;
 
 /// @ingroup GL-Core
 /// @brief Convenience alias for defining a nundirected graph.
@@ -1591,9 +1592,10 @@ template <
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
     traits::c_graph_repr_tag ReprTag = repr::list_t,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using undirected_graph =
-    graph<undirected_graph_traits<VertexProperties, EdgeProperties, ReprTag, IdType>>;
+    graph<undirected_graph_traits<VertexProperties, EdgeProperties, ReprTag, ApiPolicyTag, IdType>>;
 
 /// @ingroup GL-Core
 /// @brief Convenience alias for defining a graph utilizing an adjacency list representation model.
@@ -1601,9 +1603,10 @@ template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
 using list_graph =
-    graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+    graph<list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, ApiPolicyTag, IdType>>;
 
 /// @ingroup GL-Core
 /// @brief Convenience alias for defining a graph utilizing an adjacency matrix representation model.
@@ -1611,9 +1614,10 @@ template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using matrix_graph =
-    graph<matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+using matrix_graph = graph<
+    matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, ApiPolicyTag, IdType>>;
 
 /// @ingroup GL-Core
 /// @brief Convenience alias for defining a graph utilizing a flattened adjacency list representation model.
@@ -1621,9 +1625,10 @@ template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using flat_list_graph =
-    graph<flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+using flat_list_graph = graph<
+    flat_list_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, ApiPolicyTag, IdType>>;
 
 /// @ingroup GL-Core
 /// @brief Convenience alias for defining a graph utilizing a flattened adjacency matrix representation model.
@@ -1631,9 +1636,10 @@ template <
     traits::c_graph_directional_tag DirectionalTag = directed_t,
     traits::c_properties VertexProperties = empty_properties,
     traits::c_properties EdgeProperties = empty_properties,
+    traits::c_api_policy_tag ApiPolicyTag = api::strict_t,
     traits::c_id_type IdType = default_id_type>
-using flat_matrix_graph =
-    graph<flat_matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, IdType>>;
+using flat_matrix_graph = graph<
+    flat_matrix_graph_traits<DirectionalTag, VertexProperties, EdgeProperties, ApiPolicyTag, IdType>>;
 
 // --- vertex distance utility ---
 
