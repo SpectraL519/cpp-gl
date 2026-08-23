@@ -438,7 +438,7 @@ public:
 
     /// @brief Removes a vertex by its ID, removing all associated incident edges.
     /// @param vertex_id The ID of the vertex to remove.
-    /// @throws std::invalid_argument If the ID is invalid.
+    /// @throws std::invalid_argument If the ID is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertex(const id_type vertex_id) {
         this->_verify_vertex_id(vertex_id);
@@ -447,7 +447,7 @@ public:
 
     /// @brief Removes a vertex using its descriptor.
     /// @param vertex The descriptor of the vertex to remove.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     gl_attr_force_inline void remove_vertex(traits::c_vertex<graph> auto vertex) {
         this->remove_vertex(vertex.id());
@@ -455,7 +455,7 @@ public:
 
     /// @brief Removes a range of vertices using their IDs.
     /// @param vertex_id_rng A forward range containing the IDs of vertices to remove.
-    /// @throws std::invalid_argument If any vertex ID in the range is invalid.
+    /// @throws std::invalid_argument If any vertex ID in the range is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     void remove_vertices(const traits::c_forward_range_of<id_type> auto& vertex_id_rng) {
         auto vertex_ids = vertex_id_rng | std::ranges::to<std::vector>();
@@ -473,7 +473,7 @@ public:
     /// @brief Removes a range of vertices using their descriptors.
     /// @tparam VertexRng A forward range type containing graph's vertex descriptors.
     /// @param vertex_rng A sized range containing the descriptors of vertices to remove.
-    /// @throws std::invalid_argument If any vertex descriptor is invalid.
+    /// @throws std::invalid_argument If any vertex descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::remove_vertex_wrn()
     template <typename VertexRng>
     requires(traits::c_forward_range<VertexRng> and traits::c_vertex<std::ranges::range_value_t<VertexRng>, graph>)
@@ -497,17 +497,21 @@ public:
         return this->has_vertex(vertex.id());
     }
 
-    /// @brief Returns a vertex descriptor bounds-checked by ID.
+    /// @brief Returns a vertex descriptor, bounds-checked by ID if the strict API policy is active.
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
-    /// @throws std::invalid_argument If the ID is invalid.
+    /// @throws std::invalid_argument If the ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] vertex_t<Self> vertex(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
         return self.vertex_unchecked(vertex_id);
     }
 
-    /// @brief Returns a vertex descriptor bounds-checked by ID.
+    /// @brief Returns a vertex descriptor strictly bounds-checked by ID.
+    ///
+    /// This method guarantees input validation regardless of the active API policy,
+    /// mirroring the strict safety contract of `std::vector::at`.
+    ///
     /// @param vertex_id The ID of the vertex.
     /// @return The corresponding vertex descriptor.
     /// @throws std::invalid_argument If the ID is invalid.
@@ -564,7 +568,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex descriptors.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto neighbors(this auto& self, const id_type vertex_id) {
         return self.neighbor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
@@ -574,7 +578,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex descriptors.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto neighbors(
         this auto& self, traits::c_vertex<graph> auto vertex
     ) {
@@ -585,7 +589,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all adjacent vertex IDs.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto neighbor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.neighbor_ids(vertex_id);
@@ -595,7 +599,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::neighbors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all adjacent vertex IDs.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto neighbor_ids(traits::c_vertex<graph> auto vertex
     ) const {
         return this->neighbor_ids(vertex.id());
@@ -605,7 +609,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex descriptors.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto predecessors(this auto& self, const id_type vertex_id) {
         return self.predecessor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
@@ -615,7 +619,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex descriptors.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto predecessors(
         this auto& self, traits::c_vertex<graph> auto vertex
     ) {
@@ -626,7 +630,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex_id The ID of the target vertex.
     /// @return A view of all predecessor vertex IDs.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto predecessor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.predecessor_ids(vertex_id);
@@ -636,7 +640,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::predecessors()
     /// @param vertex The target vertex descriptor.
     /// @return A view of all predecessor vertex IDs.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto predecessor_ids(traits::c_vertex<graph> auto vertex
     ) const {
         return this->predecessor_ids(vertex.id());
@@ -646,7 +650,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex descriptors.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto successors(this auto& self, const id_type vertex_id) {
         return self.successor_ids(vertex_id)
              | std::views::transform(self._create_vertex_descriptor());
@@ -656,7 +660,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex descriptors.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto successors(
         this auto& self, traits::c_vertex<graph> auto vertex
     ) {
@@ -667,7 +671,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex_id The ID of the source vertex.
     /// @return A view of all successor vertex IDs.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto successor_ids(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.successor_ids(vertex_id);
@@ -677,7 +681,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::successors()
     /// @param vertex The source vertex descriptor.
     /// @return A view of all successor vertex IDs.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto successor_ids(traits::c_vertex<graph> auto vertex
     ) const {
         return this->successor_ids(vertex.id());
@@ -686,7 +690,7 @@ public:
     /// @brief Retrieves a mutable reference to a vertex's properties.
     /// @param id The ID of the vertex.
     /// @return A reference to the properties attached to the vertex.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline vertex_properties_t<Self>& vertex_properties(
         this Self& self, const id_type id
@@ -711,7 +715,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The total degree.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.degree(vertex_id);
@@ -721,7 +725,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::degree()
     /// @param vertex The vertex descriptor.
     /// @return The total degree.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type degree(traits::c_vertex<graph> auto vertex) const {
         return this->degree(vertex.id());
     }
@@ -736,7 +740,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The in-degree.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type in_degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.in_degree(vertex_id);
@@ -746,7 +750,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::in_degree()
     /// @param vertex The vertex descriptor.
     /// @return The in-degree.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type in_degree(traits::c_vertex<graph> auto vertex
     ) const {
         return this->in_degree(vertex.id());
@@ -762,7 +766,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex_id The ID of the vertex.
     /// @return The out-degree.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type out_degree(const id_type vertex_id) const {
         this->_verify_vertex_id(vertex_id);
         return this->_impl.out_degree(vertex_id);
@@ -772,7 +776,7 @@ public:
     /// @copydetails detail::graph_doc_anchors::out_degree()
     /// @param vertex The vertex descriptor.
     /// @return The out-degree.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline size_type out_degree(traits::c_vertex<graph> auto vertex
     ) const {
         return this->out_degree(vertex.id());
@@ -790,7 +794,7 @@ public:
     /// @param source_id The ID of the source vertex.
     /// @param target_id The ID of the target vertex.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge(const id_type source_id, const id_type target_id) {
         this->_verify_vertex_ids(source_id, target_id);
@@ -811,7 +815,7 @@ public:
     /// @param target_id The ID of the target vertex.
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     edge_type add_edge_with(
         const id_type source_id, const id_type target_id, edge_properties_type properties
@@ -838,7 +842,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge(traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target) {
         return this->add_edge(source.id(), target.id());
@@ -849,7 +853,7 @@ public:
     /// @param target The target vertex descriptor.
     /// @param properties The property payload to attach to the edge.
     /// @return A descriptor representing the newly created edge.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     gl_attr_force_inline edge_type add_edge_with(
         traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target, const edge_properties_type& properties
@@ -864,7 +868,7 @@ public:
     /// @brief Dispatches multiple edge insertions connecting one source to many targets.
     /// @param source_id The ID of the source vertex.
     /// @param target_id_rng A sized range of target vertex IDs.
-    /// @throws std::invalid_argument If any vertex ID is invalid.
+    /// @throws std::invalid_argument If any vertex ID is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     void add_edges_from(
         const id_type source_id, const traits::c_sized_range_of<id_type> auto& target_id_rng
@@ -889,7 +893,7 @@ public:
     /// @tparam TargetRng A sized range type containing graph's vertex descriptors.
     /// @param source The source vertex descriptor.
     /// @param target_rng A sized range of target vertex descriptors.
-    /// @throws std::invalid_argument If any vertex ID is invalid.
+    /// @throws std::invalid_argument If any vertex descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::add_edge_note()
     template <typename TargetRng>
     requires(traits::c_sized_range<TargetRng> and traits::c_vertex<std::ranges::range_value_t<TargetRng>, graph>)
@@ -912,7 +916,7 @@ public:
 
     /// @brief Removes a specific edge from the graph.
     /// @param edge The descriptor of the edge to remove.
-    /// @throws std::invalid_argument If the edge descriptor is invalid;
+    /// @throws std::invalid_argument If the edge descriptor is invalid (enforced only under the strict API policy).
     /// @copydetails detail::graph_doc_anchors::remove_edge_wrn()
     void remove_edge(const edge_type& edge) {
         this->_verify_edge(edge);
@@ -964,7 +968,7 @@ public:
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
     /// @return `true` if an edge exists, `false` otherwise.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] bool has_edge(const id_type source_id, const id_type target_id) const {
         this->_verify_vertex_ids(source_id, target_id);
         return this->_impl.has_edge(source_id, target_id);
@@ -974,7 +978,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return `true` if an edge exists, `false` otherwise.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline bool has_edge(
         traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target
     ) const {
@@ -985,7 +989,7 @@ public:
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
     /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] std::optional<edge_t<Self>> edge(
         this Self& self, const id_type source_id, const id_type target_id
@@ -1003,7 +1007,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return An optional containing the edge descriptor if it exists, or std::nullopt otherwise.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline std::optional<edge_t<Self>> edge(
         this Self& self, traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target
@@ -1015,7 +1019,7 @@ public:
     /// @param source_id The source vertex ID.
     /// @param target_id The target vertex ID.
     /// @return A vector populated with the descriptors of all edges linking the two vertices.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] inline std::vector<edge_t<Self>> edges(
         this Self& self, const id_type source_id, const id_type target_id
@@ -1033,7 +1037,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return A vector populated with the descriptors of all edges linking the two vertices.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline std::vector<edge_t<Self>> edges(
         this Self& self, traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target
@@ -1044,7 +1048,7 @@ public:
     /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incident edges.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] inline auto incident_edges(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
@@ -1059,7 +1063,7 @@ public:
     /// @brief Retrieves all edges incident with a vertex.
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incident edges.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline auto incident_edges(
         this Self& self, traits::c_vertex<graph> auto vertex
@@ -1070,7 +1074,7 @@ public:
     /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of incoming edges.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] inline auto in_edges(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
@@ -1083,7 +1087,7 @@ public:
     /// @brief Retrieves all incoming edges of a vertex (going into the vertex).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of incoming edges.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] gl_attr_force_inline auto in_edges(
         this Self& self, traits::c_vertex<graph> auto vertex
@@ -1094,7 +1098,7 @@ public:
     /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex_id The vertex ID.
     /// @return A view representing the set of outgoing edges.
-    /// @throws std::invalid_argument If the vertex ID is invalid.
+    /// @throws std::invalid_argument If the vertex ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] auto out_edges(this Self& self, const id_type vertex_id) {
         self._verify_vertex_id(vertex_id);
@@ -1107,7 +1111,7 @@ public:
     /// @brief Retrieves all outgoing edges of a vertex (going out of the vertex).
     /// @param vertex The vertex descriptor.
     /// @return A view representing the set of outgoing edges.
-    /// @throws std::invalid_argument If the vertex descriptor is invalid.
+    /// @throws std::invalid_argument If the vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline auto out_edges(
         this auto& self, traits::c_vertex<graph> auto vertex
     ) {
@@ -1117,7 +1121,7 @@ public:
     /// @brief Retrieves a mutable reference to an edge's properties.
     /// @param id The ID of the edge.
     /// @return A reference to the properties attached to the edge.
-    /// @throws std::invalid_argument If the edge ID is invalid.
+    /// @throws std::invalid_argument If the edge ID is invalid (enforced only under the strict API policy).
     template <typename Self>
     [[nodiscard]] edge_properties_t<Self>& edge_properties(this Self& self, const id_type id)
     requires(traits::c_non_empty_properties<edge_properties_type>)
@@ -1155,7 +1159,7 @@ public:
     /// @param source_id The ID of the source vertex.
     /// @param target_id The ID of the target vertex.
     /// @return `true` if the given vertices are adjacent, `false` otherwise.
-    /// @throws std::invalid_argument If either vertex ID is invalid.
+    /// @throws std::invalid_argument If either vertex ID is invalid (enforced only under the strict API policy).
     [[nodiscard]] bool are_adjacent(const id_type source_id, const id_type target_id) const {
         this->_verify_vertex_ids(source_id, target_id);
         if constexpr (traits::c_undirected_graph<graph>)
@@ -1180,7 +1184,7 @@ public:
     /// @param source The source vertex descriptor.
     /// @param target The target vertex descriptor.
     /// @return `true` if the given vertices are adjacent, `false` otherwise.
-    /// @throws std::invalid_argument If either vertex descriptor is invalid.
+    /// @throws std::invalid_argument If either vertex descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline bool are_adjacent(
         traits::c_vertex<graph> auto source, traits::c_vertex<graph> auto target
     ) const {
@@ -1195,7 +1199,7 @@ public:
     /// @param edge_1 The first edge descriptor.
     /// @param edge_2 The second edge descriptor.
     /// @return `true` if the given edges are adjacent, `false` otherwise.
-    /// @throws std::invalid_argument If either edge descriptor is invalid.
+    /// @throws std::invalid_argument If either edge descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] bool are_adjacent(const edge_type& edge_1, const edge_type& edge_2) const {
         this->_verify_edge(edge_1);
         this->_verify_edge(edge_2);
@@ -1214,7 +1218,7 @@ public:
     /// @param vertex The vertex descriptor.
     /// @param edge The edge descriptor.
     /// @return `true` if the vertex is incident to the edge, `false` otherwise.
-    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid.
+    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] bool are_incident(traits::c_vertex<graph> auto vertex, const edge_type& edge)
         const {
         this->_verify_vertex_id(vertex.id());
@@ -1229,7 +1233,7 @@ public:
     /// @param edge The edge descriptor.
     /// @param vertex The vertex descriptor.
     /// @return `true` if the vertex is incident to the edge, `false` otherwise.
-    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid.
+    /// @throws std::invalid_argument If either the vertex or the edge descriptor is invalid (enforced only under the strict API policy).
     [[nodiscard]] gl_attr_force_inline bool are_incident(
         const edge_type& edge, traits::c_vertex<graph> auto vertex
     ) const {
