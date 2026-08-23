@@ -6,6 +6,47 @@ This page outlines the advanced configuration toggles and features available in 
 
 ---
 
+## API Validation Policy (Strict vs. Relaxed)
+
+By default, every CPP-GL graph operates under the [**gl::api::strict_t**](../cpp-gl/structgl_1_1api_1_1strict__t.md) policy. This means that every time you query a neighbor, retrieve an edge property, or remove a vertex, the library safely checks if the provided ID is within the bounds of the active topology. If it isn't, the library throws a `std::invalid_argument` exception.
+
+While this guarantees safety and predictable failure, these branches and bounds-checks incur a small overhead. In highly complex algorithms traversing millions of edges, these checks can compound.
+
+### The Relaxed Contract
+
+To achieve absolute zero-cost abstraction, you can instantiate your graph with the [**gl::api::relaxed_t**](../cpp-gl/structgl_1_1api_1_1relaxed__t.md) tag:
+
+```cpp
+using fast_traits = gl::list_graph_traits<
+    gl::directed_t, gl::empty_properties, gl::empty_properties, gl::api::relaxed_t
+>;
+gl::graph<fast_traits> fast_graph;
+```
+
+When using `relaxed_t`, the library completely compiles away all internal throw statements and bounds checks.
+
+> [!WARNING] The Danger of Relaxed Mode
+>
+> By opting into relaxed_t, you enter a strict contract with the compiler: You guarantee that your inputs are always valid.
+>
+> If you pass an invalid vertex ID or a dangling edge descriptor to a relaxed graph, the library will not catch it. It will blindly read or erase from unmapped memory, resulting in Undefined Behavior (UB), data corruption, or a segmentation fault.
+
+### The at() Exception
+
+Mirroring standard library conventions (like `std::vector::operator[]` vs `std::vector::at()`), the `graph.at(vertex_id)` method is the sole exception to the API policy. It will always perform a strict bounds-check and throw an exception, even if the graph is instantiated with `relaxed_t`.
+
+### When to use `relaxed_t`
+
+You should switch to `relaxed_t` only when:
+
+1. You are running heavily localized algorithms (like custom BFS/DFS/A* loops) where you are exclusively querying IDs that the graph itself just provided to you.
+
+2. You have profiled your application and identified that branch-prediction failures or validation overhead in the graph queries is a demonstrable bottleneck.
+
+3. Your graph topology is fully constructed and immutable during the algorithm's execution (guaranteeing that no descriptors are invalidated mid-traversal).
+
+---
+
 ## Forced Function Inlining
 
 By default, C++ compilers use their own internal heuristics to decide whether a function marked with the `inline` keyword should actually be inlined. While modern compilers are generally excellent at this, relying purely on default cost models can sometimes leave small, heavily utilized accessors or structural traversal utilities un-inlined.

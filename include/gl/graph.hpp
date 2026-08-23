@@ -1313,7 +1313,7 @@ private:
     template <bool FollowApiPolicy = true>
     gl_attr_force_inline void _verify_vertex_id(const id_type vertex_id) const {
         if constexpr (not FollowApiPolicy or std::same_as<api_policy_tag, api::strict_t>)
-            if (not this->has_vertex(vertex_id))
+            if (not this->has_vertex(vertex_id)) [[unlikely]]
                 throw std::invalid_argument(std::format("Got invalid vertex id [{}]", vertex_id));
     }
 
@@ -1326,7 +1326,7 @@ private:
 
     void _verify_edge(const edge_type& edge) const {
         if constexpr (std::same_as<api_policy_tag, api::strict_t>)
-            if (not this->_is_valid_edge(edge))
+            if (not this->_is_valid_edge(edge)) [[unlikely]]
                 throw std::invalid_argument(std::format(
                     "Got invalid edge [id = {}, vertices = ({}, {})]",
                     edge.id(),

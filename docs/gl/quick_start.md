@@ -23,7 +23,9 @@ int main() {
         gl::directed_t,
         gl::empty_properties,
         gl::weight_property<int>,
-        gl::repr::list_t>;
+        gl::repr::list_t,
+        gl::api::strict_t,
+        std::uint8_t>;
 
     gl::graph<traits_t> graph(5); // (3)!
 
@@ -54,7 +56,7 @@ int main() {
 ```
 
 1. Include the necessary core graph, algorithm, and I/O headers.
-2. Define the graph's memory layout (adjacency list), directionality, and element payloads via a single traits structure. <br/> **NOTE:** Alternatively, you can use one of the provided [generic graph type aliases](../cpp-gl/group__GL-Core.md#public-types).
+2. Define the graph's memory layout (adjacency list), directionality, element payloads, ID type, and API policy via a single traits structure. <br/> **NOTE:** Alternatively, you can use one of the provided [generic graph type aliases](../cpp-gl/group__GL-Core.md#public-types).
 3. Instantiate the generic `graph` class, pre-allocating it with 5 vertices (IDs 0 through 4).
 4. The `add_edge` method returns an `edge_descriptor`. Use the overloaded `->` operator to directly access and assign the attached `weight` payload in a type-safe manner.
 5. Execute the external algorithm on the instantiated graph.
@@ -70,7 +72,7 @@ Path: 0 -> 2 -> 3 -> 1 -> 4
 
 ### Understanding the Code
 
-- **Traits (`gl::list_graph_traits`):** CPP-GL relies heavily on template abstraction. Instead of passing multiple arguments to the `gl::graph` constructor, you pass a single *Traits* struct as its template parameter. This strictly dictates whether the graph uses an adjacency list or matrix, if it is directed, what custom properties (like `gl::weight_property`) exist on its elements and what id type is used for its elements.
+- **Traits (`gl::list_graph_traits`):** CPP-GL relies heavily on template abstraction. Instead of passing multiple arguments to the `gl::graph` constructor, you pass a single *Traits* struct as its template parameter. This strictly dictates whether the graph uses an adjacency list or matrix, if it is directed, what custom properties (like `gl::weight_property`) exist on its elements and what ID type is used for its elements, and its API validation policy (defaulting to safe, strict bounds-checking).
 
 - **Property Access (`->weight`):** Adding an edge returns a descriptor handle. You access the specific payload fields associated with that edge by using the overloaded `->` operator, ensuring highly performant and type-safe data manipulation.
 

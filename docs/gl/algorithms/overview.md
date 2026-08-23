@@ -28,6 +28,10 @@ Concrete algorithms (like `dijkstra_shortest_paths`, `topological_sort`, or `bre
 
 By separating these layers, CPP-GL guarantees that all algorithms inherently benefit from the exact same optimized design and element management.
 
+> [!TIP] Maximum Throughput with `relaxed_t`
+>
+> Because CPP-GL's concrete algorithms strictly manage element discovery and naturally only query valid IDs, they will never trigger out-of-bounds errors on a structurally sound graph. You can pass a graph instantiated with the [**gl::api::relaxed_t**](../cpp-gl/structgl_1_1api_1_1relaxed__t.md) policy into any standard algorithm to completely strip away internal bounds-checking and instantly maximize traversal performance. You can read more about the API policy usage [here](../advanced.md#api-validation-policy-strict-vs-relaxed).
+
 ---
 
 ## Core Algorithm Elements

@@ -18,27 +18,26 @@ This section explores the core architectural decisions of the GL module:
 
 At the heart of the library is the [**gl::graph**](../cpp-gl/classgl_1_1graph.md) class. Unlike traditional object-oriented designs that rely on virtual inheritance, CPP-GL uses a policy-based design. A single template parameter, `GraphTraits`, dictates the graph's entire structural and behavioral identity.
 
-The [**gl::graph_traits**](../cpp-gl/structgl_1_1graph__traits.md) struct configures five key policies:
+The [**gl::graph_traits**](../cpp-gl/structgl_1_1graph__traits.md) struct configures the following key policies:
 
 1. **Directionality**: Directed vs. Undirected.
 2. **Vertex Properties**: The data payload attached to each vertex.
 3. **Edge Properties**: The data payload attached to each edge.
 4. **Representation Tag**: The underlying memory layout (e.g., Adjacency List).
-5. **ID Type**: The integer type used for internal indexing (defaults to `std::uint32_t`).
+5. **API Policy Tag**: The validation and safety contract (strict or relaxed).
+6. **ID Type**: The integer type used for internal indexing (defaults to `std::uint32_t`).
 
 To reduce boilerplate, the library provides several generic type aliases for the most common configurations:
 
 - Based on the directional tag:
-
-    - [**gl::directed_graph<VP, EP, ReprTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-directed_graph)
-    - [**gl::undirected_graph<VP, EP, ReprTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-undirected_graph)
+    - [**gl::directed_graph<VP, EP, ReprTag, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-directed_graph)
+    - [**gl::undirected_graph<VP, EP, ReprTag, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-undirected_graph)
 
 - Based on the representation tag:
-
-    - [**gl::list_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-list_graph)
-    - [**gl::flat_list_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-flat_list_graph)
-    - [**gl::matrix_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-matrix_graph)
-    - [**gl::flat_matrix_graph<Dir, VP, EP, IdType>**](../cpp-gl/group__GL-Core.md#typedef-flat_matrix_graph)
+    - [**gl::list_graph<Dir, VP, EP, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-list_graph)
+    - [**gl::flat_list_graph<Dir, VP, EP, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-flat_list_graph)
+    - [**gl::matrix_graph<Dir, VP, EP, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-matrix_graph)
+    - [**gl::flat_matrix_graph<Dir, VP, EP, ApiTag, IdType>**](../cpp-gl/group__GL-Core.md#typedef-flat_matrix_graph)
 
 ### Graph Directionality
 
@@ -49,6 +48,15 @@ Formally, a graph $G = (V, E)$ consists of a set of vertices $V$ and a set of ed
 - [**directed_t**](../cpp-gl/structgl_1_1directed__t.md) : Specifies a **directed graph** configuration where edges are defined as ordered pairs $(u, v)$ such that $u, v \in V$. In this graph type, a connection from vertex $u$ to vertex $v$ is structurally distinct from a connection from $v$ to $u$, and the existence of one directed edge does not imply the existence of the other.
 
 - [**undirected_t**](../cpp-gl/structgl_1_1undirected__t.md) : Edges are unordered pairs $\{u, v\}$ where $u, v \in V$. The library automatically manages the bidirectional nature of these connections, ensuring that an edge between $u$ and $v$ is recognized during both traversal and structural degree calculations regardless of the order of endpoints.
+
+### API Validation Policy
+
+CPP-GL allows you to completely strip away internal bounds-checking for maximum runtime performance using API policy tags:
+
+- [**gl::api::strict_t**](../cpp-gl/structgl_1_1api_1_1strict__t.md) : The default policy. Safely validates all input IDs and descriptors. Invalid inputs throw `std::invalid_argument`.
+- [**gl::api::relaxed_t**](../cpp-gl/structgl_1_1api_1_1relaxed__t.md) : The high-performance policy. Disables bounds-checking. Passing invalid inputs results in Undefined Behavior (UB).
+
+*(For a deep dive into when and how to safely leverage the relaxed policy, see the [Advanced Features](advanced.md) documentation).*
 
 ### IDs vs. Descriptors
 
