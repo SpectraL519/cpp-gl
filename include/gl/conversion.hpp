@@ -305,7 +305,7 @@ requires(not std::is_lvalue_reference_v<Graph>)
 /// @param func A callable (e.g., a lambda) that accepts a reference to the relaxed graph.
 /// @return The return value resulting from the provided callable.
 template <traits::c_graph Graph, typename Func>
-requires(not std::is_const_v<Graph>) and std::invocable<Func, traits::make_relaxed_t<Graph>&>
+requires(not std::is_const_v<Graph> and std::invocable<Func, traits::make_relaxed_t<Graph>&>)
 constexpr decltype(auto) with_relaxed(Graph& g, Func&& func) {
     if constexpr (traits::c_relaxed_graph<Graph>) {
         return std::forward<Func>(func)(g);

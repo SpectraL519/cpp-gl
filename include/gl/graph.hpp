@@ -1319,9 +1319,11 @@ public:
     template <traits::c_graph_repr_tag TargetImplTag, traits::c_graph_repr_tag SourceImplTag>
     friend struct detail::to_impl;
 
+    /// @brief Internal friend structure for the `as_strict` conversion operation.
     template <traits::c_graph G>
     friend auto as_strict(G&&) noexcept;
 
+    /// @brief Internal friend structure for the `as_relaxed` conversion operation.
     template <traits::c_graph G>
     friend auto as_relaxed(G&&) noexcept;
 

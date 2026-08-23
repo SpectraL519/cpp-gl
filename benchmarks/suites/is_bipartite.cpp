@@ -74,8 +74,8 @@ void add_args(argon::argument_parser& parser) {
         .help("Number of vertices for a single set in bipartite generation");
 }
 
-template <typename StrictGraph>
-void register_is_bipartite_benchmark(const std::string& base_name, int64_t n_vertices) {
+template <gl::traits::c_strict_graph StrictGraph>
+void register_is_bipartite_gl_benchmark(const std::string& base_name, int64_t n_vertices) {
     using RelaxedGraph = gl::traits::make_relaxed_t<StrictGraph>;
 
     benchmark::RegisterBenchmark(base_name + "/strict", bm_gl_is_bipartite<StrictGraph>)
@@ -104,12 +104,8 @@ void register_benchmarks(const argon::argument_parser& parser) {
         gl::api::strict_t,
         std::uint64_t>;
 
-    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u32", bm_gl_is_bipartite<gl_list_u32>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/list/u64", bm_gl_is_bipartite<gl_list_u64>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
+    register_is_bipartite_gl_benchmark<gl_list_u32>("is_bipartite/CPP-GL/list/u32", n_vertices);
+    register_is_bipartite_gl_benchmark<gl_list_u64>("is_bipartite/CPP-GL/list/u64", n_vertices);
 
     // CPP-GL Flat Adjacency List Benchmarks
     using gl_flat_list_u32 = gl::flat_list_graph<
@@ -125,14 +121,12 @@ void register_benchmarks(const argon::argument_parser& parser) {
         gl::api::strict_t,
         std::uint64_t>;
 
-    benchmark::
-        RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u32", bm_gl_is_bipartite<gl_flat_list_u32>)
-            ->Arg(n_vertices)
-            ->Unit(benchmark::kMillisecond);
-    benchmark::
-        RegisterBenchmark("is_bipartite/CPP-GL/flat_list/u64", bm_gl_is_bipartite<gl_flat_list_u64>)
-            ->Arg(n_vertices)
-            ->Unit(benchmark::kMillisecond);
+    register_is_bipartite_gl_benchmark<gl_flat_list_u32>(
+        "is_bipartite/CPP-GL/flat_list/u32", n_vertices
+    );
+    register_is_bipartite_gl_benchmark<gl_flat_list_u64>(
+        "is_bipartite/CPP-GL/flat_list/u64", n_vertices
+    );
 
     // CPP-GL Adjacency Matrix Benchmarks
     using gl_matrix_u32 = gl::matrix_graph<
@@ -148,12 +142,8 @@ void register_benchmarks(const argon::argument_parser& parser) {
         gl::api::strict_t,
         std::uint64_t>;
 
-    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/matrix/u32", bm_gl_is_bipartite<gl_matrix_u32>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
-    benchmark::RegisterBenchmark("is_bipartite/CPP-GL/matrix/u64", bm_gl_is_bipartite<gl_matrix_u64>)
-        ->Arg(n_vertices)
-        ->Unit(benchmark::kMillisecond);
+    register_is_bipartite_gl_benchmark<gl_matrix_u32>("is_bipartite/CPP-GL/matrix/u32", n_vertices);
+    register_is_bipartite_gl_benchmark<gl_matrix_u64>("is_bipartite/CPP-GL/matrix/u64", n_vertices);
 
     // CPP-GL Flat Adjacency Matrix Benchmarks
     using gl_flat_matrix_u32 = gl::flat_matrix_graph<
@@ -169,15 +159,12 @@ void register_benchmarks(const argon::argument_parser& parser) {
         gl::api::strict_t,
         std::uint64_t>;
 
-    benchmark::
-        RegisterBenchmark("is_bipartite/CPP-GL/flat_matrix/u32", bm_gl_is_bipartite<gl_flat_matrix_u32>)
-            ->Arg(n_vertices)
-            ->Unit(benchmark::kMillisecond);
-    benchmark::
-        RegisterBenchmark("is_bipartite/CPP-GL/flat_matrix/u64", bm_gl_is_bipartite<gl_flat_matrix_u64>)
-            ->Arg(n_vertices)
-            ->Unit(benchmark::kMillisecond);
-
+    register_is_bipartite_gl_benchmark<gl_flat_matrix_u32>(
+        "is_bipartite/CPP-GL/flat_matrix/u32", n_vertices
+    );
+    register_is_bipartite_gl_benchmark<gl_flat_matrix_u64>(
+        "is_bipartite/CPP-GL/flat_matrix/u64", n_vertices
+    );
 
 #ifdef GL_BENCH_INCLUDE_BGL
     // BGL Benchmarks
